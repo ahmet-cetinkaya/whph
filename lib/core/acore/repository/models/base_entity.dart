@@ -1,9 +1,9 @@
-abstract class Entity {
-  String id;
+abstract class BaseEntity<TId> {
+  TId id;
   DateTime createdDate;
   DateTime? modifiedDate;
 
-  Entity({
+  BaseEntity({
     required this.id,
     required this.createdDate,
     this.modifiedDate,

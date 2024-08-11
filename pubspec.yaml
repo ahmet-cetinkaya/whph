@@ -1,8 +1,6 @@
 name: whph
-description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+description: Personal Productivity App
+publish_to: "none"
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,7 +17,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.5.0-180.3.beta <4.0.0'
+  sdk: ">=3.5.0-180.3.beta <4.0.0"
+
+# https://pub.dev/packages/rps
+scripts:
+  format: dart format . -l 120
+  gen: flutter pub run build_runner build --delete-conflicting-outputs
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,9 +37,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
   kiwi: ^5.0.1
   get_storage: ^2.1.1
   mediatr: ^0.2.1
+  nanoid2: ^2.0.1
+  drift: ^2.19.1+1
+  drift_flutter: ^0.1.0
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  meta: ^1.14.0
 
 dev_dependencies:
   flutter_test:
@@ -48,13 +59,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  drift_dev: ^2.19.1
+  build_runner: ^2.4.11
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

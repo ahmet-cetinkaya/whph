@@ -1,5 +1,3 @@
-library acore;
-
 import '../storage/abstraction/storage.dart';
 import 'package:get_storage/get_storage.dart';
 
