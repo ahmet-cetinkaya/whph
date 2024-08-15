@@ -1,4 +1,4 @@
-import '../mapper/abstraction/mapper.dart';
+import 'abstraction/i_mapper.dart';
 
 class CoreMapper implements IMapper {
   // <<TDestination, TSource>, MapperFunction>

@@ -25,12 +25,12 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   @override
   void initState() {
-    getList();
-    listenLazyLoad();
+    _getList();
+    _listenLazyLoad();
     super.initState();
   }
 
-  Future<void> getList({int pageIndex = 0}) async {
+  Future<void> _getList({int pageIndex = 0}) async {
     setState(() {
       _loadingCount = _loadingCount + 1;
     });
@@ -51,10 +51,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     });
   }
 
-  void listenLazyLoad() {
+  void _listenLazyLoad() {
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasNext) {
-        await getList(pageIndex: _pageIndex + 1);
+        await _getList(pageIndex: _pageIndex + 1);
       }
     });
   }
@@ -70,14 +70,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
               icon: const Icon(Icons.refresh),
               onPressed: () async {
                 _appUsages.clear();
-                await getList(pageIndex: _pageIndex);
+                await _getList(pageIndex: _pageIndex);
               },
             ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await getList();
+          await _getList();
         },
         child: ListView.builder(
           controller: _scrollController,

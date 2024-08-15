@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/app_usage_view/app_usage_view_page.dart';
+import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,7 +13,7 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: AppUsageViewPage(),
+      home: TasksPage(),
     );
   }
 }
