@@ -1,9 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
@@ -138,7 +138,7 @@ class _TasksPageState extends State<TasksPage> {
                 controller: _scrollController,
                 itemCount: _tasks.length + (_loadingCount > 0 ? 1 : 0),
                 itemBuilder: (context, index) {
-                  if (_loadingCount > 0 && index == _tasks.length) {
+                  if (_loadingCount > 0) {
                     return const Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),

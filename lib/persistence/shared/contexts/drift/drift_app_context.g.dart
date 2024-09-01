@@ -727,59 +727,6 @@ typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Func
   Value<int> rowid,
 });
 
-class $$AppUsageTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AppUsageTableTable,
-    AppUsage,
-    $$AppUsageTableTableFilterComposer,
-    $$AppUsageTableTableOrderingComposer,
-    $$AppUsageTableTableCreateCompanionBuilder,
-    $$AppUsageTableTableUpdateCompanionBuilder> {
-  $$AppUsageTableTableTableManager(_$AppDatabase db, $AppUsageTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$AppUsageTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$AppUsageTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String?> processName = const Value.absent(),
-            Value<int> duration = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppUsageTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            title: title,
-            processName: processName,
-            duration: duration,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            required String title,
-            Value<String?> processName = const Value.absent(),
-            required int duration,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppUsageTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            title: title,
-            processName: processName,
-            duration: duration,
-            rowid: rowid,
-          ),
-        ));
-}
-
 class $$AppUsageTableTableFilterComposer extends FilterComposer<_$AppDatabase, $AppUsageTableTable> {
   $$AppUsageTableTableFilterComposer(super.$state);
   ColumnFilters<String> get id => $state.composableBuilder(
@@ -831,6 +778,75 @@ class $$AppUsageTableTableOrderingComposer extends OrderingComposer<_$AppDatabas
       builder: (column, joinBuilders) => ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+class $$AppUsageTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageTableTable,
+    AppUsage,
+    $$AppUsageTableTableFilterComposer,
+    $$AppUsageTableTableOrderingComposer,
+    $$AppUsageTableTableCreateCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder,
+    (AppUsage, BaseReferences<_$AppDatabase, $AppUsageTableTable, AppUsage>),
+    AppUsage,
+    PrefetchHooks Function()> {
+  $$AppUsageTableTableTableManager(_$AppDatabase db, $AppUsageTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$AppUsageTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$AppUsageTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> processName = const Value.absent(),
+            Value<int> duration = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            title: title,
+            processName: processName,
+            duration: duration,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            required String title,
+            Value<String?> processName = const Value.absent(),
+            required int duration,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            title: title,
+            processName: processName,
+            duration: duration,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppUsageTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageTableTable,
+    AppUsage,
+    $$AppUsageTableTableFilterComposer,
+    $$AppUsageTableTableOrderingComposer,
+    $$AppUsageTableTableCreateCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder,
+    (AppUsage, BaseReferences<_$AppDatabase, $AppUsageTableTable, AppUsage>),
+    AppUsage,
+    PrefetchHooks Function()>;
 typedef $$TopicTableTableCreateCompanionBuilder = TopicTableCompanion Function({
   Value<int> id,
   required DateTime createdDate,
@@ -846,49 +862,30 @@ typedef $$TopicTableTableUpdateCompanionBuilder = TopicTableCompanion Function({
   Value<String> name,
 });
 
-class $$TopicTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TopicTableTable,
-    Topic,
-    $$TopicTableTableFilterComposer,
-    $$TopicTableTableOrderingComposer,
-    $$TopicTableTableCreateCompanionBuilder,
-    $$TopicTableTableUpdateCompanionBuilder> {
-  $$TopicTableTableTableManager(_$AppDatabase db, $TopicTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$TopicTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$TopicTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<int?> parentId = const Value.absent(),
-            Value<String> name = const Value.absent(),
-          }) =>
-              TopicTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            parentId: parentId,
-            name: name,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<int?> parentId = const Value.absent(),
-            required String name,
-          }) =>
-              TopicTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            parentId: parentId,
-            name: name,
-          ),
-        ));
+final class $$TopicTableTableReferences extends BaseReferences<_$AppDatabase, $TopicTableTable, Topic> {
+  $$TopicTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TopicTableTable _parentIdTable(_$AppDatabase db) =>
+      db.topicTable.createAlias($_aliasNameGenerator(db.topicTable.parentId, db.topicTable.id));
+
+  $$TopicTableTableProcessedTableManager? get parentId {
+    if ($_item.parentId == null) return null;
+    final manager = $$TopicTableTableTableManager($_db, $_db.topicTable).filter((f) => f.id($_item.parentId!));
+    final item = $_typedResult.readTableOrNull(_parentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$TaskTableTable, List<Task>> _taskTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.taskTable,
+          aliasName: $_aliasNameGenerator(db.topicTable.id, db.taskTable.topicId));
+
+  $$TaskTableTableProcessedTableManager get taskTableRefs {
+    final manager = $$TaskTableTableTableManager($_db, $_db.taskTable).filter((f) => f.topicId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_taskTableRefsTable($_db));
+    return ProcessedTableManager(manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$TopicTableTableFilterComposer extends FilterComposer<_$AppDatabase, $TopicTableTable> {
@@ -959,6 +956,99 @@ class $$TopicTableTableOrderingComposer extends OrderingComposer<_$AppDatabase, 
   }
 }
 
+class $$TopicTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TopicTableTable,
+    Topic,
+    $$TopicTableTableFilterComposer,
+    $$TopicTableTableOrderingComposer,
+    $$TopicTableTableCreateCompanionBuilder,
+    $$TopicTableTableUpdateCompanionBuilder,
+    (Topic, $$TopicTableTableReferences),
+    Topic,
+    PrefetchHooks Function({bool parentId, bool taskTableRefs})> {
+  $$TopicTableTableTableManager(_$AppDatabase db, $TopicTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$TopicTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$TopicTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<int?> parentId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+          }) =>
+              TopicTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            parentId: parentId,
+            name: name,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<int?> parentId = const Value.absent(),
+            required String name,
+          }) =>
+              TopicTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            parentId: parentId,
+            name: name,
+          ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), $$TopicTableTableReferences(db, table, e))).toList(),
+          prefetchHooksCallback: ({parentId = false, taskTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (taskTableRefs) db.taskTable],
+              addJoins: <
+                  T extends TableManagerState<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic,
+                      dynamic, dynamic>>(state) {
+                if (parentId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.parentId,
+                    referencedTable: $$TopicTableTableReferences._parentIdTable(db),
+                    referencedColumn: $$TopicTableTableReferences._parentIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (taskTableRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$TopicTableTableReferences._taskTableRefsTable(db),
+                        managerFromTypedResult: (p0) => $$TopicTableTableReferences(db, table, p0).taskTableRefs,
+                        referencedItemsForCurrentItem: (item, referencedItems) =>
+                            referencedItems.where((e) => e.topicId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$TopicTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TopicTableTable,
+    Topic,
+    $$TopicTableTableFilterComposer,
+    $$TopicTableTableOrderingComposer,
+    $$TopicTableTableCreateCompanionBuilder,
+    $$TopicTableTableUpdateCompanionBuilder,
+    (Topic, $$TopicTableTableReferences),
+    Topic,
+    PrefetchHooks Function({bool parentId, bool taskTableRefs})>;
 typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<int> id,
   required DateTime createdDate,
@@ -988,77 +1078,19 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<bool> isCompleted,
 });
 
-class $$TaskTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TaskTableTable,
-    Task,
-    $$TaskTableTableFilterComposer,
-    $$TaskTableTableOrderingComposer,
-    $$TaskTableTableCreateCompanionBuilder,
-    $$TaskTableTableUpdateCompanionBuilder> {
-  $$TaskTableTableTableManager(_$AppDatabase db, $TaskTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$TaskTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$TaskTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String?> description = const Value.absent(),
-            Value<int?> topicId = const Value.absent(),
-            Value<EisenhowerPriority?> priority = const Value.absent(),
-            Value<DateTime?> plannedDate = const Value.absent(),
-            Value<DateTime?> deadlineDate = const Value.absent(),
-            Value<int?> estimatedTime = const Value.absent(),
-            Value<int?> elapsedTime = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
-          }) =>
-              TaskTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            title: title,
-            description: description,
-            topicId: topicId,
-            priority: priority,
-            plannedDate: plannedDate,
-            deadlineDate: deadlineDate,
-            estimatedTime: estimatedTime,
-            elapsedTime: elapsedTime,
-            isCompleted: isCompleted,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            required String title,
-            Value<String?> description = const Value.absent(),
-            Value<int?> topicId = const Value.absent(),
-            Value<EisenhowerPriority?> priority = const Value.absent(),
-            Value<DateTime?> plannedDate = const Value.absent(),
-            Value<DateTime?> deadlineDate = const Value.absent(),
-            Value<int?> estimatedTime = const Value.absent(),
-            Value<int?> elapsedTime = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
-          }) =>
-              TaskTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            title: title,
-            description: description,
-            topicId: topicId,
-            priority: priority,
-            plannedDate: plannedDate,
-            deadlineDate: deadlineDate,
-            estimatedTime: estimatedTime,
-            elapsedTime: elapsedTime,
-            isCompleted: isCompleted,
-          ),
-        ));
+final class $$TaskTableTableReferences extends BaseReferences<_$AppDatabase, $TaskTableTable, Task> {
+  $$TaskTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TopicTableTable _topicIdTable(_$AppDatabase db) =>
+      db.topicTable.createAlias($_aliasNameGenerator(db.taskTable.topicId, db.topicTable.id));
+
+  $$TopicTableTableProcessedTableManager? get topicId {
+    if ($_item.topicId == null) return null;
+    final manager = $$TopicTableTableTableManager($_db, $_db.topicTable).filter((f) => f.id($_item.topicId!));
+    final item = $_typedResult.readTableOrNull(_topicIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(manager.$state.copyWith(prefetchedData: [item]));
+  }
 }
 
 class $$TaskTableTableFilterComposer extends FilterComposer<_$AppDatabase, $TaskTableTable> {
@@ -1173,6 +1205,119 @@ class $$TaskTableTableOrderingComposer extends OrderingComposer<_$AppDatabase, $
     return composer;
   }
 }
+
+class $$TaskTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskTableTable,
+    Task,
+    $$TaskTableTableFilterComposer,
+    $$TaskTableTableOrderingComposer,
+    $$TaskTableTableCreateCompanionBuilder,
+    $$TaskTableTableUpdateCompanionBuilder,
+    (Task, $$TaskTableTableReferences),
+    Task,
+    PrefetchHooks Function({bool topicId})> {
+  $$TaskTableTableTableManager(_$AppDatabase db, $TaskTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$TaskTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$TaskTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<int?> topicId = const Value.absent(),
+            Value<EisenhowerPriority?> priority = const Value.absent(),
+            Value<DateTime?> plannedDate = const Value.absent(),
+            Value<DateTime?> deadlineDate = const Value.absent(),
+            Value<int?> estimatedTime = const Value.absent(),
+            Value<int?> elapsedTime = const Value.absent(),
+            Value<bool> isCompleted = const Value.absent(),
+          }) =>
+              TaskTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            title: title,
+            description: description,
+            topicId: topicId,
+            priority: priority,
+            plannedDate: plannedDate,
+            deadlineDate: deadlineDate,
+            estimatedTime: estimatedTime,
+            elapsedTime: elapsedTime,
+            isCompleted: isCompleted,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            required String title,
+            Value<String?> description = const Value.absent(),
+            Value<int?> topicId = const Value.absent(),
+            Value<EisenhowerPriority?> priority = const Value.absent(),
+            Value<DateTime?> plannedDate = const Value.absent(),
+            Value<DateTime?> deadlineDate = const Value.absent(),
+            Value<int?> estimatedTime = const Value.absent(),
+            Value<int?> elapsedTime = const Value.absent(),
+            Value<bool> isCompleted = const Value.absent(),
+          }) =>
+              TaskTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            title: title,
+            description: description,
+            topicId: topicId,
+            priority: priority,
+            plannedDate: plannedDate,
+            deadlineDate: deadlineDate,
+            estimatedTime: estimatedTime,
+            elapsedTime: elapsedTime,
+            isCompleted: isCompleted,
+          ),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable(table), $$TaskTableTableReferences(db, table, e))).toList(),
+          prefetchHooksCallback: ({topicId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic, dynamic,
+                      dynamic, dynamic>>(state) {
+                if (topicId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.topicId,
+                    referencedTable: $$TaskTableTableReferences._topicIdTable(db),
+                    referencedColumn: $$TaskTableTableReferences._topicIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$TaskTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskTableTable,
+    Task,
+    $$TaskTableTableFilterComposer,
+    $$TaskTableTableOrderingComposer,
+    $$TaskTableTableCreateCompanionBuilder,
+    $$TaskTableTableUpdateCompanionBuilder,
+    (Task, $$TaskTableTableReferences),
+    Task,
+    PrefetchHooks Function({bool topicId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
