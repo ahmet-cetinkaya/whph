@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/domain/features/tasks/task.dart';
-import 'package:whph/persistence/features/topics/drift_topic_repository.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
 
@@ -12,7 +11,6 @@ class TaskTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
-  IntColumn get topicId => integer().nullable().references(TopicTable, #id)();
   IntColumn get priority => intEnum<EisenhowerPriority>().nullable()();
   DateTimeColumn get plannedDate => dateTime().nullable()();
   DateTimeColumn get deadlineDate => dateTime().nullable()();
@@ -37,7 +35,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, int, TaskTable> impl
         modifiedDate: Value(entity.modifiedDate),
         title: entity.title,
         description: Value(entity.description),
-        topicId: Value(entity.topicId),
         priority: Value(entity.priority),
         plannedDate: Value(entity.plannedDate),
         deadlineDate: Value(entity.deadlineDate),

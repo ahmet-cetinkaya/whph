@@ -5,7 +5,6 @@ enum EisenhowerPriority { none, urgentImportant, notUrgentImportant, urgentNotIm
 class Task extends BaseEntity<int> {
   String title;
   String? description;
-  int? topicId;
   EisenhowerPriority? priority;
   DateTime? plannedDate;
   DateTime? deadlineDate;
@@ -19,7 +18,6 @@ class Task extends BaseEntity<int> {
       super.modifiedDate,
       required this.title,
       this.description,
-      this.topicId,
       this.plannedDate,
       this.deadlineDate,
       this.priority,

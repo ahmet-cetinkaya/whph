@@ -8,6 +8,8 @@ import 'package:whph/domain/features/app_usage/app_usage.dart';
 import 'package:whph/main.dart';
 
 class AppUsageViewPage extends StatefulWidget {
+  static const String route = '/app-usages';
+
   final Mediator mediator = container.resolve<Mediator>();
 
   AppUsageViewPage({super.key});

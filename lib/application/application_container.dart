@@ -5,19 +5,23 @@ import 'package:whph/application/features/app_usage/queries/get_list_by_top_app_
 import 'package:whph/application/features/app_usage/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usage/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usage/services/app_usage_service.dart';
+import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
+import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
+import 'package:whph/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
+import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/application/features/topics/commands/delete_topic_command.dart';
-import 'package:whph/application/features/topics/services/abstraction/i_topic_repository.dart';
+import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
+import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/mapper/abstraction/i_mapper.dart';
 import 'package:whph/core/acore/mapper/mapper.dart';
-
-import 'features/topics/commands/save_topic_command.dart';
-import 'features/topics/queries/get_list_topics_query.dart';
 
 void registerApplication(IContainer container) {
   container.registerSingleton<IMapper>((_) => CoreMapper());
@@ -27,7 +31,7 @@ void registerApplication(IContainer container) {
 
   registerAppUsagesFeature(container, mediator);
   registerTasksFeature(container, mediator);
-  registerTopicsFeature(container, mediator);
+  registerTagsFeature(container, mediator);
 }
 
 void registerAppUsagesFeature(IContainer container, Mediator mediator) {
@@ -58,22 +62,34 @@ void registerTasksFeature(IContainer container, Mediator mediator) {
     () => GetListTasksQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
   );
   mediator.registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(
-    () => GetTaskQueryHandler(
-        taskRepository: container.resolve<ITaskRepository>(), topicRepository: container.resolve<ITopicRepository>()),
+    () => GetTaskQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
   );
 }
 
-void registerTopicsFeature(IContainer container, Mediator mediator) {
-  mediator.registerHandler<SaveTopicCommand, SaveTopicCommandResponse, SaveTopicCommandHandler>(
-    () => SaveTopicCommandHandler(topicRepository: container.resolve<ITopicRepository>()),
+void registerTagsFeature(IContainer container, Mediator mediator) {
+  mediator.registerHandler<SaveTagCommand, SaveTagCommandResponse, SaveTagCommandHandler>(
+    () => SaveTagCommandHandler(tagRepository: container.resolve<ITagRepository>()),
   );
-  mediator.registerHandler<DeleteTopicCommand, DeleteTopicCommandResponse, DeleteTopicCommandHandler>(
-    () => DeleteTopicCommandHandler(topicRepository: container.resolve<ITopicRepository>()),
+  mediator.registerHandler<DeleteTagCommand, DeleteTagCommandResponse, DeleteTagCommandHandler>(
+    () => DeleteTagCommandHandler(tagRepository: container.resolve<ITagRepository>()),
   );
-  mediator.registerHandler<GetListTopicsQuery, GetListTopicsQueryResponse, GetListTopicsQueryHandler>(
-    () => GetListTopicsQueryHandler(topicRepository: container.resolve<ITopicRepository>()),
+  mediator.registerHandler<GetListTagsQuery, GetListTagsQueryResponse, GetListTagsQueryHandler>(
+    () => GetListTagsQueryHandler(tagRepository: container.resolve<ITagRepository>()),
   );
-  mediator.registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
-    () => GetListTasksQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
+  mediator.registerHandler<GetTagQuery, GetTagQueryResponse, GetTagQueryHandler>(
+    () => GetTagQueryHandler(tagRepository: container.resolve<ITagRepository>()),
+  );
+
+  mediator.registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(
+    () => AddTagTagCommandHandler(tagTagRepository: container.resolve<ITagTagRepository>()),
+  );
+  mediator.registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse, RemoveTagTagCommandHandler>(
+    () => RemoveTagTagCommandHandler(tagTagRepository: container.resolve<ITagTagRepository>()),
+  );
+  mediator.registerHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse, GetListTagTagsQueryHandler>(
+    () => GetListTagTagsQueryHandler(
+      tagRepository: container.resolve<ITagRepository>(),
+      tagTagRepository: container.resolve<ITagTagRepository>(),
+    ),
   );
 }

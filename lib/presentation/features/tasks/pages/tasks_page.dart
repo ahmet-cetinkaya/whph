@@ -7,6 +7,8 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 
 class TasksPage extends StatefulWidget {
+  static const String route = '/tasks';
+
   final Mediator mediator = container.resolve<Mediator>();
 
   TasksPage({super.key});

@@ -21,7 +21,7 @@ class TaskCompleteButton extends StatelessWidget {
       id: queryResponse.id,
       title: queryResponse.title,
       description: queryResponse.description,
-      topicId: queryResponse.topicId,
+      // topicId: queryResponse.topicId,
       priority: queryResponse.priority,
       plannedDate: queryResponse.plannedDate,
       deadlineDate: queryResponse.deadlineDate,

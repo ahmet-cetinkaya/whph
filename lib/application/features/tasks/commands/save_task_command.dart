@@ -6,7 +6,6 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final int? id;
   final String title;
   final String? description;
-  final int? topicId;
   final EisenhowerPriority? priority;
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
@@ -18,7 +17,6 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       {this.id,
       required this.title,
       this.description,
-      this.topicId,
       this.priority,
       this.plannedDate,
       this.deadlineDate,
@@ -56,7 +54,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       task.title = request.title;
       task.description = request.description;
-      task.topicId = request.topicId;
       task.priority = request.priority;
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
@@ -70,7 +67,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           createdDate: DateTime(0),
           title: request.title,
           description: request.description,
-          topicId: request.topicId,
           priority: request.priority,
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,

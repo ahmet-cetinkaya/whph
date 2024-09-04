@@ -3,7 +3,6 @@ import 'package:markdown_editor_plus/widgets/markdown_auto_preview.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/application/features/topics/queries/get_list_topics_query.dart';
 import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/core/acore/components/numeric_input.dart';
 import 'package:whph/domain/features/tasks/task.dart';
@@ -45,7 +44,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   @override
   void initState() {
     _fetchTask();
-    _fetchTopics();
+    // _fetchTopics();
     super.initState();
   }
 
@@ -61,22 +60,21 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     });
   }
 
-  Future<void> _fetchTopics() async {
-    var query = GetListTopicsQuery(pageIndex: 0, pageSize: 25);
-    var response = await _mediator.send<GetListTopicsQuery, GetListTopicsQueryResponse>(query);
-    setState(() {
-      _topicOptions.addAll(response.items.map((topic) {
-        return DropdownOption<int>(label: topic.name, value: topic.id);
-      }));
-    });
-  }
+  // Future<void> _fetchTopics() async {
+  //   var query = GetListTopicsQuery(pageIndex: 0, pageSize: 25);
+  //   var response = await _mediator.send<GetListTopicsQuery, GetListTopicsQueryResponse>(query);
+  //   setState(() {
+  //     _topicOptions.addAll(response.items.map((topic) {
+  //       return DropdownOption<int>(label: topic.name, value: topic.id);
+  //     }));
+  //   });
+  // }
 
   void _updateTask() {
     var saveCommand = SaveTaskCommand(
       id: task!.id,
       title: _titleController.text,
       description: _descriptionController.text,
-      topicId: task!.topicId,
       priority: task!.priority,
       plannedDate: DateTime.tryParse(_plannedDateController.text),
       deadlineDate: DateTime.tryParse(_deadlineDateController.text),
@@ -152,29 +150,29 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                   ),
                   const SizedBox(height: 16.0),
 
-                  // TOPIC
-                  const Text(
-                    'Topic:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  DropdownButton<DropdownOption<int?>>(
-                    value: _topicOptions.firstWhere((topicOption) => topicOption.value == task!.topicId,
-                        orElse: () => _topicOptions.first),
-                    onChanged: (DropdownOption<int?>? newValue) {
-                      setState(() {
-                        task!.topicId = newValue?.value;
-                      });
-                      _updateTask();
-                    },
-                    items:
-                        _topicOptions.map<DropdownMenuItem<DropdownOption<int?>>>((DropdownOption<int?> topicOption) {
-                      return DropdownMenuItem<DropdownOption<int?>>(
-                        value: topicOption,
-                        child: Text(topicOption.label),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 16.0),
+                  // // TOPIC
+                  // const Text(
+                  //   'Topic:',
+                  //   style: TextStyle(fontWeight: FontWeight.bold),
+                  // ),
+                  // DropdownButton<DropdownOption<int?>>(
+                  //   value: _topicOptions.firstWhere((topicOption) => topicOption.value == task!.topicId,
+                  //       orElse: () => _topicOptions.first),
+                  //   onChanged: (DropdownOption<int?>? newValue) {
+                  //     setState(() {
+                  //       // task!.topicId = newValue?.value;
+                  //     });
+                  //     _updateTask();
+                  //   },
+                  //   items:
+                  //       _topicOptions.map<DropdownMenuItem<DropdownOption<int?>>>((DropdownOption<int?> topicOption) {
+                  //     return DropdownMenuItem<DropdownOption<int?>>(
+                  //       value: topicOption,
+                  //       child: Text(topicOption.label),
+                  //     );
+                  //   }).toList(),
+                  // ),
+                  // const SizedBox(height: 16.0),
 
                   // PLANNED DATE
                   const Text(
