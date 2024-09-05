@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:whph/domain/features/app_usage/app_usage.dart';
-import 'package:whph/application/features/app_usage/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/domain/features/app_usages/app_usage.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'abstraction/i_app_usage_service.dart';
 
 class AppUsageService implements IAppUsageService {
@@ -68,6 +68,11 @@ class AppUsageService implements IAppUsageService {
     if (Platform.isLinux) {
       const scriptPath = 'linux/getActiveWindow.bash';
       final result = await Process.run('bash', ["${Directory.current.path}/$scriptPath"]);
+
+      return result.stdout.trim();
+    } else if (Platform.isWindows) {
+      const scriptPath = 'windows/getActiveWindow.ps1';
+      final result = await Process.run('powershell', ["-File", "${Directory.current.path}/$scriptPath"]);
 
       return result.stdout.trim();
     }

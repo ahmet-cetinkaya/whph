@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/app_usage/services/abstraction/i_app_usage_service.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 
 class StopTrackAppUsagesCommand implements IRequest<StopTrackAppUsagesCommandResponse> {}
 

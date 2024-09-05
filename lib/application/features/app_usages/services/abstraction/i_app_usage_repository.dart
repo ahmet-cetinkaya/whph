@@ -1,6 +1,6 @@
 import 'package:whph/core/acore/repository/abstraction/i_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
-import 'package:whph/domain/features/app_usage/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage.dart';
 
 abstract class IAppUsageRepository extends IRepository<AppUsage, String> {
   Future<AppUsage?> getByDateAndHour({

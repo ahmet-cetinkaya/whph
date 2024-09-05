@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
-import 'package:whph/domain/features/app_usage/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
-import '../../../application/features/app_usage/services/abstraction/i_app_usage_repository.dart';
+import '../../../application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 
 @UseRowClass(AppUsage)
 class AppUsageTable extends Table {

@@ -40,8 +40,7 @@ class _TasksListState extends State<TasksList> {
       _loadingCount++;
     });
 
-    const pageSize = 20;
-    var query = GetListTasksQuery(pageIndex: pageIndex, pageSize: pageSize);
+    var query = GetListTasksQuery(pageIndex: pageIndex, pageSize: 100); //TODO: Add lazy loading
     var queryResponse = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
     setState(() {

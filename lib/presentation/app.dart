@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/app_usage_view/pages/app_usage_view_page.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
 import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';
 
