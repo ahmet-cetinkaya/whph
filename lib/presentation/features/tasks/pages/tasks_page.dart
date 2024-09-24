@@ -22,7 +22,6 @@ class _TasksPageState extends State<TasksPage> {
 
   void _refreshTasks() {
     setState(() {
-      // Change the key to force TasksList to rebuild
       _tasksListKey = UniqueKey();
     });
   }
@@ -34,7 +33,7 @@ class _TasksPageState extends State<TasksPage> {
         builder: (context) => TaskDetailsPage(taskId: task.id),
       ),
     );
-    _refreshTasks(); // Refresh tasks after returning from details
+    _refreshTasks();
   }
 
   @override

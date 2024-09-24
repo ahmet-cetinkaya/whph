@@ -287,9 +287,35 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               onPressed: _showSettingsModal,
               tooltip: 'Settings',
             ),
-            Text(
-              '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-              style: const TextStyle(fontSize: 32),
+            Row(
+              children: [
+                if (!_isRunning)
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: _remainingTime.inMinutes > 1
+                        ? () {
+                            setState(() {
+                              _remainingTime -= const Duration(minutes: 5);
+                            });
+                          }
+                        : null,
+                    tooltip: 'Decrease Time',
+                  ),
+                Text(
+                  '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                  style: const TextStyle(fontSize: 32),
+                ),
+                if (!_isRunning)
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      setState(() {
+                        _remainingTime += const Duration(minutes: 5);
+                      });
+                    },
+                    tooltip: 'Increase Time',
+                  ),
+              ],
             ),
             IconButton(
               icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),

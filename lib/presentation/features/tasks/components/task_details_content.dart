@@ -272,6 +272,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                   });
                   _updateTask();
                 },
+                minLines: 1,
               ),
               const SizedBox(height: 15.0),
             ],

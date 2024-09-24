@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
+import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
 import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';
 
@@ -25,14 +26,17 @@ class App extends StatelessWidget {
   static PageRoute _buildPageRoute(RouteSettings settings) {
     Widget page;
     switch (settings.name) {
+      case AppUsageViewPage.route:
+        page = AppUsageViewPage();
+        break;
+      case HabitsPage.route:
+        page = HabitsPage();
+        break;
       case TasksPage.route:
         page = TasksPage();
         break;
       case TagsPage.route:
         page = TagsPage();
-        break;
-      case AppUsageViewPage.route:
-        page = AppUsageViewPage();
         break;
       default:
         page = TasksPage();
@@ -108,6 +112,12 @@ class _MainLayoutState extends State<MainLayout> {
             title: const Text('Tags'),
             onTap: () {
               _navigateTo(TagsPage.route);
+            },
+          ),
+          ListTile(
+            title: const Text('Habits'),
+            onTap: () {
+              _navigateTo(HabitsPage.route);
             },
           ),
           ListTile(
