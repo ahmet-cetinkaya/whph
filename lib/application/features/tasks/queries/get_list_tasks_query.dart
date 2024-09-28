@@ -13,14 +13,18 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
 class TaskListItem {
   int id;
   String title;
-  bool isCompleted;
   EisenhowerPriority? priority;
-  int? topicId;
-  String? topicName;
   DateTime? plannedDate;
   DateTime? deadlineDate;
+  bool isCompleted;
 
-  TaskListItem({required this.id, required this.title, required this.isCompleted, this.priority});
+  TaskListItem(
+      {required this.id,
+      required this.title,
+      required this.isCompleted,
+      this.priority,
+      this.plannedDate,
+      this.deadlineDate});
 }
 
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
@@ -45,7 +49,15 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     );
 
     return GetListTasksQueryResponse(
-      items: tasks.items.map((e) => TaskListItem(id: e.id, title: e.title, isCompleted: e.isCompleted)).toList(),
+      items: tasks.items
+          .map((e) => TaskListItem(
+              id: e.id,
+              title: e.title,
+              isCompleted: e.isCompleted,
+              priority: e.priority,
+              plannedDate: e.plannedDate,
+              deadlineDate: e.deadlineDate))
+          .toList(),
       totalItemCount: tasks.totalItemCount,
       totalPageCount: tasks.totalPageCount,
       pageIndex: tasks.pageIndex,

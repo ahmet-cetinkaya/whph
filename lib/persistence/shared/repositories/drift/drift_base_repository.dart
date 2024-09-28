@@ -44,7 +44,8 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   @override
   Future<void> add(TEntity item) async {
     item.createdDate = DateTime.now().toUtc();
-    await database.into(table).insert(toCompanion(item));
+    TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
+    item.id = insertedItem.id;
   }
 
   @override

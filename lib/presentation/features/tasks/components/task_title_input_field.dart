@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
@@ -19,9 +20,10 @@ class TaskTitleInputField extends StatefulWidget {
 
 class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   final Mediator _mediator = container.resolve<Mediator>();
-  final TextEditingController _titleController = TextEditingController();
 
-  GetTaskQueryResponse? task;
+  final TextEditingController _titleController = TextEditingController();
+  GetTaskQueryResponse? _task;
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -30,25 +32,35 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   }
 
   Future<void> _fetchTask() async {
-    var query = GetTaskQuery(id: widget.taskId);
-    var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+    var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+      GetTaskQuery(id: widget.taskId),
+    );
     setState(() {
-      task = response;
-      _titleController.text = task!.title;
+      _task = response;
+      _titleController.text = _task!.title;
+    });
+  }
+
+  void _onTitleChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _updateTask();
     });
   }
 
   void _updateTask() {
+    if (_task == null) return;
+
     var command = SaveTaskCommand(
       id: widget.taskId,
       title: _titleController.text,
-      deadlineDate: task!.deadlineDate,
-      description: task!.description,
-      elapsedTime: task!.elapsedTime,
-      estimatedTime: task!.estimatedTime,
-      isCompleted: task!.isCompleted,
-      plannedDate: task!.plannedDate,
-      priority: task!.priority,
+      deadlineDate: _task!.deadlineDate,
+      description: _task!.description,
+      elapsedTime: _task!.elapsedTime,
+      estimatedTime: _task!.estimatedTime,
+      isCompleted: _task!.isCompleted,
+      plannedDate: _task!.plannedDate,
+      priority: _task!.priority,
     );
 
     _mediator.send(command);
@@ -56,35 +68,35 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return task == null
-        ? const Center(child: CircularProgressIndicator())
-        : Row(
-            children: [
-              TaskCompleteButton(
-                taskId: widget.taskId,
-                isCompleted: task!.isCompleted,
-                onToggleCompleted: _fetchTask,
-              ),
-              const SizedBox(width: 8.0),
-              Expanded(
-                child: TextField(
-                  controller: _titleController,
-                  onChanged: (value) {
-                    _updateTask();
-                  },
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Enter task title',
-                  ),
-                ),
-              ),
-            ],
-          );
+    if (_task == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Row(
+      children: [
+        TaskCompleteButton(
+          taskId: widget.taskId,
+          isCompleted: _task!.isCompleted,
+          onToggleCompleted: _fetchTask,
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: TextField(
+            controller: _titleController,
+            onChanged: _onTitleChanged,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   void dispose() {
     _titleController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 }

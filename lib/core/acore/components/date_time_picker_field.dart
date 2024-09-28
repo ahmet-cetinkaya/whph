@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // To format the date and time
 
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
@@ -16,18 +17,16 @@ class DateTimePickerField extends StatelessWidget {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1980),
       lastDate: DateTime(2101),
     );
 
-    // Guard against context usage after async gap
     if (pickedDate != null && context.mounted) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(DateTime.now()),
       );
 
-      // Guard against context usage after async gap
       if (pickedTime != null && context.mounted) {
         final DateTime pickedDateTime = DateTime(
           pickedDate.year,
@@ -37,8 +36,11 @@ class DateTimePickerField extends StatelessWidget {
           pickedTime.minute,
         );
 
-        controller.text = pickedDateTime.toString();
-        onConfirm(pickedDateTime); // Trigger the callback when the date and time are confirmed
+        // Format the selected DateTime for better readability
+        final String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDateTime);
+
+        controller.text = formattedDateTime; // Update the controller with formatted date & time
+        onConfirm(pickedDateTime); // Trigger the callback
       }
     }
   }
@@ -50,8 +52,11 @@ class DateTimePickerField extends StatelessWidget {
       readOnly: true,
       onTap: () => _selectDateTime(context),
       decoration: InputDecoration(
-        hintText: hintText,
-      ),
+          hintText: hintText,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.zero),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
@@ -21,24 +20,48 @@ class PomodoroTimer extends StatefulWidget {
 
 class _PomodoroTimerState extends State<PomodoroTimer> {
   final Mediator _mediator = container.resolve<Mediator>();
-
   late Timer _timer;
   Duration _remainingTime = const Duration();
   bool _isWorking = true;
   bool _isRunning = false;
-  late int _currentWorkDuration;
-  late int _currentBreakDuration;
+  late int _workDuration;
+  late int _breakDuration;
 
   @override
   void initState() {
     super.initState();
-    _getSettings().then((_) {
-      _initializeTimer();
-    });
+    _initializeSettings();
   }
 
-  void _initializeTimer() {
-    _remainingTime = Duration(minutes: _currentWorkDuration);
+  @override
+  void dispose() {
+    if (_isRunning) {
+      _timer.cancel();
+    }
+    super.dispose();
+  }
+
+  Future<void> _initializeSettings() async {
+    _workDuration = await _getSetting('workDuration', 25);
+    _breakDuration = await _getSetting('breakDuration', 5);
+    _remainingTime = Duration(minutes: _workDuration);
+    setState(() {});
+  }
+
+  Future<int> _getSetting(String key, int defaultValue) async {
+    try {
+      var response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        GetSettingQuery(key: key),
+      );
+      return response.getValue<int>();
+    } catch (_) {
+      return defaultValue;
+    }
+  }
+
+  Future<void> _saveSetting(String key, int value) async {
+    var command = SaveSettingCommand(key: key, value: value.toString(), valueType: SettingValueType.int);
+    await _mediator.send(command);
   }
 
   void _startTimer() {
@@ -62,7 +85,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   void _stopTimer() {
     setState(() {
       _isRunning = false;
-      _remainingTime = Duration(minutes: _currentWorkDuration);
+      _remainingTime = Duration(minutes: _workDuration);
       _timer.cancel();
     });
   }
@@ -70,260 +93,127 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   void _toggleWorkBreak() {
     setState(() {
       _isWorking = !_isWorking;
-      _remainingTime = _isWorking ? Duration(minutes: _currentWorkDuration) : Duration(minutes: _currentBreakDuration);
-      _startTimer(); // Start the next session automatically
+      _remainingTime = _isWorking ? Duration(minutes: _workDuration) : Duration(minutes: _breakDuration);
+      _startTimer(); // Automatically start the next session
     });
   }
 
-  Future<void> _getSettings() async {
-    var workDurationSettingQuery = GetSettingQuery(key: 'workDuration');
-    var breakDurationSettingQuery = GetSettingQuery(key: 'breakDuration');
-
-    try {
-      var workDurationSettingQueryResponse =
-          await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(workDurationSettingQuery);
-
-      setState(() {
-        _currentWorkDuration = workDurationSettingQueryResponse.getValue<int>();
-      });
-    } catch (_) {
-      setState(() {
-        _currentWorkDuration = 25;
-      });
-    }
-
-    try {
-      var breakDurationSettingQueryResponse =
-          await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(breakDurationSettingQuery);
-
-      setState(() {
-        _currentBreakDuration = breakDurationSettingQueryResponse.getValue<int>();
-      });
-    } catch (_) {
-      setState(() {
-        _currentBreakDuration = 5;
-      });
-    }
+  void _adjustWorkDuration(int adjustment) {
+    setState(() {
+      _workDuration = (_workDuration + adjustment).clamp(5, 60);
+      if (_isWorking) _remainingTime = Duration(minutes: _workDuration);
+    });
+    _saveSetting('workDuration', _workDuration);
   }
 
-  Future<void> _saveWorkDurationSetting(int workDuration) async {
-    var workDurationSetting =
-        SaveSettingCommand(key: 'workDuration', value: workDuration.toString(), valueType: SettingValueType.int);
-
-    await _mediator.send(workDurationSetting);
-  }
-
-  Future<void> _saveBreakDurationSetting(int breakDuration) async {
-    var breakDurationSetting =
-        SaveSettingCommand(key: 'breakDuration', value: breakDuration.toString(), valueType: SettingValueType.int);
-
-    await _mediator.send(breakDurationSetting);
+  void _adjustBreakDuration(int adjustment) {
+    setState(() {
+      _breakDuration = (_breakDuration + adjustment).clamp(1, 30);
+      if (!_isWorking) _remainingTime = Duration(minutes: _breakDuration);
+    });
+    _saveSetting('breakDuration', _breakDuration);
   }
 
   void _showSettingsModal() {
-    TextEditingController workController = TextEditingController(text: _currentWorkDuration.toString());
-    TextEditingController breakController = TextEditingController(text: _currentBreakDuration.toString());
-
     showModalBottomSheet(
       context: context,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Settings',
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Work Time:'),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: _currentWorkDuration > 5
-                            ? () {
-                                setState(() {
-                                  _currentWorkDuration -= 5;
-                                  workController.text = _currentWorkDuration.toString();
-                                  if (_isWorking) {
-                                    _remainingTime = Duration(minutes: _currentWorkDuration);
-                                  }
-                                });
-                                _saveWorkDurationSetting(_currentWorkDuration);
-                              }
-                            : null,
-                        tooltip: 'Decrease Work Time',
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          controller: workController,
-                          decoration: const InputDecoration(),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            int? newValue = int.tryParse(value);
-                            if (newValue != null) {
-                              setState(() {
-                                _currentWorkDuration = newValue;
-                                if (_isWorking) {
-                                  _remainingTime = Duration(minutes: _currentWorkDuration);
-                                }
-                              });
-                              _saveWorkDurationSetting(_currentWorkDuration);
-                            }
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            _currentWorkDuration += 5;
-                            workController.text = _currentWorkDuration.toString();
-                            if (_isWorking) {
-                              _remainingTime = Duration(minutes: _currentWorkDuration);
-                            }
-                          });
-                          _saveWorkDurationSetting(_currentWorkDuration);
-                        },
-                        tooltip: 'Increase Work Time',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Break Time:'),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: _currentBreakDuration > 1
-                            ? () {
-                                setState(() {
-                                  _currentBreakDuration -= 1;
-                                  breakController.text = _currentBreakDuration.toString();
-                                  if (!_isWorking) {
-                                    _remainingTime = Duration(minutes: _currentBreakDuration);
-                                  }
-                                });
-                                _saveBreakDurationSetting(_currentBreakDuration);
-                              }
-                            : null,
-                        tooltip: 'Decrease Break Time',
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          controller: breakController,
-                          decoration: const InputDecoration(),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            int? newValue = int.tryParse(value);
-                            if (newValue != null) {
-                              setState(() {
-                                _currentBreakDuration = newValue;
-                                if (!_isWorking) {
-                                  _remainingTime = Duration(minutes: _currentBreakDuration);
-                                }
-                              });
-                              _saveBreakDurationSetting(_currentBreakDuration);
-                            }
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            _currentBreakDuration += 1;
-                            breakController.text = _currentBreakDuration.toString();
-                            if (!_isWorking) {
-                              _remainingTime = Duration(minutes: _currentBreakDuration);
-                            }
-                          });
-                          _saveBreakDurationSetting(_currentBreakDuration);
-                        },
-                        tooltip: 'Increase Break Time',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        );
-      },
+      builder: (_) => _buildSettingsModal(),
     );
-  }
-
-  @override
-  void dispose() {
-    if (_isRunning) {
-      _timer.cancel();
-    }
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        _buildTimerControls(),
+      ],
+    );
+  }
+
+  Widget _buildTimerControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: _showSettingsModal,
+        ),
+        _buildTimeDisplay(),
+        IconButton(
+          icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
+          onPressed: !_isRunning ? _startTimer : _stopTimer,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettingsModal() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          _buildSettingRow('Work Time', _workDuration, _adjustWorkDuration),
+          const SizedBox(height: 16),
+          _buildSettingRow('Break Time', _breakDuration, _adjustBreakDuration),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingRow(String label, int duration, Function(int) onAdjust) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: _showSettingsModal,
-              tooltip: 'Settings',
+              icon: const Icon(Icons.remove),
+              onPressed: duration > (label == 'Work Time' ? 5 : 1) ? () => onAdjust(-1) : null,
             ),
-            Row(
-              children: [
-                if (!_isRunning)
-                  IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: _remainingTime.inMinutes > 1
-                        ? () {
-                            setState(() {
-                              _remainingTime -= const Duration(minutes: 5);
-                            });
-                          }
-                        : null,
-                    tooltip: 'Decrease Time',
-                  ),
-                Text(
-                  '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                  style: const TextStyle(fontSize: 32),
-                ),
-                if (!_isRunning)
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      setState(() {
-                        _remainingTime += const Duration(minutes: 5);
-                      });
-                    },
-                    tooltip: 'Increase Time',
-                  ),
-              ],
-            ),
+            Text('$duration min', style: const TextStyle(fontSize: 16)),
             IconButton(
-              icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
-              onPressed: !_isRunning ? _startTimer : _stopTimer,
-              tooltip: !_isRunning ? 'Start' : 'Stop',
+              icon: const Icon(Icons.add),
+              onPressed: () => onAdjust(1),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildTimeDisplay() {
+    return Row(
+      children: [
+        _isRunning
+            ? const SizedBox(width: 40)
+            : IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: _remainingTime.inMinutes > 1
+                    ? () {
+                        setState(() {
+                          _remainingTime -= const Duration(minutes: 5);
+                        });
+                      }
+                    : null,
+              ),
+        Text(
+          '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+          style: const TextStyle(fontSize: 32),
+        ),
+        _isRunning
+            ? const SizedBox(width: 40)
+            : IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  setState(() {
+                    _remainingTime += const Duration(minutes: 5);
+                  });
+                },
+              ),
       ],
     );
   }

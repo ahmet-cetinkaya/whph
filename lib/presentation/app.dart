@@ -33,13 +33,13 @@ class App extends StatelessWidget {
         page = HabitsPage();
         break;
       case TasksPage.route:
-        page = TasksPage();
+        page = const TasksPage();
         break;
       case TagsPage.route:
         page = TagsPage();
         break;
       default:
-        page = TasksPage();
+        page = const TasksPage();
     }
 
     return PageRouteBuilder(

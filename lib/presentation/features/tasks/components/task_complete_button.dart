@@ -5,43 +5,56 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
 
 class TaskCompleteButton extends StatelessWidget {
-  final Mediator mediator = container.resolve<Mediator>();
-
   final int taskId;
   final bool isCompleted;
   final VoidCallback onToggleCompleted;
 
-  TaskCompleteButton({super.key, required this.taskId, required this.isCompleted, required this.onToggleCompleted});
+  const TaskCompleteButton({
+    super.key,
+    required this.taskId,
+    required this.isCompleted,
+    required this.onToggleCompleted,
+  });
 
-  Future<void> _toggleCompleteTask() async {
-    var query = GetTaskQuery(id: taskId);
-    var queryResponse = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+  Future<void> _toggleCompleteTask(BuildContext context) async {
+    final mediator = container.resolve<Mediator>();
 
-    var command = SaveTaskCommand(
-      id: queryResponse.id,
-      title: queryResponse.title,
-      description: queryResponse.description,
-      // topicId: queryResponse.topicId,
-      priority: queryResponse.priority,
-      plannedDate: queryResponse.plannedDate,
-      deadlineDate: queryResponse.deadlineDate,
-      estimatedTime: queryResponse.estimatedTime,
-      elapsedTime: queryResponse.elapsedTime,
-      isCompleted: !queryResponse.isCompleted,
-    );
-    await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-    onToggleCompleted();
+    try {
+      var task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+        GetTaskQuery(id: taskId),
+      );
+
+      var command = SaveTaskCommand(
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        plannedDate: task.plannedDate,
+        deadlineDate: task.deadlineDate,
+        estimatedTime: task.estimatedTime,
+        elapsedTime: task.elapsedTime,
+        isCompleted: !task.isCompleted,
+      );
+
+      await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+      onToggleCompleted();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error toggling task completion: $e')),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Center(
-          child: Icon(
+      icon: Icon(
         isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
         color: isCompleted ? Colors.green : null,
-      )),
-      onPressed: _toggleCompleteTask,
+      ),
+      onPressed: () => _toggleCompleteTask(context),
     );
   }
 }

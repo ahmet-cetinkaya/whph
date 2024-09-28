@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
@@ -18,15 +17,16 @@ class TasksList extends StatefulWidget {
   });
 
   @override
-  _TasksListState createState() => _TasksListState();
+  State<TasksList> createState() => _TasksListState();
 }
 
 class _TasksListState extends State<TasksList> {
   List<TaskListItem> _tasks = [];
   int _pageIndex = 0;
-  bool _hasNext = false;
+  bool _hasNext = true;
+  bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
-  int _loadingCount = 0;
+  final int _pageSize = 20; // Defines how many tasks are loaded per page
 
   @override
   void initState() {
@@ -36,25 +36,32 @@ class _TasksListState extends State<TasksList> {
   }
 
   Future<void> _fetchTasks({int pageIndex = 0}) async {
-    setState(() {
-      _loadingCount++;
-    });
-
-    var query = GetListTasksQuery(pageIndex: pageIndex, pageSize: 100); //TODO: Add lazy loading
-    var queryResponse = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
+    if (_isLoading || !_hasNext) return;
 
     setState(() {
-      _tasks = [..._tasks, ...queryResponse.items];
-      _pageIndex = pageIndex;
-      _hasNext = queryResponse.hasNext;
-      _loadingCount--;
+      _isLoading = true;
     });
+
+    try {
+      var query = GetListTasksQuery(pageIndex: pageIndex, pageSize: _pageSize);
+      var queryResponse = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
+
+      setState(() {
+        _tasks = [..._tasks, ...queryResponse.items];
+        _pageIndex = pageIndex;
+        _hasNext = queryResponse.hasNext;
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _setupScrollListener() {
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasNext) {
-        await _fetchTasks(pageIndex: _pageIndex + 1);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasNext && !_isLoading) {
+        _fetchTasks(pageIndex: _pageIndex + 1);
       }
     });
   }
@@ -66,14 +73,15 @@ class _TasksListState extends State<TasksList> {
         setState(() {
           _tasks.clear();
           _pageIndex = 0;
+          _hasNext = true;
         });
         await _fetchTasks();
       },
       child: ListView.builder(
         controller: _scrollController,
-        itemCount: _tasks.length + (_loadingCount > 0 ? 1 : 0),
+        itemCount: _tasks.length + (_isLoading ? 1 : 0),
         itemBuilder: (context, index) {
-          if (_loadingCount > 0) {
+          if (index == _tasks.length) {
             return const Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -85,9 +93,7 @@ class _TasksListState extends State<TasksList> {
           final task = _tasks[index];
           return TaskCard(
             task: task,
-            onOpenDetails: () {
-              widget.onClickTask(task); // Use the passed callback here
-            },
+            onOpenDetails: () => widget.onClickTask(task),
             onCompleted: () {
               setState(() {
                 _tasks.clear();
@@ -98,5 +104,11 @@ class _TasksListState extends State<TasksList> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
