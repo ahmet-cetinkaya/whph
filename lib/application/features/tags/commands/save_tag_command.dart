@@ -4,12 +4,10 @@ import 'package:whph/domain/features/tags/tag.dart';
 
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
   final int? id;
-  final int? parentId;
   final String name;
 
   SaveTagCommand({
     this.id,
-    this.parentId,
     required this.name,
   });
 }

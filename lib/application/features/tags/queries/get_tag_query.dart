@@ -8,16 +8,6 @@ class GetTagQuery implements IRequest<GetTagQueryResponse> {
   GetTagQuery({required this.id});
 }
 
-class TagTagListItem {
-  late int id;
-  late String name;
-
-  TagTagListItem({
-    required this.id,
-    required this.name,
-  });
-}
-
 class GetTagQueryResponse extends Tag {
   GetTagQueryResponse({
     required super.id,
