@@ -1,9 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
-import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
+import 'package:whph/presentation/features/shared/components/bar_chart.dart';
 
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
@@ -18,9 +17,9 @@ class AppUsageList extends StatefulWidget {
 }
 
 class AppUsageListState extends State<AppUsageList> {
-  List<AppUsage> _appUsages = [];
+  final List<AppUsage> _appUsages = [];
   int _pageIndex = 0;
-  bool _hasNext = false;
+  bool _hasNext = true;
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -28,22 +27,21 @@ class AppUsageListState extends State<AppUsageList> {
     await _fetchAppUsages();
   }
 
-  Future<void> _fetchAppUsages({int pageIndex = 0}) async {
-    if (_isLoading) return; // Check to prevent multiple requests
+  Future<void> _fetchAppUsages() async {
+    if (_isLoading || !_hasNext) return;
 
     setState(() {
       _isLoading = true;
     });
 
-    final query = GetListByTopAppUsagesQuery(pageIndex: pageIndex, pageSize: 100); //TODO: Add lazy loading
+    final query = GetListByTopAppUsagesQuery(pageIndex: _pageIndex, pageSize: 10);
 
     try {
       final response =
           await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
-
       setState(() {
-        _appUsages = [..._appUsages, ...response.items];
-        _pageIndex = pageIndex;
+        _pageIndex++;
+        _appUsages.addAll(response.items);
         _hasNext = response.hasNext;
         _isLoading = false;
       });
@@ -51,58 +49,53 @@ class AppUsageListState extends State<AppUsageList> {
       setState(() {
         _isLoading = false;
       });
-      // Optionally show an error message or dialog
     }
-  }
-
-  void _setupScrollListener() {
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoading && _hasNext) {
-        await _fetchAppUsages(pageIndex: _pageIndex + 1);
-      }
-    });
-  }
-
-  Future<void> refreshData() async {
-    setState(() {
-      _appUsages.clear();
-      _pageIndex = 0;
-      _hasNext = true;
-    });
-    await _fetchAppUsages();
   }
 
   @override
   void initState() {
     super.initState();
     _loadInitialData();
-    _setupScrollListener();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent && !_isLoading && _hasNext) {
+        _fetchAppUsages();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: refreshData,
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: _appUsages.length + (_isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (_isLoading && index == _appUsages.length) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+    double maxDuration = _appUsages.isNotEmpty
+        ? _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b)
+        : 1.0; // Avoid division by zero, maximum duration in minutes
 
-          final appUsage = _appUsages[index];
-          return AppUsageCard(
-            appUsage: appUsage,
-            mediator: widget.mediator,
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _appUsages.length + (_isLoading ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index >= _appUsages.length) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
           );
-        },
-      ),
+        }
+        final appUsage = _appUsages[index];
+
+        return BarChartComponent(
+          title: appUsage.title,
+          value: appUsage.duration / 60,
+          maxValue: maxDuration,
+          unit: "min",
+        );
+      },
     );
   }
 }
