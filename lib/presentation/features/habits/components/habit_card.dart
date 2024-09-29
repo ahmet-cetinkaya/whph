@@ -5,6 +5,7 @@ import 'package:whph/application/features/habits/commands/delete_habit_record_co
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/detail_table.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
@@ -62,27 +63,24 @@ class _HabitCardState extends State<HabitCard> {
         children: [
           ListTile(
             contentPadding: const EdgeInsets.all(16.0),
-            leading: const SizedBox(
-              width: 40,
-              height: 40,
-              child: Icon(Icons.refresh),
-            ),
-            title: Text(widget.habit.name),
+            title: DetailTable(rowData: [
+              DetailTableRowData(
+                  label: widget.habit.name,
+                  icon: Icons.loop,
+                  widget: FutureBuilder<List<HabitRecordListItem>>(
+                    future: habitRecords,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      return _buildCalendar(snapshot.data!);
+                    },
+                  )),
+            ]),
             onTap: widget.onOpenDetails,
-          ),
-          FutureBuilder<List<HabitRecordListItem>>(
-            future: habitRecords,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return const Text('Veriler yüklenirken hata oluştu');
-              } else if (snapshot.hasData) {
-                return _buildCalendar(snapshot.data!);
-              } else {
-                return const Text('Kayıt bulunamadı');
-              }
-            },
           ),
         ],
       ),
