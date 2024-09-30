@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
