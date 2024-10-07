@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "WHPH",
+            "name": "whph",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "WHPH (profile mode)",
+            "name": "whph (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "WHPH (release mode)",
+            "name": "whph (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
