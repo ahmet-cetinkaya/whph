@@ -156,7 +156,7 @@ class TaskCard extends StatelessWidget {
       case EisenhowerPriority.notUrgentNotImportant:
         return 'Not Urgent & Not Important';
       default:
-        throw Exception('Unknown priority: $priority');
+        return 'Unknown';
     }
   }
 }
