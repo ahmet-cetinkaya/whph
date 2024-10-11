@@ -23,10 +23,6 @@ class AppUsageListState extends State<AppUsageList> {
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
 
-  Future<void> _loadInitialData() async {
-    await _fetchAppUsages();
-  }
-
   Future<void> _fetchAppUsages() async {
     if (_isLoading || !_hasNext) return;
 
@@ -55,7 +51,7 @@ class AppUsageListState extends State<AppUsageList> {
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+    _fetchAppUsages();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent && !_isLoading && _hasNext) {
         _fetchAppUsages();
@@ -75,27 +71,30 @@ class AppUsageListState extends State<AppUsageList> {
         ? _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b)
         : 1.0; // Avoid division by zero, maximum duration in minutes
 
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: _appUsages.length + (_isLoading ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index >= _appUsages.length) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        final appUsage = _appUsages[index];
+    return RefreshIndicator(
+      onRefresh: _fetchAppUsages,
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount: _appUsages.length + (_isLoading ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index >= _appUsages.length) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          final appUsage = _appUsages[index];
 
-        return BarChartComponent(
-          title: appUsage.title,
-          value: appUsage.duration / 60,
-          maxValue: maxDuration,
-          unit: "min",
-        );
-      },
+          return BarChartComponent(
+            title: appUsage.title,
+            value: appUsage.duration / 60,
+            maxValue: maxDuration,
+            unit: "min",
+          );
+        },
+      ),
     );
   }
 }
