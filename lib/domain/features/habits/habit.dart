@@ -1,6 +1,8 @@
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
-class Habit extends BaseEntity<int> {
+@jsonSerializable
+class Habit extends BaseEntity<String> {
   String name;
   String description;
 
@@ -11,4 +13,9 @@ class Habit extends BaseEntity<int> {
     required this.name,
     required this.description,
   });
+
+  void mapFromInstance(Habit instance) {
+    name = instance.name;
+    description = instance.description;
+  }
 }

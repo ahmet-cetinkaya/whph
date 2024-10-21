@@ -4,7 +4,7 @@ import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/main.dart';
 
 class TagAddButton extends StatefulWidget {
-  final Function(int tagId)? onTagCreated;
+  final Function(String tagId)? onTagCreated;
 
   const TagAddButton({super.key, this.onTagCreated});
 

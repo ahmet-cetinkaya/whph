@@ -4,7 +4,7 @@ import 'package:whph/application/features/tasks/commands/delete_task_command.dar
 import 'package:whph/main.dart';
 
 class TaskDeleteButton extends StatefulWidget {
-  final int taskId;
+  final String taskId;
   final VoidCallback? onDeleteSuccess;
 
   const TaskDeleteButton({

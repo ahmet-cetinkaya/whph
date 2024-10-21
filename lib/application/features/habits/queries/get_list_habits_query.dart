@@ -11,7 +11,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
 }
 
 class HabitListItem {
-  int id;
+  String id;
   String name;
 
   HabitListItem({required this.id, required this.name});

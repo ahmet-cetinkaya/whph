@@ -6,7 +6,7 @@ import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
 
 class GetListTagTagsQuery implements IRequest<GetListTagTagsQueryResponse> {
-  late int primaryTagId;
+  late String primaryTagId;
   late int pageIndex;
   late int pageSize;
 
@@ -14,7 +14,7 @@ class GetListTagTagsQuery implements IRequest<GetListTagTagsQueryResponse> {
 }
 
 class TagTagListItem {
-  int id;
+  String id;
   String secondaryTagName;
 
   TagTagListItem({required this.id, required this.secondaryTagName});

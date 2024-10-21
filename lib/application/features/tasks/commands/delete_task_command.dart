@@ -3,7 +3,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/domain/features/tasks/task.dart';
 
 class DeleteTaskCommand implements IRequest<DeleteTaskCommandResponse> {
-  final int id;
+  final String id;
 
   DeleteTaskCommand({required this.id});
 }
@@ -22,7 +22,7 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
       throw Exception('Task with id ${request.id} not found');
     }
 
-    await _taskRepository.delete(task.id);
+    await _taskRepository.delete(task);
 
     return DeleteTaskCommandResponse();
   }

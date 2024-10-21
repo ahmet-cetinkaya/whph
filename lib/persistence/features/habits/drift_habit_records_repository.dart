@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
@@ -11,7 +10,8 @@ class HabitRecordTable extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
-  IntColumn get habitId => integer()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
+  TextColumn get habitId => text()();
   DateTimeColumn get date => dateTime()();
 }
 
@@ -30,28 +30,25 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
       date: entity.date,
     );
   }
 
   @override
-  Future<void> add(HabitRecord item) {
-    item.id = nanoid();
-    return super.add(item);
-  }
-
-  @override
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
-      int habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
+      String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.habitId.equals(habitId) & t.date.isBetweenValues(startDate, endDate))
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
-    final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = $habitId AND date BETWEEN \'$startDate\' AND \'$endDate\'',
-    )).getSingleOrNull());
+    final count = await (database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND date BETWEEN ? AND ?',
+      variables: [Variable<String>(habitId), Variable<DateTime>(startDate), Variable<DateTime>(endDate)],
+      readsFrom: {table},
+    ).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
     return PaginatedList(

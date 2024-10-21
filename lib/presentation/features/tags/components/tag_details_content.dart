@@ -8,7 +8,7 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/main.dart';
 
 class TagDetailsContent extends StatefulWidget {
-  final int tagId;
+  final String tagId;
 
   const TagDetailsContent({super.key, required this.tagId});
 
@@ -63,13 +63,13 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     });
   }
 
-  Future<void> _addTag(int secondaryTagId) async {
+  Future<void> _addTag(String secondaryTagId) async {
     var command = AddTagTagCommand(primaryTagId: widget.tagId, secondaryTagId: secondaryTagId);
     await mediator.send(command);
     _fetchLinkedTags();
   }
 
-  Future<void> _removeTag(int id) async {
+  Future<void> _removeTag(String id) async {
     var command = RemoveTagTagCommand(id: id);
     await mediator.send(command);
     _fetchLinkedTags();
@@ -99,7 +99,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   Widget _buildTagDropdown() {
-    return DropdownButton<int>(
+    return DropdownButton<String>(
       hint: const Text('Add a tag'),
       onChanged: (value) {
         if (value != null) {
@@ -107,7 +107,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         }
       },
       items: _availableTags.map((tag) {
-        return DropdownMenuItem<int>(
+        return DropdownMenuItem<String>(
           value: tag.id,
           child: Text(tag.name),
         );

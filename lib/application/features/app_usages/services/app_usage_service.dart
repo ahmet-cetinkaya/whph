@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:usage_stats_new/usage_stats.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
@@ -42,7 +43,7 @@ class AppUsageService implements IAppUsageService {
             await _appUsageRepository.update(appUsage);
           } else {
             appUsage = AppUsage(
-              id: '',
+              id: nanoid(),
               title: activeWindowOutputSections.first,
               processName: activeWindowOutputSections[1].isNotEmpty ? activeWindowOutputSections[1] : null,
               duration: _activeWindowTime,
@@ -73,10 +74,8 @@ class AppUsageService implements IAppUsageService {
         if (appUsage != null) {
           appUsage.duration = usage.duration;
           await _appUsageRepository.update(appUsage);
-          print('Updated: ${appUsage.title} - ${appUsage.duration}');
         } else {
           await _appUsageRepository.add(usage);
-          print('Added: ${usage.title} - ${usage.duration}');
         }
       }
     });
@@ -137,7 +136,7 @@ class AppUsageService implements IAppUsageService {
         if (kDebugMode) print('appName: $appName, packageName: $packageName');
 
         appUsages.add(AppUsage(
-          id: '',
+          id: nanoid(),
           title: appName ?? 'Unknown',
           processName: packageName,
           duration: int.parse(usage.totalTimeInForeground ?? '0') ~/ 1000,
@@ -146,8 +145,8 @@ class AppUsageService implements IAppUsageService {
       }
 
       return appUsages;
-    } else {
-      throw UnsupportedError('This platform is not supported');
     }
+
+    return [];
   }
 }

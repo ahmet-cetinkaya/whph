@@ -27,7 +27,7 @@ class _HabitCardState extends State<HabitCard> {
     habitRecords = _getHabitRecords(widget.habit.id);
   }
 
-  Future<List<HabitRecordListItem>> _getHabitRecords(int habitId) async {
+  Future<List<HabitRecordListItem>> _getHabitRecords(String habitId) async {
     var query = GetListHabitRecordsQuery(
       pageIndex: 0,
       pageSize: 7,
@@ -39,7 +39,7 @@ class _HabitCardState extends State<HabitCard> {
     return queryResponse.items;
   }
 
-  Future<void> _createHabitRecord(int habitId, DateTime date) async {
+  Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
     setState(() {

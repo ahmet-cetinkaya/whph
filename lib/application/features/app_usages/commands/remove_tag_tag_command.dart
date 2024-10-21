@@ -31,7 +31,7 @@ class RemoveAppUsageTagCommandHandler
     if (appUsageTag == null) {
       throw Exception('App usage tag with id ${request.id} not found');
     }
-    await _appUsageTagRepository.delete(appUsageTag.id);
+    await _appUsageTagRepository.delete(appUsageTag);
 
     return RemoveAppUsageTagCommandResponse(
       id: appUsageTag.id,

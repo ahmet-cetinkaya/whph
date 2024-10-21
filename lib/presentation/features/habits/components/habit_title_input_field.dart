@@ -5,7 +5,7 @@ import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 
 class HabitNameInputField extends StatefulWidget {
-  final int habitId;
+  final String habitId;
 
   const HabitNameInputField({
     super.key,

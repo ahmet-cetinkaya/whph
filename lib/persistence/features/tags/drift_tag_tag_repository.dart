@@ -7,42 +7,46 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 
 @UseRowClass(TagTag)
 class TagTagTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
-  IntColumn get primaryTagId => integer()();
-  IntColumn get secondaryTagId => integer()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
+  TextColumn get primaryTagId => text()();
+  TextColumn get secondaryTagId => text()();
 }
 
-class DriftTagTagRepository extends DriftBaseRepository<TagTag, int, TagTagTable> implements ITagTagRepository {
+class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTable> implements ITagTagRepository {
   DriftTagTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTagTable);
 
   @override
-  Expression<int> getPrimaryKey(TagTagTable t) {
+  Expression<String> getPrimaryKey(TagTagTable t) {
     return t.id;
   }
 
   @override
   Insertable<TagTag> toCompanion(TagTag entity) {
     return TagTagTableCompanion.insert(
-      id: entity.id > 0 ? Value(entity.id) : const Value.absent(),
+      id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       primaryTagId: entity.primaryTagId,
       secondaryTagId: entity.secondaryTagId,
     );
   }
 
   @override
-  Future<PaginatedList<TagTag>> getListByPrimaryTagId(int id, int pageIndex, int pageSize) async {
+  Future<PaginatedList<TagTag>> getListByPrimaryTagId(String id, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.primaryTagId.equals(id))
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
-    final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE primary_tag_id = $id',
-    )).getSingleOrNull());
+    final count = await (database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE primary_tag_id = ?',
+      variables: [Variable.withString(id)],
+      readsFrom: {table},
+    ).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
     return PaginatedList(
@@ -55,7 +59,7 @@ class DriftTagTagRepository extends DriftBaseRepository<TagTag, int, TagTagTable
   }
 
   @override
-  Future<bool> anyByPrimaryAndSecondaryId(int primaryTagId, int secondaryTagId) async {
+  Future<bool> anyByPrimaryAndSecondaryId(String primaryTagId, String secondaryTagId) async {
     final query = database.select(table)
       ..where((t) => t.primaryTagId.equals(primaryTagId) & t.secondaryTagId.equals(secondaryTagId));
     final result = await query.get();

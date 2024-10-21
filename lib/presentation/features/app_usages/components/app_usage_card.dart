@@ -24,7 +24,7 @@ class AppUsageCard extends StatefulWidget {
 class _AppUsageCardState extends State<AppUsageCard> {
   late Future<GetListAppUsageTagsQueryResponse> _appUsageTagsFuture;
   late Future<GetListTagsQueryResponse> _allTagsFuture;
-  List<DropdownOption<int?>> _tagOptions = [];
+  List<DropdownOption<String?>> _tagOptions = [];
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     return await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
   }
 
-  Future<void> _addAppUsageTag(int tagId) async {
+  Future<void> _addAppUsageTag(String tagId) async {
     var command = AddAppUsageTagCommand(
       appUsageId: widget.appUsage.id,
       tagId: tagId,
@@ -96,15 +96,15 @@ class _AppUsageCardState extends State<AppUsageCard> {
     );
   }
 
-  Widget _buildTagDropdown(List<DropdownOption<int?>> options) {
-    return DropdownButton<int?>(
+  Widget _buildTagDropdown(List<DropdownOption<String?>> options) {
+    return DropdownButton<String?>(
       items: options.map((option) {
-        return DropdownMenuItem<int?>(
+        return DropdownMenuItem<String?>(
           value: option.value,
           child: Text(option.label),
         );
       }).toList(),
-      onChanged: (int? tagId) {
+      onChanged: (String? tagId) {
         if (tagId != null) {
           _addAppUsageTag(tagId);
         }

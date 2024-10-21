@@ -3,14 +3,14 @@ import 'package:whph/application/features/settings/services/abstraction/i_settin
 import 'package:whph/domain/features/settings/setting.dart';
 
 class GetSettingQuery implements IRequest<GetSettingQueryResponse> {
-  late int? id;
+  late String? id;
   late String? key;
 
   GetSettingQuery({this.id, this.key});
 }
 
 class SettingSettingListItem {
-  int id;
+  String id;
   String key;
   String value;
   String valueType;

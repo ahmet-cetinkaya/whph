@@ -1,8 +1,10 @@
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
 enum EisenhowerPriority { none, urgentImportant, notUrgentImportant, urgentNotImportant, notUrgentNotImportant }
 
-class Task extends BaseEntity<int> {
+@jsonSerializable
+class Task extends BaseEntity<String> {
   String title;
   String? description;
   EisenhowerPriority? priority;
@@ -24,4 +26,15 @@ class Task extends BaseEntity<int> {
       this.estimatedTime,
       this.elapsedTime,
       required this.isCompleted});
+
+  void mapFromInstance(Task instance) {
+    title = instance.title;
+    description = instance.description;
+    priority = instance.priority;
+    plannedDate = instance.plannedDate;
+    deadlineDate = instance.deadlineDate;
+    estimatedTime = instance.estimatedTime;
+    elapsedTime = instance.elapsedTime;
+    isCompleted = instance.isCompleted;
+  }
 }

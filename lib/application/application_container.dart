@@ -23,6 +23,16 @@ import 'package:whph/application/features/settings/commands/save_setting_command
 import 'package:whph/application/features/settings/queries/get_list_settings_query.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/application/features/sync/commands/delete_sync_command.dart';
+import 'package:whph/application/features/sync/commands/save_sync_command.dart';
+import 'package:whph/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/application/features/sync/commands/stop_sync_command.dart';
+import 'package:whph/application/features/sync/commands/sync_command.dart';
+import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
+import 'package:whph/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/application/features/sync/services/sync_service.dart';
 import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
@@ -56,6 +66,7 @@ void registerApplication(IContainer container) {
   registerTasksFeature(container, mediator);
   registerTagsFeature(container, mediator);
   registerSettingsFeature(container, mediator);
+  registerSyncFeature(container, mediator);
 }
 
 void registerAppUsagesFeature(IContainer container, Mediator mediator) {
@@ -181,5 +192,41 @@ void registerSettingsFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<GetListSettingsQuery, GetListSettingsQueryResponse, GetListSettingsQueryHandler>(
     () => GetListSettingsQueryHandler(settingRepository: container.resolve<ISettingRepository>()),
+  );
+}
+
+void registerSyncFeature(IContainer container, Mediator mediator) {
+  container.registerSingleton<ISyncService>((_) => SyncService(mediator));
+
+  mediator.registerHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse, SaveSyncDeviceCommandHandler>(
+    () => SaveSyncDeviceCommandHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
+  );
+  mediator.registerHandler<DeleteSyncDeviceCommand, DeleteSyncDeviceCommandResponse, DeleteSyncDeviceCommandHandler>(
+    () => DeleteSyncDeviceCommandHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
+  );
+  mediator.registerHandler<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse, GetListSyncDevicesQueryHandler>(
+    () => GetListSyncDevicesQueryHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
+  );
+  mediator.registerHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse, GetSyncDeviceQueryHandler>(
+    () => GetSyncDeviceQueryHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
+  );
+  mediator.registerHandler<SyncCommand, SyncCommandResponse, SyncCommandHandler>(
+    () => SyncCommandHandler(
+        syncDeviceRepository: container.resolve<ISyncDeviceRepository>(),
+        appUsageRepository: container.resolve<IAppUsageRepository>(),
+        appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
+        habitRepository: container.resolve<IHabitRepository>(),
+        habitRecordRepository: container.resolve<IHabitRecordRepository>(),
+        tagRepository: container.resolve<ITagRepository>(),
+        tagTagRepository: container.resolve<ITagTagRepository>(),
+        taskRepository: container.resolve<ITaskRepository>(),
+        taskTagRepository: container.resolve<ITaskTagRepository>(),
+        settingRepository: container.resolve<ISettingRepository>()),
+  );
+  mediator.registerHandler<StartSyncCommand, StartSyncCommandResponse, StartSyncCommandHandler>(
+    () => StartSyncCommandHandler(container.resolve<ISyncService>()),
+  );
+  mediator.registerHandler<StopSyncCommand, StopSyncCommandResponse, StopSyncCommandHandler>(
+    () => StopSyncCommandHandler(container.resolve<ISyncService>()),
   );
 }

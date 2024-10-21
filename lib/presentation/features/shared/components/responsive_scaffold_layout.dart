@@ -8,11 +8,13 @@ class NavItem {
 }
 
 class ResponsiveScaffoldLayout extends StatefulWidget {
-  final Widget title;
+  final Widget appBarTitle;
+  final List<Widget>? appBarActions;
   final List<NavItem> navItems;
   final Map<String, WidgetBuilder> routes;
 
-  const ResponsiveScaffoldLayout({super.key, required this.navItems, required this.routes, required this.title});
+  const ResponsiveScaffoldLayout(
+      {super.key, required this.navItems, required this.routes, required this.appBarTitle, this.appBarActions});
 
   @override
   State<ResponsiveScaffoldLayout> createState() => _ResponsiveScaffoldLayoutState();
@@ -28,7 +30,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
     return Scaffold(
       appBar: AppBar(
-        title: widget.title,
+        title: widget.appBarTitle,
         leading: !isWideScreen
             ? Builder(
                 builder: (BuildContext context) => IconButton(
@@ -39,6 +41,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 ),
               )
             : null,
+        actions: widget.appBarActions,
       ),
       drawer: isWideScreen ? null : _buildDrawer(widget.navItems),
       body: Row(
@@ -60,7 +63,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   Widget _buildDrawer(List<NavItem> navItems) {
     return Drawer(
       child: ListView(
-        padding: EdgeInsets.zero,
+        padding: MediaQuery.of(context).size.width <= 600 ? EdgeInsets.only(top: kToolbarHeight) : EdgeInsets.zero,
         children: navItems.map((navItem) {
           return ListTile(
             title: Text(navItem.title),

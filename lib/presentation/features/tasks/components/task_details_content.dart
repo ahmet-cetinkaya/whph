@@ -17,7 +17,7 @@ import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart'
 import 'package:whph/domain/features/tasks/task.dart';
 
 class TaskDetailsContent extends StatefulWidget {
-  final int taskId;
+  final String taskId;
 
   const TaskDetailsContent({
     super.key,
@@ -45,7 +45,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     DropdownOption(label: 'Not Urgent & Not Important', value: EisenhowerPriority.notUrgentNotImportant),
   ];
 
-  final List<DropdownOption<int>> _tagOptions = [];
+  final List<DropdownOption<String>> _tagOptions = [];
   final List<int> _estimatedTimeOptions = [0, 15, 30, 45, 60, 90, 120, 180, 240];
 
   @override
@@ -86,7 +86,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     setState(() {
       _tagOptions
         ..clear()
-        ..add(DropdownOption(label: 'Add Tag', value: 0))
+        ..add(DropdownOption(label: 'Add Tag', value: ''))
         ..addAll(response.items
             .where((tag) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tag.id))
             .map((tag) => DropdownOption(label: tag.name, value: tag.id)));
@@ -111,7 +111,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     await _mediator.send<SaveTaskCommand, void>(saveCommand);
   }
 
-  Future<void> _addTag(int tagId) async {
+  Future<void> _addTag(String tagId) async {
     if (tagId == 0) return; // Skip if the user selects the "Add Tag" option
 
     var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
@@ -120,7 +120,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     await _fetchTagOptions();
   }
 
-  Future<void> _removeTag(int id) async {
+  Future<void> _removeTag(String id) async {
     var command = RemoveTaskTagCommand(id: id);
     await _mediator.send(command);
     await _fetchTaskTags();
@@ -227,9 +227,9 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           spacing: 8.0,
           runSpacing: 4.0,
           children: [
-            DropdownButton<DropdownOption<int?>>(
+            DropdownButton<DropdownOption<String?>>(
               value: _tagOptions.first,
-              onChanged: (DropdownOption<int?>? newValue) {
+              onChanged: (DropdownOption<String?>? newValue) {
                 if (newValue?.value != null) _addTag(newValue!.value!);
               },
               items: _tagOptions

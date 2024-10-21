@@ -6,28 +6,30 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 
 @UseRowClass(Setting)
 class SettingTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get key => text()();
   TextColumn get value => text()();
   IntColumn get valueType => intEnum<SettingValueType>()();
 }
 
-class DriftSettingRepository extends DriftBaseRepository<Setting, int, SettingTable> implements ISettingRepository {
+class DriftSettingRepository extends DriftBaseRepository<Setting, String, SettingTable> implements ISettingRepository {
   DriftSettingRepository() : super(AppDatabase.instance(), AppDatabase.instance().settingTable);
 
   @override
-  Expression<int> getPrimaryKey(SettingTable t) {
+  Expression<String> getPrimaryKey(SettingTable t) {
     return t.id;
   }
 
   @override
   Insertable<Setting> toCompanion(Setting entity) {
     return SettingTableCompanion.insert(
-      id: entity.id > 0 ? Value(entity.id) : const Value.absent(),
+      id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       key: entity.key,
       value: entity.value,
       valueType: entity.valueType,

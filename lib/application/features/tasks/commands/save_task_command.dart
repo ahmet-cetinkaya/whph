@@ -1,9 +1,10 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
-  final int? id;
+  final String? id;
   final String title;
   final String? description;
   final EisenhowerPriority? priority;
@@ -26,7 +27,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
 }
 
 class SaveTaskCommandResponse {
-  final int id;
+  final String id;
   final DateTime createdDate;
   final DateTime? modifiedDate;
 
@@ -63,7 +64,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       await _taskRepository.update(task);
     } else {
       task = Task(
-          id: 0,
+          id: nanoid(),
           createdDate: DateTime(0),
           title: request.title,
           description: request.description,

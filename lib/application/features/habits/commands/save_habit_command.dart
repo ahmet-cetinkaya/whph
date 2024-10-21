@@ -1,9 +1,10 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 
 class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
-  final int? id;
+  final String? id;
   final String name;
   final String description;
 
@@ -15,7 +16,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
 }
 
 class SaveHabitCommandResponse {
-  final int id;
+  final String id;
   final DateTime createdDate;
   final DateTime? modifiedDate;
 
@@ -55,7 +56,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
 
   Future<Habit> _add(Habit? habit, SaveHabitCommand request) async {
     habit = Habit(
-      id: 0,
+      id: nanoid(),
       createdDate: DateTime(0),
       name: request.name,
       description: request.description,

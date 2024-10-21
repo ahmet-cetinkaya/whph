@@ -2,6 +2,7 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -13,6 +14,7 @@ import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_reposit
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
 import 'package:whph/persistence/features/settings/drift_settings_repository.dart';
+import 'package:whph/persistence/features/sync/drift_sync_device_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_tag_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_repository.dart';
@@ -28,4 +30,5 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<ITaskRepository>((_) => DriftTaskRepository());
   container.registerSingleton<ITaskTagRepository>((_) => DriftTaskTagRepository());
   container.registerSingleton<ISettingRepository>((_) => DriftSettingRepository());
+  container.registerSingleton<ISyncDeviceRepository>((_) => DriftSyncDeviceRepository());
 }

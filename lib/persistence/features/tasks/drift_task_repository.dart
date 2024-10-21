@@ -6,9 +6,10 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 
 @UseRowClass(Task)
 class TaskTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
   IntColumn get priority => intEnum<EisenhowerPriority>().nullable()();
@@ -19,20 +20,21 @@ class TaskTable extends Table {
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
 }
 
-class DriftTaskRepository extends DriftBaseRepository<Task, int, TaskTable> implements ITaskRepository {
+class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
   DriftTaskRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTable);
 
   @override
-  Expression<int> getPrimaryKey(TaskTable t) {
+  Expression<String> getPrimaryKey(TaskTable t) {
     return t.id;
   }
 
   @override
   Insertable<Task> toCompanion(Task entity) {
     return TaskTableCompanion.insert(
-        id: entity.id > 0 ? Value(entity.id) : const Value.absent(),
+        id: entity.id,
         createdDate: entity.createdDate,
         modifiedDate: Value(entity.modifiedDate),
+        deletedDate: Value(entity.deletedDate),
         title: entity.title,
         description: Value(entity.description),
         priority: Value(entity.priority),

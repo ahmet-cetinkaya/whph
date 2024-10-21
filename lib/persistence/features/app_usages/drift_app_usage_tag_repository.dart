@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
@@ -11,8 +10,9 @@ class AppUsageTagTable extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get appUsageId => text()();
-  IntColumn get tagId => integer()();
+  TextColumn get tagId => text()();
 }
 
 class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String, AppUsageTagTable>
@@ -30,15 +30,10 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
       id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       appUsageId: entity.appUsageId,
       tagId: entity.tagId,
     );
-  }
-
-  @override
-  Future<void> add(AppUsageTag item) {
-    item.id = nanoid();
-    return super.add(item);
   }
 
   @override
@@ -49,7 +44,9 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
     final result = await query.get();
 
     final count = await ((database.customSelect(
-      "SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE app_usage_id = '$appUsageId'",
+      "SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE app_usage_id = ?",
+      variables: [Variable<String>(appUsageId)],
+      readsFrom: {table},
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
@@ -63,7 +60,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   }
 
   @override
-  Future<bool> anyByAppUsageIdAndTagId(String appUsageId, int tagId) async {
+  Future<bool> anyByAppUsageIdAndTagId(String appUsageId, String tagId) async {
     final query = database.select(table)..where((t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(tagId));
     final result = await query.get();
 

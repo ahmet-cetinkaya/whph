@@ -1,16 +1,16 @@
 import 'package:drift/drift.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
-import '../../../application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 
 @UseRowClass(AppUsage)
 class AppUsageTable extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get title => text()();
   TextColumn get processName => text().nullable()();
   IntColumn get duration => integer()();
@@ -34,16 +34,11 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       title: entity.title,
       processName: Value(entity.processName),
       duration: entity.duration,
     );
-  }
-
-  @override
-  Future<void> add(AppUsage item) {
-    item.id = nanoid();
-    return super.add(item);
   }
 
   @override

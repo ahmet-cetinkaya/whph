@@ -3,7 +3,7 @@ import 'package:whph/application/features/settings/services/abstraction/i_settin
 import 'package:whph/domain/features/settings/setting.dart';
 
 class DeleteSettingCommand implements IRequest<DeleteSettingCommandResponse> {
-  final int id;
+  final String id;
 
   DeleteSettingCommand({required this.id});
 }
@@ -22,7 +22,7 @@ class DeleteSettingCommandHandler implements IRequestHandler<DeleteSettingComman
       throw Exception('Setting with id ${request.id} not found');
     }
 
-    await _settingRepository.delete(setting.id);
+    await _settingRepository.delete(setting);
 
     return DeleteSettingCommandResponse();
   }

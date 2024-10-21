@@ -3,7 +3,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class RemoveTaskTagCommand implements IRequest<RemoveTaskTagCommandResponse> {
-  int id;
+  String id;
 
   RemoveTaskTagCommand({
     required this.id,
@@ -11,7 +11,7 @@ class RemoveTaskTagCommand implements IRequest<RemoveTaskTagCommandResponse> {
 }
 
 class RemoveTaskTagCommandResponse {
-  final int id;
+  final String id;
 
   RemoveTaskTagCommandResponse({
     required this.id,
@@ -29,7 +29,7 @@ class RemoveTaskTagCommandHandler implements IRequestHandler<RemoveTaskTagComman
     if (taskTag == null) {
       throw Exception('TaskTag with id ${request.id} not found');
     }
-    await _taskTagRepository.delete(taskTag.id);
+    await _taskTagRepository.delete(taskTag);
 
     return RemoveTaskTagCommandResponse(
       id: taskTag.id,

@@ -24,7 +24,7 @@ class DeleteHabitRecordCommandHandler
       throw Exception('HabitRecord with id ${request.id} not found');
     }
 
-    await _habitRecordRepository.delete(habitRecord.id);
+    await _habitRecordRepository.delete(habitRecord);
 
     return DeleteHabitRecordCommandResponse();
   }

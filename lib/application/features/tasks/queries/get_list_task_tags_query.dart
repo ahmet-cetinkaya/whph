@@ -6,7 +6,7 @@ import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class GetListTaskTagsQuery implements IRequest<GetListTaskTagsQueryResponse> {
-  late int taskId;
+  late String taskId;
   late int pageIndex;
   late int pageSize;
 
@@ -14,9 +14,9 @@ class GetListTaskTagsQuery implements IRequest<GetListTaskTagsQueryResponse> {
 }
 
 class TaskTagListItem {
-  int id;
-  int taskId;
-  int tagId;
+  String id;
+  String taskId;
+  String tagId;
   String tagName;
 
   TaskTagListItem({required this.id, required this.taskId, required this.tagId, required this.tagName});

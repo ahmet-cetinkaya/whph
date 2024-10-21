@@ -25,7 +25,7 @@ class _TagsPageState extends State<TagsPage> {
     });
   }
 
-  Future<void> _openTagDetails(int tagId) async {
+  Future<void> _openTagDetails(String tagId) async {
     await Navigator.push(
       context,
       MaterialPageRoute(

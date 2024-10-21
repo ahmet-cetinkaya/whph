@@ -3,13 +3,13 @@ import 'package:whph/application/features/habits/services/i_habit_repository.dar
 import 'package:whph/domain/features/habits/habit.dart';
 
 class GetHabitQuery implements IRequest<GetHabitQueryResponse> {
-  late int? id;
+  late String? id;
 
   GetHabitQuery({this.id});
 }
 
 class HabitHabitListItem {
-  int id;
+  String id;
   String name;
 
   HabitHabitListItem({

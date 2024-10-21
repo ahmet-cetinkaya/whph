@@ -24,7 +24,7 @@ class _TasksPageState extends State<TasksPage> {
     });
   }
 
-  Future<void> _openTaskDetails(int taskId) async {
+  Future<void> _openTaskDetails(String taskId) async {
     await Navigator.push(
       context,
       MaterialPageRoute(

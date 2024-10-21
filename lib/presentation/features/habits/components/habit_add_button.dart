@@ -4,7 +4,7 @@ import 'package:whph/application/features/habits/commands/save_habit_command.dar
 import 'package:whph/main.dart';
 
 class HabitAddButton extends StatefulWidget {
-  final Function(int habitId)? onHabitCreated; // Yeni habit id'sini geri döndürecek callback
+  final Function(String habitId)? onHabitCreated; // Yeni habit id'sini geri döndürecek callback
 
   const HabitAddButton({super.key, this.onHabitCreated});
 

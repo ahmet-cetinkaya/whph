@@ -11,7 +11,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
 }
 
 class TaskListItem {
-  int id;
+  String id;
   String title;
   EisenhowerPriority? priority;
   DateTime? plannedDate;

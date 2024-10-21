@@ -4,7 +4,7 @@ import 'package:whph/presentation/features/tasks/components/task_details_content
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
 
 class TaskDetailsPage extends StatefulWidget {
-  final int taskId;
+  final String taskId;
 
   const TaskDetailsPage({super.key, required this.taskId});
 

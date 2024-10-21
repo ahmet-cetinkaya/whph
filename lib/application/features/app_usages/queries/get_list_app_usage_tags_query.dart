@@ -16,7 +16,7 @@ class GetListAppUsageTagsQuery implements IRequest<GetListAppUsageTagsQueryRespo
 class AppUsageTagListItem {
   String id;
   String appUsageId;
-  int tagId;
+  String tagId;
   String tagName;
 
   AppUsageTagListItem({required this.id, required this.appUsageId, required this.tagId, required this.tagName});

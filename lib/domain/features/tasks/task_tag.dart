@@ -1,9 +1,16 @@
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
-class TaskTag extends BaseEntity<int> {
-  int taskId;
-  int tagId;
+@jsonSerializable
+class TaskTag extends BaseEntity<String> {
+  String taskId;
+  String tagId;
 
   TaskTag(
       {required super.id, required super.createdDate, super.modifiedDate, required this.taskId, required this.tagId});
+
+  void mapFromInstance(TaskTag instance) {
+    taskId = instance.taskId;
+    tagId = instance.tagId;
+  }
 }

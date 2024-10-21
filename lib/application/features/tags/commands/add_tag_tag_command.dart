@@ -1,10 +1,11 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
 
 class AddTagTagCommand implements IRequest<AddTagTagCommandResponse> {
-  int primaryTagId;
-  int secondaryTagId;
+  String primaryTagId;
+  String secondaryTagId;
 
   AddTagTagCommand({
     required this.primaryTagId,
@@ -13,7 +14,7 @@ class AddTagTagCommand implements IRequest<AddTagTagCommandResponse> {
 }
 
 class AddTagTagCommandResponse {
-  final int id;
+  final String id;
 
   AddTagTagCommandResponse({
     required this.id,
@@ -35,7 +36,7 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
     }
 
     var tagTag = TagTag(
-      id: 0,
+      id: nanoid(),
       createdDate: DateTime(0),
       primaryTagId: request.primaryTagId,
       secondaryTagId: request.secondaryTagId,

@@ -6,7 +6,7 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 
 class TagNameInputField extends StatefulWidget {
-  final int id;
+  final String id;
 
   const TagNameInputField({
     super.key,

@@ -9,6 +9,7 @@ import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 import 'package:whph/domain/features/settings/setting.dart';
+import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
@@ -18,6 +19,7 @@ import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_reposit
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
 import 'package:whph/persistence/features/settings/drift_settings_repository.dart';
+import 'package:whph/persistence/features/sync/drift_sync_device_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_tag_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_repository.dart';
@@ -38,12 +40,12 @@ const String databaseName = 'whph.db';
     TaskTagTable,
     TagTable,
     TagTagTable,
-    SettingTable
+    SettingTable,
+    SyncDeviceTable
   ],
 )
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
-
   static AppDatabase instance() {
     return _instance ??= AppDatabase();
   }
@@ -52,12 +54,12 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, folderName, databaseName));
-    return NativeDatabase.createInBackground(file);
-  });
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, folderName, databaseName));
+      return NativeDatabase.createInBackground(file);
+    });
+  }
 }

@@ -4,7 +4,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/main.dart';
 
 class TaskAddButton extends StatefulWidget {
-  final Function(int taskId)? onTaskCreated;
+  final Function(String taskId)? onTaskCreated;
 
   const TaskAddButton({super.key, this.onTaskCreated});
 

@@ -4,7 +4,7 @@ import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 
 class GetListHabitRecordsQuery implements IRequest<GetListHabitRecordsQueryResponse> {
-  int habitId;
+  String habitId;
   DateTime startDate;
   DateTime endDate;
 

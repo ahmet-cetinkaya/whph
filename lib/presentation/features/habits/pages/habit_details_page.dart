@@ -4,7 +4,7 @@ import 'package:whph/presentation/features/habits/components/habit_details_conte
 import 'package:whph/presentation/features/habits/components/habit_title_input_field.dart';
 
 class HabitDetailsPage extends StatelessWidget {
-  final int habitId;
+  final String habitId;
 
   const HabitDetailsPage({super.key, required this.habitId});
 

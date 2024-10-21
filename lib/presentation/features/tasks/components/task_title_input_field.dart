@@ -7,7 +7,7 @@ import 'package:whph/presentation/features/tasks/components/task_complete_button
 import 'package:whph/main.dart';
 
 class TaskTitleInputField extends StatefulWidget {
-  final int taskId;
+  final String taskId;
 
   const TaskTitleInputField({
     super.key,

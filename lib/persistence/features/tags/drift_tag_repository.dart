@@ -7,26 +7,28 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 
 @UseRowClass(Tag)
 class TagTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get name => text()();
 }
 
-class DriftTagRepository extends DriftBaseRepository<Tag, int, TagTable> implements ITagRepository {
+class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
   DriftTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
 
   @override
-  Expression<int> getPrimaryKey(TagTable t) {
+  Expression<String> getPrimaryKey(TagTable t) {
     return t.id;
   }
 
   @override
   Insertable<Tag> toCompanion(Tag entity) {
     return TagTableCompanion.insert(
-      id: entity.id > 0 ? Value(entity.id) : const Value.absent(),
+      id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       name: entity.name,
     );
   }
@@ -42,9 +44,11 @@ class DriftTagRepository extends DriftBaseRepository<Tag, int, TagTable> impleme
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
-    final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE name LIKE \'%$search%\'',
-    )).getSingleOrNull());
+    final count = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE name LIKE ?',
+      variables: [Variable.withString('%$search%')],
+      readsFrom: {table},
+    ).getSingleOrNull();
     final totalCount = count?.data['count'] as int? ?? 0;
 
     return PaginatedList(

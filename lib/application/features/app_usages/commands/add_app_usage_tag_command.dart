@@ -1,10 +1,11 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 
 class AddAppUsageTagCommand implements IRequest<AddAppUsageTagCommandResponse> {
   String appUsageId;
-  int tagId;
+  String tagId;
 
   AddAppUsageTagCommand({
     required this.appUsageId,
@@ -33,7 +34,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
     }
 
     var appUsageTag = AppUsageTag(
-      id: '',
+      id: nanoid(),
       createdDate: DateTime(0),
       appUsageId: request.appUsageId,
       tagId: request.tagId,

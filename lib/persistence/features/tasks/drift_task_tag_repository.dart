@@ -7,41 +7,45 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 
 @UseRowClass(TaskTag)
 class TaskTagTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get id => text()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
-  IntColumn get taskId => integer()();
-  IntColumn get tagId => integer()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
+  TextColumn get taskId => text()();
+  TextColumn get tagId => text()();
 }
 
-class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, int, TaskTagTable> implements ITaskTagRepository {
+class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTagTable> implements ITaskTagRepository {
   DriftTaskTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
 
   @override
-  Expression<int> getPrimaryKey(TaskTagTable t) {
+  Expression<String> getPrimaryKey(TaskTagTable t) {
     return t.id;
   }
 
   @override
   Insertable<TaskTag> toCompanion(TaskTag entity) {
     return TaskTagTableCompanion.insert(
-      id: entity.id > 0 ? Value(entity.id) : const Value.absent(),
+      id: entity.id,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
       taskId: entity.taskId,
       tagId: entity.tagId,
     );
   }
 
   @override
-  Future<PaginatedList<TaskTag>> getListByTaskId(int taskId, int pageIndex, int pageSize) async {
+  Future<PaginatedList<TaskTag>> getListByTaskId(String taskId, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.taskId.equals(taskId))
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
     final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE task_id = $taskId',
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE task_id = ?',
+      variables: [Variable<String>(taskId)],
+      readsFrom: {table},
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
@@ -55,7 +59,7 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, int, TaskTagTa
   }
 
   @override
-  Future<bool> anyByTaskIdAndTagId(int taskId, int tagId) async {
+  Future<bool> anyByTaskIdAndTagId(String taskId, String tagId) async {
     final query = database.select(table)..where((t) => t.taskId.equals(taskId) & t.taskId.equals(tagId));
     final result = await query.get();
 

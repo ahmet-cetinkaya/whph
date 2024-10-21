@@ -4,7 +4,7 @@ import 'package:whph/application/features/habits/commands/delete_habit_command.d
 import 'package:whph/main.dart';
 
 class HabitDeleteButton extends StatefulWidget {
-  final int habitId;
+  final String habitId;
   final VoidCallback? onDeleteSuccess;
 
   const HabitDeleteButton({

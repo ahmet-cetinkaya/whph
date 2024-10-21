@@ -3,7 +3,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/domain/features/tasks/task.dart';
 
 class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
-  late int id;
+  late String id;
 
   GetTaskQuery({required this.id});
 }

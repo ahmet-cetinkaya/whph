@@ -1,9 +1,10 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
-  final int? id;
+  final String? id;
   final String name;
 
   SaveTagCommand({
@@ -13,7 +14,7 @@ class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
 }
 
 class SaveTagCommandResponse {
-  final int id;
+  final String id;
   final DateTime createdDate;
   final DateTime? modifiedDate;
 
@@ -43,7 +44,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
       await _tagRepository.update(tag);
     } else {
       tag = Tag(
-        id: 0,
+        id: nanoid(),
         createdDate: DateTime(0),
         name: request.name,
       );

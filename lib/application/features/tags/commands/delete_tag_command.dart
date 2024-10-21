@@ -3,7 +3,7 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_reposi
 import 'package:whph/domain/features/tags/tag.dart';
 
 class DeleteTagCommand implements IRequest<DeleteTagCommandResponse> {
-  final int id;
+  final String id;
 
   DeleteTagCommand({required this.id});
 }
@@ -22,7 +22,7 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
       throw Exception('Tag with id ${request.id} not found');
     }
 
-    await _tagRepository.delete(tag.id);
+    await _tagRepository.delete(tag);
 
     return DeleteTagCommandResponse();
   }

@@ -11,7 +11,7 @@ class GetListSettingsQuery implements IRequest<GetListSettingsQueryResponse> {
 }
 
 class SettingListItem {
-  int id;
+  String id;
   String key;
   String value;
   SettingValueType valueType;

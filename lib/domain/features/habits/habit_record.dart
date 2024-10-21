@@ -1,7 +1,9 @@
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
+@jsonSerializable
 class HabitRecord extends BaseEntity<String> {
-  int habitId;
+  String habitId;
   DateTime date;
 
   HabitRecord({
@@ -11,4 +13,9 @@ class HabitRecord extends BaseEntity<String> {
     required this.habitId,
     required this.date,
   });
+
+  void mapFromInstance(HabitRecord instance) {
+    habitId = instance.habitId;
+    date = instance.date;
+  }
 }

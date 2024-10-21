@@ -12,7 +12,7 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
 }
 
 class TagListItem {
-  int id;
+  String id;
   String name;
 
   TagListItem({required this.id, required this.name});

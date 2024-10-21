@@ -3,7 +3,7 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_reposi
 import 'package:whph/domain/features/tags/tag.dart';
 
 class GetTagQuery implements IRequest<GetTagQueryResponse> {
-  late int id;
+  late String id;
 
   GetTagQuery({required this.id});
 }

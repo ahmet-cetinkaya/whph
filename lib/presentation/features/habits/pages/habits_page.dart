@@ -19,7 +19,7 @@ class HabitsPage extends StatefulWidget {
 class _HabitsPageState extends State<HabitsPage> {
   Key _habitsListKey = UniqueKey();
 
-  _openDetails(int habitId, BuildContext context) async {
+  _openDetails(String habitId, BuildContext context) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -38,7 +38,7 @@ class _HabitsPageState extends State<HabitsPage> {
           title: const Text('Habits'),
           actions: [
             HabitAddButton(
-              onHabitCreated: (int habitId) {
+              onHabitCreated: (String habitId) {
                 setState(() {
                   _openDetails(habitId, context);
                 });

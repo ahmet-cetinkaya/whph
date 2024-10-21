@@ -5,7 +5,7 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
 
 class TaskCompleteButton extends StatelessWidget {
-  final int taskId;
+  final String taskId;
   final bool isCompleted;
   final VoidCallback onToggleCompleted;
 

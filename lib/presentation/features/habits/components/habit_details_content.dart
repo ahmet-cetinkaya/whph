@@ -10,7 +10,7 @@ import 'package:whph/presentation/features/shared/components/header.dart';
 import 'package:intl/intl.dart'; // For handling dates
 
 class HabitDetailsContent extends StatefulWidget {
-  final int habitId;
+  final String habitId;
   final bool isNameFieldVisible;
 
   const HabitDetailsContent({super.key, required this.habitId, this.isNameFieldVisible = true});
@@ -67,7 +67,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     return queryResponse.items;
   }
 
-  Future<void> _createHabitRecord(int habitId, DateTime date) async {
+  Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
     setState(() {

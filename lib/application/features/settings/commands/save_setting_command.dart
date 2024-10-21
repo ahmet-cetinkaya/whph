@@ -1,9 +1,10 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 
 class SaveSettingCommand implements IRequest<SaveSettingCommandResponse> {
-  final int? id;
+  final String? id;
   final String key;
   final String value;
   final SettingValueType valueType;
@@ -17,7 +18,7 @@ class SaveSettingCommand implements IRequest<SaveSettingCommandResponse> {
 }
 
 class SaveSettingCommandResponse {
-  final int id;
+  final String id;
   final DateTime createdDate;
   final DateTime? modifiedDate;
 
@@ -62,7 +63,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
 
   Future<Setting> _add(Setting? setting, SaveSettingCommand request) async {
     setting = Setting(
-      id: 0,
+      id: nanoid(),
       createdDate: DateTime(0),
       key: request.key,
       value: request.value,

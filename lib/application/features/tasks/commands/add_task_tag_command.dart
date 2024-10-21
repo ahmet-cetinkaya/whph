@@ -1,10 +1,11 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class AddTaskTagCommand implements IRequest<AddTaskTagCommandResponse> {
-  int taskId;
-  int tagId;
+  String taskId;
+  String tagId;
 
   AddTaskTagCommand({
     required this.taskId,
@@ -13,7 +14,7 @@ class AddTaskTagCommand implements IRequest<AddTaskTagCommandResponse> {
 }
 
 class AddTaskTagCommandResponse {
-  final int id;
+  final String id;
 
   AddTaskTagCommandResponse({
     required this.id,
@@ -32,7 +33,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
     }
 
     var taskTag = TaskTag(
-      id: 0,
+      id: nanoid(),
       createdDate: DateTime(0),
       taskId: request.taskId,
       tagId: request.tagId,

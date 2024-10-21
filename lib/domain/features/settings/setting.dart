@@ -1,8 +1,10 @@
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
 enum SettingValueType { string, int, double, bool }
 
-class Setting extends BaseEntity<int> {
+@jsonSerializable
+class Setting extends BaseEntity<String> {
   String key;
   String value;
   SettingValueType valueType;
@@ -28,5 +30,11 @@ class Setting extends BaseEntity<int> {
       default:
         throw Exception('Invalid SettingType');
     }
+  }
+
+  void mapFromInstance(Setting instance) {
+    key = instance.key;
+    value = instance.value;
+    valueType = instance.valueType;
   }
 }

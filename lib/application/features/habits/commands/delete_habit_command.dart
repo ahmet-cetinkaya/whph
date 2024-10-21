@@ -3,7 +3,7 @@ import 'package:whph/application/features/habits/services/i_habit_repository.dar
 import 'package:whph/domain/features/habits/habit.dart';
 
 class DeleteHabitCommand implements IRequest<DeleteHabitCommandResponse> {
-  final int id;
+  final String id;
 
   DeleteHabitCommand({required this.id});
 }
@@ -22,7 +22,7 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
       throw Exception('Habit with id ${request.id} not found');
     }
 
-    await _habitRepository.delete(habit.id);
+    await _habitRepository.delete(habit);
 
     return DeleteHabitCommandResponse();
   }

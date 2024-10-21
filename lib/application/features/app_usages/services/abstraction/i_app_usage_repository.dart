@@ -1,4 +1,4 @@
-import 'package:whph/core/acore/repository/abstraction/i_repository.dart';
+import 'package:whph/persistence/shared/repositories/abstraction/i_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 
