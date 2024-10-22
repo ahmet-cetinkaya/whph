@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
@@ -30,10 +31,7 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       title: 'WHPH',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.themeData,
       debugShowCheckedModeBanner: false,
       home: ResponsiveScaffoldLayout(appBarTitle: const Text('WHPH'), navItems: navItems, routes: routes),
     );

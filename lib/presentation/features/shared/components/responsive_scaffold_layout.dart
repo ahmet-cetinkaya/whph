@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
 class NavItem {
   final String title;
@@ -25,13 +27,10 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final isWideScreen = width > 600;
-
     return Scaffold(
       appBar: AppBar(
         title: widget.appBarTitle,
-        leading: !isWideScreen
+        leading: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
             ? Builder(
                 builder: (BuildContext context) => IconButton(
                   icon: const Icon(Icons.menu),
@@ -43,10 +42,10 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             : null,
         actions: widget.appBarActions,
       ),
-      drawer: isWideScreen ? null : _buildDrawer(widget.navItems),
+      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) ? null : _buildDrawer(widget.navItems),
       body: Row(
         children: [
-          if (isWideScreen) _buildDrawer(widget.navItems),
+          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium)) _buildDrawer(widget.navItems),
           Expanded(
             child: Navigator(
               key: _navigatorKey,
@@ -61,17 +60,32 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   }
 
   Widget _buildDrawer(List<NavItem> navItems) {
+    final isMobile = MediaQuery.of(context).size.width <= 600;
     return Drawer(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: isMobile ? Radius.circular(16.0) : Radius.zero,
+          bottomRight: Radius.circular(16.0),
+        ),
+      ),
       child: ListView(
-        padding: MediaQuery.of(context).size.width <= 600 ? EdgeInsets.only(top: kToolbarHeight) : EdgeInsets.zero,
-        children: navItems.map((navItem) {
-          return ListTile(
-            title: Text(navItem.title),
-            onTap: () {
-              _navigateTo(navItem.route);
-            },
-          );
-        }).toList(),
+        children: [
+          if (isMobile)
+            SizedBox(
+              height: 65,
+              child: DrawerHeader(
+                child: widget.appBarTitle,
+              ),
+            ),
+          ...navItems.map((navItem) {
+            return ListTile(
+              title: Text(navItem.title),
+              onTap: () {
+                _navigateTo(navItem.route);
+              },
+            );
+          }),
+        ],
       ),
     );
   }

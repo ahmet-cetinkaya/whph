@@ -6,13 +6,11 @@ import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TasksList extends StatefulWidget {
   final Mediator mediator;
-  final VoidCallback onTaskAdded;
   final void Function(TaskListItem task) onClickTask;
 
   const TasksList({
     super.key,
     required this.mediator,
-    required this.onTaskAdded,
     required this.onClickTask,
   });
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
@@ -37,7 +40,8 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: SecondaryAppBar(
+        context: context,
         title: const Text('Tasks'),
         actions: [
           TaskAddButton(
@@ -51,7 +55,6 @@ class _TasksPageState extends State<TasksPage> {
             child: TasksList(
               key: _tasksListKey,
               mediator: _mediator,
-              onTaskAdded: _refreshTasks,
               onClickTask: (task) => _openTaskDetails(task.id),
             ),
           ),

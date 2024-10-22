@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
 import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';
 
@@ -10,10 +11,11 @@ class TagDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: SecondaryAppBar(
+          context: context,
           title: TagNameInputField(
-        id: tagId,
-      )),
+            id: tagId,
+          )),
       body: TagDetailsContent(
         tagId: tagId,
       ),

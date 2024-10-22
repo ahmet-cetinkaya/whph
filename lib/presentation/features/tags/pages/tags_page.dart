@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
@@ -38,7 +39,8 @@ class _TagsPageState extends State<TagsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: SecondaryAppBar(
+        context: context,
         title: const Text('Tags'),
         actions: [
           TagAddButton(

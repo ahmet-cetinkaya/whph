@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
@@ -21,7 +22,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: SecondaryAppBar(
+        context: context,
         title: TaskTitleInputField(taskId: widget.taskId),
         actions: [
           TaskDeleteButton(

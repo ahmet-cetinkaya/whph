@@ -4,6 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -34,7 +35,8 @@ class _HabitsPageState extends State<HabitsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: SecondaryAppBar(
+          context: context,
           title: const Text('Habits'),
           actions: [
             HabitAddButton(

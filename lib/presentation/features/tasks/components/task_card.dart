@@ -20,9 +20,6 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(4.0),
         leading: _buildCompleteButton(),

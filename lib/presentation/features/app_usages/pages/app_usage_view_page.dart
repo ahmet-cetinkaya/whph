@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
+import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -27,7 +28,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: SecondaryAppBar(
+        context: context,
         title: const Text('App Usages'),
         actions: [
           if (Platform.isLinux || Platform.isWindows || Platform.isMacOS)
