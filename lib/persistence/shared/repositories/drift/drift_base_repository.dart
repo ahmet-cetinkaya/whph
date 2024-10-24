@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:meta/meta.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/abstraction/i_repository.dart';
 
@@ -18,16 +19,53 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   Expression<TEntityId> getPrimaryKey(TTable t);
 
   @override
-  Future<PaginatedList<TEntity>> getList(int pageIndex, int pageSize, {bool includeDeleted = false}) async {
+  Future<PaginatedList<TEntity>> getList(int pageIndex, int pageSize,
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter}) async {
+    List<String> whereClauses = [
+      if (customWhereFilter != null) customWhereFilter.query,
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
     final query = database.customSelect(
-      'SELECT * FROM ${table.actualTableName}${includeDeleted ? '' : ' WHERE deleted_date IS NULL'} LIMIT ? OFFSET ?',
-      variables: [Variable.withInt(pageSize), Variable.withInt(pageIndex * pageSize)],
+      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}LIMIT ? OFFSET ?",
+      variables: [
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) {
+            if (e is String) {
+              return Variable.withString(e);
+            } else if (e is int) {
+              return Variable.withInt(e);
+            } else if (e is DateTime) {
+              return Variable.withDateTime(e);
+            } else if (e is bool) {
+              return Variable.withBool(e);
+            } else {
+              throw Exception('Unsupported variable type');
+            }
+          }),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
       readsFrom: {table},
     ).map((row) => table.map(row.data));
     final result = await query.get();
 
     final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${includeDeleted ? '' : ' WHERE deleted_date IS NULL'}',
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
+      variables: customWhereFilter?.variables.map((e) {
+            if (e is String) {
+              return Variable.withString(e);
+            } else if (e is int) {
+              return Variable.withInt(e);
+            } else if (e is DateTime) {
+              return Variable.withDateTime(e);
+            } else if (e is bool) {
+              return Variable.withBool(e);
+            } else {
+              throw Exception('Unsupported variable type');
+            }
+          }).toList() ??
+          [],
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
