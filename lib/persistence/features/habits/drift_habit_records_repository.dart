@@ -40,12 +40,12 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
     final query = database.select(table)
-      ..where((t) => t.habitId.equals(habitId) & t.date.isBetweenValues(startDate, endDate))
+      ..where((t) => t.habitId.equals(habitId) & t.date.isBetweenValues(startDate, endDate) & t.deletedDate.isNull())
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
     final count = await (database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND date BETWEEN ? AND ?',
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND date BETWEEN ? AND ? AND deleted_date IS NULL',
       variables: [Variable<String>(habitId), Variable<DateTime>(startDate), Variable<DateTime>(endDate)],
       readsFrom: {table},
     ).getSingleOrNull());

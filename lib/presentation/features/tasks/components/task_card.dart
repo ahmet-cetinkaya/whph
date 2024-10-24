@@ -72,21 +72,18 @@ class TaskCard extends StatelessWidget {
     }
     if (task.deadlineDate != null) {
       subtitleWidgets.add(
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Row(
-            children: [
-              const Icon(Icons.access_time, color: Colors.red, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                'Deadline: ${dateFormat.format(task.deadlineDate!)}',
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 14,
-                ),
+        Row(
+          children: [
+            const Icon(Icons.access_time, color: Colors.red, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              'Deadline: ${dateFormat.format(task.deadlineDate!)}',
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 14,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }

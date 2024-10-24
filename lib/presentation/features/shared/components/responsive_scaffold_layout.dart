@@ -14,9 +14,15 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final List<Widget>? appBarActions;
   final List<NavItem> navItems;
   final Map<String, WidgetBuilder> routes;
+  final WidgetBuilder defaultRoute;
 
   const ResponsiveScaffoldLayout(
-      {super.key, required this.navItems, required this.routes, required this.appBarTitle, this.appBarActions});
+      {super.key,
+      required this.navItems,
+      required this.routes,
+      required this.appBarTitle,
+      this.appBarActions,
+      required this.defaultRoute});
 
   @override
   State<ResponsiveScaffoldLayout> createState() => _ResponsiveScaffoldLayoutState();
@@ -111,8 +117,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       );
     } else {
       return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const Scaffold(body: Center(child: Text("Page Not Found"))),
+        pageBuilder: (context, animation, secondaryAnimation) => widget.defaultRoute(context),
       );
     }
   }

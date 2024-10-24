@@ -39,6 +39,7 @@ import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
@@ -176,6 +177,14 @@ void registerTagsFeature(IContainer container, Mediator mediator) {
     () => GetListTagTagsQueryHandler(
       tagRepository: container.resolve<ITagRepository>(),
       tagTagRepository: container.resolve<ITagTagRepository>(),
+    ),
+  );
+  mediator.registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse, GetTagTimesDataQueryHandler>(
+    () => GetTagTimesDataQueryHandler(
+      appUsageRepository: container.resolve<IAppUsageRepository>(),
+      appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
+      taskRepository: container.resolve<ITaskRepository>(),
+      taskTagRepository: container.resolve<ITaskTagRepository>(),
     ),
   );
 }

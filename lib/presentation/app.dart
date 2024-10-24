@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
+import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
@@ -14,6 +15,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navItems = [
+      NavItem('Today', TodayPage.route),
       NavItem('Tasks', TasksPage.route),
       NavItem('Tags', TagsPage.route),
       NavItem('Habits', HabitsPage.route),
@@ -22,6 +24,7 @@ class App extends StatelessWidget {
     ];
 
     final routes = {
+      TodayPage.route: (context) => TodayPage(),
       TasksPage.route: (context) => const TasksPage(),
       TagsPage.route: (context) => TagsPage(),
       HabitsPage.route: (context) => HabitsPage(),
@@ -33,7 +36,8 @@ class App extends StatelessWidget {
       title: 'WHPH',
       theme: AppTheme.themeData,
       debugShowCheckedModeBanner: false,
-      home: ResponsiveScaffoldLayout(appBarTitle: const Text('WHPH'), navItems: navItems, routes: routes),
+      home: ResponsiveScaffoldLayout(
+          appBarTitle: const Text('WHPH'), navItems: navItems, routes: routes, defaultRoute: (context) => TodayPage()),
     );
   }
 }

@@ -7,11 +7,15 @@ import 'package:whph/presentation/features/tasks/components/task_card.dart';
 class TasksList extends StatefulWidget {
   final Mediator mediator;
   final void Function(TaskListItem task) onClickTask;
+  final DateTime? filterByPlannedDate;
+  final DateTime? filterByDueDate;
 
   const TasksList({
     super.key,
     required this.mediator,
     required this.onClickTask,
+    this.filterByPlannedDate,
+    this.filterByDueDate,
   });
 
   @override
@@ -41,7 +45,11 @@ class _TasksListState extends State<TasksList> {
     });
 
     try {
-      var query = GetListTasksQuery(pageIndex: pageIndex, pageSize: _pageSize);
+      var query = GetListTasksQuery(
+          pageIndex: pageIndex,
+          pageSize: _pageSize,
+          filterByPlannedDate: widget.filterByPlannedDate,
+          filterByDeadlineDate: widget.filterByDueDate);
       var queryResponse = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
       setState(() {
@@ -66,41 +74,31 @@ class _TasksListState extends State<TasksList> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {
-          _tasks.clear();
-          _pageIndex = 0;
-          _hasNext = true;
-        });
-        await _fetchTasks();
-      },
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: _tasks.length + (_isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == _tasks.length) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-
-          final task = _tasks[index];
-          return TaskCard(
-            task: task,
-            onOpenDetails: () => widget.onClickTask(task),
-            onCompleted: () {
-              setState(() {
-                _tasks.clear();
-              });
-              _fetchTasks();
-            },
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _tasks.length + (_isLoading ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == _tasks.length) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: CircularProgressIndicator(),
+            ),
           );
-        },
-      ),
+        }
+
+        final task = _tasks[index];
+        return TaskCard(
+          task: task,
+          onOpenDetails: () => widget.onClickTask(task),
+          onCompleted: () {
+            setState(() {
+              _tasks.clear();
+            });
+            _fetchTasks();
+          },
+        );
+      },
     );
   }
 

@@ -1,13 +1,17 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   late int pageIndex;
   late int pageSize;
+  DateTime? filterByPlannedDate;
+  DateTime? filterByDeadlineDate;
 
-  GetListTasksQuery({required this.pageIndex, required this.pageSize});
+  GetListTasksQuery(
+      {required this.pageIndex, required this.pageSize, this.filterByPlannedDate, this.filterByDeadlineDate});
 }
 
 class TaskListItem {
@@ -46,6 +50,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     PaginatedList<Task> tasks = await _taskRepository.getList(
       request.pageIndex,
       request.pageSize,
+      customWhereFilter: _getFilters(request),
     );
 
     return GetListTasksQueryResponse(
@@ -63,5 +68,34 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       pageIndex: tasks.pageIndex,
       pageSize: tasks.pageSize,
     );
+  }
+
+  CustomWhereFilter? _getFilters(GetListTasksQuery request) {
+    CustomWhereFilter? customWhereFilter;
+
+    if (request.filterByPlannedDate != null) {
+      customWhereFilter ??= CustomWhereFilter("", []);
+
+      var plannedDateStart = request.filterByPlannedDate!;
+      var plannedDateEnd = request.filterByPlannedDate!.add(Duration(days: 1));
+      customWhereFilter.query += "planned_date > ? AND planned_date < ?";
+      customWhereFilter.variables.add(plannedDateStart);
+      customWhereFilter.variables.add(plannedDateEnd);
+    }
+
+    if (request.filterByDeadlineDate != null) {
+      customWhereFilter ??= CustomWhereFilter("", []);
+
+      var dueDateStart = request.filterByDeadlineDate!;
+      var dueDateEnd = request.filterByDeadlineDate!.add(Duration(days: 1));
+
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
+
+      customWhereFilter.query += "deadline_date > ? AND deadline_date < ?";
+      customWhereFilter.variables.add(dueDateStart);
+      customWhereFilter.variables.add(dueDateEnd);
+    }
+
+    return customWhereFilter;
   }
 }

@@ -1,13 +1,15 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
   late int pageSize;
+  bool excludeCompleted;
 
-  GetListHabitsQuery({required this.pageIndex, required this.pageSize});
+  GetListHabitsQuery({required this.pageIndex, required this.pageSize, this.excludeCompleted = false});
 }
 
 class HabitListItem {
@@ -36,6 +38,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     PaginatedList<Habit> habits = await _habitRepository.getList(
       request.pageIndex,
       request.pageSize,
+      customWhereFilter: _getCustomWhereFilter(request),
     );
 
     return GetListHabitsQueryResponse(
@@ -45,5 +48,20 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       pageIndex: habits.pageIndex,
       pageSize: habits.pageSize,
     );
+  }
+
+  CustomWhereFilter? _getCustomWhereFilter(GetListHabitsQuery request) {
+    CustomWhereFilter? customWhereFilter;
+
+    if (request.excludeCompleted) {
+      customWhereFilter = CustomWhereFilter("", []);
+
+      customWhereFilter.query =
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_id = id AND date > ? AND date < ?) = 0";
+      customWhereFilter.variables.add(DateTime.now().subtract(Duration(days: 1)));
+      customWhereFilter.variables.add(DateTime.now());
+    }
+
+    return customWhereFilter;
   }
 }
