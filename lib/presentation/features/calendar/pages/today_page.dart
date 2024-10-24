@@ -36,64 +36,65 @@ class TodayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SecondaryAppBar(
-        context: context,
-        title: const Text('Today'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHabitSection(context),
-          _buildTaskSection(context),
-          _buildTimeSection(context),
-        ],
-      ),
-    );
+        appBar: SecondaryAppBar(
+          context: context,
+          title: const Text('Today'),
+        ),
+        body: ListView(
+          children: [
+            _buildHabitSection(context),
+            _buildTaskSection(context),
+            _buildTimeSection(context),
+          ],
+        ));
   }
 
   Widget _buildHabitSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 16),
-          child: Text(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             'Habits',
             style: Theme.of(context).textTheme.titleSmall,
           ),
-        ),
-        HabitsList(
-          mediator: mediator,
-          onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-          mini: true,
-        ),
-      ],
+          SizedBox(
+            width: double.infinity,
+            height: 100,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                HabitsList(
+                  mediator: mediator,
+                  size: 5,
+                  onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                  mini: true,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
   Widget _buildTaskSection(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 16),
-            child: Text(
-              'Tasks',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+    return Padding(
+        padding: const EdgeInsets.only(left: 16, top: 16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            'Tasks',
+            style: Theme.of(context).textTheme.titleSmall,
           ),
-          Expanded(
-            child: TasksList(
-              mediator: mediator,
-              onClickTask: (task) => _openTaskDetails(context, task.id),
-              filterByPlannedDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-              filterByDueDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-            ),
+          TasksList(
+            mediator: mediator,
+            size: 5,
+            onClickTask: (task) => _openTaskDetails(context, task.id),
+            filterByPlannedDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            filterByDueDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
           ),
-        ],
-      ),
-    );
+        ]));
   }
 
   Widget _buildTimeSection(BuildContext context) {
@@ -108,12 +109,11 @@ class TodayPage extends StatelessWidget {
           ),
           Center(
             child: SizedBox(
-              height: 200,
-              width: 200,
+              height: 300,
+              width: 300,
               child: TagTimeChart(),
             ),
           ),
-          // TagTimeChart(),
         ],
       ),
     );

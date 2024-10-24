@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/presentation/features/shared/components/load_more_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TasksList extends StatefulWidget {
   final Mediator mediator;
+  final int size;
   final void Function(TaskListItem task) onClickTask;
   final DateTime? filterByPlannedDate;
   final DateTime? filterByDueDate;
@@ -14,6 +16,7 @@ class TasksList extends StatefulWidget {
     super.key,
     required this.mediator,
     required this.onClickTask,
+    this.size = 10,
     this.filterByPlannedDate,
     this.filterByDueDate,
   });
@@ -23,88 +26,54 @@ class TasksList extends StatefulWidget {
 }
 
 class _TasksListState extends State<TasksList> {
-  List<TaskListItem> _tasks = [];
-  int _pageIndex = 0;
-  bool _hasNext = true;
-  bool _isLoading = false;
-  final ScrollController _scrollController = ScrollController();
-  final int _pageSize = 20; // Defines how many tasks are loaded per page
+  GetListTasksQueryResponse? _tasks;
 
   @override
   void initState() {
     super.initState();
-    _fetchTasks();
-    _setupScrollListener();
+    _getTasks();
   }
 
-  Future<void> _fetchTasks({int pageIndex = 0}) async {
-    if (_isLoading || !_hasNext) return;
+  Future<void> _getTasks({int pageIndex = 0}) async {
+    var query = GetListTasksQuery(
+        pageIndex: pageIndex,
+        pageSize: widget.size,
+        filterByPlannedDate: widget.filterByPlannedDate,
+        filterByDeadlineDate: widget.filterByDueDate);
+    var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
     setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      var query = GetListTasksQuery(
-          pageIndex: pageIndex,
-          pageSize: _pageSize,
-          filterByPlannedDate: widget.filterByPlannedDate,
-          filterByDeadlineDate: widget.filterByDueDate);
-      var queryResponse = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
-
-      setState(() {
-        _tasks = [..._tasks, ...queryResponse.items];
-        _pageIndex = pageIndex;
-        _hasNext = queryResponse.hasNext;
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasNext && !_isLoading) {
-        _fetchTasks(pageIndex: _pageIndex + 1);
+      if (_tasks == null) {
+        _tasks = result;
+        return;
       }
+
+      _tasks!.items.addAll(result.items);
+      _tasks!.pageIndex = result.pageIndex;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: _tasks.length + (_isLoading ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index == _tasks.length) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: CircularProgressIndicator(),
-            ),
+    if (_tasks == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return Column(
+      children: [
+        ..._tasks!.items.map((task) {
+          return TaskCard(
+            task: task,
+            onOpenDetails: () => widget.onClickTask(task),
+            onCompleted: () {
+              _getTasks();
+            },
           );
-        }
-
-        final task = _tasks[index];
-        return TaskCard(
-          task: task,
-          onOpenDetails: () => widget.onClickTask(task),
-          onCompleted: () {
-            setState(() {
-              _tasks.clear();
-            });
-            _fetchTasks();
-          },
-        );
-      },
+        }),
+        if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }
