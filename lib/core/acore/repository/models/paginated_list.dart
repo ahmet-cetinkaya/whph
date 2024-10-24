@@ -4,7 +4,7 @@ class PaginatedList<T> {
   int totalPageCount;
   int pageIndex;
   int pageSize;
-  bool get hasNext => totalItemCount / pageSize > pageIndex;
+  bool get hasNext => pageIndex < totalPageCount - 1;
   bool get hasPrevious => pageIndex > 0;
 
   PaginatedList({
