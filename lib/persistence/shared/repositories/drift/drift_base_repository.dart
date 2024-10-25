@@ -26,23 +26,11 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+
     final query = database.customSelect(
       "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}LIMIT ? OFFSET ?",
       variables: [
-        if (customWhereFilter != null)
-          ...customWhereFilter.variables.map((e) {
-            if (e is String) {
-              return Variable.withString(e);
-            } else if (e is int) {
-              return Variable.withInt(e);
-            } else if (e is DateTime) {
-              return Variable.withDateTime(e);
-            } else if (e is bool) {
-              return Variable.withBool(e);
-            } else {
-              throw Exception('Unsupported variable type');
-            }
-          }),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -52,20 +40,9 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
 
     final count = await ((database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
-      variables: customWhereFilter?.variables.map((e) {
-            if (e is String) {
-              return Variable.withString(e);
-            } else if (e is int) {
-              return Variable.withInt(e);
-            } else if (e is DateTime) {
-              return Variable.withDateTime(e);
-            } else if (e is bool) {
-              return Variable.withBool(e);
-            } else {
-              throw Exception('Unsupported variable type');
-            }
-          }).toList() ??
-          [],
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
@@ -129,5 +106,27 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
       updateSync: await queryToGetSyncData('modified_date'),
       deleteSync: await queryToGetSyncData('deleted_date'),
     );
+  }
+
+  Variable<Object> _convertToQueryVariable(dynamic object) {
+    if (object is String) {
+      return Variable.withString(object);
+    } else if (object is int) {
+      return Variable.withInt(object);
+    } else if (object is double) {
+      return Variable.withReal(object);
+    } else if (object is DateTime) {
+      return Variable.withDateTime(object);
+    } else if (object is bool) {
+      return Variable.withBool(object);
+    } else if (object is Uint8List) {
+      return Variable.withBlob(object);
+    } else if (object is bool) {
+      return Variable.withBool(object);
+    } else if (object is BigInt) {
+      return Variable.withBigInt(object);
+    } else {
+      throw Exception('Unsupported variable type');
+    }
   }
 }

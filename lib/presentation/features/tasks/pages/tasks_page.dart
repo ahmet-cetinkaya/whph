@@ -47,15 +47,13 @@ class _TasksPageState extends State<TasksPage> {
           ),
         ],
       ),
-      body: Column(
+      body: ListView(
         children: [
-          Expanded(
-            child: TasksList(
-              key: _tasksListKey,
-              mediator: _mediator,
-              onClickTask: (task) => _openTaskDetails(task.id),
-            ),
-          ),
+          TasksList(
+            key: _tasksListKey,
+            mediator: _mediator,
+            onClickTask: (task) => _openTaskDetails(task.id),
+          )
         ],
       ),
     );

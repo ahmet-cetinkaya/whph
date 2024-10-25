@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';

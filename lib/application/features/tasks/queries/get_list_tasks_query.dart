@@ -9,9 +9,14 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   late int pageSize;
   DateTime? filterByPlannedDate;
   DateTime? filterByDeadlineDate;
+  List<String>? filterByTags;
 
   GetListTasksQuery(
-      {required this.pageIndex, required this.pageSize, this.filterByPlannedDate, this.filterByDeadlineDate});
+      {required this.pageIndex,
+      required this.pageSize,
+      this.filterByPlannedDate,
+      this.filterByDeadlineDate,
+      this.filterByTags});
 }
 
 class TaskListItem {
@@ -74,11 +79,13 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     CustomWhereFilter? customWhereFilter;
 
     if (request.filterByPlannedDate != null) {
-      customWhereFilter ??= CustomWhereFilter("", []);
+      customWhereFilter = CustomWhereFilter("", []);
 
       var plannedDateStart = request.filterByPlannedDate!;
       var plannedDateEnd = request.filterByPlannedDate!.add(Duration(days: 1));
+
       customWhereFilter.query += "planned_date > ? AND planned_date < ?";
+
       customWhereFilter.variables.add(plannedDateStart);
       customWhereFilter.variables.add(plannedDateEnd);
     }
@@ -90,10 +97,18 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       var dueDateEnd = request.filterByDeadlineDate!.add(Duration(days: 1));
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
-
       customWhereFilter.query += "deadline_date > ? AND deadline_date < ?";
+
       customWhereFilter.variables.add(dueDateStart);
       customWhereFilter.variables.add(dueDateEnd);
+    }
+
+    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
+      customWhereFilter ??= CustomWhereFilter("", []);
+
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
+      customWhereFilter.query +=
+          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => "'$tag'").toList().join(',')})) > 0";
     }
 
     return customWhereFilter;

@@ -1,12 +1,13 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 
 class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
-  String? search;
   late int pageIndex;
   late int pageSize;
+  String? search;
 
   GetListTagsQuery({required this.pageIndex, required this.pageSize, this.search});
 }
@@ -34,10 +35,10 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
   @override
   Future<GetListTagsQueryResponse> call(GetListTagsQuery request) async {
-    PaginatedList<Tag> tags = await _tagRepository.getListBySearch(
-      request.search,
+    PaginatedList<Tag> tags = await _tagRepository.getList(
       request.pageIndex,
       request.pageSize,
+      customWhereFilter: _getFilters(request),
     );
 
     return GetListTagsQueryResponse(
@@ -47,5 +48,18 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
       pageIndex: tags.pageIndex,
       pageSize: tags.pageSize,
     );
+  }
+
+  CustomWhereFilter? _getFilters(GetListTagsQuery request) {
+    CustomWhereFilter? filter;
+
+    if (request.search != null && request.search!.isNotEmpty) {
+      filter = CustomWhereFilter(
+        'name LIKE ?',
+        ['%${request.search}%'],
+      );
+    }
+
+    return filter;
   }
 }

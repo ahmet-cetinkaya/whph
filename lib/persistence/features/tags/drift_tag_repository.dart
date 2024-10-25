@@ -32,31 +32,4 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       name: entity.name,
     );
   }
-
-  @override
-  Future<PaginatedList<Tag>> getListBySearch(String? search, int pageIndex, int pageSize) async {
-    if (search == null || search.isEmpty) {
-      return getList(pageIndex, pageSize);
-    }
-
-    final query = database.select(table)
-      ..where((t) => t.name.like('%$search%'))
-      ..limit(pageSize, offset: pageIndex * pageSize);
-    final result = await query.get();
-
-    final count = await database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE name LIKE ?',
-      variables: [Variable.withString('%$search%')],
-      readsFrom: {table},
-    ).getSingleOrNull();
-    final totalCount = count?.data['count'] as int? ?? 0;
-
-    return PaginatedList(
-      items: result,
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
-    );
-  }
 }

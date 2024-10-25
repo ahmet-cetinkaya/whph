@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/presentation/features/shared/components/load_more_button.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TasksList extends StatefulWidget {
@@ -27,6 +28,7 @@ class TasksList extends StatefulWidget {
 
 class _TasksListState extends State<TasksList> {
   GetListTasksQueryResponse? _tasks;
+  List<String> _selectedFilterTags = [];
 
   @override
   void initState() {
@@ -39,7 +41,8 @@ class _TasksListState extends State<TasksList> {
         pageIndex: pageIndex,
         pageSize: widget.size,
         filterByPlannedDate: widget.filterByPlannedDate,
-        filterByDeadlineDate: widget.filterByDueDate);
+        filterByDeadlineDate: widget.filterByDueDate,
+        filterByTags: _selectedFilterTags);
     var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
     setState(() {
@@ -53,6 +56,13 @@ class _TasksListState extends State<TasksList> {
     });
   }
 
+  void _onTagFilter(List<String> tags) {
+    _tasks = null;
+    _selectedFilterTags = (tags);
+
+    _getTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_tasks == null) {
@@ -62,7 +72,18 @@ class _TasksListState extends State<TasksList> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Filters
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: TagSelectDropdown(
+            isMultiSelect: true,
+            onTagsSelected: _onTagFilter,
+          ),
+        ),
+
+        // List
         ..._tasks!.items.map((task) {
           return TaskCard(
             task: task,

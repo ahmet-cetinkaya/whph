@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  // Colors
   static const Color primaryColor = Color(0xFFF4D03E);
-  static const Color surface1 = Color(0xFF2B2B2B);
-  static const Color surface2 = Color(0xFF171717);
+  static const Color surface1 = Color(0xFF171717);
+  static const Color surface2 = Color(0xFF2B2B2B);
   static const Color surface3 = Color(0xFF464646);
   static const Color textColor = Color(0xFFEBEBEB);
-  static const Color dividerColor = Color(0xFF3A3A3A); // Define divider color
+  static const Color dividerColor = Color(0xFF3A3A3A);
 
+  // Dimensions
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);
 
@@ -21,89 +23,67 @@ class AppTheme {
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
+  // Text Styles
+  static const TextStyle bodySmall = TextStyle(color: textColor, fontSize: fontSizeSmall);
+  static const TextStyle bodyMedium = TextStyle(color: textColor, fontSize: fontSizeMedium);
+  static const TextStyle bodyLarge = TextStyle(color: textColor, fontSize: fontSizeLarge);
+  static const TextStyle headlineSmall =
+      TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
+  static const TextStyle headlineMedium =
+      TextStyle(color: textColor, fontSize: fontSizeXLarge, fontWeight: FontWeight.bold);
+  static const TextStyle headlineLarge =
+      TextStyle(color: textColor, fontSize: fontSizeXLarge + 4, fontWeight: FontWeight.bold);
+  static const TextStyle displaySmall =
+      TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
+
+  // ThemeData definition
   static final ThemeData themeData = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-      primaryColor: primaryColor,
-      scaffoldBackgroundColor: surface1,
-      cardTheme: CardTheme(
-        color: surface2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
+    useMaterial3: true,
+    colorScheme: ColorScheme.dark(
+      primary: primaryColor,
+      onPrimary: textColor,
+      surface: surface1,
+    ),
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: surface2,
+    highlightColor: surface3,
+    cardTheme: CardTheme(
+      color: surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
+      clipBehavior: Clip.antiAlias, // Added clipBehavior
+    ),
+    textTheme: TextTheme(
+      bodySmall: bodySmall,
+      bodyMedium: bodyMedium,
+      bodyLarge: bodyLarge,
+      headlineSmall: headlineSmall,
+      headlineMedium: headlineMedium,
+      headlineLarge: headlineLarge,
+      displaySmall: displaySmall,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(containerBorderRadius),
+        borderSide: BorderSide.none,
       ),
-      highlightColor: surface3,
-      useMaterial3: true,
-      textTheme: TextTheme(
-        bodySmall: TextStyle(color: textColor, fontSize: fontSizeSmall),
-        bodyMedium: TextStyle(color: textColor, fontSize: fontSizeMedium),
-        bodyLarge: TextStyle(color: textColor, fontSize: fontSizeLarge),
-        headlineSmall: TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold),
-        headlineMedium: TextStyle(color: textColor, fontSize: fontSizeXLarge, fontWeight: FontWeight.bold),
-        headlineLarge: TextStyle(color: textColor, fontSize: fontSizeXLarge + 4, fontWeight: FontWeight.bold),
-        displaySmall: TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold),
-        displayMedium: TextStyle(color: textColor, fontSize: fontSizeXLarge, fontWeight: FontWeight.bold),
-        displayLarge: TextStyle(color: textColor, fontSize: fontSizeXLarge + 4, fontWeight: FontWeight.bold),
-        titleSmall: TextStyle(color: textColor, fontSize: fontSizeMedium, fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold),
-        titleLarge: TextStyle(color: textColor, fontSize: fontSizeXLarge, fontWeight: FontWeight.bold),
-        labelSmall: TextStyle(color: textColor, fontSize: fontSizeSmall),
-        labelMedium: TextStyle(color: textColor, fontSize: fontSizeMedium),
-        labelLarge: TextStyle(color: textColor, fontSize: fontSizeLarge),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(containerBorderRadius),
+        borderSide: BorderSide.none,
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: surface2,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-          borderSide: BorderSide.none,
-        ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(containerBorderRadius),
+        borderSide: BorderSide.none,
       ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: surface2,
-        titleTextStyle: TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold),
-        iconTheme: IconThemeData(color: textColor),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(containerBorderRadius),
+        borderSide: BorderSide.none,
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
-        ),
-      ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: primaryColor,
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: surface2,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: textColor,
-      ),
-      tabBarTheme: TabBarTheme(
-        labelColor: primaryColor,
-        unselectedLabelColor: textColor,
-      ),
-      iconTheme: IconThemeData(color: textColor),
-      dividerColor: dividerColor, // Use the defined divider color
-      dividerTheme: DividerThemeData(
-        color: dividerColor,
-        thickness: 1.0,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: surface3,
-        contentTextStyle: TextStyle(color: textColor, fontSize: fontSizeMedium),
-      ),
-      tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: surface3,
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-        ),
-        textStyle: TextStyle(color: textColor, fontSize: fontSizeSmall),
-      ),
-      drawerTheme: DrawerThemeData(
-        backgroundColor: surface2,
-        scrimColor: Colors.transparent, // Set scrim color to transparent
-      ),
-      listTileTheme: ListTileThemeData(
-        textColor: textColor,
-        iconColor: textColor,
-        selectedTileColor: surface3,
-        selectedColor: textColor,
-      ));
+      labelStyle: TextStyle(color: textColor),
+      filled: true,
+      fillColor: surface2,
+    ),
+    checkboxTheme: CheckboxThemeData(
+      checkColor: WidgetStateProperty.all(surface1),
+    ),
+  );
 }
