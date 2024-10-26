@@ -146,7 +146,8 @@ class _TodayPageState extends State<TodayPage> {
                   key: _taskKey,
                   mediator: mediator,
                   size: 5,
-                  filterByPlannedEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  filterByPlannedEndDate:
+                      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59, 999),
                   filterByDueStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
                   filterByTags: _selectedTagFilter,
                   onClickTask: (task) => _openTaskDetails(context, task.id),
