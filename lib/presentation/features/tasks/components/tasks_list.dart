@@ -14,22 +14,25 @@ class TaskList extends StatefulWidget {
   final DateTime? filterByDueStartDate;
   final DateTime? filterByDueEndDate;
   final List<String>? filterByTags;
+  final bool? filterByCompleted;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
+  final void Function()? onTaskCompleted;
 
-  const TaskList({
-    super.key,
-    required this.mediator,
-    this.size = 10,
-    this.filterByPlannedStartDate,
-    this.filterByPlannedEndDate,
-    this.filterByDueStartDate,
-    this.filterByDueEndDate,
-    this.filterByTags = const [],
-    required this.onClickTask,
-    this.onList,
-  });
+  const TaskList(
+      {super.key,
+      required this.mediator,
+      this.size = 10,
+      this.filterByPlannedStartDate,
+      this.filterByPlannedEndDate,
+      this.filterByDueStartDate,
+      this.filterByDueEndDate,
+      this.filterByTags = const [],
+      this.filterByCompleted,
+      required this.onClickTask,
+      this.onList,
+      this.onTaskCompleted});
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -52,7 +55,8 @@ class _TaskListState extends State<TaskList> {
         filterByPlannedEndDate: widget.filterByPlannedEndDate,
         filterByDeadlineStartDate: widget.filterByDueStartDate,
         filterByDeadlineEndDate: widget.filterByDueEndDate,
-        filterByTags: widget.filterByTags);
+        filterByTags: widget.filterByTags,
+        filterByCompleted: widget.filterByCompleted);
     var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
     setState(() {
@@ -64,6 +68,15 @@ class _TaskListState extends State<TaskList> {
       _tasks!.items.addAll(result.items);
       _tasks!.pageIndex = result.pageIndex;
     });
+  }
+
+  void _onTaskCompleted() {
+    _tasks = null;
+    _getTasks();
+
+    if (widget.onTaskCompleted != null) {
+      widget.onTaskCompleted!();
+    }
   }
 
   @override
@@ -85,9 +98,7 @@ class _TaskListState extends State<TaskList> {
           return TaskCard(
             task: task,
             onOpenDetails: () => widget.onClickTask(task),
-            onCompleted: () {
-              _getTasks();
-            },
+            onCompleted: _onTaskCompleted,
           );
         }),
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:markdown_editor_plus/widgets/markdown_auto_preview.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/components/date_time_picker_field.dart';
+import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
-import 'package:whph/presentation/features/shared/components/header.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 
@@ -37,7 +38,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final List<DropdownOption<EisenhowerPriority>> priorityOptions = [
+  final List<DropdownOption<EisenhowerPriority>> _priorityOptions = [
     DropdownOption(label: 'None', value: EisenhowerPriority.none),
     DropdownOption(label: 'Urgent & Important', value: EisenhowerPriority.urgentImportant),
     DropdownOption(label: 'Not Urgent & Important', value: EisenhowerPriority.notUrgentImportant),
@@ -45,7 +46,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     DropdownOption(label: 'Not Urgent & Not Important', value: EisenhowerPriority.notUrgentNotImportant),
   ];
 
-  final List<DropdownOption<String>> _tagOptions = [];
   final List<int> _estimatedTimeOptions = [0, 15, 30, 45, 60, 90, 120, 180, 240];
 
   @override
@@ -56,7 +56,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   Future<void> _fetchInitialData() async {
     await Future.wait([_fetchTask(), _fetchTaskTags()]);
-    await _fetchTagOptions();
   }
 
   Future<void> _fetchTask() async {
@@ -80,19 +79,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     });
   }
 
-  Future<void> _fetchTagOptions() async {
-    var query = GetListTagsQuery(pageIndex: 0, pageSize: 100);
-    var response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
-    setState(() {
-      _tagOptions
-        ..clear()
-        ..add(DropdownOption(label: 'Add Tag', value: ''))
-        ..addAll(response.items
-            .where((tag) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tag.id))
-            .map((tag) => DropdownOption(label: tag.name, value: tag.id)));
-    });
-  }
-
   Future<void> _updateTask() async {
     if (_task == null) return;
 
@@ -112,19 +98,26 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _addTag(String tagId) async {
-    if (tagId.isEmpty) return; // Skip if the user selects the "Add Tag" option
-
     var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
     await _mediator.send(command);
     await _fetchTaskTags();
-    await _fetchTagOptions();
   }
 
   Future<void> _removeTag(String id) async {
     var command = RemoveTaskTagCommand(id: id);
     await _mediator.send(command);
     await _fetchTaskTags();
-    await _fetchTagOptions();
+  }
+
+  void _onTagsSelected(List<String> tags) {
+    var tagsToAdd = tags.where((tagId) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagId)).toList();
+    var tagsToRemove = _taskTags!.items.where((taskTag) => !tags.contains(taskTag.tagId)).toList();
+    for (var tagId in tagsToAdd) {
+      _addTag(tagId);
+    }
+    for (var taskTag in tagsToRemove) {
+      _removeTag(taskTag.id);
+    }
   }
 
   @override
@@ -140,37 +133,101 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DetailTable(rowData: [
-              DetailTableRowData(label: "Priority", icon: Icons.priority_high, widget: _buildPriorityDropdown()),
+              // Priority
               DetailTableRowData(
-                  label: "Planned Date",
-                  icon: Icons.calendar_today,
-                  widget: DateTimePickerField(
-                    controller: _plannedDateController,
-                    hintText: '',
-                    onConfirm: (date) {
-                      _task?.plannedDate = date;
-                      _updateTask();
+                  label: "Priority",
+                  icon: Icons.priority_high,
+                  widget: DropdownMenu(
+                    dropdownMenuEntries: _priorityOptions
+                        .map((option) => DropdownMenuEntry(label: option.label, value: option.value))
+                        .toList(),
+                    initialSelection: _task!.priority ?? EisenhowerPriority.none,
+                    onSelected: (value) {
+                      setState(() {
+                        _task!.priority = value;
+                        _updateTask();
+                      });
                     },
                   )),
-              DetailTableRowData(
-                label: "Time",
-                icon: Icons.timer,
-                widget: LayoutBuilder(
-                  builder: (context, constraints) {
-                    bool isMobile = MediaQuery.of(context).size.width < 600;
 
-                    return isMobile
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildTimeWidgets(),
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildTimeWidgets(spacing: 64.0),
-                          );
+              // Planned Date
+              DetailTableRowData(
+                label: "Planned Date",
+                icon: Icons.calendar_today,
+                widget: DateTimePickerField(
+                  controller: _plannedDateController,
+                  hintText: '',
+                  onConfirm: (date) {
+                    _task?.plannedDate = date;
+                    _updateTask();
                   },
                 ),
               ),
+
+              // Estimated Time
+              DetailTableRowData(
+                label: "Estimated Time",
+                icon: Icons.question_mark,
+                widget: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) - 1;
+                        if (nextIndex < 0) nextIndex = _estimatedTimeOptions.length - 1;
+                        setState(() {
+                          _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
+                        });
+                        _updateTask();
+                      },
+                      icon: const Icon(Icons.remove),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _task!.estimatedTime != null ? '${_task!.estimatedTime!} min' : '0 min',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: () {
+                        int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) + 1;
+                        if (nextIndex >= _estimatedTimeOptions.length) nextIndex = 0;
+                        setState(() {
+                          _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
+                        });
+                        _updateTask();
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Pomodoro Timer
+              DetailTableRowData(
+                label: "Timer",
+                icon: Icons.timer,
+                widget: PomodoroTimer(
+                  onTimeUpdate: (value) {
+                    _task!.elapsedTime = (_task!.elapsedTime ?? 0) + 1;
+                    _updateTask();
+                  },
+                ),
+              ),
+
+              // Elapsed Time
+              DetailTableRowData(
+                label: "Elapsed Time",
+                icon: Icons.timelapse_outlined,
+                widget: Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  child: Text(
+                    '${_task!.elapsedTime != null ? _task!.elapsedTime! ~/ 60 : 0} min',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+              // Deadline Date
               DetailTableRowData(
                   label: "Deadline Date",
                   icon: Icons.calendar_today,
@@ -184,38 +241,36 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                   )),
               DetailTableRowData(label: "Tags", icon: Icons.tag, widget: _buildTagSection()),
             ]),
-            const Header(text: 'Description', level: 1),
+
+            // Description
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: const Icon(Icons.description),
+                  ),
+                  const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
             MarkdownAutoPreview(
               controller: _descriptionController,
               onChanged: (value) {
-                _task?.description = value;
+                var isEmptyWhitespace = value.trim().isEmpty;
+                if (isEmptyWhitespace) {
+                  _descriptionController.clear();
+                }
+
                 _updateTask();
               },
+              hintText: 'Add a description...',
+              toolbarBackground: AppTheme.surface1,
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPriorityDropdown() {
-    return DropdownButton<DropdownOption<EisenhowerPriority>>(
-      value: priorityOptions.firstWhere(
-        (priority) => priority.value == _task?.priority,
-        orElse: () => priorityOptions.first,
-      ),
-      onChanged: (value) {
-        setState(() {
-          _task?.priority = value?.value;
-        });
-        _updateTask();
-      },
-      items: priorityOptions
-          .map((priority) => DropdownMenuItem(
-                value: priority,
-                child: Text(priority.label),
-              ))
-          .toList(),
     );
   }
 
@@ -227,23 +282,20 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           spacing: 8.0,
           runSpacing: 4.0,
           children: [
-            DropdownButton<DropdownOption<String?>>(
-              value: _tagOptions.first,
-              onChanged: (DropdownOption<String?>? newValue) {
-                if (newValue?.value != null) _addTag(newValue!.value!);
-              },
-              items: _tagOptions
-                  .map((tag) => DropdownMenuItem(
-                        value: tag,
-                        child: Text(tag.label),
-                      ))
+            TagSelectDropdown(
+              key: ValueKey(_taskTags!.items.length),
+              isMultiSelect: true,
+              onTagsSelected: _onTagsSelected,
+              initialSelectedTags: _taskTags!.items
+                  .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
                   .toList(),
+              icon: Icons.add,
             ),
-            ..._taskTags!.items.map((tag) {
+            ..._taskTags!.items.map((taskTag) {
               return Chip(
-                label: Text(tag.tagName),
+                label: Text(taskTag.tagName),
                 onDeleted: () {
-                  _removeTag(tag.id);
+                  _removeTag(taskTag.id);
                 },
               );
             })
@@ -251,69 +303,5 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildTimeWidgets({double spacing = 0.0}) {
-    return [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Estimated Time'),
-          Row(
-            children: [
-              TextButton(
-                onPressed: () {
-                  int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) - 1;
-                  if (nextIndex < 0) nextIndex = _estimatedTimeOptions.length - 1;
-                  setState(() {
-                    _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
-                  });
-                  _updateTask();
-                },
-                child: const Icon(Icons.remove),
-              ),
-              Text(
-                _task!.estimatedTime != null ? '${_task!.estimatedTime!} min' : '?',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextButton(
-                onPressed: () {
-                  int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) + 1;
-                  if (nextIndex >= _estimatedTimeOptions.length) nextIndex = 0;
-                  setState(() {
-                    _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
-                  });
-                  _updateTask();
-                },
-                child: const Icon(Icons.add),
-              ),
-            ],
-          ),
-        ],
-      ),
-      SizedBox(width: spacing),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PomodoroTimer(
-            onTimeUpdate: (value) {
-              _task!.elapsedTime = (_task!.elapsedTime ?? 0) + 1;
-              _updateTask();
-            },
-          ),
-        ],
-      ),
-      SizedBox(width: spacing),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Elapsed Time'),
-          Text(
-            '${_task!.elapsedTime != null ? _task!.elapsedTime! ~/ 60 : 0} min',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    ];
   }
 }

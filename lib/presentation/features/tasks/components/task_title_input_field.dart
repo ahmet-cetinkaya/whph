@@ -79,14 +79,11 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
           isCompleted: _task!.isCompleted,
           onToggleCompleted: _fetchTask,
         ),
-        const SizedBox(width: 8.0),
         Expanded(
           child: TextField(
             controller: _titleController,
             onChanged: _onTitleChanged,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
+            decoration: const InputDecoration(border: InputBorder.none, filled: false),
           ),
         ),
       ],

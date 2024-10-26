@@ -80,7 +80,13 @@ class _TodayPageState extends State<TodayPage> {
         appBar: SecondaryAppBar(
           context: context,
           title: const Text('Today'),
-          actions: [TagSelectDropdown(isMultiSelect: true, onTagsSelected: _onTagFilterSelect)],
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8), // Added padding
+              child: TagSelectDropdown(
+                  isMultiSelect: true, onTagsSelected: _onTagFilterSelect, buttonLabel: 'Filter by tags'),
+            )
+          ],
         ),
         body: ListView(
           children: [

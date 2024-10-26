@@ -5,13 +5,14 @@ import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
-  late int pageIndex;
-  late int pageSize;
-  DateTime? filterByPlannedStartDate;
-  DateTime? filterByPlannedEndDate;
-  DateTime? filterByDeadlineStartDate;
-  DateTime? filterByDeadlineEndDate;
-  List<String>? filterByTags;
+  final int pageIndex;
+  final int pageSize;
+  final DateTime? filterByPlannedStartDate;
+  final DateTime? filterByPlannedEndDate;
+  final DateTime? filterByDeadlineStartDate;
+  final DateTime? filterByDeadlineEndDate;
+  final List<String>? filterByTags;
+  final bool? filterByCompleted;
 
   GetListTasksQuery(
       {required this.pageIndex,
@@ -20,7 +21,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       this.filterByPlannedEndDate,
       this.filterByDeadlineStartDate,
       this.filterByDeadlineEndDate,
-      this.filterByTags});
+      this.filterByTags,
+      this.filterByCompleted});
 }
 
 class TaskListItem {
@@ -83,7 +85,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     CustomWhereFilter? customWhereFilter;
 
     if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
-      customWhereFilter = CustomWhereFilter("", []);
+      customWhereFilter = CustomWhereFilter.empty();
 
       var plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
       var plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
@@ -95,12 +97,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     }
 
     if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
-      customWhereFilter ??= CustomWhereFilter("", []);
+      customWhereFilter ??= CustomWhereFilter.empty();
 
       var dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
       var dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
 
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
       customWhereFilter.query += "deadline_date > ? AND deadline_date < ?";
 
       customWhereFilter.variables.add(dueDateStart);
@@ -108,12 +110,20 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     }
 
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      customWhereFilter ??= CustomWhereFilter("", []);
+      customWhereFilter ??= CustomWhereFilter.empty();
 
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
       customWhereFilter.query +=
-          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => '?').join(',')})) > 0";
+          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => '?').join(',')}) AND task_tag_table.deleted_date IS NULL) > 0";
       customWhereFilter.variables.addAll(request.filterByTags!);
+    }
+
+    if (request.filterByCompleted != null) {
+      customWhereFilter ??= CustomWhereFilter.empty();
+
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
+      customWhereFilter.query += "is_completed = ?";
+      customWhereFilter.variables.add(request.filterByCompleted!);
     }
 
     return customWhereFilter;

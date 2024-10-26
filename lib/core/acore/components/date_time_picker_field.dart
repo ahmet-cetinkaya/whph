@@ -39,8 +39,8 @@ class DateTimePickerField extends StatelessWidget {
         // Format the selected DateTime for better readability
         final String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDateTime);
 
-        controller.text = formattedDateTime; // Update the controller with formatted date & time
-        onConfirm(pickedDateTime); // Trigger the callback
+        controller.text = formattedDateTime;
+        onConfirm(pickedDateTime);
       }
     }
   }
@@ -56,7 +56,7 @@ class DateTimePickerField extends StatelessWidget {
           border: const OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
-          contentPadding: EdgeInsets.zero),
+          contentPadding: EdgeInsets.only(left: 8, right: 8)),
     );
   }
 }

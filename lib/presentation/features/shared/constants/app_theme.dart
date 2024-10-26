@@ -85,5 +85,29 @@ class AppTheme {
     checkboxTheme: CheckboxThemeData(
       checkColor: WidgetStateProperty.all(surface1),
     ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerBorderRadius),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerBorderRadius),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerBorderRadius),
+          borderSide: BorderSide.none,
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerBorderRadius),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    ),
+    dividerTheme: DividerThemeData(
+      color: dividerColor,
+      thickness: 1,
+    ),
   );
 }

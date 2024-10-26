@@ -29,6 +29,9 @@ class RemoveTaskTagCommandHandler implements IRequestHandler<RemoveTaskTagComman
     if (taskTag == null) {
       throw Exception('TaskTag with id ${request.id} not found');
     }
+    if (taskTag.deletedDate != null) {
+      throw Exception('TaskTag with id ${request.id} is already deleted');
+    }
     await _taskTagRepository.delete(taskTag);
 
     return RemoveTaskTagCommandResponse(

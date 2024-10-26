@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
 class DetailTableRowData {
   final String label;
@@ -22,33 +24,65 @@ class DetailTable extends StatelessWidget {
     return Column(
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
-          child: Row(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Column(
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  children: [
-                    Icon(
-                      data.icon,
-                      color: Colors.grey[700],
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      data.label,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Row(
+                            children: [
+                              Icon(data.icon),
+                              const SizedBox(width: 8),
+                              Text(
+                                data.label,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: data.widget,
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Icon(data.icon),
+                              ),
+                              Text(
+                                data.label,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        data.widget,
+                      ],
+                    );
+                  }
+                },
               ),
-              Expanded(
-                flex: 4,
-                child: data.widget,
-              ),
+              Divider()
             ],
           ),
         );

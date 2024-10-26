@@ -56,7 +56,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     CustomWhereFilter? customWhereFilter;
 
     if (request.excludeCompleted) {
-      customWhereFilter = CustomWhereFilter("", []);
+      customWhereFilter = CustomWhereFilter.empty();
 
       var startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
       var endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
@@ -67,7 +67,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     }
 
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      customWhereFilter = CustomWhereFilter("", []);
+      customWhereFilter = CustomWhereFilter.empty();
 
       customWhereFilter.query =
           "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN (${request.filterByTags!.map((e) => '?').join(',')})) > 0";

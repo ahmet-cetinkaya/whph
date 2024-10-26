@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
@@ -41,11 +42,8 @@ class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuer
 
   @override
   Future<GetListTaskTagsQueryResponse> call(GetListTaskTagsQuery request) async {
-    PaginatedList<TaskTag> taskTags = await _taskTagRepository.getListByTaskId(
-      request.taskId,
-      request.pageIndex,
-      request.pageSize,
-    );
+    PaginatedList<TaskTag> taskTags = await _taskTagRepository.getList(request.pageIndex, request.pageSize,
+        customWhereFilter: CustomWhereFilter("task_id = ?", [request.taskId]));
 
     List<TaskTagListItem> listItems = [];
     for (var taskTag in taskTags.items) {

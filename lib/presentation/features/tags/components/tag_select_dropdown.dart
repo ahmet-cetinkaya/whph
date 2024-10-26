@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
+
+  final List<Tag> initialSelectedTags;
   final bool isMultiSelect;
   final Function(List<String>) onTagsSelected;
 
+  final IconData icon;
+  final String? buttonLabel;
+
   TagSelectDropdown({
     super.key,
+    this.initialSelectedTags = const [],
     required this.isMultiSelect,
     required this.onTagsSelected,
+    this.icon = Icons.label,
+    this.buttonLabel,
   });
 
   @override
@@ -25,10 +34,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   List<String> _selectedTags = [];
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  String _buttonLabel = "Filter by tags";
 
   @override
   void initState() {
+    _selectedTags = widget.initialSelectedTags.map((e) => e.id).toList();
     _getTags(pageIndex: 0);
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -39,8 +48,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
     setState(() {
+      if (widget.initialSelectedTags.isNotEmpty) {
+        result.items.removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
+      }
+
       if (_tags == null) {
         _tags = result;
+        _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
       } else {
         _tags!.items.addAll(result.items);
         _tags!.pageIndex = result.pageIndex;
@@ -145,26 +159,22 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     );
 
     setState(() {
-      _buttonLabel = tempSelectedTags.isNotEmpty
-          ? tempSelectedTags.length == 1
-              ? _tags!.items.firstWhere((element) => element.id == tempSelectedTags.first).name
-              : "${tempSelectedTags.length} tags selected"
-          : "Filter by tags";
-
       _selectedTags = tempSelectedTags;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextButton.icon(
-        onPressed: () => _showTagSelectionModal(context),
-        style: ElevatedButton.styleFrom(backgroundColor: AppTheme.surface2),
-        icon: Icon(Icons.label),
-        label: Text(_buttonLabel),
-      ),
-    );
+    return widget.buttonLabel != null
+        ? TextButton.icon(
+            onPressed: () => _showTagSelectionModal(context),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.surface2),
+            icon: Icon(widget.icon),
+            label: Text(widget.buttonLabel!),
+          )
+        : IconButton(
+            icon: Icon(widget.icon),
+            onPressed: () => _showTagSelectionModal(context),
+          );
   }
 }

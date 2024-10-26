@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 
 class TaskCard extends StatelessWidget {
@@ -30,7 +32,7 @@ class TaskCard extends StatelessWidget {
             fontSize: 18,
           ),
         ),
-        subtitle: _buildSubtitle(),
+        subtitle: _buildSubtitle(context),
         trailing: _buildPriorityWidget(),
         onTap: onOpenDetails,
       ),
@@ -49,7 +51,7 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle() {
+  Widget _buildSubtitle(BuildContext context) {
     final DateFormat dateFormat = DateFormat('EEEE, d MMMM y');
     List<Widget> subtitleWidgets = [];
 
@@ -60,7 +62,7 @@ class TaskCard extends StatelessWidget {
             const Icon(Icons.calendar_today, color: Colors.blue, size: 16),
             const SizedBox(width: 4),
             Text(
-              'Planned: ${dateFormat.format(task.plannedDate!)}',
+              dateFormat.format(task.plannedDate!),
               style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 14,
@@ -71,13 +73,17 @@ class TaskCard extends StatelessWidget {
       );
     }
     if (task.deadlineDate != null) {
+      if (subtitleWidgets.isNotEmpty) {
+        subtitleWidgets.add(const SizedBox(width: 8));
+      }
+
       subtitleWidgets.add(
         Row(
           children: [
             const Icon(Icons.access_time, color: Colors.red, size: 16),
             const SizedBox(width: 4),
             Text(
-              'Deadline: ${dateFormat.format(task.deadlineDate!)}',
+              dateFormat.format(task.deadlineDate!),
               style: const TextStyle(
                 color: Colors.red,
                 fontSize: 14,
@@ -91,36 +97,39 @@ class TaskCard extends StatelessWidget {
     if (subtitleWidgets.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: subtitleWidgets,
-      ),
-    );
+    return AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)
+        ? Row(
+            children: subtitleWidgets,
+          )
+        : Column(
+            children: subtitleWidgets,
+          );
   }
 
   Widget _buildPriorityWidget() {
     if (task.priority == null) return const SizedBox.shrink();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.flag,
-          color: _getPriorityColor(task.priority!),
-          size: 20,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          _getPriorityText(task.priority!),
-          style: TextStyle(
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.flag,
             color: _getPriorityColor(task.priority!),
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+            size: 20,
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            _getPriorityText(task.priority!),
+            style: TextStyle(
+              color: _getPriorityColor(task.priority!),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

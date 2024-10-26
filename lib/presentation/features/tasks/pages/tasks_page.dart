@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/done_overlay.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
@@ -17,11 +20,19 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   final Mediator _mediator = container.resolve<Mediator>();
+
+  List<String>? _selectedTagIds;
+
   Key _tasksListKey = UniqueKey();
+  bool _isTasksListEmpty = false;
+
+  bool _isCompletedTasksExpanded = false;
+  Key _completedTasksListKey = UniqueKey();
 
   void _refreshTasks() {
     setState(() {
       _tasksListKey = UniqueKey();
+      _completedTasksListKey = UniqueKey();
     });
   }
 
@@ -33,6 +44,21 @@ class _TasksPageState extends State<TasksPage> {
       ),
     );
     _refreshTasks();
+  }
+
+  void _onTasksList(count) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isTasksListEmpty = count == 0;
+      });
+    });
+  }
+
+  void _onFilterTags(List<String> tagIds) {
+    setState(() {
+      _selectedTagIds = tagIds;
+      _refreshTasks();
+    });
   }
 
   @override
@@ -47,14 +73,66 @@ class _TasksPageState extends State<TasksPage> {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          TaskList(
-            key: _tasksListKey,
-            mediator: _mediator,
-            onClickTask: (task) => _openTaskDetails(task.id),
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: ListView(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: TagSelectDropdown(
+                  isMultiSelect: true,
+                  onTagsSelected: _onFilterTags,
+                  buttonLabel: (_selectedTagIds?.isEmpty ?? true)
+                      ? 'Filter by tags'
+                      : '${_selectedTagIds!.length} tags selected',
+                ),
+              ),
+            ),
+
+            if (_isTasksListEmpty) DoneOverlay(),
+
+            TaskList(
+              key: _tasksListKey,
+              mediator: _mediator,
+              filterByCompleted: false,
+              filterByTags: _selectedTagIds,
+              onClickTask: (task) => _openTaskDetails(task.id),
+              onTaskCompleted: _refreshTasks,
+              onList: _onTasksList,
+            ),
+
+            // Expansion panel for completed tasks
+            ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                setState(() {
+                  _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+                });
+              },
+              children: [
+                ExpansionPanel(
+                    isExpanded: _isCompletedTasksExpanded,
+                    headerBuilder: (context, isExpanded) {
+                      return ListTile(
+                        title: const Text('Completed tasks'),
+                      );
+                    },
+                    body: TaskList(
+                      key: _completedTasksListKey,
+                      mediator: _mediator,
+                      filterByCompleted: true,
+                      filterByTags: _selectedTagIds,
+                      onClickTask: (task) => _openTaskDetails(task.id),
+                      onTaskCompleted: _refreshTasks,
+                    ),
+                    backgroundColor: AppTheme.surface2,
+                    canTapOnHeader: true),
+              ],
+              elevation: 0,
+            )
+          ],
+        ),
       ),
     );
   }

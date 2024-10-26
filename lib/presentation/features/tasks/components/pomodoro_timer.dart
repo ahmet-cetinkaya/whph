@@ -132,13 +132,16 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Widget _buildTimerControls() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: _showSettingsModal,
         ),
-        _buildTimeDisplay(),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: _buildTimeDisplay(),
+        ),
         IconButton(
           icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
           onPressed: !_isRunning ? _startTimer : _stopTimer,
