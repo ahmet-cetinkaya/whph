@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';

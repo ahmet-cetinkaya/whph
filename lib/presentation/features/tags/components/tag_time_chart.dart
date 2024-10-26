@@ -4,11 +4,14 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';
 import 'package:whph/main.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagTimeChart extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
 
-  TagTimeChart({super.key});
+  final List<String>? filterByTags;
+
+  TagTimeChart({super.key, this.filterByTags});
 
   @override
   State<TagTimeChart> createState() => _TagTimeChartState();
@@ -25,11 +28,11 @@ class _TagTimeChartState extends State<TagTimeChart> {
   }
 
   Future<void> _getTags() async {
-    var query = GetListTagsQuery(pageIndex: 0, pageSize: 100);
+    var query = GetListTagsQuery(pageIndex: 0, pageSize: 100, filterByTags: widget.filterByTags);
     _tags = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
     for (TagListItem tag in _tags!.items) {
       int time = await _getTagTimes(tag.id);
-      if (mounted) {
+      if (time > 0) {
         setState(() {
           _tagTimes[tag.name] = time;
         });
@@ -56,20 +59,30 @@ class _TagTimeChartState extends State<TagTimeChart> {
       );
     }).toList();
 
-    return _tagTimes.isEmpty
-        ? CircularProgressIndicator()
-        : PieChart(
-            PieChartData(
-              sections: sections,
-              centerSpaceRadius: 40,
-              sectionsSpace: 2,
-              borderData: FlBorderData(show: false),
-              pieTouchData: PieTouchData(
-                touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                  // Handle touch events if needed
-                },
-              ),
-            ),
-          );
+    if (_tags == null) {
+      return CircularProgressIndicator();
+    }
+
+    if (_tagTimes.isEmpty) {
+      return Icon(
+        Icons.timelapse,
+        color: AppTheme.surface3,
+        size: 100,
+      );
+    }
+
+    return PieChart(
+      PieChartData(
+        sections: sections,
+        centerSpaceRadius: 40,
+        sectionsSpace: 2,
+        borderData: FlBorderData(show: false),
+        pieTouchData: PieTouchData(
+          touchCallback: (FlTouchEvent event, pieTouchResponse) {
+            // Handle touch events if needed
+          },
+        ),
+      ),
+    );
   }
 }

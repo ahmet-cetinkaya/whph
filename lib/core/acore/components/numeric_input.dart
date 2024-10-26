@@ -19,7 +19,7 @@ class NumericInput extends StatefulWidget {
   });
 
   @override
-  _NumericInputState createState() => _NumericInputState();
+  State<NumericInput> createState() => _NumericInputState();
 }
 
 class _NumericInputState extends State<NumericInput> {

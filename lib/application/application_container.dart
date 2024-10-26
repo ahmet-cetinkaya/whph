@@ -10,14 +10,17 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/app_usages/services/app_usage_service.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
+import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/settings/commands/delete_setting_command.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_list_settings_query.dart';
@@ -122,6 +125,13 @@ void registerHabitsFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
     () => GetListHabitRecordsQueryHandler(habitRecordRepository: container.resolve<IHabitRecordRepository>()),
+  );
+
+  mediator.registerHandler<AddHabitTagCommand, AddHabitTagCommandResponse, AddHabitTagCommandHandler>(
+    () => AddHabitTagCommandHandler(habitTagRepository: container.resolve<IHabitTagsRepository>()),
+  );
+  mediator.registerHandler<RemoveHabitTagCommand, RemoveHabitTagCommandResponse, RemoveHabitTagCommandHandler>(
+    () => RemoveHabitTagCommandHandler(habitTagRepository: container.resolve<IHabitTagsRepository>()),
   );
 }
 

@@ -8,6 +8,7 @@ import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
+import 'package:whph/domain/features/habits/habit_tag.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/domain/features/tags/tag.dart';
@@ -17,6 +18,7 @@ import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
+import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
 import 'package:whph/persistence/features/settings/drift_settings_repository.dart';
 import 'package:whph/persistence/features/sync/drift_sync_device_repository.dart';
@@ -35,6 +37,7 @@ const String databaseName = 'whph.db';
     AppUsageTable,
     AppUsageTagTable,
     HabitTable,
+    HabitTagTable,
     HabitRecordTable,
     TaskTable,
     TaskTagTable,

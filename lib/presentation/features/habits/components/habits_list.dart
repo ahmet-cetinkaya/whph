@@ -8,17 +8,22 @@ import 'package:whph/presentation/features/shared/components/load_more_button.da
 
 class HabitsList extends StatefulWidget {
   final Mediator mediator;
-  final int size;
-  final void Function(HabitListItem habit) onClickHabit;
-  final bool mini;
 
-  const HabitsList({
-    super.key,
-    required this.mediator,
-    required this.onClickHabit,
-    this.size = 10,
-    this.mini = false,
-  });
+  final int size;
+  final bool mini;
+  final List<String>? filterByTags;
+
+  final void Function(HabitListItem habit) onClickHabit;
+  final void Function(int count)? onList;
+
+  const HabitsList(
+      {super.key,
+      required this.mediator,
+      this.size = 10,
+      this.mini = false,
+      this.filterByTags,
+      required this.onClickHabit,
+      this.onList});
 
   @override
   State<HabitsList> createState() => _HabitsListState();
@@ -34,7 +39,8 @@ class _HabitsListState extends State<HabitsList> {
   }
 
   Future<void> _fetchHabits({int pageIndex = 0}) async {
-    var query = GetListHabitsQuery(pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini);
+    var query = GetListHabitsQuery(
+        pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini, filterByTags: widget.filterByTags);
     var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
     setState(() {
       if (_habits == null) {
@@ -47,12 +53,21 @@ class _HabitsListState extends State<HabitsList> {
     });
   }
 
+  void _refreshHabits() {
+    _habits = null;
+    _fetchHabits();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_habits == null) {
       return Center(
         child: CircularProgressIndicator(),
       );
+    }
+
+    if (widget.onList != null) {
+      widget.onList!(_habits!.items.length);
     }
 
     if (widget.mini) {
@@ -65,10 +80,19 @@ class _HabitsListState extends State<HabitsList> {
   Widget _buildMiniCardList() {
     return Row(
       children: [
+        // List
         ..._habits!.items.map((habit) {
           return HabitCard(
             habit: habit,
             onOpenDetails: () => widget.onClickHabit(habit),
+            onRecordCreated: (_) async {
+              await Future.delayed(Duration(seconds: 3));
+              _refreshHabits();
+            },
+            onRecordDeleted: (_) async {
+              await Future.delayed(Duration(seconds: 3));
+              _refreshHabits();
+            },
             mini: widget.mini,
           );
         }),

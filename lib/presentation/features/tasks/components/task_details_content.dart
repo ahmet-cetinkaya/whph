@@ -112,7 +112,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _addTag(String tagId) async {
-    if (tagId == 0) return; // Skip if the user selects the "Add Tag" option
+    if (tagId.isEmpty) return; // Skip if the user selects the "Add Tag" option
 
     var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
     await _mediator.send(command);

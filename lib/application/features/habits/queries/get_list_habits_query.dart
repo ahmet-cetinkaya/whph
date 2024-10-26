@@ -8,8 +8,10 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
   late int pageSize;
   bool excludeCompleted;
+  List<String>? filterByTags;
 
-  GetListHabitsQuery({required this.pageIndex, required this.pageSize, this.excludeCompleted = false});
+  GetListHabitsQuery(
+      {required this.pageIndex, required this.pageSize, this.excludeCompleted = false, this.filterByTags});
 }
 
 class HabitListItem {
@@ -56,10 +58,20 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     if (request.excludeCompleted) {
       customWhereFilter = CustomWhereFilter("", []);
 
+      var startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      var endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
       customWhereFilter.query =
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_id = id AND date > ? AND date < ?) = 0";
-      customWhereFilter.variables.add(DateTime.now().subtract(Duration(days: 1)));
-      customWhereFilter.variables.add(DateTime.now());
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0";
+      customWhereFilter.variables.add(startDate);
+      customWhereFilter.variables.add(endDate);
+    }
+
+    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
+      customWhereFilter = CustomWhereFilter("", []);
+
+      customWhereFilter.query =
+          "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN (${request.filterByTags!.map((e) => '?').join(',')})) > 0";
+      customWhereFilter.variables.addAll(request.filterByTags!);
     }
 
     return customWhereFilter;

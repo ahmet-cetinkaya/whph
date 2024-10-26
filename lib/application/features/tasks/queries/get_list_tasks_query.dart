@@ -7,15 +7,19 @@ import 'package:whph/domain/features/tasks/task.dart';
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   late int pageIndex;
   late int pageSize;
-  DateTime? filterByPlannedDate;
-  DateTime? filterByDeadlineDate;
+  DateTime? filterByPlannedStartDate;
+  DateTime? filterByPlannedEndDate;
+  DateTime? filterByDeadlineStartDate;
+  DateTime? filterByDeadlineEndDate;
   List<String>? filterByTags;
 
   GetListTasksQuery(
       {required this.pageIndex,
       required this.pageSize,
-      this.filterByPlannedDate,
-      this.filterByDeadlineDate,
+      this.filterByPlannedStartDate,
+      this.filterByPlannedEndDate,
+      this.filterByDeadlineStartDate,
+      this.filterByDeadlineEndDate,
       this.filterByTags});
 }
 
@@ -78,11 +82,11 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   CustomWhereFilter? _getFilters(GetListTasksQuery request) {
     CustomWhereFilter? customWhereFilter;
 
-    if (request.filterByPlannedDate != null) {
+    if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
       customWhereFilter = CustomWhereFilter("", []);
 
-      var plannedDateStart = request.filterByPlannedDate!;
-      var plannedDateEnd = request.filterByPlannedDate!.add(Duration(days: 1));
+      var plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
+      var plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
 
       customWhereFilter.query += "planned_date > ? AND planned_date < ?";
 
@@ -90,11 +94,11 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       customWhereFilter.variables.add(plannedDateEnd);
     }
 
-    if (request.filterByDeadlineDate != null) {
+    if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
       customWhereFilter ??= CustomWhereFilter("", []);
 
-      var dueDateStart = request.filterByDeadlineDate!;
-      var dueDateEnd = request.filterByDeadlineDate!.add(Duration(days: 1));
+      var dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
+      var dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
       customWhereFilter.query += "deadline_date > ? AND deadline_date < ?";
@@ -108,7 +112,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " OR ";
       customWhereFilter.query +=
-          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => "'$tag'").toList().join(',')})) > 0";
+          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => '?').join(',')})) > 0";
+      customWhereFilter.variables.addAll(request.filterByTags!);
     }
 
     return customWhereFilter;

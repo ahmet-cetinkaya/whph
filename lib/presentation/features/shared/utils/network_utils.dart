@@ -2,7 +2,6 @@ import 'dart:io';
 
 class NetworkUtils {
   static const String _localIPPrefix = '192.168.';
-  static const String _unknownIP = 'unknown';
 
   static Future<String?> getLocalIpAddress() async {
     List<NetworkInterface> interfaces = await NetworkInterface.list();

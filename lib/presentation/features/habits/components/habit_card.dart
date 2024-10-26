@@ -9,9 +9,17 @@ import 'package:whph/main.dart';
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
+  final void Function(AddHabitRecordCommandResponse)? onRecordCreated;
+  final void Function(DeleteHabitRecordCommandResponse)? onRecordDeleted;
   final bool mini;
 
-  const HabitCard({super.key, required this.habit, required this.onOpenDetails, this.mini = false});
+  const HabitCard(
+      {super.key,
+      required this.habit,
+      required this.onOpenDetails,
+      this.onRecordCreated,
+      this.onRecordDeleted,
+      this.mini = false});
 
   @override
   State<HabitCard> createState() => _HabitCardState();
@@ -45,6 +53,7 @@ class _HabitCardState extends State<HabitCard> {
     setState(() {
       habitRecords = _getHabitRecords(habitId);
     });
+    widget.onRecordCreated?.call(AddHabitRecordCommandResponse());
   }
 
   Future<void> _deleteHabitRecord(String id) async {
@@ -53,6 +62,7 @@ class _HabitCardState extends State<HabitCard> {
     setState(() {
       habitRecords = _getHabitRecords(widget.habit.id);
     });
+    widget.onRecordDeleted?.call(DeleteHabitRecordCommandResponse());
   }
 
   @override
@@ -106,7 +116,6 @@ class _HabitCardState extends State<HabitCard> {
           } else {
             HabitRecordListItem? recordToday =
                 snapshot.data!.firstWhere((record) => isSameDay(record.date, DateTime.now()));
-            print(recordToday.id);
             await _deleteHabitRecord(recordToday.id);
           }
         },

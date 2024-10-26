@@ -3,17 +3,32 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/shared/components/done_overlay.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 
-class TodayPage extends StatelessWidget {
+class TodayPage extends StatefulWidget {
   static const String route = '/today';
 
+  const TodayPage({super.key});
+
+  @override
+  State<TodayPage> createState() => _TodayPageState();
+}
+
+class _TodayPageState extends State<TodayPage> {
   final Mediator mediator = container.resolve<Mediator>();
 
-  TodayPage({super.key});
+  Key _habitKey = UniqueKey();
+  bool _isHabitListEmpty = false;
+
+  Key _taskKey = UniqueKey();
+  bool _isTaskListEmpty = false;
+
+  List<String>? _selectedTagFilter;
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
     await Navigator.push(
@@ -33,12 +48,39 @@ class TodayPage extends StatelessWidget {
     );
   }
 
+  void _onHabitList(int count) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isHabitListEmpty = count == 0;
+      });
+    });
+  }
+
+  void _onTaskList(int count) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isTaskListEmpty = count == 0;
+      });
+    });
+  }
+
+  void _onTagFilterSelect(List<String> tags) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _habitKey = UniqueKey();
+        _taskKey = UniqueKey();
+        _selectedTagFilter = tags;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: SecondaryAppBar(
           context: context,
           title: const Text('Today'),
+          actions: [TagSelectDropdown(isMultiSelect: true, onTagsSelected: _onTagFilterSelect)],
         ),
         body: ListView(
           children: [
@@ -51,7 +93,7 @@ class TodayPage extends StatelessWidget {
 
   Widget _buildHabitSection(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 16, top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,17 +104,22 @@ class TodayPage extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: 100,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                HabitsList(
-                  mediator: mediator,
-                  size: 5,
-                  onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                  mini: true,
-                ),
-              ],
-            ),
+            child: _isHabitListEmpty
+                ? DoneOverlay()
+                : ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      HabitsList(
+                        key: _habitKey,
+                        mediator: mediator,
+                        size: 5,
+                        mini: true,
+                        filterByTags: _selectedTagFilter,
+                        onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                        onList: _onHabitList,
+                      ),
+                    ],
+                  ),
           )
         ],
       ),
@@ -87,13 +134,18 @@ class TodayPage extends StatelessWidget {
             'Tasks',
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          TasksList(
-            mediator: mediator,
-            size: 5,
-            onClickTask: (task) => _openTaskDetails(context, task.id),
-            filterByPlannedDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-            filterByDueDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-          ),
+          _isTaskListEmpty
+              ? DoneOverlay()
+              : TaskList(
+                  key: _taskKey,
+                  mediator: mediator,
+                  size: 5,
+                  filterByPlannedEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  filterByDueStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  filterByTags: _selectedTagFilter,
+                  onClickTask: (task) => _openTaskDetails(context, task.id),
+                  onList: _onTaskList,
+                ),
         ]));
   }
 
@@ -107,11 +159,16 @@ class TodayPage extends StatelessWidget {
             'Time',
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          Center(
-            child: SizedBox(
-              height: 300,
-              width: 300,
-              child: TagTimeChart(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: SizedBox(
+                height: 300,
+                width: 300,
+                child: TagTimeChart(
+                  filterByTags: _selectedTagFilter,
+                ),
+              ),
             ),
           ),
         ],

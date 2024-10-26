@@ -49,7 +49,7 @@ class _TasksPageState extends State<TasksPage> {
       ),
       body: ListView(
         children: [
-          TasksList(
+          TaskList(
             key: _tasksListKey,
             mediator: _mediator,
             onClickTask: (task) => _openTaskDetails(task.id),

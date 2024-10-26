@@ -619,6 +619,205 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   }
 }
 
+class $HabitTagTableTable extends HabitTagTable with TableInfo<$HabitTagTableTable, HabitTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitTagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _habitIdMeta = const VerificationMeta('habitId');
+  @override
+  late final GeneratedColumn<String> habitId =
+      GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId =
+      GeneratedColumn<String>('tag_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_tag_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<HabitTag> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('habit_id')) {
+      context.handle(_habitIdMeta, habitId.isAcceptableOrUnknown(data['habit_id']!, _habitIdMeta));
+    } else if (isInserting) {
+      context.missing(_habitIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(_tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  HabitTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitTag(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
+      tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
+    );
+  }
+
+  @override
+  $HabitTagTableTable createAlias(String alias) {
+    return $HabitTagTableTable(attachedDatabase, alias);
+  }
+}
+
+class HabitTagTableCompanion extends UpdateCompanion<HabitTag> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> habitId;
+  final Value<String> tagId;
+  final Value<int> rowid;
+  const HabitTagTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitTagTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String habitId,
+    required String tagId,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        habitId = Value(habitId),
+        tagId = Value(tagId);
+  static Insertable<HabitTag> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? habitId,
+    Expression<String>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (habitId != null) 'habit_id': habitId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitTagTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? habitId,
+      Value<String>? tagId,
+      Value<int>? rowid}) {
+    return HabitTagTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      habitId: habitId ?? this.habitId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<String>(habitId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitTagTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecordTableTable, HabitRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2192,6 +2391,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppUsageTableTable appUsageTable = $AppUsageTableTable(this);
   late final $AppUsageTagTableTable appUsageTagTable = $AppUsageTagTableTable(this);
   late final $HabitTableTable habitTable = $HabitTableTable(this);
+  late final $HabitTagTableTable habitTagTable = $HabitTagTableTable(this);
   late final $HabitRecordTableTable habitRecordTable = $HabitRecordTableTable(this);
   late final $TaskTableTable taskTable = $TaskTableTable(this);
   late final $TaskTagTableTable taskTagTable = $TaskTagTableTable(this);
@@ -2206,6 +2406,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         appUsageTable,
         appUsageTagTable,
         habitTable,
+        habitTagTable,
         habitRecordTable,
         taskTable,
         taskTagTable,
@@ -2731,6 +2932,173 @@ typedef $$HabitTableTableProcessedTableManager = ProcessedTableManager<
     $$HabitTableTableUpdateCompanionBuilder,
     (Habit, BaseReferences<_$AppDatabase, $HabitTableTable, Habit>),
     Habit,
+    PrefetchHooks Function()>;
+typedef $$HabitTagTableTableCreateCompanionBuilder = HabitTagTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String habitId,
+  required String tagId,
+  Value<int> rowid,
+});
+typedef $$HabitTagTableTableUpdateCompanionBuilder = HabitTagTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> habitId,
+  Value<String> tagId,
+  Value<int> rowid,
+});
+
+class $$HabitTagTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTagTableTable> {
+  $$HabitTagTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get habitId =>
+      $composableBuilder(column: $table.habitId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnFilters(column));
+}
+
+class $$HabitTagTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTagTableTable> {
+  $$HabitTagTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get habitId =>
+      $composableBuilder(column: $table.habitId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$HabitTagTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitTagTableTable> {
+  $$HabitTagTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get habitId => $composableBuilder(column: $table.habitId, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId => $composableBuilder(column: $table.tagId, builder: (column) => column);
+}
+
+class $$HabitTagTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HabitTagTableTable,
+    HabitTag,
+    $$HabitTagTableTableFilterComposer,
+    $$HabitTagTableTableOrderingComposer,
+    $$HabitTagTableTableAnnotationComposer,
+    $$HabitTagTableTableCreateCompanionBuilder,
+    $$HabitTagTableTableUpdateCompanionBuilder,
+    (HabitTag, BaseReferences<_$AppDatabase, $HabitTagTableTable, HabitTag>),
+    HabitTag,
+    PrefetchHooks Function()> {
+  $$HabitTagTableTableTableManager(_$AppDatabase db, $HabitTagTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$HabitTagTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$HabitTagTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$HabitTagTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> habitId = const Value.absent(),
+            Value<String> tagId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitTagTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            habitId: habitId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String habitId,
+            required String tagId,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitTagTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            habitId: habitId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HabitTagTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HabitTagTableTable,
+    HabitTag,
+    $$HabitTagTableTableFilterComposer,
+    $$HabitTagTableTableOrderingComposer,
+    $$HabitTagTableTableAnnotationComposer,
+    $$HabitTagTableTableCreateCompanionBuilder,
+    $$HabitTagTableTableUpdateCompanionBuilder,
+    (HabitTag, BaseReferences<_$AppDatabase, $HabitTagTableTable, HabitTag>),
+    HabitTag,
     PrefetchHooks Function()>;
 typedef $$HabitRecordTableTableCreateCompanionBuilder = HabitRecordTableCompanion Function({
   required String id,
@@ -4026,6 +4394,7 @@ class $AppDatabaseManager {
   $$AppUsageTagTableTableTableManager get appUsageTagTable =>
       $$AppUsageTagTableTableTableManager(_db, _db.appUsageTagTable);
   $$HabitTableTableTableManager get habitTable => $$HabitTableTableTableManager(_db, _db.habitTable);
+  $$HabitTagTableTableTableManager get habitTagTable => $$HabitTagTableTableTableManager(_db, _db.habitTagTable);
   $$HabitRecordTableTableTableManager get habitRecordTable =>
       $$HabitRecordTableTableTableManager(_db, _db.habitRecordTable);
   $$TaskTableTableTableManager get taskTable => $$TaskTableTableTableManager(_db, _db.taskTable);

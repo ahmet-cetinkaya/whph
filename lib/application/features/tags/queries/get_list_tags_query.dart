@@ -8,8 +8,9 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   late int pageIndex;
   late int pageSize;
   String? search;
+  List<String>? filterByTags;
 
-  GetListTagsQuery({required this.pageIndex, required this.pageSize, this.search});
+  GetListTagsQuery({required this.pageIndex, required this.pageSize, this.search, this.filterByTags});
 }
 
 class TagListItem {
@@ -58,6 +59,14 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
         'name LIKE ?',
         ['%${request.search}%'],
       );
+    }
+
+    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
+      filter ??= CustomWhereFilter.empty();
+
+      filter.query +=
+          "(SELECT COUNT(*) FROM tag_tag_table WHERE tag_tag_table.primary_tag_id = tag_table.id AND tag_tag_table.secondary_tag_id IN (${request.filterByTags!.map((_) => '?').join(',')})) > 0";
+      filter.variables.addAll(request.filterByTags!);
     }
 
     return filter;
