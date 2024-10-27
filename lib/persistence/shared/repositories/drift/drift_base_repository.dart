@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:meta/meta.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -20,15 +21,19 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
 
   @override
   Future<PaginatedList<TEntity>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter}) async {
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     List<String> whereClauses = [
       if (customWhereFilter != null) customWhereFilter.query,
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
+    String? orderByClause = customOrder?.isNotEmpty == true
+        ? ' ORDER BY ${customOrder!.map((order) => '${order.field} ${order.ascending ? 'ASC' : 'DESC'}').join(', ')} '
+        : null;
+
     final query = database.customSelect(
-      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}LIMIT ? OFFSET ?",
+      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
       variables: [
         if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),

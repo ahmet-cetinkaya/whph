@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tasks/task.dart';
@@ -58,11 +59,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    PaginatedList<Task> tasks = await _taskRepository.getList(
-      request.pageIndex,
-      request.pageSize,
-      customWhereFilter: _getFilters(request),
-    );
+    PaginatedList<Task> tasks = await _taskRepository.getList(request.pageIndex, request.pageSize,
+        customWhereFilter: _getFilters(request), customOrder: [CustomOrder(field: "created_date", ascending: false)]);
 
     return GetListTasksQueryResponse(
       items: tasks.items

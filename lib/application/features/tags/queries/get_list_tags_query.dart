@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tags/tag.dart';
@@ -36,11 +37,8 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
   @override
   Future<GetListTagsQueryResponse> call(GetListTagsQuery request) async {
-    PaginatedList<Tag> tags = await _tagRepository.getList(
-      request.pageIndex,
-      request.pageSize,
-      customWhereFilter: _getFilters(request),
-    );
+    PaginatedList<Tag> tags = await _tagRepository.getList(request.pageIndex, request.pageSize,
+        customWhereFilter: _getFilters(request), customOrder: [CustomOrder(field: "created_date", ascending: false)]);
 
     return GetListTagsQueryResponse(
       items: tags.items.map((e) => TagListItem(id: e.id, name: e.name)).toList(),
