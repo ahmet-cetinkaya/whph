@@ -11,6 +11,7 @@ class HabitsList extends StatefulWidget {
 
   final int size;
   final bool mini;
+  final int dateRange;
   final List<String>? filterByTags;
 
   final void Function(HabitListItem habit) onClickHabit;
@@ -21,6 +22,7 @@ class HabitsList extends StatefulWidget {
       required this.mediator,
       this.size = 10,
       this.mini = false,
+      this.dateRange = 7,
       this.filterByTags,
       required this.onClickHabit,
       this.onList});
@@ -73,7 +75,7 @@ class _HabitsListState extends State<HabitsList> {
     if (widget.mini) {
       return _buildMiniCardList();
     } else {
-      return _buildListView();
+      return _buildColumnList();
     }
   }
 
@@ -83,18 +85,18 @@ class _HabitsListState extends State<HabitsList> {
         // List
         ..._habits!.items.map((habit) {
           return HabitCard(
-            habit: habit,
-            onOpenDetails: () => widget.onClickHabit(habit),
-            onRecordCreated: (_) async {
-              await Future.delayed(Duration(seconds: 3));
-              _refreshHabits();
-            },
-            onRecordDeleted: (_) async {
-              await Future.delayed(Duration(seconds: 3));
-              _refreshHabits();
-            },
-            mini: widget.mini,
-          );
+              habit: habit,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              onRecordCreated: (_) async {
+                await Future.delayed(Duration(seconds: 3));
+                _refreshHabits();
+              },
+              onRecordDeleted: (_) async {
+                await Future.delayed(Duration(seconds: 3));
+                _refreshHabits();
+              },
+              isMiniLayout: widget.mini,
+              dateRange: widget.dateRange);
         }),
         if (_habits!.hasNext)
           Padding(
@@ -105,17 +107,15 @@ class _HabitsListState extends State<HabitsList> {
     );
   }
 
-  Widget _buildListView() {
-    return Column(children: [
+  Widget _buildColumnList() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ..._habits!.items.map((habit) {
-        return Container(
-          constraints: BoxConstraints(minHeight: 100),
-          child: HabitCard(
+        return HabitCard(
             habit: habit,
             onOpenDetails: () => widget.onClickHabit(habit),
-            mini: widget.mini,
-          ),
-        );
+            isMiniLayout: widget.mini,
+            dateRange: widget.dateRange,
+            isDateLabelShowing: false);
       }),
       if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
     ]);

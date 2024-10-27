@@ -13,6 +13,7 @@ class AppTheme {
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);
 
+  static const double iconSizeXSmall = 8.0;
   static const double fontSizeSmall = 12.0;
   static const double fontSizeMedium = 16.0;
   static const double fontSizeLarge = 20.0;

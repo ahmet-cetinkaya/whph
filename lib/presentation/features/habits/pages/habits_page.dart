@@ -5,6 +5,9 @@ import 'package:whph/presentation/features/habits/components/habit_add_button.da
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -20,6 +23,8 @@ class HabitsPage extends StatefulWidget {
 class _HabitsPageState extends State<HabitsPage> {
   Key _habitsListKey = UniqueKey();
 
+  List<String> _selectedFilterTags = [];
+
   _openDetails(String habitId, BuildContext context) async {
     await Navigator.push(
       context,
@@ -32,30 +37,97 @@ class _HabitsPageState extends State<HabitsPage> {
     });
   }
 
+  _onFilterTagsSelect(List<String> tags) {
+    setState(() {
+      _selectedFilterTags = tags;
+      _habitsListKey = UniqueKey();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final today = DateTime.now();
+    List<DateTime> lastDays = List.generate(4, (index) => today.subtract(Duration(days: index)));
+
     return Scaffold(
         appBar: SecondaryAppBar(
           context: context,
           title: const Text('Habits'),
           actions: [
-            HabitAddButton(
-              onHabitCreated: (String habitId) {
-                setState(() {
-                  _openDetails(habitId, context);
-                });
-              },
-            )
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: HabitAddButton(
+                onHabitCreated: (String habitId) {
+                  setState(() {
+                    _openDetails(habitId, context);
+                  });
+                },
+                buttonColor: AppTheme.primaryColor,
+                buttonBackgroundColor: AppTheme.surface2,
+              ),
+            ),
           ],
         ),
-        body: Column(children: [
-          Expanded(
-              key: _habitsListKey,
-              child: HabitsList(
-                  mediator: widget.mediator,
-                  onClickHabit: (item) {
-                    _openDetails(item.id, context);
-                  }))
-        ]));
+        body: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView(
+            key: _habitsListKey,
+            children: [
+              Row(
+                children: [
+                  TagSelectDropdown(
+                    isMultiSelect: true,
+                    onTagsSelected: _onFilterTagsSelect,
+                    buttonLabel: "Filter by tags",
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ...lastDays.map(
+                            (date) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 18),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    DateTimeHelper.getWeekday(date.weekday),
+                                    style: TextStyle(
+                                      color: DateTimeHelper.isSameDay(date, today)
+                                          ? AppTheme.primaryColor
+                                          : AppTheme.textColor,
+                                      fontSize: AppTheme.fontSizeSmall,
+                                    ),
+                                  ),
+                                  Text(date.day.toString(),
+                                      style: TextStyle(
+                                        color: DateTimeHelper.isSameDay(date, today)
+                                            ? AppTheme.primaryColor
+                                            : AppTheme.textColor,
+                                        fontSize: AppTheme.fontSizeSmall,
+                                      ))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              HabitsList(
+                key: _habitsListKey,
+                mediator: widget.mediator,
+                dateRange: 4,
+                filterByTags: _selectedFilterTags,
+                onClickHabit: (item) {
+                  _openDetails(item.id, context);
+                },
+              ),
+            ],
+          ),
+        ));
   }
 }

@@ -5,13 +5,17 @@ import 'package:whph/application/features/habits/commands/delete_habit_record_co
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
   final void Function(AddHabitRecordCommandResponse)? onRecordCreated;
   final void Function(DeleteHabitRecordCommandResponse)? onRecordDeleted;
-  final bool mini;
+  final bool isMiniLayout;
+  final bool isDateLabelShowing;
+  final int dateRange;
 
   const HabitCard(
       {super.key,
@@ -19,7 +23,9 @@ class HabitCard extends StatefulWidget {
       required this.onOpenDetails,
       this.onRecordCreated,
       this.onRecordDeleted,
-      this.mini = false});
+      this.isMiniLayout = false,
+      this.isDateLabelShowing = true,
+      this.dateRange = 7});
 
   @override
   State<HabitCard> createState() => _HabitCardState();
@@ -27,31 +33,37 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   final Mediator mediator = container.resolve<Mediator>();
-  late Future<List<HabitRecordListItem>> habitRecords;
+  GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
   void initState() {
+    _getHabitRecords();
+
     super.initState();
-    habitRecords = _getHabitRecords(widget.habit.id);
   }
 
-  Future<List<HabitRecordListItem>> _getHabitRecords(String habitId) async {
+  Future<void> _getHabitRecords() async {
     var query = GetListHabitRecordsQuery(
       pageIndex: 0,
-      pageSize: 7,
-      habitId: habitId,
-      startDate: DateTime.now().subtract(Duration(days: widget.mini ? 1 : 7)),
+      pageSize: widget.dateRange,
+      habitId: widget.habit.id,
+      startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
       endDate: DateTime.now(),
     );
-    var queryResponse = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-    return queryResponse.items;
+    var response = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+
+    setState(() {
+      _habitRecords = response;
+    });
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+
     setState(() {
-      habitRecords = _getHabitRecords(habitId);
+      _habitRecords = null;
+      _getHabitRecords();
     });
     widget.onRecordCreated?.call(AddHabitRecordCommandResponse());
   }
@@ -59,55 +71,57 @@ class _HabitCardState extends State<HabitCard> {
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
     await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+
     setState(() {
-      habitRecords = _getHabitRecords(widget.habit.id);
+      _habitRecords = null;
+      _getHabitRecords();
     });
     widget.onRecordDeleted?.call(DeleteHabitRecordCommandResponse());
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onOpenDetails,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.end,
-            children: [
-              Text(
-                widget.habit.name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              FutureBuilder<List<HabitRecordListItem>>(
-                future: habitRecords,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
+    return Card(
+      child: ListTile(
+        onTap: widget.onOpenDetails,
+        leading: Icon(Icons.label),
+        title: LayoutBuilder(builder: (context, constraints) {
+          if (widget.isMiniLayout) {
+            return Row(
+              children: [
+                Text(
+                  widget.habit.name,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Spacer(),
+                _buildCheckbox(context),
+              ],
+            );
+          }
 
-                  if (widget.mini) {
-                    return _buildCheckbox(snapshot);
-                  } else {
-                    return _buildCalendar(snapshot.data!);
-                  }
-                },
+          return Row(
+            children: [
+              SizedBox(
+                width: constraints.maxWidth * 0.3,
+                child: Text(
+                  widget.habit.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  softWrap: true,
+                ),
               ),
+              _buildCalendar(),
             ],
-          ),
-        ),
+          );
+        }),
+        contentPadding: const EdgeInsets.all(8),
       ),
     );
   }
 
-  Widget _buildCheckbox(AsyncSnapshot<List<HabitRecordListItem>> snapshot) {
-    bool hasRecordToday = snapshot.data!.any((record) => isSameDay(record.date, DateTime.now()));
+  Widget _buildCheckbox(BuildContext context) {
+    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
     return Padding(
-      padding: const EdgeInsets.only(left: 16),
+      padding: const EdgeInsets.all(16),
       child: Checkbox(
         value: hasRecordToday,
         onChanged: (bool? value) async {
@@ -115,7 +129,7 @@ class _HabitCardState extends State<HabitCard> {
             await _createHabitRecord(widget.habit.id, DateTime.now());
           } else {
             HabitRecordListItem? recordToday =
-                snapshot.data!.firstWhere((record) => isSameDay(record.date, DateTime.now()));
+                _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
             await _deleteHabitRecord(recordToday.id);
           }
         },
@@ -123,47 +137,72 @@ class _HabitCardState extends State<HabitCard> {
     );
   }
 
-  Widget _buildCalendar(List<HabitRecordListItem> records) {
+  Widget _buildCalendar() {
     DateTime today = DateTime.now();
-    List<DateTime> last7Days = List.generate(7, (index) => today.subtract(Duration(days: index)));
+    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
 
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: last7Days.map((date) {
-            bool hasRecord = records.any((record) => isSameDay(record.date, date));
+    return _habitRecords == null
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: lastDays.map((date) {
+                bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
 
-            HabitRecordListItem? recordForDay;
-            if (hasRecord) {
-              recordForDay = records.firstWhere((record) => isSameDay(record.date, date));
-            }
-            return Container(
-              margin: const EdgeInsets.only(right: 36),
-              child: GestureDetector(
-                onTap: () async {
-                  if (hasRecord) {
-                    await _deleteHabitRecord(recordForDay!.id);
-                  } else {
-                    await _createHabitRecord(widget.habit.id, date);
-                  }
-                },
-                child: Column(
-                  children: [
-                    Text('${date.month}/${date.day}'),
-                    Icon(
-                      hasRecord ? Icons.link : Icons.close,
-                      color: hasRecord ? Colors.green : Colors.red,
+                HabitRecordListItem? recordForDay;
+                if (hasRecord) {
+                  recordForDay =
+                      _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (hasRecord) {
+                        await _deleteHabitRecord(recordForDay!.id);
+                      } else {
+                        await _createHabitRecord(widget.habit.id, date);
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        // Day of the week
+                        if (widget.isDateLabelShowing)
+                          Column(
+                            children: [
+                              Text(
+                                DateTimeHelper.getWeekday(date.weekday),
+                                style: TextStyle(
+                                  color: DateTimeHelper.isSameDay(date, today)
+                                      ? AppTheme.primaryColor
+                                      : AppTheme.textColor,
+                                  fontSize: AppTheme.fontSizeSmall,
+                                ),
+                              ),
+                              Text(date.day.toString(),
+                                  style: TextStyle(
+                                    color: DateTimeHelper.isSameDay(date, today)
+                                        ? AppTheme.primaryColor
+                                        : AppTheme.textColor,
+                                    fontSize: AppTheme.fontSizeMedium,
+                                  ))
+                            ],
+                          ),
+
+                        // Checkbox icon
+                        Icon(
+                          hasRecord ? Icons.link : Icons.close,
+                          color: hasRecord ? Colors.green : Colors.red,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        ));
-  }
-
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+                  ),
+                );
+              }).toList(),
+            ),
+          );
   }
 }

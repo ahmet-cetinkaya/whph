@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_record_command.dart';
@@ -6,8 +7,8 @@ import 'package:whph/application/features/habits/commands/save_habit_command.dar
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/components/header.dart';
-import 'package:intl/intl.dart'; // For handling dates
+import 'package:intl/intl.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart'; // For handling dates
 
 class HabitDetailsContent extends StatefulWidget {
   final String habitId;
@@ -24,22 +25,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  late Future<List<HabitRecordListItem>> habitRecords;
+  GetListHabitRecordsQueryResponse? _habitRecords;
 
-  bool isLoading = false;
+  bool _isLoading = false;
   DateTime currentMonth = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _getHabit();
-    habitRecords = Future.value([]); // Initialize with an empty list
-    habitRecords = _getHabitRecordsForMonth(currentMonth); // Fetch actual records
+    _getHabitRecordsForMonth(currentMonth);
   }
 
   Future<void> _getHabit() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     var query = GetHabitQuery(id: widget.habitId);
@@ -48,30 +48,30 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _descriptionController.text = response.description;
 
     setState(() {
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
-  Future<List<HabitRecordListItem>> _getHabitRecordsForMonth(DateTime month) async {
-    var firstDayOfMonth = DateTime(month.year, month.month, 1);
-    var lastDayOfMonth = DateTime(month.year, month.month + 1, 0); // Last day of the month
+  Future<void> _getHabitRecordsForMonth(DateTime month) async {
+    var firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
+    var lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
 
     var query = GetListHabitRecordsQuery(
       pageIndex: 0,
-      pageSize: 31,
+      pageSize: 37,
       habitId: widget.habitId,
       startDate: firstDayOfMonth,
       endDate: lastDayOfMonth,
     );
-    var queryResponse = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-    return queryResponse.items;
+    var result = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+    _habitRecords = result;
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
     setState(() {
-      habitRecords = _getHabitRecordsForMonth(currentMonth); // Update habit records
+      _getHabitRecordsForMonth(currentMonth);
     });
   }
 
@@ -79,21 +79,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     var command = DeleteHabitRecordCommand(id: id);
     await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
     setState(() {
-      habitRecords = _getHabitRecordsForMonth(currentMonth); // Update habit records
+      _getHabitRecordsForMonth(currentMonth);
     });
   }
 
   void _previousMonth() {
     setState(() {
       currentMonth = DateTime(currentMonth.year, currentMonth.month - 1);
-      habitRecords = _getHabitRecordsForMonth(currentMonth);
+      _getHabitRecordsForMonth(currentMonth);
     });
   }
 
   void _nextMonth() {
     setState(() {
       currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
-      habitRecords = _getHabitRecordsForMonth(currentMonth);
+      _getHabitRecordsForMonth(currentMonth);
     });
   }
 
@@ -101,7 +101,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
-      child: isLoading
+      child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,15 +114,53 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   ),
                   const SizedBox(height: 8.0),
                 ],
-                const Header(text: 'Description'),
-                TextField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  minLines: 3,
-                  maxLines: 5,
-                  onChanged: (value) => _saveHabit(),
+
+                // Description
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Icon(Icons.description),
+                            ),
+                            const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                      MarkdownAutoPreview(
+                        controller: _descriptionController,
+                        onChanged: (value) {
+                          var isEmptyWhitespace = value.trim().isEmpty;
+                          if (isEmptyWhitespace) {
+                            _descriptionController.clear();
+                          }
+
+                          _saveHabit();
+                        },
+                        hintText: 'Add a description...',
+                        toolbarBackground: AppTheme.surface1,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8.0),
+
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: const Icon(Icons.description),
+                      ),
+                      const Text('Records', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -143,25 +181,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 const SizedBox(height: 8.0),
                 _buildWeekdayLabels(), // Added week day labels
                 const SizedBox(height: 4.0),
-                FutureBuilder<List<HabitRecordListItem>>(
-                  future: habitRecords,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
 
-                    return _buildMonthlyCalendar(snapshot.data!);
-                  },
-                ),
+                if (_habitRecords == null) const Center(child: CircularProgressIndicator()),
+                if (_habitRecords != null) _buildMonthlyCalendar(_habitRecords!.items)
               ],
             ),
     );
   }
 
-  // Widget for Weekday labels
   Widget _buildWeekdayLabels() {
     const List<String> daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Row(
@@ -180,46 +207,76 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Widget _buildMonthlyCalendar(List<HabitRecordListItem> records) {
+    // Calculate the days of the month
     int daysInMonth = DateTime(currentMonth.year, currentMonth.month + 1, 0).day;
-    List<DateTime> days =
-        List.generate(daysInMonth, (index) => DateTime(currentMonth.year, currentMonth.month, index + 1));
+    int firstWeekdayOfMonth = DateTime(currentMonth.year, currentMonth.month, 1).weekday;
+    int previousMonthDays = firstWeekdayOfMonth - 1;
+
+    // Calculate the days of the previous month
+    DateTime firstDayOfPreviousMonth = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+    int daysInPreviousMonth = DateTime(firstDayOfPreviousMonth.year, firstDayOfPreviousMonth.month + 1, 0).day;
+
+    // Calculate the days of the next month
+    int lastWeekdayOfMonth = DateTime(currentMonth.year, currentMonth.month, daysInMonth).weekday;
+    int nextMonthDays = 7 - lastWeekdayOfMonth;
+
+    List<DateTime> days = List.generate(daysInMonth + previousMonthDays + nextMonthDays, (index) {
+      if (index < previousMonthDays) {
+        return DateTime(firstDayOfPreviousMonth.year, firstDayOfPreviousMonth.month,
+            daysInPreviousMonth - previousMonthDays + index + 1);
+      } else if (index >= previousMonthDays + daysInMonth) {
+        return DateTime(currentMonth.year, currentMonth.month + 1, index - (previousMonthDays + daysInMonth) + 1);
+      } else {
+        return DateTime(currentMonth.year, currentMonth.month, index - previousMonthDays + 1);
+      }
+    });
 
     return GridView.count(
       crossAxisCount: 7, // 7 columns for each day of the week
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1,
-      mainAxisSpacing: 0,
-      crossAxisSpacing: 0,
-      padding: EdgeInsets.zero,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
       children: days.map((date) {
+        bool isCurrentMonth = date.month == currentMonth.month;
         bool hasRecord = records.any((record) => isSameDay(record.date, date));
+        bool isFutureDate = date.isAfter(DateTime.now());
+        bool isDisabled = date.day > 10 && isCurrentMonth;
 
         HabitRecordListItem? recordForDay;
         if (hasRecord) {
           recordForDay = records.firstWhere((record) => isSameDay(record.date, date));
         }
         return GestureDetector(
-          onTap: () async {
-            if (hasRecord) {
-              await _deleteHabitRecord(recordForDay!.id);
-            } else {
-              await _createHabitRecord(widget.habitId, date);
-            }
-          },
+          onTap: isFutureDate || isDisabled
+              ? null
+              : () async {
+                  if (hasRecord) {
+                    await _deleteHabitRecord(recordForDay!.id);
+                  } else {
+                    await _createHabitRecord(widget.habitId, date);
+                  }
+                },
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300), // Light border around each day
+              border: Border.all(color: AppTheme.surface1),
+              borderRadius: BorderRadius.circular(8.0),
+              color: isFutureDate ? AppTheme.surface2 : AppTheme.surface1,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('${date.day}', style: const TextStyle(fontSize: 12)), // Increased text size for better readability
-                Icon(
-                  hasRecord ? Icons.link : Icons.close,
-                  color: hasRecord ? Colors.green : Colors.red,
-                  size: 16, // Adjusted icon size to be more compact
+                // Day of the month
+                Text(
+                  '${date.day}',
+                  style: TextStyle(fontSize: 12),
                 ),
+
+                // Icon
+                if (date.isAfter(DateTime.now())) const Icon(Icons.lock, size: 16, color: Colors.grey),
+                if (date.isBefore(DateTime.now()))
+                  Icon(hasRecord ? Icons.link : Icons.close, color: hasRecord ? Colors.green : Colors.red, size: 20),
               ],
             ),
           ),

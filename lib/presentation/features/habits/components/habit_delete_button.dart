@@ -6,11 +6,15 @@ import 'package:whph/main.dart';
 class HabitDeleteButton extends StatefulWidget {
   final String habitId;
   final VoidCallback? onDeleteSuccess;
+  Color? buttonColor;
+  Color? buttonBackgroundColor;
 
-  const HabitDeleteButton({
+  HabitDeleteButton({
     super.key,
     required this.habitId,
     this.onDeleteSuccess,
+    this.buttonColor,
+    this.buttonBackgroundColor,
   });
 
   @override
@@ -19,15 +23,8 @@ class HabitDeleteButton extends StatefulWidget {
 
 class _HabitDeleteButtonState extends State<HabitDeleteButton> {
   final Mediator mediator = container.resolve<Mediator>();
-  bool isLoading = false;
 
   Future<void> _deleteHabit(BuildContext context) async {
-    if (isLoading) return;
-
-    setState(() {
-      isLoading = true;
-    });
-
     try {
       var command = DeleteHabitCommand(id: widget.habitId);
       await mediator.send(command);
@@ -44,10 +41,6 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
           ),
         );
       }
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -75,15 +68,14 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       onPressed: () => _confirmDelete(context),
-      child: isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(),
-            )
-          : const Icon(Icons.delete),
+      icon: const Icon(Icons.delete),
+      color: widget.buttonColor,
+      style: ButtonStyle(
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+      ),
     );
   }
 }
