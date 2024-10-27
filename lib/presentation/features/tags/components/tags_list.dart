@@ -39,13 +39,13 @@ class _TagsListState extends State<TagsList> {
 
   Future<void> _getTags({int pageIndex = 0}) async {
     var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: _pageSize, filterByTags: widget.filterByTags);
-    var queryResponse = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+    var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
     setState(() {
       if (_tags == null) {
-        _tags = queryResponse;
+        _tags = result;
       } else {
-        _tags!.items.addAll(queryResponse.items);
+        _tags!.items.addAll(result.items);
       }
     });
 

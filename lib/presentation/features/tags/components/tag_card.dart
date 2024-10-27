@@ -14,7 +14,6 @@ class TagCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
       child: ListTile(
         contentPadding: const EdgeInsets.all(9.0),
         leading: const Icon(Icons.label),

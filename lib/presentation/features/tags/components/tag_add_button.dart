@@ -4,9 +4,11 @@ import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/main.dart';
 
 class TagAddButton extends StatefulWidget {
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
   final Function(String tagId)? onTagCreated;
 
-  const TagAddButton({super.key, this.onTagCreated});
+  const TagAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onTagCreated});
 
   @override
   State<TagAddButton> createState() => _TagAddButtonState();
@@ -52,18 +54,14 @@ class _TagAddButtonState extends State<TagAddButton> {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       onPressed: () => _createTag(context),
-      child: isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : const Icon(Icons.add),
+      icon: const Icon(Icons.add),
+      color: widget.buttonColor,
+      style: ButtonStyle(
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+      ),
     );
   }
 }

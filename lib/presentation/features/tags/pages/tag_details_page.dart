@@ -4,6 +4,7 @@ import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dar
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
 import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -36,10 +37,23 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SecondaryAppBar(
-          context: context,
-          title: TagNameInputField(
-            id: widget.tagId,
-          )),
+        context: context,
+        title: TagNameInputField(
+          id: widget.tagId,
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TagDeleteButton(
+                tagId: widget.tagId,
+                onDeleteSuccess: () {
+                  Navigator.of(context).pop();
+                },
+                buttonColor: AppTheme.primaryColor,
+                buttonBackgroundColor: AppTheme.surface2),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -60,6 +74,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                   isExpanded: _isTasksExpanded,
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
+                      contentPadding: EdgeInsets.only(left: 8),
+                      leading: Icon(Icons.task),
                       title: Text('Tasks'),
                     );
                   },
