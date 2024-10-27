@@ -23,11 +23,14 @@ class DetailTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: rowData.map((data) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Column(
-            children: [
-              LayoutBuilder(
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 4,
+                bottom: 4,
+              ),
+              child: LayoutBuilder(
                 builder: (context, constraints) {
                   if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)) {
                     return Row(
@@ -82,9 +85,9 @@ class DetailTable extends StatelessWidget {
                   }
                 },
               ),
-              Divider()
-            ],
-          ),
+            ),
+            Divider()
+          ],
         );
       }).toList(),
     );

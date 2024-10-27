@@ -109,5 +109,10 @@ class AppTheme {
       color: dividerColor,
       thickness: 1,
     ),
+    chipTheme: ChipThemeData(
+      labelPadding: EdgeInsets.all(4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
+      side: BorderSide.none,
+    ),
   );
 }
