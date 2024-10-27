@@ -114,5 +114,6 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       side: BorderSide.none,
     ),
+    expansionTileTheme: ExpansionTileThemeData(iconColor: textColor, textColor: textColor, backgroundColor: surface2),
   );
 }

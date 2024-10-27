@@ -9,6 +9,7 @@ class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
 
   final List<Tag> initialSelectedTags;
+  final List<String> excludeTagIds;
   final bool isMultiSelect;
   final Function(List<String>) onTagsSelected;
 
@@ -18,6 +19,7 @@ class TagSelectDropdown extends StatefulWidget {
   TagSelectDropdown({
     super.key,
     this.initialSelectedTags = const [],
+    this.excludeTagIds = const [],
     required this.isMultiSelect,
     required this.onTagsSelected,
     this.icon = Icons.label,
@@ -50,6 +52,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     setState(() {
       if (widget.initialSelectedTags.isNotEmpty) {
         result.items.removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
+      }
+
+      if (widget.excludeTagIds.isNotEmpty) {
+        result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
       }
 
       if (_tags == null) {

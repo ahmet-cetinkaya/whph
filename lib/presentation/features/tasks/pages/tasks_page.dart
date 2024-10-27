@@ -130,6 +130,7 @@ class _TasksPageState extends State<TasksPage> {
                     canTapOnHeader: true),
               ],
               elevation: 0,
+              expandedHeaderPadding: EdgeInsets.zero,
             )
           ],
         ),
