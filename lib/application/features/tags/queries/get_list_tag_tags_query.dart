@@ -15,9 +15,17 @@ class GetListTagTagsQuery implements IRequest<GetListTagTagsQueryResponse> {
 
 class TagTagListItem {
   String id;
+  String primaryTagId;
+  String primaryTagName;
+  String secondaryTagId;
   String secondaryTagName;
 
-  TagTagListItem({required this.id, required this.secondaryTagName});
+  TagTagListItem(
+      {required this.id,
+      required this.primaryTagId,
+      required this.primaryTagName,
+      required this.secondaryTagId,
+      required this.secondaryTagName});
 }
 
 class GetListTagTagsQueryResponse extends PaginatedList<TagTagListItem> {
@@ -47,9 +55,13 @@ class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery,
 
     List<TagTagListItem> listItems = [];
     for (var tagTag in tagTags.items) {
+      Tag primaryTag = (await _tagRepository.getById(tagTag.primaryTagId))!;
       Tag secondaryTag = (await _tagRepository.getById(tagTag.secondaryTagId))!;
       listItems.add(TagTagListItem(
         id: tagTag.id,
+        primaryTagId: tagTag.primaryTagId,
+        primaryTagName: primaryTag.name,
+        secondaryTagId: tagTag.secondaryTagId,
         secondaryTagName: secondaryTag.name,
       ));
     }

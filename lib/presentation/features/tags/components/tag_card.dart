@@ -16,7 +16,7 @@ class TagCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
+        contentPadding: const EdgeInsets.all(9.0),
         leading: const Icon(Icons.label),
         title: Text(tag.name),
         onTap: onOpenDetails,

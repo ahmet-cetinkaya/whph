@@ -3,17 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
+import 'package:whph/presentation/features/shared/components/load_more_button.dart';
 
 class TagsList extends StatefulWidget {
   final Mediator mediator;
+
+  final List<String>? filterByTags;
+
   final VoidCallback onTagAdded;
   final void Function(TagListItem tag) onClickTag;
+  final void Function(int count)? onList;
 
   const TagsList({
     super.key,
     required this.mediator,
+    this.filterByTags,
     required this.onTagAdded,
     required this.onClickTag,
+    this.onList,
   });
 
   @override
@@ -21,88 +28,51 @@ class TagsList extends StatefulWidget {
 }
 
 class _TagsListState extends State<TagsList> {
-  List<TagListItem> _tags = [];
-  int _pageIndex = 0;
-  bool _hasNext = true;
-  bool _isLoading = false;
-  final ScrollController _scrollController = ScrollController();
-  final int _pageSize = 20; // Defines how many tags are loaded per page
+  GetListTagsQueryResponse? _tags;
+  final int _pageSize = 20;
 
   @override
   void initState() {
     super.initState();
-    _fetchTags();
-    _setupScrollListener();
+    _getTags();
   }
 
-  Future<void> _fetchTags({int pageIndex = 0}) async {
-    if (_isLoading || !_hasNext) return;
+  Future<void> _getTags({int pageIndex = 0}) async {
+    var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: _pageSize, filterByTags: widget.filterByTags);
+    var queryResponse = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
     setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: _pageSize);
-      var queryResponse = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
-
-      setState(() {
-        _tags = [..._tags, ...queryResponse.items];
-        _pageIndex = pageIndex;
-        _hasNext = queryResponse.hasNext;
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasNext && !_isLoading) {
-        _fetchTags(pageIndex: _pageIndex + 1);
+      if (_tags == null) {
+        _tags = queryResponse;
+      } else {
+        _tags!.items.addAll(queryResponse.items);
       }
     });
+
+    if (widget.onList != null) {
+      widget.onList!(_tags!.items.length);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {
-          _tags.clear();
-          _pageIndex = 0;
-          _hasNext = true;
-        });
-        await _fetchTags();
-      },
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: _tags.length + (_isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == _tags.length) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+    if (_tags == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
-          final tag = _tags[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ..._tags!.items.map((tag) {
           return TagCard(
             tag: tag,
             onOpenDetails: () => widget.onClickTag(tag),
           );
-        },
-      ),
+        }),
+        if (_tags!.hasNext) LoadMoreButton(onPressed: () => _getTags(pageIndex: _tags!.pageIndex + 1)),
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }

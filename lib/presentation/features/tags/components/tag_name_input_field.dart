@@ -25,10 +25,10 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
   @override
   void initState() {
     super.initState();
-    _fetchTagName();
+    _getTagName();
   }
 
-  Future<void> _fetchTagName() async {
+  Future<void> _getTagName() async {
     var query = GetTagQuery(id: widget.id);
     var response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
     if (mounted) {
@@ -68,9 +68,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
-      decoration: const InputDecoration(
-        border: InputBorder.none,
-      ),
+      decoration: const InputDecoration(border: InputBorder.none, filled: false),
       onChanged: (_) => _saveTag(context),
     );
   }

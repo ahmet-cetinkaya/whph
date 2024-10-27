@@ -3,141 +3,148 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
-import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
-
+import 'package:whph/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/detail_table.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final String tagId;
 
-  const TagDetailsContent({super.key, required this.tagId});
+  const TagDetailsContent({
+    super.key,
+    required this.tagId,
+  });
 
   @override
   State<TagDetailsContent> createState() => _TagDetailsContentState();
 }
 
 class _TagDetailsContentState extends State<TagDetailsContent> {
-  final Mediator mediator = container.resolve<Mediator>();
-  List<TagListItem> _availableTags = [];
-  List<TagTagListItem> _linkedTags = [];
-  bool _isLoading = true;
+  final Mediator _mediator = container.resolve<Mediator>();
+
+  GetTagQueryResponse? _tag;
+  GetListTagTagsQueryResponse? _tagTags;
 
   @override
   void initState() {
     super.initState();
-    _fetchInitialData();
+    _getInitialData();
   }
 
-  Future<void> _fetchInitialData() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _getInitialData() async {
+    await Future.wait([_getTag(), _getTagTags()]);
+  }
 
+  Future<void> _getTag() async {
     try {
-      await Future.wait([
-        _fetchAvailableTags(),
-        _fetchLinkedTags(),
-      ]);
-    } catch (e) {
-      _handleError(e.toString());
-    } finally {
+      var query = GetTagQuery(id: widget.tagId);
+      var response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       setState(() {
-        _isLoading = false;
+        _tag = response;
       });
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
-  Future<void> _fetchAvailableTags() async {
-    var query = GetListTagsQuery(pageIndex: 0, pageSize: 100);
-    var response = await mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
-    setState(() {
-      _availableTags = response.items.where((tag) => tag.id != widget.tagId).toList();
-    });
+  Future<void> _getTagTags() async {
+    try {
+      var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: 0, pageSize: 100);
+      var response = await _mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
+      setState(() {
+        _tagTags = response;
+      });
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
-  Future<void> _fetchLinkedTags() async {
-    var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: 0, pageSize: 100);
-    var response = await mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
-    setState(() {
-      _linkedTags = response.items;
-    });
-  }
-
-  Future<void> _addTag(String secondaryTagId) async {
-    var command = AddTagTagCommand(primaryTagId: widget.tagId, secondaryTagId: secondaryTagId);
-    await mediator.send(command);
-    _fetchLinkedTags();
+  Future<void> _addTag(String tagId) async {
+    var command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
+    await _mediator.send(command);
+    await _getTagTags();
   }
 
   Future<void> _removeTag(String id) async {
     var command = RemoveTagTagCommand(id: id);
-    await mediator.send(command);
-    _fetchLinkedTags();
+    await _mediator.send(command);
+    await _getTagTags();
   }
 
-  void _handleError(String message) {
+  void _onTagsSelected(List<String> tagIds) {
+    var tagIdsToAdd =
+        tagIds.where((tagId) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagId)).toList();
+    var tagIdsToRemove = _tagTags!.items.where((tagTag) => !tagIds.contains(tagTag.secondaryTagId)).toList();
+
+    for (var tagId in tagIdsToAdd) {
+      _addTag(tagId);
+    }
+    for (var tagTag in tagIdsToRemove) {
+      _removeTag(tagTag.id);
+    }
+  }
+
+  void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(content: Text('Error: $message')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTagDropdown(),
-                const SizedBox(height: 16.0),
-                _buildLinkedTagsList(),
-              ],
-            ),
-          );
-  }
-
-  Widget _buildTagDropdown() {
-    return DropdownButton<String>(
-      hint: const Text('Add a tag'),
-      onChanged: (value) {
-        if (value != null) {
-          _addTag(value);
-        }
-      },
-      items: _availableTags.map((tag) {
-        return DropdownMenuItem<String>(
-          value: tag.id,
-          child: Text(tag.name),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildLinkedTagsList() {
-    if (_linkedTags.isEmpty) {
-      return const Text('No tags linked yet.');
+    if (_tag == null || _tagTags == null) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: _linkedTags.length,
-      itemBuilder: (context, index) {
-        var tagTag = _linkedTags[index];
-        return ListTile(
-          title: Text(tagTag.secondaryTagName),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _removeTag(tagTag.id),
-          ),
-        );
-      },
-    );
-  }
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DetailTable(rowData: [
+              // Tag Tags
+              DetailTableRowData(
+                  label: "Tags",
+                  icon: Icons.tag,
+                  widget: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: [
+                          // Select
+                          TagSelectDropdown(
+                            key: ValueKey(_tagTags!.items.length),
+                            isMultiSelect: true,
+                            onTagsSelected: _onTagsSelected,
+                            initialSelectedTags: _tagTags!.items
+                                .map((tag) => Tag(
+                                    id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
+                                .toList(),
+                            icon: Icons.add,
+                          ),
 
-  @override
-  void dispose() {
-    super.dispose();
+                          // List
+                          ..._tagTags!.items.map((tagTag) {
+                            return Chip(
+                              label: Text(tagTag.secondaryTagName),
+                              onDeleted: () {
+                                _removeTag(tagTag.id);
+                              },
+                            );
+                          })
+                        ],
+                      ),
+                    ],
+                  )),
+            ]),
+          ],
+        ),
+      ),
+    );
   }
 }
