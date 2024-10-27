@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
@@ -26,11 +27,16 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
         context: context,
         title: TaskTitleInputField(taskId: widget.taskId),
         actions: [
-          TaskDeleteButton(
-              taskId: widget.taskId,
-              onDeleteSuccess: () {
-                Navigator.of(context).pop();
-              }),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TaskDeleteButton(
+                taskId: widget.taskId,
+                onDeleteSuccess: () {
+                  Navigator.of(context).pop();
+                },
+                buttonColor: AppTheme.primaryColor,
+                buttonBackgroundColor: AppTheme.surface2),
+          ),
         ],
       ),
       body: SingleChildScrollView(child: TaskDetailsContent(taskId: widget.taskId)),

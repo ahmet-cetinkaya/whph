@@ -68,26 +68,27 @@ class _TasksPageState extends State<TasksPage> {
         context: context,
         title: const Text('Tasks'),
         actions: [
-          TaskAddButton(
-            onTaskCreated: (taskId) => _openTaskDetails(taskId),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: TaskAddButton(
+              onTaskCreated: (taskId) => _openTaskDetails(taskId),
+              buttonBackgroundColor: AppTheme.surface2,
+              buttonColor: AppTheme.primaryColor,
+            ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: TagSelectDropdown(
-                  isMultiSelect: true,
-                  onTagsSelected: _onFilterTags,
-                  buttonLabel: (_selectedTagIds?.isEmpty ?? true)
-                      ? 'Filter by tags'
-                      : '${_selectedTagIds!.length} tags selected',
-                ),
+              child: TagSelectDropdown(
+                isMultiSelect: true,
+                onTagsSelected: _onFilterTags,
+                buttonLabel:
+                    (_selectedTagIds?.isEmpty ?? true) ? 'Filter by tags' : '${_selectedTagIds!.length} tags selected',
               ),
             ),
 
@@ -115,6 +116,8 @@ class _TasksPageState extends State<TasksPage> {
                     isExpanded: _isCompletedTasksExpanded,
                     headerBuilder: (context, isExpanded) {
                       return ListTile(
+                        contentPadding: EdgeInsets.only(left: 8),
+                        leading: const Icon(Icons.done_all),
                         title: const Text('Completed tasks'),
                       );
                     },

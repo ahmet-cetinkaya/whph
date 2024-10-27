@@ -21,7 +21,6 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
       child: ListTile(
         contentPadding: const EdgeInsets.all(4.0),
         leading: _buildCompleteButton(),

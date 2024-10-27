@@ -6,11 +6,15 @@ import 'package:whph/main.dart';
 class TaskDeleteButton extends StatefulWidget {
   final String taskId;
   final VoidCallback? onDeleteSuccess;
+  Color? buttonColor;
+  Color? buttonBackgroundColor;
 
-  const TaskDeleteButton({
+  TaskDeleteButton({
     super.key,
     required this.taskId,
     this.onDeleteSuccess,
+    this.buttonColor,
+    this.buttonBackgroundColor,
   });
 
   @override
@@ -18,16 +22,8 @@ class TaskDeleteButton extends StatefulWidget {
 }
 
 class _TaskDeleteButtonState extends State<TaskDeleteButton> {
-  bool isLoading = false;
-
   Future<void> _deleteTask(BuildContext context) async {
     final Mediator mediator = container.resolve<Mediator>();
-
-    if (isLoading) return;
-
-    setState(() {
-      isLoading = true;
-    });
 
     try {
       var command = DeleteTaskCommand(id: widget.taskId);
@@ -45,10 +41,6 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
           ),
         );
       }
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -76,15 +68,14 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       onPressed: () => _confirmDelete(context),
-      child: isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(),
-            )
-          : const Icon(Icons.delete),
+      icon: const Icon(Icons.delete),
+      color: widget.buttonColor,
+      style: ButtonStyle(
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+      ),
     );
   }
 }

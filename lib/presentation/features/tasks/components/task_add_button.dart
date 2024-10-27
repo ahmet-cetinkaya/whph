@@ -4,9 +4,11 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/main.dart';
 
 class TaskAddButton extends StatefulWidget {
+  Color? buttonColor;
+  Color? buttonBackgroundColor;
   final Function(String taskId)? onTaskCreated;
 
-  const TaskAddButton({super.key, this.onTaskCreated});
+  TaskAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onTaskCreated});
 
   @override
   State<TaskAddButton> createState() => _TaskAddButtonState();
@@ -49,18 +51,14 @@ class _TaskAddButtonState extends State<TaskAddButton> {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       onPressed: () => _createTask(context),
-      child: isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            )
-          : const Icon(Icons.add),
+      icon: const Icon(Icons.add),
+      color: widget.buttonColor,
+      style: ButtonStyle(
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+      ),
     );
   }
 }
