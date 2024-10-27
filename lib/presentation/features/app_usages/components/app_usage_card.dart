@@ -29,11 +29,11 @@ class _AppUsageCardState extends State<AppUsageCard> {
   @override
   void initState() {
     super.initState();
-    _appUsageTagsFuture = _fetchAppUsageTags();
-    _allTagsFuture = _fetchAllTags();
+    _appUsageTagsFuture = _getAppUsageTags();
+    _allTagsFuture = _getAllTags();
   }
 
-  Future<GetListAppUsageTagsQueryResponse> _fetchAppUsageTags() async {
+  Future<GetListAppUsageTagsQueryResponse> _getAppUsageTags() async {
     var query = GetListAppUsageTagsQuery(
       appUsageId: widget.appUsage.id,
       pageIndex: 0,
@@ -42,7 +42,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     return await widget.mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
   }
 
-  Future<GetListTagsQueryResponse> _fetchAllTags() async {
+  Future<GetListTagsQueryResponse> _getAllTags() async {
     var query = GetListTagsQuery(pageIndex: 0, pageSize: 100);
     // add lazy loading
     return await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
@@ -55,7 +55,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     );
     await widget.mediator.send<AddAppUsageTagCommand, AddAppUsageTagCommandResponse>(command);
     setState(() {
-      _appUsageTagsFuture = _fetchAppUsageTags(); // Refresh tags
+      _appUsageTagsFuture = _getAppUsageTags(); // Refresh tags
     });
   }
 
@@ -63,7 +63,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     var command = RemoveAppUsageTagCommand(id: tagId);
     await widget.mediator.send<RemoveAppUsageTagCommand, RemoveAppUsageTagCommandResponse>(command);
     setState(() {
-      _appUsageTagsFuture = _fetchAppUsageTags(); // Refresh tags
+      _appUsageTagsFuture = _getAppUsageTags(); // Refresh tags
     });
   }
 

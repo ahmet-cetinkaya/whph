@@ -28,10 +28,10 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   @override
   void initState() {
     super.initState();
-    _fetchTask();
+    _getTask();
   }
 
-  Future<void> _fetchTask() async {
+  Future<void> _getTask() async {
     var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
       GetTaskQuery(id: widget.taskId),
     );
@@ -77,7 +77,7 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
         TaskCompleteButton(
           taskId: widget.taskId,
           isCompleted: _task!.isCompleted,
-          onToggleCompleted: _fetchTask,
+          onToggleCompleted: _getTask,
         ),
         Expanded(
           child: TextField(

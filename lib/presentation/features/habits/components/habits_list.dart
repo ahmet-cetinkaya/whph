@@ -35,10 +35,10 @@ class _HabitsListState extends State<HabitsList> {
   @override
   void initState() {
     super.initState();
-    _fetchHabits();
+    _getHabits();
   }
 
-  Future<void> _fetchHabits({int pageIndex = 0}) async {
+  Future<void> _getHabits({int pageIndex = 0}) async {
     var query = GetListHabitsQuery(
         pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini, filterByTags: widget.filterByTags);
     var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
@@ -55,7 +55,7 @@ class _HabitsListState extends State<HabitsList> {
 
   void _refreshHabits() {
     _habits = null;
-    _fetchHabits();
+    _getHabits();
   }
 
   @override
@@ -99,7 +99,7 @@ class _HabitsListState extends State<HabitsList> {
         if (_habits!.hasNext)
           Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 16),
-            child: LoadMoreButton(onPressed: () => _fetchHabits(pageIndex: _habits!.pageIndex + 1)),
+            child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
           ),
       ],
     );
@@ -117,7 +117,7 @@ class _HabitsListState extends State<HabitsList> {
           ),
         );
       }),
-      if (_habits!.hasNext) LoadMoreButton(onPressed: () => _fetchHabits(pageIndex: _habits!.pageIndex + 1)),
+      if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
     ]);
   }
 }

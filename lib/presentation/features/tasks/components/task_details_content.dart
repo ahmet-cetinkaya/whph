@@ -51,62 +51,82 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   @override
   void initState() {
     super.initState();
-    _fetchInitialData();
+    _getInitialData();
   }
 
-  Future<void> _fetchInitialData() async {
-    await Future.wait([_fetchTask(), _fetchTaskTags()]);
+  Future<void> _getInitialData() async {
+    await Future.wait([_getTask(), _getTaskTags()]);
   }
 
-  Future<void> _fetchTask() async {
-    var query = GetTaskQuery(id: widget.taskId);
-    var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-    setState(() {
-      _task = response;
-      _plannedDateController.text =
-          _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
-      _deadlineDateController.text =
-          _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
-      _descriptionController.text = _task!.description ?? '';
-    });
+  Future<void> _getTask() async {
+    try {
+      var query = GetTaskQuery(id: widget.taskId);
+      var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      setState(() {
+        _task = response;
+        _plannedDateController.text =
+            _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
+        _deadlineDateController.text =
+            _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
+        _descriptionController.text = _task!.description ?? '';
+      });
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
-  Future<void> _fetchTaskTags() async {
-    var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: 0, pageSize: 100);
-    var response = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
-    setState(() {
-      _taskTags = response;
-    });
+  Future<void> _getTaskTags() async {
+    try {
+      var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: 0, pageSize: 100);
+      var response = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
+      setState(() {
+        _taskTags = response;
+      });
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _updateTask() async {
     if (_task == null) return;
 
-    var saveCommand = SaveTaskCommand(
-      id: _task!.id,
-      title: _task!.title,
-      description: _descriptionController.text,
-      plannedDate: DateTime.tryParse(_plannedDateController.text),
-      deadlineDate: DateTime.tryParse(_deadlineDateController.text),
-      priority: _task!.priority,
-      estimatedTime: _task!.estimatedTime,
-      elapsedTime: _task!.elapsedTime,
-      isCompleted: _task!.isCompleted,
-    );
+    try {
+      var saveCommand = SaveTaskCommand(
+        id: _task!.id,
+        title: _task!.title,
+        description: _descriptionController.text,
+        plannedDate: DateTime.tryParse(_plannedDateController.text),
+        deadlineDate: DateTime.tryParse(_deadlineDateController.text),
+        priority: _task!.priority,
+        estimatedTime: _task!.estimatedTime,
+        elapsedTime: _task!.elapsedTime,
+        isCompleted: _task!.isCompleted,
+      );
 
-    await _mediator.send<SaveTaskCommand, void>(saveCommand);
+      await _mediator.send<SaveTaskCommand, void>(saveCommand);
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _addTag(String tagId) async {
-    var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
-    await _mediator.send(command);
-    await _fetchTaskTags();
+    try {
+      var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
+      await _mediator.send(command);
+      await _getTaskTags();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _removeTag(String id) async {
-    var command = RemoveTaskTagCommand(id: id);
-    await _mediator.send(command);
-    await _fetchTaskTags();
+    try {
+      var command = RemoveTaskTagCommand(id: id);
+      await _mediator.send(command);
+      await _getTaskTags();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   void _onTagsSelected(List<String> tags) {
@@ -118,6 +138,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     for (var taskTag in tagsToRemove) {
       _removeTag(taskTag.id);
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: $message')),
+    );
   }
 
   @override
@@ -282,6 +308,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           spacing: 8.0,
           runSpacing: 4.0,
           children: [
+            // Select
             TagSelectDropdown(
               key: ValueKey(_taskTags!.items.length),
               isMultiSelect: true,
@@ -291,6 +318,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                   .toList(),
               icon: Icons.add,
             ),
+
+            // List
             ..._taskTags!.items.map((taskTag) {
               return Chip(
                 label: Text(taskTag.tagName),

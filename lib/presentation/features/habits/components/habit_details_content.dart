@@ -32,12 +32,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   @override
   void initState() {
     super.initState();
-    _fetchHabit();
+    _getHabit();
     habitRecords = Future.value([]); // Initialize with an empty list
     habitRecords = _getHabitRecordsForMonth(currentMonth); // Fetch actual records
   }
 
-  Future<void> _fetchHabit() async {
+  Future<void> _getHabit() async {
     setState(() {
       isLoading = true;
     });

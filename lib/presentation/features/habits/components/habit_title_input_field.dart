@@ -25,10 +25,10 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
   @override
   void initState() {
     super.initState();
-    _fetchHabit();
+    _getHabit();
   }
 
-  Future<void> _fetchHabit() async {
+  Future<void> _getHabit() async {
     var query = GetHabitQuery(id: widget.habitId);
     var response = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
     setState(() {

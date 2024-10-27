@@ -23,7 +23,7 @@ class AppUsageListState extends State<AppUsageList> {
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
 
-  Future<void> _fetchAppUsages() async {
+  Future<void> _getAppUsages() async {
     if (_isLoading || !_hasNext) return;
 
     setState(() {
@@ -51,10 +51,10 @@ class AppUsageListState extends State<AppUsageList> {
   @override
   void initState() {
     super.initState();
-    _fetchAppUsages();
+    _getAppUsages();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent && !_isLoading && _hasNext) {
-        _fetchAppUsages();
+        _getAppUsages();
       }
     });
   }
@@ -72,7 +72,7 @@ class AppUsageListState extends State<AppUsageList> {
         : 1.0; // Avoid division by zero, maximum duration in minutes
 
     return RefreshIndicator(
-      onRefresh: _fetchAppUsages,
+      onRefresh: _getAppUsages,
       child: ListView.builder(
         controller: _scrollController,
         itemCount: _appUsages.length + (_isLoading ? 1 : 0),
