@@ -161,29 +161,38 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: _previousMonth,
-                    ),
-                    Text(
-                      DateFormat.yMMMM().format(currentMonth),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_forward),
-                      onPressed: _nextMonth,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                _buildWeekdayLabels(), // Added week day labels
-                const SizedBox(height: 4.0),
 
-                if (_habitRecords == null) const Center(child: CircularProgressIndicator()),
-                if (_habitRecords != null) _buildMonthlyCalendar(_habitRecords!.items)
+                Center(
+                  child: SizedBox(
+                    width: 600,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: _previousMonth,
+                            ),
+                            Text(
+                              DateFormat.yMMMM().format(currentMonth),
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward),
+                              onPressed: _nextMonth,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8.0),
+                        _buildWeekdayLabels(),
+                        const SizedBox(height: 4.0),
+                        if (_habitRecords == null) const Center(child: CircularProgressIndicator()),
+                        if (_habitRecords != null) _buildMonthlyCalendar(_habitRecords!.items)
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
     );
