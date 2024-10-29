@@ -7,7 +7,12 @@ class TaskTag extends BaseEntity<String> {
   String tagId;
 
   TaskTag(
-      {required super.id, required super.createdDate, super.modifiedDate, required this.taskId, required this.tagId});
+      {required super.id,
+      required super.createdDate,
+      super.modifiedDate,
+      super.deletedDate,
+      required this.taskId,
+      required this.tagId});
 
   void mapFromInstance(TaskTag instance) {
     taskId = instance.taskId;

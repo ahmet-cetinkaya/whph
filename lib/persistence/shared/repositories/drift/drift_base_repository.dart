@@ -72,6 +72,18 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   }
 
   @override
+  Future<TEntity?> getFirst(CustomWhereFilter customWhereFilter) {
+    return database
+        .customSelect(
+          'SELECT * FROM ${table.actualTableName} WHERE ${customWhereFilter.query} LIMIT 1',
+          variables: customWhereFilter.variables.map((e) => _convertToQueryVariable(e)).toList(),
+          readsFrom: {table},
+        )
+        .getSingleOrNull()
+        .then((value) => value != null ? table.map(value.data) : null);
+  }
+
+  @override
   Future<void> add(TEntity item) async {
     item.createdDate = DateTime.now().toUtc();
     TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));

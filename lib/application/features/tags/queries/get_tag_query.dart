@@ -13,6 +13,7 @@ class GetTagQueryResponse extends Tag {
     required super.id,
     required super.createdDate,
     super.modifiedDate,
+    super.deletedDate,
     required super.name,
   });
 }

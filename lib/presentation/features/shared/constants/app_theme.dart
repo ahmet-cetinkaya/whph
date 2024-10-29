@@ -7,13 +7,31 @@ class AppTheme {
   static const Color surface2 = Color(0xFF2B2B2B);
   static const Color surface3 = Color(0xFF464646);
   static const Color textColor = Color(0xFFEBEBEB);
+  static const Color darkTextColor = Color(0xFF121212);
   static const Color dividerColor = Color(0xFF3A3A3A);
+
+  static const Color successColor = Color(0xFF4CAF50);
+  static const Color warningColor = Color(0xFFFFC107);
+  static const Color errorColor = Color(0xFFF44336);
+  static const Color infoColor = Color(0xFF2196F3);
+  static const Color disabledColor = Color(0xFF9E9E9E);
+
+  static const Color chartColor1 = Color(0xFF2E7D32);
+  static const Color chartColor2 = Color(0xFF1565C0);
+  static const Color chartColor3 = Color(0xFFFF8F00);
+  static const Color chartColor4 = Color(0xFFC62828);
+  static const Color chartColor5 = Color(0xFF6A1B9A);
+  static const Color chartColor6 = Color(0xFF00838F);
+  static const Color chartColor7 = Color(0xFF4E342E);
+  static const Color chartColor8 = Color(0xFF37474F);
+  static const Color chartColor9 = Color(0xFF558B2F);
+  static const Color chartColor10 = Color(0xFF9E9D24);
 
   // Dimensions
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);
 
-  static const double iconSizeXSmall = 8.0;
+  static const double fontSizeXSmall = 8.0;
   static const double fontSizeSmall = 12.0;
   static const double fontSizeMedium = 16.0;
   static const double fontSizeLarge = 20.0;

@@ -15,6 +15,7 @@ class GetTaskQueryResponse extends Task {
       {required super.id,
       required super.createdDate,
       super.modifiedDate,
+      super.deletedDate,
       required super.title,
       this.topicName,
       super.description,

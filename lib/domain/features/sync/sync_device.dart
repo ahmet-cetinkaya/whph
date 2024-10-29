@@ -14,6 +14,7 @@ class SyncDevice extends BaseEntity<String> {
     required this.fromIp,
     required this.toIp,
     super.modifiedDate,
+    super.deletedDate,
     this.name,
     this.lastSyncDate,
   });

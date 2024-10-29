@@ -24,20 +24,25 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
   @override
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> title =
-      GeneratedColumn<String>('title', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _processNameMeta = const VerificationMeta('processName');
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _displayNameMeta = const VerificationMeta('displayName');
   @override
-  late final GeneratedColumn<String> processName = GeneratedColumn<String>('process_name', aliasedName, true,
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>('display_name', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color =
+      GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _durationMeta = const VerificationMeta('duration');
   @override
   late final GeneratedColumn<int> duration =
       GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, title, processName, duration];
+  List<GeneratedColumn> get $columns =>
+      [id, createdDate, modifiedDate, deletedDate, name, displayName, color, duration];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -63,13 +68,16 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
     if (data.containsKey('deleted_date')) {
       context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
     }
-    if (data.containsKey('title')) {
-      context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    if (data.containsKey('name')) {
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_titleMeta);
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('process_name')) {
-      context.handle(_processNameMeta, processName.isAcceptableOrUnknown(data['process_name']!, _processNameMeta));
+    if (data.containsKey('display_name')) {
+      context.handle(_displayNameMeta, displayName.isAcceptableOrUnknown(data['display_name']!, _displayNameMeta));
+    }
+    if (data.containsKey('color')) {
+      context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
     }
     if (data.containsKey('duration')) {
       context.handle(_durationMeta, duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
@@ -88,9 +96,11 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      processName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}process_name']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      displayName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+      color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
     );
   }
 
@@ -105,8 +115,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
-  final Value<String> title;
-  final Value<String?> processName;
+  final Value<String> name;
+  final Value<String?> displayName;
+  final Value<String?> color;
   final Value<int> duration;
   final Value<int> rowid;
   const AppUsageTableCompanion({
@@ -114,8 +125,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
-    this.title = const Value.absent(),
-    this.processName = const Value.absent(),
+    this.name = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.color = const Value.absent(),
     this.duration = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -124,21 +136,23 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
-    required String title,
-    this.processName = const Value.absent(),
+    required String name,
+    this.displayName = const Value.absent(),
+    this.color = const Value.absent(),
     required int duration,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
-        title = Value(title),
+        name = Value(name),
         duration = Value(duration);
   static Insertable<AppUsage> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
-    Expression<String>? title,
-    Expression<String>? processName,
+    Expression<String>? name,
+    Expression<String>? displayName,
+    Expression<String>? color,
     Expression<int>? duration,
     Expression<int>? rowid,
   }) {
@@ -147,8 +161,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
-      if (title != null) 'title': title,
-      if (processName != null) 'process_name': processName,
+      if (name != null) 'name': name,
+      if (displayName != null) 'display_name': displayName,
+      if (color != null) 'color': color,
       if (duration != null) 'duration': duration,
       if (rowid != null) 'rowid': rowid,
     });
@@ -159,8 +174,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
-      Value<String>? title,
-      Value<String?>? processName,
+      Value<String>? name,
+      Value<String?>? displayName,
+      Value<String?>? color,
       Value<int>? duration,
       Value<int>? rowid}) {
     return AppUsageTableCompanion(
@@ -168,8 +184,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
-      title: title ?? this.title,
-      processName: processName ?? this.processName,
+      name: name ?? this.name,
+      displayName: displayName ?? this.displayName,
+      color: color ?? this.color,
       duration: duration ?? this.duration,
       rowid: rowid ?? this.rowid,
     );
@@ -190,11 +207,14 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     if (deletedDate.present) {
       map['deleted_date'] = Variable<DateTime>(deletedDate.value);
     }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
-    if (processName.present) {
-      map['process_name'] = Variable<String>(processName.value);
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
     }
     if (duration.present) {
       map['duration'] = Variable<int>(duration.value);
@@ -212,8 +232,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
-          ..write('title: $title, ')
-          ..write('processName: $processName, ')
+          ..write('name: $name, ')
+          ..write('displayName: $displayName, ')
+          ..write('color: $color, ')
           ..write('duration: $duration, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -299,6 +320,7 @@ class $AppUsageTagTableTable extends AppUsageTagTable with TableInfo<$AppUsageTa
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
       tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
     );
@@ -498,6 +520,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description'])!,
     );
@@ -697,6 +720,7 @@ class $HabitTagTableTable extends HabitTagTable with TableInfo<$HabitTagTableTab
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
       tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
     );
@@ -896,6 +920,7 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
       date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
     );
@@ -1151,6 +1176,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description']),
       plannedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}planned_date']),
@@ -1427,6 +1453,7 @@ class $TaskTagTableTable extends TaskTagTable with TableInfo<$TaskTagTableTable,
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       taskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
       tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
     );
@@ -1617,6 +1644,7 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
     );
   }
@@ -1804,6 +1832,7 @@ class $TagTagTableTable extends TagTagTable with TableInfo<$TagTagTableTable, Ta
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       primaryTagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}primary_tag_id'])!,
       secondaryTagId:
           attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}secondary_tag_id'])!,
@@ -2010,6 +2039,7 @@ class $SettingTableTable extends SettingTable with TableInfo<$SettingTableTable,
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       key: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}key'])!,
       value: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}value'])!,
       valueType: $SettingTableTable.$convertervalueType
@@ -2242,6 +2272,7 @@ class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTa
       fromIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}from_ip'])!,
       toIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}to_ip'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name']),
       lastSyncDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
     );
@@ -2422,8 +2453,9 @@ typedef $$AppUsageTableTableCreateCompanionBuilder = AppUsageTableCompanion Func
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
-  required String title,
-  Value<String?> processName,
+  required String name,
+  Value<String?> displayName,
+  Value<String?> color,
   required int duration,
   Value<int> rowid,
 });
@@ -2432,8 +2464,9 @@ typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Func
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
-  Value<String> title,
-  Value<String?> processName,
+  Value<String> name,
+  Value<String?> displayName,
+  Value<String?> color,
   Value<int> duration,
   Value<int> rowid,
 });
@@ -2457,11 +2490,13 @@ class $$AppUsageTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsa
   ColumnFilters<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get processName =>
-      $composableBuilder(column: $table.processName, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get displayName =>
+      $composableBuilder(column: $table.displayName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => ColumnFilters(column));
@@ -2486,11 +2521,14 @@ class $$AppUsageTableTableOrderingComposer extends Composer<_$AppDatabase, $AppU
   ColumnOrderings<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get processName =>
-      $composableBuilder(column: $table.processName, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get displayName =>
+      $composableBuilder(column: $table.displayName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => ColumnOrderings(column));
@@ -2515,10 +2553,12 @@ class $$AppUsageTableTableAnnotationComposer extends Composer<_$AppDatabase, $Ap
   GeneratedColumn<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
-  GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
+  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get processName =>
-      $composableBuilder(column: $table.processName, builder: (column) => column);
+  GeneratedColumn<String> get displayName =>
+      $composableBuilder(column: $table.displayName, builder: (column) => column);
+
+  GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<int> get duration => $composableBuilder(column: $table.duration, builder: (column) => column);
 }
@@ -2547,8 +2587,9 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String?> processName = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> displayName = const Value.absent(),
+            Value<String?> color = const Value.absent(),
             Value<int> duration = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -2557,8 +2598,9 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
-            title: title,
-            processName: processName,
+            name: name,
+            displayName: displayName,
+            color: color,
             duration: duration,
             rowid: rowid,
           ),
@@ -2567,8 +2609,9 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
-            required String title,
-            Value<String?> processName = const Value.absent(),
+            required String name,
+            Value<String?> displayName = const Value.absent(),
+            Value<String?> color = const Value.absent(),
             required int duration,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -2577,8 +2620,9 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
-            title: title,
-            processName: processName,
+            name: name,
+            displayName: displayName,
+            color: color,
             duration: duration,
             rowid: rowid,
           ),

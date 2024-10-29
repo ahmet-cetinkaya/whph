@@ -1,75 +1,114 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
-class BarChartComponent extends StatelessWidget {
-  final String title;
+class BarChart extends StatelessWidget {
   final double value;
-  final double maxValue; // Max value for scaling
+  final double maxValue;
   final Color? barColor;
   final String unit;
+  final Widget? additionalWidget;
+  final VoidCallback? onTap;
+  final String title;
 
-  final List<Color> _pastelColors = [
-    const Color(0xFFB6E3E9), // Light Blue
-    const Color(0xFFFFC2C2), // Light Pink
-    const Color(0xFFFFE7C2), // Light Orange
-    const Color(0xFFC2FFC2), // Light Green
-    const Color(0xFFD1C2FF), // Light Purple
-    const Color(0xFFFFF5C2), // Light Yellow
-    const Color(0xFFE9C2FF), // Soft Lavender
-    const Color(0xFFFFD9C2), // Soft Peach
-    const Color(0xFFC2FFF5), // Light Aqua
-    const Color(0xFFC2E0FF), // Soft Sky Blue
-    const Color(0xFFFFF2C2), // Soft Banana
-    const Color(0xFFC2FFC2), // Light Lime Green
-    const Color(0xFFC2C2FF), // Soft Periwinkle
-  ];
-
-  BarChartComponent({
+  const BarChart({
     super.key,
-    required this.title,
     required this.value,
     required this.maxValue,
-    this.barColor, // Opsiyonel renk
+    this.barColor,
     this.unit = "",
+    this.additionalWidget,
+    this.onTap,
+    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
-    Color finalBarColor = barColor ?? _pastelColors[Random().nextInt(_pastelColors.length)];
+    Color finalBarColor = barColor ?? AppThemeHelper.getRandomChartColor();
     double barWidth = (MediaQuery.of(context).size.width - 100) * (value / maxValue);
 
-    return ListTile(
-      title: Stack(
-        alignment: Alignment.centerLeft,
-        children: <Widget>[
-          // Bar
-          Container(
-            height: 50,
-            width: barWidth,
-            decoration: BoxDecoration(
-              color: finalBarColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          Positioned(
-            left: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTap,
+      child: ListTile(
+        title: Stack(
+          alignment: Alignment.centerLeft,
+          children: <Widget>[
+            // Bar
+            Stack(
               children: [
-                // Title
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  height: 60,
+                  width: barWidth,
+                  decoration: BoxDecoration(
+                    color: finalBarColor,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                // Label
-                Text('${value.toStringAsFixed(1)} $unit'),
+                SizedBox(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min, // Add this line
+                        children: [
+                          // Label
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppTheme.surface2,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  value.toStringAsFixed(1),
+                                ),
+                                Text(
+                                  " $unit",
+                                  style: const TextStyle(fontSize: AppTheme.fontSizeSmall),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: additionalWidget == null
+                                ? _buildTitle()
+                                : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Title
+                                      _buildTitle(),
+                                      // Additional Widget
+                                      additionalWidget!,
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
       ),
     );
   }

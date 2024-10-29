@@ -10,6 +10,7 @@ class TagTag extends BaseEntity<String> {
       {required super.id,
       required super.createdDate,
       super.modifiedDate,
+      super.deletedDate,
       required this.primaryTagId,
       required this.secondaryTagId});
 

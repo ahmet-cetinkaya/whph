@@ -39,12 +39,12 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   @override
   Future<PaginatedList<AppUsageTag>> getListByAppUsageId(String appUsageId, int pageIndex, int pageSize) async {
     final query = database.select(table)
-      ..where((t) => t.appUsageId.equals(appUsageId))
+      ..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
     final count = await ((database.customSelect(
-      "SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE app_usage_id = ?",
+      "SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE app_usage_id = ? AND deleted_date IS NULL",
       variables: [Variable<String>(appUsageId)],
       readsFrom: {table},
     )).getSingleOrNull());
@@ -61,7 +61,8 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
 
   @override
   Future<bool> anyByAppUsageIdAndTagId(String appUsageId, String tagId) async {
-    final query = database.select(table)..where((t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(tagId));
+    final query = database.select(table)
+      ..where((t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;

@@ -10,11 +10,23 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   int? month;
   int? day;
   int? hour;
+  List<String>? filterByTags;
 
-  GetListByTopAppUsagesQuery({required this.pageIndex, required this.pageSize});
+  GetListByTopAppUsagesQuery(
+      {required this.pageIndex, required this.pageSize, this.year, this.month, this.day, this.hour, this.filterByTags});
 }
 
-class GetListByTopAppUsagesQueryResponse extends PaginatedList<AppUsage> {
+class AppUsageListItem {
+  String id;
+  String name;
+  String? displayName;
+  int duration;
+  String? color;
+
+  AppUsageListItem({required this.id, required this.name, this.displayName, required this.duration, this.color});
+}
+
+class GetListByTopAppUsagesQueryResponse extends PaginatedList<AppUsageListItem> {
   GetListByTopAppUsagesQueryResponse(
       {required super.items,
       required super.totalItemCount,
@@ -39,10 +51,14 @@ class GetListByTopAppUsagesQueryHandler
       month: request.month,
       day: request.day,
       hour: request.hour,
+      filterByTags: request.filterByTags,
     );
 
     return GetListByTopAppUsagesQueryResponse(
-      items: appUsages.items,
+      items: appUsages.items
+          .map((e) => AppUsageListItem(
+              id: e.id, name: e.name, displayName: e.displayName, duration: e.duration, color: e.color))
+          .toList(),
       totalItemCount: appUsages.totalItemCount,
       totalPageCount: appUsages.totalPageCount,
       pageIndex: appUsages.pageIndex,

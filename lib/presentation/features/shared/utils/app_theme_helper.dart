@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
@@ -26,5 +28,21 @@ class AppThemeHelper {
 
   static bool isScreenSmallerThan(BuildContext context, double width) {
     return MediaQuery.of(context).size.width < width;
+  }
+
+  static final List<Color> _chartColors = [
+    AppTheme.chartColor1,
+    AppTheme.chartColor2,
+    AppTheme.chartColor3,
+    AppTheme.chartColor4,
+    AppTheme.chartColor5,
+    AppTheme.chartColor6,
+    AppTheme.chartColor7,
+    AppTheme.chartColor8,
+    AppTheme.chartColor9,
+    AppTheme.chartColor10
+  ];
+  static Color getRandomChartColor() {
+    return _chartColors[Random().nextInt(_chartColors.length)];
   }
 }

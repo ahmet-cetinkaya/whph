@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:usage_stats_new/usage_stats.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'abstraction/i_app_usage_service.dart';
 
 class AppUsageService implements IAppUsageService {
@@ -29,9 +32,14 @@ class AppUsageService implements IAppUsageService {
           if (kDebugMode) print('$_activeWindowOutput: $_activeWindowTime seconds');
 
           List<String> activeWindowOutputSections = _activeWindowOutput.split(',');
+          String appName = activeWindowOutputSections[1].isNotEmpty
+              ? activeWindowOutputSections[1]
+              : activeWindowOutputSections[0].isNotEmpty
+                  ? activeWindowOutputSections[0]
+                  : 'Unknown';
 
           AppUsage? appUsage = await _appUsageRepository.getByDateAndHour(
-            title: activeWindowOutputSections.first,
+            name: appName,
             year: DateTime.now().toUtc().year,
             month: DateTime.now().toUtc().month,
             day: DateTime.now().toUtc().day,
@@ -42,10 +50,16 @@ class AppUsageService implements IAppUsageService {
             appUsage.duration += _activeWindowTime;
             await _appUsageRepository.update(appUsage);
           } else {
+            AppUsage? firstAppUsage = await _appUsageRepository.getFirst(
+              CustomWhereFilter(
+                'name = ?',
+                [appName],
+              ),
+            );
             appUsage = AppUsage(
               id: nanoid(),
-              title: activeWindowOutputSections.first,
-              processName: activeWindowOutputSections[1].isNotEmpty ? activeWindowOutputSections[1] : null,
+              name: appName,
+              color: firstAppUsage == null ? _getRandomColor() : firstAppUsage.color,
               duration: _activeWindowTime,
               createdDate: DateTime(0),
             );
@@ -64,7 +78,7 @@ class AppUsageService implements IAppUsageService {
       List<AppUsage> usages = await getUsages();
       for (AppUsage usage in usages) {
         AppUsage? appUsage = await _appUsageRepository.getByDateAndHour(
-          title: usage.title,
+          name: usage.name,
           year: DateTime.now().toUtc().year,
           month: DateTime.now().toUtc().month,
           day: DateTime.now().toUtc().day,
@@ -137,9 +151,9 @@ class AppUsageService implements IAppUsageService {
 
         appUsages.add(AppUsage(
           id: nanoid(),
-          title: appName ?? 'Unknown',
-          processName: packageName,
+          name: appName ?? 'Unknown',
           duration: int.parse(usage.totalTimeInForeground ?? '0') ~/ 1000,
+          color: _getRandomColor(),
           createdDate: DateTime.now(),
         ));
       }
@@ -148,5 +162,21 @@ class AppUsageService implements IAppUsageService {
     }
 
     return [];
+  }
+
+  String _getRandomColor() {
+    List<Color> colors = [
+      AppTheme.chartColor1,
+      AppTheme.chartColor2,
+      AppTheme.chartColor3,
+      AppTheme.chartColor4,
+      AppTheme.chartColor5,
+      AppTheme.chartColor6,
+      AppTheme.chartColor7,
+      AppTheme.chartColor8,
+      AppTheme.chartColor9,
+      AppTheme.chartColor10,
+    ];
+    return colors[Random().nextInt(colors.length)].value.toRadixString(16).substring(2);
   }
 }

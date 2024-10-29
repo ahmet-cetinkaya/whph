@@ -102,7 +102,7 @@ class _HabitCardState extends State<HabitCard> {
           return Row(
             children: [
               SizedBox(
-                width: constraints.maxWidth * 0.3,
+                width: (constraints.maxWidth) * 0.3,
                 child: Text(
                   widget.habit.name,
                   style: Theme.of(context).textTheme.titleMedium,

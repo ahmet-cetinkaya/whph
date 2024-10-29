@@ -28,6 +28,7 @@ class GetSettingQueryResponse extends Setting {
     required super.id,
     required super.createdDate,
     super.modifiedDate,
+    super.deletedDate,
     required super.key,
     required super.value,
     required super.valueType,

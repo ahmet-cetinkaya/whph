@@ -1,8 +1,11 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_command.dart';
+import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/commands/remove_tag_tag_command.dart';
+import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/commands/start_track_app_usages_command.dart';
 import 'package:whph/application/features/app_usages/commands/stop_track_app_usages_command.dart';
+import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
@@ -100,6 +103,15 @@ void registerAppUsagesFeature(IContainer container, Mediator mediator) {
       tagRepository: container.resolve<ITagRepository>(),
       appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
     ),
+  );
+  mediator.registerHandler<GetAppUsageQuery, GetAppUsageQueryResponse, GetAppUsageQueryHandler>(
+    () => GetAppUsageQueryHandler(appUsageRepository: container.resolve<IAppUsageRepository>()),
+  );
+  mediator.registerHandler<SaveAppUsageCommand, SaveAppUsageCommandResponse, SaveAppUsageCommandHandler>(
+    () => SaveAppUsageCommandHandler(appUsageRepository: container.resolve<IAppUsageRepository>()),
+  );
+  mediator.registerHandler<DeleteAppUsageCommand, DeleteAppUsageCommandResponse, DeleteAppUsageCommandHandler>(
+    () => DeleteAppUsageCommandHandler(appUsageRepository: container.resolve<IAppUsageRepository>()),
   );
 }
 

@@ -69,6 +69,7 @@ dependencies:
   qr_code_scanner_plus: ^2.0.6
   dart_json_mapper: ^2.2.13
   fl_chart: ^0.69.0
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

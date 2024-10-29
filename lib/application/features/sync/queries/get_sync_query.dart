@@ -15,6 +15,7 @@ class GetSyncDeviceQueryResponse extends SyncDevice {
     required super.id,
     required super.createdDate,
     super.modifiedDate,
+    super.deletedDate,
     required super.fromIp,
     required super.toIp,
     super.name,

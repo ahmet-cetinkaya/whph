@@ -13,6 +13,7 @@ class Setting extends BaseEntity<String> {
       {required super.id,
       required super.createdDate,
       super.modifiedDate,
+      super.deletedDate,
       required this.key,
       required this.value,
       required this.valueType});

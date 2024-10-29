@@ -1,100 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/domain/features/app_usages/app_usage.dart';
-import 'package:whph/presentation/features/shared/components/bar_chart.dart';
+import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
 
-  const AppUsageList({
-    super.key,
-    required this.mediator,
-  });
+  final int size;
+  final List<String>? filterByTags;
+  final Function(String int)? onOpenDetails;
+
+  const AppUsageList({super.key, required this.mediator, this.size = 10, this.filterByTags, this.onOpenDetails});
 
   @override
   AppUsageListState createState() => AppUsageListState();
 }
 
 class AppUsageListState extends State<AppUsageList> {
-  final List<AppUsage> _appUsages = [];
-  int _pageIndex = 0;
-  bool _hasNext = true;
-  bool _isLoading = false;
-  final ScrollController _scrollController = ScrollController();
+  GetListByTopAppUsagesQueryResponse? _appUsages;
 
-  Future<void> _getAppUsages() async {
-    if (_isLoading || !_hasNext) return;
+  @override
+  void initState() {
+    _getAppUsages();
 
-    setState(() {
-      _isLoading = true;
-    });
+    super.initState();
+  }
 
-    final query = GetListByTopAppUsagesQuery(pageIndex: _pageIndex, pageSize: 10);
+  Future<void> _getAppUsages({int pageIndex = 0}) async {
+    final query =
+        GetListByTopAppUsagesQuery(pageIndex: pageIndex, pageSize: widget.size, filterByTags: widget.filterByTags);
 
     try {
-      final response =
-          await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
+      final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
+
       setState(() {
-        _pageIndex++;
-        _appUsages.addAll(response.items);
-        _hasNext = response.hasNext;
-        _isLoading = false;
+        if (_appUsages == null) {
+          _appUsages = result;
+        } else {
+          _appUsages!.items.addAll(result.items);
+          _appUsages!.pageIndex = result.pageIndex;
+        }
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (context.mounted) ErrorHelper.showError(context, e);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    _getAppUsages();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent && !_isLoading && _hasNext) {
-        _getAppUsages();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double maxDuration = _appUsages.isNotEmpty
-        ? _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b)
+    if (_appUsages == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    double maxDuration = _appUsages!.items.isNotEmpty
+        ? _appUsages!.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b)
         : 1.0; // Avoid division by zero, maximum duration in minutes
 
-    return RefreshIndicator(
-      onRefresh: _getAppUsages,
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: _appUsages.length + (_isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index >= _appUsages.length) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var appUsage in _appUsages!.items)
+          AppUsageCard(
+            mediator: widget.mediator,
+            appUsage: appUsage,
+            maxDurationInListing: maxDuration,
+            onTap: () => widget.onOpenDetails != null ? widget.onOpenDetails!(appUsage.id) : null,
+          ),
+        if (_appUsages!.hasNext)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ElevatedButton(
+                onPressed: () {
+                  _getAppUsages(pageIndex: _appUsages!.pageIndex + 1);
+                },
+                child: const Text('Load more'),
               ),
-            );
-          }
-          final appUsage = _appUsages[index];
-
-          return BarChartComponent(
-            title: appUsage.title,
-            value: appUsage.duration / 60,
-            maxValue: maxDuration,
-            unit: "min",
-          );
-        },
-      ),
+            ),
+          ),
+      ],
     );
   }
 }

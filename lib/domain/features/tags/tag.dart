@@ -5,7 +5,7 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 class Tag extends BaseEntity<String> {
   String name;
 
-  Tag({required super.id, required super.createdDate, super.modifiedDate, required this.name});
+  Tag({required super.id, required super.createdDate, super.modifiedDate, super.deletedDate, required this.name});
 
   void mapFromInstance(Tag instance) {
     name = instance.name;
