@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 
@@ -63,6 +64,10 @@ class SyncQrCodeButton extends StatelessWidget {
       onPressed: () {
         _showQrCodeModal(context);
       },
+      color: AppTheme.primaryColor,
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all<Color>(AppTheme.surface2),
+      ),
     );
   }
 }

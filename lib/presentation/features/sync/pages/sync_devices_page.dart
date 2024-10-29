@@ -8,6 +8,7 @@ import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
 
@@ -71,9 +72,27 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
 
   List<Widget> _buildAppBarActions() {
     return [
-      TextButton(onPressed: _sync, child: Icon(Icons.sync)),
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) const SyncQrCodeButton(),
-      if (Platform.isAndroid || Platform.isIOS) SyncQrScanButton()
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: IconButton(
+          onPressed: _sync,
+          icon: Icon(Icons.sync),
+          color: AppTheme.primaryColor,
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all<Color>(AppTheme.surface2),
+          ),
+        ),
+      ),
+      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows)
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: const SyncQrCodeButton(),
+        ),
+      if (Platform.isAndroid || Platform.isIOS)
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: SyncQrScanButton(),
+        )
     ];
   }
 

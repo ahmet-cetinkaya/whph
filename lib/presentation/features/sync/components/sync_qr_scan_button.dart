@@ -5,6 +5,7 @@ import 'package:whph/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
@@ -80,9 +81,10 @@ class SyncQrScanButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
       onPressed: () => _openQRScanner(context),
-      child: const Icon(Icons.qr_code_scanner),
+      icon: const Icon(Icons.qr_code_scanner),
+      color: AppTheme.primaryColor,
     );
   }
 }
