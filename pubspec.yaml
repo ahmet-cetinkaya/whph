@@ -65,6 +65,9 @@ dependencies:
   # Desktop
   qr_flutter: ^4.1.0
 
+  # Android
+  app_usage: ^3.0.1
+
   # Mobile
   qr_code_scanner_plus: ^2.0.6
   dart_json_mapper: ^2.2.13
