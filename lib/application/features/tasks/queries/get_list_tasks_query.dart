@@ -12,6 +12,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final DateTime? filterByPlannedEndDate;
   final DateTime? filterByDeadlineStartDate;
   final DateTime? filterByDeadlineEndDate;
+  final bool filterDateOr;
   final List<String>? filterByTags;
   final bool? filterByCompleted;
 
@@ -22,6 +23,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       this.filterByPlannedEndDate,
       this.filterByDeadlineStartDate,
       this.filterByDeadlineEndDate,
+      this.filterDateOr = false,
       this.filterByTags,
       this.filterByCompleted});
 }
@@ -59,8 +61,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    PaginatedList<Task> tasks = await _taskRepository.getList(request.pageIndex, request.pageSize,
-        customWhereFilter: _getFilters(request), customOrder: [CustomOrder(field: "created_date", ascending: false)]);
+    PaginatedList<Task> tasks = await _taskRepository.getList(
+      request.pageIndex,
+      request.pageSize,
+      customWhereFilter: _getFilters(request),
+      customOrder: [CustomOrder(field: "created_date", ascending: false)],
+    );
 
     return GetListTasksQueryResponse(
       items: tasks.items
@@ -88,7 +94,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       var plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
       var plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
 
-      customWhereFilter.query += "planned_date > ? AND planned_date < ?";
+      customWhereFilter.query += "(planned_date > ? AND planned_date < ?)";
 
       customWhereFilter.variables.add(plannedDateStart);
       customWhereFilter.variables.add(plannedDateEnd);
@@ -100,8 +106,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       var dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
       var dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
 
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
-      customWhereFilter.query += "deadline_date > ? AND deadline_date < ?";
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += request.filterDateOr ? " OR " : " AND ";
+      customWhereFilter.query += "(deadline_date > ? AND deadline_date < ?)";
 
       customWhereFilter.variables.add(dueDateStart);
       customWhereFilter.variables.add(dueDateEnd);
