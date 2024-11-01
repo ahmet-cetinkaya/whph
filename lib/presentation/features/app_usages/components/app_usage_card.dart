@@ -3,7 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/presentation/features/shared/components/bar_chart.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class AppUsageCard extends StatefulWidget {

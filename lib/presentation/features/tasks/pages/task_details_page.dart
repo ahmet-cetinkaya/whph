@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';

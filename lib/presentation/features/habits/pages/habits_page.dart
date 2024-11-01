@@ -5,7 +5,7 @@ import 'package:whph/presentation/features/habits/components/habit_add_button.da
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
@@ -82,13 +82,13 @@ class _HabitsPageState extends State<HabitsPage> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.only(right: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           ...lastDays.map(
                             (date) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 18),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Column(
                                 children: [
                                   Text(

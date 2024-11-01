@@ -5,7 +5,7 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_delet
 import 'package:whph/presentation/features/app_usages/components/app_usage_details_content.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_name_input_field.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';

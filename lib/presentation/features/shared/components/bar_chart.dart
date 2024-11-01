@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
 class BarChart extends StatelessWidget {
@@ -53,7 +53,7 @@ class BarChart extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min, // Add this line
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           // Label
                           Container(
@@ -86,7 +86,9 @@ class BarChart extends StatelessWidget {
                                       // Title
                                       _buildTitle(),
                                       // Additional Widget
-                                      additionalWidget!,
+                                      Flexible(
+                                        child: additionalWidget ?? Container(),
+                                      ),
                                     ],
                                   ),
                           ),

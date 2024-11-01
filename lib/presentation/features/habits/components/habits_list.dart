@@ -81,11 +81,14 @@ class _HabitsListState extends State<HabitsList> {
 
   Widget _buildMiniCardList() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // List
         ..._habits!.items.map((habit) {
           return HabitCard(
               habit: habit,
+              isMiniLayout: widget.mini,
+              dateRange: widget.dateRange,
               onOpenDetails: () => widget.onClickHabit(habit),
               onRecordCreated: (_) async {
                 await Future.delayed(Duration(seconds: 3));
@@ -94,15 +97,9 @@ class _HabitsListState extends State<HabitsList> {
               onRecordDeleted: (_) async {
                 await Future.delayed(Duration(seconds: 3));
                 _refreshHabits();
-              },
-              isMiniLayout: widget.mini,
-              dateRange: widget.dateRange);
+              });
         }),
-        if (_habits!.hasNext)
-          Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 16),
-            child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
-          ),
+        if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
       ],
     );
   }
@@ -110,12 +107,15 @@ class _HabitsListState extends State<HabitsList> {
   Widget _buildColumnList() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ..._habits!.items.map((habit) {
-        return HabitCard(
-            habit: habit,
-            onOpenDetails: () => widget.onClickHabit(habit),
-            isMiniLayout: widget.mini,
-            dateRange: widget.dateRange,
-            isDateLabelShowing: false);
+        return SizedBox(
+          height: 60,
+          child: HabitCard(
+              habit: habit,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              isMiniLayout: widget.mini,
+              dateRange: widget.dateRange,
+              isDateLabelShowing: false),
+        );
       }),
       if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
     ]);

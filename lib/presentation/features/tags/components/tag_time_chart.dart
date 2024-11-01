@@ -4,7 +4,7 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';
 import 'package:whph/main.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 
 class TagTimeChart extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -48,11 +48,14 @@ class _TagTimeChartState extends State<TagTimeChart> {
 
   @override
   Widget build(BuildContext context) {
+    int totalTime = _tagTimes.values.fold(0, (sum, time) => sum + time);
+
     List<PieChartSectionData> sections = _tagTimes.entries.map((entry) {
-      double timeInMinutes = (entry.value.toDouble() / 60).roundToDouble();
+      double percentage = (entry.value / totalTime) * 100;
+      String percentageString = '${percentage.round()}%';
       return PieChartSectionData(
-        value: timeInMinutes,
-        title: '${entry.key}: $timeInMinutes',
+        value: percentage,
+        title: '${entry.key}: $percentageString',
         color: Colors.primaries[_tagTimes.keys.toList().indexOf(entry.key) % Colors.primaries.length],
         titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         radius: 100,
@@ -77,11 +80,6 @@ class _TagTimeChartState extends State<TagTimeChart> {
         centerSpaceRadius: 40,
         sectionsSpace: 2,
         borderData: FlBorderData(show: false),
-        pieTouchData: PieTouchData(
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            // Handle touch events if needed
-          },
-        ),
       ),
     );
   }

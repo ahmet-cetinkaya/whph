@@ -66,13 +66,13 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       int? hour,
       List<String>? filterByTags}) async {
     var query = database.customSelect(
-      'SELECT * FROM app_usage_table '
+      'SELECT id, name, display_name, color, SUM(duration) as duration, created_date, modified_date, deleted_date FROM app_usage_table '
       'WHERE deleted_date IS NULL '
-      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''}'
-      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''}'
-      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''}'
-      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''}'
-      '${filterByTags != null && filterByTags.isNotEmpty ? 'AND (SELECT COUNT(*) FROM app_usage_tag_table WHERE app_usage_tag_table.app_usage_id = app_usage_table.id AND app_usage_tag_table.tag_id IN (${List.filled(filterByTags.length, '?').join(', ')}) > 0) ' : ''}'
+      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''} '
+      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''} '
+      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''} '
+      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''} '
+      '${filterByTags != null && filterByTags.isNotEmpty ? 'AND (SELECT COUNT(*) FROM app_usage_tag_table WHERE app_usage_tag_table.app_usage_id = app_usage_table.id AND app_usage_tag_table.tag_id IN (${List.filled(filterByTags.length, '?').join(', ')}) > 0) ' : ''} '
       'GROUP BY name '
       'ORDER BY SUM(duration) DESC '
       'LIMIT ? OFFSET ?',
@@ -102,10 +102,10 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     var totalCountQuery = database.customSelect(
       'SELECT COUNT(DISTINCT name) as count FROM app_usage_table '
       'WHERE deleted_date IS NULL '
-      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''}'
-      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''}'
-      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''}'
-      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''}'
+      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''} '
+      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''} '
+      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''} '
+      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''} '
       '${filterByTags != null && filterByTags.isNotEmpty ? 'AND (SELECT COUNT(*) FROM app_usage_tag_table WHERE app_usage_tag_table.app_usage_id = app_usage_table.id AND app_usage_tag_table.tag_id IN (${List.filled(filterByTags.length, '?').join(', ')}) > 0) ' : ''}',
       variables: [
         if (year != null) Variable.withString(year.toString()),

@@ -5,7 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class AppUsageViewPage extends StatefulWidget {

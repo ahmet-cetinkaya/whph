@@ -82,104 +82,100 @@ class _TodayPageState extends State<TodayPage> {
           title: const Text('Today'),
           actions: [
             Padding(
-              padding: const EdgeInsets.all(8), // Added padding
+              padding: const EdgeInsets.all(8),
               child: TagSelectDropdown(
                   isMultiSelect: true, onTagsSelected: _onTagFilterSelect, buttonLabel: 'Filter by tags'),
             )
           ],
         ),
-        body: ListView(
-          children: [
-            _buildHabitSection(context),
-            _buildTaskSection(context),
-            _buildTimeSection(context),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: ListView(
+            children: [
+              _buildHabitSection(context),
+              _buildTaskSection(context),
+              _buildTimeSection(context),
+            ],
+          ),
         ));
   }
 
   Widget _buildHabitSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Habits',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: 100,
-            child: _isHabitListEmpty
-                ? DoneOverlay()
-                : ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      HabitsList(
-                        key: _habitKey,
-                        mediator: mediator,
-                        size: 5,
-                        mini: true,
-                        filterByTags: _selectedTagFilter,
-                        onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                        onList: _onHabitList,
-                      ),
-                    ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Habits',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        _isHabitListEmpty
+            ? DoneOverlay()
+            : SizedBox(
+                height: 80,
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: HabitsList(
+                    key: _habitKey,
+                    mediator: mediator,
+                    size: 5,
+                    mini: true,
+                    filterByTags: _selectedTagFilter,
+                    onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                    onList: _onHabitList,
                   ),
-          )
-        ],
-      ),
+                )),
+      ],
     );
   }
 
   Widget _buildTaskSection(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 16, top: 16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Tasks',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          _isTaskListEmpty
-              ? DoneOverlay()
-              : TaskList(
-                  key: _taskKey,
-                  mediator: mediator,
-                  size: 5,
-                  filterByPlannedEndDate:
-                      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59, 999),
-                  filterByDueStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                  filterByTags: _selectedTagFilter,
-                  onClickTask: (task) => _openTaskDetails(context, task.id),
-                  onList: _onTaskList,
-                ),
-        ]));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+        'Tasks',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+      _isTaskListEmpty
+          ? DoneOverlay()
+          : Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: TaskList(
+                key: _taskKey,
+                mediator: mediator,
+                size: 5,
+                filterByPlannedEndDate:
+                    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59, 999),
+                filterByDueStartDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                filterDateOr: true,
+                filterByTags: _selectedTagFilter,
+                onClickTask: (task) => _openTaskDetails(context, task.id),
+                onList: _onTaskList,
+              ),
+            ),
+    ]);
   }
 
   Widget _buildTimeSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Time',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: SizedBox(
-                height: 300,
-                width: 300,
-                child: TagTimeChart(
-                  filterByTags: _selectedTagFilter,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Time',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: SizedBox(
+              height: 300,
+              width: 300,
+              child: TagTimeChart(
+                filterByTags: _selectedTagFilter,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

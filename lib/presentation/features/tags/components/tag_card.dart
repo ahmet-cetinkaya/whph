@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 
 class TagCard extends StatelessWidget {
   final TagListItem tag;
@@ -15,8 +16,10 @@ class TagCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        contentPadding: const EdgeInsets.all(9.0),
-        leading: const Icon(Icons.label),
+        leading: const Icon(
+          Icons.label,
+          size: AppTheme.fontSizeLarge,
+        ),
         title: Text(tag.name),
         onTap: onOpenDetails,
       ),

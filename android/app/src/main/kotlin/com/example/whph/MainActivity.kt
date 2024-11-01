@@ -1,4 +1,4 @@
-package com.example.whph
+package com.ahmetcetinkaya.whph
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,7 +8,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.whph/app_info"
+    private val CHANNEL = "com.ahmetcetinkaya.whph/app_info"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

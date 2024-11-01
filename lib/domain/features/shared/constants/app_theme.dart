@@ -37,6 +37,11 @@ class AppTheme {
   static const double fontSizeLarge = 20.0;
   static const double fontSizeXLarge = 24.0;
 
+  static const double iconSizeSmall = 16.0;
+  static const double iconSizeMedium = 24.0;
+  static const double iconSizeLarge = 32.0;
+  static const double iconSizeXLarge = 48.0;
+
   static const double screenSmall = 320.0;
   static const double screenMedium = 768.0;
   static const double screenLarge = 1024.0;

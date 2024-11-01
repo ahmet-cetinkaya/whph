@@ -3,7 +3,7 @@ import 'package:whph/presentation/features/habits/components/habit_delete_button
 import 'package:whph/presentation/features/habits/components/habit_details_content.dart';
 import 'package:whph/presentation/features/habits/components/habit_title_input_field.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 
 class HabitDetailsPage extends StatelessWidget {
   final String habitId;

@@ -3,7 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
 import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';

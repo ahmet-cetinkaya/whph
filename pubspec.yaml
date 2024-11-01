@@ -1,5 +1,5 @@
 name: whph
-description: "A new Flutter project."
+description: "A new Flutter project"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -25,7 +25,11 @@ environment:
 scripts:
   clean: flutter clean && rm -rf ./.dart_tool && flutter pub get
   format: dart format . -l 120
-  gen: flutter pub run build_runner build --delete-conflicting-outputs
+  gen: flutter pub run build_runner build --delete-conflicting-outputs && dart format ./**/*.g.dart -l 120
+  gen-icons: flutter pub run icons_launcher:create
+  release-linux: flutter build linux --release
+  release-windows: flutter build windows --release
+  release-android: flutter build apk --release
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -37,30 +41,27 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-
-  kiwi: ^5.0.1 # Dependency Injection
-  mediatr: ^0.2.1 # Mediator Pattern
-
   # Data
-  drift: ^2.20.3
+  drift: ^2.21.0
   nanoid2: ^2.0.1
-  sqflite: ^2.3.3+2
-  sqlite3_flutter_libs: ^0.5.24
+  sqflite: ^2.4.0
+  sqlite3_flutter_libs: ^0.5.26
 
   # Utils
+  kiwi: ^5.0.1 # Dependency Injection
+  mediatr: ^0.2.1 # Mediator Pattern
   meta: ^1.15.0 # Annotations
   path: ^1.9.0
-  path_provider: ^2.0.11
+  path_provider: ^2.1.5
+  dart_json_mapper: ^2.2.13
+  url_launcher: ^6.3.1
+  intl: ^0.19.0 # Internationalization
 
   # UI
-  intl: ^0.19.0 # Internationalization
+  cupertino_icons: ^1.0.8
   markdown_editor_plus: ^0.2.15
-
-  # Android
-  usage_stats_new: ^2.0.5
+  fl_chart: ^0.69.0
+  flutter_colorpicker: ^1.1.0
 
   # Desktop
   qr_flutter: ^4.1.0
@@ -70,9 +71,6 @@ dependencies:
 
   # Mobile
   qr_code_scanner_plus: ^2.0.6
-  dart_json_mapper: ^2.2.13
-  fl_chart: ^0.69.0
-  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -87,7 +85,10 @@ dev_dependencies:
   build_runner: ^2.4.13
 
   # Data
-  drift_dev: ^2.20.1 # ORM Generator
+  drift_dev: ^2.21.2 # ORM Generator
+
+  # Icon
+  icons_launcher: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -100,9 +101,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - lib/domain/features/shared/assets/
+    - linux/getActiveWindow.bash
+    - windows/getActiveWindow.ps1
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -129,3 +131,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+

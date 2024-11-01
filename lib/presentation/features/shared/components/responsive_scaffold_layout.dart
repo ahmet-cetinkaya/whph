@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
 class NavItem {
   final String title;
-  final String route;
+  final IconData? icon;
+  final Widget? widget;
+  final String? route;
+  final Function(BuildContext context)? onTap;
 
-  NavItem(this.title, this.route);
+  NavItem({required this.title, this.icon, this.widget, this.route, this.onTap});
 }
 
 class ResponsiveScaffoldLayout extends StatefulWidget {
   final Widget appBarTitle;
   final List<Widget>? appBarActions;
-  final List<NavItem> navItems;
+  final List<NavItem> topNavItems;
+  final List<NavItem>? bottomNavItems;
   final Map<String, WidgetBuilder> routes;
   final WidgetBuilder defaultRoute;
 
-  const ResponsiveScaffoldLayout(
-      {super.key,
-      required this.navItems,
-      required this.routes,
-      required this.appBarTitle,
-      this.appBarActions,
-      required this.defaultRoute});
+  const ResponsiveScaffoldLayout({
+    super.key,
+    required this.topNavItems,
+    this.bottomNavItems,
+    required this.routes,
+    required this.appBarTitle,
+    this.appBarActions,
+    required this.defaultRoute,
+  });
 
   @override
   State<ResponsiveScaffoldLayout> createState() => _ResponsiveScaffoldLayoutState();
@@ -30,6 +36,23 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
 
 class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  void _navigateTo(String routeName) {
+    Navigator.of(_navigatorKey.currentContext!).pushNamedAndRemoveUntil(
+      routeName,
+      ModalRoute.withName('/'),
+    );
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _onClickNavItem(NavItem navItem) {
+    if (navItem.route != null) {
+      _navigateTo(navItem.route!);
+    }
+    navItem.onTap?.call(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +71,13 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             : null,
         actions: widget.appBarActions,
       ),
-      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) ? null : _buildDrawer(widget.navItems),
+      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium)
+          ? null
+          : _buildDrawer(widget.topNavItems, widget.bottomNavItems),
       body: Row(
         children: [
-          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium)) _buildDrawer(widget.navItems),
+          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium))
+            _buildDrawer(widget.topNavItems, widget.bottomNavItems),
           Expanded(
             child: Navigator(
               key: _navigatorKey,
@@ -65,45 +91,48 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
-  Widget _buildDrawer(List<NavItem> navItems) {
+  Widget _buildDrawer(List<NavItem> topNavItems, List<NavItem>? bottomNavItems) {
     final isMobile = MediaQuery.of(context).size.width <= 600;
-    return Drawer(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: isMobile ? Radius.circular(16.0) : Radius.zero,
-          bottomRight: Radius.circular(16.0),
+    final drawerWidth = isMobile ? MediaQuery.of(context).size.width * 0.75 : 200.0;
+    return SizedBox(
+      width: drawerWidth,
+      child: Drawer(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: isMobile ? Radius.circular(16.0) : Radius.zero,
+            bottomRight: Radius.circular(16.0),
+          ),
         ),
-      ),
-      child: ListView(
-        children: [
-          if (isMobile)
-            SizedBox(
-              height: 65,
-              child: DrawerHeader(
-                child: widget.appBarTitle,
+        child: Column(
+          children: [
+            if (isMobile)
+              SizedBox(
+                height: 85,
+                child: DrawerHeader(
+                  child: widget.appBarTitle,
+                ),
+              ),
+            Expanded(
+              child: ListView(
+                children: [
+                  ...topNavItems.map((navItem) => _buildNavItem(navItem)),
+                ],
               ),
             ),
-          ...navItems.map((navItem) {
-            return ListTile(
-              title: Text(navItem.title),
-              onTap: () {
-                _navigateTo(navItem.route);
-              },
-            );
-          }),
-        ],
+            Divider(),
+            if (bottomNavItems != null) ...bottomNavItems.map((navItem) => _buildNavItem(navItem)),
+          ],
+        ),
       ),
     );
   }
 
-  void _navigateTo(String routeName) {
-    Navigator.of(_navigatorKey.currentContext!).pushNamedAndRemoveUntil(
-      routeName,
-      ModalRoute.withName('/'),
+  ListTile _buildNavItem(NavItem navItem) {
+    return ListTile(
+      leading: navItem.icon != null ? Icon(navItem.icon) : null,
+      title: navItem.widget ?? Text(navItem.title, style: Theme.of(context).textTheme.labelLarge),
+      onTap: () => _onClickNavItem(navItem),
     );
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
-    }
   }
 
   PageRoute _buildPageRoute(RouteSettings settings) {

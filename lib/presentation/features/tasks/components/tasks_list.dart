@@ -13,6 +13,7 @@ class TaskList extends StatefulWidget {
   final DateTime? filterByPlannedEndDate;
   final DateTime? filterByDueStartDate;
   final DateTime? filterByDueEndDate;
+  final bool filterDateOr;
   final List<String>? filterByTags;
   final bool? filterByCompleted;
 
@@ -28,6 +29,7 @@ class TaskList extends StatefulWidget {
       this.filterByPlannedEndDate,
       this.filterByDueStartDate,
       this.filterByDueEndDate,
+      this.filterDateOr = false,
       this.filterByTags = const [],
       this.filterByCompleted,
       required this.onClickTask,
@@ -55,6 +57,7 @@ class _TaskListState extends State<TaskList> {
         filterByPlannedEndDate: widget.filterByPlannedEndDate,
         filterByDeadlineStartDate: widget.filterByDueStartDate,
         filterByDeadlineEndDate: widget.filterByDueEndDate,
+        filterDateOr: widget.filterDateOr,
         filterByTags: widget.filterByTags,
         filterByCompleted: widget.filterByCompleted);
     var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
