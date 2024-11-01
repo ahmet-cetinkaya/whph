@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagCard extends StatelessWidget {
   final TagListItem tag;

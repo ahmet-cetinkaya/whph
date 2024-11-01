@@ -11,7 +11,7 @@ import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/domain/features/shared/constants/app_info.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppAbout extends StatelessWidget {

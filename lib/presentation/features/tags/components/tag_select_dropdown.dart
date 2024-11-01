@@ -3,7 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();

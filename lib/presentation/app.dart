@@ -6,7 +6,7 @@ import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';

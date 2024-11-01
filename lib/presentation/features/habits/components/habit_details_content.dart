@@ -8,7 +8,7 @@ import 'package:whph/application/features/habits/queries/get_list_habit_records_
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:intl/intl.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart'; // For handling dates
+import 'package:whph/presentation/features/shared/constants/app_theme.dart'; // For handling dates
 
 class HabitDetailsContent extends StatefulWidget {
   final String habitId;
