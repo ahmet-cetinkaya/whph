@@ -31,7 +31,8 @@ class AppUsageService implements IAppUsageService {
   }
 
   void _startDesktopTracking() {
-    _intervalTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+    const int time = 5;
+    _intervalTimer = Timer.periodic(const Duration(seconds: time), (timer) async {
       String? currentWindow = await _getDesktopActiveWindow();
       if (currentWindow == null) return;
 
@@ -53,7 +54,7 @@ class AppUsageService implements IAppUsageService {
         _activeDesktopWindowTime = 0;
       }
 
-      _activeDesktopWindowTime++;
+      _activeDesktopWindowTime += time;
     });
   }
 
