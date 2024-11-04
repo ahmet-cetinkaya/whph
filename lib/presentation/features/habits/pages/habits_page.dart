@@ -6,6 +6,7 @@ import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
@@ -73,50 +74,66 @@ class _HabitsPageState extends State<HabitsPage> {
           child: ListView(
             key: _habitsListKey,
             children: [
-              Row(
-                children: [
-                  TagSelectDropdown(
-                    isMultiSelect: true,
-                    onTagsSelected: _onFilterTagsSelect,
-                    buttonLabel: "Filter by tags",
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ...lastDays.map(
-                            (date) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    DateTimeHelper.getWeekday(date.weekday),
-                                    style: TextStyle(
-                                      color: DateTimeHelper.isSameDay(date, today)
-                                          ? AppTheme.primaryColor
-                                          : AppTheme.textColor,
-                                      fontSize: AppTheme.fontSizeSmall,
-                                    ),
-                                  ),
-                                  Text(date.day.toString(),
-                                      style: TextStyle(
-                                        color: DateTimeHelper.isSameDay(date, today)
-                                            ? AppTheme.primaryColor
-                                            : AppTheme.textColor,
-                                        fontSize: AppTheme.fontSizeSmall,
-                                      ))
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+              // Filters
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width -
+                      (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) ? 214 : 14),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Filter by tags
+                      TagSelectDropdown(
+                        isMultiSelect: true,
+                        onTagsSelected: _onFilterTagsSelect,
+                        buttonLabel: (_selectedFilterTags.isEmpty)
+                            ? 'Filter by tags'
+                            : '${_selectedFilterTags.length} tags selected',
                       ),
-                    ),
+
+                      // Calendar
+                      if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12.5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ...lastDays.map(
+                                (date) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 9.8),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        DateTimeHelper.getWeekday(date.weekday),
+                                        style: TextStyle(
+                                          color: DateTimeHelper.isSameDay(date, today)
+                                              ? AppTheme.primaryColor
+                                              : AppTheme.textColor,
+                                          fontSize: AppTheme.fontSizeSmall,
+                                        ),
+                                      ),
+                                      Text(date.day.toString(),
+                                          style: TextStyle(
+                                            color: DateTimeHelper.isSameDay(date, today)
+                                                ? AppTheme.primaryColor
+                                                : AppTheme.textColor,
+                                            fontSize: AppTheme.fontSizeSmall,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
-                ],
+                ),
               ),
+
+              // List
               HabitsList(
                 key: _habitsListKey,
                 mediator: widget.mediator,

@@ -6,6 +6,7 @@ import 'package:whph/application/features/habits/queries/get_list_habit_records_
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 
 class HabitCard extends StatefulWidget {
@@ -82,22 +83,48 @@ class _HabitCardState extends State<HabitCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: widget.onOpenDetails,
-        child: Card(
-            child: Padding(
+      onTap: widget.onOpenDetails,
+      child: Card(
+        child: Padding(
           padding: const EdgeInsets.all(8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.refresh),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(widget.habit.name),
-              ),
-              widget.isMiniLayout ? _buildCheckbox(context) : _buildCalendar(),
-            ],
-          ),
-        )));
+          child: widget.isMiniLayout || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall)
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _buildHabitName(),
+                    _buildCheckbox(context),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildHabitName(),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: _buildCalendar(),
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHabitName() {
+    return Expanded(
+      flex: 1,
+      child: Wrap(
+        children: [
+          Icon(Icons.refresh),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                widget.habit.name,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ],
+      ),
+    );
   }
 
   Widget _buildCheckbox(BuildContext context) {
@@ -134,6 +161,7 @@ class _HabitCardState extends State<HabitCard> {
 
     return Expanded(
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: lastDays.map((date) {
           bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
@@ -143,47 +171,42 @@ class _HabitCardState extends State<HabitCard> {
             recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
           }
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: GestureDetector(
-              onTap: () async {
-                if (hasRecord) {
-                  await _deleteHabitRecord(recordForDay!.id);
-                } else {
-                  await _createHabitRecord(widget.habit.id, date);
-                }
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Day of the week
-                  if (widget.isDateLabelShowing)
-                    Column(
-                      children: [
-                        Text(
-                          DateTimeHelper.getWeekday(date.weekday),
-                          style: TextStyle(
-                            color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                            fontSize: AppTheme.fontSizeSmall,
-                          ),
-                        ),
-                        Text(date.day.toString(),
-                            style: TextStyle(
-                              color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                              fontSize: AppTheme.fontSizeMedium,
-                            ))
-                      ],
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Day of the week
+              if (widget.isDateLabelShowing)
+                Column(
+                  children: [
+                    Text(
+                      DateTimeHelper.getWeekday(date.weekday),
+                      style: TextStyle(
+                        color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                        fontSize: AppTheme.fontSizeSmall,
+                      ),
                     ),
+                    Text(date.day.toString(),
+                        style: TextStyle(
+                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                          fontSize: AppTheme.fontSizeMedium,
+                        ))
+                  ],
+                ),
 
-                  // Checkbox icon
-                  Icon(
-                    hasRecord ? Icons.link : Icons.close,
-                    color: hasRecord ? Colors.green : Colors.red,
-                  ),
-                ],
+              // Checkbox icon
+              IconButton(
+                onPressed: () async {
+                  if (hasRecord) {
+                    await _deleteHabitRecord(recordForDay!.id);
+                  } else {
+                    await _createHabitRecord(widget.habit.id, date);
+                  }
+                },
+                icon: Icon(hasRecord ? Icons.link : Icons.close),
+                color: hasRecord ? Colors.green : Colors.red,
               ),
-            ),
+            ],
           );
         }).toList(),
       ),

@@ -108,7 +108,7 @@ class _HabitsListState extends State<HabitsList> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ..._habits!.items.map((habit) {
         return SizedBox(
-          height: 60,
+          height: 64,
           child: HabitCard(
               habit: habit,
               onOpenDetails: () => widget.onClickHabit(habit),

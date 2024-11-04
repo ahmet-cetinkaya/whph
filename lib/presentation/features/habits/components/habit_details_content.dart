@@ -127,7 +127,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               children: [
                 // Description
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: 32),
                   child: Column(
                     children: [
                       Padding(
@@ -166,7 +166,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: const Icon(Icons.description),
+                        child: const Icon(Icons.link),
                       ),
                       const Text('Records', style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
@@ -268,8 +268,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         if (hasRecord) {
           recordForDay = records.firstWhere((record) => isSameDay(record.date, date));
         }
-        return GestureDetector(
-          onTap: isFutureDate || isDisabled
+
+        return ElevatedButton(
+          onPressed: isFutureDate || isDisabled
               ? null
               : () async {
                   if (hasRecord) {
@@ -278,27 +279,28 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     await _createHabitRecord(widget.habitId, date);
                   }
                 },
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.surface1),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: AppTheme.textColor,
+            disabledBackgroundColor: AppTheme.surface2,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
-              color: isFutureDate ? AppTheme.surface2 : AppTheme.surface1,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Day of the month
-                Text(
-                  '${date.day}',
-                  style: TextStyle(fontSize: 12),
-                ),
+            side: BorderSide(color: AppTheme.surface1),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Day of the month
+              Text(
+                '${date.day}',
+                style: TextStyle(fontSize: 12),
+              ),
 
-                // Icon
-                if (date.isAfter(DateTime.now())) const Icon(Icons.lock, size: 16, color: Colors.grey),
-                if (date.isBefore(DateTime.now()))
-                  Icon(hasRecord ? Icons.link : Icons.close, color: hasRecord ? Colors.green : Colors.red, size: 20),
-              ],
-            ),
+              // Icon
+              if (date.isAfter(DateTime.now())) const Icon(Icons.lock, size: 16, color: Colors.grey),
+              if (date.isBefore(DateTime.now()))
+                Icon(hasRecord ? Icons.link : Icons.close, color: hasRecord ? Colors.green : Colors.red, size: 20),
+            ],
           ),
         );
       }).toList(),
