@@ -23,7 +23,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   Future<PaginatedList<TEntity>> getList(int pageIndex, int pageSize,
       {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     List<String> whereClauses = [
-      if (customWhereFilter != null) customWhereFilter.query,
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
