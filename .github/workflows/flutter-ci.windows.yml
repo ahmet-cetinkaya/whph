@@ -1,0 +1,45 @@
+name: Flutter CI - Windows
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # Install dependencies
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      # Build for Windows
+      - name: Build for Windows
+        run: flutter build windows --release
+
+      # Publish the build artifacts
+      - name: Get application version
+        id: app_version
+        run: |
+          $content = Get-Content 'pubspec.yaml'
+          $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value }
+          echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: whph-v${{ env.APP_VERSION }}-windows
+          path: build\windows\x64\runner\Release\
+          if-no-files-found: error
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
