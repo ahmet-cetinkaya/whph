@@ -3,11 +3,15 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 
 class HabitNameInputField extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final HabitsService _habitsService = container.resolve<HabitsService>();
+
   final String habitId;
 
-  const HabitNameInputField({
+  HabitNameInputField({
     super.key,
     required this.habitId,
   });
@@ -17,34 +21,42 @@ class HabitNameInputField extends StatefulWidget {
 }
 
 class _HabitNameInputFieldState extends State<HabitNameInputField> {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final TextEditingController _titleController = TextEditingController();
-
   GetHabitQueryResponse? habit;
+  final TextEditingController _titleController = TextEditingController();
 
   @override
   void initState() {
-    super.initState();
     _getHabit();
+    widget._habitsService.onHabitSaved.addListener(_getHabit);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget._habitsService.onHabitSaved.removeListener(_getHabit);
+    _titleController.dispose();
+    super.dispose();
   }
 
   Future<void> _getHabit() async {
     var query = GetHabitQuery(id: widget.habitId);
-    var response = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+    var response = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
     setState(() {
       habit = response;
       _titleController.text = habit!.name;
     });
   }
 
-  void _updateHabit() {
+  Future<void> _updateHabit() async {
     var command = SaveHabitCommand(
       id: widget.habitId,
       name: _titleController.text,
       description: habit!.description,
     );
+    var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-    _mediator.send(command);
+    widget._habitsService.onHabitSaved.value = result;
   }
 
   @override
@@ -64,11 +76,5 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
               ),
             ],
           );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
   }
 }

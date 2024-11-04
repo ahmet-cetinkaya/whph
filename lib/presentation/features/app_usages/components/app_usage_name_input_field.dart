@@ -4,12 +4,16 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class AppUsageNameInputField extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
+
   final String id;
 
-  const AppUsageNameInputField({
+  AppUsageNameInputField({
     super.key,
     required this.id,
   });
@@ -19,8 +23,6 @@ class AppUsageNameInputField extends StatefulWidget {
 }
 
 class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
-  final Mediator _mediator = container.resolve<Mediator>();
-
   GetAppUsageQueryResponse? _appUsage;
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
@@ -28,12 +30,21 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   @override
   void initState() {
     _getAppUsage();
+    widget._appUsagesService.onAppUsageSaved.addListener(_getAppUsage);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _debounce?.cancel();
+    widget._appUsagesService.onAppUsageSaved.removeListener(_getAppUsage);
+    super.dispose();
   }
 
   Future<void> _getAppUsage() async {
     var query = GetAppUsageQuery(id: widget.id);
-    var response = await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+    var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
     if (mounted) {
       setState(() {
         _appUsage = response;
@@ -53,7 +64,9 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
     );
 
     try {
-      await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+      var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+
+      widget._appUsagesService.onAppUsageSaved.value = result;
     } catch (e) {
       if (context.mounted) {
         ErrorHelper.showError(context, e);
@@ -72,13 +85,6 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       });
       await _saveAppUsage(context);
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _debounce?.cancel();
-    super.dispose();
   }
 
   @override

@@ -10,6 +10,7 @@ import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dar
 import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
 import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
+import 'package:whph/presentation/presentation_container.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 
 late final IContainer container;
@@ -20,6 +21,7 @@ void main() {
 
   registerPersistence(container);
   registerApplication(container);
+  registerPresentation(container);
 
   runBackgroundWorkers();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) startWebSocketServer();

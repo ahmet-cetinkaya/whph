@@ -5,11 +5,15 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 
 class TaskTitleInputField extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final TasksService _tasksService = container.resolve<TasksService>();
+
   final String taskId;
 
-  const TaskTitleInputField({
+  TaskTitleInputField({
     super.key,
     required this.taskId,
   });
@@ -19,24 +23,30 @@ class TaskTitleInputField extends StatefulWidget {
 }
 
 class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
-  final Mediator _mediator = container.resolve<Mediator>();
-
-  final TextEditingController _titleController = TextEditingController();
   GetTaskQueryResponse? _task;
+  final TextEditingController _titleController = TextEditingController();
   Timer? _debounce;
 
   @override
   void initState() {
-    super.initState();
     _getTask();
+    widget._tasksService.onTaskSaved.addListener(_getTask);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _debounce?.cancel();
+    widget._tasksService.onTaskSaved.removeListener(_getTask);
+    super.dispose();
   }
 
   Future<void> _getTask() async {
-    var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-      GetTaskQuery(id: widget.taskId),
-    );
+    var query = GetTaskQuery(id: widget.taskId);
+    var result = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
     setState(() {
-      _task = response;
+      _task = result;
       _titleController.text = _task!.title;
     });
   }
@@ -48,9 +58,7 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
     });
   }
 
-  void _updateTask() {
-    if (_task == null) return;
-
+  Future<void> _updateTask() async {
     var command = SaveTaskCommand(
       id: widget.taskId,
       title: _titleController.text,
@@ -62,8 +70,9 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
       plannedDate: _task!.plannedDate,
       priority: _task!.priority,
     );
+    var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
-    _mediator.send(command);
+    widget._tasksService.onTaskSaved.value = result;
   }
 
   @override
@@ -88,12 +97,5 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _debounce?.cancel();
-    super.dispose();
   }
 }

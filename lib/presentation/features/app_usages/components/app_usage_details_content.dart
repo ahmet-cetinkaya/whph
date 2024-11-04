@@ -7,6 +7,7 @@ import 'package:whph/application/features/app_usages/queries/get_app_usage_query
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/features/shared/components/color_picker.dart';
 import 'package:whph/presentation/features/shared/components/color_preview.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
@@ -14,9 +15,12 @@ import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class AppUsageDetailsContent extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
+
   final String id;
 
-  const AppUsageDetailsContent({
+  AppUsageDetailsContent({
     super.key,
     required this.id,
   });
@@ -26,16 +30,20 @@ class AppUsageDetailsContent extends StatefulWidget {
 }
 
 class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
-  final Mediator _mediator = container.resolve<Mediator>();
-
   GetAppUsageQueryResponse? _appUsage;
   GetListAppUsageTagsQueryResponse? _appUsageTags;
 
   @override
   void initState() {
     _getInitialData();
-
+    widget._appUsagesService.onAppUsageSaved.addListener(_getAppUsage);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget._appUsagesService.onAppUsageSaved.removeListener(_getAppUsage);
+    super.dispose();
   }
 
   Future<void> _getInitialData() async {
@@ -45,7 +53,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   Future<void> _getAppUsage() async {
     var query = GetAppUsageQuery(id: widget.id);
     try {
-      var response = await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+      var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       setState(() {
         _appUsage = response;
       });
@@ -64,7 +72,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       color: _appUsage!.color,
     );
     try {
-      await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+      var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+
+      widget._appUsagesService.onAppUsageSaved.value = result;
     } catch (e) {
       if (context.mounted) {
         ErrorHelper.showError(context, e);
@@ -75,7 +85,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   Future<void> _getAppUsageAppUsages() async {
     var query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: 0, pageSize: 999);
     try {
-      var result = await _mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+      var result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
       setState(() {
         _appUsageTags = result;
       });
@@ -89,7 +99,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   Future<void> _addTag(String appUsageId) async {
     var command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: appUsageId);
     try {
-      await _mediator.send(command);
+      await widget._mediator.send(command);
     } catch (e) {
       if (context.mounted) {
         ErrorHelper.showError(context, e);
@@ -102,7 +112,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   Future<void> _removeTag(String id) async {
     var command = RemoveAppUsageTagCommand(id: id);
     try {
-      await _mediator.send(command);
+      await widget._mediator.send(command);
     } catch (e) {
       if (context.mounted) {
         ErrorHelper.showError(context, e);
@@ -191,11 +201,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             children: [
               ColorPreview(color: Color(int.parse("FF${_appUsage!.color!}", radix: 16))),
               IconButton(onPressed: _onChangeColorOpen, icon: Icon(Icons.edit))
-              // ColorPicker(
-              //   key: ValueKey(_appUsage!.color),
-              //   pickerColor: Color(int.parse(_appUsage!.color!, radix: 16)),
-              //   changeColor: _onChangeColor,
-              // ),
             ],
           )),
     ]);

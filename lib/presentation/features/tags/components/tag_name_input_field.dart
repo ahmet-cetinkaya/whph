@@ -6,9 +6,11 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 
 class TagNameInputField extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+
   final String id;
 
-  const TagNameInputField({
+  TagNameInputField({
     super.key,
     required this.id,
   });
@@ -18,7 +20,6 @@ class TagNameInputField extends StatefulWidget {
 }
 
 class _TagNameInputFieldState extends State<TagNameInputField> {
-  final Mediator _mediator = container.resolve<Mediator>();
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
 
@@ -30,7 +31,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
 
   Future<void> _getTagName() async {
     var query = GetTagQuery(id: widget.id);
-    var response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
+    var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
     if (mounted) {
       setState(() {
         _controller.text = response.name;
@@ -46,7 +47,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
         name: _controller.text,
       );
       try {
-        await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
+        await widget._mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

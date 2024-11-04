@@ -34,10 +34,7 @@ class HabitDetailsPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: HabitDetailsContent(
-          habitId: habitId,
-          isNameFieldVisible: false,
-        ),
+        child: HabitDetailsContent(habitId: habitId),
       ),
     );
   }

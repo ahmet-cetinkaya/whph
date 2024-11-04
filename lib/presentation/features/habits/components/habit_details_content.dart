@@ -8,47 +8,55 @@ import 'package:whph/application/features/habits/queries/get_list_habit_records_
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:intl/intl.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart'; // For handling dates
 
 class HabitDetailsContent extends StatefulWidget {
-  final String habitId;
-  final bool isNameFieldVisible;
+  final Mediator _mediator = container.resolve<Mediator>();
+  final HabitsService _habitsService = container.resolve<HabitsService>();
 
-  const HabitDetailsContent({super.key, required this.habitId, this.isNameFieldVisible = true});
+  final String habitId;
+
+  HabitDetailsContent({super.key, required this.habitId});
 
   @override
   State<HabitDetailsContent> createState() => _HabitDetailsContentState();
 }
 
 class _HabitDetailsContentState extends State<HabitDetailsContent> {
-  final Mediator mediator = container.resolve<Mediator>();
+  GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   GetListHabitRecordsQueryResponse? _habitRecords;
 
-  bool _isLoading = false;
   DateTime currentMonth = DateTime.now();
 
   @override
   void initState() {
-    super.initState();
     _getHabit();
     _getHabitRecordsForMonth(currentMonth);
+    widget._habitsService.onHabitSaved.addListener(_getHabit);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget._habitsService.onHabitSaved.removeListener(_getHabit);
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   Future<void> _getHabit() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     var query = GetHabitQuery(id: widget.habitId);
-    var response = await mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
-    _nameController.text = response.name;
-    _descriptionController.text = response.description;
+    var result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
 
     setState(() {
-      _isLoading = false;
+      _habit = result;
+      _nameController.text = _habit!.name;
+      _descriptionController.text = _habit!.description;
     });
   }
 
@@ -63,13 +71,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       startDate: firstDayOfMonth,
       endDate: lastDayOfMonth,
     );
-    var result = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+    var result = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
     _habitRecords = result;
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
     setState(() {
       _getHabitRecordsForMonth(currentMonth);
     });
@@ -77,7 +85,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
-    await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
     setState(() {
       _getHabitRecordsForMonth(currentMonth);
     });
@@ -97,24 +105,26 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     });
   }
 
+  Future<void> _saveHabit() async {
+    var command = SaveHabitCommand(
+      id: widget.habitId,
+      name: _nameController.text,
+      description: _descriptionController.text,
+    );
+    var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+
+    widget._habitsService.onHabitSaved.value = result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
-      child: _isLoading
+      child: _habit == null
           ? const Center(child: CircularProgressIndicator())
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.isNameFieldVisible) ...[
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(labelText: 'Habit Name'),
-                    onChanged: (value) => _saveHabit(),
-                  ),
-                  const SizedBox(height: 8.0),
-                ],
-
                 // Description
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -149,6 +159,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   ),
                 ),
 
+                // Records
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
@@ -296,14 +307,5 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
-
-  Future<void> _saveHabit() async {
-    var command = SaveHabitCommand(
-      id: widget.habitId,
-      name: _nameController.text,
-      description: _descriptionController.text,
-    );
-    await mediator.send(command);
   }
 }

@@ -10,9 +10,11 @@ import 'package:whph/presentation/features/shared/components/detail_table.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class TagDetailsContent extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+
   final String tagId;
 
-  const TagDetailsContent({
+  TagDetailsContent({
     super.key,
     required this.tagId,
   });
@@ -22,8 +24,6 @@ class TagDetailsContent extends StatefulWidget {
 }
 
 class _TagDetailsContentState extends State<TagDetailsContent> {
-  final Mediator _mediator = container.resolve<Mediator>();
-
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
 
@@ -40,7 +40,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   Future<void> _getTag() async {
     try {
       var query = GetTagQuery(id: widget.tagId);
-      var response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
+      var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       setState(() {
         _tag = response;
       });
@@ -52,7 +52,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   Future<void> _getTagTags() async {
     try {
       var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: 0, pageSize: 100);
-      var response = await _mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
+      var response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
       setState(() {
         _tagTags = response;
       });
@@ -63,13 +63,13 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   Future<void> _addTag(String tagId) async {
     var command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
-    await _mediator.send(command);
+    await widget._mediator.send(command);
     await _getTagTags();
   }
 
   Future<void> _removeTag(String id) async {
     var command = RemoveTagTagCommand(id: id);
-    await _mediator.send(command);
+    await widget._mediator.send(command);
     await _getTagTags();
   }
 

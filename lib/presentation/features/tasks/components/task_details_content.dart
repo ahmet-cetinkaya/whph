@@ -16,11 +16,15 @@ import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 
 class TaskDetailsContent extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final TasksService _tasksService = container.resolve<TasksService>();
+
   final String taskId;
 
-  const TaskDetailsContent({
+  TaskDetailsContent({
     super.key,
     required this.taskId,
   });
@@ -30,8 +34,6 @@ class TaskDetailsContent extends StatefulWidget {
 }
 
 class _TaskDetailsContentState extends State<TaskDetailsContent> {
-  final Mediator _mediator = container.resolve<Mediator>();
-
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
   final TextEditingController _plannedDateController = TextEditingController();
@@ -50,8 +52,15 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   @override
   void initState() {
-    super.initState();
     _getInitialData();
+    widget._tasksService.onTaskSaved.addListener(_getTask);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget._tasksService.onTaskSaved.removeListener(_getTask);
+    super.dispose();
   }
 
   Future<void> _getInitialData() async {
@@ -61,7 +70,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _getTask() async {
     try {
       var query = GetTaskQuery(id: widget.taskId);
-      var response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      var response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
       setState(() {
         _task = response;
         _plannedDateController.text =
@@ -78,7 +87,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _getTaskTags() async {
     try {
       var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: 0, pageSize: 100);
-      var response = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
+      var response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
       setState(() {
         _taskTags = response;
       });
@@ -88,22 +97,20 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _updateTask() async {
-    if (_task == null) return;
-
+    var saveCommand = SaveTaskCommand(
+      id: _task!.id,
+      title: _task!.title,
+      description: _descriptionController.text,
+      plannedDate: DateTime.tryParse(_plannedDateController.text),
+      deadlineDate: DateTime.tryParse(_deadlineDateController.text),
+      priority: _task!.priority,
+      estimatedTime: _task!.estimatedTime,
+      elapsedTime: _task!.elapsedTime,
+      isCompleted: _task!.isCompleted,
+    );
     try {
-      var saveCommand = SaveTaskCommand(
-        id: _task!.id,
-        title: _task!.title,
-        description: _descriptionController.text,
-        plannedDate: DateTime.tryParse(_plannedDateController.text),
-        deadlineDate: DateTime.tryParse(_deadlineDateController.text),
-        priority: _task!.priority,
-        estimatedTime: _task!.estimatedTime,
-        elapsedTime: _task!.elapsedTime,
-        isCompleted: _task!.isCompleted,
-      );
-
-      await _mediator.send<SaveTaskCommand, void>(saveCommand);
+      var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+      widget._tasksService.onTaskSaved.value = result;
     } catch (e) {
       _showError(e.toString());
     }
@@ -112,7 +119,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _addTag(String tagId) async {
     try {
       var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
-      await _mediator.send(command);
+      await widget._mediator.send(command);
       await _getTaskTags();
     } catch (e) {
       _showError(e.toString());
@@ -122,7 +129,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _removeTag(String id) async {
     try {
       var command = RemoveTaskTagCommand(id: id);
-      await _mediator.send(command);
+      await widget._mediator.send(command);
       await _getTaskTags();
     } catch (e) {
       _showError(e.toString());
