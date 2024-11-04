@@ -7,6 +7,7 @@ import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/update_checker.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
@@ -17,6 +18,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UpdateChecker.checkForUpdates(context);
+
     final topNavItems = [
       NavItem(title: 'Today', icon: Icons.today, route: TodayPage.route),
       NavItem(title: 'Tasks', icon: Icons.check_circle, route: TasksPage.route),
