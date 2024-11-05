@@ -80,24 +80,26 @@ class _HabitsListState extends State<HabitsList> {
   }
 
   Widget _buildMiniCardList() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Wrap(
       children: [
         // List
         ..._habits!.items.map((habit) {
-          return HabitCard(
-              habit: habit,
-              isMiniLayout: widget.mini,
-              dateRange: widget.dateRange,
-              onOpenDetails: () => widget.onClickHabit(habit),
-              onRecordCreated: (_) async {
-                await Future.delayed(Duration(seconds: 3));
-                _refreshHabits();
-              },
-              onRecordDeleted: (_) async {
-                await Future.delayed(Duration(seconds: 3));
-                _refreshHabits();
-              });
+          return SizedBox(
+            width: 200,
+            child: HabitCard(
+                habit: habit,
+                isMiniLayout: widget.mini,
+                dateRange: widget.dateRange,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                onRecordCreated: (_) async {
+                  await Future.delayed(Duration(seconds: 3));
+                  _refreshHabits();
+                },
+                onRecordDeleted: (_) async {
+                  await Future.delayed(Duration(seconds: 3));
+                  _refreshHabits();
+                }),
+          );
         }),
         if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
       ],
@@ -105,19 +107,25 @@ class _HabitsListState extends State<HabitsList> {
   }
 
   Widget _buildColumnList() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ..._habits!.items.map((habit) {
-        return SizedBox(
-          height: 64,
-          child: HabitCard(
-              habit: habit,
-              onOpenDetails: () => widget.onClickHabit(habit),
-              isMiniLayout: widget.mini,
-              dateRange: widget.dateRange,
-              isDateLabelShowing: false),
-        );
-      }),
-      if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
-    ]);
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._habits!.items.map((habit) {
+            return SizedBox(
+              height: 64,
+              child: HabitCard(
+                habit: habit,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                isMiniLayout: widget.mini,
+                dateRange: widget.dateRange,
+                isDateLabelShowing: false,
+              ),
+            );
+          }),
+          if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
+        ],
+      ),
+    );
   }
 }

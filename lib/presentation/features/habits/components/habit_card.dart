@@ -87,15 +87,18 @@ class _HabitCardState extends State<HabitCard> {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: widget.isMiniLayout || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall)
+          child: widget.isMiniLayout ||
+                  (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildHabitName(),
                     _buildCheckbox(context),
                   ],
                 )
               : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildHabitName(),
@@ -111,19 +114,16 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Widget _buildHabitName() {
-    return Expanded(
-      flex: 1,
-      child: Wrap(
-        children: [
-          Icon(Icons.refresh),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                widget.habit.name,
-                overflow: TextOverflow.ellipsis,
-              )),
-        ],
-      ),
+    return Wrap(
+      children: [
+        Icon(Icons.refresh),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              widget.habit.name,
+              overflow: TextOverflow.ellipsis,
+            )),
+      ],
     );
   }
 
@@ -159,57 +159,55 @@ class _HabitCardState extends State<HabitCard> {
     DateTime today = DateTime.now();
     List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
 
-    return Expanded(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: lastDays.map((date) {
-          bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: lastDays.map((date) {
+        bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
 
-          HabitRecordListItem? recordForDay;
-          if (hasRecord) {
-            recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
-          }
+        HabitRecordListItem? recordForDay;
+        if (hasRecord) {
+          recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
+        }
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Day of the week
-              if (widget.isDateLabelShowing)
-                Column(
-                  children: [
-                    Text(
-                      DateTimeHelper.getWeekday(date.weekday),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Day of the week
+            if (widget.isDateLabelShowing)
+              Column(
+                children: [
+                  Text(
+                    DateTimeHelper.getWeekday(date.weekday),
+                    style: TextStyle(
+                      color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                      fontSize: AppTheme.fontSizeSmall,
+                    ),
+                  ),
+                  Text(date.day.toString(),
                       style: TextStyle(
                         color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                        fontSize: AppTheme.fontSizeSmall,
-                      ),
-                    ),
-                    Text(date.day.toString(),
-                        style: TextStyle(
-                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                          fontSize: AppTheme.fontSizeMedium,
-                        ))
-                  ],
-                ),
-
-              // Checkbox icon
-              IconButton(
-                onPressed: () async {
-                  if (hasRecord) {
-                    await _deleteHabitRecord(recordForDay!.id);
-                  } else {
-                    await _createHabitRecord(widget.habit.id, date);
-                  }
-                },
-                icon: Icon(hasRecord ? Icons.link : Icons.close),
-                color: hasRecord ? Colors.green : Colors.red,
+                        fontSize: AppTheme.fontSizeMedium,
+                      ))
+                ],
               ),
-            ],
-          );
-        }).toList(),
-      ),
+
+            // Checkbox icon
+            IconButton(
+              onPressed: () async {
+                if (hasRecord) {
+                  await _deleteHabitRecord(recordForDay!.id);
+                } else {
+                  await _createHabitRecord(widget.habit.id, date);
+                }
+              },
+              icon: Icon(hasRecord ? Icons.link : Icons.close),
+              color: hasRecord ? Colors.green : Colors.red,
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 }
