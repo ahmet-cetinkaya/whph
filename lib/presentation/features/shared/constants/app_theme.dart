@@ -9,6 +9,7 @@ class AppTheme {
   static const Color surface2 = Color(0xFF2B2B2B);
   static const Color surface3 = Color(0xFF464646);
   static const Color textColor = Color(0xFFEBEBEB);
+  static const Color secondaryTextColor = Color(0xFFBDBDBD);
   static const Color darkTextColor = Color(0xFF121212);
   static const Color dividerColor = Color(0xFF3A3A3A);
 

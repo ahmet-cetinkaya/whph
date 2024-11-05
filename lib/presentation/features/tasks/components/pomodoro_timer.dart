@@ -3,13 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 
 class PomodoroTimer extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+
   final Function(Duration) onTimeUpdate;
 
-  const PomodoroTimer({
+  PomodoroTimer({
     super.key,
     required this.onTimeUpdate,
   });
@@ -19,13 +26,14 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> {
-  final Mediator _mediator = container.resolve<Mediator>();
   late Timer _timer;
   Duration _remainingTime = const Duration();
   bool _isWorking = true;
   bool _isRunning = false;
   late int _workDuration;
+  int _defaultWorkDuration = 25;
   late int _breakDuration;
+  int _defaultBreakDuration = 5;
 
   @override
   void initState() {
@@ -42,15 +50,18 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Future<void> _initializeSettings() async {
-    _workDuration = await _getSetting('workDuration', 25);
-    _breakDuration = await _getSetting('breakDuration', 5);
-    _remainingTime = Duration(minutes: _workDuration);
-    setState(() {});
+    _defaultWorkDuration = await _getSetting(Settings.workTime, 25);
+    _defaultBreakDuration = await _getSetting(Settings.breakTime, 5);
+    setState(() {
+      _workDuration = _defaultWorkDuration;
+      _breakDuration = _defaultBreakDuration;
+      _remainingTime = Duration(minutes: _workDuration);
+    });
   }
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      var response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      var response = await widget._mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: key),
       );
       return response.getValue<int>();
@@ -61,7 +72,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Future<void> _saveSetting(String key, int value) async {
     var command = SaveSettingCommand(key: key, value: value.toString(), valueType: SettingValueType.int);
-    await _mediator.send(command);
+    await widget._mediator.send(command);
   }
 
   void _startTimer() {
@@ -76,6 +87,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           });
           widget.onTimeUpdate(_remainingTime);
         } else {
+          widget._soundPlayer.play(SharedSounds.alarmDone);
           _toggleWorkBreak();
         }
       });
@@ -98,27 +110,27 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     });
   }
 
-  void _adjustWorkDuration(int adjustment) {
+  Future<void> _showSettingsModal() async {
     setState(() {
-      _workDuration = (_workDuration + adjustment).clamp(5, 60);
-      if (_isWorking) _remainingTime = Duration(minutes: _workDuration);
+      _isWorking = true;
+      _isRunning = false;
+      _workDuration = _defaultWorkDuration;
+      _breakDuration = _defaultBreakDuration;
     });
-    _saveSetting('workDuration', _workDuration);
-  }
-
-  void _adjustBreakDuration(int adjustment) {
-    setState(() {
-      _breakDuration = (_breakDuration + adjustment).clamp(1, 30);
-      if (!_isWorking) _remainingTime = Duration(minutes: _breakDuration);
-    });
-    _saveSetting('breakDuration', _breakDuration);
-  }
-
-  void _showSettingsModal() {
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
-      builder: (_) => _buildSettingsModal(),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return _buildSettingsModal(setState);
+          },
+        );
+      },
     );
+    _saveSetting(Settings.workTime, _workDuration);
+    _defaultBreakDuration = _breakDuration;
+    _saveSetting(Settings.breakTime, _breakDuration);
+    _defaultWorkDuration = _workDuration;
   }
 
   @override
@@ -135,38 +147,51 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: _showSettingsModal,
+          icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
+          onPressed: !_isRunning ? _startTimer : _stopTimer,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: _buildTimeDisplay(),
         ),
         IconButton(
-          icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
-          onPressed: !_isRunning ? _startTimer : _stopTimer,
+          icon: const Icon(Icons.settings),
+          onPressed: _showSettingsModal,
         ),
       ],
     );
   }
 
-  Widget _buildSettingsModal() {
+  static const int _minTimerValue = 1;
+  static const int _maxTimerValue = 120;
+  Widget _buildSettingsModal(StateSetter setState) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          _buildSettingRow('Work Time', _workDuration, _adjustWorkDuration),
-          const SizedBox(height: 16),
-          _buildSettingRow('Break Time', _breakDuration, _adjustBreakDuration),
+          Center(child: const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold))),
+          const Text(
+            'Default timer settings:',
+            style: TextStyle(color: AppTheme.secondaryTextColor),
+          ),
+          _buildSettingRow('Work Time', _workDuration, (adjustment) {
+            setState(() {
+              _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
+            });
+          }),
+          _buildSettingRow('Break Time', _breakDuration, (adjustment) {
+            setState(() {
+              _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
+            });
+          }),
         ],
       ),
     );
   }
 
-  Widget _buildSettingRow(String label, int duration, Function(int) onAdjust) {
+  Widget _buildSettingRow(String label, int value, Function(int) onAdjust) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -174,13 +199,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.remove),
-              onPressed: duration > (label == 'Work Time' ? 5 : 1) ? () => onAdjust(-1) : null,
+              icon: Icon(Icons.remove),
+              onPressed: value > _minTimerValue ? () => onAdjust(-5) : null,
             ),
-            Text('$duration min', style: const TextStyle(fontSize: 16)),
+            SizedBox(width: 80, child: Center(child: Text("${value.toString()} min"))),
             IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () => onAdjust(1),
+              icon: Icon(Icons.add),
+              onPressed: value < _maxTimerValue ? () => onAdjust(5) : null,
             ),
           ],
         ),
@@ -195,27 +220,48 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             ? const SizedBox(width: 40)
             : IconButton(
                 icon: const Icon(Icons.remove),
-                onPressed: _remainingTime.inMinutes > 1
-                    ? () {
-                        setState(() {
-                          _remainingTime -= const Duration(minutes: 5);
-                        });
-                      }
-                    : null,
+                onPressed:
+                    _isWorking && _workDuration > _minTimerValue || !_isWorking && _breakDuration > _minTimerValue
+                        ? () {
+                            setState(() {
+                              if (_isWorking) {
+                                _workDuration = (_workDuration - 5).clamp(_minTimerValue, _maxTimerValue);
+                                _remainingTime = Duration(minutes: _workDuration);
+                              } else {
+                                _breakDuration = (_breakDuration - 5).clamp(_minTimerValue, _maxTimerValue);
+                                _remainingTime = Duration(minutes: _breakDuration);
+                              }
+                            });
+                          }
+                        : null,
               ),
-        Text(
-          '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-          style: const TextStyle(fontSize: 32),
+        SizedBox(
+          width: 120,
+          child: Center(
+            child: Text(
+              '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+              style: const TextStyle(fontSize: 32),
+            ),
+          ),
         ),
         _isRunning
             ? const SizedBox(width: 40)
             : IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: () {
-                  setState(() {
-                    _remainingTime += const Duration(minutes: 5);
-                  });
-                },
+                onPressed:
+                    _isWorking && _workDuration < _maxTimerValue || !_isWorking && _breakDuration < _maxTimerValue
+                        ? () {
+                            setState(() {
+                              if (_isWorking) {
+                                _workDuration = (_workDuration + 5).clamp(_minTimerValue, _maxTimerValue);
+                                _remainingTime = Duration(minutes: _workDuration);
+                              } else {
+                                _breakDuration = (_breakDuration + 5).clamp(_minTimerValue, _maxTimerValue);
+                                _remainingTime = Duration(minutes: _breakDuration);
+                              }
+                            });
+                          }
+                        : null,
               ),
       ],
     );

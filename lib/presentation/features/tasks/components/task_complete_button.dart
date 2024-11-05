@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 
 class TaskCompleteButton extends StatelessWidget {
+  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+
   final String taskId;
   final bool isCompleted;
   final VoidCallback onToggleCompleted;
 
-  const TaskCompleteButton({
+  TaskCompleteButton({
     super.key,
     required this.taskId,
     required this.isCompleted,
@@ -37,6 +41,8 @@ class TaskCompleteButton extends StatelessWidget {
       );
 
       await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+
+      if (command.isCompleted) _soundPlayer.play(SharedSounds.done);
       onToggleCompleted();
     } catch (e) {
       if (context.mounted) {

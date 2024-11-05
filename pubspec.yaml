@@ -57,7 +57,8 @@ dependencies:
   url_launcher: ^6.3.1
   intl: ^0.19.0 # Internationalization
   http: ^0.13.6
-
+  audioplayers: ^6.1.0
+  
   # UI
   cupertino_icons: ^1.0.8
   markdown_editor_plus: ^0.2.15
@@ -72,6 +73,8 @@ dependencies:
 
   # Mobile
   qr_code_scanner_plus: ^2.0.6
+
+
 
 dev_dependencies:
   flutter_test:
@@ -107,6 +110,7 @@ flutter:
     - lib/domain/features/shared/assets/
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
+    - lib/presentation/features/shared/assets/sounds/level-up-191997.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

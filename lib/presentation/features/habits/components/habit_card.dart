@@ -4,12 +4,17 @@ import 'package:whph/application/features/habits/commands/add_habit_record_comma
 import 'package:whph/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 
 class HabitCard extends StatefulWidget {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
   final void Function(AddHabitRecordCommandResponse)? onRecordCreated;
@@ -18,7 +23,7 @@ class HabitCard extends StatefulWidget {
   final bool isDateLabelShowing;
   final int dateRange;
 
-  const HabitCard(
+  HabitCard(
       {super.key,
       required this.habit,
       required this.onOpenDetails,
@@ -33,7 +38,6 @@ class HabitCard extends StatefulWidget {
 }
 
 class _HabitCardState extends State<HabitCard> {
-  final Mediator mediator = container.resolve<Mediator>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
@@ -51,7 +55,7 @@ class _HabitCardState extends State<HabitCard> {
       startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
       endDate: DateTime.now(),
     );
-    var response = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+    var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
     setState(() {
       _habitRecords = response;
@@ -60,18 +64,19 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
     setState(() {
       _habitRecords = null;
       _getHabitRecords();
     });
     widget.onRecordCreated?.call(AddHabitRecordCommandResponse());
+    widget._soundPlayer.play(SharedSounds.done);
   }
 
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
-    await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
     setState(() {
       _habitRecords = null;
