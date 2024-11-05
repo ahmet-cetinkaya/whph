@@ -11,20 +11,27 @@ public class WindowHelper
     
     [DllImport("user32.dll")]
     public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+
+    [DllImport("user32.dll")]
+    public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 }
 "@
 
 # Get the handle of the active window
-$hwnd = [WindowHelper]::GetForegroundWindow()
+$foregroundWindow = [WindowHelper]::GetForegroundWindow()
 
 # Create a StringBuilder to hold the window title
 $titleBuilder = New-Object System.Text.StringBuilder 256
-[WindowHelper]::GetWindowText($hwnd, $titleBuilder, $titleBuilder.Capacity) | Out-Null
+[WindowHelper]::GetWindowText($foregroundWindow, $titleBuilder, $titleBuilder.Capacity) | Out-Null
 $title = $titleBuilder.ToString()
 
+# Get the process ID of the active window
+$processId = 0
+[WindowHelper]::GetWindowThreadProcessId($foregroundWindow, [ref] $processId)
+
 # Get the process associated with the active window
-$process = Get-Process | Where-Object { $_.MainWindowHandle -eq $hwnd }
-$processName = if ($process) { $process.Name } else { "Unknown" }
+$process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+$processName = if ($process) { $process.Name } else { "" }
 
 # Output the results
 Write-Output "$title,$processName"
