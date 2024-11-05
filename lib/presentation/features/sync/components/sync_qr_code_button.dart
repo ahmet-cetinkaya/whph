@@ -37,10 +37,17 @@ class SyncQrCodeButton extends StatelessWidget {
               height: 200.0,
               child: Center(
                 child: QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 200.0,
-                ),
+                    data: qrData,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                    eyeStyle: const QrEyeStyle(
+                      eyeShape: QrEyeShape.square,
+                      color: AppTheme.textColor,
+                    ),
+                    dataModuleStyle: QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.circle,
+                      color: AppTheme.textColor,
+                    )),
               ),
             ),
             actions: <Widget>[
