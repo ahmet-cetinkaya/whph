@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
 
 class RemoveTagTagCommand implements IRequest<RemoveTagTagCommandResponse> {
@@ -27,7 +28,7 @@ class RemoveTagTagCommandHandler implements IRequestHandler<RemoveTagTagCommand,
   Future<RemoveTagTagCommandResponse> call(RemoveTagTagCommand request) async {
     TagTag? tagTag = await _tagTagRepository.getById(request.id);
     if (tagTag == null) {
-      throw Exception('TagTag with id ${request.id} not found');
+      throw BusinessException('TagTag with id ${request.id} not found');
     }
     await _tagTagRepository.delete(tagTag);
 

@@ -42,10 +42,12 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
   Future<void> _getHabit() async {
     var query = GetHabitQuery(id: widget.habitId);
     var response = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
-    setState(() {
-      habit = response;
-      _titleController.text = habit!.name;
-    });
+    if (mounted) {
+      setState(() {
+        habit = response;
+        _titleController.text = habit!.name;
+      });
+    }
   }
 
   Future<void> _updateHabit() async {

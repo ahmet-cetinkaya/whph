@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
@@ -37,7 +38,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
     if (request.id != null) {
       tag = await _tagRepository.getById(request.id!);
       if (tag == null) {
-        throw Exception('Tag with id ${request.id} not found');
+        throw BusinessException('Tag with id ${request.id} not found');
       }
 
       tag.name = request.name;

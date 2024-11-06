@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TagAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -21,9 +23,11 @@ class _TagAddButtonState extends State<TagAddButton> {
   Future<void> _createTag(BuildContext context) async {
     if (isLoading) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     try {
       var command = SaveTagCommand(
@@ -34,17 +38,14 @@ class _TagAddButtonState extends State<TagAddButton> {
       if (widget.onTagCreated != null) {
         widget.onTagCreated!(response.id);
       }
-    } catch (error) {
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to create tag. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while creating tag.');
       }
     } finally {
-      if (context.mounted) {
+      if (!mounted) {
         setState(() {
           isLoading = false;
         });

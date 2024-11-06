@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class RemoveTaskTagCommand implements IRequest<RemoveTaskTagCommandResponse> {
@@ -27,10 +28,10 @@ class RemoveTaskTagCommandHandler implements IRequestHandler<RemoveTaskTagComman
   Future<RemoveTaskTagCommandResponse> call(RemoveTaskTagCommand request) async {
     TaskTag? taskTag = await _taskTagRepository.getById(request.id);
     if (taskTag == null) {
-      throw Exception('TaskTag with id ${request.id} not found');
+      throw BusinessException('TaskTag with id ${request.id} not found');
     }
     if (taskTag.deletedDate != null) {
-      throw Exception('TaskTag with id ${request.id} is already deleted');
+      throw BusinessException('TaskTag with id ${request.id} is already deleted');
     }
     await _taskTagRepository.delete(taskTag);
 

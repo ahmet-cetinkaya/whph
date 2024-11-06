@@ -24,9 +24,11 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   List<String>? _selectedTagFilters;
 
   void _refreshAppUsages() {
-    setState(() {
-      _appUsageListKey = UniqueKey();
-    });
+    if (mounted) {
+      setState(() {
+        _appUsageListKey = UniqueKey();
+      });
+    }
   }
 
   Future<void> _openDetails(String id) async {

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TagDeleteButton extends StatefulWidget {
   final String tagId;
   final VoidCallback? onDeleteSuccess;
-  Color? buttonColor;
-  Color? buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
 
-  TagDeleteButton({
+  const TagDeleteButton({
     super.key,
     required this.tagId,
     this.onDeleteSuccess,
@@ -33,15 +35,10 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
       }
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to delete tag. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      if (context.mounted) ErrorHelper.showError(context, error);
     }
   }
 

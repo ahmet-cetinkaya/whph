@@ -4,8 +4,10 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
@@ -26,11 +28,7 @@ class SyncQrScanButton extends StatelessWidget {
     var parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
     if (parsedMessage == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error: Unable to parse scanned message.'),
-          ),
-        );
+        ErrorHelper.showError(context, 'Error: Unable to parse scanned message.');
       }
       return;
     }
@@ -42,11 +40,7 @@ class SyncQrScanButton extends StatelessWidget {
     String? toIP = await NetworkUtils.getLocalIpAddress();
     if (toIP == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error: Unable to fetch local IP address.'),
-          ),
-        );
+        ErrorHelper.showError(context, 'Error: Unable to fetch local IP address.');
       }
       return;
     }
@@ -76,7 +70,16 @@ class SyncQrScanButton extends StatelessWidget {
   }
 
   _sync(BuildContext context) async {
-    await _mediator.send<SyncCommand, SyncCommandResponse>(SyncCommand());
+    try {
+      await _mediator.send<SyncCommand, SyncCommandResponse>(SyncCommand());
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHelper.showUnexpectedError(context, e,
+            message: 'Unexpected error occurred while syncing. You must devices are connected to the same network.');
+      }
+    }
   }
 
   @override

@@ -49,23 +49,25 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 20, search: search);
     var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-    setState(() {
-      if (widget.initialSelectedTags.isNotEmpty) {
-        result.items.removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
-      }
+    if (mounted) {
+      setState(() {
+        if (widget.initialSelectedTags.isNotEmpty) {
+          result.items.removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
+        }
 
-      if (widget.excludeTagIds.isNotEmpty) {
-        result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
-      }
+        if (widget.excludeTagIds.isNotEmpty) {
+          result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
+        }
 
-      if (_tags == null) {
-        _tags = result;
-        _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
-      } else {
-        _tags!.items.addAll(result.items);
-        _tags!.pageIndex = result.pageIndex;
-      }
-    });
+        if (_tags == null) {
+          _tags = result;
+          _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
+        } else {
+          _tags!.items.addAll(result.items);
+          _tags!.pageIndex = result.pageIndex;
+        }
+      });
+    }
   }
 
   void _scrollListener() {
@@ -99,6 +101,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         labelText: 'Search Tags',
                       ),
                       onChanged: (value) {
+                        if (!mounted) return;
                         setState(() {
                           _tags = null;
                           _getTags(pageIndex: 0, search: value);
@@ -119,6 +122,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           title: Text(tag.name),
                           value: tempSelectedTags.contains(tag.id),
                           onChanged: (bool? value) {
+                            if (!mounted) return;
                             setState(() {
                               if (widget.isMultiSelect) {
                                 if (value == true) {
@@ -164,9 +168,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       },
     );
 
-    setState(() {
-      _selectedTags = tempSelectedTags;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedTags = tempSelectedTags;
+      });
+    }
   }
 
   @override

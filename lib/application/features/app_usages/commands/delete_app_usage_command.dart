@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 
 class DeleteAppUsageCommand implements IRequest<DeleteAppUsageCommandResponse> {
@@ -25,7 +26,7 @@ class DeleteAppUsageCommandHandler implements IRequestHandler<DeleteAppUsageComm
   Future<DeleteAppUsageCommandResponse> call(DeleteAppUsageCommand request) async {
     AppUsage? appUsage = await _appUsageRepository.getById(request.id);
     if (appUsage == null) {
-      throw Exception('AppUsage with id ${request.id} not found');
+      throw BusinessException('AppUsage with id ${request.id} not found');
     }
 
     await _appUsageRepository.delete(appUsage);

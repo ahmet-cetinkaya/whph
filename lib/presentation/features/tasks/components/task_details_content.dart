@@ -8,11 +8,13 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/components/date_time_picker_field.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/domain/features/tasks/task.dart';
@@ -71,16 +73,20 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       var query = GetTaskQuery(id: widget.taskId);
       var response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-      setState(() {
-        _task = response;
-        _plannedDateController.text =
-            _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
-        _deadlineDateController.text =
-            _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
-        _descriptionController.text = _task!.description ?? '';
-      });
+      if (mounted) {
+        setState(() {
+          _task = response;
+          _plannedDateController.text =
+              _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
+          _deadlineDateController.text =
+              _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
+          _descriptionController.text = _task!.description ?? '';
+        });
+      }
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting task.");
+      }
     }
   }
 
@@ -88,11 +94,17 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: 0, pageSize: 100);
       var response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
-      setState(() {
-        _taskTags = response;
-      });
+      if (mounted) {
+        setState(() {
+          _taskTags = response;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting task tags.");
+      }
     }
   }
 
@@ -111,8 +123,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
       widget._tasksService.onTaskSaved.value = result;
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while saving task.");
+      }
     }
   }
 
@@ -121,8 +137,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
       await widget._mediator.send(command);
       await _getTaskTags();
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
+      }
     }
   }
 
@@ -131,8 +151,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       var command = RemoveTaskTagCommand(id: id);
       await widget._mediator.send(command);
       await _getTaskTags();
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
+      }
     }
   }
 
@@ -145,12 +169,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     for (var taskTag in tagsToRemove) {
       _removeTag(taskTag.id);
     }
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $message')),
-    );
   }
 
   @override
@@ -176,6 +194,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                         .toList(),
                     initialSelection: _task!.priority ?? EisenhowerPriority.none,
                     onSelected: (value) {
+                      if (!mounted) return;
                       setState(() {
                         _task!.priority = value;
                         _updateTask();
@@ -207,6 +226,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                       onPressed: () {
                         int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) - 1;
                         if (nextIndex < 0) nextIndex = _estimatedTimeOptions.length - 1;
+                        if (!mounted) return;
                         setState(() {
                           _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
                         });
@@ -224,6 +244,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                       onPressed: () {
                         int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) + 1;
                         if (nextIndex >= _estimatedTimeOptions.length) nextIndex = 0;
+                        if (!mounted) return;
                         setState(() {
                           _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
                         });

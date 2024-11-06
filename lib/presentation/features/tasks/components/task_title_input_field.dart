@@ -45,10 +45,12 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   Future<void> _getTask() async {
     var query = GetTaskQuery(id: widget.taskId);
     var result = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-    setState(() {
-      _task = result;
-      _titleController.text = _task!.title;
-    });
+    if (mounted) {
+      setState(() {
+        _task = result;
+        _titleController.text = _task!.title;
+      });
+    }
   }
 
   void _onTitleChanged(String value) {

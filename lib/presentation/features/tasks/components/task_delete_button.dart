@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TaskDeleteButton extends StatefulWidget {
   final String taskId;
   final VoidCallback? onDeleteSuccess;
-  Color? buttonColor;
-  Color? buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
 
-  TaskDeleteButton({
+  const TaskDeleteButton({
     super.key,
     required this.taskId,
     this.onDeleteSuccess,
@@ -32,14 +34,11 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
       }
-    } catch (error) {
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to delete task. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while deleting task.');
       }
     }
   }

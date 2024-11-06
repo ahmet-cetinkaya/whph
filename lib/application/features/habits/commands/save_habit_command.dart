@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 
 class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
@@ -39,7 +40,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
     if (request.id != null) {
       habit = await _habitRepository.getById(request.id!);
       if (habit == null) {
-        throw Exception('Habit with id ${request.id} not found');
+        throw BusinessException('Habit with id ${request.id} not found');
       }
 
       await _update(habit, request);

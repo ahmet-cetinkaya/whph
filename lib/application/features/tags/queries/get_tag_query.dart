@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 
 class GetTagQuery implements IRequest<GetTagQueryResponse> {
@@ -29,7 +30,7 @@ class GetTagQueryHandler implements IRequestHandler<GetTagQuery, GetTagQueryResp
       request.id,
     );
     if (tags == null) {
-      throw Exception('Tag with id ${request.id} not found');
+      throw BusinessException('Tag with id ${request.id} not found');
     }
 
     return GetTagQueryResponse(

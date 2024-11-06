@@ -53,11 +53,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     var query = GetHabitQuery(id: widget.habitId);
     var result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
 
-    setState(() {
-      _habit = result;
-      _nameController.text = _habit!.name;
-      _descriptionController.text = _habit!.description;
-    });
+    if (mounted) {
+      setState(() {
+        _habit = result;
+        _nameController.text = _habit!.name;
+        _descriptionController.text = _habit!.description;
+      });
+    }
   }
 
   Future<void> _getHabitRecordsForMonth(DateTime month) async {
@@ -78,31 +80,39 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
-    setState(() {
-      _getHabitRecordsForMonth(currentMonth);
-    });
+    if (mounted) {
+      setState(() {
+        _getHabitRecordsForMonth(currentMonth);
+      });
+    }
   }
 
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
     await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
-    setState(() {
-      _getHabitRecordsForMonth(currentMonth);
-    });
+    if (mounted) {
+      setState(() {
+        _getHabitRecordsForMonth(currentMonth);
+      });
+    }
   }
 
   void _previousMonth() {
-    setState(() {
-      currentMonth = DateTime(currentMonth.year, currentMonth.month - 1);
-      _getHabitRecordsForMonth(currentMonth);
-    });
+    if (mounted) {
+      setState(() {
+        currentMonth = DateTime(currentMonth.year, currentMonth.month - 1);
+        _getHabitRecordsForMonth(currentMonth);
+      });
+    }
   }
 
   void _nextMonth() {
-    setState(() {
-      currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
-      _getHabitRecordsForMonth(currentMonth);
-    });
+    if (mounted) {
+      setState(() {
+        currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
+        _getHabitRecordsForMonth(currentMonth);
+      });
+    }
   }
 
   Future<void> _saveHabit() async {

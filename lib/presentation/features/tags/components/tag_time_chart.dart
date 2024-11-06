@@ -33,6 +33,7 @@ class _TagTimeChartState extends State<TagTimeChart> {
     for (TagListItem tag in _tags!.items) {
       int time = await _getTagTimes(tag.id);
       if (time > 0) {
+        if (!mounted) return;
         setState(() {
           _tagTimes[tag.name] = time;
         });

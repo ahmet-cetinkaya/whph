@@ -65,6 +65,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           // Tasks
           ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
+              if (!mounted) return;
               setState(() {
                 _isTasksExpanded = isExpanded;
               });

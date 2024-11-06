@@ -30,10 +30,12 @@ class _TasksPageState extends State<TasksPage> {
   Key _completedTasksListKey = UniqueKey();
 
   void _refreshTasks() {
-    setState(() {
-      _tasksListKey = UniqueKey();
-      _completedTasksListKey = UniqueKey();
-    });
+    if (mounted) {
+      setState(() {
+        _tasksListKey = UniqueKey();
+        _completedTasksListKey = UniqueKey();
+      });
+    }
   }
 
   Future<void> _openTaskDetails(String taskId) async {
@@ -48,17 +50,21 @@ class _TasksPageState extends State<TasksPage> {
 
   void _onTasksList(count) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _isTasksListEmpty = count == 0;
-      });
+      if (mounted) {
+        setState(() {
+          _isTasksListEmpty = count == 0;
+        });
+      }
     });
   }
 
   void _onFilterTags(List<String> tagIds) {
-    setState(() {
-      _selectedTagIds = tagIds;
-      _refreshTasks();
-    });
+    if (mounted) {
+      setState(() {
+        _selectedTagIds = tagIds;
+        _refreshTasks();
+      });
+    }
   }
 
   @override
@@ -107,6 +113,7 @@ class _TasksPageState extends State<TasksPage> {
             // Expansion panel for completed tasks
             ExpansionPanelList(
               expansionCallback: (int index, bool isExpanded) {
+                if (!mounted) return;
                 setState(() {
                   _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
                 });

@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 
 class GetHabitQuery implements IRequest<GetHabitQueryResponse> {
@@ -40,7 +41,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       request.id!,
     );
     if (habit == null) {
-      throw Exception('Habit with id ${request.id} not found');
+      throw BusinessException('Habit with id ${request.id} not found');
     }
 
     return GetHabitQueryResponse(

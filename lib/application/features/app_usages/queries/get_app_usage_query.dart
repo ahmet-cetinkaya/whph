@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 
 class GetAppUsageQuery implements IRequest<GetAppUsageQueryResponse> {
@@ -33,7 +34,7 @@ class GetAppUsageQueryHandler implements IRequestHandler<GetAppUsageQuery, GetAp
       request.id,
     );
     if (appUsages == null) {
-      throw Exception('AppUsage with id ${request.id} not found');
+      throw BusinessException('AppUsage with id ${request.id} not found');
     }
 
     return GetAppUsageQueryResponse(

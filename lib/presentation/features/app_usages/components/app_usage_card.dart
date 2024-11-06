@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/shared/components/bar_chart.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
@@ -44,11 +45,17 @@ class _AppUsageCardState extends State<AppUsageCard> {
     try {
       var result = await widget.mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
 
-      setState(() {
-        _appUsageTags = result;
-      });
+      if (mounted) {
+        setState(() {
+          _appUsageTags = result;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while getting app usage tags.');
+      }
     }
   }
 

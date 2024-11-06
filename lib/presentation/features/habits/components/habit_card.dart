@@ -57,19 +57,23 @@ class _HabitCardState extends State<HabitCard> {
     );
     var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
-    setState(() {
-      _habitRecords = response;
-    });
+    if (mounted) {
+      setState(() {
+        _habitRecords = response;
+      });
+    }
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
     await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
-    setState(() {
-      _habitRecords = null;
-      _getHabitRecords();
-    });
+    if (mounted) {
+      setState(() {
+        _habitRecords = null;
+        _getHabitRecords();
+      });
+    }
     widget.onRecordCreated?.call(AddHabitRecordCommandResponse());
     widget._soundPlayer.play(SharedSounds.done);
   }
@@ -78,10 +82,12 @@ class _HabitCardState extends State<HabitCard> {
     var command = DeleteHabitRecordCommand(id: id);
     await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
-    setState(() {
-      _habitRecords = null;
-      _getHabitRecords();
-    });
+    if (mounted) {
+      setState(() {
+        _habitRecords = null;
+        _getHabitRecords();
+      });
+    }
     widget.onRecordDeleted?.call(DeleteHabitRecordCommandResponse());
   }
 

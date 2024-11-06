@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
@@ -46,10 +47,12 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
     var query = GetAppUsageQuery(id: widget.id);
     var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
     if (mounted) {
-      setState(() {
-        _appUsage = response;
-        _controller.text = _appUsage?.displayName ?? _appUsage?.name ?? '';
-      });
+      if (mounted) {
+        setState(() {
+          _appUsage = response;
+          _controller.text = _appUsage?.displayName ?? _appUsage?.name ?? '';
+        });
+      }
     }
   }
 
@@ -67,9 +70,11 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
       widget._appUsagesService.onAppUsageSaved.value = result;
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e) {
       if (context.mounted) {
-        ErrorHelper.showError(context, e);
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving app usage.');
       }
     }
   }
@@ -78,11 +83,13 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      setState(() {
-        if (_appUsage != null) {
-          _appUsage!.displayName = _controller.text;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (_appUsage != null) {
+            _appUsage!.displayName = _controller.text;
+          }
+        });
+      }
       await _saveAppUsage(context);
     });
   }

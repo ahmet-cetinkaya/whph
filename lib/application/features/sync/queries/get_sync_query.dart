@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 
 class GetSyncDeviceQuery implements IRequest<GetSyncDeviceQueryResponse> {
@@ -45,7 +46,7 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
     }
 
     if (syncDevices == null) {
-      throw Exception('SyncDevice with id ${request.id} not found');
+      throw BusinessException('SyncDevice with id ${request.id} not found');
     }
 
     return GetSyncDeviceQueryResponse(

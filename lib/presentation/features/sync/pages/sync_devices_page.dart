@@ -35,17 +35,21 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
     var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
     var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
-    setState(() {
-      list = response;
-    });
+    if (mounted) {
+      setState(() {
+        list = response;
+      });
+    }
   }
 
   Future<void> _removeDevice(String id) async {
     var command = DeleteSyncDeviceCommand(id: id);
     await widget.mediator.send<DeleteSyncDeviceCommand, void>(command);
-    setState(() {
-      list!.items.removeWhere((item) => item.id == id);
-    });
+    if (mounted) {
+      setState(() {
+        list!.items.removeWhere((item) => item.id == id);
+      });
+    }
   }
 
   bool _isSyncing = false;
@@ -58,16 +62,20 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
 
     if (_isSyncing) return;
 
-    setState(() {
-      _isSyncing = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isSyncing = true;
+      });
+    }
 
     var command = SyncCommand();
     await widget.mediator.send<SyncCommand, void>(command);
 
-    setState(() {
-      _isSyncing = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isSyncing = false;
+      });
+    }
   }
 
   List<Widget> _buildAppBarActions() {

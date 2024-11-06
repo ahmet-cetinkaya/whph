@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 
 class SaveAppUsageCommand implements IRequest<SaveAppUsageCommandResponse> {
@@ -48,7 +49,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
     if (request.id != null) {
       appUsage = await _appUsageRepository.getById(request.id!);
       if (appUsage == null) {
-        throw Exception('App Usage with id ${request.id} not found');
+        throw BusinessException('App Usage with id ${request.id} not found');
       }
 
       appUsage.displayName = request.displayName;

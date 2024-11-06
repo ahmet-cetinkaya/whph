@@ -49,8 +49,11 @@ import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart
 // ignore_for_file: unnecessary_const
 // ignore_for_file: unused_import
 
+// ignore: depend_on_referenced_packages
 import 'package:reflectable/mirrors.dart' as m;
+// ignore: depend_on_referenced_packages
 import 'package:reflectable/src/reflectable_builder_based.dart' as r;
+// ignore: depend_on_referenced_packages
 import 'package:reflectable/reflectable.dart' as r show Reflectable;
 
 final _data = <r.Reflectable, r.ReflectorData>{

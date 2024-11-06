@@ -30,10 +30,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   Duration _remainingTime = const Duration();
   bool _isWorking = true;
   bool _isRunning = false;
-  late int _workDuration;
   int _defaultWorkDuration = 25;
-  late int _breakDuration;
   int _defaultBreakDuration = 5;
+  late int _workDuration = _defaultWorkDuration;
+  late int _breakDuration = _defaultBreakDuration;
 
   @override
   void initState() {
@@ -52,11 +52,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   Future<void> _initializeSettings() async {
     _defaultWorkDuration = await _getSetting(Settings.workTime, 25);
     _defaultBreakDuration = await _getSetting(Settings.breakTime, 5);
-    setState(() {
-      _workDuration = _defaultWorkDuration;
-      _breakDuration = _defaultBreakDuration;
-      _remainingTime = Duration(minutes: _workDuration);
-    });
+    if (mounted) {
+      setState(() {
+        _workDuration = _defaultWorkDuration;
+        _breakDuration = _defaultBreakDuration;
+        _remainingTime = Duration(minutes: _workDuration);
+      });
+    }
   }
 
   Future<int> _getSetting(String key, int defaultValue) async {
@@ -78,45 +80,54 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   void _startTimer() {
     if (_isRunning) return;
 
-    setState(() {
-      _isRunning = true;
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (_remainingTime.inSeconds > 0) {
-          setState(() {
-            _remainingTime -= const Duration(seconds: 1);
-          });
-          widget.onTimeUpdate(_remainingTime);
-        } else {
-          widget._soundPlayer.play(SharedSounds.alarmDone);
-          _toggleWorkBreak();
-        }
+    if (mounted) {
+      setState(() {
+        _isRunning = true;
+        _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          if (_remainingTime.inSeconds > 0) {
+            if (!mounted) return;
+            setState(() {
+              _remainingTime -= const Duration(seconds: 1);
+            });
+            widget.onTimeUpdate(_remainingTime);
+          } else {
+            widget._soundPlayer.play(SharedSounds.alarmDone);
+            _toggleWorkBreak();
+          }
+        });
       });
-    });
+    }
   }
 
   void _stopTimer() {
-    setState(() {
-      _isRunning = false;
-      _remainingTime = Duration(minutes: _workDuration);
-      _timer.cancel();
-    });
+    if (mounted) {
+      setState(() {
+        _isRunning = false;
+        _remainingTime = Duration(minutes: _workDuration);
+        _timer.cancel();
+      });
+    }
   }
 
   void _toggleWorkBreak() {
-    setState(() {
-      _isWorking = !_isWorking;
-      _remainingTime = _isWorking ? Duration(minutes: _workDuration) : Duration(minutes: _breakDuration);
-      _startTimer(); // Automatically start the next session
-    });
+    if (mounted) {
+      setState(() {
+        _isWorking = !_isWorking;
+        _remainingTime = _isWorking ? Duration(minutes: _workDuration) : Duration(minutes: _breakDuration);
+        _startTimer(); // Automatically start the next session
+      });
+    }
   }
 
   Future<void> _showSettingsModal() async {
-    setState(() {
-      _isWorking = true;
-      _isRunning = false;
-      _workDuration = _defaultWorkDuration;
-      _breakDuration = _defaultBreakDuration;
-    });
+    if (mounted) {
+      setState(() {
+        _isWorking = true;
+        _isRunning = false;
+        _workDuration = _defaultWorkDuration;
+        _breakDuration = _defaultBreakDuration;
+      });
+    }
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -177,11 +188,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             style: TextStyle(color: AppTheme.secondaryTextColor),
           ),
           _buildSettingRow('Work Time', _workDuration, (adjustment) {
+            if (!mounted) return;
             setState(() {
               _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
             });
           }),
           _buildSettingRow('Break Time', _breakDuration, (adjustment) {
+            if (!mounted) return;
             setState(() {
               _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
             });
@@ -223,6 +236,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 onPressed:
                     _isWorking && _workDuration > _minTimerValue || !_isWorking && _breakDuration > _minTimerValue
                         ? () {
+                            if (!mounted) return;
                             setState(() {
                               if (_isWorking) {
                                 _workDuration = (_workDuration - 5).clamp(_minTimerValue, _maxTimerValue);
@@ -251,6 +265,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 onPressed:
                     _isWorking && _workDuration < _maxTimerValue || !_isWorking && _breakDuration < _maxTimerValue
                         ? () {
+                            if (!mounted) return;
                             setState(() {
                               if (_isWorking) {
                                 _workDuration = (_workDuration + 5).clamp(_minTimerValue, _maxTimerValue);

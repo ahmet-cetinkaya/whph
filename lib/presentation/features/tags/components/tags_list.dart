@@ -41,13 +41,15 @@ class _TagsListState extends State<TagsList> {
     var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: _pageSize, filterByTags: widget.filterByTags);
     var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-    setState(() {
-      if (_tags == null) {
-        _tags = result;
-      } else {
-        _tags!.items.addAll(result.items);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (_tags == null) {
+          _tags = result;
+        } else {
+          _tags!.items.addAll(result.items);
+        }
+      });
+    }
 
     if (widget.onList != null) {
       widget.onList!(_tags!.items.length);

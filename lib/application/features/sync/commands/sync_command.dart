@@ -15,6 +15,7 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_reposi
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
@@ -177,7 +178,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
         attempt++;
         if (attempt >= maxRetries) {
-          throw Exception('Max retries reached. Giving up. Error: $e');
+          throw BusinessException('Max retries reached. Giving up. Error: $e');
         }
 
         await Future.delayed(Duration(seconds: 5));
@@ -285,14 +286,14 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
     for (T item in syncData.updateSync) {
       T? existingItem = await getByIdFunction(item.id);
-      if (existingItem == null) throw Exception('${T.toString()} with id ${item.id} not found');
+      if (existingItem == null) throw BusinessException('${T.toString()} with id ${item.id} not found');
       mapFunction(existingItem, item);
       await updateFunction(item);
     }
 
     for (T item in syncData.deleteSync) {
       T? existingItem = await getByIdFunction(item.id);
-      if (existingItem == null) throw Exception('${T.toString()} with id ${item.id} not found');
+      if (existingItem == null) throw BusinessException('${T.toString()} with id ${item.id} not found');
       await deleteFunction(item);
     }
   }

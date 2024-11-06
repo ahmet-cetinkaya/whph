@@ -24,9 +24,11 @@ class _TagsPageState extends State<TagsPage> {
   Key _tagsListKey = UniqueKey();
 
   void _refreshTags() {
-    setState(() {
-      _tagsListKey = UniqueKey();
-    });
+    if (mounted) {
+      setState(() {
+        _tagsListKey = UniqueKey();
+      });
+    }
   }
 
   Future<void> _openTagDetails(String tagId) async {
@@ -40,10 +42,12 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _onFilterTags(List<String> tagIds) {
-    setState(() {
-      _selectedTagIds = tagIds;
-      _refreshTags();
-    });
+    if (mounted) {
+      setState(() {
+        _selectedTagIds = tagIds;
+        _refreshTags();
+      });
+    }
   }
 
   @override

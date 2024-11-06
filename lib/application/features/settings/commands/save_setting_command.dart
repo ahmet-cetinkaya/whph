@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 
 class SaveSettingCommand implements IRequest<SaveSettingCommandResponse> {
@@ -41,7 +42,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
     if (request.id != null) {
       setting = await _settingRepository.getById(request.id!);
       if (setting == null) {
-        throw Exception('Setting with id ${request.id} not found');
+        throw BusinessException('Setting with id ${request.id} not found');
       }
 
       await _update(setting, request);

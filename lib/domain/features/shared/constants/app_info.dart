@@ -10,4 +10,5 @@ class AppInfo {
   static const String logoPath = "lib/domain/features/shared/assets/whph_logo.png";
   static const String supportUrl = "https://buymeacoffee.com/ahmetcetinkaya";
   static const String updateCheckerUrl = "https://api.github.com/repos/ahmet-cetinkaya/whph/releases/latest";
+  static const String supportEmail = "ahmetcetinkaya@tutamail.com";
 }

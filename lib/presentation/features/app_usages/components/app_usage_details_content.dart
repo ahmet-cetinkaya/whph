@@ -5,6 +5,7 @@ import 'package:whph/application/features/app_usages/commands/remove_tag_tag_com
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
@@ -54,12 +55,16 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     var query = GetAppUsageQuery(id: widget.id);
     try {
       var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
-      setState(() {
-        _appUsage = response;
-      });
+      if (mounted) {
+        setState(() {
+          _appUsage = response;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting app usage.");
       }
     }
   }
@@ -75,9 +80,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
       widget._appUsagesService.onAppUsageSaved.value = result;
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while saving app usage.");
       }
     }
   }
@@ -86,12 +93,16 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     var query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: 0, pageSize: 999);
     try {
       var result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
-      setState(() {
-        _appUsageTags = result;
-      });
+      if (mounted) {
+        setState(() {
+          _appUsageTags = result;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting app usage tags.");
       }
     }
   }
@@ -100,9 +111,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     var command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: appUsageId);
     try {
       await widget._mediator.send(command);
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
       }
     }
 
@@ -113,9 +126,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     var command = RemoveAppUsageTagCommand(id: id);
     try {
       await widget._mediator.send(command);
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showError(context, e);
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
       }
     }
 
@@ -137,9 +152,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   void _onChangeColor(Color color) {
-    setState(() {
-      _appUsage!.color = color.value.toRadixString(16).substring(2);
-    });
+    if (mounted) {
+      setState(() {
+        _appUsage!.color = color.value.toRadixString(16).substring(2);
+      });
+    }
     _saveAppUsage();
   }
 

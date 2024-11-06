@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class AddTaskTagCommand implements IRequest<AddTaskTagCommandResponse> {
@@ -29,7 +30,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
   @override
   Future<AddTaskTagCommandResponse> call(AddTaskTagCommand request) async {
     if (await _taskTagRepository.anyByTaskIdAndTagId(request.taskId, request.tagId)) {
-      throw Exception('Task tag already exists');
+      throw BusinessException('Task tag already exists');
     }
 
     var taskTag = TaskTag(

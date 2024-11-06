@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
@@ -34,9 +35,11 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
       }
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e) {
       if (context.mounted) {
-        ErrorHelper.showError(context, e);
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unxpected error occurred while deleting app usage.');
       }
     }
   }

@@ -5,6 +5,7 @@ import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/components/done_overlay.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -50,27 +51,33 @@ class _TodayPageState extends State<TodayPage> {
 
   void _onHabitList(int count) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _isHabitListEmpty = count == 0;
-      });
+      if (mounted) {
+        setState(() {
+          _isHabitListEmpty = count == 0;
+        });
+      }
     });
   }
 
   void _onTaskList(int count) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _isTaskListEmpty = count == 0;
-      });
+      if (mounted) {
+        setState(() {
+          _isTaskListEmpty = count == 0;
+        });
+      }
     });
   }
 
   void _onTagFilterSelect(List<String> tags) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _habitKey = UniqueKey();
-        _taskKey = UniqueKey();
-        _selectedTagFilter = tags;
-      });
+      if (mounted) {
+        setState(() {
+          _habitKey = UniqueKey();
+          _taskKey = UniqueKey();
+          _selectedTagFilter = tags;
+        });
+      }
     });
   }
 

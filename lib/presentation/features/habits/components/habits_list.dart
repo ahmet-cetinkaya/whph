@@ -44,15 +44,17 @@ class _HabitsListState extends State<HabitsList> {
     var query = GetListHabitsQuery(
         pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini, filterByTags: widget.filterByTags);
     var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
-    setState(() {
-      if (_habits == null) {
-        _habits = result;
-        return;
-      }
+    if (mounted) {
+      setState(() {
+        if (_habits == null) {
+          _habits = result;
+          return;
+        }
 
-      _habits!.items.addAll(result.items);
-      _habits!.pageIndex = result.pageIndex;
-    });
+        _habits!.items.addAll(result.items);
+        _habits!.pageIndex = result.pageIndex;
+      });
+    }
   }
 
   void _refreshHabits() {

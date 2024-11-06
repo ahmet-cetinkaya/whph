@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TaskCompleteButton extends StatelessWidget {
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
@@ -44,11 +46,11 @@ class TaskCompleteButton extends StatelessWidget {
 
       if (command.isCompleted) _soundPlayer.play(SharedSounds.done);
       onToggleCompleted();
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error toggling task completion: $e')),
-        );
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving task.');
       }
     }
   }

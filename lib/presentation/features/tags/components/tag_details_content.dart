@@ -4,9 +4,11 @@ import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart
 import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class TagDetailsContent extends StatefulWidget {
@@ -41,11 +43,17 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     try {
       var query = GetTagQuery(id: widget.tagId);
       var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
-      setState(() {
-        _tag = response;
-      });
+      if (mounted) {
+        setState(() {
+          _tag = response;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting tag.");
+      }
     }
   }
 
@@ -53,11 +61,17 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     try {
       var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: 0, pageSize: 100);
       var response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
-      setState(() {
-        _tagTags = response;
-      });
+      if (mounted) {
+        setState(() {
+          _tagTags = response;
+        });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
     } catch (e) {
-      _showError(e.toString());
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting tag tags.");
+      }
     }
   }
 
@@ -84,12 +98,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     for (var tagTag in tagIdsToRemove) {
       _removeTag(tagTag.id);
     }
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $message')),
-    );
   }
 
   @override

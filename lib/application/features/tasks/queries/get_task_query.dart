@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 
 class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
@@ -38,7 +39,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       request.id,
     );
     if (task == null) {
-      throw Exception('Task with id ${request.id} not found');
+      throw BusinessException('Task with id ${request.id} not found');
     }
 
     return GetTaskQueryResponse(

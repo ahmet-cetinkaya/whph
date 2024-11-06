@@ -33,16 +33,20 @@ class _HabitsPageState extends State<HabitsPage> {
         builder: (context) => HabitDetailsPage(habitId: habitId),
       ),
     );
-    setState(() {
-      _habitsListKey = UniqueKey();
-    });
+    if (mounted) {
+      setState(() {
+        _habitsListKey = UniqueKey();
+      });
+    }
   }
 
   _onFilterTagsSelect(List<String> tags) {
-    setState(() {
-      _selectedFilterTags = tags;
-      _habitsListKey = UniqueKey();
-    });
+    if (mounted) {
+      setState(() {
+        _selectedFilterTags = tags;
+        _habitsListKey = UniqueKey();
+      });
+    }
   }
 
   @override
@@ -59,6 +63,7 @@ class _HabitsPageState extends State<HabitsPage> {
               padding: const EdgeInsets.all(8.0),
               child: HabitAddButton(
                 onHabitCreated: (String habitId) {
+                  if (!mounted) return;
                   setState(() {
                     _openDetails(habitId, context);
                   });

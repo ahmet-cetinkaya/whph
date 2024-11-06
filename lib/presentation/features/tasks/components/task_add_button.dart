@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TaskAddButton extends StatefulWidget {
-  Color? buttonColor;
-  Color? buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
   final Function(String taskId)? onTaskCreated;
 
-  TaskAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onTaskCreated});
+  const TaskAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onTaskCreated});
 
   @override
   State<TaskAddButton> createState() => _TaskAddButtonState();
@@ -21,9 +23,11 @@ class _TaskAddButtonState extends State<TaskAddButton> {
   Future<void> _createTask(BuildContext context) async {
     if (isLoading) return;
 
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     try {
       var command = SaveTaskCommand(
@@ -33,19 +37,18 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       var response = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (widget.onTaskCreated != null) widget.onTaskCreated!(response.id);
-    } catch (error) {
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to create task. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving task.');
       }
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

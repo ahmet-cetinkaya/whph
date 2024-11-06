@@ -62,15 +62,17 @@ class _TaskListState extends State<TaskList> {
         filterByCompleted: widget.filterByCompleted);
     var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
-    setState(() {
-      if (_tasks == null) {
-        _tasks = result;
-        return;
-      }
+    if (mounted) {
+      setState(() {
+        if (_tasks == null) {
+          _tasks = result;
+          return;
+        }
 
-      _tasks!.items.addAll(result.items);
-      _tasks!.pageIndex = result.pageIndex;
-    });
+        _tasks!.items.addAll(result.items);
+        _tasks!.pageIndex = result.pageIndex;
+      });
+    }
   }
 
   void _onTaskCompleted() {

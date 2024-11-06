@@ -36,10 +36,12 @@ class _NumericInputState extends State<NumericInput> {
     if (value == null) return;
 
     int nextValue = value + widget.incrementValue;
-    setState(() {
-      _controller.value =
-          TextEditingValue(text: (nextValue <= widget.maxValue ? nextValue : widget.maxValue).toString());
-    });
+    if (mounted) {
+      setState(() {
+        _controller.value =
+            TextEditingValue(text: (nextValue <= widget.maxValue ? nextValue : widget.maxValue).toString());
+      });
+    }
     widget.onValueChanged(nextValue);
   }
 
@@ -48,10 +50,12 @@ class _NumericInputState extends State<NumericInput> {
     if (value == null) return;
 
     int nextValue = value - widget.decrementValue;
-    setState(() {
-      _controller.value =
-          TextEditingValue(text: (nextValue >= widget.minValue ? nextValue : widget.minValue).toString());
-    });
+    if (mounted) {
+      setState(() {
+        _controller.value =
+            TextEditingValue(text: (nextValue >= widget.minValue ? nextValue : widget.minValue).toString());
+      });
+    }
     widget.onValueChanged(value);
   }
 

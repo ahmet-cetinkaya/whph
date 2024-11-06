@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class HabitAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -26,18 +28,13 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       var response = await mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
       if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
-    } catch (error) {
-      if (context.mounted) _showError(context);
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while creating habit.');
+      }
     }
-  }
-
-  void _showError(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Failed to create habit. Please try again.'),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
 
   @override

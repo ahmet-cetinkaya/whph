@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_command.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class HabitDeleteButton extends StatefulWidget {
   final String habitId;
   final VoidCallback? onDeleteSuccess;
-  Color? buttonColor;
-  Color? buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
 
-  HabitDeleteButton({
+  const HabitDeleteButton({
     super.key,
     required this.habitId,
     this.onDeleteSuccess,
@@ -32,14 +34,11 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
       }
-    } catch (error) {
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to delete habit. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ErrorHelper.showError(context, e);
       }
     }
   }
