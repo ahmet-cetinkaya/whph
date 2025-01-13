@@ -31,7 +31,6 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   @override
   void initState() {
     _getAppUsage();
-    widget._appUsagesService.onAppUsageSaved.addListener(_getAppUsage);
     super.initState();
   }
 
@@ -39,7 +38,6 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   void dispose() {
     _controller.dispose();
     _debounce?.cancel();
-    widget._appUsagesService.onAppUsageSaved.removeListener(_getAppUsage);
     super.dispose();
   }
 

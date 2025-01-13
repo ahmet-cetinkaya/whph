@@ -30,7 +30,6 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   @override
   void initState() {
     _getTask();
-    widget._tasksService.onTaskSaved.addListener(_getTask);
     super.initState();
   }
 
@@ -38,7 +37,6 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   void dispose() {
     _titleController.dispose();
     _debounce?.cancel();
-    widget._tasksService.onTaskSaved.removeListener(_getTask);
     super.dispose();
   }
 

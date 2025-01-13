@@ -27,14 +27,12 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
   @override
   void initState() {
     _getHabit();
-    widget._habitsService.onHabitSaved.addListener(_getHabit);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    widget._habitsService.onHabitSaved.removeListener(_getHabit);
     _titleController.dispose();
     super.dispose();
   }
