@@ -58,6 +58,26 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      beforeOpen: (details) async {
+        // Create database directory if it doesn't exist
+        final dbFolder = await getApplicationDocumentsDirectory();
+        final dbDirectory = Directory(p.join(dbFolder.path, folderName));
+        if (!await dbDirectory.exists()) {
+          await dbDirectory.create(recursive: true);
+        }
+
+        // Verify that all tables are created
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();

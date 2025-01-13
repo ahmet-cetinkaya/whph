@@ -11,3 +11,10 @@ targets:
       reflectable:
         generate_for:
           - no/files
+
+      drift_dev:
+        options:
+          databases:
+            app_database: lib/persistence/shared/contexts/drift/drift_app_context.dart
+          test_dir: test/drift/
+          schema_dir: lib/persistence/shared/contexts/drift/schemas/
