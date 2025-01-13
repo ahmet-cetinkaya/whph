@@ -31,8 +31,7 @@ class AppUsageService implements IAppUsageService {
   }
 
   void _startDesktopTracking() {
-    const int time = 5;
-    _intervalTimer = Timer.periodic(const Duration(seconds: time), (timer) async {
+    _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       String? currentWindow = await _getDesktopActiveWindow();
       if (currentWindow == null) return;
 
@@ -56,7 +55,7 @@ class AppUsageService implements IAppUsageService {
         _activeDesktopWindowTime = 0;
       }
 
-      _activeDesktopWindowTime += time;
+      _activeDesktopWindowTime += 1;
     });
   }
 
@@ -75,7 +74,7 @@ class AppUsageService implements IAppUsageService {
   }
 
   void _startMobileTracking() {
-    _periodicTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (Platform.isAndroid) {
         DateTime endDate = DateTime.now();
         DateTime startDate = endDate.subtract(Duration(hours: 1));
@@ -85,7 +84,7 @@ class AppUsageService implements IAppUsageService {
         if (usageStats.isEmpty) return;
 
         for (app_usage_package.AppUsageInfo usage in usageStats) {
-          _saveAppUsage(usage.appName, usage.usage.inSeconds);
+          _saveAppUsage(usage.appName, usage.usage.inSeconds, overwrite: true);
         }
       }
     });
@@ -103,7 +102,7 @@ class AppUsageService implements IAppUsageService {
     AppTheme.chartColor9,
     AppTheme.chartColor10,
   ];
-  Future<void> _saveAppUsage(String appName, int duration) async {
+  Future<void> _saveAppUsage(String appName, int duration, {bool overwrite = false}) async {
     AppUsage? appUsage = await _appUsageRepository.getByDateAndHour(
       name: appName,
       year: DateTime.now().toUtc().year,
@@ -113,7 +112,12 @@ class AppUsageService implements IAppUsageService {
     );
 
     if (appUsage != null) {
-      appUsage.duration += duration;
+      if (overwrite) {
+        appUsage.duration = duration;
+      } else {
+        appUsage.duration += duration;
+      }
+
       await _appUsageRepository.update(appUsage);
     } else {
       AppUsage? firstAppUsage = await _appUsageRepository.getFirst(
@@ -122,6 +126,7 @@ class AppUsageService implements IAppUsageService {
           [appName],
         ),
       );
+
       appUsage = AppUsage(
         id: nanoid(),
         name: appName,
