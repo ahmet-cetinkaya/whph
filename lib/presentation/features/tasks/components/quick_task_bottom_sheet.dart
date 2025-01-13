@@ -4,9 +4,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:intl/intl.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
@@ -212,9 +210,9 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           child: GestureDetector(
             onTap: () {}, // Prevent tap from propagating
             child: DraggableScrollableSheet(
-              initialChildSize: 0.15, // Daha küçük başlangıç boyutu
-              minChildSize: 0.15, // Daha küçük minimum boyut
-              maxChildSize: 0.9, // Maximum boyut aynı kalsın
+              initialChildSize: 0.15,
+              minChildSize: 0.15,
+              maxChildSize: 0.9,
               builder: (context, controller) {
                 return Container(
                   padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),

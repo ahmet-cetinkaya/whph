@@ -208,7 +208,7 @@ class _HabitCardState extends State<HabitCard> {
     DateTime today = DateTime.now();
     List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
 
-    return Container(
+    return SizedBox(
       width: widget.dateRange * 48.0, // Match header width (48px per day)
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,

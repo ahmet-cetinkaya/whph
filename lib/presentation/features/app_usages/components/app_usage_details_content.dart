@@ -154,7 +154,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   void _onChangeColor(Color color) {
     if (mounted) {
       setState(() {
-        _appUsage!.color = color.value.toRadixString(16).substring(2);
+        _appUsage!.color = color.toString().substring(10, 16);
       });
     }
     _saveAppUsage();

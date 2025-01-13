@@ -66,7 +66,9 @@ class _AppUsageCardState extends State<AppUsageCard> {
       value: widget.appUsage.duration.toDouble() / 60,
       maxValue: widget.maxDurationInListing != null ? widget.maxDurationInListing!.toDouble() : double.infinity,
       unit: "min",
-      barColor: Color(int.parse(widget.appUsage.color!, radix: 16)).withOpacity(0.5),
+      barColor: Color(int.parse(widget.appUsage.color!, radix: 16)).withValues(
+        alpha: 0.5,
+      ),
       onTap: widget.onTap,
       additionalWidget: _appUsageTags == null
           ? Center(child: CircularProgressIndicator())

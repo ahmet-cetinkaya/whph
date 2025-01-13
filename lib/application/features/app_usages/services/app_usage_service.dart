@@ -131,7 +131,7 @@ class AppUsageService implements IAppUsageService {
         id: nanoid(),
         name: appName,
         color: firstAppUsage == null
-            ? _chartColors[Random().nextInt(_chartColors.length)].value.toRadixString(16).substring(2)
+            ? _chartColors[Random().nextInt(_chartColors.length)].toString().substring(10, 16)
             : null,
         duration: duration,
         createdDate: DateTime(0),
