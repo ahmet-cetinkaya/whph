@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
@@ -6,10 +7,15 @@ import 'package:whph/application/features/habits/commands/delete_habit_record_co
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
+import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
+import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
-import 'package:intl/intl.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart'; // For handling dates
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class HabitDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -29,6 +35,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
 
   GetListHabitRecordsQueryResponse? _habitRecords;
+  GetListHabitTagsQueryResponse? _habitTags;
 
   DateTime currentMonth = DateTime.now();
 
@@ -36,6 +43,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   void initState() {
     _getHabit();
     _getHabitRecordsForMonth(currentMonth);
+    _getHabitTags();
     widget._habitsService.onHabitSaved.addListener(_getHabit);
 
     super.initState();
@@ -97,21 +105,57 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
   }
 
-  void _previousMonth() {
-    if (mounted) {
-      setState(() {
-        currentMonth = DateTime(currentMonth.year, currentMonth.month - 1);
-        _getHabitRecordsForMonth(currentMonth);
-      });
+  Future<void> _getHabitTags() async {
+    try {
+      var query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: 0, pageSize: 100);
+      var response = await widget._mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
+      if (mounted) {
+        setState(() {
+          _habitTags = response;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting habit tags.");
+      }
     }
   }
 
-  void _nextMonth() {
-    if (mounted) {
-      setState(() {
-        currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
-        _getHabitRecordsForMonth(currentMonth);
-      });
+  Future<void> _addTag(String tagId) async {
+    try {
+      var command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
+      await widget._mediator.send(command);
+      await _getHabitTags();
+    } catch (e) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
+      }
+    }
+  }
+
+  Future<void> _removeTag(String id) async {
+    try {
+      var command = RemoveHabitTagCommand(id: id);
+      await widget._mediator.send(command);
+      await _getHabitTags();
+    } catch (e) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
+      }
+    }
+  }
+
+  void _onTagsSelected(List<String> tags) {
+    if (_habitTags == null) return;
+
+    var tagsToAdd = tags.where((tagId) => !_habitTags!.items.any((habitTag) => habitTag.tagId == tagId)).toList();
+    var tagsToRemove = _habitTags!.items.where((habitTag) => !tags.contains(habitTag.tagId)).toList();
+
+    for (var tagId in tagsToAdd) {
+      _addTag(tagId);
+    }
+    for (var habitTag in tagsToRemove) {
+      _removeTag(habitTag.id);
     }
   }
 
@@ -126,6 +170,25 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     widget._habitsService.onHabitSaved.value = result;
   }
 
+  void _previousMonth() {
+    setState(() {
+      currentMonth = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+      _getHabitRecordsForMonth(currentMonth);
+    });
+  }
+
+  void _nextMonth() {
+    final now = DateTime.now();
+    final nextMonth = DateTime(currentMonth.year, currentMonth.month + 1, 1);
+
+    if (nextMonth.isAfter(now)) return; // Don't allow navigation to future months
+
+    setState(() {
+      currentMonth = nextMonth;
+      _getHabitRecordsForMonth(currentMonth);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -135,9 +198,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Tags
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: const Icon(Icons.tag),
+                      ),
+                      const Text('Tags', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                _buildTagSection(),
+
                 // Description
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 32),
+                  padding: const EdgeInsets.only(bottom: 32, top: 16),
                   child: Column(
                     children: [
                       Padding(
@@ -314,6 +392,41 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildTagSection() {
+    if (_habitTags == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: [
+            TagSelectDropdown(
+              key: ValueKey(_habitTags!.items.length),
+              isMultiSelect: true,
+              onTagsSelected: _onTagsSelected,
+              initialSelectedTags: _habitTags!.items
+                  .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
+                  .toList(),
+              icon: Icons.add,
+            ),
+            ..._habitTags!.items.map((habitTag) {
+              return Chip(
+                label: Text(habitTag.tagName),
+                onDeleted: () {
+                  _removeTag(habitTag.id);
+                },
+              );
+            })
+          ],
+        ),
+      ],
     );
   }
 

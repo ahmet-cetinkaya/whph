@@ -124,7 +124,10 @@ void registerHabitsFeature(IContainer container, Mediator mediator) {
     () => DeleteHabitCommandHandler(habitRepository: container.resolve<IHabitRepository>()),
   );
   mediator.registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(
-    () => GetListHabitsQueryHandler(habitRepository: container.resolve<IHabitRepository>()),
+    () => GetListHabitsQueryHandler(
+        habitRepository: container.resolve<IHabitRepository>(),
+        habitTagRepository: container.resolve<IHabitTagsRepository>(),
+        tagRepository: container.resolve<ITagRepository>()),
   );
   mediator.registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(
     () => GetHabitQueryHandler(habitRepository: container.resolve<IHabitRepository>()),
@@ -139,7 +142,12 @@ void registerHabitsFeature(IContainer container, Mediator mediator) {
   mediator.registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
     () => GetListHabitRecordsQueryHandler(habitRecordRepository: container.resolve<IHabitRecordRepository>()),
   );
-
+  mediator.registerHandler<GetListHabitTagsQuery, GetListHabitTagsQueryResponse, GetListHabitTagsQueryHandler>(
+    () => GetListHabitTagsQueryHandler(
+      tagRepository: container.resolve<ITagRepository>(),
+      habitTagRepository: container.resolve<IHabitTagsRepository>(),
+    ),
+  );
   mediator.registerHandler<AddHabitTagCommand, AddHabitTagCommandResponse, AddHabitTagCommandHandler>(
     () => AddHabitTagCommandHandler(habitTagRepository: container.resolve<IHabitTagsRepository>()),
   );

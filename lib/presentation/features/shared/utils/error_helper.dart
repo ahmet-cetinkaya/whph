@@ -46,7 +46,6 @@ class ErrorHelper {
                           "Thanks!",
                     },
                   );
-                  print(emailLaunchUri);
                   launchUrl(emailLaunchUri);
                 },
                 style: ButtonStyle(

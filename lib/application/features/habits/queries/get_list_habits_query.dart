@@ -1,8 +1,11 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit.dart';
+import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
@@ -17,8 +20,13 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
 class HabitListItem {
   String id;
   String name;
+  List<TagListItem> tags;
 
-  HabitListItem({required this.id, required this.name});
+  HabitListItem({
+    required this.id,
+    required this.name,
+    this.tags = const [],
+  });
 }
 
 class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
@@ -32,8 +40,16 @@ class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
 
 class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, GetListHabitsQueryResponse> {
   late final IHabitRepository _habitRepository;
+  late final IHabitTagsRepository _habitTagsRepository;
+  late final ITagRepository _tagRepository;
 
-  GetListHabitsQueryHandler({required IHabitRepository habitRepository}) : _habitRepository = habitRepository;
+  GetListHabitsQueryHandler({
+    required IHabitRepository habitRepository,
+    required IHabitTagsRepository habitTagRepository,
+    required ITagRepository tagRepository,
+  })  : _habitRepository = habitRepository,
+        _habitTagsRepository = habitTagRepository,
+        _tagRepository = tagRepository;
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
@@ -43,8 +59,30 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       customWhereFilter: _getCustomWhereFilter(request),
     );
 
+    List<HabitListItem> habitItems = [];
+
+    for (var habit in habits.items) {
+      // Fetch tags for each habit
+      var habitTags =
+          await _habitTagsRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("habit_id = ?", [habit.id]));
+
+      var tagItems = await Future.wait(habitTags.items.map((ht) async {
+        var tag = await _tagRepository.getById(ht.tagId);
+        return TagListItem(
+          id: ht.tagId,
+          name: tag?.name ?? "",
+        );
+      }).toList());
+
+      habitItems.add(HabitListItem(
+        id: habit.id,
+        name: habit.name,
+        tags: tagItems,
+      ));
+    }
+
     return GetListHabitsQueryResponse(
-      items: habits.items.map((e) => HabitListItem(id: e.id, name: e.name)).toList(),
+      items: habitItems,
       totalItemCount: habits.totalItemCount,
       totalPageCount: habits.totalPageCount,
       pageIndex: habits.pageIndex,

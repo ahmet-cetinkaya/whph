@@ -76,21 +76,25 @@ class _AppUsageCardState extends State<AppUsageCard> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (_appUsageTags!.items.isNotEmpty)
-                      Icon(
-                        Icons.label,
-                        color: AppTheme.disabledColor,
-                        size: AppTheme.fontSizeSmall,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.label,
+                            color: AppTheme.disabledColor,
+                            size: AppTheme.fontSizeSmall,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Text(
+                              _appUsageTags!.items.map((e) => e.tagName).join(", "),
+                              style: TextStyle(
+                                color: AppTheme.disabledColor,
+                                fontSize: AppTheme.fontSizeSmall,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Text(
-                        _appUsageTags!.items.map((e) => e.tagName).join(", "),
-                        style: TextStyle(
-                          color: AppTheme.disabledColor,
-                          fontSize: AppTheme.fontSizeSmall,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
     );

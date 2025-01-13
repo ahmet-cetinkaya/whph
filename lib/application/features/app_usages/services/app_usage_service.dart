@@ -38,7 +38,9 @@ class AppUsageService implements IAppUsageService {
 
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
-          if (kDebugMode) print('$_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
+          if (kDebugMode) {
+            print('$_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
+          }
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
           String appName = activeWindowOutputSections[1].isNotEmpty

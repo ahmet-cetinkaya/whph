@@ -28,8 +28,6 @@ class Setting extends BaseEntity<String> {
         return double.parse(value) as T;
       case SettingValueType.bool:
         return (value == 'true') as T;
-      default:
-        throw Exception('Invalid SettingType');
     }
   }
 

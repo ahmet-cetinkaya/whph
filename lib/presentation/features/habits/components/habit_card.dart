@@ -52,10 +52,13 @@ class _HabitCardState extends State<HabitCard> {
       pageIndex: 0,
       pageSize: widget.dateRange,
       habitId: widget.habit.id,
-      startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
+      startDate:
+          DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
       endDate: DateTime.now(),
     );
-    var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+    var response = await widget._mediator
+        .send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
+            query);
 
     if (mounted) {
       setState(() {
@@ -66,7 +69,8 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    await widget._mediator
+        .send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
     if (mounted) {
       setState(() {
@@ -80,7 +84,9 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
-    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+    await widget._mediator
+        .send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
+            command);
 
     if (mounted) {
       setState(() {
@@ -97,9 +103,11 @@ class _HabitCardState extends State<HabitCard> {
       onTap: widget.onOpenDetails,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: widget.isMiniLayout ||
-                  (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
+                  (widget.isMiniLayout == false &&
+                      AppThemeHelper.isScreenSmallerThan(
+                          context, AppTheme.screenSmall))
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,9 +121,12 @@ class _HabitCardState extends State<HabitCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildHabitName(),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: _buildCalendar(),
+                    Flexible(
+                      // Added Flexible
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: _buildCalendar(),
+                      ),
                     ),
                   ],
                 ),
@@ -125,16 +136,51 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Widget _buildHabitName() {
-    return Wrap(
-      children: [
-        Icon(Icons.refresh),
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              widget.habit.name,
-              overflow: TextOverflow.ellipsis,
-            )),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.refresh),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    widget.habit.name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.label,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      widget.habit.tags.map((tag) => tag.name).join(", "),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -145,15 +191,17 @@ class _HabitCardState extends State<HabitCard> {
       );
     }
 
-    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+    bool hasRecordToday = _habitRecords!.items
+        .any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
     return Checkbox(
       value: hasRecordToday,
       onChanged: (bool? value) async {
         if (value == true) {
           await _createHabitRecord(widget.habit.id, DateTime.now());
         } else {
-          HabitRecordListItem? recordToday =
-              _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+          HabitRecordListItem? recordToday = _habitRecords!.items.firstWhere(
+              (record) =>
+                  DateTimeHelper.isSameDay(record.date, DateTime.now()));
           await _deleteHabitRecord(recordToday.id);
         }
       },
@@ -162,63 +210,84 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCalendar() {
     if (_habitRecords == null) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
     DateTime today = DateTime.now();
-    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
+    List<DateTime> lastDays = List.generate(
+        widget.dateRange, (index) => today.subtract(Duration(days: index)));
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: lastDays.map((date) {
-        bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
+    return Container(
+      width: widget.dateRange * 48.0, // Match header width (48px per day)
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: lastDays.map((date) {
+          bool hasRecord = _habitRecords!.items
+              .any((record) => DateTimeHelper.isSameDay(record.date, date));
 
-        HabitRecordListItem? recordForDay;
-        if (hasRecord) {
-          recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
-        }
+          HabitRecordListItem? recordForDay;
+          if (hasRecord) {
+            recordForDay = _habitRecords!.items.firstWhere(
+                (record) => DateTimeHelper.isSameDay(record.date, date));
+          }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Day of the week
-            if (widget.isDateLabelShowing)
-              Column(
-                children: [
-                  Text(
-                    DateTimeHelper.getWeekday(date.weekday),
-                    style: TextStyle(
-                      color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                      fontSize: AppTheme.fontSizeSmall,
-                    ),
+          return SizedBox(
+            width: 46, // Fixed width for each date column
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (widget.isDateLabelShowing)
+                  Column(
+                    children: [
+                      Text(
+                        DateTimeHelper.getWeekday(date.weekday),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: DateTimeHelper.isSameDay(date, today)
+                              ? AppTheme.primaryColor
+                              : AppTheme.textColor,
+                          fontSize: AppTheme.fontSizeSmall,
+                        ),
+                      ),
+                      Text(
+                        date.day.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: DateTimeHelper.isSameDay(date, today)
+                              ? AppTheme.primaryColor
+                              : AppTheme.textColor,
+                          fontSize: AppTheme.fontSizeMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(date.day.toString(),
-                      style: TextStyle(
-                        color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                        fontSize: AppTheme.fontSizeMedium,
-                      ))
-                ],
-              ),
-
-            // Checkbox icon
-            IconButton(
-              onPressed: () async {
-                if (hasRecord) {
-                  await _deleteHabitRecord(recordForDay!.id);
-                } else {
-                  await _createHabitRecord(widget.habit.id, date);
-                }
-              },
-              icon: Icon(hasRecord ? Icons.link : Icons.close),
-              color: hasRecord ? Colors.green : Colors.red,
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  onPressed: () async {
+                    if (hasRecord) {
+                      await _deleteHabitRecord(recordForDay!.id);
+                    } else {
+                      await _createHabitRecord(widget.habit.id, date);
+                    }
+                  },
+                  icon: Icon(
+                    hasRecord ? Icons.link : Icons.close,
+                    size: 20,
+                  ),
+                  color: hasRecord ? Colors.green : Colors.red,
+                ),
+              ],
             ),
-          ],
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }
