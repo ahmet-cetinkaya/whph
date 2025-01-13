@@ -184,6 +184,9 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DetailTable(rowData: [
+              // Tags
+              DetailTableRowData(label: "Tags", icon: Icons.tag, widget: _buildTagSection()),
+
               // Priority
               DetailTableRowData(
                   label: "Priority",
@@ -293,7 +296,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                       _updateTask();
                     },
                   )),
-              DetailTableRowData(label: "Tags", icon: Icons.tag, widget: _buildTagSection()),
             ]),
 
             // Description
