@@ -32,7 +32,6 @@ class TaskCard extends StatelessWidget {
           ),
         ),
         subtitle: _buildSubtitle(context),
-        trailing: _buildPriorityWidget(),
         onTap: onOpenDetails,
       ),
     );
@@ -46,17 +45,43 @@ class TaskCard extends StatelessWidget {
         taskId: task.id,
         isCompleted: task.isCompleted,
         onToggleCompleted: onCompleted,
+        color: task.priority != null ? _getPriorityColor(task.priority!) : null,
       ),
     );
   }
 
   Widget _buildSubtitle(BuildContext context) {
-    final DateFormat dateFormat = DateFormat('EEEE, d MMMM y');
+    final DateFormat dateFormat = DateFormat('dd.MM.yy');
     List<Widget> subtitleWidgets = [];
 
-    if (task.plannedDate != null) {
+    // Add estimated time if exists
+    if (task.estimatedTime != null) {
       subtitleWidgets.add(
         Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.timer, color: Colors.blue, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              '${task.estimatedTime}m',
+              style: const TextStyle(
+                color: Colors.blue,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Add planned date if exists
+    if (task.plannedDate != null) {
+      if (subtitleWidgets.isNotEmpty) {
+        subtitleWidgets.add(const SizedBox(width: 8));
+      }
+      subtitleWidgets.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.calendar_today, color: Colors.blue, size: 16),
             const SizedBox(width: 4),
@@ -71,13 +96,15 @@ class TaskCard extends StatelessWidget {
         ),
       );
     }
+
+    // Add deadline date if exists
     if (task.deadlineDate != null) {
       if (subtitleWidgets.isNotEmpty) {
         subtitleWidgets.add(const SizedBox(width: 8));
       }
-
       subtitleWidgets.add(
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.access_time, color: Colors.red, size: 16),
             const SizedBox(width: 4),
@@ -93,13 +120,20 @@ class TaskCard extends StatelessWidget {
       );
     }
 
-    // Add tags with new simplified layout
-    if (task.tags.isNotEmpty) {
-      if (subtitleWidgets.isNotEmpty) {
-        subtitleWidgets.add(const SizedBox(height: 8));
-      }
+    var topRow = Row(
+      children: subtitleWidgets,
+    );
 
-      subtitleWidgets.add(
+    // Add tags in a separate row if they exist
+    if (task.tags.isEmpty) {
+      return topRow;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        topRow,
+        const SizedBox(height: 4),
         Row(
           children: [
             const Icon(
@@ -119,47 +153,7 @@ class TaskCard extends StatelessWidget {
             ),
           ],
         ),
-      );
-    }
-
-    if (subtitleWidgets.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    return AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: subtitleWidgets,
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: subtitleWidgets,
-          );
-  }
-
-  Widget _buildPriorityWidget() {
-    if (task.priority == null) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.flag,
-            color: _getPriorityColor(task.priority!),
-            size: 20,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _getPriorityText(task.priority!),
-            style: TextStyle(
-              color: _getPriorityColor(task.priority!),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -167,29 +161,14 @@ class TaskCard extends StatelessWidget {
     switch (priority) {
       case EisenhowerPriority.urgentImportant:
         return Colors.red;
-      case EisenhowerPriority.urgentNotImportant:
-        return Colors.orange;
       case EisenhowerPriority.notUrgentImportant:
         return Colors.green;
-      case EisenhowerPriority.notUrgentNotImportant:
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String _getPriorityText(EisenhowerPriority priority) {
-    switch (priority) {
-      case EisenhowerPriority.urgentImportant:
-        return 'Urgent & Important';
       case EisenhowerPriority.urgentNotImportant:
-        return 'Urgent & Not Important';
-      case EisenhowerPriority.notUrgentImportant:
-        return 'Important & Not Urgent';
+        return Colors.blue;
       case EisenhowerPriority.notUrgentNotImportant:
-        return 'Not Urgent & Not Important';
+        return Colors.grey;
       default:
-        return 'Unknown';
+        return Colors.white;
     }
   }
 }

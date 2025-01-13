@@ -77,7 +77,7 @@ class _TasksPageState extends State<TasksPage> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: TaskAddButton(
-              onTaskCreated: (taskId) => _openTaskDetails(taskId),
+              onTaskCreated: (_) => _refreshTasks(),
               buttonBackgroundColor: AppTheme.surface2,
               buttonColor: AppTheme.primaryColor,
               initialTagIds: _selectedTagIds,

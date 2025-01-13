@@ -91,14 +91,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                       leading: Icon(Icons.task),
                       title: Text('Tasks'),
                       trailing: TaskAddButton(
-                        onTaskCreated: (taskId) {
-                          _refreshTasks();
-                          _openTaskDetails(TaskListItem(
-                            id: taskId,
-                            title: '',
-                            isCompleted: false,
-                          ));
-                        },
+                        onTaskCreated: (taskId) => _refreshTasks(),
                         buttonColor: AppTheme.primaryColor,
                         buttonBackgroundColor: AppTheme.surface2,
                         initialTagIds: [widget.tagId],

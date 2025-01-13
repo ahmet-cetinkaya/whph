@@ -40,15 +40,18 @@ class TaskListItem {
   DateTime? deadlineDate;
   bool isCompleted;
   List<TagListItem> tags;
+  int? estimatedTime;
 
-  TaskListItem(
-      {required this.id,
-      required this.title,
-      required this.isCompleted,
-      this.priority,
-      this.plannedDate,
-      this.deadlineDate,
-      this.tags = const []});
+  TaskListItem({
+    required this.id,
+    required this.title,
+    required this.isCompleted,
+    this.priority,
+    this.plannedDate,
+    this.deadlineDate,
+    this.tags = const [],
+    this.estimatedTime,
+  });
 }
 
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
@@ -106,6 +109,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         tags: tagItems,
+        estimatedTime: task.estimatedTime, // Add this field
       ));
     }
 

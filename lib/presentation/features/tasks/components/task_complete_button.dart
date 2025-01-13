@@ -8,26 +8,33 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
-class TaskCompleteButton extends StatelessWidget {
-  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
-
+class TaskCompleteButton extends StatefulWidget {
   final String taskId;
   final bool isCompleted;
   final VoidCallback onToggleCompleted;
+  final Color? color;
 
-  TaskCompleteButton({
+  const TaskCompleteButton({
     super.key,
     required this.taskId,
     required this.isCompleted,
     required this.onToggleCompleted,
+    this.color,
   });
+
+  @override
+  State<TaskCompleteButton> createState() => _TaskCompleteButtonState();
+}
+
+class _TaskCompleteButtonState extends State<TaskCompleteButton> {
+  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
 
   Future<void> _toggleCompleteTask(BuildContext context) async {
     final mediator = container.resolve<Mediator>();
 
     try {
       var task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
+        GetTaskQuery(id: widget.taskId),
       );
 
       var command = SaveTaskCommand(
@@ -45,7 +52,7 @@ class TaskCompleteButton extends StatelessWidget {
       await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (command.isCompleted) _soundPlayer.play(SharedSounds.done);
-      onToggleCompleted();
+      widget.onToggleCompleted();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e) {
@@ -57,12 +64,15 @@ class TaskCompleteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-        color: isCompleted ? Colors.green : null,
+    return Checkbox(
+      value: widget.isCompleted,
+      onChanged: (_) => _toggleCompleteTask(context),
+      activeColor: widget.color,
+      shape: const CircleBorder(),
+      side: BorderSide(
+        color: widget.color ?? Colors.white,
+        width: 2,
       ),
-      onPressed: () => _toggleCompleteTask(context),
     );
   }
 }

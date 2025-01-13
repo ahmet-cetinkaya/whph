@@ -4,6 +4,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
 
 class TaskAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -28,36 +29,21 @@ class _TaskAddButtonState extends State<TaskAddButton> {
   bool isLoading = false;
 
   Future<void> _createTask(BuildContext context) async {
-    if (isLoading) return;
-
-    if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
-    }
-
-    try {
-      var command = SaveTaskCommand(
-        title: "New Task",
-        description: "# Steps\n - [ ] Step 1\n - [ ] Step 2\n# Notes\n",
-        tagIds: widget.initialTagIds,
-      );
-      var response = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      if (widget.onTaskCreated != null) widget.onTaskCreated!(response.id);
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving task.');
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => QuickTaskBottomSheet(
+        initialTagIds: widget.initialTagIds,
+        onTaskCreated: (taskId) {
+          if (widget.onTaskCreated != null) {
+            widget.onTaskCreated!(taskId);
+          }
+        },
+      ),
+    );
   }
 
   @override
