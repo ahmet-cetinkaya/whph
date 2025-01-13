@@ -1,9 +1,13 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -35,6 +39,7 @@ class TaskListItem {
   DateTime? plannedDate;
   DateTime? deadlineDate;
   bool isCompleted;
+  List<TagListItem> tags;
 
   TaskListItem(
       {required this.id,
@@ -42,7 +47,8 @@ class TaskListItem {
       required this.isCompleted,
       this.priority,
       this.plannedDate,
-      this.deadlineDate});
+      this.deadlineDate,
+      this.tags = const []});
 }
 
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
@@ -56,8 +62,16 @@ class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
 
 class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, GetListTasksQueryResponse> {
   late final ITaskRepository _taskRepository;
+  late final ITaskTagRepository _taskTagRepository;
+  late final ITagRepository _tagRepository;
 
-  GetListTasksQueryHandler({required ITaskRepository taskRepository}) : _taskRepository = taskRepository;
+  GetListTasksQueryHandler(
+      {required ITaskRepository taskRepository,
+      required ITaskTagRepository taskTagRepository,
+      required ITagRepository tagRepository})
+      : _taskRepository = taskRepository,
+        _taskTagRepository = taskTagRepository,
+        _tagRepository = tagRepository;
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
@@ -68,16 +82,35 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       customOrder: [CustomOrder(field: "created_date", ascending: false)],
     );
 
+    List<TaskListItem> taskListItems = [];
+
+    for (var task in tasks.items) {
+      // Fetch tags for each task
+      PaginatedList<TaskTag> taskTags =
+          await _taskTagRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("task_id = ?", [task.id]));
+
+      var tagItems = await Future.wait(taskTags.items.map((tt) async {
+        var tag = await _tagRepository.getById(tt.tagId);
+
+        return TagListItem(
+          id: tt.tagId,
+          name: tag?.name ?? "",
+        );
+      }).toList());
+
+      taskListItems.add(TaskListItem(
+        id: task.id,
+        title: task.title,
+        isCompleted: task.isCompleted,
+        priority: task.priority,
+        plannedDate: task.plannedDate,
+        deadlineDate: task.deadlineDate,
+        tags: tagItems,
+      ));
+    }
+
     return GetListTasksQueryResponse(
-      items: tasks.items
-          .map((e) => TaskListItem(
-              id: e.id,
-              title: e.title,
-              isCompleted: e.isCompleted,
-              priority: e.priority,
-              plannedDate: e.plannedDate,
-              deadlineDate: e.deadlineDate))
-          .toList(),
+      items: taskListItems,
       totalItemCount: tasks.totalItemCount,
       totalPageCount: tasks.totalPageCount,
       pageIndex: tasks.pageIndex,

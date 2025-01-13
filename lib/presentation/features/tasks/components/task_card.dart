@@ -93,14 +93,45 @@ class TaskCard extends StatelessWidget {
       );
     }
 
+    // Add tags with new simplified layout
+    if (task.tags.isNotEmpty) {
+      if (subtitleWidgets.isNotEmpty) {
+        subtitleWidgets.add(const SizedBox(height: 8));
+      }
+
+      subtitleWidgets.add(
+        Row(
+          children: [
+            const Icon(
+              Icons.label,
+              color: Colors.grey,
+              size: 16,
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                task.tags.map((tag) => tag.name).join(", "),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (subtitleWidgets.isEmpty) {
       return const SizedBox.shrink();
     }
     return AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)
-        ? Row(
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: subtitleWidgets,
           )
         : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: subtitleWidgets,
           );
   }

@@ -61,6 +61,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/mapper/abstraction/i_mapper.dart';
 import 'package:whph/core/acore/mapper/mapper.dart';
+import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 
 void registerApplication(IContainer container) {
   container.registerSingleton<IMapper>((_) => CoreMapper());
@@ -155,7 +156,10 @@ void registerTasksFeature(IContainer container, Mediator mediator) {
     () => DeleteTaskCommandHandler(taskRepository: container.resolve<ITaskRepository>()),
   );
   mediator.registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
-    () => GetListTasksQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
+    () => GetListTasksQueryHandler(
+        taskRepository: container.resolve<ITaskRepository>(),
+        taskTagRepository: container.resolve<ITaskTagRepository>(),
+        tagRepository: container.resolve<ITagRepository>()),
   );
   mediator.registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(
     () => GetTaskQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
