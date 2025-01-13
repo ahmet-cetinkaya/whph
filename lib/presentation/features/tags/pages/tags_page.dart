@@ -22,13 +22,14 @@ class _TagsPageState extends State<TagsPage> {
 
   List<String>? _selectedTagIds;
   Key _tagsListKey = UniqueKey();
+  Key _addButtonKey = const ValueKey('tagAddButton');
 
   void _refreshTags() {
-    if (mounted) {
-      setState(() {
-        _tagsListKey = UniqueKey();
-      });
-    }
+    setState(() {
+      _selectedTagIds = null;
+      _tagsListKey = UniqueKey();
+      _addButtonKey = ValueKey(DateTime.now().toString());
+    });
   }
 
   Future<void> _openTagDetails(String tagId) async {
@@ -42,12 +43,9 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _onFilterTags(List<String> tagIds) {
-    if (mounted) {
-      setState(() {
-        _selectedTagIds = tagIds;
-        _refreshTags();
-      });
-    }
+    setState(() {
+      _selectedTagIds = tagIds;
+    });
   }
 
   @override
@@ -60,6 +58,7 @@ class _TagsPageState extends State<TagsPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TagAddButton(
+              key: _addButtonKey,
               onTagCreated: (tagId) {
                 _openTagDetails(tagId);
               },
