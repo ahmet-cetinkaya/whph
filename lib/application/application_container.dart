@@ -158,7 +158,8 @@ void registerHabitsFeature(IContainer container, Mediator mediator) {
 
 void registerTasksFeature(IContainer container, Mediator mediator) {
   mediator.registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
-    () => SaveTaskCommandHandler(taskService: container.resolve<ITaskRepository>()),
+    () => SaveTaskCommandHandler(
+        taskService: container.resolve<ITaskRepository>(), taskTagRepository: container.resolve<ITaskTagRepository>()),
   );
   mediator.registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
     () => DeleteTaskCommandHandler(taskRepository: container.resolve<ITaskRepository>()),

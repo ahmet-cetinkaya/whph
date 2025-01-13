@@ -9,8 +9,15 @@ class TaskAddButton extends StatefulWidget {
   final Color? buttonColor;
   final Color? buttonBackgroundColor;
   final Function(String taskId)? onTaskCreated;
+  final List<String>? initialTagIds;
 
-  const TaskAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onTaskCreated});
+  const TaskAddButton({
+    super.key,
+    this.buttonColor,
+    this.buttonBackgroundColor,
+    this.onTaskCreated,
+    this.initialTagIds,
+  });
 
   @override
   State<TaskAddButton> createState() => _TaskAddButtonState();
@@ -33,6 +40,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       var command = SaveTaskCommand(
         title: "New Task",
         description: "# Steps\n - [ ] Step 1\n - [ ] Step 2\n# Notes\n",
+        tagIds: widget.initialTagIds,
       );
       var response = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 

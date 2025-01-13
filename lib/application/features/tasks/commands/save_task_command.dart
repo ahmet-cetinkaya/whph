@@ -1,8 +1,10 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -14,6 +16,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final int? estimatedTime;
   final int? elapsedTime;
   final bool isCompleted;
+  final List<String>? tagIds;
 
   SaveTaskCommand(
       {this.id,
@@ -24,7 +27,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       this.deadlineDate,
       this.estimatedTime,
       this.elapsedTime,
-      this.isCompleted = false});
+      this.isCompleted = false,
+      this.tagIds});
 }
 
 class SaveTaskCommandResponse {
@@ -41,8 +45,11 @@ class SaveTaskCommandResponse {
 
 class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
   final ITaskRepository _taskRepository;
+  final ITaskTagRepository _taskTagRepository;
 
-  SaveTaskCommandHandler({required ITaskRepository taskService}) : _taskRepository = taskService;
+  SaveTaskCommandHandler({required ITaskRepository taskService, required ITaskTagRepository taskTagRepository})
+      : _taskRepository = taskService,
+        _taskTagRepository = taskTagRepository;
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
@@ -76,6 +83,19 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           elapsedTime: request.elapsedTime,
           isCompleted: false);
       await _taskRepository.add(task);
+    }
+
+    // Add initial tags if provided
+    if (request.tagIds != null) {
+      for (var tagId in request.tagIds!) {
+        var taskTag = TaskTag(
+          id: nanoid(),
+          taskId: task.id,
+          tagId: tagId,
+          createdDate: DateTime.now(),
+        );
+        await _taskTagRepository.add(taskTag);
+      }
     }
 
     return SaveTaskCommandResponse(

@@ -80,6 +80,7 @@ class _TasksPageState extends State<TasksPage> {
               onTaskCreated: (taskId) => _openTaskDetails(taskId),
               buttonBackgroundColor: AppTheme.surface2,
               buttonColor: AppTheme.primaryColor,
+              initialTagIds: _selectedTagIds,
             ),
           ),
         ],

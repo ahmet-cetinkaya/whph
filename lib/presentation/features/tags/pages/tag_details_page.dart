@@ -7,6 +7,7 @@ import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
 import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 
@@ -23,6 +24,15 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   final Mediator mediator = container.resolve<Mediator>();
 
   bool _isTasksExpanded = false;
+  Key _tasksListKey = UniqueKey();
+
+  void _refreshTasks() {
+    if (mounted) {
+      setState(() {
+        _tasksListKey = UniqueKey();
+      });
+    }
+  }
 
   Future<void> _openTaskDetails(TaskListItem task) async {
     await Navigator.push(
@@ -31,6 +41,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
         builder: (context) => TaskDetailsPage(taskId: task.id),
       ),
     );
+    _refreshTasks();
   }
 
   @override
@@ -45,12 +56,13 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TagDeleteButton(
-                tagId: widget.tagId,
-                onDeleteSuccess: () {
-                  Navigator.of(context).pop();
-                },
-                buttonColor: AppTheme.primaryColor,
-                buttonBackgroundColor: AppTheme.surface2),
+              tagId: widget.tagId,
+              onDeleteSuccess: () {
+                Navigator.of(context).pop();
+              },
+              buttonColor: AppTheme.primaryColor,
+              buttonBackgroundColor: AppTheme.surface2,
+            ),
           ),
         ],
       ),
@@ -75,12 +87,26 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                   isExpanded: _isTasksExpanded,
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
-                      contentPadding: EdgeInsets.only(left: 8),
+                      contentPadding: EdgeInsets.only(left: 1),
                       leading: Icon(Icons.task),
                       title: Text('Tasks'),
+                      trailing: TaskAddButton(
+                        onTaskCreated: (taskId) {
+                          _refreshTasks();
+                          _openTaskDetails(TaskListItem(
+                            id: taskId,
+                            title: '',
+                            isCompleted: false,
+                          ));
+                        },
+                        buttonColor: AppTheme.primaryColor,
+                        buttonBackgroundColor: AppTheme.surface2,
+                        initialTagIds: [widget.tagId],
+                      ),
                     );
                   },
                   body: TaskList(
+                    key: _tasksListKey,
                     mediator: mediator,
                     onClickTask: _openTaskDetails,
                     filterByTags: [widget.tagId],
