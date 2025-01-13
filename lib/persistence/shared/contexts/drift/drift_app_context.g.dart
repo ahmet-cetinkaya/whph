@@ -1600,8 +1600,15 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
   @override
   late final GeneratedColumn<String> name =
       GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name];
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>('is_archived', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, isArchived];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1632,6 +1639,9 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('is_archived')) {
+      context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
+    }
     return context;
   }
 
@@ -1646,6 +1656,7 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
     );
   }
 
@@ -1661,6 +1672,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<String> name;
+  final Value<bool> isArchived;
   final Value<int> rowid;
   const TagTableCompanion({
     this.id = const Value.absent(),
@@ -1668,6 +1680,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.name = const Value.absent(),
+    this.isArchived = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TagTableCompanion.insert({
@@ -1676,6 +1689,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     required String name,
+    this.isArchived = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -1686,6 +1700,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<String>? name,
+    Expression<bool>? isArchived,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1694,6 +1709,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (name != null) 'name': name,
+      if (isArchived != null) 'is_archived': isArchived,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1704,6 +1720,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<String>? name,
+      Value<bool>? isArchived,
       Value<int>? rowid}) {
     return TagTableCompanion(
       id: id ?? this.id,
@@ -1711,6 +1728,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       name: name ?? this.name,
+      isArchived: isArchived ?? this.isArchived,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1733,6 +1751,9 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1747,6 +1768,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('name: $name, ')
+          ..write('isArchived: $isArchived, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3740,6 +3762,7 @@ typedef $$TagTableTableCreateCompanionBuilder = TagTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   required String name,
+  Value<bool> isArchived,
   Value<int> rowid,
 });
 typedef $$TagTableTableUpdateCompanionBuilder = TagTableCompanion Function({
@@ -3748,6 +3771,7 @@ typedef $$TagTableTableUpdateCompanionBuilder = TagTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   Value<String> name,
+  Value<bool> isArchived,
   Value<int> rowid,
 });
 
@@ -3771,6 +3795,9 @@ class $$TagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTableTab
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isArchived =>
+      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnFilters(column));
 }
 
 class $$TagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTableTable> {
@@ -3794,6 +3821,9 @@ class $$TagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTableT
 
   ColumnOrderings<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isArchived =>
+      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTableTable> {
@@ -3816,6 +3846,8 @@ class $$TagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTabl
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
   GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(column: $table.isArchived, builder: (column) => column);
 }
 
 class $$TagTableTableTableManager extends RootTableManager<
@@ -3843,6 +3875,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<bool> isArchived = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TagTableCompanion(
@@ -3851,6 +3884,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             name: name,
+            isArchived: isArchived,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3859,6 +3893,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             required String name,
+            Value<bool> isArchived = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TagTableCompanion.insert(
@@ -3867,6 +3902,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             name: name,
+            isArchived: isArchived,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

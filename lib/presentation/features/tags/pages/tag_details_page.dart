@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/tags/components/tag_name_input_field.
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 
 class TagDetailsPage extends StatefulWidget {
   final String tagId;
@@ -53,6 +54,17 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           id: widget.tagId,
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TagArchiveButton(
+              tagId: widget.tagId,
+              onArchiveSuccess: () {
+                Navigator.of(context).pop();
+              },
+              buttonColor: AppTheme.primaryColor,
+              buttonBackgroundColor: AppTheme.surface2,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TagDeleteButton(

@@ -23,6 +23,7 @@ class _TagsPageState extends State<TagsPage> {
   List<String>? _selectedTagIds;
   Key _tagsListKey = UniqueKey();
   Key _addButtonKey = const ValueKey('tagAddButton');
+  bool _showArchived = false;
 
   void _refreshTags() {
     setState(() {
@@ -55,6 +56,7 @@ class _TagsPageState extends State<TagsPage> {
         context: context,
         title: const Text('Tags'),
         actions: [
+          // Add button
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TagAddButton(
@@ -75,11 +77,30 @@ class _TagsPageState extends State<TagsPage> {
             // Filters
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: TagSelectDropdown(
-                isMultiSelect: true,
-                onTagsSelected: _onFilterTags,
-                buttonLabel:
-                    (_selectedTagIds?.isEmpty ?? true) ? 'Filter by tags' : '${_selectedTagIds!.length} tags selected',
+              child: Row(
+                children: [
+                  // Tag select dropdown
+                  TagSelectDropdown(
+                    isMultiSelect: true,
+                    onTagsSelected: _onFilterTags,
+                    buttonLabel: (_selectedTagIds?.isEmpty ?? true)
+                        ? 'Filter by tags'
+                        : '${_selectedTagIds!.length} tags selected',
+                  ),
+
+                  // Archive toggle button
+                  IconButton(
+                    icon: Icon(_showArchived ? Icons.archive : Icons.archive_outlined),
+                    tooltip: _showArchived ? 'Hide archived tags' : 'Show archived tags',
+                    onPressed: () {
+                      setState(() {
+                        _showArchived = !_showArchived;
+                        _tagsListKey = UniqueKey(); // TagsList'i yeniden yüklemek için key'i güncelle
+                      });
+                    },
+                    color: AppTheme.primaryColor,
+                  ),
+                ],
               ),
             ),
 
@@ -90,6 +111,7 @@ class _TagsPageState extends State<TagsPage> {
               onTagAdded: _refreshTags,
               onClickTag: (tag) => _openTagDetails(tag.id),
               filterByTags: _selectedTagIds,
+              showArchived: _showArchived,
             ),
           ],
         ),

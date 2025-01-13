@@ -10,8 +10,10 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   late int pageSize;
   String? search;
   List<String>? filterByTags;
+  bool showArchived = false;
 
-  GetListTagsQuery({required this.pageIndex, required this.pageSize, this.search, this.filterByTags});
+  GetListTagsQuery(
+      {required this.pageIndex, required this.pageSize, this.search, this.filterByTags, this.showArchived = false});
 }
 
 class TagListItem {
@@ -54,20 +56,23 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
   }
 
   CustomWhereFilter? _getFilters(GetListTagsQuery request) {
-    CustomWhereFilter? filter;
+    CustomWhereFilter? filter = CustomWhereFilter.empty();
+    if (!request.showArchived) {
+      filter.query += 'is_archived = ?';
+      filter.variables.add(0);
+    } else {
+      filter.query += 'is_archived = ?';
+      filter.variables.add(1);
+    }
 
     if (request.search != null && request.search!.isNotEmpty) {
-      filter = CustomWhereFilter(
-        'name LIKE ?',
-        ['%${request.search}%'],
-      );
+      filter.query += ' AND name LIKE ?';
+      filter.variables.add('%${request.search}%');
     }
 
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      filter ??= CustomWhereFilter.empty();
-
       filter.query +=
-          "(SELECT COUNT(*) FROM tag_tag_table WHERE tag_tag_table.primary_tag_id = tag_table.id AND tag_tag_table.secondary_tag_id IN (${request.filterByTags!.map((_) => '?').join(',')})) > 0";
+          ' AND (SELECT COUNT(*) FROM tag_tag_table WHERE tag_tag_table.primary_tag_id = tag_table.id AND tag_tag_table.secondary_tag_id IN (${request.filterByTags!.map((_) => '?').join(',')})) > 0';
       filter.variables.addAll(request.filterByTags!);
     }
 

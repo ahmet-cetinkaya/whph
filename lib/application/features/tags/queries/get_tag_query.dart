@@ -16,6 +16,7 @@ class GetTagQueryResponse extends Tag {
     super.modifiedDate,
     super.deletedDate,
     required super.name,
+    super.isArchived = false,
   });
 }
 
@@ -35,9 +36,10 @@ class GetTagQueryHandler implements IRequestHandler<GetTagQuery, GetTagQueryResp
 
     return GetTagQueryResponse(
       id: tags.id,
+      name: tags.name,
+      isArchived: tags.isArchived,
       createdDate: tags.createdDate,
       modifiedDate: tags.modifiedDate,
-      name: tags.name,
     );
   }
 }

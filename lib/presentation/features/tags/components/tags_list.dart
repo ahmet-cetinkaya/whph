@@ -7,12 +7,11 @@ import 'package:whph/presentation/features/shared/components/load_more_button.da
 
 class TagsList extends StatefulWidget {
   final Mediator mediator;
-
   final List<String>? filterByTags;
-
   final VoidCallback onTagAdded;
   final void Function(TagListItem tag) onClickTag;
   final void Function(int count)? onList;
+  final bool showArchived;
 
   const TagsList({
     super.key,
@@ -21,6 +20,7 @@ class TagsList extends StatefulWidget {
     required this.onTagAdded,
     required this.onClickTag,
     this.onList,
+    this.showArchived = false,
   });
 
   @override
@@ -38,7 +38,12 @@ class _TagsListState extends State<TagsList> {
   }
 
   Future<void> _getTags({int pageIndex = 0}) async {
-    var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: _pageSize, filterByTags: widget.filterByTags);
+    var query = GetListTagsQuery(
+      pageIndex: pageIndex,
+      pageSize: _pageSize,
+      filterByTags: widget.filterByTags,
+      showArchived: widget.showArchived,
+    );
     var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
     if (mounted) {

@@ -4,10 +4,18 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 @jsonSerializable
 class Tag extends BaseEntity<String> {
   String name;
+  bool isArchived;
 
-  Tag({required super.id, required super.createdDate, super.modifiedDate, super.deletedDate, required this.name});
+  Tag(
+      {required super.id,
+      required super.createdDate,
+      super.modifiedDate,
+      super.deletedDate,
+      required this.name,
+      this.isArchived = false});
 
   void mapFromInstance(Tag instance) {
     name = instance.name;
+    isArchived = instance.isArchived;
   }
 }

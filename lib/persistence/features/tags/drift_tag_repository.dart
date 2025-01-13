@@ -11,6 +11,7 @@ class TagTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get name => text()();
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
 class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
@@ -29,6 +30,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       name: entity.name,
+      isArchived: Value(entity.isArchived),
     );
   }
 }

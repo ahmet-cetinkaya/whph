@@ -7,10 +7,12 @@ import 'package:whph/domain/features/tags/tag.dart';
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
   final String? id;
   final String name;
+  final bool isArchived;
 
   SaveTagCommand({
     this.id,
     required this.name,
+    this.isArchived = false,
   });
 }
 
@@ -42,12 +44,14 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
       }
 
       tag.name = request.name;
+      tag.isArchived = request.isArchived;
       await _tagRepository.update(tag);
     } else {
       tag = Tag(
         id: nanoid(),
         createdDate: DateTime(0),
         name: request.name,
+        isArchived: request.isArchived,
       );
       await _tagRepository.add(tag);
     }
