@@ -37,8 +37,12 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
   @override
   Future<GetListTagsQueryResponse> call(GetListTagsQuery request) async {
-    PaginatedList<Tag> tags = await _tagRepository.getList(request.pageIndex, request.pageSize,
-        customWhereFilter: _getFilters(request), customOrder: [CustomOrder(field: "created_date", ascending: false)]);
+    PaginatedList<Tag> tags = await _tagRepository.getList(
+      request.pageIndex,
+      request.pageSize,
+      customWhereFilter: _getFilters(request),
+      customOrder: [CustomOrder(field: "name")],
+    );
 
     return GetListTagsQueryResponse(
       items: tags.items.map((e) => TagListItem(id: e.id, name: e.name)).toList(),

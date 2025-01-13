@@ -52,13 +52,10 @@ class _HabitCardState extends State<HabitCard> {
       pageIndex: 0,
       pageSize: widget.dateRange,
       habitId: widget.habit.id,
-      startDate:
-          DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
+      startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
       endDate: DateTime.now(),
     );
-    var response = await widget._mediator
-        .send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
-            query);
+    var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
     if (mounted) {
       setState(() {
@@ -69,8 +66,7 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await widget._mediator
-        .send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
     if (mounted) {
       setState(() {
@@ -84,9 +80,7 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _deleteHabitRecord(String id) async {
     var command = DeleteHabitRecordCommand(id: id);
-    await widget._mediator
-        .send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
-            command);
+    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
     if (mounted) {
       setState(() {
@@ -105,9 +99,7 @@ class _HabitCardState extends State<HabitCard> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: widget.isMiniLayout ||
-                  (widget.isMiniLayout == false &&
-                      AppThemeHelper.isScreenSmallerThan(
-                          context, AppTheme.screenSmall))
+                  (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -191,17 +183,15 @@ class _HabitCardState extends State<HabitCard> {
       );
     }
 
-    bool hasRecordToday = _habitRecords!.items
-        .any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
     return Checkbox(
       value: hasRecordToday,
       onChanged: (bool? value) async {
         if (value == true) {
           await _createHabitRecord(widget.habit.id, DateTime.now());
         } else {
-          HabitRecordListItem? recordToday = _habitRecords!.items.firstWhere(
-              (record) =>
-                  DateTimeHelper.isSameDay(record.date, DateTime.now()));
+          HabitRecordListItem? recordToday =
+              _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
           await _deleteHabitRecord(recordToday.id);
         }
       },
@@ -216,21 +206,18 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     DateTime today = DateTime.now();
-    List<DateTime> lastDays = List.generate(
-        widget.dateRange, (index) => today.subtract(Duration(days: index)));
+    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
 
     return Container(
       width: widget.dateRange * 48.0, // Match header width (48px per day)
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: lastDays.map((date) {
-          bool hasRecord = _habitRecords!.items
-              .any((record) => DateTimeHelper.isSameDay(record.date, date));
+          bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
 
           HabitRecordListItem? recordForDay;
           if (hasRecord) {
-            recordForDay = _habitRecords!.items.firstWhere(
-                (record) => DateTimeHelper.isSameDay(record.date, date));
+            recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
           }
 
           return SizedBox(
@@ -246,9 +233,7 @@ class _HabitCardState extends State<HabitCard> {
                         DateTimeHelper.getWeekday(date.weekday),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: DateTimeHelper.isSameDay(date, today)
-                              ? AppTheme.primaryColor
-                              : AppTheme.textColor,
+                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
                           fontSize: AppTheme.fontSizeSmall,
                         ),
                       ),
@@ -256,9 +241,7 @@ class _HabitCardState extends State<HabitCard> {
                         date.day.toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: DateTimeHelper.isSameDay(date, today)
-                              ? AppTheme.primaryColor
-                              : AppTheme.textColor,
+                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
                           fontSize: AppTheme.fontSizeMedium,
                         ),
                       ),
