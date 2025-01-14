@@ -3,7 +3,7 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 
 class QRCodeScannerPage extends StatefulWidget {
-  static const String route = '/qr_code_scanner';
+  static const String route = '/sync/qr-scanner';
 
   const QRCodeScannerPage({super.key});
 

@@ -18,11 +18,11 @@ class SyncQrScanButton extends StatelessWidget {
   SyncQrScanButton({super.key});
 
   _openQRScanner(BuildContext context) async {
-    String? scannedMessage = await Navigator.of(context).push<String>(
-      MaterialPageRoute(
-        builder: (context) => const QRCodeScannerPage(),
-      ),
-    );
+    String? scannedMessage = await Navigator.pushNamed(
+      context,
+      QRCodeScannerPage.route,
+    ) as String?;
+
     if (scannedMessage == null) return;
 
     var parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);

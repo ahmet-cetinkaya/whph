@@ -4,9 +4,10 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
-import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -32,7 +33,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   Future<void> _openDetails(String id) async {
-    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => AppUsageDetailsPage(appUsageId: id)));
+    await Navigator.of(context).pushNamed(
+      AppUsageDetailsPage.route,
+      arguments: {'id': id},
+    );
     _refreshAppUsages();
   }
 
@@ -43,48 +47,46 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: SecondaryAppBar(
-          context: context,
-          title: const Text('App Usages'),
-          actions: [
-            if (Platform.isLinux || Platform.isWindows || Platform.isMacOS)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: () {
-                    _refreshAppUsages();
-                  },
-                  color: AppTheme.primaryColor,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(AppTheme.surface2),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        body: ListView(
-          children: [
-            // Filters
-            Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: TagSelectDropdown(
-                  isMultiSelect: true,
-                  onTagsSelected: _onTagFilterSelect,
-                  buttonLabel: "Filter by tags",
-                ),
+    return ResponsiveScaffoldLayout(
+      appBarTitle: const Text('App Usages'),
+      appBarActions: [
+        if (Platform.isLinux || Platform.isWindows || Platform.isMacOS)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => _refreshAppUsages(),
+              color: AppTheme.primaryColor,
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(AppTheme.surface2),
               ),
             ),
-
-            AppUsageList(
-                key: _appUsageListKey,
-                mediator: widget.mediator,
-                onOpenDetails: _openDetails,
-                filterByTags: _selectedTagFilters),
-          ],
-        ));
+          ),
+      ],
+      topNavItems: NavigationItems.topNavItems,
+      bottomNavItems: NavigationItems.bottomNavItems,
+      routes: {},
+      defaultRoute: (context) => ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: TagSelectDropdown(
+                isMultiSelect: true,
+                onTagsSelected: _onTagFilterSelect,
+                buttonLabel: "Filter by tags",
+              ),
+            ),
+          ),
+          AppUsageList(
+            key: _appUsageListKey,
+            mediator: widget.mediator,
+            onOpenDetails: _openDetails,
+            filterByTags: _selectedTagFilters,
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -16,7 +16,6 @@ import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
-import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 
@@ -256,18 +255,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                       icon: const Icon(Icons.add),
                     ),
                   ],
-                ),
-              ),
-
-              // Pomodoro Timer
-              DetailTableRowData(
-                label: "Timer",
-                icon: Icons.timer,
-                widget: PomodoroTimer(
-                  onTimeUpdate: (value) {
-                    _task!.elapsedTime = (_task!.elapsedTime ?? 0) + 1;
-                    _updateTask();
-                  },
                 ),
               ),
 

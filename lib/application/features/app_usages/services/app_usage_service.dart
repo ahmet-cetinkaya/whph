@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
@@ -130,9 +131,7 @@ class AppUsageService implements IAppUsageService {
       appUsage = AppUsage(
         id: nanoid(),
         name: appName,
-        color: firstAppUsage == null
-            ? _chartColors[Random().nextInt(_chartColors.length)].toString().substring(10, 16)
-            : null,
+        color: firstAppUsage == null ? _chartColors[Random().nextInt(_chartColors.length)].toHexString() : null,
         duration: duration,
         createdDate: DateTime(0),
       );

@@ -33,7 +33,6 @@ class BarChart extends StatelessWidget {
         title: Stack(
           alignment: Alignment.centerLeft,
           children: <Widget>[
-            // Bar
             Stack(
               children: [
                 Container(
@@ -51,18 +50,15 @@ class BarChart extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Label
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: AppTheme.surface2,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surface2,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
@@ -74,25 +70,20 @@ class BarChart extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: additionalWidget == null
-                                ? _buildTitle()
-                                : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Title
-                                      _buildTitle(),
-                                      // Additional Widget
-                                      Flexible(
-                                        child: additionalWidget ?? Container(),
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16),
+                              child: additionalWidget == null
+                                  ? _buildTitle(Colors.white)
+                                  : Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildTitle(Colors.white),
+                                        Flexible(child: additionalWidget ?? Container()),
+                                      ],
+                                    ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -105,12 +96,13 @@ class BarChart extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(Color textColor) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
+        color: textColor,
       ),
     );
   }

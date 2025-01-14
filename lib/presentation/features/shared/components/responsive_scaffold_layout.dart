@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 
+class RouteOptions {
+  final WidgetBuilder builder;
+  final bool fullScreen;
+
+  RouteOptions({required this.builder, this.fullScreen = false});
+}
+
 class NavItem {
   final String title;
   final IconData? icon;
@@ -17,8 +24,9 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final List<Widget>? appBarActions;
   final List<NavItem> topNavItems;
   final List<NavItem>? bottomNavItems;
-  final Map<String, WidgetBuilder> routes;
+  final Map<String, RouteOptions> routes;
   final WidgetBuilder defaultRoute;
+  final bool fullScreen;
 
   const ResponsiveScaffoldLayout({
     super.key,
@@ -28,6 +36,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     required this.appBarTitle,
     this.appBarActions,
     required this.defaultRoute,
+    this.fullScreen = false,
   });
 
   @override
@@ -35,28 +44,39 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
 }
 
 class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _navigateTo(String routeName) {
-    Navigator.of(_navigatorKey.currentContext!).pushNamedAndRemoveUntil(
-      routeName,
-      ModalRoute.withName('/'),
-    );
-    if (Navigator.of(context).canPop()) {
+    if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(context).pop();
     }
+
+    Future.microtask(() {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(
+          routeName,
+          arguments: {'noAnimation': true},
+        );
+      }
+    });
   }
 
   void _onClickNavItem(NavItem navItem) {
     if (navItem.route != null) {
       _navigateTo(navItem.route!);
+    } else {
+      navItem.onTap?.call(context);
     }
-    navItem.onTap?.call(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.fullScreen) {
+      return widget.defaultRoute(context);
+    }
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: widget.appBarTitle,
         leading: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
@@ -64,7 +84,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 builder: (BuildContext context) => IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: () {
-                    Scaffold.of(context).openDrawer();
+                    _scaffoldKey.currentState?.openDrawer();
                   },
                 ),
               )
@@ -79,12 +99,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
           if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium))
             _buildDrawer(widget.topNavItems, widget.bottomNavItems),
           Expanded(
-            child: Navigator(
-              key: _navigatorKey,
-              onGenerateRoute: (routeSettings) {
-                return _buildPageRoute(routeSettings);
-              },
-            ),
+            child: widget.defaultRoute(context),
           ),
         ],
       ),
@@ -133,21 +148,5 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       title: navItem.widget ?? Text(navItem.title, style: Theme.of(context).textTheme.labelLarge),
       onTap: () => _onClickNavItem(navItem),
     );
-  }
-
-  PageRoute _buildPageRoute(RouteSettings settings) {
-    final pageBuilder = widget.routes[settings.name];
-    if (pageBuilder != null) {
-      return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => pageBuilder(context),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return child;
-        },
-      );
-    } else {
-      return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => widget.defaultRoute(context),
-      );
-    }
   }
 }

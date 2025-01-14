@@ -39,7 +39,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     var query = GetListAppUsageTagsQuery(
       appUsageId: widget.appUsage.id,
       pageIndex: 0,
-      pageSize: 999,
+      pageSize: 100,
     );
 
     try {
@@ -66,9 +66,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
       value: widget.appUsage.duration.toDouble() / 60,
       maxValue: widget.maxDurationInListing != null ? widget.maxDurationInListing!.toDouble() : double.infinity,
       unit: "min",
-      barColor: Color(int.parse(widget.appUsage.color!, radix: 16)).withValues(
-        alpha: 0.5,
-      ),
+      barColor: Color(int.parse(widget.appUsage.color!, radix: 16)),
       onTap: widget.onTap,
       additionalWidget: _appUsageTags?.items.isNotEmpty == true
           ? Row(

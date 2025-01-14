@@ -4,12 +4,13 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/components/done_overlay.dart';
-import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/utils/update_checker.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -38,20 +39,16 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TaskDetailsPage(taskId: taskId),
-      ),
+    await Navigator.of(context).pushNamed(
+      TaskDetailsPage.route,
+      arguments: {'id': taskId},
     );
   }
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HabitDetailsPage(habitId: id),
-      ),
+    await Navigator.of(context).pushNamed(
+      HabitDetailsPage.route,
+      arguments: {'id': id},
     );
   }
 
@@ -89,28 +86,29 @@ class _TodayPageState extends State<TodayPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: SecondaryAppBar(
-          context: context,
-          title: const Text('Today'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: TagSelectDropdown(
-                  isMultiSelect: true, onTagsSelected: _onTagFilterSelect, buttonLabel: 'Filter by tags'),
-            )
+    return ResponsiveScaffoldLayout(
+      appBarTitle: const Text('Today'),
+      appBarActions: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child:
+              TagSelectDropdown(isMultiSelect: true, onTagsSelected: _onTagFilterSelect, buttonLabel: 'Filter by tags'),
+        ),
+      ],
+      topNavItems: NavigationItems.topNavItems,
+      bottomNavItems: NavigationItems.bottomNavItems,
+      routes: {},
+      defaultRoute: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: ListView(
+          children: [
+            _buildHabitSection(context),
+            _buildTaskSection(context),
+            _buildTimeSection(context),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              _buildHabitSection(context),
-              _buildTaskSection(context),
-              _buildTimeSection(context),
-            ],
-          ),
-        ));
+      ),
+    );
   }
 
   Widget _buildHabitSection(BuildContext context) {

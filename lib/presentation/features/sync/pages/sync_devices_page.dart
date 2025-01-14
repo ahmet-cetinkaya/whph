@@ -7,10 +7,11 @@ import 'package:whph/application/features/sync/commands/delete_sync_command.dart
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
+import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -106,13 +107,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SecondaryAppBar(
-        context: context,
-        title: const Text('Sync Devices'),
-        actions: _buildAppBarActions(),
-      ),
-      body: list == null || list!.items.isEmpty
+    return ResponsiveScaffoldLayout(
+      appBarTitle: const Text('Sync Devices'),
+      appBarActions: _buildAppBarActions(),
+      topNavItems: NavigationItems.topNavItems,
+      bottomNavItems: NavigationItems.bottomNavItems,
+      routes: {},
+      defaultRoute: (context) => list == null || list!.items.isEmpty
           ? const Center(child: Text('No synced devices found'))
           : ListView.builder(
               itemCount: list!.items.length,

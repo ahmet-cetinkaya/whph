@@ -1,80 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/presentation/features/about/components/app_about.dart';
-import 'package:whph/domain/features/shared/constants/app_info.dart';
-import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
-import 'package:whph/presentation/features/habits/pages/habits_page.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
+import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
-
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
+import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';
+import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
+import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
+import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final topNavItems = [
-      NavItem(title: 'Today', icon: Icons.today, route: TodayPage.route),
-      NavItem(title: 'Tasks', icon: Icons.check_circle, route: TasksPage.route),
-      NavItem(title: 'Tags', icon: Icons.label, route: TagsPage.route),
-      NavItem(title: 'Habits', icon: Icons.refresh, route: HabitsPage.route),
-      NavItem(title: 'App Usages', icon: Icons.bar_chart, route: AppUsageViewPage.route),
-    ];
-    final bottomNavItems = [
-      NavItem(title: 'Sync Devices', icon: Icons.sync, route: SyncDevicesPage.route),
-      NavItem(
-          title: 'Buy me a coffee',
-          icon: Icons.coffee,
-          onTap: (context) {
-            launchUrl(Uri.parse(AppInfo.supportUrl), mode: LaunchMode.externalApplication);
-          }),
-      NavItem(
-          title: 'About',
-          icon: Icons.info,
-          onTap: (context) {
-            showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Center(child: SingleChildScrollView(child: AppAbout())),
-                  );
-                });
-          }),
-    ];
-
-    final routes = {
-      TodayPage.route: (context) => TodayPage(),
-      TasksPage.route: (context) => const TasksPage(),
-      TagsPage.route: (context) => TagsPage(),
-      HabitsPage.route: (context) => HabitsPage(),
-      AppUsageViewPage.route: (context) => AppUsageViewPage(),
-      SyncDevicesPage.route: (context) => SyncDevicesPage(),
-    };
-
     return MaterialApp(
       title: 'WHPH',
       theme: AppTheme.themeData,
       debugShowCheckedModeBanner: false,
-      home: ResponsiveScaffoldLayout(
-          appBarTitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset('lib/domain/features/shared/assets/whph_logo_adaptive_fg.png', width: 32, height: 32),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: const Text('WHPH'),
-              ),
-            ],
-          ),
-          topNavItems: topNavItems,
-          bottomNavItems: bottomNavItems,
-          routes: routes,
-          defaultRoute: (context) => TodayPage()),
+      onGenerateRoute: (settings) {
+        Widget page;
+        final arguments = settings.arguments as Map<String, dynamic>?;
+
+        switch (settings.name) {
+          case TodayPage.route:
+            page = TodayPage();
+            break;
+          case TasksPage.route:
+            page = const TasksPage();
+            break;
+          case TagsPage.route:
+            page = TagsPage();
+            break;
+          case HabitsPage.route:
+            page = HabitsPage();
+            break;
+          case AppUsageViewPage.route:
+            page = AppUsageViewPage();
+            break;
+          case SyncDevicesPage.route:
+            page = SyncDevicesPage();
+            break;
+          case MarathonPage.route:
+            page = const MarathonPage();
+            break;
+          case AppUsageDetailsPage.route:
+            if (arguments == null || arguments['id'] == null) {
+              page = TodayPage();
+            } else {
+              page = AppUsageDetailsPage(appUsageId: arguments['id'] as String);
+            }
+            break;
+          case TaskDetailsPage.route:
+            if (arguments?['id'] == null) {
+              page = TodayPage();
+            } else {
+              page = TaskDetailsPage(taskId: arguments!['id'] as String);
+            }
+            break;
+          case HabitDetailsPage.route:
+            if (arguments?['id'] == null) {
+              page = TodayPage();
+            } else {
+              page = HabitDetailsPage(habitId: arguments!['id'] as String);
+            }
+            break;
+          case QRCodeScannerPage.route:
+            page = const QRCodeScannerPage();
+            break;
+          case TagDetailsPage.route:
+            if (arguments?['id'] == null) {
+              page = TodayPage();
+            } else {
+              page = TagDetailsPage(tagId: arguments!['id'] as String);
+            }
+            break;
+          default:
+            page = TodayPage();
+        }
+
+        final isNoAnimation = arguments?['noAnimation'] == true;
+
+        if (isNoAnimation) {
+          return PageRouteBuilder(
+            settings: settings,
+            pageBuilder: (_, __, ___) => page,
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          );
+        }
+
+        return MaterialPageRoute(
+          builder: (_) => page,
+          settings: settings,
+        );
+      },
+      home: TodayPage(),
     );
   }
 }

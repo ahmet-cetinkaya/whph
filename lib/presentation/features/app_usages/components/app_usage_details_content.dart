@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_command.dart';
 import 'package:whph/application/features/app_usages/commands/remove_tag_tag_command.dart';
@@ -9,7 +10,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
-import 'package:whph/presentation/features/shared/components/color_picker.dart';
+import 'package:whph/presentation/features/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/features/shared/components/color_preview.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
@@ -154,7 +155,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   void _onChangeColor(Color color) {
     if (mounted) {
       setState(() {
-        _appUsage!.color = color.toString().substring(10, 16);
+        _appUsage!.color = color.toHexString();
       });
     }
     _saveAppUsage();
@@ -163,7 +164,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   void _onChangeColorOpen() {
     showModalBottomSheet(
         context: context,
-        builder: (context) => ColorPicker(
+        builder: (context) => color_picker.ColorPicker(
             pickerColor: Color(int.parse("FF${_appUsage!.color!}", radix: 16)), onChangeColor: _onChangeColor));
   }
 

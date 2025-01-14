@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/done_overlay.dart';
-import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -39,11 +40,9 @@ class _TasksPageState extends State<TasksPage> {
   }
 
   Future<void> _openTaskDetails(String taskId) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TaskDetailsPage(taskId: taskId),
-      ),
+    await Navigator.of(context).pushNamed(
+      TaskDetailsPage.route,
+      arguments: {'id': taskId},
     );
     _refreshTasks();
   }
@@ -69,23 +68,23 @@ class _TasksPageState extends State<TasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SecondaryAppBar(
-        context: context,
-        title: const Text('Tasks'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TaskAddButton(
-              onTaskCreated: (_) => _refreshTasks(),
-              buttonBackgroundColor: AppTheme.surface2,
-              buttonColor: AppTheme.primaryColor,
-              initialTagIds: _selectedTagIds,
-            ),
+    return ResponsiveScaffoldLayout(
+      appBarTitle: const Text('Tasks'),
+      appBarActions: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: TaskAddButton(
+            onTaskCreated: (_) => _refreshTasks(),
+            buttonBackgroundColor: AppTheme.surface2,
+            buttonColor: AppTheme.primaryColor,
+            initialTagIds: _selectedTagIds,
           ),
-        ],
-      ),
-      body: Padding(
+        ),
+      ],
+      topNavItems: NavigationItems.topNavItems,
+      bottomNavItems: NavigationItems.bottomNavItems,
+      routes: {},
+      defaultRoute: (context) => Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
