@@ -174,7 +174,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   @override
   Widget build(BuildContext context) {
     if (_task == null || _taskTags == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
     }
 
     return SingleChildScrollView(
@@ -331,6 +331,23 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Widget _buildTagSection() {
+    if (_taskTags!.items.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TagSelectDropdown(
+            key: ValueKey(_taskTags!.items.length),
+            isMultiSelect: true,
+            onTagsSelected: _onTagsSelected,
+            initialSelectedTags: _taskTags!.items
+                .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
+                .toList(),
+            icon: Icons.add,
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

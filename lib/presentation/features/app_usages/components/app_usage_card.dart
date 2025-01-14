@@ -70,35 +70,32 @@ class _AppUsageCardState extends State<AppUsageCard> {
         alpha: 0.5,
       ),
       onTap: widget.onTap,
-      additionalWidget: _appUsageTags == null
-          ? Center(child: CircularProgressIndicator())
-          : _appUsageTags!.items.isEmpty
-              ? null
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      additionalWidget: _appUsageTags?.items.isNotEmpty == true
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
                   children: [
-                    if (_appUsageTags!.items.isNotEmpty)
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.label,
-                            color: AppTheme.disabledColor,
-                            size: AppTheme.fontSizeSmall,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Text(
-                              _appUsageTags!.items.map((e) => e.tagName).join(", "),
-                              style: TextStyle(
-                                color: AppTheme.disabledColor,
-                                fontSize: AppTheme.fontSizeSmall,
-                              ),
-                            ),
-                          ),
-                        ],
+                    Icon(
+                      Icons.label,
+                      color: AppTheme.disabledColor,
+                      size: AppTheme.fontSizeSmall,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Text(
+                        _appUsageTags!.items.map((e) => e.tagName).join(", "),
+                        style: TextStyle(
+                          color: AppTheme.disabledColor,
+                          fontSize: AppTheme.fontSizeSmall,
+                        ),
                       ),
+                    ),
                   ],
                 ),
+              ],
+            )
+          : null,
     );
   }
 }

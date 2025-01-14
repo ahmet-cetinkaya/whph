@@ -57,14 +57,16 @@ class AppUsageListState extends State<AppUsageList> {
   @override
   Widget build(BuildContext context) {
     if (_appUsages == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (_appUsages!.items.isEmpty) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Text('No app usage data found'),
       );
     }
 
-    double maxDuration = _appUsages!.items.isNotEmpty
-        ? _appUsages!.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b)
-        : 1.0; // Avoid division by zero, maximum duration in minutes
+    double maxDuration = _appUsages!.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

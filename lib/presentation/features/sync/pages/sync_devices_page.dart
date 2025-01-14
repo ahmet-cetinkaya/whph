@@ -112,8 +112,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
         title: const Text('Sync Devices'),
         actions: _buildAppBarActions(),
       ),
-      body: list == null
-          ? const Center(child: CircularProgressIndicator())
+      body: list == null || list!.items.isEmpty
+          ? const Center(child: Text('No synced devices found'))
           : ListView.builder(
               itemCount: list!.items.length,
               itemBuilder: (context, index) {

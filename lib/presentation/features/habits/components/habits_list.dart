@@ -65,20 +65,18 @@ class _HabitsListState extends State<HabitsList> {
   @override
   Widget build(BuildContext context) {
     if (_habits == null) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+      return const SizedBox.shrink();
+    }
+
+    if (_habits!.items.isEmpty) {
+      return const Center(child: Text('No habits found'));
     }
 
     if (widget.onList != null) {
       widget.onList!(_habits!.items.length);
     }
 
-    if (widget.mini) {
-      return _buildMiniCardList();
-    } else {
-      return _buildColumnList();
-    }
+    return widget.mini ? _buildMiniCardList() : _buildColumnList();
   }
 
   Widget _buildMiniCardList() {

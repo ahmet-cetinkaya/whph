@@ -49,7 +49,17 @@ class _TagTimeChartState extends State<TagTimeChart> {
 
   @override
   Widget build(BuildContext context) {
+    if (_tags == null) {
+      return const SizedBox.shrink();
+    }
+
     int totalTime = _tagTimes.values.fold(0, (sum, time) => sum + time);
+
+    if (_tagTimes.isEmpty) {
+      return const Center(
+        child: Text('No time data available'),
+      );
+    }
 
     List<PieChartSectionData> sections = _tagTimes.entries.map((entry) {
       double percentage = (entry.value / totalTime) * 100;
@@ -62,18 +72,6 @@ class _TagTimeChartState extends State<TagTimeChart> {
         radius: 100,
       );
     }).toList();
-
-    if (_tags == null) {
-      return CircularProgressIndicator();
-    }
-
-    if (_tagTimes.isEmpty) {
-      return Icon(
-        Icons.timelapse,
-        color: AppTheme.surface3,
-        size: 100,
-      );
-    }
 
     return PieChart(
       PieChartData(

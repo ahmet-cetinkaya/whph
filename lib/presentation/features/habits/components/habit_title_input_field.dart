@@ -61,20 +61,22 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return habit == null
-        ? const Center(child: CircularProgressIndicator())
-        : Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _titleController,
-                  onChanged: (value) {
-                    _updateHabit();
-                  },
-                  decoration: const InputDecoration(border: InputBorder.none, hintText: 'Enter title', filled: false),
-                ),
-              ),
-            ],
-          );
+    if (habit == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _titleController,
+            onChanged: (value) {
+              _updateHabit();
+            },
+            decoration: const InputDecoration(border: InputBorder.none, hintText: 'Enter title', filled: false),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -78,7 +78,7 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   @override
   Widget build(BuildContext context) {
     if (_task == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
     }
 
     return Row(

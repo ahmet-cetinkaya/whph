@@ -13,6 +13,7 @@ import 'package:whph/application/features/habits/queries/get_list_habit_tags_que
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/features/shared/components/detail_table.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart'; // For handling dates
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -191,109 +192,102 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   @override
   Widget build(BuildContext context) {
+    if (_habit == null) {
+      return const SizedBox.shrink();
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
-      child: _habit == null
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Tags
+          DetailTable(rowData: [
+            DetailTableRowData(
+              label: "Tags",
+              icon: Icons.tag,
+              widget: _buildTagSection(),
+            ),
+          ]),
+
+          // Description
+          Padding(
+            padding: const EdgeInsets.only(bottom: 32, top: 16),
+            child: Column(
               children: [
-                // Tags
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: const Icon(Icons.tag),
+                        child: const Icon(Icons.description),
                       ),
-                      const Text('Tags', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
-                _buildTagSection(),
-
-                // Description
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 32, top: 16),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: const Icon(Icons.description),
-                            ),
-                            const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                      MarkdownAutoPreview(
-                        controller: _descriptionController,
-                        onChanged: (value) {
-                          var isEmptyWhitespace = value.trim().isEmpty;
-                          if (isEmptyWhitespace) {
-                            _descriptionController.clear();
-                          }
-
-                          _saveHabit();
-                        },
-                        hintText: 'Add a description...',
-                        toolbarBackground: AppTheme.surface1,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Records
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: const Icon(Icons.link),
-                      ),
-                      const Text('Records', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
-
-                Center(
-                  child: SizedBox(
-                    width: 600,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: _previousMonth,
-                            ),
-                            Text(
-                              DateFormat.yMMMM().format(currentMonth),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_forward),
-                              onPressed: _nextMonth,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8.0),
-                        _buildWeekdayLabels(),
-                        const SizedBox(height: 4.0),
-                        if (_habitRecords == null) const Center(child: CircularProgressIndicator()),
-                        if (_habitRecords != null) _buildMonthlyCalendar(_habitRecords!.items)
-                      ],
-                    ),
-                  ),
+                MarkdownAutoPreview(
+                  controller: _descriptionController,
+                  onChanged: (value) {
+                    var isEmptyWhitespace = value.trim().isEmpty;
+                    if (isEmptyWhitespace) {
+                      _descriptionController.clear();
+                    }
+                    _saveHabit();
+                  },
+                  hintText: 'Add a description...',
+                  toolbarBackground: AppTheme.surface1,
                 ),
               ],
             ),
+          ),
+
+          // Records
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: const Icon(Icons.link),
+                ),
+                const Text('Records', style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          Center(
+            child: SizedBox(
+              width: 600,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: _previousMonth,
+                      ),
+                      Text(
+                        DateFormat.yMMMM().format(currentMonth),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward),
+                        onPressed: _nextMonth,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  _buildWeekdayLabels(),
+                  const SizedBox(height: 4.0),
+                  if (_habitRecords != null) _buildMonthlyCalendar(_habitRecords!.items)
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -397,7 +391,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Widget _buildTagSection() {
     if (_habitTags == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
+    }
+
+    if (_habitTags!.items.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TagSelectDropdown(
+            key: ValueKey(_habitTags!.items.length),
+            isMultiSelect: true,
+            onTagsSelected: _onTagsSelected,
+            initialSelectedTags: _habitTags!.items
+                .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
+                .toList(),
+            icon: Icons.add,
+          ),
+        ],
+      );
     }
 
     return Column(

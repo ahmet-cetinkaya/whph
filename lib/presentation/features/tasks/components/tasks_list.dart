@@ -42,6 +42,7 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   GetListTasksQueryResponse? _tasks;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,6 +51,12 @@ class _TaskListState extends State<TaskList> {
   }
 
   Future<void> _getTasks({int pageIndex = 0}) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     var query = GetListTasksQuery(
         pageIndex: pageIndex,
         pageSize: widget.size,
@@ -64,20 +71,27 @@ class _TaskListState extends State<TaskList> {
 
     if (mounted) {
       setState(() {
-        if (_tasks == null) {
+        if (_tasks == null || pageIndex == 0) {
           _tasks = result;
-          return;
+        } else {
+          _tasks!.items.addAll(result.items);
+          _tasks!.pageIndex = result.pageIndex;
         }
-
-        _tasks!.items.addAll(result.items);
-        _tasks!.pageIndex = result.pageIndex;
+        _isLoading = false;
       });
     }
   }
 
   void _onTaskCompleted() {
-    _tasks = null;
-    _getTasks();
+    if (_tasks != null) {
+      // Tamamlanan task'ı listeden kaldır
+      setState(() {
+        _tasks!.items.removeWhere((task) => task.isCompleted);
+      });
+    }
+
+    // Listeyi arka planda güncelle
+    // _getTasks();
 
     if (widget.onTaskCompleted != null) {
       widget.onTaskCompleted!();
@@ -87,8 +101,12 @@ class _TaskListState extends State<TaskList> {
   @override
   Widget build(BuildContext context) {
     if (_tasks == null) {
-      return Center(
-        child: CircularProgressIndicator(),
+      return const SizedBox.shrink();
+    }
+
+    if (_tasks!.items.isEmpty) {
+      return const Center(
+        child: Text('No tasks found'),
       );
     }
 
@@ -99,13 +117,19 @@ class _TaskListState extends State<TaskList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._tasks!.items.map((task) {
-          return TaskCard(
-            task: task,
-            onOpenDetails: () => widget.onClickTask(task),
-            onCompleted: _onTaskCompleted,
-          );
-        }),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: _tasks!.items.length,
+          itemBuilder: (context, index) {
+            final task = _tasks!.items[index];
+            return TaskCard(
+              task: task,
+              onOpenDetails: () => widget.onClickTask(task),
+              onCompleted: _onTaskCompleted,
+            );
+          },
+        ),
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
       ],
     );

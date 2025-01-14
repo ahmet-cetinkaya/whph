@@ -103,47 +103,44 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   @override
   Widget build(BuildContext context) {
     if (_tag == null || _tagTags == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
     }
 
     return DetailTable(rowData: [
-      // Tag Tags
       DetailTableRowData(
-          label: "Tags",
-          icon: Icons.tag,
-          widget: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
-                children: [
-                  // Select
-                  TagSelectDropdown(
-                    key: ValueKey(_tagTags!.items.length),
-                    isMultiSelect: true,
-                    onTagsSelected: _onTagsSelected,
-                    initialSelectedTags: _tagTags!.items
-                        .map((tag) =>
-                            Tag(id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
-                        .toList(),
-                    icon: Icons.add,
-                    excludeTagIds: [_tag!.id],
-                  ),
-
-                  // List
-                  ..._tagTags!.items.map((tagTag) {
-                    return Chip(
-                      label: Text(tagTag.secondaryTagName),
-                      onDeleted: () {
-                        _removeTag(tagTag.id);
-                      },
-                    );
-                  })
-                ],
-              ),
-            ],
-          )),
+        label: "Tags",
+        icon: Icons.tag,
+        widget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children: [
+                TagSelectDropdown(
+                  key: ValueKey(_tagTags!.items.length),
+                  isMultiSelect: true,
+                  onTagsSelected: _onTagsSelected,
+                  initialSelectedTags: _tagTags!.items
+                      .map(
+                          (tag) => Tag(id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
+                      .toList(),
+                  icon: Icons.add,
+                  excludeTagIds: [_tag!.id],
+                ),
+                ..._tagTags!.items.map((tagTag) {
+                  return Chip(
+                    label: Text(tagTag.secondaryTagName),
+                    onDeleted: () {
+                      _removeTag(tagTag.id);
+                    },
+                  );
+                })
+              ],
+            ),
+          ],
+        ),
+      ),
     ]);
   }
 }

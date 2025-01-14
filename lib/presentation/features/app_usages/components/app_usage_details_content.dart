@@ -170,7 +170,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   @override
   Widget build(BuildContext context) {
     if (_appUsage == null || _appUsageTags == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const SizedBox.shrink();
     }
 
     return DetailTable(rowData: [
@@ -195,8 +195,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                         .toList(),
                     icon: Icons.add,
                   ),
-
-                  // List
                   ..._appUsageTags!.items.map((tag) {
                     return Chip(
                       label: Text(tag.tagName),

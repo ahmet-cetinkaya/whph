@@ -64,8 +64,12 @@ class _TagsListState extends State<TagsList> {
   @override
   Widget build(BuildContext context) {
     if (_tags == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (_tags!.items.isEmpty) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Text('No tags found'),
       );
     }
 
