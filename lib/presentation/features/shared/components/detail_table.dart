@@ -32,6 +32,7 @@ class DetailTable extends StatelessWidget {
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  // If the screen is large, display the data in a row
                   if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)) {
                     return Row(
                       children: [
@@ -58,6 +59,7 @@ class DetailTable extends StatelessWidget {
                       ],
                     );
                   } else {
+                    // If the screen is small, display the data in a column
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

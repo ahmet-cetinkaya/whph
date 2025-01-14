@@ -130,7 +130,9 @@ void registerHabitsFeature(IContainer container, Mediator mediator) {
         tagRepository: container.resolve<ITagRepository>()),
   );
   mediator.registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(
-    () => GetHabitQueryHandler(habitRepository: container.resolve<IHabitRepository>()),
+    () => GetHabitQueryHandler(
+        habitRepository: container.resolve<IHabitRepository>(),
+        habitRecordRepository: container.resolve<IHabitRecordRepository>()),
   );
 
   mediator.registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse, AddHabitRecordCommandHandler>(
