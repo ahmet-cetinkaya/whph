@@ -38,12 +38,12 @@ class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTa
   @override
   Future<PaginatedList<TagTag>> getListByPrimaryTagId(String id, int pageIndex, int pageSize) async {
     final query = database.select(table)
-      ..where((t) => t.primaryTagId.equals(id))
+      ..where((t) => t.primaryTagId.equals(id) & t.deletedDate.isNull())
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
     final count = await (database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE primary_tag_id = ?',
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE primary_tag_id = ? AND deleted_date IS NULL',
       variables: [Variable.withString(id)],
       readsFrom: {table},
     ).getSingleOrNull());
