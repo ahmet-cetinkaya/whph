@@ -3,7 +3,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -12,18 +11,25 @@ class TagSelectDropdown extends StatefulWidget {
   final List<String> excludeTagIds;
   final bool isMultiSelect;
   final Function(List<String>) onTagsSelected;
-
   final IconData icon;
   final String? buttonLabel;
+  final double? iconSize;
+  final Color? color;
+  final String? tooltip;
+  final bool showLength;
 
   TagSelectDropdown({
     super.key,
     this.initialSelectedTags = const [],
     this.excludeTagIds = const [],
     required this.isMultiSelect,
-    required this.onTagsSelected,
     this.icon = Icons.label,
     this.buttonLabel,
+    this.iconSize,
+    this.color,
+    this.tooltip,
+    required this.onTagsSelected,
+    this.showLength = false,
   });
 
   @override
@@ -177,16 +183,36 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.buttonLabel != null
-        ? TextButton.icon(
-            onPressed: () => _showTagSelectionModal(context),
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.surface2),
-            icon: Icon(widget.icon),
-            label: Text(widget.buttonLabel!),
-          )
-        : IconButton(
-            icon: Icon(widget.icon),
-            onPressed: () => _showTagSelectionModal(context),
-          );
+    final int selectedCount = _selectedTags.length;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        widget.buttonLabel != null
+            ? TextButton.icon(
+                onPressed: () => _showTagSelectionModal(context),
+                icon: Icon(widget.icon, size: widget.iconSize, color: widget.color),
+                label: Text(widget.buttonLabel!),
+              )
+            : IconButton(
+                icon: Icon(widget.icon, color: widget.color),
+                iconSize: widget.iconSize ?? 24.0,
+                tooltip: widget.tooltip,
+                onPressed: () => _showTagSelectionModal(context),
+              ),
+        if (widget.showLength && selectedCount > 0)
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Text(
+              selectedCount.toString(),
+              style: TextStyle(
+                color: widget.color ?? Colors.grey,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

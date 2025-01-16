@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
+import 'package:whph/presentation/features/shared/components/load_more_button.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class AppUsageList extends StatefulWidget {
@@ -79,17 +80,9 @@ class AppUsageListState extends State<AppUsageList> {
             onTap: () => widget.onOpenDetails != null ? widget.onOpenDetails!(appUsage.id) : null,
           ),
         if (_appUsages!.hasNext)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: ElevatedButton(
-                onPressed: () {
-                  _getAppUsages(pageIndex: _appUsages!.pageIndex + 1);
-                },
-                child: const Text('Load more'),
-              ),
-            ),
-          ),
+          Center(child: LoadMoreButton(onPressed: () {
+            _getAppUsages(pageIndex: _appUsages!.pageIndex + 1);
+          })),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
+import 'package:whph/presentation/features/shared/components/app_logo.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
@@ -48,7 +49,15 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: const Text('App Usages'),
+      appBarTitle: Row(
+        children: [
+          const AppLogo(width: 32, height: 32),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: const Text('App Usages'),
+          )
+        ],
+      ),
       appBarActions: [
         if (Platform.isLinux || Platform.isWindows || Platform.isMacOS)
           Padding(
@@ -57,9 +66,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
               icon: const Icon(Icons.refresh),
               onPressed: () => _refreshAppUsages(),
               color: AppTheme.primaryColor,
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(AppTheme.surface2),
-              ),
             ),
           ),
       ],
@@ -75,15 +81,22 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
               child: TagSelectDropdown(
                 isMultiSelect: true,
                 onTagsSelected: _onTagFilterSelect,
-                buttonLabel: "Filter by tags",
+                showLength: true,
+                icon: Icons.label_outline,
+                iconSize: 20,
+                color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                tooltip: 'Filter by tags',
               ),
             ),
           ),
-          AppUsageList(
-            key: _appUsageListKey,
-            mediator: widget.mediator,
-            onOpenDetails: _openDetails,
-            filterByTags: _selectedTagFilters,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: AppUsageList(
+              key: _appUsageListKey,
+              mediator: widget.mediator,
+              onOpenDetails: _openDetails,
+              filterByTags: _selectedTagFilters,
+            ),
           ),
         ],
       ),

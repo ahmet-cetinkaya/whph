@@ -56,7 +56,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             tagId: widget.tagId,
             onArchiveSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
         Padding(
@@ -65,7 +64,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             tagId: widget.tagId,
             onDeleteSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],
@@ -94,7 +92,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                       trailing: TaskAddButton(
                         onTaskCreated: (taskId) => _refreshTasks(),
                         buttonColor: AppTheme.primaryColor,
-                        buttonBackgroundColor: AppTheme.surface2,
                         initialTagIds: [widget.tagId],
                       ),
                     );
@@ -105,7 +102,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                     onClickTask: _openTaskDetails,
                     filterByTags: [widget.tagId],
                   ),
-                  backgroundColor: AppTheme.surface2,
+                  backgroundColor: Colors.transparent,
                   canTapOnHeader: true)
             ],
             elevation: 0,

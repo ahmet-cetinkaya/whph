@@ -69,9 +69,6 @@ class SyncQrCodeButton extends StatelessWidget {
         _showQrCodeModal(context);
       },
       color: AppTheme.primaryColor,
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(AppTheme.surface2),
-      ),
     );
   }
 }

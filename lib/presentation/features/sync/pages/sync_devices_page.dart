@@ -7,6 +7,7 @@ import 'package:whph/application/features/sync/commands/delete_sync_command.dart
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/app_logo.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
@@ -87,9 +88,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
           onPressed: _sync,
           icon: Icon(Icons.sync),
           color: AppTheme.primaryColor,
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all<Color>(AppTheme.surface2),
-          ),
         ),
       ),
       if (Platform.isLinux || Platform.isMacOS || Platform.isWindows)
@@ -108,7 +106,15 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: const Text('Sync Devices'),
+      appBarTitle: Row(
+        children: [
+          const AppLogo(width: 32, height: 32),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: const Text('Sync Devices'),
+          )
+        ],
+      ),
       appBarActions: _buildAppBarActions(),
       topNavItems: NavigationItems.topNavItems,
       bottomNavItems: NavigationItems.bottomNavItems,

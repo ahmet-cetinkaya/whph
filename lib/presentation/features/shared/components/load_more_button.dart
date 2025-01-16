@@ -11,7 +11,7 @@ class LoadMoreButton extends StatelessWidget {
       onPressed: onPressed,
       child: const Text(
         'Load More',
-        style: TextStyle(fontSize: 20),
+        style: TextStyle(fontSize: 14),
       ),
     );
   }

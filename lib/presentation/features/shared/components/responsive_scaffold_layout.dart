@@ -46,6 +46,11 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
 class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  void _closeAllDialogs() {
+    // Close any open dialogs/modals before navigation
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
   void _navigateTo(String routeName) {
     if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(context).pop();
@@ -53,6 +58,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
     Future.microtask(() {
       if (mounted) {
+        _closeAllDialogs();
         Navigator.of(context).pushReplacementNamed(
           routeName,
           arguments: {'noAnimation': true},

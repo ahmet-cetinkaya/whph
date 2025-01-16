@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
@@ -14,8 +15,8 @@ class TagArchiveButton extends StatefulWidget {
     super.key,
     required this.tagId,
     this.onArchiveSuccess,
-    required this.buttonColor,
-    required this.buttonBackgroundColor,
+    this.buttonColor = AppTheme.primaryColor,
+    this.buttonBackgroundColor = Colors.transparent,
   });
 
   @override

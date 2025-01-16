@@ -33,7 +33,6 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
             appUsageId: widget.appUsageId,
             onDeleteSuccess: () => Navigator.of(context).pop(), // This will work with push navigation
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],

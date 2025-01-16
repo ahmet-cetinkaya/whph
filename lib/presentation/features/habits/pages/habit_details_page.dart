@@ -23,7 +23,6 @@ class HabitDetailsPage extends StatelessWidget {
             habitId: habitId,
             onDeleteSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],

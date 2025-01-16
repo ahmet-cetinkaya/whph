@@ -35,7 +35,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
               Navigator.of(context).pop();
             },
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],

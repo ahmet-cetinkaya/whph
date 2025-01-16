@@ -30,31 +30,32 @@ class BarChart extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ListTile(
+        contentPadding: EdgeInsets.zero,
         title: Stack(
           alignment: Alignment.centerLeft,
           children: <Widget>[
             Stack(
               children: [
                 Container(
-                  height: 60,
+                  height: 40,
                   width: barWidth,
                   decoration: BoxDecoration(
                     color: finalBarColor,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
                 SizedBox(
-                  height: 60,
+                  height: 40,
                   width: MediaQuery.of(context).size.width,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppTheme.surface2,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
                           children: [
@@ -63,6 +64,7 @@ class BarChart extends StatelessWidget {
                               children: [
                                 Text(
                                   value.toStringAsFixed(1),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                                 Text(
                                   " $unit",
@@ -71,16 +73,17 @@ class BarChart extends StatelessWidget {
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: additionalWidget == null
-                                  ? _buildTitle(Colors.white)
-                                  : Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        _buildTitle(Colors.white),
-                                        Flexible(child: additionalWidget ?? Container()),
-                                      ],
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Row(
+                                children: [
+                                  _buildTitle(Colors.white),
+                                  if (additionalWidget != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: additionalWidget!,
                                     ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -100,7 +103,7 @@ class BarChart extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 16,
+        fontSize: 13, // Reduced from 16
         fontWeight: FontWeight.bold,
         color: textColor,
       ),

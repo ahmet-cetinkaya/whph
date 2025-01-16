@@ -100,77 +100,137 @@ class _HabitCardState extends State<HabitCard> {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: widget.isMiniLayout ||
                   (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildHabitName(),
-                    _buildCheckbox(context),
-                  ],
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildHabitName(),
-                    Flexible(
-                      // Added Flexible
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: _buildCalendar(),
-                      ),
-                    ),
-                  ],
-                ),
+              ? _buildCompactView()
+              : _buildFullView(),
         ),
       ),
     );
   }
 
-  Widget _buildHabitName() {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+  Widget _buildCompactView() => Row(
         children: [
-          Row(
-            children: [
-              Icon(Icons.refresh),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
+          _buildHabitInfo(),
+          _buildCheckbox(context),
+        ],
+      );
+
+  Widget _buildFullView() => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildHabitInfo(),
+          const SizedBox(width: 8), // habit info ile calendar arası boşluk
+          Align(
+            alignment: Alignment.centerRight,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: _buildCalendar(),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildHabitInfo() => Expanded(
+        child: Row(
+          children: [
+            const Icon(Icons.refresh, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
                     widget.habit.name,
+                    style: const TextStyle(fontSize: 14),
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ),
-            ],
-          ),
-          if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.label,
-                    color: Colors.grey,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      widget.habit.tags.map((tag) => tag.name).join(", "),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
+                  if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.label, color: Colors.grey, size: 12),
+                          const SizedBox(width: 2),
+                          Expanded(
+                            child: Text(
+                              widget.habit.tags.map((tag) => tag.name).join(", "),
+                              style: const TextStyle(color: Colors.grey, fontSize: 10),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
                 ],
               ),
             ),
+          ],
+        ),
+      );
+
+  Widget _buildCalendar() {
+    if (_habitRecords == null) {
+      return const SizedBox(
+        width: 32,
+        height: 32,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    DateTime today = DateTime.now();
+    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)))
+        .reversed // tarihleri ters çeviriyoruz
+        .toList();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end, // sağa hizalama
+      mainAxisSize: MainAxisSize.min, // minimum genişlik
+      children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
+    );
+  }
+
+  Widget _buildCalendarDay(DateTime date, DateTime today) {
+    bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
+    HabitRecordListItem? recordForDay =
+        hasRecord ? _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date)) : null;
+
+    return SizedBox(
+      width: 46,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.isDateLabelShowing) ...[
+            Text(
+              DateTimeHelper.getWeekday(date.weekday),
+              style: TextStyle(
+                color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                fontSize: 10,
+              ),
+            ),
+            Text(
+              date.day.toString(),
+              style: TextStyle(
+                color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                fontSize: 12,
+              ),
+            ),
+          ],
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            onPressed: () async {
+              if (hasRecord) {
+                await _deleteHabitRecord(recordForDay!.id);
+              } else {
+                await _createHabitRecord(widget.habit.id, date);
+              }
+            },
+            icon: Icon(
+              hasRecord ? Icons.link : Icons.close,
+              size: 16,
+              color: hasRecord ? Colors.green : Colors.red,
+            ),
+          ),
         ],
       ),
     );
@@ -195,82 +255,6 @@ class _HabitCardState extends State<HabitCard> {
           await _deleteHabitRecord(recordToday.id);
         }
       },
-    );
-  }
-
-  Widget _buildCalendar() {
-    if (_habitRecords == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    DateTime today = DateTime.now();
-    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)));
-
-    return SizedBox(
-      width: widget.dateRange * 48.0, // Match header width (48px per day)
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: lastDays.map((date) {
-          bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
-
-          HabitRecordListItem? recordForDay;
-          if (hasRecord) {
-            recordForDay = _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date));
-          }
-
-          return SizedBox(
-            width: 46, // Fixed width for each date column
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (widget.isDateLabelShowing)
-                  Column(
-                    children: [
-                      Text(
-                        DateTimeHelper.getWeekday(date.weekday),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                          fontSize: AppTheme.fontSizeSmall,
-                        ),
-                      ),
-                      Text(
-                        date.day.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                          fontSize: AppTheme.fontSizeMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
-                  onPressed: () async {
-                    if (hasRecord) {
-                      await _deleteHabitRecord(recordForDay!.id);
-                    } else {
-                      await _createHabitRecord(widget.habit.id, date);
-                    }
-                  },
-                  icon: Icon(
-                    hasRecord ? Icons.link : Icons.close,
-                    size: 20,
-                  ),
-                  color: hasRecord ? Colors.green : Colors.red,
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
     );
   }
 }

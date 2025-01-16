@@ -7,153 +7,133 @@ import 'package:whph/presentation/features/tasks/components/task_complete_button
 class TaskCard extends StatelessWidget {
   final TaskListItem task;
   final VoidCallback onOpenDetails;
-  final VoidCallback onCompleted;
+  final VoidCallback? onCompleted;
+  final List<Widget>? trailingButtons;
+  final bool transparent;
 
   const TaskCard({
     super.key,
     required this.task,
     required this.onOpenDetails,
-    required this.onCompleted,
+    this.onCompleted,
+    this.trailingButtons,
+    this.transparent = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(4.0),
-        leading: _buildCompleteButton(),
-        title: Text(
-          task.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        subtitle: _buildSubtitle(context),
+      color: transparent ? Colors.transparent : null,
+      elevation: transparent ? 0 : null,
+      child: InkWell(
         onTap: onOpenDetails,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: _buildMainContent(context),
+        ),
       ),
     );
   }
 
-  Widget _buildCompleteButton() {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: TaskCompleteButton(
-        taskId: task.id,
-        isCompleted: task.isCompleted,
-        onToggleCompleted: onCompleted,
-        color: task.priority != null ? _getPriorityColor(task.priority!) : null,
-      ),
-    );
-  }
-
-  Widget _buildSubtitle(BuildContext context) {
-    final DateFormat dateFormat = DateFormat('dd.MM.yy');
-    List<Widget> subtitleWidgets = [];
-
-    // Add estimated time if exists
-    if (task.estimatedTime != null) {
-      subtitleWidgets.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.timer, color: Colors.blue, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              '${task.estimatedTime}m',
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 14,
-              ),
+  Widget _buildMainContent(BuildContext context) => Row(
+        children: [
+          SizedBox(
+            width: 32,
+            height: 32,
+            child: TaskCompleteButton(
+              taskId: task.id,
+              isCompleted: task.isCompleted,
+              onToggleCompleted: onCompleted ?? () {},
+              color: task.priority != null ? _getPriorityColor(task.priority!) : null,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: _buildTitleAndMetadata(context)),
+          if (trailingButtons != null) ...trailingButtons!,
+        ],
       );
-    }
 
-    // Add planned date if exists
-    if (task.plannedDate != null) {
-      if (subtitleWidgets.isNotEmpty) {
-        subtitleWidgets.add(const SizedBox(width: 8));
-      }
-      subtitleWidgets.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.calendar_today, color: Colors.blue, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              dateFormat.format(task.plannedDate!),
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Add deadline date if exists
-    if (task.deadlineDate != null) {
-      if (subtitleWidgets.isNotEmpty) {
-        subtitleWidgets.add(const SizedBox(width: 8));
-      }
-      subtitleWidgets.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.access_time, color: Colors.red, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              dateFormat.format(task.deadlineDate!),
-              style: const TextStyle(
-                color: Colors.red,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    var topRow = Row(
-      children: subtitleWidgets,
-    );
-
-    // Add tags in a separate row if they exist
-    if (task.tags.isEmpty) {
-      return topRow;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        topRow,
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            const Icon(
-              Icons.label,
-              color: Colors.grey,
-              size: 16,
-            ),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                task.tags.map((tag) => tag.name).join(", "),
-                style: const TextStyle(
-                  color: Colors.grey,
+  Widget _buildTitleAndMetadata(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            task.title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),
-              ),
-            ),
-          ],
+          ),
+          const SizedBox(height: 2),
+          _buildMetadataRow(),
+        ],
+      );
+
+  Widget _buildMetadataRow() {
+    final List<Widget> metadata = [];
+
+    // Add tags if exist
+    if (task.tags.isNotEmpty) {
+      metadata.addAll([
+        const Icon(Icons.label_outline, size: 12, color: Colors.grey),
+        const SizedBox(width: 2),
+        Text(
+          task.tags.map((tag) => tag.name).join(", "),
+          style: const TextStyle(color: Colors.grey, fontSize: 10),
         ),
-      ],
+      ]);
+    }
+
+    // Add separator if needed
+    if (metadata.isNotEmpty && _hasDateOrTime) {
+      metadata.add(const SizedBox(width: 8));
+      metadata.add(const Text("•", style: TextStyle(color: Colors.grey, fontSize: 10)));
+      metadata.add(const SizedBox(width: 8));
+    }
+
+    // Add date/time info
+    if (_hasDateOrTime) {
+      final dateTimeWidgets = _buildDateTimeElements();
+      metadata.addAll(dateTimeWidgets);
+    }
+
+    return Row(
+      children: metadata,
     );
   }
+
+  List<Widget> _buildDateTimeElements() {
+    final dateFormat = DateFormat('dd.MM.yy');
+    final elements = <Widget>[];
+    void addElement(Widget element) {
+      if (elements.isNotEmpty) {
+        elements.add(const SizedBox(width: 8));
+      }
+      elements.add(element);
+    }
+
+    if (task.estimatedTime != null) {
+      addElement(_buildInfoRow(Icons.timer, '${task.estimatedTime}m', Colors.blue));
+    }
+    if (task.plannedDate != null) {
+      addElement(_buildInfoRow(Icons.calendar_today, dateFormat.format(task.plannedDate!), Colors.blue));
+    }
+    if (task.deadlineDate != null) {
+      addElement(_buildInfoRow(Icons.access_time, dateFormat.format(task.deadlineDate!), Colors.red));
+    }
+
+    return elements;
+  }
+
+  Widget _buildInfoRow(IconData icon, String text, Color color) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 14),
+          const SizedBox(width: 2),
+          Text(text, style: TextStyle(color: color, fontSize: 12)),
+        ],
+      );
+
+  bool get _hasDateOrTime => task.estimatedTime != null || task.plannedDate != null || task.deadlineDate != null;
 
   Color _getPriorityColor(EisenhowerPriority priority) {
     switch (priority) {

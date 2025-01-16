@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/components/app_logo.dart';
+import 'package:whph/presentation/features/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
@@ -51,7 +53,15 @@ class _TagsPageState extends State<TagsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: const Text('Tags'),
+      appBarTitle: Row(
+        children: [
+          const AppLogo(width: 32, height: 32),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: const Text('Tags'),
+          )
+        ],
+      ),
       appBarActions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -61,7 +71,6 @@ class _TagsPageState extends State<TagsPage> {
               _openTagDetails(tagId);
             },
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],
@@ -77,15 +86,21 @@ class _TagsPageState extends State<TagsPage> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
+                  // Tag filter
                   TagSelectDropdown(
                     isMultiSelect: true,
                     onTagsSelected: _onFilterTags,
-                    buttonLabel: (_selectedTagIds?.isEmpty ?? true)
-                        ? 'Filter by tags'
-                        : '${_selectedTagIds!.length} tags selected',
+                    icon: Icons.label_outline,
+                    iconSize: 20,
+                    color: _selectedTagIds?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                    tooltip: 'Filter by tags',
+                    showLength: true,
                   ),
-                  IconButton(
-                    icon: Icon(_showArchived ? Icons.archive : Icons.archive_outlined),
+
+                  // Show archived tags
+                  FilterIconButton(
+                    icon: _showArchived ? Icons.archive : Icons.archive_outlined,
+                    color: _showArchived ? AppTheme.primaryColor : null,
                     tooltip: _showArchived ? 'Hide archived tags' : 'Show archived tags',
                     onPressed: () {
                       setState(() {
@@ -93,8 +108,7 @@ class _TagsPageState extends State<TagsPage> {
                         _tagsListKey = UniqueKey();
                       });
                     },
-                    color: AppTheme.primaryColor,
-                  ),
+                  )
                 ],
               ),
             ),

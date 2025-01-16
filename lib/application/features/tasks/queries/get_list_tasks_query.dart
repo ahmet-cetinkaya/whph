@@ -19,17 +19,20 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final bool filterDateOr;
   final List<String>? filterByTags;
   final bool? filterByCompleted;
+  final String? searchQuery;
 
-  GetListTasksQuery(
-      {required this.pageIndex,
-      required this.pageSize,
-      this.filterByPlannedStartDate,
-      this.filterByPlannedEndDate,
-      this.filterByDeadlineStartDate,
-      this.filterByDeadlineEndDate,
-      this.filterDateOr = false,
-      this.filterByTags,
-      this.filterByCompleted});
+  GetListTasksQuery({
+    required this.pageIndex,
+    required this.pageSize,
+    this.filterByPlannedStartDate,
+    this.filterByPlannedEndDate,
+    this.filterByDeadlineStartDate,
+    this.filterByDeadlineEndDate,
+    this.filterDateOr = false,
+    this.filterByTags,
+    this.filterByCompleted,
+    this.searchQuery,
+  });
 }
 
 class TaskListItem {
@@ -82,7 +85,10 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getFilters(request),
-      customOrder: [CustomOrder(field: "created_date", ascending: false)],
+      customOrder: [
+        CustomOrder(field: "priority"),
+        CustomOrder(field: "created_date", ascending: false),
+      ],
     );
 
     List<TaskListItem> taskListItems = [];
@@ -109,7 +115,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         tags: tagItems,
-        estimatedTime: task.estimatedTime, // Add this field
+        estimatedTime: task.estimatedTime,
       ));
     }
 
@@ -125,13 +131,18 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   CustomWhereFilter? _getFilters(GetListTasksQuery request) {
     CustomWhereFilter? customWhereFilter;
 
+    // Add search filter
+    if (request.searchQuery?.isNotEmpty ?? false) {
+      customWhereFilter = CustomWhereFilter("title LIKE ?", ["%${request.searchQuery}%"]);
+    }
+
     if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
-      customWhereFilter = CustomWhereFilter.empty();
+      customWhereFilter ??= CustomWhereFilter.empty();
 
       var plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
       var plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
 
-      customWhereFilter.query += "(planned_date > ? AND planned_date < ?)";
+      customWhereFilter.query += "(planned_date >= ? AND planned_date < ?)";
 
       customWhereFilter.variables.add(plannedDateStart);
       customWhereFilter.variables.add(plannedDateEnd);

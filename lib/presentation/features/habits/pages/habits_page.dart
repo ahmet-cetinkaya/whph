@@ -4,6 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/shared/components/app_logo.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
@@ -65,7 +66,15 @@ class _HabitsPageState extends State<HabitsPage> {
     List<DateTime> lastDays = List.generate(daysToShow, (index) => today.subtract(Duration(days: index)));
 
     return ResponsiveScaffoldLayout(
-      appBarTitle: const Text('Habits'),
+      appBarTitle: Row(
+        children: [
+          const AppLogo(width: 32, height: 32),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: const Text('Habits'),
+          )
+        ],
+      ),
       appBarActions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -77,7 +86,6 @@ class _HabitsPageState extends State<HabitsPage> {
               });
             },
             buttonColor: AppTheme.primaryColor,
-            buttonBackgroundColor: AppTheme.surface2,
           ),
         ),
       ],
@@ -103,9 +111,11 @@ class _HabitsPageState extends State<HabitsPage> {
                     TagSelectDropdown(
                       isMultiSelect: true,
                       onTagsSelected: _onFilterTagsSelect,
-                      buttonLabel: (_selectedFilterTags.isEmpty)
-                          ? 'Filter by tags'
-                          : '${_selectedFilterTags.length} tags selected',
+                      icon: Icons.label_outline,
+                      iconSize: 20,
+                      color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
+                      tooltip: 'Filter by tags',
+                      showLength: true,
                     ),
 
                     // Calendar

@@ -14,9 +14,9 @@ class NavigationItems {
   static List<NavItem> topNavItems = [
     NavItem(title: 'Today', icon: Icons.today, route: TodayPage.route),
     NavItem(title: 'Tasks', icon: Icons.check_circle, route: TasksPage.route),
-    NavItem(title: 'Tags', icon: Icons.label, route: TagsPage.route),
     NavItem(title: 'Habits', icon: Icons.refresh, route: HabitsPage.route),
     NavItem(title: 'App Usages', icon: Icons.bar_chart, route: AppUsageViewPage.route),
+    NavItem(title: 'Tags', icon: Icons.label, route: TagsPage.route),
   ];
 
   static List<NavItem> bottomNavItems = [
@@ -24,13 +24,15 @@ class NavigationItems {
     NavItem(
         title: 'Buy me a coffee',
         icon: Icons.coffee,
-        onTap: (context) {
-          launchUrl(Uri.parse(AppInfo.supportUrl), mode: LaunchMode.externalApplication);
+        onTap: (context) async {
+          Navigator.of(context).pop(); // Close drawer if open
+          await launchUrl(Uri.parse(AppInfo.supportUrl), mode: LaunchMode.externalApplication);
         }),
     NavItem(
         title: 'About',
         icon: Icons.info,
         onTap: (context) {
+          Navigator.of(context).pop(); // Close drawer if open
           showModalBottomSheet(
               context: context,
               builder: (context) {

@@ -72,7 +72,7 @@ class AppTheme {
       surface: surface1,
     ),
     primaryColor: domain.AppTheme.primaryColor,
-    scaffoldBackgroundColor: surface2,
+    scaffoldBackgroundColor: Colors.black,
     highlightColor: surface3,
     cardTheme: CardTheme(
       color: surface1,
