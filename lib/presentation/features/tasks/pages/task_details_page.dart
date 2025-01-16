@@ -41,7 +41,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
       topNavItems: NavigationItems.topNavItems,
       bottomNavItems: NavigationItems.bottomNavItems,
       routes: {},
-      defaultRoute: (context) => SingleChildScrollView(
+      defaultRoute: (context) => Container(
+        width: double.infinity,
+        alignment: Alignment.topLeft,
         child: TaskDetailsContent(taskId: widget.taskId),
       ),
     );
