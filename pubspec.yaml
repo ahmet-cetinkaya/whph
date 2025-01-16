@@ -65,6 +65,7 @@ dependencies:
   markdown_editor_plus: ^0.2.15
   fl_chart: ^0.70.1
   flutter_colorpicker: ^1.1.0
+  calendar_date_picker2: ^1.1.8
 
   # Desktop
   qr_flutter: ^4.1.0

@@ -7,34 +7,49 @@ import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TaskList extends StatefulWidget {
   final Mediator mediator;
-
   final int size;
+
+  // Update filter props to match query parameters
+  final List<String>? filterByTags;
   final DateTime? filterByPlannedStartDate;
   final DateTime? filterByPlannedEndDate;
-  final DateTime? filterByDueStartDate;
-  final DateTime? filterByDueEndDate;
+  final DateTime? filterByDeadlineStartDate;
+  final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
-  final List<String>? filterByTags;
   final bool? filterByCompleted;
+  final String? search;
+
+  final TaskListItem? selectedTask;
+  final bool showSelectButton;
+  final bool transparentCards;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
   final void Function()? onTaskCompleted;
+  final void Function(TaskListItem task)? onSelectTask;
+  final List<Widget> Function(TaskListItem task)? trailingButtons;
 
-  const TaskList(
-      {super.key,
-      required this.mediator,
-      this.size = 10,
-      this.filterByPlannedStartDate,
-      this.filterByPlannedEndDate,
-      this.filterByDueStartDate,
-      this.filterByDueEndDate,
-      this.filterDateOr = false,
-      this.filterByTags = const [],
-      this.filterByCompleted,
-      required this.onClickTask,
-      this.onList,
-      this.onTaskCompleted});
+  const TaskList({
+    super.key,
+    required this.mediator,
+    this.size = 10,
+    this.filterByTags,
+    this.filterByPlannedStartDate,
+    this.filterByPlannedEndDate,
+    this.filterByDeadlineStartDate,
+    this.filterByDeadlineEndDate,
+    this.filterDateOr = false,
+    this.filterByCompleted,
+    this.search,
+    this.selectedTask,
+    this.showSelectButton = false,
+    this.transparentCards = false,
+    required this.onClickTask,
+    this.onList,
+    this.onTaskCompleted,
+    this.onSelectTask,
+    this.trailingButtons,
+  });
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -62,11 +77,12 @@ class _TaskListState extends State<TaskList> {
         pageSize: widget.size,
         filterByPlannedStartDate: widget.filterByPlannedStartDate,
         filterByPlannedEndDate: widget.filterByPlannedEndDate,
-        filterByDeadlineStartDate: widget.filterByDueStartDate,
-        filterByDeadlineEndDate: widget.filterByDueEndDate,
+        filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
+        filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
         filterDateOr: widget.filterDateOr,
         filterByTags: widget.filterByTags,
-        filterByCompleted: widget.filterByCompleted);
+        filterByCompleted: widget.filterByCompleted,
+        searchQuery: widget.search);
     var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
     if (mounted) {
@@ -84,14 +100,11 @@ class _TaskListState extends State<TaskList> {
 
   void _onTaskCompleted() {
     if (_tasks != null) {
-      // Tamamlanan task'ı listeden kaldır
+      // Remove completed task from the list
       setState(() {
         _tasks!.items.removeWhere((task) => task.isCompleted);
       });
     }
-
-    // Listeyi arka planda güncelle
-    // _getTasks();
 
     if (widget.onTaskCompleted != null) {
       widget.onTaskCompleted!();
@@ -119,14 +132,24 @@ class _TaskListState extends State<TaskList> {
       children: [
         ListView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: _tasks!.items.length,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _tasks!.items.where((task) => task.id != widget.selectedTask?.id).length,
           itemBuilder: (context, index) {
-            final task = _tasks!.items[index];
+            final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
+
             return TaskCard(
               task: task,
               onOpenDetails: () => widget.onClickTask(task),
               onCompleted: _onTaskCompleted,
+              transparent: widget.transparentCards,
+              trailingButtons: [
+                if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                if (widget.showSelectButton)
+                  IconButton(
+                    icon: Icon(Icons.push_pin_outlined, color: Colors.grey),
+                    onPressed: () => widget.onSelectTask?.call(task),
+                  ),
+              ],
             );
           },
         ),

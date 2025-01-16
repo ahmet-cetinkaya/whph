@@ -26,6 +26,18 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> {
+  static const bool _isDebugMode = true; // Debug modu açık
+  static const int _minTimerValue = 5;
+  static const int _maxTimerValue = 120;
+
+  // Helper methods for time calculations
+  int _getTimeInSeconds(int value) => _isDebugMode ? value : value * 60;
+  String _getDisplayTime() {
+    final minutes = _remainingTime.inMinutes;
+    final seconds = _remainingTime.inSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
   late Timer _timer;
   Duration _remainingTime = const Duration();
   bool _isWorking = true;
@@ -34,6 +46,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   int _defaultBreakDuration = 5;
   late int _workDuration = _defaultWorkDuration;
   late int _breakDuration = _defaultBreakDuration;
+  bool _isAlarmPlaying = false;
 
   @override
   void initState() {
@@ -46,6 +59,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (_isRunning) {
       _timer.cancel();
     }
+    widget._soundPlayer.stop(); // Stop any playing sounds
     super.dispose();
   }
 
@@ -54,9 +68,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _defaultBreakDuration = await _getSetting(Settings.breakTime, 5);
     if (mounted) {
       setState(() {
-        _workDuration = _defaultWorkDuration;
-        _breakDuration = _defaultBreakDuration;
-        _remainingTime = Duration(minutes: _workDuration);
+        // Debug modda süreleri saniye, normal modda dakika olarak ayarla
+        _workDuration = _isDebugMode ? 10 : _defaultWorkDuration;
+        _breakDuration = _isDebugMode ? 10 : _defaultBreakDuration;
+        _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
       });
     }
   }
@@ -77,8 +92,25 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     await widget._mediator.send(command);
   }
 
+  void _startAlarm() {
+    setState(() {
+      _isAlarmPlaying = true;
+    });
+
+    widget._soundPlayer.setLoop(true);
+    widget._soundPlayer.play(SharedSounds.alarmDone);
+  }
+
+  void _stopAlarm() {
+    widget._soundPlayer.stop();
+    widget._soundPlayer.setLoop(false);
+    setState(() {
+      _isAlarmPlaying = false;
+    });
+  }
+
   void _startTimer() {
-    if (_isRunning) return;
+    if (_isRunning || _isAlarmPlaying) return;
 
     if (mounted) {
       setState(() {
@@ -91,8 +123,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             });
             widget.onTimeUpdate(_remainingTime);
           } else {
-            widget._soundPlayer.play(SharedSounds.alarmDone);
-            _toggleWorkBreak();
+            _timer.cancel();
+            _isRunning = false;
+            _startAlarm(); // Süre bitince alarm çal ve bekle
           }
         });
       });
@@ -103,23 +136,36 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (mounted) {
       setState(() {
         _isRunning = false;
-        _remainingTime = Duration(minutes: _workDuration);
+        if (!_isWorking) {
+          // If in break mode, switch back to work mode
+          _isWorking = true;
+        }
+        _remainingTime = Duration(
+          seconds: _getTimeInSeconds(_workDuration), // Always set to work duration
+        );
         _timer.cancel();
+        widget._soundPlayer.stop(); // Stop any playing sounds
       });
     }
   }
 
   void _toggleWorkBreak() {
     if (mounted) {
+      _stopAlarm();
       setState(() {
         _isWorking = !_isWorking;
-        _remainingTime = _isWorking ? Duration(minutes: _workDuration) : Duration(minutes: _breakDuration);
-        _startTimer(); // Automatically start the next session
+        _remainingTime = Duration(
+          seconds: _getTimeInSeconds(_isWorking ? _workDuration : _breakDuration),
+        );
       });
+      _startTimer();
     }
   }
 
   Future<void> _showSettingsModal() async {
+    final previousWorkDuration = _workDuration;
+    final previousBreakDuration = _breakDuration;
+
     if (mounted) {
       setState(() {
         _isWorking = true;
@@ -128,6 +174,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         _breakDuration = _defaultBreakDuration;
       });
     }
+
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -138,43 +185,93 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         );
       },
     );
+
+    // Save settings
     _saveSetting(Settings.workTime, _workDuration);
-    _defaultBreakDuration = _breakDuration;
     _saveSetting(Settings.breakTime, _breakDuration);
     _defaultWorkDuration = _workDuration;
+    _defaultBreakDuration = _breakDuration;
+
+    // Update current timer if settings changed
+    if (mounted && (previousWorkDuration != _workDuration || previousBreakDuration != _breakDuration)) {
+      setState(() {
+        _remainingTime = Duration(minutes: _isWorking ? _workDuration : _breakDuration);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildTimerControls(),
-      ],
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Calculate responsive sizes with running state multiplier
+    final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0; // Only shrink when stopped
+    final double buttonSize = (screenWidth < 600 ? 32.0 : 40.0) * multiplier;
+    final double fontSize = (screenWidth < 600 ? 24.0 : 32.0) * multiplier;
+    final double spacing = (screenWidth < 600 ? 8.0 : 16.0) * multiplier;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      padding: EdgeInsets.all(spacing),
+      decoration: BoxDecoration(
+        color: _getBackgroundColor(context),
+        borderRadius: BorderRadius.circular(buttonSize),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!_isRunning && !_isAlarmPlaying)
+            IconButton(
+              iconSize: buttonSize * 0.7,
+              icon: const Icon(Icons.settings),
+              onPressed: _showSettingsModal,
+            ),
+          SizedBox(width: spacing),
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 300),
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              fontFeatures: const [
+                FontFeature.tabularFigures(),
+              ],
+            ),
+            child: Text(_getDisplayTime()),
+          ),
+          SizedBox(width: spacing),
+          IconButton(
+            iconSize: buttonSize * 0.7,
+            icon: Icon(_getButtonIcon()),
+            onPressed: _getButtonAction(),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildTimerControls() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        IconButton(
-          icon: Icon(!_isRunning ? Icons.play_arrow : Icons.stop),
-          onPressed: !_isRunning ? _startTimer : _stopTimer,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: _buildTimeDisplay(),
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: _showSettingsModal,
-        ),
-      ],
-    );
+  Color _getBackgroundColor(BuildContext context) {
+    final normalColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final breakColor = Theme.of(context).colorScheme.tertiaryContainer;
+    final breakEndColor = Theme.of(context).colorScheme.errorContainer;
+
+    if (_isAlarmPlaying) return _isWorking ? breakColor : breakEndColor;
+    if (!_isRunning) return normalColor;
+    return _isWorking ? normalColor : breakColor;
   }
 
-  static const int _minTimerValue = 1;
-  static const int _maxTimerValue = 120;
+  IconData _getButtonIcon() {
+    if (_isAlarmPlaying) return Icons.arrow_forward; // Changed from skip_next
+    if (_isRunning) return Icons.stop;
+    return Icons.play_arrow;
+  }
+
+  VoidCallback _getButtonAction() {
+    if (_isAlarmPlaying) return _toggleWorkBreak;
+    if (_isRunning) return _stopTimer;
+    return _startTimer;
+  }
+
   Widget _buildSettingsModal(StateSetter setState) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -183,9 +280,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Center(child: const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold))),
-          const Text(
-            'Default timer settings:',
-            style: TextStyle(color: AppTheme.secondaryTextColor),
+          Text(
+            'Default timer settings: ${_isDebugMode ? "(Debug Mode - in seconds)" : "(in minutes)"}',
+            style: const TextStyle(color: AppTheme.secondaryTextColor),
           ),
           _buildSettingRow('Work Time', _workDuration, (adjustment) {
             if (!mounted) return;
@@ -226,59 +323,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     );
   }
 
-  Widget _buildTimeDisplay() {
-    return Row(
-      children: [
-        _isRunning
-            ? const SizedBox(width: 40)
-            : IconButton(
-                icon: const Icon(Icons.remove),
-                onPressed:
-                    _isWorking && _workDuration > _minTimerValue || !_isWorking && _breakDuration > _minTimerValue
-                        ? () {
-                            if (!mounted) return;
-                            setState(() {
-                              if (_isWorking) {
-                                _workDuration = (_workDuration - 5).clamp(_minTimerValue, _maxTimerValue);
-                                _remainingTime = Duration(minutes: _workDuration);
-                              } else {
-                                _breakDuration = (_breakDuration - 5).clamp(_minTimerValue, _maxTimerValue);
-                                _remainingTime = Duration(minutes: _breakDuration);
-                              }
-                            });
-                          }
-                        : null,
-              ),
-        SizedBox(
-          width: 120,
-          child: Center(
-            child: Text(
-              '${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-              style: const TextStyle(fontSize: 32),
-            ),
-          ),
-        ),
-        _isRunning
-            ? const SizedBox(width: 40)
-            : IconButton(
-                icon: const Icon(Icons.add),
-                onPressed:
-                    _isWorking && _workDuration < _maxTimerValue || !_isWorking && _breakDuration < _maxTimerValue
-                        ? () {
-                            if (!mounted) return;
-                            setState(() {
-                              if (_isWorking) {
-                                _workDuration = (_workDuration + 5).clamp(_minTimerValue, _maxTimerValue);
-                                _remainingTime = Duration(minutes: _workDuration);
-                              } else {
-                                _breakDuration = (_breakDuration + 5).clamp(_minTimerValue, _maxTimerValue);
-                                _remainingTime = Duration(minutes: _breakDuration);
-                              }
-                            });
-                          }
-                        : null,
-              ),
-      ],
-    );
-  }
+  // Helper method to convert minutes to seconds
+  int minutes(int value) => value * 60;
 }
