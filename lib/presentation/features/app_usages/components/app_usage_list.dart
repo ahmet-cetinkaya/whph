@@ -12,8 +12,18 @@ class AppUsageList extends StatefulWidget {
   final int size;
   final List<String>? filterByTags;
   final Function(String int)? onOpenDetails;
+  final DateTime? filterStartDate;
+  final DateTime? filterEndDate;
 
-  const AppUsageList({super.key, required this.mediator, this.size = 10, this.filterByTags, this.onOpenDetails});
+  const AppUsageList({
+    super.key,
+    required this.mediator,
+    this.size = 10,
+    this.filterByTags,
+    this.onOpenDetails,
+    this.filterStartDate,
+    this.filterEndDate,
+  });
 
   @override
   AppUsageListState createState() => AppUsageListState();
@@ -30,8 +40,13 @@ class AppUsageListState extends State<AppUsageList> {
   }
 
   Future<void> _getAppUsages({int pageIndex = 0}) async {
-    final query =
-        GetListByTopAppUsagesQuery(pageIndex: pageIndex, pageSize: widget.size, filterByTags: widget.filterByTags);
+    final query = GetListByTopAppUsagesQuery(
+      pageIndex: pageIndex,
+      pageSize: widget.size,
+      filterByTags: widget.filterByTags,
+      startDate: widget.filterStartDate,
+      endDate: widget.filterEndDate,
+    );
 
     try {
       final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);

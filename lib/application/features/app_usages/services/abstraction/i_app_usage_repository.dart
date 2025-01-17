@@ -14,10 +14,8 @@ abstract class IAppUsageRepository extends IRepository<AppUsage, String> {
   Future<PaginatedList<AppUsage>> getListByTopAppUsages({
     required int pageIndex,
     required int pageSize,
-    int? year,
-    int? month,
-    int? day,
-    int? hour,
     List<String>? filterByTags,
+    DateTime? startDate,
+    DateTime? endDate,
   });
 }

@@ -57,30 +57,61 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
   }
 
   @override
-  Future<PaginatedList<AppUsage>> getListByTopAppUsages(
-      {required int pageIndex,
-      required int pageSize,
-      int? year,
-      int? month,
-      int? day,
-      int? hour,
-      List<String>? filterByTags}) async {
+  Future<PaginatedList<AppUsage>> getListByTopAppUsages({
+    required int pageIndex,
+    required int pageSize,
+    List<String>? filterByTags,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
     var query = database.customSelect(
-      'SELECT id, name, display_name, color, SUM(duration) as duration, created_date, modified_date, deleted_date FROM app_usage_table '
-      'WHERE deleted_date IS NULL '
-      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''} '
-      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''} '
-      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''} '
-      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''} '
-      '${filterByTags != null && filterByTags.isNotEmpty ? 'AND (SELECT COUNT(*) FROM app_usage_tag_table WHERE app_usage_tag_table.app_usage_id = app_usage_table.id AND app_usage_tag_table.tag_id IN (${List.filled(filterByTags.length, '?').join(', ')}) > 0) ' : ''} '
-      'GROUP BY name '
-      'ORDER BY SUM(duration) DESC '
-      'LIMIT ? OFFSET ?',
+      '''
+      WITH FilteredPeriodAppUsages AS (
+        SELECT t.id, t.name, SUM(t.duration) as total_duration
+        FROM app_usage_table t
+        WHERE t.deleted_date IS NULL
+        ${startDate != null ? 'AND t.created_date >= ?' : ''}
+        ${endDate != null ? 'AND t.created_date < ?' : ''}
+        GROUP BY t.name
+      ),
+      FirstAppUsage AS (
+        SELECT 
+          t.name,
+          t.id as first_id,
+          t.color,
+          t.display_name,
+          t.created_date,
+          ROW_NUMBER() OVER (PARTITION BY t.name ORDER BY t.created_date ASC) as rn
+        FROM app_usage_table t
+        WHERE t.deleted_date IS NULL
+      )
+      SELECT 
+        fa.first_id as id,
+        fp.name,
+        fa.display_name,
+        fa.color,
+        fp.total_duration as duration,
+        MIN(t.created_date) as created_date,
+        MAX(t.modified_date) as modified_date,
+        MAX(t.deleted_date) as deleted_date
+      FROM FilteredPeriodAppUsages fp
+      INNER JOIN app_usage_table t ON fp.name = t.name
+      LEFT JOIN FirstAppUsage fa ON fp.name = fa.name AND fa.rn = 1
+      ${filterByTags != null && filterByTags.isNotEmpty ? '''
+      WHERE EXISTS (
+        SELECT 1 FROM app_usage_tag_table att 
+        WHERE att.app_usage_id = fa.first_id 
+        AND att.deleted_date IS NULL 
+        AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})
+      )
+      ''' : ''}
+      GROUP BY fp.name, fa.first_id, fa.display_name, fa.color, fp.total_duration
+      ORDER BY fp.total_duration DESC
+      LIMIT ? OFFSET ?
+      ''',
       variables: [
-        if (year != null) Variable.withString(year.toString()),
-        if (month != null) Variable.withString(month.toString().padLeft(2, '0')),
-        if (day != null) Variable.withString(day.toString().padLeft(2, '0')),
-        if (hour != null) Variable.withString(hour.toString().padLeft(2, '0')),
+        if (startDate != null) Variable.withDateTime(startDate),
+        if (endDate != null) Variable.withDateTime(endDate),
         if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize),
@@ -100,18 +131,29 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
         .get();
 
     var totalCountQuery = database.customSelect(
-      'SELECT COUNT(DISTINCT name) as count FROM app_usage_table '
-      'WHERE deleted_date IS NULL '
-      '${year != null ? 'AND strftime("%Y", created_date) = ? ' : ''} '
-      '${month != null ? 'AND strftime("%m", created_date) = ? ' : ''} '
-      '${day != null ? 'AND strftime("%d", created_date) = ? ' : ''} '
-      '${hour != null ? 'AND strftime("%H", created_date) = ? ' : ''} '
-      '${filterByTags != null && filterByTags.isNotEmpty ? 'AND (SELECT COUNT(*) FROM app_usage_tag_table WHERE app_usage_tag_table.app_usage_id = app_usage_table.id AND app_usage_tag_table.tag_id IN (${List.filled(filterByTags.length, '?').join(', ')}) > 0) ' : ''}',
+      '''
+      WITH FilteredPeriodAppUsages AS (
+        SELECT DISTINCT t.name
+        FROM app_usage_table t
+        WHERE t.deleted_date IS NULL
+        ${startDate != null ? 'AND t.created_date >= ?' : ''}
+        ${endDate != null ? 'AND t.created_date < ?' : ''}
+      )
+      SELECT COUNT(*) as count 
+      FROM FilteredPeriodAppUsages fp
+      INNER JOIN app_usage_table t ON fp.name = t.name
+      WHERE EXISTS (
+        SELECT 1 FROM app_usage_table au
+        LEFT JOIN app_usage_tag_table att ON au.id = att.app_usage_id
+        WHERE au.name = fp.name
+        AND au.deleted_date IS NULL
+        AND att.deleted_date IS NULL
+        ${filterByTags != null && filterByTags.isNotEmpty ? 'AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})' : ''}
+      )
+      ''',
       variables: [
-        if (year != null) Variable.withString(year.toString()),
-        if (month != null) Variable.withString(month.toString().padLeft(2, '0')),
-        if (day != null) Variable.withString(day.toString().padLeft(2, '0')),
-        if (hour != null) Variable.withString(hour.toString().padLeft(2, '0')),
+        if (startDate != null) Variable.withDateTime(startDate),
+        if (endDate != null) Variable.withDateTime(endDate),
         if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
       ],
     );

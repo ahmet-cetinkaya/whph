@@ -6,14 +6,17 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryResponse> {
   late int pageIndex;
   late int pageSize;
-  int? year;
-  int? month;
-  int? day;
-  int? hour;
   List<String>? filterByTags;
+  DateTime? startDate;
+  DateTime? endDate;
 
-  GetListByTopAppUsagesQuery(
-      {required this.pageIndex, required this.pageSize, this.year, this.month, this.day, this.hour, this.filterByTags});
+  GetListByTopAppUsagesQuery({
+    required this.pageIndex,
+    required this.pageSize,
+    this.filterByTags,
+    this.startDate,
+    this.endDate,
+  });
 }
 
 class AppUsageListItem {
@@ -47,11 +50,9 @@ class GetListByTopAppUsagesQueryHandler
     PaginatedList<AppUsage> appUsages = await _appUsageRepository.getListByTopAppUsages(
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
-      year: request.year,
-      month: request.month,
-      day: request.day,
-      hour: request.hour,
       filterByTags: request.filterByTags,
+      startDate: request.startDate,
+      endDate: request.endDate,
     );
 
     return GetListByTopAppUsagesQueryResponse(

@@ -61,12 +61,17 @@ class _AppUsageCardState extends State<AppUsageCard> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+    final barColor = widget.appUsage.color != null
+        ? Color(int.parse(widget.appUsage.color!, radix: 16))
+        : primaryColor; // Fallback to primary color if no color is specified
+
     return BarChart(
       title: widget.appUsage.displayName ?? widget.appUsage.name,
       value: widget.appUsage.duration.toDouble() / 60,
       maxValue: widget.maxDurationInListing != null ? widget.maxDurationInListing!.toDouble() : double.infinity,
       unit: "min",
-      barColor: Color(int.parse(widget.appUsage.color!, radix: 16)),
+      barColor: barColor,
       onTap: widget.onTap,
       additionalWidget: _appUsageTags?.items.isNotEmpty == true
           ? Row(

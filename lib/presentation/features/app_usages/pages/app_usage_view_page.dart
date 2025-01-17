@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -24,6 +25,8 @@ class AppUsageViewPage extends StatefulWidget {
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Key _appUsageListKey = UniqueKey();
   List<String>? _selectedTagFilters;
+  DateTime? _filterStartDate;
+  DateTime? _filterEndDate;
 
   void _refreshAppUsages() {
     if (mounted) {
@@ -44,6 +47,16 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   void _onTagFilterSelect(List<String> tags) {
     _selectedTagFilters = tags;
     _refreshAppUsages();
+  }
+
+  void _onDateFilterChange(DateTime? start, DateTime? end) {
+    setState(() {
+      _filterStartDate = start;
+
+      if (end != null) end = DateTime(end!.year, end!.month, end!.day, 23, 59, 59);
+      _filterEndDate = end;
+      _refreshAppUsages();
+    });
   }
 
   @override
@@ -74,21 +87,36 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       routes: {},
       defaultRoute: (context) => ListView(
         children: [
+          // Filters
           Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+            padding: const EdgeInsets.all(8),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: TagSelectDropdown(
-                isMultiSelect: true,
-                onTagsSelected: _onTagFilterSelect,
-                showLength: true,
-                icon: Icons.label,
-                iconSize: 20,
-                color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                tooltip: 'Filter by tags',
+              child: Row(
+                children: [
+                  // Tag Filter
+                  TagSelectDropdown(
+                    isMultiSelect: true,
+                    onTagsSelected: _onTagFilterSelect,
+                    showLength: true,
+                    icon: Icons.label,
+                    iconSize: 20,
+                    color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                    tooltip: 'Filter by tags',
+                  ),
+
+                  // Date Range Filter
+                  DateRangeFilter(
+                    selectedStartDate: _filterStartDate,
+                    selectedEndDate: _filterEndDate,
+                    onDateFilterChange: _onDateFilterChange,
+                  ),
+                ],
               ),
             ),
           ),
+
+          // App Usage List
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: AppUsageList(
@@ -96,6 +124,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
               mediator: widget.mediator,
               onOpenDetails: _openDetails,
               filterByTags: _selectedTagFilters,
+              filterStartDate: _filterStartDate,
+              filterEndDate: _filterEndDate,
             ),
           ),
         ],
