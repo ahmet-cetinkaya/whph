@@ -98,21 +98,38 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Search bar
+                  // Search bar and clear button row
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search Tags',
-                      ),
-                      onChanged: (value) {
-                        if (!mounted) return;
-                        setState(() {
-                          _tags = null;
-                          _getTags(pageIndex: 0, search: value);
-                        });
-                      },
+                    child: Row(
+                      children: [
+                        // Search bar
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(labelText: 'Search Tags', fillColor: Colors.transparent),
+                            onChanged: (value) {
+                              if (!mounted) return;
+                              setState(() {
+                                _tags = null;
+                                _getTags(pageIndex: 0, search: value);
+                              });
+                            },
+                          ),
+                        ),
+
+                        // Clear all button
+                        if (tempSelectedTags.isNotEmpty)
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                tempSelectedTags.clear();
+                              });
+                            },
+                            icon: Icon(Icons.clear),
+                            label: Text('Clear All'),
+                          ),
+                      ],
                     ),
                   ),
 
