@@ -28,6 +28,21 @@ class TaskCompleteButton extends StatefulWidget {
 
 class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+  bool _isCompleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isCompleted = widget.isCompleted;
+  }
+
+  @override
+  void didUpdateWidget(TaskCompleteButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isCompleted != widget.isCompleted) {
+      _isCompleted = widget.isCompleted;
+    }
+  }
 
   Future<void> _toggleCompleteTask(BuildContext context) async {
     final mediator = container.resolve<Mediator>();
@@ -46,12 +61,19 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         deadlineDate: task.deadlineDate,
         estimatedTime: task.estimatedTime,
         elapsedTime: task.elapsedTime,
-        isCompleted: !task.isCompleted,
+        isCompleted: !_isCompleted,
       );
 
       await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
-      if (command.isCompleted) _soundPlayer.play(SharedSounds.done);
+      if (command.isCompleted) {
+        _soundPlayer.play(SharedSounds.done);
+      }
+
+      setState(() {
+        _isCompleted = !_isCompleted;
+      });
+
       widget.onToggleCompleted();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
@@ -65,7 +87,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   @override
   Widget build(BuildContext context) {
     return Checkbox(
-      value: widget.isCompleted,
+      value: _isCompleted,
       onChanged: (_) => _toggleCompleteTask(context),
       activeColor: widget.color,
       shape: const CircleBorder(),

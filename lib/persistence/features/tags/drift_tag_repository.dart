@@ -11,6 +11,7 @@ class TagTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get name => text()();
+  TextColumn get color => text().nullable()();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
@@ -30,6 +31,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       name: entity.name,
+      color: Value(entity.color),
       isArchived: Value(entity.isArchived),
     );
   }

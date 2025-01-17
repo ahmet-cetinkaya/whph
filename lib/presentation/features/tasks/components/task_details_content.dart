@@ -41,8 +41,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final List<DropdownOption<EisenhowerPriority>> _priorityOptions = [
-    DropdownOption(label: 'None', value: EisenhowerPriority.none),
+  final List<DropdownOption<EisenhowerPriority?>> _priorityOptions = [
+    DropdownOption(label: 'None', value: null),
     DropdownOption(label: 'Urgent & Important', value: EisenhowerPriority.urgentImportant),
     DropdownOption(label: 'Not Urgent & Important', value: EisenhowerPriority.notUrgentImportant),
     DropdownOption(label: 'Urgent & Not Important', value: EisenhowerPriority.urgentNotImportant),
@@ -184,7 +184,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           children: [
             DetailTable(rowData: [
               // Tags
-              DetailTableRowData(label: "Tags", icon: Icons.tag, widget: _buildTagSection()),
+              DetailTableRowData(label: "Tags", icon: Icons.label, widget: _buildTagSection()),
 
               // Priority
               DetailTableRowData(
@@ -194,7 +194,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                     dropdownMenuEntries: _priorityOptions
                         .map((option) => DropdownMenuEntry(label: option.label, value: option.value))
                         .toList(),
-                    initialSelection: _task!.priority ?? EisenhowerPriority.none,
+                    initialSelection: _task!.priority,
                     onSelected: (value) {
                       if (!mounted) return;
                       setState(() {
@@ -356,7 +356,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
             // List
             ..._taskTags!.items.map((taskTag) {
               return Chip(
-                label: Text(taskTag.tagName),
+                label: Text(
+                  taskTag.tagName,
+                  style: TextStyle(
+                    color: taskTag.tagColor != null ? Color(int.parse('FF${taskTag.tagColor}', radix: 16)) : null,
+                  ),
+                ),
                 onDeleted: () {
                   _removeTag(taskTag.id);
                 },

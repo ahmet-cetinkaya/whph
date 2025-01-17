@@ -20,10 +20,10 @@ class TagCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              const Icon(
-                Icons.label_outline,
+              Icon(
+                Icons.label,
                 size: 20,
-                color: Colors.grey,
+                color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey,
               ),
               const SizedBox(width: 8),
               Expanded(

@@ -104,6 +104,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         return TagListItem(
           id: tt.tagId,
           name: tag?.name ?? "",
+          color: tag?.color,
         );
       }).toList());
 
@@ -131,11 +132,16 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   CustomWhereFilter? _getFilters(GetListTasksQuery request) {
     CustomWhereFilter? customWhereFilter;
 
-    // Add search filter
+    // Search filter
     if (request.searchQuery?.isNotEmpty ?? false) {
       customWhereFilter = CustomWhereFilter("title LIKE ?", ["%${request.searchQuery}%"]);
     }
 
+    // Date filters
+    if (request.filterDateOr) {
+      customWhereFilter ??= CustomWhereFilter.empty();
+      customWhereFilter.query += " (";
+    }
     if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
       customWhereFilter ??= CustomWhereFilter.empty();
 
@@ -155,12 +161,16 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       var dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += request.filterDateOr ? " OR " : " AND ";
-      customWhereFilter.query += "(deadline_date > ? AND deadline_date < ?)";
+      customWhereFilter.query += "(deadline_date >= ? AND deadline_date < ?)";
 
       customWhereFilter.variables.add(dueDateStart);
       customWhereFilter.variables.add(dueDateEnd);
     }
+    if (request.filterDateOr) {
+      customWhereFilter!.query += " )";
+    }
 
+    // Tag filter
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
       customWhereFilter ??= CustomWhereFilter.empty();
 
@@ -170,12 +180,13 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       customWhereFilter.variables.addAll(request.filterByTags!);
     }
 
+    // Completed filter
     if (request.filterByCompleted != null) {
       customWhereFilter ??= CustomWhereFilter.empty();
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
-      customWhereFilter.query += "is_completed = ?";
-      customWhereFilter.variables.add(request.filterByCompleted!);
+      customWhereFilter.query += "(is_completed = ?)";
+      customWhereFilter.variables.add(request.filterByCompleted! ? 1 : 0);
     }
 
     return customWhereFilter;

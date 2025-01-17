@@ -90,7 +90,7 @@ class _TagsPageState extends State<TagsPage> {
                   TagSelectDropdown(
                     isMultiSelect: true,
                     onTagsSelected: _onFilterTags,
-                    icon: Icons.label_outline,
+                    icon: Icons.label,
                     iconSize: 20,
                     color: _selectedTagIds?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                     tooltip: 'Filter by tags',

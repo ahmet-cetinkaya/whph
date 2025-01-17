@@ -111,7 +111,7 @@ class _HabitsPageState extends State<HabitsPage> {
                     TagSelectDropdown(
                       isMultiSelect: true,
                       onTagsSelected: _onFilterTagsSelect,
-                      icon: Icons.label_outline,
+                      icon: Icons.label,
                       iconSize: 20,
                       color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
                       tooltip: 'Filter by tags',

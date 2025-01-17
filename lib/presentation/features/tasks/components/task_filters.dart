@@ -49,7 +49,7 @@ class _TaskFiltersState extends State<TaskFilters> {
               TagSelectDropdown(
                 isMultiSelect: true,
                 onTagsSelected: widget.onTagFilterChange,
-                icon: Icons.label_outline,
+                icon: Icons.label,
                 iconSize: iconSize,
                 color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
                 tooltip: 'Filter by tags',

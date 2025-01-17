@@ -19,8 +19,9 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
 class TagListItem {
   String id;
   String name;
+  String? color;
 
-  TagListItem({required this.id, required this.name});
+  TagListItem({required this.id, required this.name, this.color});
 }
 
 class GetListTagsQueryResponse extends PaginatedList<TagListItem> {
@@ -47,7 +48,13 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
     );
 
     return GetListTagsQueryResponse(
-      items: tags.items.map((e) => TagListItem(id: e.id, name: e.name)).toList(),
+      items: tags.items
+          .map((e) => TagListItem(
+                id: e.id,
+                name: e.name,
+                color: e.color,
+              ))
+          .toList(),
       totalItemCount: tags.totalItemCount,
       totalPageCount: tags.totalPageCount,
       pageIndex: tags.pageIndex,

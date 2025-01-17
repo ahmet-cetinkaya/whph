@@ -81,12 +81,26 @@ class _AppUsageCardState extends State<AppUsageCard> {
                   ),
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  _appUsageTags!.items.map((e) => e.tagName).join(", "),
-                  style: TextStyle(
-                    color: AppTheme.disabledColor,
-                    fontSize: AppTheme.fontSizeSmall - 1,
-                  ),
+                Row(
+                  children: [
+                    for (var i = 0; i < _appUsageTags!.items.length; i++) ...[
+                      if (i > 0)
+                        Text(", ",
+                            style: TextStyle(
+                              color: AppTheme.disabledColor,
+                              fontSize: AppTheme.fontSizeSmall - 1,
+                            )),
+                      Text(
+                        _appUsageTags!.items[i].tagName,
+                        style: TextStyle(
+                          color: _appUsageTags!.items[i].tagColor != null
+                              ? Color(int.parse('FF${_appUsageTags!.items[i].tagColor}', radix: 16))
+                              : AppTheme.disabledColor,
+                          fontSize: AppTheme.fontSizeSmall - 1,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             )

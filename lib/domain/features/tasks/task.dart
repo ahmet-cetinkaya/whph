@@ -1,7 +1,12 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
-enum EisenhowerPriority { none, urgentImportant, notUrgentImportant, urgentNotImportant, notUrgentNotImportant }
+enum EisenhowerPriority {
+  urgentImportant,
+  notUrgentImportant,
+  urgentNotImportant,
+  notUrgentNotImportant,
+}
 
 @jsonSerializable
 class Task extends BaseEntity<String> {

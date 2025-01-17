@@ -1600,6 +1600,10 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
   @override
   late final GeneratedColumn<String> name =
       GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color =
+      GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
   @override
   late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>('is_archived', aliasedName, false,
@@ -1608,7 +1612,7 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
       defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
       defaultValue: const Constant(false));
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, isArchived];
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, color, isArchived];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1639,6 +1643,9 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('color')) {
+      context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
     if (data.containsKey('is_archived')) {
       context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
     }
@@ -1657,6 +1664,7 @@ class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
+      color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
     );
   }
 
@@ -1672,6 +1680,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<String> name;
+  final Value<String?> color;
   final Value<bool> isArchived;
   final Value<int> rowid;
   const TagTableCompanion({
@@ -1680,6 +1689,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.name = const Value.absent(),
+    this.color = const Value.absent(),
     this.isArchived = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1689,6 +1699,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     required String name,
+    this.color = const Value.absent(),
     this.isArchived = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -1700,6 +1711,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<String>? name,
+    Expression<String>? color,
     Expression<bool>? isArchived,
     Expression<int>? rowid,
   }) {
@@ -1709,6 +1721,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (name != null) 'name': name,
+      if (color != null) 'color': color,
       if (isArchived != null) 'is_archived': isArchived,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1720,6 +1733,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<String>? name,
+      Value<String?>? color,
       Value<bool>? isArchived,
       Value<int>? rowid}) {
     return TagTableCompanion(
@@ -1728,6 +1742,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       name: name ?? this.name,
+      color: color ?? this.color,
       isArchived: isArchived ?? this.isArchived,
       rowid: rowid ?? this.rowid,
     );
@@ -1751,6 +1766,9 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
     if (isArchived.present) {
       map['is_archived'] = Variable<bool>(isArchived.value);
     }
@@ -1768,6 +1786,7 @@ class TagTableCompanion extends UpdateCompanion<Tag> {
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('isArchived: $isArchived, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3762,6 +3781,7 @@ typedef $$TagTableTableCreateCompanionBuilder = TagTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   required String name,
+  Value<String?> color,
   Value<bool> isArchived,
   Value<int> rowid,
 });
@@ -3771,6 +3791,7 @@ typedef $$TagTableTableUpdateCompanionBuilder = TagTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   Value<String> name,
+  Value<String?> color,
   Value<bool> isArchived,
   Value<int> rowid,
 });
@@ -3795,6 +3816,9 @@ class $$TagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTableTab
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get isArchived =>
       $composableBuilder(column: $table.isArchived, builder: (column) => ColumnFilters(column));
@@ -3822,6 +3846,9 @@ class $$TagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTableT
   ColumnOrderings<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get isArchived =>
       $composableBuilder(column: $table.isArchived, builder: (column) => ColumnOrderings(column));
 }
@@ -3846,6 +3873,8 @@ class $$TagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTabl
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
   GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<bool> get isArchived => $composableBuilder(column: $table.isArchived, builder: (column) => column);
 }
@@ -3875,6 +3904,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<String?> color = const Value.absent(),
             Value<bool> isArchived = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -3884,6 +3914,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             name: name,
+            color: color,
             isArchived: isArchived,
             rowid: rowid,
           ),
@@ -3893,6 +3924,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             required String name,
+            Value<String?> color = const Value.absent(),
             Value<bool> isArchived = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -3902,6 +3934,7 @@ class $$TagTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             name: name,
+            color: color,
             isArchived: isArchived,
             rowid: rowid,
           ),

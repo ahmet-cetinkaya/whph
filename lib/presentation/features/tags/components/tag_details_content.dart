@@ -130,7 +130,14 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                 ),
                 ..._tagTags!.items.map((tagTag) {
                   return Chip(
-                    label: Text(tagTag.secondaryTagName),
+                    label: Text(
+                      tagTag.secondaryTagName,
+                      style: TextStyle(
+                        color: tagTag.secondaryTagColor != null
+                            ? Color(int.parse('FF${tagTag.secondaryTagColor}', radix: 16))
+                            : null,
+                      ),
+                    ),
                     onDeleted: () {
                       _removeTag(tagTag.id);
                     },

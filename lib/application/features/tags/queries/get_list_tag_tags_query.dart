@@ -17,15 +17,19 @@ class TagTagListItem {
   String id;
   String primaryTagId;
   String primaryTagName;
+  String? primaryTagColor;
   String secondaryTagId;
   String secondaryTagName;
+  String? secondaryTagColor;
 
   TagTagListItem(
       {required this.id,
       required this.primaryTagId,
       required this.primaryTagName,
+      this.primaryTagColor,
       required this.secondaryTagId,
-      required this.secondaryTagName});
+      required this.secondaryTagName,
+      this.secondaryTagColor});
 }
 
 class GetListTagTagsQueryResponse extends PaginatedList<TagTagListItem> {
@@ -61,8 +65,10 @@ class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery,
         id: tagTag.id,
         primaryTagId: tagTag.primaryTagId,
         primaryTagName: primaryTag.name,
+        primaryTagColor: primaryTag.color,
         secondaryTagId: tagTag.secondaryTagId,
         secondaryTagName: secondaryTag.name,
+        secondaryTagColor: secondaryTag.color,
       ));
     }
     return GetListTagTagsQueryResponse(

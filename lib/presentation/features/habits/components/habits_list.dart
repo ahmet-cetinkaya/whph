@@ -16,6 +16,7 @@ class HabitsList extends StatefulWidget {
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
+  final void Function()? onHabitCompleted;
 
   const HabitsList(
       {super.key,
@@ -25,7 +26,8 @@ class HabitsList extends StatefulWidget {
       this.dateRange = 7,
       this.filterByTags,
       required this.onClickHabit,
-      this.onList});
+      this.onList,
+      this.onHabitCompleted});
 
   @override
   State<HabitsList> createState() => _HabitsListState();
@@ -44,16 +46,21 @@ class _HabitsListState extends State<HabitsList> {
     var query = GetListHabitsQuery(
         pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini, filterByTags: widget.filterByTags);
     var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
-    if (mounted) {
-      setState(() {
-        if (_habits == null) {
-          _habits = result;
-          return;
-        }
 
-        _habits!.items.addAll(result.items);
-        _habits!.pageIndex = result.pageIndex;
-      });
+    if (!mounted) return;
+
+    setState(() {
+      if (_habits == null) {
+        _habits = result;
+        return;
+      }
+
+      _habits!.items.addAll(result.items);
+      _habits!.pageIndex = result.pageIndex;
+    });
+
+    if (widget.onList != null) {
+      widget.onList!(_habits!.items.length);
     }
   }
 
@@ -70,10 +77,6 @@ class _HabitsListState extends State<HabitsList> {
 
     if (_habits!.items.isEmpty) {
       return const Center(child: Text('No habits found'));
-    }
-
-    if (widget.onList != null) {
-      widget.onList!(_habits!.items.length);
     }
 
     return widget.mini ? _buildMiniCardList() : _buildColumnList();
@@ -94,10 +97,12 @@ class _HabitsListState extends State<HabitsList> {
                 onRecordCreated: (_) async {
                   await Future.delayed(Duration(seconds: 3));
                   _refreshHabits();
+                  widget.onHabitCompleted?.call();
                 },
                 onRecordDeleted: (_) async {
                   await Future.delayed(Duration(seconds: 3));
                   _refreshHabits();
+                  widget.onHabitCompleted?.call();
                 }),
           );
         }),
@@ -120,6 +125,12 @@ class _HabitsListState extends State<HabitsList> {
                 isMiniLayout: widget.mini,
                 dateRange: widget.dateRange,
                 isDateLabelShowing: false,
+                onRecordCreated: (_) {
+                  widget.onHabitCompleted?.call();
+                },
+                onRecordDeleted: (_) {
+                  widget.onHabitCompleted?.call();
+                },
               ),
             );
           }),

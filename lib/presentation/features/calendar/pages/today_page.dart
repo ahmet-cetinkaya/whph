@@ -124,7 +124,7 @@ class _TodayPageState extends State<TodayPage> {
             // Filters
             TagSelectDropdown(
                 isMultiSelect: true,
-                icon: Icons.label_outline,
+                icon: Icons.label,
                 iconSize: 20,
                 color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                 tooltip: 'Filter by tags',
@@ -177,6 +177,10 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _buildTaskSection(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(left: 8.0),
@@ -190,12 +194,13 @@ class _TodayPageState extends State<TodayPage> {
           : TaskList(
               key: _taskKey,
               mediator: mediator,
-              size: 5,
-              filterByPlannedEndDate:
-                  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59, 999),
-              filterByDeadlineEndDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-              filterDateOr: true,
+              filterByCompleted: false,
               filterByTags: _selectedTagFilter,
+              filterByPlannedStartDate: today,
+              filterByPlannedEndDate: tomorrow,
+              filterByDeadlineStartDate: today,
+              filterByDeadlineEndDate: tomorrow,
+              filterDateOr: true,
               onClickTask: (task) => _openTaskDetails(context, task.id),
               onList: _onTaskList,
             ),

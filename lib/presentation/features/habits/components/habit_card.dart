@@ -118,7 +118,7 @@ class _HabitCardState extends State<HabitCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHabitInfo(),
-          const SizedBox(width: 8), // habit info ile calendar arası boşluk
+          const SizedBox(width: 8),
           Align(
             alignment: Alignment.centerRight,
             child: SingleChildScrollView(
@@ -152,10 +152,23 @@ class _HabitCardState extends State<HabitCard> {
                           const Icon(Icons.label, color: Colors.grey, size: 12),
                           const SizedBox(width: 2),
                           Expanded(
-                            child: Text(
-                              widget.habit.tags.map((tag) => tag.name).join(", "),
-                              style: const TextStyle(color: Colors.grey, fontSize: 10),
-                              overflow: TextOverflow.ellipsis,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  for (var i = 0; i < widget.habit.tags.length; i++) ...[
+                                    if (i > 0) const Text(", ", style: TextStyle(color: Colors.grey, fontSize: 10)),
+                                    Text(
+                                      widget.habit.tags[i].name,
+                                      style: TextStyle(
+                                          color: widget.habit.tags[i].color != null
+                                              ? Color(int.parse('FF${widget.habit.tags[i].color}', radix: 16))
+                                              : Colors.grey,
+                                          fontSize: 10),
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -178,9 +191,8 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     DateTime today = DateTime.now();
-    List<DateTime> lastDays = List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index)))
-        .reversed // tarihleri ters çeviriyoruz
-        .toList();
+    List<DateTime> lastDays =
+        List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index))).toList();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end, // sağa hizalama
@@ -244,17 +256,23 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
-    return Checkbox(
-      value: hasRecordToday,
-      onChanged: (bool? value) async {
-        if (value == true) {
-          await _createHabitRecord(widget.habit.id, DateTime.now());
-        } else {
+    return IconButton(
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+      onPressed: () async {
+        if (hasRecordToday) {
           HabitRecordListItem? recordToday =
               _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
           await _deleteHabitRecord(recordToday.id);
+        } else {
+          await _createHabitRecord(widget.habit.id, DateTime.now());
         }
       },
+      icon: Icon(
+        hasRecordToday ? Icons.link : Icons.close,
+        size: 16,
+        color: hasRecordToday ? Colors.green : Colors.red,
+      ),
     );
   }
 }

@@ -38,11 +38,18 @@ class _TasksPageState extends State<TasksPage> {
 
   String? _searchQuery;
 
-  void _refreshTasks() {
+  void _onCompletedTask() {
+    if (mounted) {
+      setState(() {
+        _completedTasksListKey = UniqueKey();
+      });
+    }
+  }
+
+  void _onUncompletedTask() {
     if (mounted) {
       setState(() {
         _tasksListKey = UniqueKey();
-        _completedTasksListKey = UniqueKey();
       });
     }
   }
@@ -52,7 +59,7 @@ class _TasksPageState extends State<TasksPage> {
       TaskDetailsPage.route,
       arguments: {'id': taskId},
     );
-    _refreshTasks();
+    _onCompletedTask();
   }
 
   void _onTasksList(count) {
@@ -69,7 +76,7 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _selectedTagIds = tagIds;
-        _refreshTasks();
+        _onCompletedTask();
       });
     }
   }
@@ -79,7 +86,7 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _filterStartDate = start;
         _filterEndDate = end;
-        _refreshTasks();
+        _onCompletedTask();
       });
     }
   }
@@ -88,7 +95,7 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _searchQuery = query;
-        _refreshTasks();
+        _onCompletedTask();
       });
     }
   }
@@ -105,7 +112,14 @@ class _TasksPageState extends State<TasksPage> {
     );
 
     await _mediator.send(command);
-    _refreshTasks();
+    _onCompletedTask();
+    _refreshTaskList();
+  }
+
+  void _refreshTaskList() {
+    setState(() {
+      _tasksListKey = UniqueKey();
+    });
   }
 
   @override
@@ -124,7 +138,7 @@ class _TasksPageState extends State<TasksPage> {
         Padding(
           padding: const EdgeInsets.all(8),
           child: TaskAddButton(
-            onTaskCreated: (_) => _refreshTasks(),
+            onTaskCreated: (_) => _onCompletedTask(),
             buttonColor: AppTheme.primaryColor,
             initialTagIds: _selectedTagIds,
           ),
@@ -148,43 +162,44 @@ class _TasksPageState extends State<TasksPage> {
             ),
 
             // Tasks list
-            if (_isTasksListEmpty) DoneOverlay(),
+            if (_isTasksListEmpty)
+              DoneOverlay()
+            else
+              TaskList(
+                key: _tasksListKey,
+                mediator: _mediator,
+                filterByCompleted: false,
+                filterByTags: _selectedTagIds,
+                filterByPlannedStartDate: _filterStartDate,
+                filterByPlannedEndDate: _filterEndDate,
+                search: _searchQuery,
+                onClickTask: (task) => _openTaskDetails(task.id),
+                onTaskCompleted: _onCompletedTask,
+                onList: _onTasksList,
+                trailingButtons: (task) => [
+                  PopupMenuButton<DateTime>(
+                    icon: Icon(Icons.schedule, color: Colors.grey),
+                    tooltip: 'Schedule task',
+                    itemBuilder: (context) {
+                      final now = DateTime.now();
+                      final today = DateTime(now.year, now.month, now.day);
+                      final tomorrow = today.add(const Duration(days: 1));
 
-            TaskList(
-              key: _tasksListKey,
-              mediator: _mediator,
-              filterByCompleted: false,
-              filterByTags: _selectedTagIds,
-              filterByPlannedStartDate: _filterStartDate,
-              filterByPlannedEndDate: _filterEndDate,
-              search: _searchQuery,
-              onClickTask: (task) => _openTaskDetails(task.id),
-              onTaskCompleted: _refreshTasks,
-              onList: _onTasksList,
-              trailingButtons: (task) => [
-                PopupMenuButton<DateTime>(
-                  icon: Icon(Icons.schedule, color: Colors.grey),
-                  tooltip: 'Schedule task',
-                  itemBuilder: (context) {
-                    final now = DateTime.now();
-                    final today = DateTime(now.year, now.month, now.day);
-                    final tomorrow = today.add(const Duration(days: 1));
-
-                    return [
-                      PopupMenuItem(
-                        value: today,
-                        child: Text('Schedule for today'),
-                      ),
-                      PopupMenuItem(
-                        value: tomorrow,
-                        child: Text('Schedule for tomorrow'),
-                      ),
-                    ];
-                  },
-                  onSelected: (date) => _handleScheduleTask(task, date),
-                ),
-              ],
-            ),
+                      return [
+                        PopupMenuItem(
+                          value: today,
+                          child: Text('Schedule for today'),
+                        ),
+                        PopupMenuItem(
+                          value: tomorrow,
+                          child: Text('Schedule for tomorrow'),
+                        ),
+                      ];
+                    },
+                    onSelected: (date) => _handleScheduleTask(task, date),
+                  ),
+                ],
+              ),
 
             // Expansion panel for completed tasks
             ExpansionPanelList(
@@ -211,7 +226,7 @@ class _TasksPageState extends State<TasksPage> {
                       filterByTags: _selectedTagIds,
                       search: _searchQuery,
                       onClickTask: (task) => _openTaskDetails(task.id),
-                      onTaskCompleted: _refreshTasks,
+                      onTaskCompleted: _onUncompletedTask,
                     ),
                     backgroundColor: Colors.transparent,
                     canTapOnHeader: true),

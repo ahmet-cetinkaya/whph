@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
@@ -26,12 +27,19 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> {
-  static const bool _isDebugMode = true; // Debug modu açık
   static const int _minTimerValue = 5;
   static const int _maxTimerValue = 120;
 
   // Helper methods for time calculations
-  int _getTimeInSeconds(int value) => _isDebugMode ? value : value * 60;
+  int _getTimeInSeconds(int value) {
+    if (kDebugMode) {
+      print('DEBUG: Time will be in seconds. (PomodoroTimer)');
+      return value;
+    }
+
+    return value * 60;
+  }
+
   String _getDisplayTime() {
     final minutes = _remainingTime.inMinutes;
     final seconds = _remainingTime.inSeconds % 60;
@@ -68,9 +76,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _defaultBreakDuration = await _getSetting(Settings.breakTime, 5);
     if (mounted) {
       setState(() {
-        // Debug modda süreleri saniye, normal modda dakika olarak ayarla
-        _workDuration = _isDebugMode ? 10 : _defaultWorkDuration;
-        _breakDuration = _isDebugMode ? 10 : _defaultBreakDuration;
+        _workDuration = _defaultWorkDuration;
+        _breakDuration = _defaultBreakDuration;
         _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
       });
     }
@@ -280,9 +287,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Center(child: const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold))),
-          Text(
-            'Default timer settings: ${_isDebugMode ? "(Debug Mode - in seconds)" : "(in minutes)"}',
-            style: const TextStyle(color: AppTheme.secondaryTextColor),
+          const Text(
+            'Default timer settings (in minutes):',
+            style: TextStyle(color: AppTheme.secondaryTextColor),
           ),
           _buildSettingRow('Work Time', _workDuration, (adjustment) {
             if (!mounted) return;
@@ -312,7 +319,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               icon: Icon(Icons.remove),
               onPressed: value > _minTimerValue ? () => onAdjust(-5) : null,
             ),
-            SizedBox(width: 80, child: Center(child: Text("${value.toString()} min"))),
+            SizedBox(width: 80, child: Center(child: Text("$value min"))),
             IconButton(
               icon: Icon(Icons.add),
               onPressed: value < _maxTimerValue ? () => onAdjust(5) : null,
@@ -322,7 +329,4 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       ],
     );
   }
-
-  // Helper method to convert minutes to seconds
-  int minutes(int value) => value * 60;
 }

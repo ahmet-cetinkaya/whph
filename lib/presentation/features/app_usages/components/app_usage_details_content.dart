@@ -198,7 +198,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                   ),
                   ..._appUsageTags!.items.map((tag) {
                     return Chip(
-                      label: Text(tag.tagName),
+                      label: Text(
+                        tag.tagName,
+                        style: TextStyle(
+                          color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
+                        ),
+                      ),
                       onDeleted: () {
                         _removeTag(tag.id);
                       },

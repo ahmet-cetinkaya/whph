@@ -45,7 +45,12 @@ class HabitTagSection extends StatelessWidget {
 
   Widget _buildTagChip(HabitTagListItem habitTag) {
     return Chip(
-      label: Text(habitTag.tagName),
+      label: Text(
+        habitTag.tagName,
+        style: TextStyle(
+          color: habitTag.tagColor != null ? Color(int.parse('FF${habitTag.tagColor}', radix: 16)) : null,
+        ),
+      ),
       onDeleted: () => onRemoveTag(habitTag.id),
     );
   }

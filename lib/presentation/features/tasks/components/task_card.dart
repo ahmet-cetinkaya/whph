@@ -73,14 +73,19 @@ class TaskCard extends StatelessWidget {
 
     // Add tags if exist
     if (task.tags.isNotEmpty) {
-      metadata.addAll([
-        const Icon(Icons.label_outline, size: 12, color: Colors.grey),
-        const SizedBox(width: 2),
-        Text(
-          task.tags.map((tag) => tag.name).join(", "),
-          style: const TextStyle(color: Colors.grey, fontSize: 10),
-        ),
-      ]);
+      metadata.add(const Icon(Icons.label, size: 12, color: Colors.grey));
+      metadata.add(const SizedBox(width: 2));
+
+      for (var i = 0; i < task.tags.length; i++) {
+        final tag = task.tags[i];
+        if (i > 0) metadata.add(const Text(", ", style: TextStyle(color: Colors.grey, fontSize: 10)));
+
+        metadata.add(Text(
+          tag.name,
+          style: TextStyle(
+              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey, fontSize: 10),
+        ));
+      }
     }
 
     // Add separator if needed
@@ -135,7 +140,7 @@ class TaskCard extends StatelessWidget {
 
   bool get _hasDateOrTime => task.estimatedTime != null || task.plannedDate != null || task.deadlineDate != null;
 
-  Color _getPriorityColor(EisenhowerPriority priority) {
+  Color _getPriorityColor(EisenhowerPriority? priority) {
     switch (priority) {
       case EisenhowerPriority.urgentImportant:
         return Colors.red;

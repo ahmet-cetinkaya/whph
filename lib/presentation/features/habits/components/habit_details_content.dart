@@ -208,7 +208,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             rowData: [
               DetailTableRowData(
                 label: "Tags",
-                icon: Icons.tag,
+                icon: Icons.label,
                 widget: _habitTags == null
                     ? const SizedBox.shrink()
                     : HabitTagSection(

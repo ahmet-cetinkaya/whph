@@ -5,17 +5,21 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 class Tag extends BaseEntity<String> {
   String name;
   bool isArchived;
+  String? color;
 
-  Tag(
-      {required super.id,
-      required super.createdDate,
-      super.modifiedDate,
-      super.deletedDate,
-      required this.name,
-      this.isArchived = false});
+  Tag({
+    required super.id,
+    required super.createdDate,
+    super.modifiedDate,
+    super.deletedDate,
+    required this.name,
+    this.isArchived = false,
+    this.color,
+  });
 
   void mapFromInstance(Tag instance) {
     name = instance.name;
     isArchived = instance.isArchived;
+    color = instance.color;
   }
 }

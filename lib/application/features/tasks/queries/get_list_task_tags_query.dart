@@ -19,8 +19,9 @@ class TaskTagListItem {
   String taskId;
   String tagId;
   String tagName;
+  String? tagColor;
 
-  TaskTagListItem({required this.id, required this.taskId, required this.tagId, required this.tagName});
+  TaskTagListItem({required this.id, required this.taskId, required this.tagId, required this.tagName, this.tagColor});
 }
 
 class GetListTaskTagsQueryResponse extends PaginatedList<TaskTagListItem> {
@@ -53,6 +54,7 @@ class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuer
         taskId: taskTag.taskId,
         tagId: taskTag.tagId,
         tagName: secondaryTag.name,
+        tagColor: secondaryTag.color,
       ));
     }
     return GetListTaskTagsQueryResponse(

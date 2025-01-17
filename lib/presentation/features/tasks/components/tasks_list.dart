@@ -58,6 +58,27 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
   GetListTasksQueryResponse? _tasks;
   bool _isLoading = false;
+  final ScrollController _scrollController = ScrollController();
+  double? _savedScrollPosition;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(TaskList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.key != widget.key) {
+      _savedScrollPosition = _scrollController.position.pixels;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_savedScrollPosition != null && _scrollController.hasClients) {
+          _scrollController.jumpTo(_savedScrollPosition!);
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -95,20 +116,23 @@ class _TaskListState extends State<TaskList> {
         }
         _isLoading = false;
       });
+
+      if (widget.onList != null) {
+        widget.onList!(_tasks!.items.length);
+      }
     }
   }
 
   void _onTaskCompleted() {
-    if (_tasks != null) {
-      // Remove completed task from the list
-      setState(() {
-        _tasks!.items.removeWhere((task) => task.isCompleted);
-      });
-    }
+    Future.delayed(const Duration(seconds: 3), () {
+      final pageIndex = _tasks!.pageIndex;
+      _tasks = null;
+      _getTasks(pageIndex: pageIndex);
 
-    if (widget.onTaskCompleted != null) {
-      widget.onTaskCompleted!();
-    }
+      if (widget.onTaskCompleted != null) {
+        widget.onTaskCompleted!();
+      }
+    });
   }
 
   @override
@@ -123,35 +147,35 @@ class _TaskListState extends State<TaskList> {
       );
     }
 
-    if (widget.onList != null) {
-      widget.onList!(_tasks!.items.length);
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _tasks!.items.where((task) => task.id != widget.selectedTask?.id).length,
-          itemBuilder: (context, index) {
-            final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
-
-            return TaskCard(
-              task: task,
-              onOpenDetails: () => widget.onClickTask(task),
-              onCompleted: _onTaskCompleted,
-              transparent: widget.transparentCards,
-              trailingButtons: [
-                if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                if (widget.showSelectButton)
-                  IconButton(
-                    icon: Icon(Icons.push_pin_outlined, color: Colors.grey),
-                    onPressed: () => widget.onSelectTask?.call(task),
-                  ),
-              ],
-            );
-          },
+        SizedBox(
+          child: ListView.builder(
+            controller: _scrollController,
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            itemCount: _tasks!.items.where((task) => task.id != widget.selectedTask?.id).length,
+            itemBuilder: (context, index) {
+              final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
+              return TaskCard(
+                key: ValueKey(task.id), // Add this line
+                task: task,
+                onOpenDetails: () => widget.onClickTask(task),
+                onCompleted: _onTaskCompleted,
+                transparent: widget.transparentCards,
+                trailingButtons: [
+                  if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                  if (widget.showSelectButton)
+                    IconButton(
+                      icon: Icon(Icons.push_pin_outlined, color: Colors.grey),
+                      onPressed: () => widget.onSelectTask?.call(task),
+                    ),
+                ],
+              );
+            },
+          ),
         ),
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
       ],

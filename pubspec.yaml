@@ -31,6 +31,7 @@ scripts:
   release-linux: flutter build linux --release
   release-windows: flutter build windows --release
   release-android: flutter build apk --release
+  test: flutter test
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -41,6 +42,7 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
+  test: ^1.25.8
 
   # Data
   drift: ^2.21.0
@@ -94,6 +96,7 @@ dev_dependencies:
 
   # Icon
   icons_launcher: ^3.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

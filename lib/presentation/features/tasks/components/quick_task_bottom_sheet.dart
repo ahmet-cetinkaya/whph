@@ -116,9 +116,6 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         case null:
           _selectedPriority = EisenhowerPriority.urgentImportant;
           break;
-        case EisenhowerPriority.none:
-          _selectedPriority = EisenhowerPriority.urgentImportant;
-          break;
         case EisenhowerPriority.urgentImportant:
           _selectedPriority = EisenhowerPriority.notUrgentImportant;
           break;
@@ -129,7 +126,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           _selectedPriority = EisenhowerPriority.notUrgentNotImportant;
           break;
         case EisenhowerPriority.notUrgentNotImportant:
-          _selectedPriority = EisenhowerPriority.none;
+          _selectedPriority = null;
           break;
       }
     });
@@ -145,7 +142,6 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         return Colors.blue;
       case EisenhowerPriority.notUrgentNotImportant:
         return Colors.grey;
-      case EisenhowerPriority.none:
       case null:
         return Colors.white;
     }
@@ -161,7 +157,6 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         return 'Urgent & Not Important';
       case EisenhowerPriority.notUrgentNotImportant:
         return 'Not Urgent & Not Important';
-      case EisenhowerPriority.none:
       case null:
         return 'No Priority';
     }
@@ -247,9 +242,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
                             children: [
                               IconButton(
                                 icon: Icon(
-                                  _selectedPriority == null || _selectedPriority == EisenhowerPriority.none
-                                      ? Icons.flag_outlined
-                                      : Icons.flag,
+                                  _selectedPriority == null ? Icons.flag_outlined : Icons.flag,
                                   color: _getPriorityColor(),
                                 ),
                                 onPressed: _togglePriority,

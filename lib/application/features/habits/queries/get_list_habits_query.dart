@@ -71,6 +71,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         return TagListItem(
           id: ht.tagId,
           name: tag?.name ?? "",
+          color: tag?.color,
         );
       }).toList());
 
