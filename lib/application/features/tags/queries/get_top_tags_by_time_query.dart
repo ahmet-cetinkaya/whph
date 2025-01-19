@@ -38,12 +38,8 @@ class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQu
       request.startDate,
       request.endDate,
       limit: request.limit,
-      filterByTags: request.filterByTags, // Pass filter to repository
+      filterByTags: request.filterByTags,
     );
-
-    for (final tagTime in tagTimes) {
-      print('${tagTime.tagName} ${tagTime.duration}');
-    }
 
     final totalDuration = tagTimes.fold<int>(0, (sum, item) => sum + item.duration);
 

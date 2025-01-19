@@ -28,38 +28,50 @@ class DateRangeFilter extends StatelessWidget {
     final result = await showModalBottomSheet<List<DateTime?>>(
       context: context,
       backgroundColor: AppTheme.surface1,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Select Date Range', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
+      builder: (context) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Select Date Range', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CalendarDatePicker2(
+                    config: CalendarDatePicker2Config(
+                      calendarType: CalendarDatePicker2Type.range,
+                      selectedDayHighlightColor: Theme.of(context).primaryColor,
+                    ),
+                    value: selectedStartDate != null && selectedEndDate != null
+                        ? [selectedStartDate, selectedEndDate]
+                        : [],
+                    onValueChanged: (dates) {
+                      if (dates.length == 2) {
+                        Navigator.pop(context, dates);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          CalendarDatePicker2(
-            config: CalendarDatePicker2Config(
-              calendarType: CalendarDatePicker2Type.range,
-              selectedDayHighlightColor: Theme.of(context).primaryColor,
-            ),
-            value: selectedStartDate != null && selectedEndDate != null ? [selectedStartDate, selectedEndDate] : [],
-            onValueChanged: (dates) {
-              if (dates.length == 2) {
-                Navigator.pop(context, dates);
-              }
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
 

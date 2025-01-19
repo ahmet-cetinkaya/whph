@@ -158,11 +158,14 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
-  void _onTagsSelected(List<String> tags) {
-    var tagsToAdd = tags.where((tagId) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagId)).toList();
-    var tagsToRemove = _taskTags!.items.where((taskTag) => !tags.contains(taskTag.tagId)).toList();
-    for (var tagId in tagsToAdd) {
-      _addTag(tagId);
+  void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
+    var tagOptionsToAdd =
+        tagOptions.where((tagOption) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagOption.value)).toList();
+    var tagsToRemove =
+        _taskTags!.items.where((taskTag) => !tagOptions.map((tag) => tag.value).contains(taskTag.tagId)).toList();
+
+    for (var tagOption in tagOptionsToAdd) {
+      _addTag(tagOption.value);
     }
     for (var taskTag in tagsToRemove) {
       _removeTag(taskTag.id);

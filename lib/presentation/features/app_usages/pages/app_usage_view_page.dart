@@ -4,12 +4,14 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_tag_rules_page.dart';
 import 'package:whph/presentation/features/shared/components/app_logo.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -45,8 +47,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     _refreshAppUsages();
   }
 
-  void _onTagFilterSelect(List<String> tags) {
-    _selectedTagFilters = tags;
+  void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
+    _selectedTagFilters = tagOptions.map((option) => option.value).toList();
     _refreshAppUsages();
   }
 
@@ -76,15 +78,28 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         ],
       ),
       appBarActions: [
-        if (Platform.isLinux || Platform.isWindows || Platform.isMacOS)
+        if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) ...[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => _refreshAppUsages(),
-              color: AppTheme.primaryColor,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppUsageTagRulesPage.route);
+                  },
+                  color: AppTheme.primaryColor,
+                  tooltip: 'Tag Rules',
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () => _refreshAppUsages(),
+                  color: AppTheme.primaryColor,
+                ),
+              ],
             ),
           ),
+        ],
       ],
       topNavItems: NavigationItems.topNavItems,
       bottomNavItems: NavigationItems.bottomNavItems,

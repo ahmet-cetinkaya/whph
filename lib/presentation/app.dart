@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_tag_rules_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
@@ -78,6 +79,9 @@ class App extends StatelessWidget {
             } else {
               page = TagDetailsPage(tagId: arguments!['id'] as String);
             }
+            break;
+          case AppUsageTagRulesPage.route:
+            page = const AppUsageTagRulesPage();
             break;
           default:
             page = TodayPage();

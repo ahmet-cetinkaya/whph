@@ -13,6 +13,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
@@ -148,11 +149,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
   }
 
-  void _onTagsSelected(List<String> tags) {
+  void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     if (_habitTags == null) return;
 
-    var tagsToAdd = tags.where((tagId) => !_habitTags!.items.any((habitTag) => habitTag.tagId == tagId)).toList();
-    var tagsToRemove = _habitTags!.items.where((habitTag) => !tags.contains(habitTag.tagId)).toList();
+    var tagsToAdd = tagOptions
+        .where((tagOption) => !_habitTags!.items.any((habitTag) => habitTag.tagId == tagOption.value))
+        .map((option) => option.value)
+        .toList();
+
+    var tagsToRemove =
+        _habitTags!.items.where((habitTag) => !tagOptions.map((tag) => tag.value).contains(habitTag.tagId)).toList();
 
     for (var tagId in tagsToAdd) {
       _addTag(tagId);

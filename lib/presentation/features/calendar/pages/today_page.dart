@@ -14,6 +14,7 @@ import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -75,13 +76,13 @@ class _TodayPageState extends State<TodayPage> {
     });
   }
 
-  void _onTagFilterSelect(List<String> tags) {
+  void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
           _habitKey = UniqueKey();
           _taskKey = UniqueKey();
-          _selectedTagFilter = tags;
+          _selectedTagFilter = tagOptions.map((option) => option.value).toList();
         });
       }
     });

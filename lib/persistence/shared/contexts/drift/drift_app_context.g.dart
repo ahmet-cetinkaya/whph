@@ -419,6 +419,249 @@ class AppUsageTagTableCompanion extends UpdateCompanion<AppUsageTag> {
   }
 }
 
+class $AppUsageTagRuleTableTable extends AppUsageTagRuleTable
+    with TableInfo<$AppUsageTagRuleTableTable, AppUsageTagRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppUsageTagRuleTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _patternMeta = const VerificationMeta('pattern');
+  @override
+  late final GeneratedColumn<String> pattern =
+      GeneratedColumn<String>('pattern', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId =
+      GeneratedColumn<String>('tag_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isActiveMeta = const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>('is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description =
+      GeneratedColumn<String>('description', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, pattern, tagId, isActive, description, createdDate, modifiedDate, deletedDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_usage_tag_rule_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppUsageTagRule> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('pattern')) {
+      context.handle(_patternMeta, pattern.isAcceptableOrUnknown(data['pattern']!, _patternMeta));
+    } else if (isInserting) {
+      context.missing(_patternMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(_tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta, isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('description')) {
+      context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppUsageTagRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppUsageTagRule(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      pattern: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}pattern'])!,
+      tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
+      isActive: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description']),
+    );
+  }
+
+  @override
+  $AppUsageTagRuleTableTable createAlias(String alias) {
+    return $AppUsageTagRuleTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
+  final Value<String> id;
+  final Value<String> pattern;
+  final Value<String> tagId;
+  final Value<bool> isActive;
+  final Value<String?> description;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<int> rowid;
+  const AppUsageTagRuleTableCompanion({
+    this.id = const Value.absent(),
+    this.pattern = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppUsageTagRuleTableCompanion.insert({
+    required String id,
+    required String pattern,
+    required String tagId,
+    this.isActive = const Value.absent(),
+    this.description = const Value.absent(),
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        pattern = Value(pattern),
+        tagId = Value(tagId),
+        createdDate = Value(createdDate);
+  static Insertable<AppUsageTagRule> custom({
+    Expression<String>? id,
+    Expression<String>? pattern,
+    Expression<String>? tagId,
+    Expression<bool>? isActive,
+    Expression<String>? description,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pattern != null) 'pattern': pattern,
+      if (tagId != null) 'tag_id': tagId,
+      if (isActive != null) 'is_active': isActive,
+      if (description != null) 'description': description,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppUsageTagRuleTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? pattern,
+      Value<String>? tagId,
+      Value<bool>? isActive,
+      Value<String?>? description,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<int>? rowid}) {
+    return AppUsageTagRuleTableCompanion(
+      id: id ?? this.id,
+      pattern: pattern ?? this.pattern,
+      tagId: tagId ?? this.tagId,
+      isActive: isActive ?? this.isActive,
+      description: description ?? this.description,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (pattern.present) {
+      map['pattern'] = Variable<String>(pattern.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppUsageTagRuleTableCompanion(')
+          ..write('id: $id, ')
+          ..write('pattern: $pattern, ')
+          ..write('tagId: $tagId, ')
+          ..write('isActive: $isActive, ')
+          ..write('description: $description, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
     with TableInfo<$AppUsageTimeRecordTableTable, AppUsageTimeRecord> {
   @override
@@ -2820,6 +3063,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AppUsageTableTable appUsageTable = $AppUsageTableTable(this);
   late final $AppUsageTagTableTable appUsageTagTable = $AppUsageTagTableTable(this);
+  late final $AppUsageTagRuleTableTable appUsageTagRuleTable = $AppUsageTagRuleTableTable(this);
   late final $AppUsageTimeRecordTableTable appUsageTimeRecordTable = $AppUsageTimeRecordTableTable(this);
   late final $HabitTableTable habitTable = $HabitTableTable(this);
   late final $HabitTagTableTable habitTagTable = $HabitTagTableTable(this);
@@ -2837,6 +3081,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         appUsageTable,
         appUsageTagTable,
+        appUsageTagRuleTable,
         appUsageTimeRecordTable,
         habitTable,
         habitTagTable,
@@ -3198,6 +3443,202 @@ typedef $$AppUsageTagTableTableProcessedTableManager = ProcessedTableManager<
     $$AppUsageTagTableTableUpdateCompanionBuilder,
     (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
     AppUsageTag,
+    PrefetchHooks Function()>;
+typedef $$AppUsageTagRuleTableTableCreateCompanionBuilder = AppUsageTagRuleTableCompanion Function({
+  required String id,
+  required String pattern,
+  required String tagId,
+  Value<bool> isActive,
+  Value<String?> description,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+typedef $$AppUsageTagRuleTableTableUpdateCompanionBuilder = AppUsageTagRuleTableCompanion Function({
+  Value<String> id,
+  Value<String> pattern,
+  Value<String> tagId,
+  Value<bool> isActive,
+  Value<String?> description,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+
+class $$AppUsageTagRuleTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsageTagRuleTableTable> {
+  $$AppUsageTagRuleTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pattern =>
+      $composableBuilder(column: $table.pattern, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppUsageTagRuleTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTagRuleTableTable> {
+  $$AppUsageTagRuleTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pattern =>
+      $composableBuilder(column: $table.pattern, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppUsageTagRuleTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTagRuleTableTable> {
+  $$AppUsageTagRuleTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get pattern => $composableBuilder(column: $table.pattern, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId => $composableBuilder(column: $table.tagId, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive => $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+}
+
+class $$AppUsageTagRuleTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageTagRuleTableTable,
+    AppUsageTagRule,
+    $$AppUsageTagRuleTableTableFilterComposer,
+    $$AppUsageTagRuleTableTableOrderingComposer,
+    $$AppUsageTagRuleTableTableAnnotationComposer,
+    $$AppUsageTagRuleTableTableCreateCompanionBuilder,
+    $$AppUsageTagRuleTableTableUpdateCompanionBuilder,
+    (AppUsageTagRule, BaseReferences<_$AppDatabase, $AppUsageTagRuleTableTable, AppUsageTagRule>),
+    AppUsageTagRule,
+    PrefetchHooks Function()> {
+  $$AppUsageTagRuleTableTableTableManager(_$AppDatabase db, $AppUsageTagRuleTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$AppUsageTagRuleTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$AppUsageTagRuleTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$AppUsageTagRuleTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> pattern = const Value.absent(),
+            Value<String> tagId = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTagRuleTableCompanion(
+            id: id,
+            pattern: pattern,
+            tagId: tagId,
+            isActive: isActive,
+            description: description,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String pattern,
+            required String tagId,
+            Value<bool> isActive = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTagRuleTableCompanion.insert(
+            id: id,
+            pattern: pattern,
+            tagId: tagId,
+            isActive: isActive,
+            description: description,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppUsageTagRuleTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageTagRuleTableTable,
+    AppUsageTagRule,
+    $$AppUsageTagRuleTableTableFilterComposer,
+    $$AppUsageTagRuleTableTableOrderingComposer,
+    $$AppUsageTagRuleTableTableAnnotationComposer,
+    $$AppUsageTagRuleTableTableCreateCompanionBuilder,
+    $$AppUsageTagRuleTableTableUpdateCompanionBuilder,
+    (AppUsageTagRule, BaseReferences<_$AppDatabase, $AppUsageTagRuleTableTable, AppUsageTagRule>),
+    AppUsageTagRule,
     PrefetchHooks Function()>;
 typedef $$AppUsageTimeRecordTableTableCreateCompanionBuilder = AppUsageTimeRecordTableCompanion Function({
   required String id,
@@ -5174,6 +5615,8 @@ class $AppDatabaseManager {
   $$AppUsageTableTableTableManager get appUsageTable => $$AppUsageTableTableTableManager(_db, _db.appUsageTable);
   $$AppUsageTagTableTableTableManager get appUsageTagTable =>
       $$AppUsageTagTableTableTableManager(_db, _db.appUsageTagTable);
+  $$AppUsageTagRuleTableTableTableManager get appUsageTagRuleTable =>
+      $$AppUsageTagRuleTableTableTableManager(_db, _db.appUsageTagRuleTable);
   $$AppUsageTimeRecordTableTableTableManager get appUsageTimeRecordTable =>
       $$AppUsageTimeRecordTableTableTableManager(_db, _db.appUsageTimeRecordTable);
   $$HabitTableTableTableManager get habitTable => $$HabitTableTableTableManager(_db, _db.habitTable);

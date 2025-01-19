@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/tasks/components/task_details_content
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -73,9 +74,9 @@ class _MarathonPageState extends State<MarathonPage> {
     });
   }
 
-  void _handleTagFilterChange(List<String> tagIds) {
+  void _handleTagFilterChange(List<DropdownOption<String>> tagOptions) {
     setState(() {
-      _selectedTagIds = tagIds.isEmpty ? null : tagIds;
+      _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
       _tasksListKey = UniqueKey();
     });
   }

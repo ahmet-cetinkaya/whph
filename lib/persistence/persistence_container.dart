@@ -1,4 +1,5 @@
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
@@ -14,6 +15,7 @@ import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dar
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_rule_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_time_record_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
@@ -29,6 +31,7 @@ import 'package:whph/persistence/features/tasks/drift_task_time_record_repositor
 void registerPersistence(IContainer container) {
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());
   container.registerSingleton<IAppUsageTagRepository>((_) => DriftAppUsageTagRepository());
+  container.registerSingleton<IAppUsageTagRuleRepository>((_) => DriftAppUsageTagRuleRepository());
   container.registerSingleton<IAppUsageTimeRecordRepository>((_) => DriftAppUsageTimeRecordRepository());
   container.registerSingleton<IHabitRepository>((_) => DriftHabitRepository());
   container.registerSingleton<IHabitTagsRepository>((_) => DriftHabitTagRepository());

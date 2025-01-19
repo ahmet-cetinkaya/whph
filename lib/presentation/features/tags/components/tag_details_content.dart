@@ -8,6 +8,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
@@ -87,15 +88,17 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     await _getTagTags();
   }
 
-  void _onTagsSelected(List<String> tagIds) {
-    var tagIdsToAdd =
-        tagIds.where((tagId) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagId)).toList();
-    var tagIdsToRemove = _tagTags!.items.where((tagTag) => !tagIds.contains(tagTag.secondaryTagId)).toList();
+  void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
+    var tagOptionsToAdd = tagOptions
+        .where((tagOption) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagOption.value))
+        .toList();
+    var tagTagsToRemove =
+        _tagTags!.items.where((tagTag) => !tagOptions.map((tag) => tag.value).contains(tagTag.secondaryTagId)).toList();
 
-    for (var tagId in tagIdsToAdd) {
-      _addTag(tagId);
+    for (var tagOption in tagOptionsToAdd) {
+      _addTag(tagOption.value);
     }
-    for (var tagTag in tagIdsToRemove) {
+    for (var tagTag in tagTagsToRemove) {
       _removeTag(tagTag.id);
     }
   }

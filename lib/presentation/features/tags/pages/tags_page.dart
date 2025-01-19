@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -49,11 +50,11 @@ class _TagsPageState extends State<TagsPage> {
     _refreshTags();
   }
 
-  void _onFilterTags(List<String> tagIds) {
+  void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     setState(() {
-      _selectedFilters = tagIds;
+      _selectedFilters = tagOptions.map((option) => option.value).toList();
       _tagsListKey = UniqueKey();
-      _chartKey = UniqueKey(); // Reset chart key when filter changes
+      _chartKey = UniqueKey();
     });
   }
 

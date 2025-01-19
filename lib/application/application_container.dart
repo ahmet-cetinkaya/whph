@@ -1,16 +1,20 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_command.dart';
+import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
+import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
 import 'package:whph/application/features/app_usages/commands/remove_tag_tag_command.dart';
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/commands/start_track_app_usages_command.dart';
 import 'package:whph/application/features/app_usages/commands/stop_track_app_usages_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/app_usage_service.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
@@ -82,8 +86,11 @@ void registerApplication(IContainer container) {
 }
 
 void registerAppUsagesFeature(IContainer container, Mediator mediator) {
-  container.registerSingleton<IAppUsageService>((_) =>
-      AppUsageService(container.resolve<IAppUsageRepository>(), container.resolve<IAppUsageTimeRecordRepository>()));
+  container.registerSingleton<IAppUsageService>((_) => AppUsageService(
+      container.resolve<IAppUsageRepository>(),
+      container.resolve<IAppUsageTimeRecordRepository>(),
+      container.resolve<IAppUsageTagRuleRepository>(),
+      container.resolve<IAppUsageTagRepository>()));
 
   mediator.registerHandler<StartTrackAppUsagesCommand, StartTrackAppUsagesCommandResponse,
       StartTrackAppUsagesCommandHandler>(
@@ -120,6 +127,20 @@ void registerAppUsagesFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<DeleteAppUsageCommand, DeleteAppUsageCommandResponse, DeleteAppUsageCommandHandler>(
     () => DeleteAppUsageCommandHandler(appUsageRepository: container.resolve<IAppUsageRepository>()),
+  );
+  mediator
+      .registerHandler<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse, AddAppUsageTagRuleCommandHandler>(
+    () => AddAppUsageTagRuleCommandHandler(repository: container.resolve<IAppUsageTagRuleRepository>()),
+  );
+  mediator.registerHandler<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse,
+      DeleteAppUsageTagRuleCommandHandler>(
+    () => DeleteAppUsageTagRuleCommandHandler(repository: container.resolve<IAppUsageTagRuleRepository>()),
+  );
+  mediator.registerHandler<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse,
+      GetListAppUsageTagRulesQueryHandler>(
+    () => GetListAppUsageTagRulesQueryHandler(
+        appUsageRulesRepository: container.resolve<IAppUsageTagRuleRepository>(),
+        tagRepository: container.resolve<ITagRepository>()),
   );
 }
 

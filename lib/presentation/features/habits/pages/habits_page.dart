@@ -11,6 +11,7 @@ import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -40,10 +41,10 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  _onFilterTagsSelect(List<String> tags) {
+  _onFilterTagsSelect(List<DropdownOption<String>> tagOptions) {
     if (mounted) {
       setState(() {
-        _selectedFilterTags = tags;
+        _selectedFilterTags = tagOptions.map((option) => option.value).toList();
         _habitsListKey = UniqueKey();
       });
     }

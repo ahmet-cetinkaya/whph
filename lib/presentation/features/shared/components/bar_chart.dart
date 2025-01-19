@@ -37,11 +37,15 @@ class BarChart extends StatelessWidget {
             Stack(
               children: [
                 Container(
-                  height: 40,
-                  width: barWidth,
                   decoration: BoxDecoration(
                     color: finalBarColor,
                     borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: barWidth,
+                    maxWidth: barWidth,
+                    minHeight: 40,
+                    maxHeight: 40,
                   ),
                 ),
                 SizedBox(

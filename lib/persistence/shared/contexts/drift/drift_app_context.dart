@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
+import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
@@ -19,6 +20,7 @@ import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_rule_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_time_record_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
@@ -41,6 +43,7 @@ const String databaseName = 'whph.db';
   tables: [
     AppUsageTable,
     AppUsageTagTable,
+    AppUsageTagRuleTable,
     AppUsageTimeRecordTable,
     HabitTable,
     HabitTagTable,
@@ -77,7 +80,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -140,6 +143,10 @@ class AppDatabase extends _$AppDatabase {
 
           // Drop duration column from AppUsage table
           await m.dropColumn(appUsageTable, "duration");
+        },
+        from4To5: (m, schema) async {
+          // Create AppUsageTagRule table
+          await m.createTable(appUsageTagRuleTable);
         },
       ),
     );

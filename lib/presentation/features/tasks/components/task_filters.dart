@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/features/shared/components/search_filter.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class TaskFilters extends StatefulWidget {
   final List<String>? selectedTagIds;
   final DateTime? selectedStartDate;
   final DateTime? selectedEndDate;
-  final Function(List<String>) onTagFilterChange;
+  final Function(List<DropdownOption<String>>) onTagFilterChange;
   final Function(DateTime?, DateTime?) onDateFilterChange;
   final Function(String?) onSearchChange;
   final bool showTagFilter;

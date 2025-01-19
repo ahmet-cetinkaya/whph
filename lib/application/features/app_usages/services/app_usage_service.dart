@@ -7,12 +7,15 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'abstraction/i_app_usage_service.dart';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 
 class AppUsageService implements IAppUsageService {
   String _activeDesktopWindowOutput = '';
@@ -21,9 +24,16 @@ class AppUsageService implements IAppUsageService {
   Timer? _periodicTimer;
 
   final IAppUsageRepository _appUsageRepository;
-  final IAppUsageTimeRecordRepository _timeRecordRepository;
+  final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
+  final IAppUsageTagRuleRepository _appUsageTagRuleRepository;
+  final IAppUsageTagRepository _appUsageTagRepository;
 
-  AppUsageService(this._appUsageRepository, this._timeRecordRepository);
+  AppUsageService(
+    this._appUsageRepository,
+    this._appUsageTimeRecordRepository,
+    this._appUsageTagRuleRepository,
+    this._appUsageTagRepository,
+  );
 
   @override
   void startTracking() {
@@ -42,7 +52,7 @@ class AppUsageService implements IAppUsageService {
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
           if (kDebugMode) {
-            print('$_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
+            print('DEBUG: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
           }
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
@@ -112,11 +122,14 @@ class AppUsageService implements IAppUsageService {
     // First, get or create AppUsage
     var appUsage = await _getOrCreateAppUsage(appName);
 
+    // Check and apply tag rules
+    await _applyTagRules(appUsage);
+
     // Then, get or create AppUsageTimeRecord
     var now = DateTime.now().toUtc();
     final recordStartTime = DateTime(now.year, now.month, now.day, now.hour);
 
-    var timeRecords = await _timeRecordRepository.getAll(
+    var timeRecords = await _appUsageTimeRecordRepository.getAll(
       customWhereFilter: CustomWhereFilter(
         'app_usage_id = ? AND created_date = ? AND deleted_date IS NULL',
         [appUsage.id, recordStartTime],
@@ -142,7 +155,7 @@ class AppUsageService implements IAppUsageService {
           modifiedDate: DateTime.now().toUtc(),
         );
       }
-      await _timeRecordRepository.update(existingRecord);
+      await _appUsageTimeRecordRepository.update(existingRecord);
     } else {
       var newRecord = AppUsageTimeRecord(
         id: nanoid(),
@@ -150,7 +163,53 @@ class AppUsageService implements IAppUsageService {
         duration: duration,
         createdDate: recordStartTime,
       );
-      await _timeRecordRepository.add(newRecord);
+      await _appUsageTimeRecordRepository.add(newRecord);
+    }
+  }
+
+  Future<void> _applyTagRules(AppUsage appUsage) async {
+    // Get all active rules
+    final rules = await _appUsageTagRuleRepository.getAll(
+      customWhereFilter: CustomWhereFilter('is_active = ?', [1]),
+    );
+
+    for (var rule in rules) {
+      try {
+        // Check if pattern matches
+        final pattern = RegExp(rule.pattern);
+        if (pattern.hasMatch(appUsage.displayName ?? appUsage.name)) {
+          print('DEBUG: ${appUsage.name} matched rule ${rule.id}');
+
+          // Check if tag already exists
+          final existingTag = await _appUsageTagRepository.getFirst(
+            CustomWhereFilter(
+              'app_usage_id = ? AND tag_id = ? AND deleted_date IS NULL',
+              [appUsage.id, rule.tagId],
+            ),
+          );
+          if (kDebugMode && existingTag != null) print('DEBUG: existingTag: $existingTag');
+
+          // Add tag if it doesn't exist
+          if (existingTag == null) {
+            final appUsageTag = AppUsageTag(
+              id: nanoid(),
+              createdDate: DateTime.now(),
+              appUsageId: appUsage.id,
+              tagId: rule.tagId,
+            );
+            await _appUsageTagRepository.add(appUsageTag);
+
+            if (kDebugMode) {
+              print('DEBUG: Tagged ${appUsage.name} with ${rule.tagId} with rule ${rule.id}');
+            }
+          }
+        }
+      } catch (e) {
+        // Log or handle invalid regex patterns
+        if (kDebugMode) {
+          print('Invalid pattern in rule ${rule.id}: ${e.toString()}');
+        }
+      }
     }
   }
 

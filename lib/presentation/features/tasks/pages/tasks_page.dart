@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/shared/components/responsive_scaffold
 import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -72,10 +73,10 @@ class _TasksPageState extends State<TasksPage> {
     });
   }
 
-  void _onFilterTags(List<String> tagIds) {
+  void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     if (mounted) {
       setState(() {
-        _selectedTagIds = tagIds;
+        _selectedTagIds = tagOptions.map((option) => option.value).toList();
         _onCompletedTask();
       });
     }

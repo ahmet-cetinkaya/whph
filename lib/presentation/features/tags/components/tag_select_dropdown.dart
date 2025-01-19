@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -10,13 +11,14 @@ class TagSelectDropdown extends StatefulWidget {
   final List<Tag> initialSelectedTags;
   final List<String> excludeTagIds;
   final bool isMultiSelect;
-  final Function(List<String>) onTagsSelected;
+  final Function(List<DropdownOption<String>>) onTagsSelected;
   final IconData icon;
   final String? buttonLabel;
   final double? iconSize;
   final Color? color;
   final String? tooltip;
   final bool showLength;
+  final int? limit;
 
   TagSelectDropdown({
     super.key,
@@ -30,6 +32,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.tooltip,
     required this.onTagsSelected,
     this.showLength = false,
+    this.limit,
   });
 
   @override
@@ -149,6 +152,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             setState(() {
                               if (widget.isMultiSelect) {
                                 if (value == true) {
+                                  if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
+                                    tempSelectedTags.removeAt(0);
+                                  }
                                   tempSelectedTags.add(tag.id);
                                 } else {
                                   tempSelectedTags.remove(tag.id);
@@ -175,7 +181,15 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
                         TextButton(
                           onPressed: () {
-                            widget.onTagsSelected(tempSelectedTags);
+                            final selectedOptions = tempSelectedTags.map((id) {
+                              final tag = _tags!.items.firstWhere((tag) => tag.id == id);
+                              return DropdownOption(
+                                label: tag.name,
+                                value: tag.id,
+                              );
+                            }).toList();
+
+                            widget.onTagsSelected(selectedOptions);
                             Navigator.pop(context);
                           },
                           child: Text('Done'),
@@ -196,6 +210,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         _selectedTags = tempSelectedTags;
       });
     }
+  }
+
+  void reset() {
+    setState(() {
+      _selectedTags.clear();
+      _searchController.clear();
+    });
   }
 
   @override

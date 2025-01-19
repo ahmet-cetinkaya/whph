@@ -13,6 +13,7 @@ import 'package:whph/presentation/features/app_usages/services/app_usages_servic
 import 'package:whph/presentation/features/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/features/shared/components/color_preview.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
+import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
@@ -138,16 +139,19 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     await _getAppUsageAppUsages();
   }
 
-  void _onTagsSelected(List<String> tagIds) {
-    var tagIdsToAdd = tagIds
-        .where((tagId) => !_appUsageTags!.items.any((appUsageAppUsage) => appUsageAppUsage.tagId == tagId))
+  void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
+    var tagOptionsToAdd = tagOptions
+        .where(
+            (tagOption) => !_appUsageTags!.items.any((appUsageAppUsage) => appUsageAppUsage.tagId == tagOption.value))
         .toList();
-    var tagIdsToRemove = _appUsageTags!.items.where((appUsageTag) => !tagIds.contains(appUsageTag.tagId)).toList();
+    var appUsageTagsToRemove = _appUsageTags!.items
+        .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
+        .toList();
 
-    for (var appUsageId in tagIdsToAdd) {
-      _addTag(appUsageId);
+    for (var tagOption in tagOptionsToAdd) {
+      _addTag(tagOption.value);
     }
-    for (var appUsageAppUsage in tagIdsToRemove) {
+    for (var appUsageAppUsage in appUsageTagsToRemove) {
       _removeTag(appUsageAppUsage.id);
     }
   }
