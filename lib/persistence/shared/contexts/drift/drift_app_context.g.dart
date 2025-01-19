@@ -36,13 +36,8 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
   @override
   late final GeneratedColumn<String> color =
       GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _durationMeta = const VerificationMeta('duration');
   @override
-  late final GeneratedColumn<int> duration =
-      GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, createdDate, modifiedDate, deletedDate, name, displayName, color, duration];
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, displayName, color];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -79,11 +74,6 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
     if (data.containsKey('color')) {
       context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
     }
-    if (data.containsKey('duration')) {
-      context.handle(_durationMeta, duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
-    } else if (isInserting) {
-      context.missing(_durationMeta);
-    }
     return context;
   }
 
@@ -99,7 +89,6 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}display_name']),
-      duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
       color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
     );
   }
@@ -118,7 +107,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
   final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> color;
-  final Value<int> duration;
   final Value<int> rowid;
   const AppUsageTableCompanion({
     this.id = const Value.absent(),
@@ -128,7 +116,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.color = const Value.absent(),
-    this.duration = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppUsageTableCompanion.insert({
@@ -139,12 +126,10 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     required String name,
     this.displayName = const Value.absent(),
     this.color = const Value.absent(),
-    required int duration,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
-        name = Value(name),
-        duration = Value(duration);
+        name = Value(name);
   static Insertable<AppUsage> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
@@ -153,7 +138,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? color,
-    Expression<int>? duration,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -164,7 +148,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (color != null) 'color': color,
-      if (duration != null) 'duration': duration,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -177,7 +160,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? color,
-      Value<int>? duration,
       Value<int>? rowid}) {
     return AppUsageTableCompanion(
       id: id ?? this.id,
@@ -187,7 +169,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       color: color ?? this.color,
-      duration: duration ?? this.duration,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -216,9 +197,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     if (color.present) {
       map['color'] = Variable<String>(color.value);
     }
-    if (duration.present) {
-      map['duration'] = Variable<int>(duration.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -235,7 +213,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('color: $color, ')
-          ..write('duration: $duration, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -436,6 +413,207 @@ class AppUsageTagTableCompanion extends UpdateCompanion<AppUsageTag> {
           ..write('deletedDate: $deletedDate, ')
           ..write('appUsageId: $appUsageId, ')
           ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
+    with TableInfo<$AppUsageTimeRecordTableTable, AppUsageTimeRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppUsageTimeRecordTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _appUsageIdMeta = const VerificationMeta('appUsageId');
+  @override
+  late final GeneratedColumn<String> appUsageId = GeneratedColumn<String>('app_usage_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _durationMeta = const VerificationMeta('duration');
+  @override
+  late final GeneratedColumn<int> duration =
+      GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, appUsageId, duration, createdDate, modifiedDate, deletedDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_usage_time_record_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppUsageTimeRecord> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('app_usage_id')) {
+      context.handle(_appUsageIdMeta, appUsageId.isAcceptableOrUnknown(data['app_usage_id']!, _appUsageIdMeta));
+    } else if (isInserting) {
+      context.missing(_appUsageIdMeta);
+    }
+    if (data.containsKey('duration')) {
+      context.handle(_durationMeta, duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
+    } else if (isInserting) {
+      context.missing(_durationMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppUsageTimeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppUsageTimeRecord(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
+      duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+    );
+  }
+
+  @override
+  $AppUsageTimeRecordTableTable createAlias(String alias) {
+    return $AppUsageTimeRecordTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecord> {
+  final Value<String> id;
+  final Value<String> appUsageId;
+  final Value<int> duration;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<int> rowid;
+  const AppUsageTimeRecordTableCompanion({
+    this.id = const Value.absent(),
+    this.appUsageId = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppUsageTimeRecordTableCompanion.insert({
+    required String id,
+    required String appUsageId,
+    required int duration,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        appUsageId = Value(appUsageId),
+        duration = Value(duration),
+        createdDate = Value(createdDate);
+  static Insertable<AppUsageTimeRecord> custom({
+    Expression<String>? id,
+    Expression<String>? appUsageId,
+    Expression<int>? duration,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (appUsageId != null) 'app_usage_id': appUsageId,
+      if (duration != null) 'duration': duration,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppUsageTimeRecordTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? appUsageId,
+      Value<int>? duration,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<int>? rowid}) {
+    return AppUsageTimeRecordTableCompanion(
+      id: id ?? this.id,
+      appUsageId: appUsageId ?? this.appUsageId,
+      duration: duration ?? this.duration,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (appUsageId.present) {
+      map['app_usage_id'] = Variable<String>(appUsageId.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppUsageTimeRecordTableCompanion(')
+          ..write('id: $id, ')
+          ..write('appUsageId: $appUsageId, ')
+          ..write('duration: $duration, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1051,18 +1229,6 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   late final GeneratedColumn<String> id =
       GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title =
@@ -1088,10 +1254,6 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   late final GeneratedColumn<int> estimatedTime =
       GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _elapsedTimeMeta = const VerificationMeta('elapsedTime');
-  @override
-  late final GeneratedColumn<int> elapsedTime =
-      GeneratedColumn<int>('elapsed_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _isCompletedMeta = const VerificationMeta('isCompleted');
   @override
   late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>('is_completed', aliasedName, false,
@@ -1099,20 +1261,31 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_completed" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        createdDate,
-        modifiedDate,
-        deletedDate,
         title,
         description,
         priority,
         plannedDate,
         deadlineDate,
         estimatedTime,
-        elapsedTime,
-        isCompleted
+        isCompleted,
+        createdDate,
+        modifiedDate,
+        deletedDate
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1127,17 +1300,6 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
     }
     if (data.containsKey('title')) {
       context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
@@ -1158,11 +1320,19 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       context.handle(
           _estimatedTimeMeta, estimatedTime.isAcceptableOrUnknown(data['estimated_time']!, _estimatedTimeMeta));
     }
-    if (data.containsKey('elapsed_time')) {
-      context.handle(_elapsedTimeMeta, elapsedTime.isAcceptableOrUnknown(data['elapsed_time']!, _elapsedTimeMeta));
-    }
     if (data.containsKey('is_completed')) {
       context.handle(_isCompletedMeta, isCompleted.isAcceptableOrUnknown(data['is_completed']!, _isCompletedMeta));
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
     }
     return context;
   }
@@ -1184,7 +1354,6 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       priority: $TaskTableTable.$converterpriorityn
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}priority'])),
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
-      elapsedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}elapsed_time']),
       isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
     );
   }
@@ -1202,109 +1371,102 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
 
 class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
   final Value<String> title;
   final Value<String?> description;
   final Value<EisenhowerPriority?> priority;
   final Value<DateTime?> plannedDate;
   final Value<DateTime?> deadlineDate;
   final Value<int?> estimatedTime;
-  final Value<int?> elapsedTime;
   final Value<bool> isCompleted;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.priority = const Value.absent(),
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.elapsedTime = const Value.absent(),
     this.isCompleted = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
     required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
     required String title,
     this.description = const Value.absent(),
     this.priority = const Value.absent(),
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.elapsedTime = const Value.absent(),
     this.isCompleted = const Value.absent(),
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        createdDate = Value(createdDate),
-        title = Value(title);
+        title = Value(title),
+        createdDate = Value(createdDate);
   static Insertable<Task> custom({
     Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
     Expression<String>? title,
     Expression<String>? description,
     Expression<int>? priority,
     Expression<DateTime>? plannedDate,
     Expression<DateTime>? deadlineDate,
     Expression<int>? estimatedTime,
-    Expression<int>? elapsedTime,
     Expression<bool>? isCompleted,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
       if (priority != null) 'priority': priority,
       if (plannedDate != null) 'planned_date': plannedDate,
       if (deadlineDate != null) 'deadline_date': deadlineDate,
       if (estimatedTime != null) 'estimated_time': estimatedTime,
-      if (elapsedTime != null) 'elapsed_time': elapsedTime,
       if (isCompleted != null) 'is_completed': isCompleted,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   TaskTableCompanion copyWith(
       {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
       Value<String>? title,
       Value<String?>? description,
       Value<EisenhowerPriority?>? priority,
       Value<DateTime?>? plannedDate,
       Value<DateTime?>? deadlineDate,
       Value<int?>? estimatedTime,
-      Value<int?>? elapsedTime,
       Value<bool>? isCompleted,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
       title: title ?? this.title,
       description: description ?? this.description,
       priority: priority ?? this.priority,
       plannedDate: plannedDate ?? this.plannedDate,
       deadlineDate: deadlineDate ?? this.deadlineDate,
       estimatedTime: estimatedTime ?? this.estimatedTime,
-      elapsedTime: elapsedTime ?? this.elapsedTime,
       isCompleted: isCompleted ?? this.isCompleted,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1314,15 +1476,6 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -1342,11 +1495,17 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     if (estimatedTime.present) {
       map['estimated_time'] = Variable<int>(estimatedTime.value);
     }
-    if (elapsedTime.present) {
-      map['elapsed_time'] = Variable<int>(elapsedTime.value);
-    }
     if (isCompleted.present) {
       map['is_completed'] = Variable<bool>(isCompleted.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1358,17 +1517,16 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   String toString() {
     return (StringBuffer('TaskTableCompanion(')
           ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('priority: $priority, ')
           ..write('plannedDate: $plannedDate, ')
           ..write('deadlineDate: $deadlineDate, ')
           ..write('estimatedTime: $estimatedTime, ')
-          ..write('elapsedTime: $elapsedTime, ')
           ..write('isCompleted: $isCompleted, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1996,6 +2154,206 @@ class TagTagTableCompanion extends UpdateCompanion<TagTag> {
   }
 }
 
+class $TaskTimeRecordTableTable extends TaskTimeRecordTable with TableInfo<$TaskTimeRecordTableTable, TaskTimeRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskTimeRecordTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId =
+      GeneratedColumn<String>('task_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _durationMeta = const VerificationMeta('duration');
+  @override
+  late final GeneratedColumn<int> duration =
+      GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, taskId, duration, createdDate, modifiedDate, deletedDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_time_record_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskTimeRecord> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta, taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('duration')) {
+      context.handle(_durationMeta, duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
+    } else if (isInserting) {
+      context.missing(_durationMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  TaskTimeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskTimeRecord(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      taskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
+      duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+    );
+  }
+
+  @override
+  $TaskTimeRecordTableTable createAlias(String alias) {
+    return $TaskTimeRecordTableTable(attachedDatabase, alias);
+  }
+}
+
+class TaskTimeRecordTableCompanion extends UpdateCompanion<TaskTimeRecord> {
+  final Value<String> id;
+  final Value<String> taskId;
+  final Value<int> duration;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<int> rowid;
+  const TaskTimeRecordTableCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskTimeRecordTableCompanion.insert({
+    required String id,
+    required String taskId,
+    required int duration,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        taskId = Value(taskId),
+        duration = Value(duration),
+        createdDate = Value(createdDate);
+  static Insertable<TaskTimeRecord> custom({
+    Expression<String>? id,
+    Expression<String>? taskId,
+    Expression<int>? duration,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (duration != null) 'duration': duration,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskTimeRecordTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? taskId,
+      Value<int>? duration,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<int>? rowid}) {
+    return TaskTimeRecordTableCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      duration: duration ?? this.duration,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskTimeRecordTableCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('duration: $duration, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SettingTableTable extends SettingTable with TableInfo<$SettingTableTable, Setting> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2462,6 +2820,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AppUsageTableTable appUsageTable = $AppUsageTableTable(this);
   late final $AppUsageTagTableTable appUsageTagTable = $AppUsageTagTableTable(this);
+  late final $AppUsageTimeRecordTableTable appUsageTimeRecordTable = $AppUsageTimeRecordTableTable(this);
   late final $HabitTableTable habitTable = $HabitTableTable(this);
   late final $HabitTagTableTable habitTagTable = $HabitTagTableTable(this);
   late final $HabitRecordTableTable habitRecordTable = $HabitRecordTableTable(this);
@@ -2469,6 +2828,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TaskTagTableTable taskTagTable = $TaskTagTableTable(this);
   late final $TagTableTable tagTable = $TagTableTable(this);
   late final $TagTagTableTable tagTagTable = $TagTagTableTable(this);
+  late final $TaskTimeRecordTableTable taskTimeRecordTable = $TaskTimeRecordTableTable(this);
   late final $SettingTableTable settingTable = $SettingTableTable(this);
   late final $SyncDeviceTableTable syncDeviceTable = $SyncDeviceTableTable(this);
   @override
@@ -2477,6 +2837,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         appUsageTable,
         appUsageTagTable,
+        appUsageTimeRecordTable,
         habitTable,
         habitTagTable,
         habitRecordTable,
@@ -2484,6 +2845,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         taskTagTable,
         tagTable,
         tagTagTable,
+        taskTimeRecordTable,
         settingTable,
         syncDeviceTable
       ];
@@ -2497,7 +2859,6 @@ typedef $$AppUsageTableTableCreateCompanionBuilder = AppUsageTableCompanion Func
   required String name,
   Value<String?> displayName,
   Value<String?> color,
-  required int duration,
   Value<int> rowid,
 });
 typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Function({
@@ -2508,7 +2869,6 @@ typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Func
   Value<String> name,
   Value<String?> displayName,
   Value<String?> color,
-  Value<int> duration,
   Value<int> rowid,
 });
 
@@ -2538,9 +2898,6 @@ class $$AppUsageTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsa
 
   ColumnFilters<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get duration =>
-      $composableBuilder(column: $table.duration, builder: (column) => ColumnFilters(column));
 }
 
 class $$AppUsageTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTableTable> {
@@ -2570,9 +2927,6 @@ class $$AppUsageTableTableOrderingComposer extends Composer<_$AppDatabase, $AppU
 
   ColumnOrderings<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get duration =>
-      $composableBuilder(column: $table.duration, builder: (column) => ColumnOrderings(column));
 }
 
 class $$AppUsageTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTableTable> {
@@ -2600,8 +2954,6 @@ class $$AppUsageTableTableAnnotationComposer extends Composer<_$AppDatabase, $Ap
       $composableBuilder(column: $table.displayName, builder: (column) => column);
 
   GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
-
-  GeneratedColumn<int> get duration => $composableBuilder(column: $table.duration, builder: (column) => column);
 }
 
 class $$AppUsageTableTableTableManager extends RootTableManager<
@@ -2631,7 +2983,6 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> color = const Value.absent(),
-            Value<int> duration = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppUsageTableCompanion(
@@ -2642,7 +2993,6 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             name: name,
             displayName: displayName,
             color: color,
-            duration: duration,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -2653,7 +3003,6 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> color = const Value.absent(),
-            required int duration,
             Value<int> rowid = const Value.absent(),
           }) =>
               AppUsageTableCompanion.insert(
@@ -2664,7 +3013,6 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             name: name,
             displayName: displayName,
             color: color,
-            duration: duration,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
@@ -2850,6 +3198,173 @@ typedef $$AppUsageTagTableTableProcessedTableManager = ProcessedTableManager<
     $$AppUsageTagTableTableUpdateCompanionBuilder,
     (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
     AppUsageTag,
+    PrefetchHooks Function()>;
+typedef $$AppUsageTimeRecordTableTableCreateCompanionBuilder = AppUsageTimeRecordTableCompanion Function({
+  required String id,
+  required String appUsageId,
+  required int duration,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+typedef $$AppUsageTimeRecordTableTableUpdateCompanionBuilder = AppUsageTimeRecordTableCompanion Function({
+  Value<String> id,
+  Value<String> appUsageId,
+  Value<int> duration,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+
+class $$AppUsageTimeRecordTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsageTimeRecordTableTable> {
+  $$AppUsageTimeRecordTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get appUsageId =>
+      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppUsageTimeRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTimeRecordTableTable> {
+  $$AppUsageTimeRecordTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get appUsageId =>
+      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppUsageTimeRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTimeRecordTableTable> {
+  $$AppUsageTimeRecordTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get appUsageId => $composableBuilder(column: $table.appUsageId, builder: (column) => column);
+
+  GeneratedColumn<int> get duration => $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+}
+
+class $$AppUsageTimeRecordTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageTimeRecordTableTable,
+    AppUsageTimeRecord,
+    $$AppUsageTimeRecordTableTableFilterComposer,
+    $$AppUsageTimeRecordTableTableOrderingComposer,
+    $$AppUsageTimeRecordTableTableAnnotationComposer,
+    $$AppUsageTimeRecordTableTableCreateCompanionBuilder,
+    $$AppUsageTimeRecordTableTableUpdateCompanionBuilder,
+    (AppUsageTimeRecord, BaseReferences<_$AppDatabase, $AppUsageTimeRecordTableTable, AppUsageTimeRecord>),
+    AppUsageTimeRecord,
+    PrefetchHooks Function()> {
+  $$AppUsageTimeRecordTableTableTableManager(_$AppDatabase db, $AppUsageTimeRecordTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$AppUsageTimeRecordTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$AppUsageTimeRecordTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$AppUsageTimeRecordTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> appUsageId = const Value.absent(),
+            Value<int> duration = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTimeRecordTableCompanion(
+            id: id,
+            appUsageId: appUsageId,
+            duration: duration,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String appUsageId,
+            required int duration,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTimeRecordTableCompanion.insert(
+            id: id,
+            appUsageId: appUsageId,
+            duration: duration,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppUsageTimeRecordTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageTimeRecordTableTable,
+    AppUsageTimeRecord,
+    $$AppUsageTimeRecordTableTableFilterComposer,
+    $$AppUsageTimeRecordTableTableOrderingComposer,
+    $$AppUsageTimeRecordTableTableAnnotationComposer,
+    $$AppUsageTimeRecordTableTableCreateCompanionBuilder,
+    $$AppUsageTimeRecordTableTableUpdateCompanionBuilder,
+    (AppUsageTimeRecord, BaseReferences<_$AppDatabase, $AppUsageTimeRecordTableTable, AppUsageTimeRecord>),
+    AppUsageTimeRecord,
     PrefetchHooks Function()>;
 typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   required String id,
@@ -3354,32 +3869,30 @@ typedef $$HabitRecordTableTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
   required String title,
   Value<String?> description,
   Value<EisenhowerPriority?> priority,
   Value<DateTime?> plannedDate,
   Value<DateTime?> deadlineDate,
   Value<int?> estimatedTime,
-  Value<int?> elapsedTime,
   Value<bool> isCompleted,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
   Value<int> rowid,
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
   Value<String> title,
   Value<String?> description,
   Value<EisenhowerPriority?> priority,
   Value<DateTime?> plannedDate,
   Value<DateTime?> deadlineDate,
   Value<int?> estimatedTime,
-  Value<int?> elapsedTime,
   Value<bool> isCompleted,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
   Value<int> rowid,
 });
 
@@ -3392,15 +3905,6 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
@@ -3420,11 +3924,17 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
   ColumnFilters<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get elapsedTime =>
-      $composableBuilder(column: $table.elapsedTime, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<bool> get isCompleted =>
       $composableBuilder(column: $table.isCompleted, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 }
 
 class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -3436,15 +3946,6 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
@@ -3464,11 +3965,17 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
   ColumnOrderings<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get elapsedTime =>
-      $composableBuilder(column: $table.elapsedTime, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<bool> get isCompleted =>
       $composableBuilder(column: $table.isCompleted, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -3480,15 +3987,6 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
     super.$removeJoinBuilderFromRootComposer,
   });
   GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
   GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
 
@@ -3507,9 +4005,16 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
   GeneratedColumn<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => column);
 
-  GeneratedColumn<int> get elapsedTime => $composableBuilder(column: $table.elapsedTime, builder: (column) => column);
-
   GeneratedColumn<bool> get isCompleted => $composableBuilder(column: $table.isCompleted, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 }
 
 class $$TaskTableTableTableManager extends RootTableManager<
@@ -3533,62 +4038,58 @@ class $$TaskTableTableTableManager extends RootTableManager<
           createComputedFieldComposer: () => $$TaskTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> title = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<EisenhowerPriority?> priority = const Value.absent(),
             Value<DateTime?> plannedDate = const Value.absent(),
             Value<DateTime?> deadlineDate = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
-            Value<int?> elapsedTime = const Value.absent(),
             Value<bool> isCompleted = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion(
             id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
             title: title,
             description: description,
             priority: priority,
             plannedDate: plannedDate,
             deadlineDate: deadlineDate,
             estimatedTime: estimatedTime,
-            elapsedTime: elapsedTime,
             isCompleted: isCompleted,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
             required String title,
             Value<String?> description = const Value.absent(),
             Value<EisenhowerPriority?> priority = const Value.absent(),
             Value<DateTime?> plannedDate = const Value.absent(),
             Value<DateTime?> deadlineDate = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
-            Value<int?> elapsedTime = const Value.absent(),
             Value<bool> isCompleted = const Value.absent(),
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion.insert(
             id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
             title: title,
             description: description,
             priority: priority,
             plannedDate: plannedDate,
             deadlineDate: deadlineDate,
             estimatedTime: estimatedTime,
-            elapsedTime: elapsedTime,
             isCompleted: isCompleted,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
@@ -4124,6 +4625,173 @@ typedef $$TagTagTableTableProcessedTableManager = ProcessedTableManager<
     (TagTag, BaseReferences<_$AppDatabase, $TagTagTableTable, TagTag>),
     TagTag,
     PrefetchHooks Function()>;
+typedef $$TaskTimeRecordTableTableCreateCompanionBuilder = TaskTimeRecordTableCompanion Function({
+  required String id,
+  required String taskId,
+  required int duration,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+typedef $$TaskTimeRecordTableTableUpdateCompanionBuilder = TaskTimeRecordTableCompanion Function({
+  Value<String> id,
+  Value<String> taskId,
+  Value<int> duration,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+
+class $$TaskTimeRecordTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTimeRecordTableTable> {
+  $$TaskTimeRecordTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskTimeRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTimeRecordTableTable> {
+  $$TaskTimeRecordTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskTimeRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTimeRecordTableTable> {
+  $$TaskTimeRecordTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId => $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<int> get duration => $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+}
+
+class $$TaskTimeRecordTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskTimeRecordTableTable,
+    TaskTimeRecord,
+    $$TaskTimeRecordTableTableFilterComposer,
+    $$TaskTimeRecordTableTableOrderingComposer,
+    $$TaskTimeRecordTableTableAnnotationComposer,
+    $$TaskTimeRecordTableTableCreateCompanionBuilder,
+    $$TaskTimeRecordTableTableUpdateCompanionBuilder,
+    (TaskTimeRecord, BaseReferences<_$AppDatabase, $TaskTimeRecordTableTable, TaskTimeRecord>),
+    TaskTimeRecord,
+    PrefetchHooks Function()> {
+  $$TaskTimeRecordTableTableTableManager(_$AppDatabase db, $TaskTimeRecordTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$TaskTimeRecordTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$TaskTimeRecordTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$TaskTimeRecordTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> taskId = const Value.absent(),
+            Value<int> duration = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTimeRecordTableCompanion(
+            id: id,
+            taskId: taskId,
+            duration: duration,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String taskId,
+            required int duration,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskTimeRecordTableCompanion.insert(
+            id: id,
+            taskId: taskId,
+            duration: duration,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskTimeRecordTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskTimeRecordTableTable,
+    TaskTimeRecord,
+    $$TaskTimeRecordTableTableFilterComposer,
+    $$TaskTimeRecordTableTableOrderingComposer,
+    $$TaskTimeRecordTableTableAnnotationComposer,
+    $$TaskTimeRecordTableTableCreateCompanionBuilder,
+    $$TaskTimeRecordTableTableUpdateCompanionBuilder,
+    (TaskTimeRecord, BaseReferences<_$AppDatabase, $TaskTimeRecordTableTable, TaskTimeRecord>),
+    TaskTimeRecord,
+    PrefetchHooks Function()>;
 typedef $$SettingTableTableCreateCompanionBuilder = SettingTableCompanion Function({
   required String id,
   required DateTime createdDate,
@@ -4506,6 +5174,8 @@ class $AppDatabaseManager {
   $$AppUsageTableTableTableManager get appUsageTable => $$AppUsageTableTableTableManager(_db, _db.appUsageTable);
   $$AppUsageTagTableTableTableManager get appUsageTagTable =>
       $$AppUsageTagTableTableTableManager(_db, _db.appUsageTagTable);
+  $$AppUsageTimeRecordTableTableTableManager get appUsageTimeRecordTable =>
+      $$AppUsageTimeRecordTableTableTableManager(_db, _db.appUsageTimeRecordTable);
   $$HabitTableTableTableManager get habitTable => $$HabitTableTableTableManager(_db, _db.habitTable);
   $$HabitTagTableTableTableManager get habitTagTable => $$HabitTagTableTableTableManager(_db, _db.habitTagTable);
   $$HabitRecordTableTableTableManager get habitRecordTable =>
@@ -4514,6 +5184,8 @@ class $AppDatabaseManager {
   $$TaskTagTableTableTableManager get taskTagTable => $$TaskTagTableTableTableManager(_db, _db.taskTagTable);
   $$TagTableTableTableManager get tagTable => $$TagTableTableTableManager(_db, _db.tagTable);
   $$TagTagTableTableTableManager get tagTagTable => $$TagTagTableTableTableManager(_db, _db.tagTagTable);
+  $$TaskTimeRecordTableTableTableManager get taskTimeRecordTable =>
+      $$TaskTimeRecordTableTableTableManager(_db, _db.taskTimeRecordTable);
   $$SettingTableTableTableManager get settingTable => $$SettingTableTableTableManager(_db, _db.settingTable);
   $$SyncDeviceTableTableTableManager get syncDeviceTable =>
       $$SyncDeviceTableTableTableManager(_db, _db.syncDeviceTable);

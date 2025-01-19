@@ -64,25 +64,34 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
   CustomWhereFilter? _getFilters(GetListTagsQuery request) {
     CustomWhereFilter? filter = CustomWhereFilter.empty();
-    if (!request.showArchived) {
-      filter.query += 'is_archived = ?';
-      filter.variables.add(0);
-    } else {
-      filter.query += 'is_archived = ?';
-      filter.variables.add(1);
-    }
+    List<String> conditions = [];
 
+    // Archive filter
+    conditions.add('is_archived = ?');
+    filter.variables.add(request.showArchived ? 1 : 0);
+
+    // Search filter
     if (request.search != null && request.search!.isNotEmpty) {
-      filter.query += ' AND name LIKE ?';
+      conditions.add('name LIKE ?');
       filter.variables.add('%${request.search}%');
     }
 
+    // Tag relationship filter
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      filter.query +=
-          ' AND (SELECT COUNT(*) FROM tag_tag_table WHERE tag_tag_table.primary_tag_id = tag_table.id AND tag_tag_table.secondary_tag_id IN (${request.filterByTags!.map((_) => '?').join(',')})) > 0';
-      filter.variables.addAll(request.filterByTags!);
+      conditions.add('''(
+        id IN (${request.filterByTags!.map((_) => '?').join(',')})
+        OR
+        (SELECT COUNT(*) FROM tag_tag_table 
+         WHERE tag_tag_table.primary_tag_id = tag_table.id 
+         AND tag_tag_table.secondary_tag_id IN (${request.filterByTags!.map((_) => '?').join(',')})
+         AND tag_tag_table.deleted_date IS NULL) > 0
+      )''');
+
+      // Add variables for both IN clause and EXISTS subquery
+      filter.variables.addAll([...request.filterByTags!, ...request.filterByTags!]);
     }
 
+    filter.query = conditions.join(' AND ');
     return filter;
   }
 }

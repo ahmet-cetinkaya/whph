@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
+import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 import 'package:whph/domain/features/habits/habit_tag.dart';
@@ -15,8 +16,10 @@ import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
+import 'package:whph/domain/features/tasks/task_time_record.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_time_record_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
@@ -26,6 +29,7 @@ import 'package:whph/persistence/features/tags/drift_tag_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_tag_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_tag_repository.dart';
+import 'package:whph/persistence/features/tasks/drift_task_time_record_repository.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 part 'drift_app_context.g.dart';
@@ -37,6 +41,7 @@ const String databaseName = 'whph.db';
   tables: [
     AppUsageTable,
     AppUsageTagTable,
+    AppUsageTimeRecordTable,
     HabitTable,
     HabitTagTable,
     HabitRecordTable,
@@ -44,6 +49,7 @@ const String databaseName = 'whph.db';
     TaskTagTable,
     TagTable,
     TagTagTable,
+    TaskTimeRecordTable,
     SettingTable,
     SyncDeviceTable
   ],
@@ -71,28 +77,72 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
-    return MigrationStrategy(onCreate: (Migrator m) async {
-      await m.createAll();
-    }, beforeOpen: (details) async {
-      if (!isTestMode) {
-        // Create database directory if it doesn't exist
-        final dbFolder = await getApplicationDocumentsDirectory();
-        final dbDirectory = Directory(p.join(dbFolder.path, folderName));
-        if (!await dbDirectory.exists()) {
-          await dbDirectory.create(recursive: true);
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      beforeOpen: (details) async {
+        if (!isTestMode) {
+          // Create database directory if it doesn't exist
+          final dbFolder = await getApplicationDocumentsDirectory();
+          final dbDirectory = Directory(p.join(dbFolder.path, folderName));
+          if (!await dbDirectory.exists()) {
+            await dbDirectory.create(recursive: true);
+          }
         }
-      }
 
-      // Verify that all tables are created
-      await customStatement('PRAGMA foreign_keys = ON');
-    }, onUpgrade: stepByStep(from1To2: (m, schema) async {
-      // Add color column to tag table
-      await m.addColumn(tagTable, tagTable.color);
-    }));
+        // Verify that all tables are created
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          await m.addColumn(tagTable, tagTable.color);
+        },
+        from2To3: (m, schema) async {
+          // Create TaskTimeRecord table
+          await m.createTable(taskTimeRecordTable);
+
+          // Drop column elapsed time from Task table
+          await m.dropColumn(taskTable, "elapsed_time");
+        },
+        from3To4: (m, schema) async {
+          // Create AppUsageTimeRecord table
+          await m.createTable(appUsageTimeRecordTable);
+
+          // Copy existing durations to new time records
+          await customStatement('''
+            INSERT INTO app_usage_time_record_table (
+              id,
+              app_usage_id,
+              duration,
+              created_date,
+              modified_date,
+              deleted_date
+            )
+            SELECT 
+              LOWER(HEX(RANDOMBLOB(4))) || '-' || LOWER(HEX(RANDOMBLOB(2))) || '-4' || 
+              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' || 
+              SUBSTR('89ab', ABS(RANDOM()) % 4 + 1, 1) || 
+              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' || 
+              LOWER(HEX(RANDOMBLOB(6))),
+              id,
+              duration,
+              created_date,
+              modified_date,
+              deleted_date
+            FROM app_usage_table
+            WHERE duration > 0 AND deleted_date IS NULL
+          ''');
+
+          // Drop duration column from AppUsage table
+          await m.dropColumn(appUsageTable, "duration");
+        },
+      ),
+    );
   }
 
   static LazyDatabase _openConnection() {

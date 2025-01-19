@@ -25,8 +25,9 @@ class AppUsageViewPage extends StatefulWidget {
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Key _appUsageListKey = UniqueKey();
   List<String>? _selectedTagFilters;
-  DateTime? _filterStartDate;
-  DateTime? _filterEndDate;
+  // Initialize with default dates (last 7 days)
+  DateTime _filterStartDate = DateTime.now().subtract(const Duration(days: 7));
+  DateTime _filterEndDate = DateTime.now();
 
   void _refreshAppUsages() {
     if (mounted) {
@@ -51,10 +52,13 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   void _onDateFilterChange(DateTime? start, DateTime? end) {
     setState(() {
-      _filterStartDate = start;
+      _filterStartDate = start ?? DateTime.now().subtract(const Duration(days: 7));
 
-      if (end != null) end = DateTime(end!.year, end!.month, end!.day, 23, 59, 59);
-      _filterEndDate = end;
+      if (end != null) {
+        end = DateTime(end!.year, end!.month, end!.day, 23, 59, 59);
+      }
+      _filterEndDate = end ?? DateTime.now();
+
       _refreshAppUsages();
     });
   }

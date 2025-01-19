@@ -14,7 +14,6 @@ class AppUsageTable extends Table {
   TextColumn get name => text()();
   TextColumn get displayName => text().nullable()();
   TextColumn get color => text().nullable()();
-  IntColumn get duration => integer()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -38,7 +37,6 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       deletedDate: Value(entity.deletedDate),
       name: entity.name,
       displayName: Value(entity.displayName),
-      duration: entity.duration,
       color: Value(entity.color),
     );
   }
@@ -123,7 +121,6 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
             id: row.read<String>('id'),
             name: row.read<String>('name'),
             displayName: row.read<String?>('display_name'),
-            duration: row.read<int>('duration'),
             color: row.read<String?>('color'),
             createdDate: row.read<DateTime>('created_date'),
             modifiedDate: row.read<DateTime?>('modified_date'),

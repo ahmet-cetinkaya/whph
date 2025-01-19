@@ -11,6 +11,7 @@ import 'package:whph/application/features/app_usages/queries/get_list_by_top_app
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/app_usage_service.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
@@ -46,11 +47,13 @@ import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.d
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';
+import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
@@ -58,6 +61,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/mapper/abstraction/i_mapper.dart';
 import 'package:whph/core/acore/mapper/mapper.dart';
@@ -78,7 +82,8 @@ void registerApplication(IContainer container) {
 }
 
 void registerAppUsagesFeature(IContainer container, Mediator mediator) {
-  container.registerSingleton<IAppUsageService>((_) => AppUsageService(container.resolve<IAppUsageRepository>()));
+  container.registerSingleton<IAppUsageService>((_) =>
+      AppUsageService(container.resolve<IAppUsageRepository>(), container.resolve<IAppUsageTimeRecordRepository>()));
 
   mediator.registerHandler<StartTrackAppUsagesCommand, StartTrackAppUsagesCommandResponse,
       StartTrackAppUsagesCommandHandler>(
@@ -90,7 +95,9 @@ void registerAppUsagesFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse,
       GetListByTopAppUsagesQueryHandler>(
-    () => GetListByTopAppUsagesQueryHandler(appUsageRepository: container.resolve<IAppUsageRepository>()),
+    () => GetListByTopAppUsagesQueryHandler(
+        appUsageRepository: container.resolve<IAppUsageRepository>(),
+        timeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>()),
   );
 
   mediator.registerHandler<AddAppUsageTagCommand, AddAppUsageTagCommandResponse, AddAppUsageTagCommandHandler>(
@@ -168,12 +175,15 @@ void registerTasksFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
     () => GetListTasksQueryHandler(
-        taskRepository: container.resolve<ITaskRepository>(),
-        taskTagRepository: container.resolve<ITaskTagRepository>(),
-        tagRepository: container.resolve<ITagRepository>()),
+      taskRepository: container.resolve<ITaskRepository>(),
+      taskTagRepository: container.resolve<ITaskTagRepository>(),
+      tagRepository: container.resolve<ITagRepository>(),
+    ),
   );
   mediator.registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(
-    () => GetTaskQueryHandler(taskRepository: container.resolve<ITaskRepository>()),
+    () => GetTaskQueryHandler(
+        taskRepository: container.resolve<ITaskRepository>(),
+        taskTimeRecordRepository: container.resolve<ITaskTimeRecordRepository>()),
   );
 
   mediator.registerHandler<AddTaskTagCommand, AddTaskTagCommandResponse, AddTaskTagCommandHandler>(
@@ -187,6 +197,10 @@ void registerTasksFeature(IContainer container, Mediator mediator) {
       tagRepository: container.resolve<ITagRepository>(),
       taskTagRepository: container.resolve<ITaskTagRepository>(),
     ),
+  );
+  mediator
+      .registerHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
+    () => SaveTaskTimeRecordCommandHandler(taskTimeRecordRepository: container.resolve<ITaskTimeRecordRepository>()),
   );
 }
 
@@ -218,10 +232,16 @@ void registerTagsFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse, GetTagTimesDataQueryHandler>(
     () => GetTagTimesDataQueryHandler(
-      appUsageRepository: container.resolve<IAppUsageRepository>(),
+      appUsageTimeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>(),
       appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
       taskRepository: container.resolve<ITaskRepository>(),
       taskTagRepository: container.resolve<ITaskTagRepository>(),
+      taskTimeRecordRepository: container.resolve<ITaskTimeRecordRepository>(),
+    ),
+  );
+  mediator.registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse, GetTopTagsByTimeQueryHandler>(
+    () => GetTopTagsByTimeQueryHandler(
+      appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
     ),
   );
 }

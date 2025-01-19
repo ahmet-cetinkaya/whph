@@ -7,17 +7,16 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 @UseRowClass(Task)
 class TaskTable extends Table {
   TextColumn get id => text()();
-  DateTimeColumn get createdDate => dateTime()();
-  DateTimeColumn get modifiedDate => dateTime().nullable()();
-  DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
   IntColumn get priority => intEnum<EisenhowerPriority>().nullable()();
   DateTimeColumn get plannedDate => dateTime().nullable()();
   DateTimeColumn get deadlineDate => dateTime().nullable()();
   IntColumn get estimatedTime => integer().nullable()();
-  IntColumn get elapsedTime => integer().nullable()();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdDate => dateTime()();
+  DateTimeColumn get modifiedDate => dateTime().nullable()();
+  DateTimeColumn get deletedDate => dateTime().nullable()();
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
@@ -41,7 +40,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         plannedDate: Value(entity.plannedDate),
         deadlineDate: Value(entity.deadlineDate),
         estimatedTime: Value(entity.estimatedTime),
-        elapsedTime: Value(entity.elapsedTime),
         isCompleted: Value(entity.isCompleted));
   }
 }

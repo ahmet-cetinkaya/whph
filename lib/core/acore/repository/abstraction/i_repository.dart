@@ -7,6 +7,8 @@ import '../models/paginated_list.dart';
 abstract class IRepository<T extends BaseEntity, TId> {
   Future<PaginatedList<T>> getList(int pageIndex, int pageSize,
       {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder});
+  Future<List<T>> getAll(
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder});
   Future<T?> getById(TId id);
   Future<T?> getFirst(CustomWhereFilter customWhereFilter);
   Future<void> add(T item);

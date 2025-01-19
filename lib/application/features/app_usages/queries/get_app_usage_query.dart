@@ -12,13 +12,11 @@ class GetAppUsageQuery implements IRequest<GetAppUsageQueryResponse> {
 class GetAppUsageQueryResponse {
   String name;
   String? displayName;
-  int duration;
   String? color;
 
   GetAppUsageQueryResponse({
     required this.name,
     this.displayName,
-    required this.duration,
     this.color,
   });
 }
@@ -40,7 +38,6 @@ class GetAppUsageQueryHandler implements IRequestHandler<GetAppUsageQuery, GetAp
     return GetAppUsageQueryResponse(
       name: appUsages.name,
       displayName: appUsages.displayName,
-      duration: appUsages.duration,
       color: appUsages.color,
     );
   }

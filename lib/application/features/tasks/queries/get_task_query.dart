@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 
 class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
   late String id;
@@ -10,7 +11,7 @@ class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
 }
 
 class GetTaskQueryResponse extends Task {
-  String? topicName;
+  int totalDuration = 0;
 
   GetTaskQueryResponse(
       {required super.id,
@@ -18,29 +19,33 @@ class GetTaskQueryResponse extends Task {
       super.modifiedDate,
       super.deletedDate,
       required super.title,
-      this.topicName,
       super.description,
       super.priority,
       super.plannedDate,
       super.deadlineDate,
       super.estimatedTime,
-      super.elapsedTime,
+      required this.totalDuration,
       required super.isCompleted});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
-  late final ITaskRepository _taskRepository;
+  final ITaskRepository _taskRepository;
+  final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
-  GetTaskQueryHandler({required ITaskRepository taskRepository}) : _taskRepository = taskRepository;
+  GetTaskQueryHandler({
+    required ITaskRepository taskRepository,
+    required ITaskTimeRecordRepository taskTimeRecordRepository,
+  })  : _taskRepository = taskRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<GetTaskQueryResponse> call(GetTaskQuery request) async {
-    Task? task = await _taskRepository.getById(
-      request.id,
-    );
+    Task? task = await _taskRepository.getById(request.id);
     if (task == null) {
       throw BusinessException('Task with id ${request.id} not found');
     }
+
+    final totalDuration = await _taskTimeRecordRepository.getTotalDurationByTaskId(request.id);
 
     return GetTaskQueryResponse(
         id: task.id,
@@ -52,7 +57,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         estimatedTime: task.estimatedTime,
-        elapsedTime: task.elapsedTime,
+        totalDuration: totalDuration,
         isCompleted: task.isCompleted);
   }
 }

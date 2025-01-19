@@ -116,7 +116,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       deadlineDate: DateTime.tryParse(_deadlineDateController.text),
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
-      elapsedTime: _task!.elapsedTime,
       isCompleted: _task!.isCompleted,
     );
     try {
@@ -265,7 +264,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                 widget: Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8),
                   child: Text(
-                    '${_task!.elapsedTime != null ? _task!.elapsedTime! ~/ 60 : 0} min',
+                    '${_task!.totalDuration ~/ 60} min',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

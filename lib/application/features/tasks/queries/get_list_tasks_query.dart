@@ -44,6 +44,7 @@ class TaskListItem {
   bool isCompleted;
   List<TagListItem> tags;
   int? estimatedTime;
+  int totalElapsedTime = 0;
 
   TaskListItem({
     required this.id,

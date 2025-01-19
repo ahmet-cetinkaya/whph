@@ -1,19 +1,17 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/core/acore/repository/models/paginated_list.dart';
-import 'package:whph/domain/features/app_usages/app_usage.dart';
-import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
-import 'package:whph/domain/features/tasks/task.dart';
-import 'package:whph/domain/features/tasks/task_tag.dart';
 
 class GetTagTimesDataQuery implements IRequest<GetTagTimesDataQueryResponse> {
   final String tagId;
+  final DateTime startDate;
+  final DateTime endDate;
 
-  GetTagTimesDataQuery({required this.tagId});
+  GetTagTimesDataQuery({required this.tagId, required this.startDate, required this.endDate});
 }
 
 class GetTagTimesDataQueryResponse {
@@ -24,21 +22,21 @@ class GetTagTimesDataQueryResponse {
 }
 
 class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse> {
-  final IAppUsageRepository _appUsageRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
-
-  final ITaskRepository _taskRepository;
+  final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final ITaskTagRepository _taskTagRepository;
+  final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
   GetTagTimesDataQueryHandler(
-      {required IAppUsageRepository appUsageRepository,
-      required IAppUsageTagRepository appUsageTagRepository,
+      {required IAppUsageTagRepository appUsageTagRepository,
+      required IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
       required ITaskRepository taskRepository,
-      required ITaskTagRepository taskTagRepository})
-      : _appUsageRepository = appUsageRepository,
-        _appUsageTagRepository = appUsageTagRepository,
-        _taskRepository = taskRepository,
-        _taskTagRepository = taskTagRepository;
+      required ITaskTagRepository taskTagRepository,
+      required ITaskTimeRecordRepository taskTimeRecordRepository})
+      : _appUsageTagRepository = appUsageTagRepository,
+        _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
+        _taskTagRepository = taskTagRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<GetTagTimesDataQueryResponse> call(GetTagTimesDataQuery request) async {
@@ -50,40 +48,41 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
   }
 
   Future<int> _getAppUsageTagTimes(GetTagTimesDataQuery request) async {
-    int time = 0;
+    // Get all app usages with this tag
+    final appUsageTags = await _appUsageTagRepository.getAll(
+        customWhereFilter: CustomWhereFilter("tag_id = ? AND deleted_date IS NULL", [request.tagId]));
 
-    PaginatedList<AppUsageTag>? appUsageTags;
-    do {
-      appUsageTags = await _appUsageTagRepository.getList((appUsageTags?.pageIndex ?? -1) + 1, 100,
-          customWhereFilter: CustomWhereFilter("tag_id = ?", [request.tagId]));
+    if (appUsageTags.isEmpty) return 0;
 
-      for (final appUsage in appUsageTags.items) {
-        AppUsage? appUsageData = await _appUsageRepository.getById(appUsage.appUsageId);
-        if (appUsageData == null) continue;
+    // Get total duration from time records for these app usages
+    final appUsageIds = appUsageTags.map((e) => e.appUsageId).toList();
+    final durations = await _appUsageTimeRecordRepository.getAppUsageDurations(
+      appUsageIds: appUsageIds,
+      startDate: request.startDate,
+      endDate: request.endDate,
+    );
 
-        time += appUsageData.duration;
-      }
-    } while (appUsageTags.hasNext);
-
-    return time;
+    final total = durations.values.fold(0, (sum, duration) => sum + duration);
+    return total;
   }
 
   Future<int> _getTaskTagTimes(GetTagTimesDataQuery request) async {
-    int time = 0;
+    // Get task tags within date range
+    final taskTags = await _taskTagRepository.getAll(
+        customWhereFilter: CustomWhereFilter("tag_id = ? AND deleted_date IS NULL", [request.tagId]));
 
-    PaginatedList<TaskTag>? taskTags;
-    do {
-      taskTags = await _taskTagRepository.getList((taskTags?.pageIndex ?? -1) + 1, 100,
-          customWhereFilter: CustomWhereFilter("tag_id = ?", [request.tagId]));
+    if (taskTags.isEmpty) return 0;
 
-      for (final taskTag in taskTags.items) {
-        Task? task = await _taskRepository.getById(taskTag.taskId);
-        if (task == null) continue;
+    int totalTime = 0;
+    for (final taskTag in taskTags) {
+      final taskTime = await _taskTimeRecordRepository.getTotalDurationByTaskId(
+        taskTag.taskId,
+        startDate: request.startDate,
+        endDate: request.endDate,
+      );
+      totalTime += taskTime;
+    }
 
-        if (task.elapsedTime != null) time += task.elapsedTime!;
-      }
-    } while (taskTags.hasNext);
-
-    return time;
+    return totalTime;
   }
 }

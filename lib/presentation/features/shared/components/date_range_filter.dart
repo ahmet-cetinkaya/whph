@@ -64,7 +64,9 @@ class DateRangeFilter extends StatelessWidget {
     );
 
     if (result != null && result.length == 2) {
-      onDateFilterChange(result[0], result[1]);
+      // Set end date to end of day (23:59:59)
+      final endDate = result[1]?.copyWith(hour: 23, minute: 59, second: 59);
+      onDateFilterChange(result[0], endDate);
     }
   }
 

@@ -61,6 +61,51 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   }
 
   @override
+  Future<List<TEntity>> getAll(
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? orderByClause = customOrder?.isNotEmpty == true
+        ? ' ORDER BY ${customOrder!.map((order) => '${order.field} ${order.ascending ? 'ASC' : 'DESC'}').join(', ')} '
+        : null;
+
+    const int chunkSize = 1000;
+    List<TEntity> allResults = [];
+
+    // Get total counts
+    final countResult = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+    final totalCount = countResult?.data['count'] as int? ?? 0;
+    final totalPages = (totalCount / chunkSize).ceil();
+
+    // Get all data in chunks
+    for (int pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+      final query = database.customSelect(
+        "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+          Variable.withInt(chunkSize),
+          Variable.withInt(pageIndex * chunkSize),
+        ],
+        readsFrom: {table},
+      ).map((row) => table.map(row.data));
+      final result = await query.get();
+
+      allResults
+          .addAll(await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))));
+    }
+
+    return allResults;
+  }
+
+  @override
   Future<TEntity?> getById(TEntityId id) async {
     final result = await database.customSelect(
       'SELECT * FROM ${table.actualTableName} WHERE id = ?',

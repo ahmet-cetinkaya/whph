@@ -208,6 +208,10 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _buildTimeSection(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -226,6 +230,8 @@ class _TodayPageState extends State<TodayPage> {
               width: 300,
               child: TagTimeChart(
                 filterByTags: _selectedTagFilter,
+                startDate: today,
+                endDate: tomorrow,
               ),
             ),
           ),

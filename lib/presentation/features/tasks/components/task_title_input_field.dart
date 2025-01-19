@@ -64,7 +64,6 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
       title: _titleController.text,
       deadlineDate: _task!.deadlineDate,
       description: _task!.description,
-      elapsedTime: _task!.elapsedTime,
       estimatedTime: _task!.estimatedTime,
       isCompleted: _task!.isCompleted,
       plannedDate: _task!.plannedDate,

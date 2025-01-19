@@ -60,7 +60,6 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
         id: nanoid(),
         name: request.name,
         displayName: request.displayName,
-        duration: 0,
         color: request.color,
         createdDate: DateTime(0),
       );

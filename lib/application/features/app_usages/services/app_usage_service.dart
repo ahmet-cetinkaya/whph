@@ -7,7 +7,9 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/domain/features/shared/constants/app_theme.dart';
 import 'abstraction/i_app_usage_service.dart';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
@@ -19,8 +21,9 @@ class AppUsageService implements IAppUsageService {
   Timer? _periodicTimer;
 
   final IAppUsageRepository _appUsageRepository;
+  final IAppUsageTimeRecordRepository _timeRecordRepository;
 
-  AppUsageService(this._appUsageRepository);
+  AppUsageService(this._appUsageRepository, this._timeRecordRepository);
 
   @override
   void startTracking() {
@@ -49,7 +52,7 @@ class AppUsageService implements IAppUsageService {
                   ? activeWindowOutputSections[0]
                   : 'Unknown';
 
-          _saveAppUsage(appName, _activeDesktopWindowTime);
+          await saveTimeRecord(appName, _activeDesktopWindowTime);
         }
 
         _activeDesktopWindowOutput = currentWindow;
@@ -78,14 +81,14 @@ class AppUsageService implements IAppUsageService {
     _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (Platform.isAndroid) {
         DateTime endDate = DateTime.now();
-        DateTime startDate = endDate.subtract(Duration(hours: 1));
+        DateTime startDate = endDate.subtract(const Duration(hours: 1));
         List<app_usage_package.AppUsageInfo> usageStats =
             await app_usage_package.AppUsage().getAppUsage(startDate, endDate);
 
         if (usageStats.isEmpty) return;
 
         for (app_usage_package.AppUsageInfo usage in usageStats) {
-          _saveAppUsage(usage.appName, usage.usage.inSeconds, overwrite: true);
+          await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: true);
         }
       }
     });
@@ -103,40 +106,73 @@ class AppUsageService implements IAppUsageService {
     AppTheme.chartColor9,
     AppTheme.chartColor10,
   ];
-  Future<void> _saveAppUsage(String appName, int duration, {bool overwrite = false}) async {
-    AppUsage? appUsage = await _appUsageRepository.getByDateAndHour(
-      name: appName,
-      year: DateTime.now().toUtc().year,
-      month: DateTime.now().toUtc().month,
-      day: DateTime.now().toUtc().day,
-      hour: DateTime.now().toUtc().hour,
+
+  @override
+  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
+    // First, get or create AppUsage
+    var appUsage = await _getOrCreateAppUsage(appName);
+
+    // Then, get or create AppUsageTimeRecord
+    var now = DateTime.now().toUtc();
+    final recordStartTime = DateTime(now.year, now.month, now.day, now.hour);
+
+    var timeRecords = await _timeRecordRepository.getAll(
+      customWhereFilter: CustomWhereFilter(
+        'app_usage_id = ? AND created_date = ? AND deleted_date IS NULL',
+        [appUsage.id, recordStartTime],
+      ),
     );
 
-    if (appUsage != null) {
+    if (timeRecords.isNotEmpty) {
+      var existingRecord = timeRecords.first;
       if (overwrite) {
-        appUsage.duration = duration;
+        existingRecord = AppUsageTimeRecord(
+          id: existingRecord.id,
+          appUsageId: existingRecord.appUsageId,
+          duration: duration,
+          createdDate: existingRecord.createdDate,
+          modifiedDate: DateTime.now().toUtc(),
+        );
       } else {
-        appUsage.duration += duration;
+        existingRecord = AppUsageTimeRecord(
+          id: existingRecord.id,
+          appUsageId: existingRecord.appUsageId,
+          duration: existingRecord.duration + duration,
+          createdDate: existingRecord.createdDate,
+          modifiedDate: DateTime.now().toUtc(),
+        );
       }
-
-      await _appUsageRepository.update(appUsage);
+      await _timeRecordRepository.update(existingRecord);
     } else {
-      AppUsage? firstAppUsage = await _appUsageRepository.getFirst(
-        CustomWhereFilter(
-          'name = ? AND deleted_date IS NULL',
-          [appName],
-        ),
+      var newRecord = AppUsageTimeRecord(
+        id: nanoid(),
+        appUsageId: appUsage.id,
+        duration: duration,
+        createdDate: recordStartTime,
       );
+      await _timeRecordRepository.add(newRecord);
+    }
+  }
 
+  Future<AppUsage> _getOrCreateAppUsage(String appName) async {
+    var appUsage = await _appUsageRepository.getFirst(
+      CustomWhereFilter(
+        'name = ? AND deleted_date IS NULL',
+        [appName],
+      ),
+    );
+
+    if (appUsage == null) {
       appUsage = AppUsage(
         id: nanoid(),
         name: appName,
-        color: firstAppUsage == null ? _chartColors[Random().nextInt(_chartColors.length)].toHexString() : null,
-        duration: duration,
-        createdDate: DateTime(0),
+        color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
+        createdDate: DateTime.now().toUtc(),
       );
       await _appUsageRepository.add(appUsage);
     }
+
+    return appUsage;
   }
 
   @override

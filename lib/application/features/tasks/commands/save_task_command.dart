@@ -14,7 +14,6 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
   final int? estimatedTime;
-  final int? elapsedTime;
   final bool isCompleted;
   final List<String>? tagIds;
 
@@ -26,7 +25,6 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       this.plannedDate,
       this.deadlineDate,
       this.estimatedTime,
-      this.elapsedTime,
       this.isCompleted = false,
       this.tagIds});
 }
@@ -67,7 +65,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime;
-      task.elapsedTime = request.elapsedTime;
       task.isCompleted = request.isCompleted;
       await _taskRepository.update(task);
     } else {
@@ -80,7 +77,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
           estimatedTime: request.estimatedTime,
-          elapsedTime: request.elapsedTime,
           isCompleted: false);
       await _taskRepository.add(task);
     }

@@ -1,4 +1,5 @@
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
@@ -8,10 +9,12 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_re
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_time_record_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
@@ -21,10 +24,12 @@ import 'package:whph/persistence/features/tags/drift_tag_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_tag_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_tag_repository.dart';
+import 'package:whph/persistence/features/tasks/drift_task_time_record_repository.dart';
 
 void registerPersistence(IContainer container) {
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());
   container.registerSingleton<IAppUsageTagRepository>((_) => DriftAppUsageTagRepository());
+  container.registerSingleton<IAppUsageTimeRecordRepository>((_) => DriftAppUsageTimeRecordRepository());
   container.registerSingleton<IHabitRepository>((_) => DriftHabitRepository());
   container.registerSingleton<IHabitTagsRepository>((_) => DriftHabitTagRepository());
   container.registerSingleton<IHabitRecordRepository>((_) => DriftHabitRecordRepository());
@@ -32,6 +37,7 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<ITagTagRepository>((_) => DriftTagTagRepository());
   container.registerSingleton<ITaskRepository>((_) => DriftTaskRepository());
   container.registerSingleton<ITaskTagRepository>((_) => DriftTaskTagRepository());
+  container.registerSingleton<ITaskTimeRecordRepository>((_) => DriftTaskTimeRecordRepository());
   container.registerSingleton<ISettingRepository>((_) => DriftSettingRepository());
   container.registerSingleton<ISyncDeviceRepository>((_) => DriftSyncDeviceRepository());
 }

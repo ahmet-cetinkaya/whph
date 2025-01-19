@@ -60,7 +60,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         estimatedTime: task.estimatedTime,
-        elapsedTime: task.elapsedTime,
         isCompleted: !_isCompleted,
       );
 

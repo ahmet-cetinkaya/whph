@@ -6,4 +6,21 @@ abstract class IAppUsageTagRepository extends IRepository<AppUsageTag, String> {
   Future<PaginatedList<AppUsageTag>> getListByAppUsageId(String appUsageId, int pageIndex, int pageSize);
 
   Future<bool> anyByAppUsageIdAndTagId(String appUsageId, String tagId);
+
+  Future<List<TagTimeData>> getTopTagsByDuration(DateTime startDate, DateTime endDate,
+      {int? limit, List<String>? filterByTags});
+}
+
+class TagTimeData {
+  final String tagId;
+  final String tagName;
+  final String? tagColor;
+  final int duration;
+
+  TagTimeData({
+    required this.tagId,
+    required this.tagName,
+    this.tagColor,
+    required this.duration,
+  });
 }

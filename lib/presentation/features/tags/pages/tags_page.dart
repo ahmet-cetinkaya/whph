@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/app_logo.dart';
+import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/features/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
+import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -23,14 +25,17 @@ class TagsPage extends StatefulWidget {
 class _TagsPageState extends State<TagsPage> {
   final Mediator _mediator = container.resolve<Mediator>();
 
-  List<String>? _selectedTagIds;
+  List<String>? _selectedFilters; // Rename from _selectedTagIds to _selectedFilters for clarity
   Key _tagsListKey = UniqueKey();
   Key _addButtonKey = const ValueKey('tagAddButton');
   bool _showArchived = false;
+  DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
+  DateTime _endDate = DateTime.now();
+  Key _chartKey = UniqueKey(); // Add chart key
 
   void _refreshTags() {
     setState(() {
-      _selectedTagIds = null;
+      _selectedFilters = null;
       _tagsListKey = UniqueKey();
       _addButtonKey = ValueKey(DateTime.now().toString());
     });
@@ -46,7 +51,17 @@ class _TagsPageState extends State<TagsPage> {
 
   void _onFilterTags(List<String> tagIds) {
     setState(() {
-      _selectedTagIds = tagIds;
+      _selectedFilters = tagIds;
+      _tagsListKey = UniqueKey();
+      _chartKey = UniqueKey(); // Reset chart key when filter changes
+    });
+  }
+
+  void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
+    // Make parameters nullable
+    setState(() {
+      _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7)); // Use default if null
+      _endDate = endDate ?? DateTime.now(); // Use default if null
     });
   }
 
@@ -81,45 +96,94 @@ class _TagsPageState extends State<TagsPage> {
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
-            // Filters
+            // Tag filter
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  // Tag filter
-                  TagSelectDropdown(
-                    isMultiSelect: true,
-                    onTagsSelected: _onFilterTags,
-                    icon: Icons.label,
-                    iconSize: 20,
-                    color: _selectedTagIds?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                    tooltip: 'Filter by tags',
-                    showLength: true,
-                  ),
-
-                  // Show archived tags
-                  FilterIconButton(
-                    icon: _showArchived ? Icons.archive : Icons.archive_outlined,
-                    color: _showArchived ? AppTheme.primaryColor : null,
-                    tooltip: _showArchived ? 'Hide archived tags' : 'Show archived tags',
-                    onPressed: () {
-                      setState(() {
-                        _showArchived = !_showArchived;
-                        _tagsListKey = UniqueKey();
-                      });
-                    },
-                  )
-                ],
+              child: TagSelectDropdown(
+                isMultiSelect: true,
+                onTagsSelected: _onFilterTags,
+                icon: Icons.label,
+                iconSize: 20,
+                color: _selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                tooltip: 'Filter by tags',
+                showLength: true,
               ),
             ),
 
+            // Tag Times Section with Date Filter
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: Row(
+                children: [
+                  Text(
+                    'Tag Times',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: DateRangeFilter(
+                      selectedStartDate: _startDate,
+                      selectedEndDate: _endDate,
+                      onDateFilterChange: (start, end) {
+                        _onDateFilterChange(start, end);
+                      },
+                      iconSize: 20,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Chart
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: TagTimeChart(
+                    key: _chartKey,
+                    filterByTags: _selectedFilters,
+                    startDate: _startDate,
+                    endDate: _endDate,
+                  ),
+                ),
+              ),
+            ),
+
+            // Tags Section with Archive Filter
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: Row(
+                children: [
+                  Text(
+                    'Tags',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: FilterIconButton(
+                      icon: _showArchived ? Icons.archive : Icons.archive_outlined,
+                      color: _showArchived ? AppTheme.primaryColor : null,
+                      tooltip: _showArchived ? 'Hide archived tags' : 'Show archived tags',
+                      onPressed: () {
+                        setState(() {
+                          _showArchived = !_showArchived;
+                          _tagsListKey = UniqueKey();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // List
             TagsList(
               key: _tagsListKey,
               mediator: _mediator,
               onTagAdded: _refreshTags,
               onClickTag: (tag) => _openTagDetails(tag.id),
-              filterByTags: _selectedTagIds,
+              filterByTags: _selectedFilters,
               showArchived: _showArchived,
             ),
           ],

@@ -16,7 +16,6 @@ class Task extends BaseEntity<String> {
   DateTime? plannedDate;
   DateTime? deadlineDate;
   int? estimatedTime;
-  int? elapsedTime;
   bool isCompleted = false;
 
   Task(
@@ -30,7 +29,6 @@ class Task extends BaseEntity<String> {
       this.deadlineDate,
       this.priority,
       this.estimatedTime,
-      this.elapsedTime,
       required this.isCompleted});
 
   void mapFromInstance(Task instance) {
@@ -40,7 +38,6 @@ class Task extends BaseEntity<String> {
     plannedDate = instance.plannedDate;
     deadlineDate = instance.deadlineDate;
     estimatedTime = instance.estimatedTime;
-    elapsedTime = instance.elapsedTime;
     isCompleted = instance.isCompleted;
   }
 }

@@ -11,7 +11,7 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
-import 'package:whph/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -161,18 +161,36 @@ class _MarathonPageState extends State<MarathonPage> {
   void _handleTimerUpdate(Duration elapsed) async {
     if (_selectedTask == null) return;
 
-    var command = SaveTaskCommand(
-      id: _selectedTask!.id,
-      title: _selectedTask!.title,
-      priority: _selectedTask!.priority,
-      plannedDate: _selectedTask!.plannedDate,
-      deadlineDate: _selectedTask!.deadlineDate,
-      estimatedTime: _selectedTask!.estimatedTime,
-      elapsedTime: elapsed.inSeconds,
-      isCompleted: _selectedTask!.isCompleted,
+    var command = SaveTaskTimeRecordCommand(
+      taskId: _selectedTask!.id,
+      duration: elapsed.inSeconds,
     );
 
-    _mediator.send(command);
+    await _mediator.send(command);
+    _refreshSelectedTask(); // Refresh to show updated duration
+  }
+
+  Future<void> _refreshSelectedTask() async {
+    if (_selectedTask == null) return;
+
+    var query = GetTaskQuery(id: _selectedTask!.id);
+    var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+    var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+
+    if (mounted) {
+      setState(() {
+        _selectedTask = TaskListItem(
+            id: task.id,
+            title: task.title,
+            isCompleted: task.isCompleted,
+            deadlineDate: task.deadlineDate,
+            estimatedTime: task.estimatedTime,
+            plannedDate: task.plannedDate,
+            priority: task.priority,
+            tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+      });
+    }
   }
 
   @override
