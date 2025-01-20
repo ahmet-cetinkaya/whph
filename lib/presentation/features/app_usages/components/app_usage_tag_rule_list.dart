@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
+import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
@@ -96,9 +97,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: rule.tagColor != null
-                        ? Color(int.parse('FF${rule.tagColor}', radix: 16)).withOpacity(0.1)
-                        : Colors.grey.withOpacity(0.1),
+                    color: AppTheme.surface2,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -152,7 +151,9 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                 // Delete Button
                 IconButton(
                   icon: const Icon(Icons.delete_outline, size: 18),
-                  onPressed: () => _delete(context, rule),
+                  onPressed: () {
+                    if (mounted) _delete(context, rule);
+                  },
                   color: Colors.red,
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.only(left: 8),
@@ -167,6 +168,8 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   }
 
   Future<void> _delete(BuildContext context, AppUsageTagRuleListItem rule) async {
+    if (!mounted) return;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -186,14 +189,13 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       ),
     );
 
-    if (confirmed == true && mounted) {
+    if (confirmed == true && context.mounted) {
       try {
         final command = DeleteAppUsageTagRuleCommand(id: rule.id);
         await widget.mediator.send(command);
-        await _loadRules(); // Refresh list after successful deletion
+        if (context.mounted) await _loadRules(); // Refresh list after successful deletion
       } catch (e) {
-        if (!mounted) return;
-        ErrorHelper.showUnexpectedError(context, e);
+        if (context.mounted) ErrorHelper.showUnexpectedError(context, e);
       }
     }
   }

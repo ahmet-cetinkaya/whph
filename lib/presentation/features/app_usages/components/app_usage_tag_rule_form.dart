@@ -241,14 +241,14 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               if (widget.onCancel != null)
                 TextButton.icon(
                   onPressed: widget.onCancel,
-                  icon: const Icon(Icons.close, size: 18, color: Colors.black),
-                  label: const Text('Cancel', style: TextStyle(fontSize: 12, color: Colors.black)),
+                  icon: const Icon(Icons.close, size: 18, color: AppTheme.darkTextColor),
+                  label: const Text('Cancel', style: TextStyle(fontSize: 12, color: AppTheme.darkTextColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
                 onPressed: _handleSubmit,
-                icon: const Icon(Icons.add, size: 18, color: Colors.black),
-                label: const Text('Add', style: TextStyle(fontSize: 12, color: Colors.black)),
+                icon: const Icon(Icons.add, size: 18, color: AppTheme.darkTextColor),
+                label: const Text('Add', style: TextStyle(fontSize: 12, color: AppTheme.darkTextColor)),
               ),
             ],
           ),

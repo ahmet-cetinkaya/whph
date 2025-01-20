@@ -5,6 +5,7 @@ class AppTheme {
   // Colors
   static const Color primaryColor = domain.AppTheme.primaryColor;
 
+  static const Color surface0 = Color(0xFF000000);
   static const Color surface1 = Color(0xFF171717);
   static const Color surface2 = Color(0xFF2B2B2B);
   static const Color surface3 = Color(0xFF464646);
@@ -72,12 +73,12 @@ class AppTheme {
       surface: surface1,
     ),
     primaryColor: domain.AppTheme.primaryColor,
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: AppTheme.surface0,
     highlightColor: surface3,
     cardTheme: CardTheme(
       color: surface1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
-      clipBehavior: Clip.antiAlias, // Added clipBehavior
+      clipBehavior: Clip.antiAlias,
     ),
     textTheme: TextTheme(
       bodySmall: bodySmall,

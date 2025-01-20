@@ -5,7 +5,7 @@ class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final DateTime startDate;
   final DateTime endDate;
   final int? limit;
-  final List<String>? filterByTags; // Add filter parameter
+  final List<String>? filterByTags;
 
   GetTopTagsByTimeQuery({
     required this.startDate,

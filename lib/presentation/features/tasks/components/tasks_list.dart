@@ -160,7 +160,7 @@ class _TaskListState extends State<TaskList> {
             itemBuilder: (context, index) {
               final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
               return TaskCard(
-                key: ValueKey(task.id), // Add this line
+                key: ValueKey(task.id),
                 task: task,
                 onOpenDetails: () => widget.onClickTask(task),
                 onCompleted: _onTaskCompleted,

@@ -178,8 +178,6 @@ class AppUsageService implements IAppUsageService {
         // Check if pattern matches
         final pattern = RegExp(rule.pattern);
         if (pattern.hasMatch(appUsage.displayName ?? appUsage.name)) {
-          print('DEBUG: ${appUsage.name} matched rule ${rule.id}');
-
           // Check if tag already exists
           final existingTag = await _appUsageTagRepository.getFirst(
             CustomWhereFilter(
@@ -187,7 +185,6 @@ class AppUsageService implements IAppUsageService {
               [appUsage.id, rule.tagId],
             ),
           );
-          if (kDebugMode && existingTag != null) print('DEBUG: existingTag: $existingTag');
 
           // Add tag if it doesn't exist
           if (existingTag == null) {

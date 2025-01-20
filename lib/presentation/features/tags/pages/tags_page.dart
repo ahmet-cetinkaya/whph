@@ -32,7 +32,7 @@ class _TagsPageState extends State<TagsPage> {
   bool _showArchived = false;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
-  Key _chartKey = UniqueKey(); // Add chart key
+  Key _chartKey = UniqueKey();
 
   void _refreshTags() {
     setState(() {
