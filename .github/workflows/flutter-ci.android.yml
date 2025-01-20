@@ -33,19 +33,8 @@ jobs:
     - name: Install Flutter dependencies
       run: flutter pub get
 
-    - name: Modify app_usage build.gradle
-      run: |
-        PUB_CACHE="${HOME}/.pub-cache"
-        APP_USAGE_PATH="${PUB_CACHE}/hosted/pub.dev/app_usage-3.0.1/android/build.gradle"
-        if [ -f "$APP_USAGE_PATH" ]; then
-          sed -i 's/^    compileSdkVersion .*$/    compileSdkVersion 33/' "$APP_USAGE_PATH"
-          sed -i '/^android {/a \ \ namespace "dk.cachet.app_usage"' "$APP_USAGE_PATH"
-          sed -i '/^android {/a \ \ compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17; }' "$APP_USAGE_PATH"
-          sed -i '/^android {/a \ \ kotlinOptions { jvmTarget = "17" }' "$APP_USAGE_PATH"
-        else
-          echo "build.gradle not found. Please check the package path."
-          exit 1
-        fi
+    - name: Fix Android Packages
+      run: flutter pub run rps fix-android
 
     - name: Build for Android
       run: flutter build apk --release

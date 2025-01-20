@@ -88,7 +88,7 @@ class AppUsageService implements IAppUsageService {
   }
 
   void _startMobileTracking() {
-    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    _periodicTimer = Timer.periodic(const Duration(hours: 1), (timer) async {
       if (Platform.isAndroid) {
         DateTime endDate = DateTime.now();
         DateTime startDate = endDate.subtract(const Duration(hours: 1));
