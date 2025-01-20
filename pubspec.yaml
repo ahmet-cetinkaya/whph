@@ -73,12 +73,14 @@ dependencies:
 
   # Desktop
   qr_flutter: ^4.1.0
+  local_notifier: ^0.1.6
 
   # Android
   app_usage: ^3.0.1
 
   # Mobile
   qr_code_scanner_plus: ^2.0.6
+  flutter_local_notifications: ^15.1.1
 
 dev_dependencies:
   flutter_test:

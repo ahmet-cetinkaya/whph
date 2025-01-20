@@ -10,10 +10,12 @@ import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+  final INotificationService _notificationService = container.resolve<INotificationService>();
 
   final Function(Duration) onTimeUpdate;
 
@@ -106,6 +108,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     widget._soundPlayer.setLoop(true);
     widget._soundPlayer.play(SharedSounds.alarmDone);
+
+    // Send notification
+    final sessionType = _isWorking ? 'Work' : 'Break';
+    widget._notificationService.show(
+      title: 'Pomodoro Timer',
+      body: '$sessionType session completed!',
+    );
   }
 
   void _stopAlarm() {

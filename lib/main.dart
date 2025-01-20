@@ -14,9 +14,9 @@ import 'package:whph/presentation/features/shared/services/abstraction/i_system_
 import 'package:whph/presentation/presentation_container.dart';
 import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
+import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
 
 late final IContainer container;
-late final ISystemTrayService _systemTrayService;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +28,10 @@ void main() async {
   registerInfrastructure(container);
   registerPresentation(container);
 
+  // Initialize notification service for all platforms
+  var notificationService = container.resolve<INotificationService>();
+  await notificationService.init();
+
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await windowManager.ensureInitialized();
 
@@ -36,8 +40,9 @@ void main() async {
     await windowManager.setMinimumSize(const Size(800, 600));
     await windowManager.center();
 
-    _systemTrayService = container.resolve<ISystemTrayService>();
-    await _systemTrayService.init();
+    // Initialize system tray service
+    var systemTrayService = container.resolve<ISystemTrayService>();
+    await systemTrayService.init();
   }
 
   runBackgroundWorkers();
