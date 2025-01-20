@@ -71,6 +71,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   void dispose() {
     if (_isRunning) {
       _timer.cancel();
+      _removeTimerMenuItems();
     }
     widget._soundPlayer.stop();
     super.dispose();
@@ -136,6 +137,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     if (mounted) {
       _setSystemTrayIcon();
+      _addTimerMenuItems(); // Add menu items when timer starts
 
       setState(() {
         _isRunning = true;
@@ -164,6 +166,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (mounted) {
       setState(() {
         _isRunning = false;
+        _isAlarmPlaying = false; // Reset alarm state
         if (!_isWorking) {
           // If in break mode, switch back to work mode
           _isWorking = true;
@@ -176,6 +179,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       });
 
       _resetSystemTrayIcon();
+      _removeTimerMenuItems();
     }
   }
 
@@ -355,5 +359,24 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         ),
       ],
     );
+  }
+
+  static const String _pomodoroTimerSeparatorKey = 'pomodoro_timer_separator';
+  static const String _stopTimerMenuKey = 'stop_timer';
+  void _addTimerMenuItems() {
+    widget._systemTrayService.insertMenuItems([
+      TrayMenuItem(
+        key: _stopTimerMenuKey,
+        label: 'Stop Timer',
+        onClicked: _stopTimer,
+      ),
+      TrayMenuItem.separator(
+        _pomodoroTimerSeparatorKey,
+      ),
+    ], 0); // Insert at index 0 (top of menu)
+  }
+
+  void _removeTimerMenuItems() {
+    widget._systemTrayService.removeMenuItem(_stopTimerMenuKey);
   }
 }

@@ -20,7 +20,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
       await addMenuItems([
         TrayMenuItem(key: 'show_window', label: 'Show Window', onClicked: showWindow),
         TrayMenuItem(key: 'hide_window', label: 'Hide Window', onClicked: hideWindow),
-        TrayMenuItem.separator(),
+        TrayMenuItem.separator('window_separator'),
         TrayMenuItem(key: 'exit_app', label: 'Exit', onClicked: exitApp),
       ]);
 
@@ -98,6 +98,12 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
   @override
   Future<void> addMenuItems(List<TrayMenuItem> items) async {
     _menuItems.addAll(items);
+    await rebuildMenu();
+  }
+
+  @override
+  Future<void> insertMenuItems(List<TrayMenuItem> items, int index) async {
+    _menuItems.insertAll(index, items);
     await rebuildMenu();
   }
 

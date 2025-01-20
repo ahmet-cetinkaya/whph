@@ -13,8 +13,8 @@ class TrayMenuItem {
     this.onClicked,
   });
 
-  static TrayMenuItem separator() => const TrayMenuItem(
-        key: 'separator',
+  static TrayMenuItem separator(String key) => TrayMenuItem(
+        key: key,
         label: '',
         isSeparator: true,
       );
@@ -32,4 +32,5 @@ abstract class ISystemTrayService {
   Future<void> removeMenuItem(String key);
   Future<void> clearMenu();
   Future<void> rebuildMenu();
+  Future<void> insertMenuItems(List<TrayMenuItem> items, int index);
 }
