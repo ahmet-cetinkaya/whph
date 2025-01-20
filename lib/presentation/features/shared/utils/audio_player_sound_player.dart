@@ -5,6 +5,30 @@ import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.d
 
 class AudioPlayerSoundPlayer implements ISoundPlayer {
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final Map<String, Uint8List> _soundCache = {};
+  bool _isInitialized = false;
+
+  Future<void> _ensureInitialized(String path) async {
+    if (!_soundCache.containsKey(path)) {
+      _soundCache[path] = await File(path).readAsBytes();
+    }
+
+    if (!_isInitialized) {
+      await _audioPlayer.setSourceBytes(_soundCache[path]!);
+      await _audioPlayer.setVolume(0);
+      await _audioPlayer.stop();
+      _isInitialized = true;
+    }
+  }
+
+  @override
+  Future<void> play(String path) async {
+    await _ensureInitialized(path);
+    await _audioPlayer.stop();
+    await _audioPlayer.setSourceBytes(_soundCache[path]!);
+    await _audioPlayer.setVolume(1);
+    await _audioPlayer.resume();
+  }
 
   @override
   void dispose() {
@@ -14,16 +38,6 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   @override
   void pause() {
     _audioPlayer.pause();
-  }
-
-  @override
-  Future<void> play(String path) async {
-    stop();
-
-    Uint8List bytes = await File(path).readAsBytes();
-    _audioPlayer.setSourceBytes(bytes);
-    _audioPlayer.setVolume(1);
-    _audioPlayer.resume();
   }
 
   @override
