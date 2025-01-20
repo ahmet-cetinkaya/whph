@@ -51,9 +51,10 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting tag.");
       }
     }
   }
@@ -69,9 +70,10 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting tag tags.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting tag tags.");
       }
     }
   }

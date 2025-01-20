@@ -30,9 +30,10 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while creating habit.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while creating habit.');
       }
     }
   }

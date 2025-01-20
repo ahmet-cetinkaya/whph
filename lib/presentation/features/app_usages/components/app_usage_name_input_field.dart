@@ -42,14 +42,18 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   }
 
   Future<void> _getAppUsage() async {
-    var query = GetAppUsageQuery(id: widget.id);
-    var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
-    if (mounted) {
+    try {
+      var query = GetAppUsageQuery(id: widget.id);
+      var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       if (mounted) {
         setState(() {
           _appUsage = response;
           _controller.text = _appUsage?.displayName ?? _appUsage?.name ?? '';
         });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load app usage.');
       }
     }
   }
@@ -70,9 +74,10 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       widget._appUsagesService.onAppUsageSaved.value = result;
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving app usage.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while saving app usage.');
       }
     }
   }

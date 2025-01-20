@@ -7,61 +7,62 @@ import 'package:whph/domain/features/shared/constants/app_info.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 
 class ErrorHelper {
-  static void showError(BuildContext context, dynamic error) {
+  static void showError(BuildContext context, Exception error) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(error.toString()), backgroundColor: AppTheme.errorColor));
   }
 
-  static void showUnexpectedError(BuildContext context, dynamic error,
+  static void showUnexpectedError(BuildContext context, Exception error, StackTrace stackTrace,
       {String message = 'An unexpected error occurred.'}) {
     if (kDebugMode) {
-      throw error;
+      print('Error: $error');
+      print('Stack trace: $stackTrace');
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 9,
-              child: Text(message),
+              child: Text(message, style: const TextStyle(color: Colors.white)),
             ),
-            Expanded(
-              flex: 1,
-              child: TextButton.icon(
-                icon: Icon(Icons.send),
-                label: Text('Report'),
-                onPressed: () {
-                  final Uri emailLaunchUri = Uri(
-                    scheme: 'mailto',
-                    path: AppInfo.supportEmail,
-                    queryParameters: {
-                      'subject': 'WHPH App: Unexpected Error Report',
-                      'body': "Hi, I encountered an unexpected error while using the WHPH app. \n\n"
-                          "Here's information that might help you diagnose the issue: \n"
-                          "App Version: ${AppInfo.version} \n"
-                          "Device Info: ${Platform.localHostname} \n"
-                          "OS: ${Platform.operatingSystem} \n"
-                          "OS Version: ${Platform.operatingSystemVersion} \n"
-                          "Error Message: \n"
-                          "```\n"
-                          "${error.toString()} \n"
-                          "```\n\n"
-                          "Please help me resolve this issue. \n\n"
-                          "Thanks!",
-                    },
-                  );
-                  launchUrl(emailLaunchUri);
-                },
-                style: ButtonStyle(
-                  foregroundColor: WidgetStateProperty.all<Color>(AppTheme.surface1),
-                ),
-              ),
+            TextButton.icon(
+              icon: const Icon(Icons.send, color: Colors.white),
+              label: const Text('Report', style: TextStyle(color: Colors.white)),
+              onPressed: () => _sendErrorReport(error, stackTrace),
             ),
           ],
         ),
         backgroundColor: AppTheme.errorColor,
       ),
+    );
+  }
+
+  static void _sendErrorReport(Exception error, StackTrace stackTrace) {
+    final errorBody = "Hi, I encountered an unexpected error while using the WHPH app. \n\n"
+        "Here's information that might help you diagnose the issue: \n"
+        "App Version: ${AppInfo.version} \n"
+        "Device Info: ${Platform.localHostname} \n"
+        "OS: ${Platform.operatingSystem} \n"
+        "OS Version: ${Platform.operatingSystemVersion} \n"
+        "Error Message: \n"
+        "```\n"
+        "$error:  \n"
+        "Stack Trace: \n"
+        "$stackTrace \n"
+        "```\n\n"
+        "Please help me resolve this issue. \n\n"
+        "Thanks!";
+
+    final subject = Uri.encodeFull('WHPH App: Unexpected Error Report');
+    final body = Uri.encodeFull(errorBody).replaceAll('+', '%20');
+
+    final emailUrl = 'mailto:${AppInfo.supportEmail}?subject=$subject&body=$body';
+
+    launchUrl(
+      Uri.parse(emailUrl),
+      mode: LaunchMode.platformDefault,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/shared/utils/network_utils.dart';
@@ -15,7 +16,8 @@ class SyncQrCodeButton extends StatelessWidget {
     String? ipAddress = await NetworkUtils.getLocalIpAddress();
     if (ipAddress == null) {
       if (context.mounted) {
-        ErrorHelper.showError(context, 'Error: Unable to fetch local IP address.');
+        BusinessException exception = BusinessException('Error: Unable to fetch local IP address.');
+        ErrorHelper.showError(context, exception);
       }
       return;
     }

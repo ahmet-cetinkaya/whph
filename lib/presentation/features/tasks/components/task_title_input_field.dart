@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
@@ -41,13 +42,19 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   }
 
   Future<void> _getTask() async {
-    var query = GetTaskQuery(id: widget.taskId);
-    var result = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-    if (mounted) {
-      setState(() {
-        _task = result;
-        _titleController.text = _task!.title;
-      });
+    try {
+      var query = GetTaskQuery(id: widget.taskId);
+      var result = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      if (mounted) {
+        setState(() {
+          _task = result;
+          _titleController.text = _task!.title;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load task.');
+      }
     }
   }
 
@@ -59,19 +66,25 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
   }
 
   Future<void> _updateTask() async {
-    var command = SaveTaskCommand(
-      id: widget.taskId,
-      title: _titleController.text,
-      deadlineDate: _task!.deadlineDate,
-      description: _task!.description,
-      estimatedTime: _task!.estimatedTime,
-      isCompleted: _task!.isCompleted,
-      plannedDate: _task!.plannedDate,
-      priority: _task!.priority,
-    );
-    var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+    try {
+      var command = SaveTaskCommand(
+        id: widget.taskId,
+        title: _titleController.text,
+        deadlineDate: _task!.deadlineDate,
+        description: _task!.description,
+        estimatedTime: _task!.estimatedTime,
+        isCompleted: _task!.isCompleted,
+        plannedDate: _task!.plannedDate,
+        priority: _task!.priority,
+      );
+      var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
-    widget._tasksService.onTaskSaved.value = result;
+      widget._tasksService.onTaskSaved.value = result;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to update task.');
+      }
+    }
   }
 
   @override

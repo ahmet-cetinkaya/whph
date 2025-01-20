@@ -9,6 +9,7 @@ import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/components/app_logo.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
@@ -35,34 +36,46 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
   }
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
-    var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
-    var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
-    if (mounted) {
-      setState(() {
-        list = response;
-      });
+    try {
+      var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
+      var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
+      if (mounted) {
+        setState(() {
+          list = response;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load sync devices.');
+      }
     }
   }
 
   Future<void> _removeDevice(String id) async {
-    var command = DeleteSyncDeviceCommand(id: id);
-    await widget.mediator.send<DeleteSyncDeviceCommand, void>(command);
-    if (mounted) {
-      setState(() {
-        list!.items.removeWhere((item) => item.id == id);
-      });
+    try {
+      var command = DeleteSyncDeviceCommand(id: id);
+      await widget.mediator.send<DeleteSyncDeviceCommand, void>(command);
+      if (mounted) {
+        setState(() {
+          list!.items.removeWhere((item) => item.id == id);
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to remove sync device.');
+      }
     }
   }
 
   bool _isSyncing = false;
   Future<void> _sync() async {
+    if (_isSyncing) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Syncing...'),
       ),
     );
-
-    if (_isSyncing) return;
 
     if (mounted) {
       setState(() {
@@ -70,13 +83,19 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
       });
     }
 
-    var command = SyncCommand();
-    await widget.mediator.send<SyncCommand, void>(command);
-
-    if (mounted) {
-      setState(() {
-        _isSyncing = false;
-      });
+    try {
+      var command = SyncCommand();
+      await widget.mediator.send<SyncCommand, void>(command);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to sync devices.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSyncing = false;
+        });
+      }
     }
   }
 

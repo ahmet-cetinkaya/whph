@@ -9,6 +9,7 @@ import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/shared/components/detail_table.dart';
@@ -60,15 +61,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _getHabit() async {
-    var query = GetHabitQuery(id: widget.habitId);
-    var result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+    try {
+      var query = GetHabitQuery(id: widget.habitId);
+      var result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
 
-    if (mounted) {
-      setState(() {
-        _habit = result;
-        _nameController.text = _habit!.name;
-        _descriptionController.text = _habit!.description;
-      });
+      if (mounted) {
+        setState(() {
+          _habit = result;
+          _nameController.text = _habit!.name;
+          _descriptionController.text = _habit!.description;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit details.');
+      }
     }
   }
 
@@ -118,9 +125,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           _habitTags = response;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting habit tags.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting habit tags.");
       }
     }
   }
@@ -130,9 +138,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       var command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
       await widget._mediator.send(command);
       await _getHabitTags();
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while adding tag.");
       }
     }
   }
@@ -142,9 +151,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       var command = RemoveHabitTagCommand(id: id);
       await widget._mediator.send(command);
       await _getHabitTags();
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while removing tag.");
       }
     }
   }
@@ -169,14 +179,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _saveHabit() async {
-    var command = SaveHabitCommand(
-      id: widget.habitId,
-      name: _nameController.text,
-      description: _descriptionController.text,
-    );
-    var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+    try {
+      var command = SaveHabitCommand(
+        id: widget.habitId,
+        name: _nameController.text,
+        description: _descriptionController.text,
+      );
+      var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-    widget._habitsService.onHabitSaved.value = result;
+      widget._habitsService.onHabitSaved.value = result;
+    } on BusinessException catch (e) {
+      if (mounted) {
+        ErrorHelper.showError(context, e);
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to save habit.');
+      }
+    }
   }
 
   void _previousMonth() {

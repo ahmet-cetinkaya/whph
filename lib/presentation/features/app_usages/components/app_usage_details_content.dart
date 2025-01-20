@@ -64,9 +64,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting app usage.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting app usage.");
       }
     }
   }
@@ -84,9 +85,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       widget._appUsagesService.onAppUsageSaved.value = result;
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while saving app usage.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while saving app usage.");
       }
     }
   }
@@ -102,9 +104,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting app usage tags.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting app usage tags.");
       }
     }
   }
@@ -115,9 +118,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       await widget._mediator.send(command);
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while adding tag.");
       }
     }
 
@@ -130,9 +134,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       await widget._mediator.send(command);
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while removing tag.");
       }
     }
 

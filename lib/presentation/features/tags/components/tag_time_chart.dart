@@ -62,9 +62,9 @@ class _TagTimeChartState extends State<TagTimeChart> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Error loading tag times");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: "Error loading tag times");
         setState(() => _isLoading = false);
       }
     }

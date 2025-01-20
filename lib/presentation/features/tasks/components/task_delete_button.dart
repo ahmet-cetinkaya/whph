@@ -36,9 +36,10 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
       }
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while deleting task.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while deleting task.');
       }
     }
   }

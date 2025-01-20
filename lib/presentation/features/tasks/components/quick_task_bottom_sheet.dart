@@ -77,9 +77,9 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Error creating task');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Error creating task');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

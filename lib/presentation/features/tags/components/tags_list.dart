@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
 import 'package:whph/presentation/features/shared/components/load_more_button.dart';
 
@@ -38,26 +39,32 @@ class _TagsListState extends State<TagsList> {
   }
 
   Future<void> _getTags({int pageIndex = 0}) async {
-    var query = GetListTagsQuery(
-      pageIndex: pageIndex,
-      pageSize: _pageSize,
-      filterByTags: widget.filterByTags,
-      showArchived: widget.showArchived,
-    );
-    var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+    try {
+      var query = GetListTagsQuery(
+        pageIndex: pageIndex,
+        pageSize: _pageSize,
+        filterByTags: widget.filterByTags,
+        showArchived: widget.showArchived,
+      );
+      var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-    if (mounted) {
-      setState(() {
-        if (_tags == null) {
-          _tags = result;
-        } else {
-          _tags!.items.addAll(result.items);
-        }
-      });
-    }
+      if (mounted) {
+        setState(() {
+          if (_tags == null) {
+            _tags = result;
+          } else {
+            _tags!.items.addAll(result.items);
+          }
+        });
+      }
 
-    if (widget.onList != null) {
-      widget.onList!(_tags!.items.length);
+      if (widget.onList != null) {
+        widget.onList!(_tags!.items.length);
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tags.');
+      }
     }
   }
 

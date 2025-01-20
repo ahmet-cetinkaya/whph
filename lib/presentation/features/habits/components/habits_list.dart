@@ -5,6 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/features/shared/components/load_more_button.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class HabitsList extends StatefulWidget {
   final Mediator mediator;
@@ -43,24 +44,33 @@ class _HabitsListState extends State<HabitsList> {
   }
 
   Future<void> _getHabits({int pageIndex = 0}) async {
-    var query = GetListHabitsQuery(
-        pageIndex: pageIndex, pageSize: widget.size, excludeCompleted: widget.mini, filterByTags: widget.filterByTags);
-    var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
+    try {
+      var query = GetListHabitsQuery(
+          pageIndex: pageIndex,
+          pageSize: widget.size,
+          excludeCompleted: widget.mini,
+          filterByTags: widget.filterByTags);
+      var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      if (_habits == null) {
-        _habits = result;
-        return;
+      setState(() {
+        if (_habits == null) {
+          _habits = result;
+          return;
+        }
+
+        _habits!.items.addAll(result.items);
+        _habits!.pageIndex = result.pageIndex;
+      });
+
+      if (widget.onList != null) {
+        widget.onList!(_habits!.items.length);
       }
-
-      _habits!.items.addAll(result.items);
-      _habits!.pageIndex = result.pageIndex;
-    });
-
-    if (widget.onList != null) {
-      widget.onList!(_habits!.items.length);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habits.');
+      }
     }
   }
 

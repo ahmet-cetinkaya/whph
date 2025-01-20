@@ -76,9 +76,10 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       widget.onToggleCompleted();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while saving task.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while saving task.');
       }
     }
   }

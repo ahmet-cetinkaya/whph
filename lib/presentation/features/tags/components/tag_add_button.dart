@@ -40,12 +40,13 @@ class _TagAddButtonState extends State<TagAddButton> {
       }
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while creating tag.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while creating tag.');
       }
     } finally {
-      if (!mounted) {
+      if (mounted) {
         setState(() {
           isLoading = false;
         });

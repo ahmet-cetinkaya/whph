@@ -50,11 +50,15 @@ class _AppUsageCardState extends State<AppUsageCard> {
           _appUsageTags = result;
         });
       }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } on BusinessException catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: 'Unexpected error occurred while getting app usage tags.');
+        ErrorHelper.showUnexpectedError(context, e, stackTrace,
+            message: 'Error occurred while getting app usage tags.');
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while getting app usage tags.');
       }
     }
   }

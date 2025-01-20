@@ -4,6 +4,7 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -55,27 +56,34 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   }
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
-    var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 20, search: search);
-    var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+    try {
+      var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 20, search: search);
+      var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-    if (mounted) {
-      setState(() {
-        if (widget.initialSelectedTags.isNotEmpty) {
-          result.items.removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
-        }
+      if (mounted) {
+        setState(() {
+          if (widget.initialSelectedTags.isNotEmpty) {
+            result.items
+                .removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
+          }
 
-        if (widget.excludeTagIds.isNotEmpty) {
-          result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
-        }
+          if (widget.excludeTagIds.isNotEmpty) {
+            result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
+          }
 
-        if (_tags == null) {
-          _tags = result;
-          _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
-        } else {
-          _tags!.items.addAll(result.items);
-          _tags!.pageIndex = result.pageIndex;
-        }
-      });
+          if (_tags == null) {
+            _tags = result;
+            _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
+          } else {
+            _tags!.items.addAll(result.items);
+            _tags!.pageIndex = result.pageIndex;
+          }
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tags.');
+      }
     }
   }
 

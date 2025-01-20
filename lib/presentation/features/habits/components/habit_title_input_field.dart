@@ -4,6 +4,7 @@ import 'package:whph/application/features/habits/commands/save_habit_command.dar
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class HabitNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -38,25 +39,37 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
   }
 
   Future<void> _getHabit() async {
-    var query = GetHabitQuery(id: widget.habitId);
-    var response = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
-    if (mounted) {
-      setState(() {
-        habit = response;
-        _titleController.text = habit!.name;
-      });
+    try {
+      var query = GetHabitQuery(id: widget.habitId);
+      var response = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      if (mounted) {
+        setState(() {
+          habit = response;
+          _titleController.text = habit!.name;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit.');
+      }
     }
   }
 
   Future<void> _updateHabit() async {
-    var command = SaveHabitCommand(
-      id: widget.habitId,
-      name: _titleController.text,
-      description: habit!.description,
-    );
-    var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+    try {
+      var command = SaveHabitCommand(
+        id: widget.habitId,
+        name: _titleController.text,
+        description: habit!.description,
+      );
+      var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-    widget._habitsService.onHabitSaved.value = result;
+      widget._habitsService.onHabitSaved.value = result;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to update habit.');
+      }
+    }
   }
 
   @override

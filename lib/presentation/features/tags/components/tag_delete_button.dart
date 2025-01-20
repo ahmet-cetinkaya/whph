@@ -37,8 +37,11 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
       }
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (error) {
-      if (context.mounted) ErrorHelper.showError(context, error);
+    } catch (e, stackTrace) {
+      if (context.mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while deleting tag.');
+      }
     }
   }
 

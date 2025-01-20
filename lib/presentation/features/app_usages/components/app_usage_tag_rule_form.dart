@@ -74,9 +74,10 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           widget.onSave();
           _resetForm();
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         if (!mounted) return;
-        ErrorHelper.showUnexpectedError(context, e);
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Unexpected error occurred while adding app usage tag rule.');
       }
     }
   }

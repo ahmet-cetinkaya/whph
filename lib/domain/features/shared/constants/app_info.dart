@@ -1,6 +1,6 @@
 class AppInfo {
   static const String name = "WHPH";
-  static const String version = "0.0.2";
+  static const String version = "0.1.0";
   static const String description = "WHPH is a comprehensive app designed to enhance your personal productivity; "
       "it allows you to effectively manage your tasks, develop new habits, and make the most of your time, "
       "while also tracking how much time you spend on different applications to strengthen your focus. "
@@ -10,5 +10,5 @@ class AppInfo {
   static const String logoPath = "lib/domain/features/shared/assets/whph_logo.png";
   static const String supportUrl = "https://buymeacoffee.com/ahmetcetinkaya";
   static const String updateCheckerUrl = "https://api.github.com/repos/ahmet-cetinkaya/whph/releases/latest";
-  static const String supportEmail = "ahmetcetinkaya@tutamail.com";
+  static const String supportEmail = "contact@ahmetcetinkaya.me";
 }

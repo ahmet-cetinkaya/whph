@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/features/shared/utils/date_time_helper.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class HabitCard extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -48,47 +49,65 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Future<void> _getHabitRecords() async {
-    var query = GetListHabitRecordsQuery(
-      pageIndex: 0,
-      pageSize: widget.dateRange,
-      habitId: widget.habit.id,
-      startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
-      endDate: DateTime.now(),
-    );
-    var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+    try {
+      var query = GetListHabitRecordsQuery(
+        pageIndex: 0,
+        pageSize: widget.dateRange,
+        habitId: widget.habit.id,
+        startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
+        endDate: DateTime.now(),
+      );
+      var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
-    if (mounted) {
-      setState(() {
-        _habitRecords = response;
-      });
+      if (mounted) {
+        setState(() {
+          _habitRecords = response;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit records.');
+      }
     }
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
-    var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    try {
+      var command = AddHabitRecordCommand(habitId: habitId, date: date);
+      var response = await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
-    if (mounted) {
-      setState(() {
-        _habitRecords = null;
-        _getHabitRecords();
-      });
+      if (mounted) {
+        setState(() {
+          _habitRecords = null;
+          _getHabitRecords();
+        });
+      }
+      widget.onRecordCreated?.call(response);
+      widget._soundPlayer.play(SharedSounds.done);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to create habit record.');
+      }
     }
-    widget.onRecordCreated?.call(AddHabitRecordCommandResponse());
-    widget._soundPlayer.play(SharedSounds.done);
   }
 
   Future<void> _deleteHabitRecord(String id) async {
-    var command = DeleteHabitRecordCommand(id: id);
-    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+    try {
+      var command = DeleteHabitRecordCommand(id: id);
+      var response = await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
-    if (mounted) {
-      setState(() {
-        _habitRecords = null;
-        _getHabitRecords();
-      });
+      if (mounted) {
+        setState(() {
+          _habitRecords = null;
+          _getHabitRecords();
+        });
+      }
+      widget.onRecordDeleted?.call(response);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to delete habit record.');
+      }
     }
-    widget.onRecordDeleted?.call(DeleteHabitRecordCommandResponse());
   }
 
   @override

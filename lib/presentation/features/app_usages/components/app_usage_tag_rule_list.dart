@@ -194,8 +194,8 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
         final command = DeleteAppUsageTagRuleCommand(id: rule.id);
         await widget.mediator.send(command);
         if (context.mounted) await _loadRules(); // Refresh list after successful deletion
-      } catch (e) {
-        if (context.mounted) ErrorHelper.showUnexpectedError(context, e);
+      } catch (e, stackTrace) {
+        if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
       }
     }
   }

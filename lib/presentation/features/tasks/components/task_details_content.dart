@@ -82,9 +82,10 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           _descriptionController.text = _task!.description ?? '';
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting task.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting task.");
       }
     }
   }
@@ -100,9 +101,10 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while getting task tags.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while getting task tags.");
       }
     }
   }
@@ -123,9 +125,10 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       widget._tasksService.onTaskSaved.value = result;
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while saving task.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while saving task.");
       }
     }
   }
@@ -137,9 +140,10 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       await _getTaskTags();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while adding tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while adding tag.");
       }
     }
   }
@@ -151,9 +155,10 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       await _getTaskTags();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, message: "Unexpected error occurred while removing tag.");
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while removing tag.");
       }
     }
   }

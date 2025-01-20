@@ -32,13 +32,17 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
   }
 
   Future<void> _getTagName() async {
-    var query = GetTagQuery(id: widget.id);
-    var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
-    if (mounted) {
+    try {
+      var query = GetTagQuery(id: widget.id);
+      var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       if (mounted) {
         setState(() {
           _controller.text = response.name;
         });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tag name.');
       }
     }
   }
@@ -54,8 +58,11 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
         await widget._mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
       } on BusinessException catch (e) {
         if (context.mounted) ErrorHelper.showError(context, e);
-      } catch (e) {
-        if (context.mounted) ErrorHelper.showError(context, e);
+      } catch (e, stackTrace) {
+        if (context.mounted) {
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+              message: 'Unexpected error occurred while saving tag.');
+        }
       }
     });
   }

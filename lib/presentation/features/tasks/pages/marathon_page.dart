@@ -6,6 +6,7 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
@@ -134,25 +135,29 @@ class _MarathonPageState extends State<MarathonPage> {
 
     // Update selected task after dialog closes
     if (_selectedTask?.id == taskId) {
-      var query = GetTaskQuery(
-        id: taskId,
-      );
-      var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-      var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-          GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
+      try {
+        var query = GetTaskQuery(id: taskId);
+        var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+        var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+            GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
 
-      if (mounted) {
-        setState(() {
-          _selectedTask = TaskListItem(
-              id: task.id,
-              title: task.title,
-              isCompleted: task.isCompleted,
-              deadlineDate: task.deadlineDate,
-              estimatedTime: task.estimatedTime,
-              plannedDate: task.plannedDate,
-              priority: task.priority,
-              tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
-        });
+        if (mounted) {
+          setState(() {
+            _selectedTask = TaskListItem(
+                id: task.id,
+                title: task.title,
+                isCompleted: task.isCompleted,
+                deadlineDate: task.deadlineDate,
+                estimatedTime: task.estimatedTime,
+                plannedDate: task.plannedDate,
+                priority: task.priority,
+                tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+          });
+        }
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load task details.');
+        }
       }
     }
 
@@ -167,30 +172,44 @@ class _MarathonPageState extends State<MarathonPage> {
       duration: elapsed.inSeconds,
     );
 
-    await _mediator.send(command);
-    _refreshSelectedTask(); // Refresh to show updated duration
+    try {
+      await _mediator.send(command);
+      _refreshSelectedTask(); // Refresh to show updated duration
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Failed to save task time record.');
+      }
+    }
   }
 
   Future<void> _refreshSelectedTask() async {
     if (_selectedTask == null) return;
 
-    var query = GetTaskQuery(id: _selectedTask!.id);
-    var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-    var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-        GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+    try {
+      var query = GetTaskQuery(id: _selectedTask!.id);
+      var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+          GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
 
-    if (mounted) {
-      setState(() {
-        _selectedTask = TaskListItem(
-            id: task.id,
-            title: task.title,
-            isCompleted: task.isCompleted,
-            deadlineDate: task.deadlineDate,
-            estimatedTime: task.estimatedTime,
-            plannedDate: task.plannedDate,
-            priority: task.priority,
-            tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
-      });
+      if (mounted) {
+        setState(() {
+          _selectedTask = TaskListItem(
+              id: task.id,
+              title: task.title,
+              isCompleted: task.isCompleted,
+              deadlineDate: task.deadlineDate,
+              estimatedTime: task.estimatedTime,
+              plannedDate: task.plannedDate,
+              priority: task.priority,
+              tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: 'Failed to refresh selected task.');
+      }
     }
   }
 

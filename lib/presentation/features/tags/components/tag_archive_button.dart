@@ -4,6 +4,7 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
@@ -34,13 +35,19 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
 
   Future<void> _loadArchiveStatus() async {
     final mediator = container.resolve<Mediator>();
-    final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
-      GetTagQuery(id: widget.tagId),
-    );
-    if (mounted) {
-      setState(() {
-        _isArchived = tag.isArchived;
-      });
+    try {
+      final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
+        GetTagQuery(id: widget.tagId),
+      );
+      if (mounted) {
+        setState(() {
+          _isArchived = tag.isArchived;
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load archive status.');
+      }
     }
   }
 
@@ -69,23 +76,30 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
 
     if (confirmed == true) {
       final mediator = container.resolve<Mediator>();
-      final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
-        GetTagQuery(id: widget.tagId),
-      );
+      try {
+        final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
+          GetTagQuery(id: widget.tagId),
+        );
 
-      await mediator.send(SaveTagCommand(
-        id: widget.tagId,
-        name: tag.name,
-        isArchived: newStatus,
-      ));
+        await mediator.send(SaveTagCommand(
+          id: widget.tagId,
+          name: tag.name,
+          isArchived: newStatus,
+        ));
 
-      if (mounted) {
-        setState(() {
-          _isArchived = newStatus;
-        });
+        if (mounted) {
+          setState(() {
+            _isArchived = newStatus;
+          });
+        }
+
+        widget.onArchiveSuccess?.call();
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+              message: 'Failed to toggle archive status.');
+        }
       }
-
-      widget.onArchiveSuccess?.call();
     }
   }
 

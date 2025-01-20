@@ -39,7 +39,7 @@ void main() {
   // The following template shows how to write tests ensuring your migrations
   // preserve existing data.
   // Testing this can be useful for migrations that change existing columns
-  // (e.g. by alterating their type or constraints). Migrations that only add
+  // (e.g. by altercating their type or constraints). Migrations that only add
   // tables or columns typically don't need these advanced tests. For more
   // information, see https://drift.simonbinder.eu/migrations/tests/#verifying-data-integrity
   // TODO: This generated template shows how these tests could be written. Adopt

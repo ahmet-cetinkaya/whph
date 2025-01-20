@@ -28,7 +28,7 @@ class SyncQrScanButton extends StatelessWidget {
     var parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
     if (parsedMessage == null) {
       if (context.mounted) {
-        ErrorHelper.showError(context, 'Error: Unable to parse scanned message.');
+        ErrorHelper.showError(context, BusinessException('Error: Unable to parse scanned message.'));
       }
       return;
     }
@@ -40,7 +40,7 @@ class SyncQrScanButton extends StatelessWidget {
     String? toIP = await NetworkUtils.getLocalIpAddress();
     if (toIP == null) {
       if (context.mounted) {
-        ErrorHelper.showError(context, 'Error: Unable to fetch local IP address.');
+        ErrorHelper.showError(context, BusinessException('Error: Unable to fetch local IP address.'));
       }
       return;
     }
@@ -74,9 +74,9 @@ class SyncQrScanButton extends StatelessWidget {
       await _mediator.send<SyncCommand, SyncCommandResponse>(SyncCommand());
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e,
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
             message: 'Unexpected error occurred while syncing. You must devices are connected to the same network.');
       }
     }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/presentation/features/shared/components/load_more_button.dart';
+import 'package:whph/presentation/features/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TaskList extends StatefulWidget {
@@ -93,33 +94,42 @@ class _TaskListState extends State<TaskList> {
       _isLoading = true;
     });
 
-    var query = GetListTasksQuery(
-        pageIndex: pageIndex,
-        pageSize: widget.size,
-        filterByPlannedStartDate: widget.filterByPlannedStartDate,
-        filterByPlannedEndDate: widget.filterByPlannedEndDate,
-        filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
-        filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
-        filterDateOr: widget.filterDateOr,
-        filterByTags: widget.filterByTags,
-        filterByCompleted: widget.filterByCompleted,
-        searchQuery: widget.search);
-    var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
+    try {
+      var query = GetListTasksQuery(
+          pageIndex: pageIndex,
+          pageSize: widget.size,
+          filterByPlannedStartDate: widget.filterByPlannedStartDate,
+          filterByPlannedEndDate: widget.filterByPlannedEndDate,
+          filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
+          filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
+          filterDateOr: widget.filterDateOr,
+          filterByTags: widget.filterByTags,
+          filterByCompleted: widget.filterByCompleted,
+          searchQuery: widget.search);
+      var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
-    if (mounted) {
-      setState(() {
-        if (_tasks == null || pageIndex == 0) {
-          _tasks = result;
-        } else {
-          _tasks!.items.addAll(result.items);
-          _tasks!.pageIndex = result.pageIndex;
+      if (mounted) {
+        setState(() {
+          if (_tasks == null || pageIndex == 0) {
+            _tasks = result;
+          } else {
+            _tasks!.items.addAll(result.items);
+            _tasks!.pageIndex = result.pageIndex;
+          }
+          _isLoading = false;
+        });
+
+        if (widget.onList != null) {
+          widget.onList!(_tasks!.items.length);
         }
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tasks.');
+      }
+      setState(() {
         _isLoading = false;
       });
-
-      if (widget.onList != null) {
-        widget.onList!(_tasks!.items.length);
-      }
     }
   }
 
