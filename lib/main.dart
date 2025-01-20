@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/api/api.dart';
@@ -8,20 +7,38 @@ import 'package:whph/application/features/app_usages/commands/start_track_app_us
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
+import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
+import 'package:whph/presentation/features/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/presentation_container.dart';
+import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 
 late final IContainer container;
+late final ISystemTrayService _systemTrayService;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   container = acore.Container();
   initializeJsonMapper();
-
   registerPersistence(container);
   registerApplication(container);
+  registerInfrastructure(container);
   registerPresentation(container);
+
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+
+    // Update window manager settings
+    await windowManager.setPreventClose(true);
+    await windowManager.setMinimumSize(const Size(800, 600));
+    await windowManager.center();
+
+    _systemTrayService = container.resolve<ISystemTrayService>();
+    await _systemTrayService.init();
+  }
 
   runBackgroundWorkers();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) startWebSocketServer();
@@ -32,10 +49,14 @@ void main() {
 void runBackgroundWorkers() {
   var mediator = container.resolve<Mediator>();
 
-  if (Platform.isAndroid || Platform.isIOS) {
-    var startSyncCommand = StartSyncCommand();
-    mediator.send(startSyncCommand);
+  if (!(Platform.isAndroid || Platform.isIOS)) {
+    var startTrackAppUsagesCommand = StartTrackAppUsagesCommand();
+    mediator.send(startTrackAppUsagesCommand);
+    return;
   }
+
+  var startSyncCommand = StartSyncCommand();
+  mediator.send(startSyncCommand);
 
   var startTrackAppUsagesCommand = StartTrackAppUsagesCommand();
   mediator.send(startTrackAppUsagesCommand);

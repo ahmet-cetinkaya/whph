@@ -42,6 +42,8 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
+  tray_manager: ^0.2.0
+  window_manager: ^0.4.3
   test: ^1.25.8
 
   # Data
@@ -114,6 +116,8 @@ flutter:
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
     - lib/presentation/features/shared/assets/sounds/level-up-191997.mp3
+    - lib/domain/features/shared/assets/whph_logo_adaptive_fg.png
+    - lib/domain/features/shared/assets/whph_logo_adaptive_fg.ico
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

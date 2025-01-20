@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:whph/domain/features/shared/constants/app_assets.dart';
 
 class AppLogo extends StatelessWidget {
   final double width;
@@ -9,7 +10,7 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'lib/domain/features/shared/assets/whph_logo_adaptive_fg.png',
+      AppAssets.logoAdaptiveFg,
       width: width,
       height: height,
     );
