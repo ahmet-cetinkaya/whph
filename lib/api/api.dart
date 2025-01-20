@@ -42,11 +42,20 @@ Future<void> _handleWebSocketMessage(message, WebSocket socket) async {
     case 'sync':
       var controller = SyncController();
       var syncDataDto = SyncDataDto.fromJson(parsedMessage.data);
-      var response = await controller.sync(syncDataDto);
+      try {
+        var response = await controller.sync(syncDataDto);
 
-      if (kDebugMode) print('Sending response: ${JsonMapper.serialize(response)}');
-      WebSocketMessage responseMessage = WebSocketMessage(type: 'sync', data: response);
-      socket.add(JsonMapper.serialize(responseMessage));
+        WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
+          'syncDataDto': response.syncDataDto,
+          'success': true,
+          'timestamp': DateTime.now().toIso8601String()
+        });
+        socket.add(JsonMapper.serialize(responseMessage));
+      } catch (e) {
+        WebSocketMessage errorMessage =
+            WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
+        socket.add(JsonMapper.serialize(errorMessage));
+      }
       break;
 
     default:

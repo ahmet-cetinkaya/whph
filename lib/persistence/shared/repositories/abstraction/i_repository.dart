@@ -11,6 +11,7 @@ class SyncData<T extends BaseEntity> {
   SyncData({required this.createSync, required this.updateSync, required this.deleteSync});
 }
 
-abstract class IRepository<T extends BaseEntity, TId> extends core.IRepository<T, TId> {
+abstract class IRepository<T extends BaseEntity<TId>, TId> extends core.IRepository<T, TId> {
   Future<SyncData<T>> getSyncData(DateTime lastSyncDate);
+  Future<void> hardDeleteSoftDeleted(DateTime beforeDate);
 }

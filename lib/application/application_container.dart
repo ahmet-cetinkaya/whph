@@ -299,16 +299,21 @@ void registerSyncFeature(IContainer container, Mediator mediator) {
   );
   mediator.registerHandler<SyncCommand, SyncCommandResponse, SyncCommandHandler>(
     () => SyncCommandHandler(
-        syncDeviceRepository: container.resolve<ISyncDeviceRepository>(),
-        appUsageRepository: container.resolve<IAppUsageRepository>(),
-        appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
-        habitRepository: container.resolve<IHabitRepository>(),
-        habitRecordRepository: container.resolve<IHabitRecordRepository>(),
-        tagRepository: container.resolve<ITagRepository>(),
-        tagTagRepository: container.resolve<ITagTagRepository>(),
-        taskRepository: container.resolve<ITaskRepository>(),
-        taskTagRepository: container.resolve<ITaskTagRepository>(),
-        settingRepository: container.resolve<ISettingRepository>()),
+      appUsageRepository: container.resolve<IAppUsageRepository>(),
+      appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
+      appUsageTagRuleRepository: container.resolve<IAppUsageTagRuleRepository>(),
+      appUsageTimeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>(),
+      habitRecordRepository: container.resolve<IHabitRecordRepository>(),
+      habitRepository: container.resolve<IHabitRepository>(),
+      habitTagRepository: container.resolve<IHabitTagsRepository>(),
+      settingRepository: container.resolve<ISettingRepository>(),
+      syncDeviceRepository: container.resolve<ISyncDeviceRepository>(),
+      tagRepository: container.resolve<ITagRepository>(),
+      tagTagRepository: container.resolve<ITagTagRepository>(),
+      taskRepository: container.resolve<ITaskRepository>(),
+      taskTagRepository: container.resolve<ITaskTagRepository>(),
+      taskTimeRecordRepository: container.resolve<ITaskTimeRecordRepository>(),
+    ),
   );
   mediator.registerHandler<StartSyncCommand, StartSyncCommandResponse, StartSyncCommandHandler>(
     () => StartSyncCommandHandler(container.resolve<ISyncService>()),

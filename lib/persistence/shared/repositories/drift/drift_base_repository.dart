@@ -7,8 +7,8 @@ import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/abstraction/i_repository.dart';
 
-abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends Object, TTable extends Table>
-    implements IRepository<TEntity, TEntityId> {
+abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntityId extends Object,
+    TTable extends Table> implements IRepository<TEntity, TEntityId> {
   @protected
   final AppDatabase database;
   @protected
@@ -145,6 +145,14 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity, TEntityId extends
   Future<void> delete(TEntity item) async {
     item.deletedDate = DateTime.now().toUtc();
     await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(toCompanion(item));
+  }
+
+  @override
+  Future<void> hardDeleteSoftDeleted(DateTime beforeDate) async {
+    await database.customStatement(
+      'DELETE FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date < ?',
+      [Variable.withDateTime(beforeDate)],
+    );
   }
 
   @override

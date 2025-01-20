@@ -14,4 +14,13 @@ class AppUsageTimeRecord extends BaseEntity<String> {
     required this.appUsageId,
     required this.duration,
   });
+
+  void mapFromInstance(AppUsageTimeRecord record) {
+    super.id = record.id;
+    super.createdDate = record.createdDate;
+    super.modifiedDate = record.modifiedDate;
+    super.deletedDate = record.deletedDate;
+    appUsageId = record.appUsageId;
+    duration = record.duration;
+  }
 }
