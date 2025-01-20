@@ -12,10 +12,10 @@ import 'package:whph/application/features/habits/queries/get_list_habit_tags_que
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/features/shared/components/detail_table.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/components/detail_table.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_tag_section.dart';

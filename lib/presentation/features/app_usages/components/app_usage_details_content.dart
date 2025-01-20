@@ -10,11 +10,11 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
-import 'package:whph/presentation/features/shared/components/color_picker.dart' as color_picker;
-import 'package:whph/presentation/features/shared/components/color_preview.dart';
-import 'package:whph/presentation/features/shared/components/detail_table.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
+import 'package:whph/presentation/shared/components/color_preview.dart';
+import 'package:whph/presentation/shared/components/detail_table.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class AppUsageDetailsContent extends StatefulWidget {

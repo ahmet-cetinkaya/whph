@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/components/app_logo.dart';
-import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
-import 'package:whph/presentation/features/shared/components/filter_icon_button.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/components/app_logo.dart';
+import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/components/filter_icon_button.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';

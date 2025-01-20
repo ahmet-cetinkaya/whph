@@ -8,7 +8,7 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/application/features/shared/models/websocket_request.dart';
+import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';

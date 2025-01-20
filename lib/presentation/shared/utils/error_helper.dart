@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/domain/features/shared/constants/app_info.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class ErrorHelper {
   static void showError(BuildContext context, Exception error) {

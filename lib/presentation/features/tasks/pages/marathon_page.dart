@@ -6,14 +6,14 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';

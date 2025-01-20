@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/components/app_logo.dart';
-import 'package:whph/presentation/features/shared/components/done_overlay.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/components/app_logo.dart';
+import 'package:whph/presentation/shared/components/done_overlay.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';

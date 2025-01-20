@@ -3,18 +3,18 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
-import 'package:whph/presentation/features/shared/components/app_logo.dart';
-import 'package:whph/presentation/features/shared/components/done_overlay.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/utils/update_checker.dart';
+import 'package:whph/presentation/shared/components/app_logo.dart';
+import 'package:whph/presentation/shared/components/done_overlay.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/utils/update_checker.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';

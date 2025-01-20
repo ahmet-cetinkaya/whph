@@ -3,7 +3,7 @@
 // @dart = 2.12
 // ignore_for_file: depend_on_referenced_packages
 
-import 'application/features/shared/models/websocket_request.dart' as x8 show WebSocketMessage;
+import 'application/shared/models/websocket_request.dart' as x8 show WebSocketMessage;
 import 'application/features/sync/commands/sync_command.dart' as x0 show SyncCommandResponse;
 import 'application/features/sync/models/sync_data_dto.dart' as x9 show SyncDataDto;
 import 'core/acore/repository/models/base_entity.dart' as x2 show BaseEntity;
@@ -29,7 +29,7 @@ import 'presentation/features/sync/models/sync_qr_code_message.dart' as x19 show
 // https://github.com/dart-lang/reflectable.
 import 'dart:core';
 import 'package:dart_json_mapper/src/model/annotations.dart' as prefix0;
-import 'package:whph/application/features/shared/models/websocket_request.dart' as prefix1;
+import 'package:whph/application/shared/models/websocket_request.dart' as prefix1;
 import 'package:whph/application/features/sync/commands/sync_command.dart' as prefix3;
 import 'package:whph/application/features/sync/models/sync_data_dto.dart' as prefix2;
 import 'package:whph/core/acore/repository/models/base_entity.dart' as prefix18;

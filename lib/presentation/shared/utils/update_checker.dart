@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-import 'package:whph/domain/features/shared/constants/app_info.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 
 class UpdateChecker {
   static Future<void> checkForUpdates(BuildContext context) async {

@@ -7,13 +7,13 @@ import 'package:whph/application/features/sync/commands/delete_sync_command.dart
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/components/app_logo.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/components/app_logo.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';

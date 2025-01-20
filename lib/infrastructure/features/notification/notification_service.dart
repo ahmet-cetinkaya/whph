@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:whph/domain/features/shared/constants/app_info.dart';
-import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 
 class NotificationService implements INotificationService {
   final List<LocalNotification> _activeDesktopNotifications = [];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/domain/features/shared/constants/app_info.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 
 class SupportMe extends StatelessWidget {
   SupportMe({super.key});

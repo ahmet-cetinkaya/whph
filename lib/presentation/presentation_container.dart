@@ -2,7 +2,7 @@ import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dar
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/features/shared/utils/audio_player_sound_player.dart';
+import 'package:whph/presentation/shared/utils/audio_player_sound_player.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 
 void registerPresentation(IContainer container) {

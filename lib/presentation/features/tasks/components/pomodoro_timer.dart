@@ -8,11 +8,11 @@ import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.d
 import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
-import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
-import 'package:whph/domain/features/shared/constants/app_assets.dart';
-import 'package:whph/presentation/features/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/domain/shared/constants/app_assets.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/api/controllers/sync_controller.dart';
-import 'package:whph/application/features/shared/models/websocket_request.dart';
+import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 
 void startWebSocketServer() async {

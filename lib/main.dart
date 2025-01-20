@@ -10,11 +10,11 @@ import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
-import 'package:whph/presentation/features/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/presentation_container.dart';
 import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
-import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 
 late final IContainer container;
 

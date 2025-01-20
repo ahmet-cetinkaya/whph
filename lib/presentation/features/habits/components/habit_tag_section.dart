@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class HabitTagSection extends StatelessWidget {
   final GetListHabitTagsQueryResponse habitTags;

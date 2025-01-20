@@ -114,17 +114,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/domain/features/shared/assets/
+    - lib/domain/shared/assets/
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
-    - lib/presentation/features/shared/assets/sounds/level-up-191997.mp3
-    - lib/domain/features/shared/assets/whph_logo_adaptive_fg.png
-    - lib/domain/features/shared/assets/whph_logo_adaptive_fg.ico
-    - lib/domain/features/shared/assets/whph_logo_fg_pause.png
-    - lib/domain/features/shared/assets/whph_logo_fg_pause.ico
-    - lib/domain/features/shared/assets/whph_logo_fg_play.png
-    - lib/domain/features/shared/assets/whph_logo_fg_play.ico
-
+    - lib/presentation/shared/assets/sounds/level-up-191997.mp3
+    - lib/domain/shared/assets/whph_logo_adaptive_fg.png
+    - lib/domain/shared/assets/whph_logo_adaptive_fg.ico
+    - lib/domain/shared/assets/whph_logo_fg_pause.png
+    - lib/domain/shared/assets/whph_logo_fg_pause.ico
+    - lib/domain/shared/assets/whph_logo_fg_play.png
+    - lib/domain/shared/assets/whph_logo_fg_play.ico
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

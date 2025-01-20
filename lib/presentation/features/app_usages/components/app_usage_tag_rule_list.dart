@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;

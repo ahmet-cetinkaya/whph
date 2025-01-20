@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart' as domain;
+import 'package:whph/domain/shared/constants/app_theme.dart' as domain;
 
 class AppTheme {
   // Colors

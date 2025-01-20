@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/components/date_range_filter.dart';
 
 class TimeChartFilters extends StatefulWidget {
   final DateTime selectedStartDate;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/domain/features/shared/constants/app_info.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/features/about/components/app_about.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
 import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';

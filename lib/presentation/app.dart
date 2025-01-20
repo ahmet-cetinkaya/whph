@@ -3,7 +3,7 @@ import 'package:whph/presentation/features/app_usages/pages/app_usage_details_pa
 import 'package:whph/presentation/features/app_usages/pages/app_usage_tag_rules_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';

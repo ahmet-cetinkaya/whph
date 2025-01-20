@@ -4,7 +4,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:intl/intl.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {

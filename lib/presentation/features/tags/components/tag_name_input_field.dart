@@ -5,7 +5,7 @@ import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class TagNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();

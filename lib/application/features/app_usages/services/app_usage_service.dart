@@ -11,7 +11,7 @@ import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/domain/features/shared/constants/app_theme.dart';
+import 'package:whph/domain/shared/constants/app_theme.dart';
 import 'abstraction/i_app_usage_service.dart';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';

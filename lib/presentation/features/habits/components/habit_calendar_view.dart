@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class HabitCalendarView extends StatelessWidget {
   final DateTime currentMonth;

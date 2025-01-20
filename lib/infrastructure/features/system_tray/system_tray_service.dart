@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tray_manager/tray_manager.dart';
-import 'package:whph/presentation/features/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:whph/domain/features/shared/constants/app_assets.dart';
+import 'package:whph/domain/shared/constants/app_assets.dart';
 
 class SystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
   final List<TrayMenuItem> _menuItems = [];

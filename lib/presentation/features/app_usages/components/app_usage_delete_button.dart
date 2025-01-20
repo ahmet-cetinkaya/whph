@@ -4,7 +4,7 @@ import 'package:whph/application/features/app_usages/commands/delete_app_usage_c
 import 'package:whph/core/acore/errors/business_exception.dart';
 
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class AppUsageDeleteButton extends StatefulWidget {
   final String appUsageId;

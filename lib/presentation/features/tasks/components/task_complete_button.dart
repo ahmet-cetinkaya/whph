@@ -5,8 +5,8 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class TaskCompleteButton extends StatefulWidget {
   final String taskId;

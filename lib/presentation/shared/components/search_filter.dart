@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/components/filter_icon_button.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/components/filter_icon_button.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class SearchFilter extends StatefulWidget {
   final String? initialValue;

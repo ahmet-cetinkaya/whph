@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
-import 'package:whph/presentation/features/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/components/load_more_button.dart';
 
 class TagsList extends StatefulWidget {
   final Mediator mediator;

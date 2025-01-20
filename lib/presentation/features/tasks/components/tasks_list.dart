@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/presentation/features/shared/components/load_more_button.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 
 class TaskList extends StatefulWidget {

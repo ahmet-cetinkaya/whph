@@ -6,7 +6,7 @@ import 'package:whph/application/features/app_usages/queries/get_app_usage_query
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class AppUsageNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();

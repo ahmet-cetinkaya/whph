@@ -4,9 +4,9 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_delete_button.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_details_content.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_name_input_field.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';

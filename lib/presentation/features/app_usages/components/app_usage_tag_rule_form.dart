@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
-import 'package:whph/presentation/features/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/main.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:whph/presentation/features/shared/components/secondary_app_bar.dart';
+import 'package:whph/presentation/shared/components/secondary_app_bar.dart';
 
 class QRCodeScannerPage extends StatefulWidget {
   static const String route = '/sync/qr-scanner';

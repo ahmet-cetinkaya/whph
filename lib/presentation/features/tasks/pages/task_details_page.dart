@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/features/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';

@@ -3,8 +3,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_form.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_list.dart';
-import 'package:whph/presentation/features/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/shared/constants/navigation_items.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class AppUsageTagRulesPage extends StatefulWidget {
   static const String route = '/app-usages/tag-rules';
