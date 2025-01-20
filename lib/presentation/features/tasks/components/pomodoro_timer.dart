@@ -11,11 +11,14 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/domain/features/shared/constants/app_assets.dart';
+import 'package:whph/presentation/features/shared/services/abstraction/i_system_tray_service.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
   final INotificationService _notificationService = container.resolve<INotificationService>();
+  final ISystemTrayService _systemTrayService = container.resolve<ISystemTrayService>();
 
   final Function(Duration) onTimeUpdate;
 
@@ -69,7 +72,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (_isRunning) {
       _timer.cancel();
     }
-    widget._soundPlayer.stop(); // Stop any playing sounds
+    widget._soundPlayer.stop();
     super.dispose();
   }
 
@@ -109,7 +112,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     widget._soundPlayer.setLoop(true);
     widget._soundPlayer.play(SharedSounds.alarmDone);
 
-    // Send notification
+    _sendNotification();
+  }
+
+  void _sendNotification() {
     final sessionType = _isWorking ? 'Work' : 'Break';
     widget._notificationService.show(
       title: 'Pomodoro Timer',
@@ -129,6 +135,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (_isRunning || _isAlarmPlaying) return;
 
     if (mounted) {
+      _setSystemTrayIcon();
+
       setState(() {
         _isRunning = true;
         _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -141,11 +149,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           } else {
             _timer.cancel();
             _isRunning = false;
-            _startAlarm(); // Süre bitince alarm çal ve bekle
+            _startAlarm();
           }
         });
       });
     }
+  }
+
+  void _setSystemTrayIcon() {
+    widget._systemTrayService.setTrayIcon(_isWorking ? TrayIconType.play : TrayIconType.pause);
   }
 
   void _stopTimer() {
@@ -162,7 +174,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         _timer.cancel();
         widget._soundPlayer.stop(); // Stop any playing sounds
       });
+
+      _resetSystemTrayIcon();
     }
+  }
+
+  void _resetSystemTrayIcon() {
+    widget._systemTrayService.setTrayIcon(TrayIconType.default_);
   }
 
   void _toggleWorkBreak() {
@@ -277,7 +295,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   IconData _getButtonIcon() {
-    if (_isAlarmPlaying) return Icons.arrow_forward; // Changed from skip_next
+    if (_isAlarmPlaying) return Icons.arrow_forward;
     if (_isRunning) return Icons.stop;
     return Icons.play_arrow;
   }

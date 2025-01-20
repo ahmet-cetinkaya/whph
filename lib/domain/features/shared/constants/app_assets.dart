@@ -8,21 +8,26 @@ class AppAssets {
 
   // Tray Icons
   static const String trayIconDefault = 'lib/domain/features/shared/assets/whph_logo_adaptive_fg';
-  static const String trayIconActive = 'lib/domain/features/shared/assets/whph_logo_adaptive_active';
-  static const String trayIconPaused = 'lib/domain/features/shared/assets/whph_logo_adaptive_paused';
+  static const String trayIconPlay = 'lib/domain/features/shared/assets/whph_logo_fg_play';
+  static const String trayIconPause = 'lib/domain/features/shared/assets/whph_logo_fg_pause';
 
   static String getTrayIcon(TrayIconType type, {bool isWindows = false}) {
-    final basePath = switch (type) {
-      TrayIconType.default_ => trayIconDefault,
-      TrayIconType.active => trayIconActive,
-      TrayIconType.paused => trayIconPaused,
-    };
-    return '$basePath${isWindows ? '.ico' : '.png'}';
+    final extension = isWindows ? 'ico' : 'png';
+    switch (type) {
+      case TrayIconType.play:
+        return '$trayIconPlay.$extension';
+      case TrayIconType.pause:
+        return '$trayIconPause.$extension';
+      case TrayIconType.default_:
+      default:
+        return '$trayIconDefault.$extension';
+    }
   }
 }
 
 enum TrayIconType {
   default_,
-  active,
+  play,
+  pause,
   paused,
 }
