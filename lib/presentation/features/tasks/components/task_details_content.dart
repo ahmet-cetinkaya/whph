@@ -9,7 +9,6 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
@@ -192,7 +191,21 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           children: [
             DetailTable(rowData: [
               // Tags
-              DetailTableRowData(label: "Tags", icon: Icons.label, widget: _buildTagSection()),
+              DetailTableRowData(
+                label: "Tags",
+                icon: Icons.label,
+                hintText: "Select tags to associate",
+                widget: TagSelectDropdown(
+                  key: ValueKey(_taskTags!.items.length),
+                  isMultiSelect: true,
+                  onTagsSelected: _onTagsSelected,
+                  showSelectedInDropdown: true,
+                  initialSelectedTags: _taskTags!.items
+                      .map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId))
+                      .toList(),
+                  icon: Icons.add,
+                ),
+              ),
 
               // Priority
               DetailTableRowData(
@@ -327,62 +340,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTagSection() {
-    if (_taskTags!.items.isEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TagSelectDropdown(
-            key: ValueKey(_taskTags!.items.length),
-            isMultiSelect: true,
-            onTagsSelected: _onTagsSelected,
-            initialSelectedTags: _taskTags!.items
-                .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
-                .toList(),
-            icon: Icons.add,
-          ),
-        ],
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 4.0,
-          children: [
-            // Select
-            TagSelectDropdown(
-              key: ValueKey(_taskTags!.items.length),
-              isMultiSelect: true,
-              onTagsSelected: _onTagsSelected,
-              initialSelectedTags: _taskTags!.items
-                  .map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now()))
-                  .toList(),
-              icon: Icons.add,
-            ),
-
-            // List
-            ..._taskTags!.items.map((taskTag) {
-              return Chip(
-                label: Text(
-                  taskTag.tagName,
-                  style: TextStyle(
-                    color: taskTag.tagColor != null ? Color(int.parse('FF${taskTag.tagColor}', radix: 16)) : null,
-                  ),
-                ),
-                onDeleted: () {
-                  _removeTag(taskTag.id);
-                },
-              );
-            })
-          ],
-        ),
-      ],
     );
   }
 }

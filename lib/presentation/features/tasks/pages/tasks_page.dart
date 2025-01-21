@@ -152,7 +152,6 @@ class _TasksPageState extends State<TasksPage> {
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
-            // Filters
             TaskFilters(
               selectedTagIds: _selectedTagIds,
               selectedStartDate: _filterStartDate,
@@ -161,11 +160,10 @@ class _TasksPageState extends State<TasksPage> {
               onDateFilterChange: _onDateFilterChange,
               onSearchChange: _onSearchChange,
             ),
-
-            // Tasks list
+            const SizedBox(height: 8),
             if (_isTasksListEmpty)
-              DoneOverlay()
-            else
+              const Center(child: DoneOverlay())
+            else ...[
               TaskList(
                 key: _tasksListKey,
                 mediator: _mediator,
@@ -179,7 +177,7 @@ class _TasksPageState extends State<TasksPage> {
                 onList: _onTasksList,
                 trailingButtons: (task) => [
                   PopupMenuButton<DateTime>(
-                    icon: Icon(Icons.schedule, color: Colors.grey),
+                    icon: const Icon(Icons.schedule, color: Colors.grey),
                     tooltip: 'Schedule task',
                     itemBuilder: (context) {
                       final now = DateTime.now();
@@ -189,11 +187,11 @@ class _TasksPageState extends State<TasksPage> {
                       return [
                         PopupMenuItem(
                           value: today,
-                          child: Text('Schedule for today'),
+                          child: const Text('Schedule for today'),
                         ),
                         PopupMenuItem(
                           value: tomorrow,
-                          child: Text('Schedule for tomorrow'),
+                          child: const Text('Schedule for tomorrow'),
                         ),
                       ];
                     },
@@ -201,40 +199,40 @@ class _TasksPageState extends State<TasksPage> {
                   ),
                 ],
               ),
-
-            // Expansion panel for completed tasks
-            ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                if (!mounted) return;
-                setState(() {
-                  _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
-                });
-              },
-              children: [
-                ExpansionPanel(
-                    isExpanded: _isCompletedTasksExpanded,
-                    headerBuilder: (context, isExpanded) {
-                      return ListTile(
-                        contentPadding: EdgeInsets.only(left: 8),
-                        leading: const Icon(Icons.done_all),
-                        title: const Text('Completed tasks'),
-                      );
-                    },
-                    body: TaskList(
-                      key: _completedTasksListKey,
-                      mediator: _mediator,
-                      filterByCompleted: true,
-                      filterByTags: _selectedTagIds,
-                      search: _searchQuery,
-                      onClickTask: (task) => _openTaskDetails(task.id),
-                      onTaskCompleted: _onUncompletedTask,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    canTapOnHeader: true),
-              ],
-              elevation: 0,
-              expandedHeaderPadding: EdgeInsets.zero,
-            )
+              const SizedBox(height: 8),
+              ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  if (!mounted) return;
+                  setState(() {
+                    _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+                  });
+                },
+                children: [
+                  ExpansionPanel(
+                      isExpanded: _isCompletedTasksExpanded,
+                      headerBuilder: (context, isExpanded) {
+                        return ListTile(
+                          contentPadding: EdgeInsets.only(left: 8),
+                          leading: const Icon(Icons.done_all),
+                          title: const Text('Completed tasks'),
+                        );
+                      },
+                      body: TaskList(
+                        key: _completedTasksListKey,
+                        mediator: _mediator,
+                        filterByCompleted: true,
+                        filterByTags: _selectedTagIds,
+                        search: _searchQuery,
+                        onClickTask: (task) => _openTaskDetails(task.id),
+                        onTaskCompleted: _onUncompletedTask,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      canTapOnHeader: true),
+                ],
+                elevation: 0,
+                expandedHeaderPadding: EdgeInsets.zero,
+              ),
+            ],
           ],
         ),
       ),

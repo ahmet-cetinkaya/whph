@@ -4,6 +4,8 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:intl/intl.dart';
 
@@ -194,102 +196,132 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     return '${_estimatedTime}m';
   }
 
+  List<Widget> _buildQuickActionButtons() {
+    return [
+      IconButton(
+        icon: Icon(
+          _selectedPriority == null ? Icons.flag_outlined : Icons.flag,
+          color: _getPriorityColor(),
+        ),
+        onPressed: _togglePriority,
+        tooltip: _getPriorityTooltip(),
+      ),
+      IconButton(
+        icon: _estimatedTime == null
+            ? const Icon(Icons.timer_outlined)
+            : Text(
+                _getEstimatedTimeText()!,
+                style: const TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        onPressed: _toggleEstimatedTime,
+        tooltip: 'Estimated Time: ${_getEstimatedTimeText() ?? 'Not set'}',
+      ),
+      IconButton(
+        icon: Icon(
+          _plannedDate == null ? Icons.event_outlined : Icons.event,
+          color: _plannedDate == null ? null : Colors.green,
+        ),
+        onPressed: () => _selectDate(false),
+        tooltip: 'Planned: ${_getFormattedDate(_plannedDate) ?? 'Not set'}',
+      ),
+      IconButton(
+        icon: Icon(
+          _deadlineDate == null ? Icons.alarm_outlined : Icons.alarm,
+          color: _deadlineDate == null ? null : Colors.orange,
+        ),
+        onPressed: () => _selectDate(true),
+        tooltip: 'Deadline: ${_getFormattedDate(_deadlineDate) ?? 'Not set'}',
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = AppThemeHelper.isSmallScreen(context);
+
     return PopScope(
       canPop: true,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          color: Colors.transparent,
-          child: GestureDetector(
-            onTap: () {}, // Prevent tap from propagating
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.15,
-              minChildSize: 0.15,
-              maxChildSize: 0.9,
-              builder: (context, controller) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[400],
-                            borderRadius: BorderRadius.circular(2),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            color: Colors.transparent,
+            child: GestureDetector(
+              onTap: () {}, // Prevent tap from propagating
+              child: DraggableScrollableSheet(
+                initialChildSize: AppThemeHelper.isSmallScreen(context) ? 0.33 : 0.15,
+                minChildSize: 0.15,
+                maxChildSize: 0.9,
+                builder: (context, controller) {
+                  return Container(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: SingleChildScrollView(
+                      controller: controller,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            behavior: HitTestBehavior.opaque,
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      TextField(
-                        controller: _titleController,
-                        focusNode: _focusNode,
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: 'Task title',
-                          suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  _selectedPriority == null ? Icons.flag_outlined : Icons.flag,
-                                  color: _getPriorityColor(),
-                                ),
-                                onPressed: _togglePriority,
-                                tooltip: _getPriorityTooltip(),
+
+                          // Title input
+                          TextField(
+                            controller: _titleController,
+                            focusNode: _focusNode,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: 'Task title',
+                              suffixIcon: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Quick action buttons (large screen)
+                                  if (!isSmallScreen) ..._buildQuickActionButtons(),
+
+                                  // Send button
+                                  IconButton(
+                                    icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send,
+                                        color: AppTheme.primaryColor),
+                                    onPressed: _createTask,
+                                  ),
+                                ],
                               ),
-                              IconButton(
-                                icon: _estimatedTime == null
-                                    ? const Icon(Icons.timer_outlined)
-                                    : Text(
-                                        _getEstimatedTimeText()!,
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                onPressed: _toggleEstimatedTime,
-                                tooltip: 'Estimated Time: ${_getEstimatedTimeText() ?? 'Not set'}',
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  _plannedDate == null ? Icons.event_outlined : Icons.event,
-                                  color: _plannedDate == null ? null : Colors.green,
-                                ),
-                                onPressed: () => _selectDate(false),
-                                tooltip: 'Planned: ${_getFormattedDate(_plannedDate) ?? 'Not set'}',
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  _deadlineDate == null ? Icons.alarm_outlined : Icons.alarm,
-                                  color: _deadlineDate == null ? null : Colors.orange,
-                                ),
-                                onPressed: () => _selectDate(true),
-                                tooltip: 'Deadline: ${_getFormattedDate(_deadlineDate) ?? 'Not set'}',
-                              ),
-                              IconButton(
-                                icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send),
-                                onPressed: _createTask,
-                              ),
-                            ],
+                            ),
+                            onSubmitted: (_) => _createTask(),
                           ),
-                        ),
-                        onSubmitted: (_) => _createTask(),
+
+                          // Quick action buttons (small screen)
+                          if (isSmallScreen)
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildQuickActionButtons(),
+                              ),
+                            ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),

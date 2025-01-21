@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
@@ -39,7 +38,7 @@ class HabitTagSection extends StatelessWidget {
       isMultiSelect: true,
       onTagsSelected: onTagsSelected,
       initialSelectedTags:
-          habitTags.items.map((tag) => Tag(id: tag.tagId, name: tag.tagName, createdDate: DateTime.now())).toList(),
+          habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
       icon: Icons.add,
     );
   }

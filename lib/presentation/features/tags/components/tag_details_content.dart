@@ -5,7 +5,6 @@ import 'package:whph/application/features/tags/commands/remove_tag_tag_command.d
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -118,44 +117,21 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           DetailTable(rowData: [
             DetailTableRowData(
               label: "Tags",
-              icon: Icons.tag,
+              icon: Icons.label,
               hintText: "Select tags to associate",
-              widget: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    children: [
-                      TagSelectDropdown(
-                        key: ValueKey(_tagTags!.items.length),
-                        isMultiSelect: true,
-                        onTagsSelected: _onTagsSelected,
-                        initialSelectedTags: _tagTags!.items
-                            .map((tag) =>
-                                Tag(id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
-                            .toList(),
-                        icon: Icons.add,
-                        excludeTagIds: [_tag!.id],
-                      ),
-                      ..._tagTags!.items.map((tagTag) {
-                        return Chip(
-                          label: Text(
-                            tagTag.secondaryTagName,
-                            style: TextStyle(
-                              color: tagTag.secondaryTagColor != null
-                                  ? Color(int.parse('FF${tagTag.secondaryTagColor}', radix: 16))
-                                  : null,
-                            ),
-                          ),
-                          onDeleted: () {
-                            _removeTag(tagTag.id);
-                          },
-                        );
-                      })
-                    ],
-                  ),
-                ],
+              widget: TagSelectDropdown(
+                key: ValueKey(_tagTags!.items.length),
+                isMultiSelect: true,
+                onTagsSelected: _onTagsSelected,
+                showSelectedInDropdown: true,
+                initialSelectedTags: _tagTags!.items
+                    .map((tag) => DropdownOption<String>(
+                          value: tag.secondaryTagId,
+                          label: tag.secondaryTagName,
+                        ))
+                    .toList(),
+                excludeTagIds: [_tag!.id],
+                icon: Icons.add,
               ),
             ),
           ]),

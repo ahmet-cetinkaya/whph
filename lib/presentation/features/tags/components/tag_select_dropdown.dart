@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -9,7 +8,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
 
-  final List<Tag> initialSelectedTags;
+  final List<DropdownOption<String>> initialSelectedTags;
   final List<String> excludeTagIds;
   final bool isMultiSelect;
   final Function(List<DropdownOption<String>>) onTagsSelected;
@@ -20,6 +19,7 @@ class TagSelectDropdown extends StatefulWidget {
   final String? tooltip;
   final bool showLength;
   final int? limit;
+  final bool showSelectedInDropdown;
 
   TagSelectDropdown({
     super.key,
@@ -34,6 +34,7 @@ class TagSelectDropdown extends StatefulWidget {
     required this.onTagsSelected,
     this.showLength = false,
     this.limit,
+    this.showSelectedInDropdown = false,
   });
 
   @override
@@ -49,7 +50,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   @override
   void initState() {
-    _selectedTags = widget.initialSelectedTags.map((e) => e.id).toList();
+    _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
     _getTags(pageIndex: 0);
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -64,7 +65,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         setState(() {
           if (widget.initialSelectedTags.isNotEmpty) {
             result.items
-                .removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.id == tag.id));
+                .removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.value == tag.id));
           }
 
           if (widget.excludeTagIds.isNotEmpty) {
@@ -73,7 +74,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
           if (_tags == null) {
             _tags = result;
-            _tags!.items.insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.id, name: tag.name)));
+            _tags!.items
+                .insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.value, name: tag.label)));
           } else {
             _tags!.items.addAll(result.items);
             _tags!.pageIndex = result.pageIndex;
@@ -229,35 +231,53 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final int selectedCount = _selectedTags.length;
-
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.buttonLabel != null
-            ? TextButton.icon(
-                onPressed: () => _showTagSelectionModal(context),
-                icon: Icon(widget.icon, size: widget.iconSize, color: widget.color),
-                label: Text(widget.buttonLabel!),
-              )
-            : IconButton(
-                icon: Icon(widget.icon, color: widget.color),
-                iconSize: widget.iconSize ?? 24.0,
-                tooltip: widget.tooltip,
-                onPressed: () => _showTagSelectionModal(context),
-              ),
-        if (widget.showLength && selectedCount > 0)
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Text(
-              selectedCount.toString(),
-              style: TextStyle(
-                color: widget.color ?? Colors.grey,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
+        // Tags wrap - on the left
+        if (widget.showSelectedInDropdown && _tags != null)
+          Expanded(
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: _selectedTags.map((tagId) {
+                final tag = _tags!.items.firstWhere((t) => t.id == tagId);
+                return Chip(
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  label: Text(
+                    tag.name,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  onDeleted: () {
+                    final List<DropdownOption<String>> updatedTags = _selectedTags.where((id) => id != tagId).map((id) {
+                      final tag = _tags!.items.firstWhere((t) => t.id == id);
+                      return DropdownOption(label: tag.name, value: tag.id);
+                    }).toList();
+                    widget.onTagsSelected(updatedTags);
+                    setState(() {
+                      _selectedTags.remove(tagId);
+                    });
+                  },
+                );
+              }).toList(),
             ),
           ),
+
+        // Add button - always on the right
+        SizedBox(
+          width: 32,
+          height: 32,
+          child: IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(minWidth: 32),
+            icon: Icon(widget.icon, size: widget.iconSize ?? 20),
+            onPressed: () => _showTagSelectionModal(context),
+            tooltip: widget.tooltip,
+            color: widget.color,
+          ),
+        ),
       ],
     );
   }

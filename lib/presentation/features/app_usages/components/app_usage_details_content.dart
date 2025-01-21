@@ -7,7 +7,6 @@ import 'package:whph/application/features/app_usages/commands/save_app_usage_com
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
@@ -194,40 +193,15 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
               label: "Tags",
               icon: Icons.label,
               hintText: "Select tags to associate",
-              widget: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    children: [
-                      // Select
-                      TagSelectDropdown(
-                        key: ValueKey(_appUsageTags!.items.length),
-                        isMultiSelect: true,
-                        onTagsSelected: _onTagsSelected,
-                        initialSelectedTags: _appUsageTags!.items
-                            .map((appUsage) =>
-                                Tag(id: appUsage.tagId, name: appUsage.tagName, createdDate: DateTime.now()))
-                            .toList(),
-                        icon: Icons.add,
-                      ),
-                      ..._appUsageTags!.items.map((tag) {
-                        return Chip(
-                          label: Text(
-                            tag.tagName,
-                            style: TextStyle(
-                              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
-                            ),
-                          ),
-                          onDeleted: () {
-                            _removeTag(tag.id);
-                          },
-                        );
-                      })
-                    ],
-                  ),
-                ],
+              widget: TagSelectDropdown(
+                key: ValueKey(_appUsageTags!.items.length),
+                isMultiSelect: true,
+                onTagsSelected: _onTagsSelected,
+                showSelectedInDropdown: true,
+                initialSelectedTags: _appUsageTags!.items
+                    .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))
+                    .toList(),
+                icon: Icons.add,
               ),
             ),
 

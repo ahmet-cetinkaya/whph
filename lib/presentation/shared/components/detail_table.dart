@@ -46,15 +46,7 @@ class DetailTable extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenLarge)) {
-                    return _buildLargeScreenRow(context, data);
-                  } else {
-                    return _buildSmallScreenLayout(context, data);
-                  }
-                },
-              ),
+              child: _buildRow(context, data),
             ),
           ),
         );
@@ -62,16 +54,40 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildLargeScreenRow(BuildContext context, DetailTableRowData data) {
+  Widget _buildRow(BuildContext context, DetailTableRowData data) {
+    final isSmallScreen = AppThemeHelper.isSmallScreen(context);
+    final labelWidth = isSmallScreen ? 120.0 : 200.0;
+
     if (forceVertical) {
-      return _buildSmallScreenLayout(context, data);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildLabel(context, data),
+          if (data.hintText != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 26, top: 4),
+              child: Text(
+                data.hintText!,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
+                ),
+              ),
+            ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 26),
+            child: _buildContent(context, data),
+          ),
+        ],
+      );
     }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: 200,
+          width: labelWidth,
           child: _buildLabel(context, data),
         ),
         const SizedBox(width: 8),
@@ -82,30 +98,9 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildSmallScreenLayout(BuildContext context, DetailTableRowData data) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel(context, data),
-        if (data.hintText != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 26, top: 4),
-            child: Text(
-              data.hintText!,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
-              ),
-            ),
-          ),
-        const SizedBox(height: 8),
-        _buildContent(context, data),
-      ],
-    );
-  }
-
   Widget _buildLabel(BuildContext context, DetailTableRowData data) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           data.icon,
@@ -113,15 +108,19 @@ class DetailTable extends StatelessWidget {
           color: AppTheme.lightTextColor,
         ),
         const SizedBox(width: 8),
-        Expanded(
+        Flexible(
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                data.label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppTheme.lightTextColor,
+              Flexible(
+                child: Text(
+                  data.label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.lightTextColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (data.tooltip != null) ...[
@@ -148,7 +147,10 @@ class DetailTable extends StatelessWidget {
       clipBehavior: Clip.none,
       constraints: const BoxConstraints(minHeight: 36),
       alignment: Alignment.centerLeft,
-      child: data.widget,
+      child: DefaultTextStyle(
+        style: const TextStyle(overflow: TextOverflow.ellipsis),
+        child: data.widget,
+      ),
     );
   }
 }
