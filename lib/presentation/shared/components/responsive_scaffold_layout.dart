@@ -85,10 +85,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: widget.appBarTitle,
+        titleSpacing: 0,
         leading: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
             ? Builder(
                 builder: (BuildContext context) => IconButton(
-                  icon: const Icon(Icons.menu),
+                  icon: const Icon(Icons.menu, size: 22),
+                  padding: const EdgeInsets.all(12),
                   onPressed: () {
                     _scaffoldKey.currentState?.openDrawer();
                   },
@@ -114,34 +116,49 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   Widget _buildDrawer(List<NavItem> topNavItems, List<NavItem>? bottomNavItems) {
     final isMobile = MediaQuery.of(context).size.width <= 600;
-    final drawerWidth = isMobile ? MediaQuery.of(context).size.width * 0.75 : 200.0;
+    final drawerWidth = isMobile ? MediaQuery.of(context).size.width * 0.65 : 180.0;
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topRight: isMobile ? Radius.circular(16.0) : Radius.zero,
-            bottomRight: Radius.circular(16.0),
+            topRight: isMobile ? const Radius.circular(12.0) : Radius.zero,
+            bottomRight: const Radius.circular(12.0),
           ),
         ),
         child: Column(
           children: [
             if (isMobile)
               SizedBox(
-                height: 85,
+                height: 80, // slightly taller header
                 child: DrawerHeader(
+                  margin: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                   child: widget.appBarTitle,
                 ),
               ),
+            const SizedBox(height: 8), // add spacing after header
             Expanded(
               child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: 8), // add vertical padding
                 children: [
-                  ...topNavItems.map((navItem) => _buildNavItem(navItem)),
+                  ...topNavItems.map((navItem) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4), // add horizontal padding
+                        child: _buildNavItem(navItem),
+                      )),
                 ],
               ),
             ),
-            Divider(),
-            if (bottomNavItems != null) ...bottomNavItems.map((navItem) => _buildNavItem(navItem)),
+            if (bottomNavItems != null) ...[
+              const SizedBox(height: 8), // add spacing before divider
+              const Divider(height: 1),
+              const SizedBox(height: 8), // add spacing after divider
+              ...bottomNavItems.map((navItem) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4), // add horizontal padding
+                    child: _buildNavItem(navItem),
+                  )),
+              const SizedBox(height: 16), // add bottom padding
+            ],
           ],
         ),
       ),
@@ -150,8 +167,17 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   ListTile _buildNavItem(NavItem navItem) {
     return ListTile(
-      leading: navItem.icon != null ? Icon(navItem.icon) : null,
-      title: navItem.widget ?? Text(navItem.title, style: Theme.of(context).textTheme.labelLarge),
+      dense: true,
+      visualDensity: const VisualDensity(horizontal: 0, vertical: -1), // slightly less compact
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16), // adjust content padding
+      leading: navItem.icon != null
+          ? Icon(navItem.icon, size: 22) // slightly larger icon
+          : null,
+      title: navItem.widget ??
+          Text(navItem.title,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    fontSize: 14, // slightly larger font
+                  )),
       onTap: () => _onClickNavItem(navItem),
     );
   }
