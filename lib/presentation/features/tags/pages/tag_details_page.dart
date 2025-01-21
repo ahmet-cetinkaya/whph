@@ -11,7 +11,6 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -67,10 +66,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => ListView(
+      builder: (context) => ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Details

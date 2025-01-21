@@ -137,7 +137,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     if (mounted) {
       _setSystemTrayIcon();
-      _addTimerMenuItems(); // Add menu items when timer starts
+      _addTimerMenuItems();
 
       setState(() {
         _isRunning = true;

@@ -282,9 +282,9 @@ class _MarathonPageState extends State<MarathonPage> {
                 mediator: _mediator,
                 filterByCompleted: false,
                 filterByTags: _selectedTagIds,
-                filterByPlannedStartDate: today, // Add today as start date
-                filterByPlannedEndDate: tomorrow, // Add tomorrow as end date
-                filterDateOr: false, // Use AND logic for date filtering
+                filterByPlannedStartDate: today,
+                filterByPlannedEndDate: tomorrow,
+                filterDateOr: false,
                 search: _searchQuery,
                 onTaskCompleted: _refreshTasks,
                 onClickTask: (task) => _showTaskDetails(task.id),

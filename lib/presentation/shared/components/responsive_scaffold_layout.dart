@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class RouteOptions {
   final WidgetBuilder builder;
@@ -20,22 +23,22 @@ class NavItem {
 }
 
 class ResponsiveScaffoldLayout extends StatefulWidget {
-  final Widget appBarTitle;
+  final String? title;
+  final Widget? appBarLeading;
+  final Widget? appBarTitle;
   final List<Widget>? appBarActions;
-  final List<NavItem> topNavItems;
-  final List<NavItem>? bottomNavItems;
-  final Map<String, RouteOptions> routes;
-  final WidgetBuilder defaultRoute;
+  final Widget Function(BuildContext) builder;
+  final bool showLogo;
   final bool fullScreen;
 
   const ResponsiveScaffoldLayout({
     super.key,
-    required this.topNavItems,
-    this.bottomNavItems,
-    required this.routes,
-    required this.appBarTitle,
+    this.title,
+    required this.builder,
+    this.appBarLeading,
+    this.appBarTitle,
     this.appBarActions,
-    required this.defaultRoute,
+    this.showLogo = true,
     this.fullScreen = false,
   });
 
@@ -78,36 +81,46 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   @override
   Widget build(BuildContext context) {
     if (widget.fullScreen) {
-      return widget.defaultRoute(context);
+      return widget.builder(context);
     }
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: widget.appBarTitle,
+        leading: widget.appBarLeading ??
+            (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
+                ? Builder(
+                    builder: (BuildContext context) => IconButton(
+                      icon: const Icon(Icons.menu, size: 22),
+                      padding: const EdgeInsets.all(12),
+                      onPressed: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                    ),
+                  )
+                : null),
+        title: widget.appBarTitle ??
+            Row(
+              children: [
+                if (widget.showLogo) ...[
+                  const AppLogo(width: 32, height: 32),
+                  const SizedBox(width: 8),
+                ],
+                Text(widget.title ?? AppInfo.name),
+              ],
+            ),
         titleSpacing: 0,
-        leading: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
-            ? Builder(
-                builder: (BuildContext context) => IconButton(
-                  icon: const Icon(Icons.menu, size: 22),
-                  padding: const EdgeInsets.all(12),
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                ),
-              )
-            : null,
         actions: widget.appBarActions,
       ),
       drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium)
           ? null
-          : _buildDrawer(widget.topNavItems, widget.bottomNavItems),
+          : _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
       body: Row(
         children: [
           if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium))
-            _buildDrawer(widget.topNavItems, widget.bottomNavItems),
+            _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
-            child: widget.defaultRoute(context),
+            child: widget.builder(context),
           ),
         ],
       ),
@@ -132,32 +145,37 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               SizedBox(
                 height: 80, // slightly taller header
                 child: DrawerHeader(
-                  margin: EdgeInsets.zero,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                  child: widget.appBarTitle,
-                ),
+                    margin: EdgeInsets.zero,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    child: Row(
+                      children: [
+                        const AppLogo(width: 32, height: 32),
+                        const SizedBox(width: 8),
+                        Text(AppInfo.name),
+                      ],
+                    )),
               ),
-            const SizedBox(height: 8), // add spacing after header
+            const SizedBox(height: 8),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8), // add vertical padding
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
                   ...topNavItems.map((navItem) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4), // add horizontal padding
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: _buildNavItem(navItem),
                       )),
                 ],
               ),
             ),
             if (bottomNavItems != null) ...[
-              const SizedBox(height: 8), // add spacing before divider
+              const SizedBox(height: 8),
               const Divider(height: 1),
-              const SizedBox(height: 8), // add spacing after divider
+              const SizedBox(height: 8),
               ...bottomNavItems.map((navItem) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4), // add horizontal padding
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: _buildNavItem(navItem),
                   )),
-              const SizedBox(height: 16), // add bottom padding
+              const SizedBox(height: 16),
             ],
           ],
         ),

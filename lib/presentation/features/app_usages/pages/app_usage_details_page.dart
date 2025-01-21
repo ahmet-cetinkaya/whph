@@ -6,7 +6,6 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_detai
 import 'package:whph/presentation/features/app_usages/components/app_usage_name_input_field.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -31,15 +30,12 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
           padding: const EdgeInsets.all(8),
           child: AppUsageDeleteButton(
             appUsageId: widget.appUsageId,
-            onDeleteSuccess: () => Navigator.of(context).pop(), // This will work with push navigation
+            onDeleteSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => ListView(
+      builder: (context) => ListView(
         children: [
           AppUsageDetailsContent(id: widget.appUsageId),
         ],

@@ -4,18 +4,15 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
-import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
-
   final Mediator mediator = container.resolve<Mediator>();
 
   HabitsPage({super.key});
@@ -53,9 +50,8 @@ class _HabitsPageState extends State<HabitsPage> {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
+    int daysToShow = 7;
 
-    // Calculate days to show based on screen width
-    int daysToShow = 7; // Changed default to 7 days
     if (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall)) {
       daysToShow = 1;
     } else if (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)) {
@@ -67,15 +63,7 @@ class _HabitsPageState extends State<HabitsPage> {
     List<DateTime> lastDays = List.generate(daysToShow, (index) => today.subtract(Duration(days: index)));
 
     return ResponsiveScaffoldLayout(
-      appBarTitle: Row(
-        children: [
-          const AppLogo(width: 32, height: 32),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: const Text('Habits'),
-          )
-        ],
-      ),
+      title: 'Habits',
       appBarActions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -90,10 +78,7 @@ class _HabitsPageState extends State<HabitsPage> {
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => Padding(
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(
           key: _habitsListKey,
@@ -127,37 +112,37 @@ class _HabitsPageState extends State<HabitsPage> {
                           width: daysToShow * 46.0,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ...lastDays.map(
-                                (date) => SizedBox(
-                                  width: 46,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        DateTimeHelper.getWeekday(date.weekday),
-                                        style: TextStyle(
-                                          color: DateTimeHelper.isSameDay(date, today)
-                                              ? AppTheme.primaryColor
-                                              : AppTheme.textColor,
-                                          fontSize: AppTheme.fontSizeSmall,
+                            children: lastDays
+                                .map(
+                                  (date) => SizedBox(
+                                    width: 46,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          DateTimeHelper.getWeekday(date.weekday),
+                                          style: TextStyle(
+                                            color: DateTimeHelper.isSameDay(date, today)
+                                                ? AppTheme.primaryColor
+                                                : AppTheme.textColor,
+                                            fontSize: AppTheme.fontSizeSmall,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        date.day.toString(),
-                                        style: TextStyle(
-                                          color: DateTimeHelper.isSameDay(date, today)
-                                              ? AppTheme.primaryColor
-                                              : AppTheme.textColor,
-                                          fontSize: AppTheme.fontSizeSmall,
-                                        ),
-                                      )
-                                    ],
+                                        Text(
+                                          date.day.toString(),
+                                          style: TextStyle(
+                                            color: DateTimeHelper.isSameDay(date, today)
+                                                ? AppTheme.primaryColor
+                                                : AppTheme.textColor,
+                                            fontSize: AppTheme.fontSizeSmall,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ],
+                                )
+                                .toList(),
                           ),
                         ),
                       ),
@@ -170,7 +155,7 @@ class _HabitsPageState extends State<HabitsPage> {
             HabitsList(
               key: _habitsListKey,
               mediator: widget.mediator,
-              dateRange: daysToShow, // Pass the dynamic days count
+              dateRange: daysToShow,
               filterByTags: _selectedFilterTags,
               onClickHabit: (item) {
                 _openDetails(item.id, context);

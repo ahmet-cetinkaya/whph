@@ -12,7 +12,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
   Future<void> init() async {
     try {
       await destroy();
-      windowManager.addListener(this); // Add window event listener
+      windowManager.addListener(this);
 
       await setTrayIcon(TrayIconType.default_);
 

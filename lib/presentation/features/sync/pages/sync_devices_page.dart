@@ -8,13 +8,11 @@ import 'package:whph/application/features/sync/commands/delete_sync_command.dart
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -29,10 +27,10 @@ class SyncDevicesPage extends StatefulWidget {
 
 class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
   GetListSyncDevicesQueryResponse? list;
-  Key _listKey = UniqueKey(); // Add this
+  Key _listKey = UniqueKey();
 
   @override
-  bool get wantKeepAlive => true; // Add this
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -162,63 +160,41 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
   }
 
-  List<Widget> _buildAppBarActions() {
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: IconButton(
-          onPressed: _sync,
-          icon: Icon(Icons.sync),
-          color: AppTheme.primaryColor,
-        ),
-      ),
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows)
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: const SyncQrCodeButton(),
-        ),
-      if (Platform.isAndroid || Platform.isIOS)
-        Padding(
-          padding: const EdgeInsets.all(4),
-          child: SyncQrScanButton(
-            onSyncComplete: _refreshDevices,
-          ),
-        )
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Add this
+    super.build(context);
     return ResponsiveScaffoldLayout(
-      appBarTitle: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const AppLogo(width: 32, height: 32),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: const Text(
-                'Sync Devices',
-                overflow: TextOverflow.ellipsis,
-              ),
+      title: 'Sync Devices',
+      appBarActions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: IconButton(
+            onPressed: _sync,
+            icon: Icon(Icons.sync),
+            color: AppTheme.primaryColor,
+          ),
+        ),
+        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows)
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: const SyncQrCodeButton(),
+          ),
+        if (Platform.isAndroid || Platform.isIOS)
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: SyncQrScanButton(
+              onSyncComplete: _refreshDevices,
             ),
           )
-        ],
-      ),
-      appBarActions: _buildAppBarActions(),
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => list == null || list!.items.isEmpty
+      ],
+      builder: (context) => list == null || list!.items.isEmpty
           ? const Center(child: Text('No synced devices found'))
           : ListView.builder(
-              key: _listKey, // Add this
+              key: _listKey,
               itemCount: list!.items.length,
               itemBuilder: (context, index) {
                 return SyncDeviceListItemWidget(
-                  key: ValueKey(list!.items[index].id), // Add this
+                  key: ValueKey(list!.items[index].id),
                   item: list!.items[index],
                   onRemove: _removeDevice,
                 );

@@ -4,7 +4,6 @@ import 'package:whph/presentation/features/habits/components/habit_details_conte
 import 'package:whph/presentation/features/habits/components/habit_title_input_field.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class HabitDetailsPage extends StatelessWidget {
   static const String route = '/habits/details';
@@ -26,10 +25,7 @@ class HabitDetailsPage extends StatelessWidget {
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => Padding(
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: HabitDetailsContent(habitId: habitId),
       ),

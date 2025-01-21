@@ -5,11 +5,9 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_tag_rules_page.dart';
-import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
@@ -68,15 +66,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: Row(
-        children: [
-          const AppLogo(width: 32, height: 32),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: const Text('App Usages'),
-          )
-        ],
-      ),
+      title: 'App Usages',
       appBarActions: [
         if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) ...[
           Padding(
@@ -101,10 +91,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           ),
         ],
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => ListView(
+      builder: (context) => ListView(
         children: [
           // Filters
           Padding(

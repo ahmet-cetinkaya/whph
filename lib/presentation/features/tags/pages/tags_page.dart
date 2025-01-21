@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -11,7 +10,6 @@ import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class TagsPage extends StatefulWidget {
@@ -69,15 +67,7 @@ class _TagsPageState extends State<TagsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: Row(
-        children: [
-          const AppLogo(width: 32, height: 32),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: const Text('Tags'),
-          )
-        ],
-      ),
+      title: 'Tags',
       appBarActions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -90,10 +80,7 @@ class _TagsPageState extends State<TagsPage> {
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => Padding(
+      builder: (context) => Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [

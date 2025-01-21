@@ -4,7 +4,6 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_form.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_list.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class AppUsageTagRulesPage extends StatefulWidget {
   static const String route = '/app-usages/tag-rules';
@@ -28,11 +27,8 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: const Text('Tag Rules'),
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => Container(
+      title: 'Tag Rules',
+      builder: (context) => Container(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           child: Container(

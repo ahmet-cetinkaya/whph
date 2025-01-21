@@ -4,7 +4,6 @@ import 'package:whph/presentation/features/tasks/components/task_delete_button.d
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/shared/constants/navigation_items.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -38,10 +37,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           ),
         ),
       ],
-      topNavItems: NavigationItems.topNavItems,
-      bottomNavItems: NavigationItems.bottomNavItems,
-      routes: {},
-      defaultRoute: (context) => Container(
+      builder: (context) => Container(
         width: double.infinity,
         alignment: Alignment.topLeft,
         child: TaskDetailsContent(taskId: widget.taskId),
