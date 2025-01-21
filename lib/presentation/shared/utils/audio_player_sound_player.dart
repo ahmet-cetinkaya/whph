@@ -1,6 +1,5 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 
 class AudioPlayerSoundPlayer implements ISoundPlayer {
@@ -10,7 +9,7 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
 
   Future<void> _ensureInitialized(String path) async {
     if (!_soundCache.containsKey(path)) {
-      _soundCache[path] = await File(path).readAsBytes();
+      _soundCache[path] = (await rootBundle.load(path)).buffer.asUint8List();
     }
 
     if (!_isInitialized) {

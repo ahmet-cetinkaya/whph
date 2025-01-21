@@ -120,6 +120,7 @@ flutter:
     - lib/domain/shared/assets/
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
+    - lib/presentation/shared/assets/sounds/level-completed-90734.mp3
     - lib/presentation/shared/assets/sounds/level-up-191997.mp3
     - lib/domain/shared/assets/whph_logo_adaptive_fg.png
     - lib/domain/shared/assets/whph_logo_adaptive_fg.ico
