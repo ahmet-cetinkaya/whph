@@ -10,6 +10,8 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
   @override
   Future<void> init() async {
+    if (!_isDesktop) return;
+
     try {
       await destroy();
       windowManager.addListener(this);
@@ -34,6 +36,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
   @override
   Future<void> setTrayIcon(TrayIconType type) async {
+    if (!_isDesktop) return;
     try {
       await trayManager.setIcon(
         AppAssets.getTrayIcon(type, isWindows: Platform.isWindows),
@@ -47,6 +50,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
   @override
   Future<void> destroy() async {
+    if (!_isDesktop) return;
     windowManager.removeListener(this); // Remove window event listener
     trayManager.removeListener(this);
     await trayManager.destroy();
@@ -60,23 +64,22 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
   @override
   Future<void> showWindow() async {
-    if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) return;
-
+    if (!_isDesktop) return;
     await windowManager.show();
     await windowManager.focus();
   }
 
   @override
   Future<void> hideWindow() async {
-    if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) return;
-
+    if (!_isDesktop) return;
     await windowManager.hide();
   }
 
   @override
   Future<void> exitApp() async {
-    if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    if (!_isDesktop) {
       exit(0);
+      return;
     }
 
     await windowManager.destroy();
@@ -95,36 +98,42 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
   @override
   Future<void> addMenuItem(TrayMenuItem item) async {
+    if (!_isDesktop) return;
     _menuItems.add(item);
     await rebuildMenu();
   }
 
   @override
   Future<void> addMenuItems(List<TrayMenuItem> items) async {
+    if (!_isDesktop) return;
     _menuItems.addAll(items);
     await rebuildMenu();
   }
 
   @override
   Future<void> insertMenuItems(List<TrayMenuItem> items, int index) async {
+    if (!_isDesktop) return;
     _menuItems.insertAll(index, items);
     await rebuildMenu();
   }
 
   @override
   Future<void> removeMenuItem(String key) async {
+    if (!_isDesktop) return;
     _menuItems.removeWhere((item) => item.key == key);
     await rebuildMenu();
   }
 
   @override
   Future<void> clearMenu() async {
+    if (!_isDesktop) return;
     _menuItems.clear();
     await rebuildMenu();
   }
 
   @override
   Future<void> rebuildMenu() async {
+    if (!_isDesktop) return;
     final menu = Menu(
       items: _menuItems.map((item) {
         if (item.isSeparator) return MenuItem.separator();
@@ -145,4 +154,6 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
     );
     item.onClicked?.call();
   }
+
+  bool get _isDesktop => Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }
