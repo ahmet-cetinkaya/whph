@@ -59,16 +59,19 @@ class HabitStatisticsView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 8),
             Text(
               label,
               style: TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
-              isCount ? value.toInt().toString() : "${(value * 100).toStringAsFixed(1)}%",
+              isCount ? value.toInt().toString() : "${(value * 100).toStringAsFixed(0)}%",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -181,75 +184,76 @@ class HabitStatisticsView extends StatelessWidget {
         children: [
           // Start date
           SizedBox(
-            width: 80,
+            width: 60,
             child: Text(
-              DateFormat('MMM d').format(streak.startDate),
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              DateFormat('M/d').format(streak.startDate),
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
               textAlign: TextAlign.end,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           // Bar chart
           Expanded(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Left half of the bar
-                Align(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
                   alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TweenAnimationBuilder(
-                        duration: const Duration(milliseconds: 500),
-                        tween: Tween<double>(begin: 0, end: streak.days / maxDays),
-                        builder: (context, double value, child) {
-                          return Container(
-                            width: (MediaQuery.of(context).size.width * 0.2) * value,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryColor,
-                              borderRadius: BorderRadius.horizontal(left: Radius.circular(4)),
-                            ),
-                          );
-                        },
+                  children: [
+                    // Bar
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TweenAnimationBuilder(
+                          duration: const Duration(milliseconds: 500),
+                          tween: Tween<double>(begin: 0, end: streak.days / maxDays),
+                          builder: (context, double value, child) {
+                            return Container(
+                              width: (constraints.maxWidth / 2) * value,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor,
+                                borderRadius: BorderRadius.horizontal(left: Radius.circular(4)),
+                              ),
+                            );
+                          },
+                        ),
+                        TweenAnimationBuilder(
+                          duration: const Duration(milliseconds: 500),
+                          tween: Tween<double>(begin: 0, end: streak.days / maxDays),
+                          builder: (context, double value, child) {
+                            return Container(
+                              width: (constraints.maxWidth / 2) * value,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor,
+                                borderRadius: BorderRadius.horizontal(right: Radius.circular(4)),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    // Days text
+                    Text(
+                      "${streak.days}d",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.surface1,
+                        fontSize: 13,
                       ),
-                      TweenAnimationBuilder(
-                        duration: const Duration(milliseconds: 500),
-                        tween: Tween<double>(begin: 0, end: streak.days / maxDays),
-                        builder: (context, double value, child) {
-                          return Container(
-                            width: (MediaQuery.of(context).size.width * 0.2) * value,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryColor,
-                              borderRadius: BorderRadius.horizontal(right: Radius.circular(4)),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                // Day count in the middle
-                Text(
-                  "${streak.days} days",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.surface1,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           // End date
           SizedBox(
-            width: 80,
+            width: 60,
             child: Text(
-              DateFormat('MMM d').format(streak.endDate),
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              DateFormat('M/d').format(streak.endDate),
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
             ),
           ),
         ],

@@ -108,8 +108,8 @@ class HabitCalendarView extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       children: days.map((date) {
         bool hasRecord = records.any((record) => _isSameDay(record.date, date));
         bool isFutureDate = date.isAfter(DateTime.now());
@@ -132,27 +132,29 @@ class HabitCalendarView extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             foregroundColor: AppTheme.textColor,
             disabledBackgroundColor: AppTheme.surface2,
+            padding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
             side: BorderSide(color: AppTheme.surface1),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${date.day}',
-                style: TextStyle(fontSize: 12),
-              ),
-              if (date.isAfter(DateTime.now()))
-                const Icon(Icons.lock, size: 16, color: Colors.grey)
-              else
-                Icon(
-                  hasRecord ? Icons.link : Icons.close,
-                  color: hasRecord ? Colors.green : Colors.red,
-                  size: 20,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${date.day}',
                 ),
-            ],
+                if (date.isAfter(DateTime.now()))
+                  const Icon(Icons.lock, size: 12, color: Colors.grey)
+                else
+                  Icon(
+                    hasRecord ? Icons.link : Icons.close,
+                    color: hasRecord ? Colors.green : Colors.red,
+                  ),
+              ],
+            ),
           ),
         );
       }).toList(),
