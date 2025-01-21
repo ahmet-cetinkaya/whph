@@ -119,12 +119,15 @@ class _TodayPageState extends State<TodayPage> {
                 onTagsSelected: _onTagFilterSelect),
 
             // Habits
+            const SizedBox(height: 16),
             _buildHabitSection(context),
 
             // Tasks
+            const SizedBox(height: 16),
             _buildTaskSection(context),
 
             // Times
+            const SizedBox(height: 16),
             _buildTimeSection(context),
           ],
         ),
@@ -137,7 +140,7 @@ class _TodayPageState extends State<TodayPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(left: 8, bottom: 4),
           child: Text(
             'Habits',
             style: Theme.of(context).textTheme.titleSmall,
@@ -171,7 +174,7 @@ class _TodayPageState extends State<TodayPage> {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding: const EdgeInsets.only(left: 8.0),
+        padding: const EdgeInsets.only(left: 8.0, bottom: 4),
         child: Text(
           'Tasks',
           style: Theme.of(context).textTheme.titleSmall,
@@ -204,7 +207,7 @@ class _TodayPageState extends State<TodayPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8, top: 16),
+          padding: const EdgeInsets.only(left: 8, bottom: 4),
           child: Text(
             'Time',
             style: Theme.of(context).textTheme.titleSmall,
