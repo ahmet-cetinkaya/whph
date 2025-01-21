@@ -73,7 +73,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
       defaultRoute: (context) => ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // Details
           TagDetailsContent(tagId: widget.tagId),
+
+          // Tasks
           ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
               if (!mounted) return;

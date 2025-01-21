@@ -111,48 +111,56 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       return const SizedBox.shrink();
     }
 
-    return DetailTable(rowData: [
-      DetailTableRowData(
-        label: "Tags",
-        icon: Icons.tag,
-        widget: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              children: [
-                TagSelectDropdown(
-                  key: ValueKey(_tagTags!.items.length),
-                  isMultiSelect: true,
-                  onTagsSelected: _onTagsSelected,
-                  initialSelectedTags: _tagTags!.items
-                      .map(
-                          (tag) => Tag(id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
-                      .toList(),
-                  icon: Icons.add,
-                  excludeTagIds: [_tag!.id],
-                ),
-                ..._tagTags!.items.map((tagTag) {
-                  return Chip(
-                    label: Text(
-                      tagTag.secondaryTagName,
-                      style: TextStyle(
-                        color: tagTag.secondaryTagColor != null
-                            ? Color(int.parse('FF${tagTag.secondaryTagColor}', radix: 16))
-                            : null,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DetailTable(rowData: [
+            DetailTableRowData(
+              label: "Tags",
+              icon: Icons.tag,
+              hintText: "Select tags to associate",
+              widget: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: [
+                      TagSelectDropdown(
+                        key: ValueKey(_tagTags!.items.length),
+                        isMultiSelect: true,
+                        onTagsSelected: _onTagsSelected,
+                        initialSelectedTags: _tagTags!.items
+                            .map((tag) =>
+                                Tag(id: tag.secondaryTagId, name: tag.secondaryTagName, createdDate: DateTime.now()))
+                            .toList(),
+                        icon: Icons.add,
+                        excludeTagIds: [_tag!.id],
                       ),
-                    ),
-                    onDeleted: () {
-                      _removeTag(tagTag.id);
-                    },
-                  );
-                })
-              ],
+                      ..._tagTags!.items.map((tagTag) {
+                        return Chip(
+                          label: Text(
+                            tagTag.secondaryTagName,
+                            style: TextStyle(
+                              color: tagTag.secondaryTagColor != null
+                                  ? Color(int.parse('FF${tagTag.secondaryTagColor}', radix: 16))
+                                  : null,
+                            ),
+                          ),
+                          onDeleted: () {
+                            _removeTag(tagTag.id);
+                          },
+                        );
+                      })
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ]),
+        ],
       ),
-    ]);
+    );
   }
 }

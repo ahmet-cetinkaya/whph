@@ -225,33 +225,49 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tags
+          // Tags Table
+          DetailTable(rowData: [
+            DetailTableRowData(
+              label: "Tags",
+              icon: Icons.label,
+              widget: _habitTags == null
+                  ? const SizedBox.shrink()
+                  : HabitTagSection(
+                      habitTags: _habitTags!,
+                      onTagsSelected: _onTagsSelected,
+                      onRemoveTag: _removeTag,
+                    ),
+            ),
+          ]),
+
+          // Description Table
           DetailTable(
+            forceVertical: true,
             rowData: [
               DetailTableRowData(
-                label: "Tags",
-                icon: Icons.label,
-                widget: _habitTags == null
-                    ? const SizedBox.shrink()
-                    : HabitTagSection(
-                        habitTags: _habitTags!,
-                        onTagsSelected: _onTagsSelected,
-                        onRemoveTag: _removeTag,
-                      ),
+                label: "Description",
+                icon: Icons.description,
+                hintText: "Click text to edit",
+                widget: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: MarkdownAutoPreview(
+                    controller: _descriptionController,
+                    onChanged: _onDescriptionChanged,
+                    hintText: 'Add a description...',
+                    toolbarBackground: AppTheme.surface1,
+                  ),
+                ),
               ),
             ],
           ),
 
-          // Description
-          _buildDescriptionSection(),
+          const SizedBox(height: 16),
 
-          const Divider(),
-
-          // Calendar
+          // Records and Statistics Section
           _buildRecordsHeader(),
           if (_habitRecords != null)
             HabitCalendarView(
@@ -264,45 +280,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               habitId: widget.habitId,
             ),
 
-          const Divider(),
-
           // Statistics
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: HabitStatisticsView(statistics: _habit!.statistics),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDescriptionSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildSectionHeader(Icons.description, 'Description'),
-              const SizedBox(width: 8),
-              Text(
-                "Click to edit",
-                style: TextStyle(fontSize: 12, color: AppTheme.disabledColor),
-              )
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: SizedBox(
-              width: double.infinity,
-              child: MarkdownAutoPreview(
-                controller: _descriptionController,
-                onChanged: _onDescriptionChanged,
-                hintText: 'Add a description...',
-                toolbarBackground: AppTheme.surface1,
-              ),
-            ),
           ),
         ],
       ),

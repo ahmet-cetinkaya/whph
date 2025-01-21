@@ -12,6 +12,7 @@ class AppTheme {
   static const Color textColor = Color(0xFFEBEBEB);
   static const Color secondaryTextColor = Color(0xFFBDBDBD);
   static const Color darkTextColor = Color(0xFF121212);
+  static const Color lightTextColor = Color(0xFFE0E0E0);
   static const Color dividerColor = Color(0xFF3A3A3A);
 
   static const Color successColor = Color(0xFF4CAF50);
@@ -108,13 +109,20 @@ class AppTheme {
       ),
       labelStyle: TextStyle(color: textColor),
       filled: true,
-      fillColor: surface2,
+      fillColor: surface1,
     ),
     checkboxTheme: CheckboxThemeData(
       checkColor: WidgetStateProperty.all(surface1),
     ),
     dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle: TextStyle(fontSize: 12),
+      menuStyle: MenuStyle(
+        backgroundColor: WidgetStateProperty.all(surface1),
+        elevation: WidgetStateProperty.all(0),
+      ),
       inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(containerBorderRadius),
           borderSide: BorderSide.none,
@@ -131,6 +139,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(containerBorderRadius),
           borderSide: BorderSide.none,
         ),
+        filled: true,
+        fillColor: surface1,
       ),
     ),
     dividerTheme: DividerThemeData(

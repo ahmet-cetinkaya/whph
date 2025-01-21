@@ -40,7 +40,6 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
       bottomNavItems: NavigationItems.bottomNavItems,
       routes: {},
       defaultRoute: (context) => ListView(
-        padding: const EdgeInsets.all(16),
         children: [
           AppUsageDetailsContent(id: widget.appUsageId),
         ],

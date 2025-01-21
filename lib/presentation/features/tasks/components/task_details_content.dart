@@ -11,6 +11,7 @@ import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -195,33 +196,35 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
               // Priority
               DetailTableRowData(
-                  label: "Priority",
-                  icon: Icons.priority_high,
-                  widget: DropdownMenu(
-                    dropdownMenuEntries: _priorityOptions
-                        .map((option) => DropdownMenuEntry(label: option.label, value: option.value))
-                        .toList(),
-                    initialSelection: _task!.priority,
-                    onSelected: (value) {
-                      if (!mounted) return;
-                      setState(() {
-                        _task!.priority = value;
-                        _updateTask();
-                      });
-                    },
-                  )),
+                label: "Priority",
+                icon: Icons.priority_high,
+                widget: PrioritySelectField(
+                  value: _task!.priority,
+                  options: _priorityOptions,
+                  onChanged: (value) {
+                    if (!mounted) return;
+                    setState(() {
+                      _task!.priority = value;
+                      _updateTask();
+                    });
+                  },
+                ),
+              ),
 
               // Planned Date
               DetailTableRowData(
                 label: "Planned Date",
                 icon: Icons.calendar_today,
-                widget: DateTimePickerField(
-                  controller: _plannedDateController,
-                  hintText: '',
-                  onConfirm: (date) {
-                    _task?.plannedDate = date;
-                    _updateTask();
-                  },
+                widget: SizedBox(
+                  height: 36,
+                  child: DateTimePickerField(
+                    controller: _plannedDateController,
+                    hintText: '',
+                    onConfirm: (date) {
+                      _task?.plannedDate = date;
+                      _updateTask();
+                    },
+                  ),
                 ),
               ),
 
@@ -282,41 +285,44 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
               DetailTableRowData(
                   label: "Deadline Date",
                   icon: Icons.calendar_today,
-                  widget: DateTimePickerField(
-                    controller: _deadlineDateController,
-                    hintText: '',
-                    onConfirm: (date) {
-                      _task?.deadlineDate = date;
-                      _updateTask();
-                    },
+                  widget: SizedBox(
+                    height: 36,
+                    child: DateTimePickerField(
+                      controller: _deadlineDateController,
+                      hintText: '',
+                      onConfirm: (date) {
+                        _task?.deadlineDate = date;
+                        _updateTask();
+                      },
+                    ),
                   )),
             ]),
 
-            // Description
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: const Icon(Icons.description),
+            // Description section with DetailTable
+            DetailTable(
+              forceVertical: true,
+              rowData: [
+                DetailTableRowData(
+                  label: "Description",
+                  icon: Icons.description,
+                  hintText: "Click text to edit",
+                  widget: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: MarkdownAutoPreview(
+                      controller: _descriptionController,
+                      onChanged: (value) {
+                        var isEmptyWhitespace = value.trim().isEmpty;
+                        if (isEmptyWhitespace) {
+                          _descriptionController.clear();
+                        }
+                        _updateTask();
+                      },
+                      hintText: 'Add a description...',
+                      toolbarBackground: AppTheme.surface1,
+                    ),
                   ),
-                  const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            MarkdownAutoPreview(
-              controller: _descriptionController,
-              onChanged: (value) {
-                var isEmptyWhitespace = value.trim().isEmpty;
-                if (isEmptyWhitespace) {
-                  _descriptionController.clear();
-                }
-
-                _updateTask();
-              },
-              hintText: 'Add a description...',
-              toolbarBackground: AppTheme.surface1,
+                ),
+              ],
             ),
           ],
         ),

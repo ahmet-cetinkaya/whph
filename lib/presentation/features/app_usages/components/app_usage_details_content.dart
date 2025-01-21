@@ -183,56 +183,72 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       return const SizedBox.shrink();
     }
 
-    return DetailTable(rowData: [
-      // AppUsage Tags
-      DetailTableRowData(
-          label: "Tags",
-          icon: Icons.label,
-          widget: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DetailTable(rowData: [
+            // AppUsage Tags
+            DetailTableRowData(
+              label: "Tags",
+              icon: Icons.label,
+              hintText: "Select tags to associate",
+              widget: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Select
-                  TagSelectDropdown(
-                    key: ValueKey(_appUsageTags!.items.length),
-                    isMultiSelect: true,
-                    onTagsSelected: _onTagsSelected,
-                    initialSelectedTags: _appUsageTags!.items
-                        .map((appUsage) => Tag(id: appUsage.tagId, name: appUsage.tagName, createdDate: DateTime.now()))
-                        .toList(),
-                    icon: Icons.add,
-                  ),
-                  ..._appUsageTags!.items.map((tag) {
-                    return Chip(
-                      label: Text(
-                        tag.tagName,
-                        style: TextStyle(
-                          color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
-                        ),
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: [
+                      // Select
+                      TagSelectDropdown(
+                        key: ValueKey(_appUsageTags!.items.length),
+                        isMultiSelect: true,
+                        onTagsSelected: _onTagsSelected,
+                        initialSelectedTags: _appUsageTags!.items
+                            .map((appUsage) =>
+                                Tag(id: appUsage.tagId, name: appUsage.tagName, createdDate: DateTime.now()))
+                            .toList(),
+                        icon: Icons.add,
                       ),
-                      onDeleted: () {
-                        _removeTag(tag.id);
-                      },
-                    );
-                  })
+                      ..._appUsageTags!.items.map((tag) {
+                        return Chip(
+                          label: Text(
+                            tag.tagName,
+                            style: TextStyle(
+                              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
+                            ),
+                          ),
+                          onDeleted: () {
+                            _removeTag(tag.id);
+                          },
+                        );
+                      })
+                    ],
+                  ),
                 ],
               ),
-            ],
-          )),
+            ),
 
-      // Color
-      DetailTableRowData(
-          label: "Color",
-          icon: Icons.color_lens,
-          widget: Row(
-            children: [
-              ColorPreview(color: Color(int.parse("FF${_appUsage!.color!}", radix: 16))),
-              IconButton(onPressed: _onChangeColorOpen, icon: Icon(Icons.edit))
-            ],
-          )),
-    ]);
+            // Color
+            DetailTableRowData(
+              label: "Color",
+              icon: Icons.color_lens,
+              hintText: "Click to change color",
+              widget: Row(
+                children: [
+                  ColorPreview(color: Color(int.parse("FF${_appUsage!.color!}", radix: 16))),
+                  IconButton(
+                    onPressed: _onChangeColorOpen,
+                    icon: Icon(Icons.edit, size: 18),
+                  )
+                ],
+              ),
+            ),
+          ]),
+        ],
+      ),
+    );
   }
 }

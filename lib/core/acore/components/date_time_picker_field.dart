@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // To format the date and time
+import 'package:intl/intl.dart';
 
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  final Function(DateTime) onConfirm;
+  final Function(DateTime?) onConfirm;
 
   const DateTimePickerField({
     super.key,
@@ -47,16 +47,20 @@ class DateTimePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       readOnly: true,
-      onTap: () => _selectDateTime(context),
+      style: const TextStyle(fontSize: 12),
       decoration: InputDecoration(
-          hintText: hintText,
-          border: const OutlineInputBorder(
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.only(left: 8, right: 8)),
+        hintText: hintText,
+        hintStyle: const TextStyle(fontSize: 11),
+        suffixIcon: const Icon(Icons.edit, size: 18),
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      onTap: () async {
+        await _selectDateTime(context);
+      },
     );
   }
 }
