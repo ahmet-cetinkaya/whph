@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
@@ -11,6 +12,7 @@ import 'package:whph/application/features/habits/services/i_habit_record_reposit
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/application/features/sync/models/sync_data.dart';
 import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -35,7 +37,7 @@ import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
-import 'package:whph/persistence/shared/repositories/abstraction/i_repository.dart';
+import 'package:whph/application/shared/services/i_repository.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 
 class SyncCommand implements IRequest<SyncCommandResponse> {
@@ -49,6 +51,20 @@ class SyncCommandResponse {
   SyncDataDto? syncDataDto;
 
   SyncCommandResponse({this.syncDataDto});
+}
+
+class SyncConfig<T extends BaseEntity<String>> {
+  final String name;
+  final IRepository<T, String> repository;
+  final Future<SyncData<T>> Function(DateTime) getSyncData;
+  final SyncData<T>? Function(SyncDataDto) getSyncDataFromDto;
+
+  SyncConfig({
+    required this.name,
+    required this.repository,
+    required this.getSyncData,
+    required this.getSyncDataFromDto,
+  });
 }
 
 class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResponse> {
@@ -67,6 +83,8 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   final ITaskTimeRecordRepository taskTimeRecordRepository;
   final ISettingRepository settingRepository;
 
+  late final List<SyncConfig> _syncConfigs;
+
   SyncCommandHandler({
     required this.syncDeviceRepository,
     required this.appUsageRepository,
@@ -82,14 +100,93 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     required this.taskTagRepository,
     required this.taskTimeRecordRepository,
     required this.settingRepository,
-  });
-
-  Future<void> _checkVersion(String remoteVersion) async {
-    if (remoteVersion != AppInfo.version) {
-      throw BusinessException(
-        'Version mismatch. Local version: ${AppInfo.version}, Remote version: $remoteVersion. Please update both applications to the same version.',
-      );
-    }
+  }) {
+    _syncConfigs = [
+      SyncConfig<AppUsage>(
+        name: 'AppUsage',
+        repository: appUsageRepository,
+        getSyncData: appUsageRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.appUsagesSyncData,
+      ),
+      SyncConfig<AppUsageTag>(
+        name: 'AppUsageTag',
+        repository: appUsageTagRepository,
+        getSyncData: appUsageTagRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.appUsageTagsSyncData,
+      ),
+      SyncConfig<AppUsageTimeRecord>(
+        name: 'AppUsageTimeRecord',
+        repository: appUsageTimeRecordRepository,
+        getSyncData: appUsageTimeRecordRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.appUsageTimeRecordsSyncData,
+      ),
+      SyncConfig<AppUsageTagRule>(
+        name: 'AppUsageTagRule',
+        repository: appUsageTagRuleRepository,
+        getSyncData: appUsageTagRuleRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.appUsageTagRulesSyncData,
+      ),
+      SyncConfig<Habit>(
+        name: 'Habit',
+        repository: habitRepository,
+        getSyncData: habitRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.habitsSyncData,
+      ),
+      SyncConfig<HabitRecord>(
+        name: 'HabitRecord',
+        repository: habitRecordRepository,
+        getSyncData: habitRecordRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.habitRecordsSyncData,
+      ),
+      SyncConfig<HabitTag>(
+        name: 'HabitTag',
+        repository: habitTagRepository,
+        getSyncData: habitTagRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.habitTagsSyncData,
+      ),
+      SyncConfig<Tag>(
+        name: 'Tag',
+        repository: tagRepository,
+        getSyncData: tagRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.tagsSyncData,
+      ),
+      SyncConfig<TagTag>(
+        name: 'TagTag',
+        repository: tagTagRepository,
+        getSyncData: tagTagRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.tagTagsSyncData,
+      ),
+      SyncConfig<Task>(
+        name: 'Task',
+        repository: taskRepository,
+        getSyncData: taskRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.tasksSyncData,
+      ),
+      SyncConfig<TaskTag>(
+        name: 'TaskTag',
+        repository: taskTagRepository,
+        getSyncData: taskTagRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.taskTagsSyncData,
+      ),
+      SyncConfig<TaskTimeRecord>(
+        name: 'TaskTimeRecord',
+        repository: taskTimeRecordRepository,
+        getSyncData: taskTimeRecordRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.taskTimeRecordsSyncData,
+      ),
+      SyncConfig<Setting>(
+        name: 'Setting',
+        repository: settingRepository,
+        getSyncData: settingRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.settingsSyncData,
+      ),
+      SyncConfig<SyncDevice>(
+        name: 'SyncDevice',
+        repository: syncDeviceRepository,
+        getSyncData: syncDeviceRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.syncDevicesSyncData,
+      ),
+    ];
   }
 
   @override
@@ -144,52 +241,30 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   }
 
   Future<SyncDataDto> _prepareSyncData(SyncDevice syncDevice) async {
-    SyncData<AppUsage> syncAppUsageData =
-        await appUsageRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<AppUsageTag> syncAppUsageTagData =
-        await appUsageTagRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<AppUsageTimeRecord> syncAppUsageTimeRecordData =
-        await appUsageTimeRecordRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<AppUsageTagRule> syncAppUsageTagRuleData =
-        await appUsageTagRuleRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<Habit> syncHabitData =
-        await habitRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<HabitRecord> syncHabitRecordData =
-        await habitRecordRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<HabitTag> syncHabitTagData =
-        await habitTagRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<Tag> syncTagData = await tagRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<TagTag> syncTagTagData =
-        await tagTagRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<Task> syncTaskData = await taskRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<TaskTag> syncTaskTagData =
-        await taskTagRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<TaskTimeRecord> syncTaskTimeRecordData =
-        await taskTimeRecordRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<Setting> syncSettingData =
-        await settingRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
-    SyncData<SyncDevice> syncSyncDeviceData =
-        await syncDeviceRepository.getSyncData(syncDevice.lastSyncDate ?? syncDevice.createdDate);
+    final lastSyncDate = syncDevice.lastSyncDate ?? syncDevice.createdDate;
 
-    SyncDataDto combinedData = SyncDataDto(
+    final syncDataResults = await Future.wait(_syncConfigs.map((config) => config.getSyncData(lastSyncDate)));
+
+    var dto = SyncDataDto(
       appVersion: AppInfo.version,
-      appUsagesSyncData: syncAppUsageData,
-      appUsageTagsSyncData: syncAppUsageTagData,
-      appUsageTimeRecordsSyncData: syncAppUsageTimeRecordData,
-      appUsageTagRulesSyncData: syncAppUsageTagRuleData,
-      habitsSyncData: syncHabitData,
-      habitRecordsSyncData: syncHabitRecordData,
-      habitTagsSyncData: syncHabitTagData,
-      tagsSyncData: syncTagData,
-      tagTagsSyncData: syncTagTagData,
-      tasksSyncData: syncTaskData,
-      taskTagsSyncData: syncTaskTagData,
-      taskTimeRecordsSyncData: syncTaskTimeRecordData,
-      settingsSyncData: syncSettingData,
-      syncDevicesSyncData: syncSyncDeviceData,
       syncDevice: syncDevice,
+      appUsagesSyncData: syncDataResults[0] as SyncData<AppUsage>,
+      appUsageTagsSyncData: syncDataResults[1] as SyncData<AppUsageTag>,
+      appUsageTimeRecordsSyncData: syncDataResults[2] as SyncData<AppUsageTimeRecord>,
+      appUsageTagRulesSyncData: syncDataResults[3] as SyncData<AppUsageTagRule>,
+      habitsSyncData: syncDataResults[4] as SyncData<Habit>,
+      habitRecordsSyncData: syncDataResults[5] as SyncData<HabitRecord>,
+      habitTagsSyncData: syncDataResults[6] as SyncData<HabitTag>,
+      tagsSyncData: syncDataResults[7] as SyncData<Tag>,
+      tagTagsSyncData: syncDataResults[8] as SyncData<TagTag>,
+      tasksSyncData: syncDataResults[9] as SyncData<Task>,
+      taskTagsSyncData: syncDataResults[10] as SyncData<TaskTag>,
+      taskTimeRecordsSyncData: syncDataResults[11] as SyncData<TaskTimeRecord>,
+      settingsSyncData: syncDataResults[12] as SyncData<Setting>,
+      syncDevicesSyncData: syncDataResults[13] as SyncData<SyncDevice>,
     );
-    return combinedData;
+
+    return dto;
   }
 
   Future<void> _saveSyncDevice(SyncDevice sync) async {
@@ -199,6 +274,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
   Future<void> _sendDataToWebSocket(String ipAddress, String jsonData) async {
     const int maxRetries = 3;
+    const int baseTimeout = 10;
     int attempt = 0;
 
     while (attempt < maxRetries) {
@@ -206,224 +282,203 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       try {
         if (kDebugMode) print('Attempting to connect to WebSocket at ws://$ipAddress:4040 (Attempt ${attempt + 1})');
 
-        // Connect to WebSocket
-        socket = await WebSocket.connect('ws://$ipAddress:4040');
+        socket =
+            await WebSocket.connect('ws://$ipAddress:4040').timeout(Duration(seconds: baseTimeout * (attempt + 1)));
+
+        bool responseReceived = false;
+        Timer? timeoutTimer = Timer(Duration(seconds: baseTimeout * (attempt + 1)), () {
+          if (!responseReceived) {
+            socket?.close();
+            throw TimeoutException('WebSocket response timeout');
+          }
+        });
 
         if (kDebugMode) print('Connected to WebSocket at ws://$ipAddress:4040');
 
-        // Send data to WebSocket
+        // Send our data first
         socket.add(jsonData);
-        if (kDebugMode) print('Data sent to WebSocket: $jsonData');
 
-        // Listen for a single response from WebSocket
+        bool syncCompleted = false;
         await for (var message in socket) {
-          if (kDebugMode) print('Received message from WebSocket: $message');
-          WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
-          var parsedData = SyncDataDto.fromJson(parsedMessage!.data['syncDataDto']);
+          responseReceived = true;
+          timeoutTimer.cancel();
 
-          // Check version before processing data
-          await _checkVersion(parsedData.appVersion);
-          bool syncSuccess = await _processIncomingData(parsedData);
+          if (kDebugMode) print('Received message: $message');
 
-          if (syncSuccess) {
-            await _saveSyncDevice(parsedData.syncDevice);
-            // Send success response
-            WebSocketMessage responseMessage = WebSocketMessage(
-                type: 'sync_complete', data: {'success': true, 'timestamp': DateTime.now().toIso8601String()});
-            socket.add(JsonMapper.serialize(responseMessage));
-          } else {
-            // Send error response
-            WebSocketMessage responseMessage = WebSocketMessage(
-                type: 'sync_error', data: {'success': false, 'message': 'Failed to process sync data'});
-            socket.add(JsonMapper.serialize(responseMessage));
+          try {
+            var receivedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
+            if (receivedMessage?.data == null) {
+              throw FormatException('Invalid message format or null data');
+            }
+
+            var messageData = receivedMessage!.data;
+
+            // Handle sync complete response
+            if (receivedMessage.type == 'sync_complete' && messageData is Map<String, dynamic>) {
+              bool? success = messageData['success'] as bool?;
+              if (success == true) {
+                syncCompleted = true;
+
+                // Check if we have syncDataDto in the response
+                if (messageData['syncDataDto'] != null) {
+                  var syncDataDtoJson = messageData['syncDataDto'] as Map<String, dynamic>;
+                  var parsedData = SyncDataDto.fromJson(syncDataDtoJson);
+                  await _processIncomingData(parsedData);
+                }
+              } else {
+                throw FormatException('Sync failed: ${messageData['message']}');
+              }
+            }
+            // Handle incoming sync data
+            else if (receivedMessage.type == 'sync' && messageData is Map<String, dynamic>) {
+              var syncDataDtoJson = messageData['syncDataDto'];
+              if (syncDataDtoJson != null) {
+                // Process incoming sync data from the other device
+                var parsedData = SyncDataDto.fromJson(syncDataDtoJson as Map<String, dynamic>);
+                await _checkVersion(parsedData.appVersion);
+                bool syncSuccess = await _processIncomingData(parsedData);
+
+                if (syncSuccess) {
+                  await _saveSyncDevice(parsedData.syncDevice);
+                  socket.add(JsonMapper.serialize(WebSocketMessage(
+                      type: 'sync_complete', data: {'success': true, 'timestamp': DateTime.now().toIso8601String()})));
+                } else {
+                  socket.add(JsonMapper.serialize(WebSocketMessage(
+                      type: 'sync_error', data: {'success': false, 'message': 'Failed to process sync data'})));
+                }
+              }
+            }
+          } catch (e, stack) {
+            if (kDebugMode) {
+              print('Error processing WebSocket message: $e');
+              print('Stack trace: $stack');
+            }
+            rethrow;
           }
-          break;
+        }
+
+        if (!syncCompleted) {
+          throw BusinessException('Sync did not complete successfully');
         }
 
         socket.close();
         break;
-      } catch (e) {
-        if (kDebugMode) print('Error during WebSocket communication: $e');
+      } catch (e, stack) {
+        if (kDebugMode) {
+          print('Error during WebSocket communication (Attempt ${attempt + 1}): $e');
+          print('Stack trace: $stack');
+        }
 
         attempt++;
         if (attempt >= maxRetries) {
-          throw BusinessException('Max retries reached. Giving up. Error: $e');
+          throw BusinessException('Failed to sync after $maxRetries attempts. Last error: $e');
         }
 
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: pow(2, attempt).toInt()));
       } finally {
         socket?.close();
       }
     }
   }
 
-  //#region Process incoming data
+  Future<void> _checkVersion(String remoteVersion) async {
+    if (remoteVersion != AppInfo.version) {
+      throw BusinessException(
+        'Version mismatch. Local version: ${AppInfo.version}, Remote version: $remoteVersion. Please update both applications to the same version.',
+      );
+    }
+  }
 
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {
     try {
-      await _processSyncData<AppUsage, String>(
-        syncDataDto.appUsagesSyncData,
-        appUsageRepository.getById,
-        appUsageRepository.add,
-        (existingAppUsage, appUsage) => existingAppUsage.mapFromInstance(appUsage),
-        appUsageRepository.update,
-        appUsageRepository.delete,
-      );
-      await _processSyncData<AppUsageTag, String>(
-        syncDataDto.appUsageTagsSyncData,
-        appUsageTagRepository.getById,
-        appUsageTagRepository.add,
-        (existingAppUsageTag, appUsageTag) => existingAppUsageTag.mapFromInstance(appUsageTag),
-        appUsageTagRepository.update,
-        appUsageTagRepository.delete,
-      );
-      await _processSyncData<AppUsageTimeRecord, String>(
-        syncDataDto.appUsageTimeRecordsSyncData,
-        appUsageTimeRecordRepository.getById,
-        appUsageTimeRecordRepository.add,
-        (existing, record) => existing.mapFromInstance(record),
-        appUsageTimeRecordRepository.update,
-        appUsageTimeRecordRepository.delete,
-      );
-      await _processSyncData<AppUsageTagRule, String>(
-        syncDataDto.appUsageTagRulesSyncData,
-        appUsageTagRuleRepository.getById,
-        appUsageTagRuleRepository.add,
-        (existing, rule) => existing.mapFromInstance(rule),
-        appUsageTagRuleRepository.update,
-        appUsageTagRuleRepository.delete,
-      );
-      await _processSyncData<Habit, String>(
-        syncDataDto.habitsSyncData,
-        habitRepository.getById,
-        habitRepository.add,
-        (existingHabit, habit) => existingHabit.mapFromInstance(habit),
-        habitRepository.update,
-        habitRepository.delete,
-      );
-      await _processSyncData<HabitRecord, String>(
-        syncDataDto.habitRecordsSyncData,
-        habitRecordRepository.getById,
-        habitRecordRepository.add,
-        (existingHabitRecord, habitRecord) => existingHabitRecord.mapFromInstance(habitRecord),
-        habitRecordRepository.update,
-        habitRecordRepository.delete,
-      );
-      await _processSyncData<HabitTag, String>(
-        syncDataDto.habitTagsSyncData,
-        habitTagRepository.getById,
-        habitTagRepository.add,
-        (existing, tag) => existing.mapFromInstance(tag),
-        habitTagRepository.update,
-        habitTagRepository.delete,
-      );
-      await _processSyncData<Tag, String>(
-        syncDataDto.tagsSyncData,
-        tagRepository.getById,
-        tagRepository.add,
-        (existingTag, tag) => existingTag.mapFromInstance(tag),
-        tagRepository.update,
-        tagRepository.delete,
-      );
-      await _processSyncData<TagTag, String>(
-        syncDataDto.tagTagsSyncData,
-        tagTagRepository.getById,
-        tagTagRepository.add,
-        (existingTagTag, tagTag) => existingTagTag.mapFromInstance(tagTag),
-        tagTagRepository.update,
-        tagTagRepository.delete,
-      );
-      await _processSyncData<Task, String>(
-        syncDataDto.tasksSyncData,
-        taskRepository.getById,
-        taskRepository.add,
-        (existingTask, task) => existingTask.mapFromInstance(task),
-        taskRepository.update,
-        taskRepository.delete,
-      );
-      await _processSyncData<TaskTag, String>(
-        syncDataDto.taskTagsSyncData,
-        taskTagRepository.getById,
-        taskTagRepository.add,
-        (existingTaskTag, taskTag) => existingTaskTag.mapFromInstance(taskTag),
-        taskTagRepository.update,
-        taskTagRepository.delete,
-      );
-      await _processSyncData<TaskTimeRecord, String>(
-        syncDataDto.taskTimeRecordsSyncData,
-        taskTimeRecordRepository.getById,
-        taskTimeRecordRepository.add,
-        (existing, record) => existing.mapFromInstance(record),
-        taskTimeRecordRepository.update,
-        taskTimeRecordRepository.delete,
-      );
-      await _processSyncData<Setting, String>(
-        syncDataDto.settingsSyncData,
-        settingRepository.getById,
-        settingRepository.add,
-        (existingSetting, setting) => existingSetting.mapFromInstance(setting),
-        settingRepository.update,
-        settingRepository.delete,
-      );
-      await _processSyncData<SyncDevice, String>(
-          syncDataDto.syncDevicesSyncData,
-          syncDeviceRepository.getById,
-          syncDeviceRepository.add,
-          (existingSyncDevice, syncDevice) => existingSyncDevice.mapFromInstance(syncDevice),
-          syncDeviceRepository.update,
-          syncDeviceRepository.delete);
-
-      return true; // Return true if all sync operations completed successfully
+      await Future.wait(_syncConfigs.map((config) {
+        var syncData = config.getSyncDataFromDto(syncDataDto);
+        if (syncData != null) {
+          return _processSyncDataBatch(syncData, config.repository);
+        }
+        return Future.value(); // Skip if no sync data
+      }));
+      return true;
     } catch (e) {
       if (kDebugMode) print('Error processing incoming data: $e');
       return false;
     }
   }
 
-  Future<void> _processSyncData<T extends BaseEntity<TId>, TId>(
-    SyncData<T> syncData,
-    Future<T?> Function(TId) getByIdFunction,
-    Future<void> Function(T) addFunction,
-    void Function(T, T) mapFunction,
-    Future<void> Function(T) updateFunction,
-    Future<void> Function(T) deleteFunction,
+  Future<void> _processSyncDataBatch<T extends BaseEntity<String>>(
+      SyncData<T> syncData, IRepository<T, String> repository) async {
+    try {
+      const batchSize = 100;
+
+      // Process creates and updates together
+      var upsertItems = [...syncData.createSync, ...syncData.updateSync];
+
+      if (upsertItems.isNotEmpty) {
+        await _processBatchOperation(
+          upsertItems,
+          (item) async {
+            try {
+              // First try to get the existing item
+              T? existingItem = await repository.getById(item.id);
+              if (existingItem != null) {
+                // If item exists, update it
+                await repository.update(item);
+              } else {
+                // If item doesn't exist, add it
+                await repository.add(item);
+              }
+            } catch (e) {
+              if (kDebugMode) {
+                print('Error processing item ${item.id}: $e');
+              }
+              rethrow;
+            }
+          },
+          batchSize,
+        );
+      }
+
+      // Process deletes separately
+      if (syncData.deleteSync.isNotEmpty) {
+        await _processBatchOperation(
+          syncData.deleteSync,
+          (item) => repository.delete(item),
+          batchSize,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error processing batch for ${T.toString()}: $e');
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _processBatchOperation<T>(
+    List<T> items,
+    Future<void> Function(T) operation,
+    int batchSize,
   ) async {
-    for (T item in syncData.createSync) {
-      await addFunction(item);
-    }
-
-    for (T item in syncData.updateSync) {
-      T? existingItem = await getByIdFunction(item.id);
-      if (existingItem == null) throw BusinessException('${T.toString()} with id ${item.id} not found');
-      mapFunction(existingItem, item);
-      await updateFunction(item);
-    }
-
-    for (T item in syncData.deleteSync) {
-      T? existingItem = await getByIdFunction(item.id);
-      if (existingItem == null) throw BusinessException('${T.toString()} with id ${item.id} not found');
-      await deleteFunction(item);
+    for (var i = 0; i < items.length; i += batchSize) {
+      var end = (i + batchSize < items.length) ? i + batchSize : items.length;
+      try {
+        // Process items sequentially in each batch to maintain order
+        for (var item in items.sublist(i, end)) {
+          await operation(item);
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error processing batch ${i ~/ batchSize + 1}: $e');
+        }
+        rethrow;
+      }
     }
   }
 
   Future<void> _cleanupSoftDeletedData(DateTime oldestLastSyncDate) async {
     if (kDebugMode) print('Cleaning up soft deleted data older than: $oldestLastSyncDate');
 
-    await appUsageRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await appUsageTagRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await appUsageTimeRecordRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await appUsageTagRuleRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await habitRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await habitRecordRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await habitTagRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await tagRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await tagTagRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await taskRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await taskTagRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await taskTimeRecordRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await settingRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
-    await syncDeviceRepository.hardDeleteSoftDeleted(oldestLastSyncDate);
+    await Future.wait(
+        _syncConfigs.map((config) => config.repository.hardDeleteSoftDeleted(oldestLastSyncDate)).toList());
   }
-
-  //#endregion Process incoming data
 }

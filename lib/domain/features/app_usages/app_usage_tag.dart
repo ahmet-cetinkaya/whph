@@ -13,9 +13,4 @@ class AppUsageTag extends BaseEntity<String> {
       super.deletedDate,
       required this.appUsageId,
       required this.tagId});
-
-  void mapFromInstance(AppUsageTag instance) {
-    appUsageId = instance.appUsageId;
-    tagId = instance.tagId;
-  }
 }

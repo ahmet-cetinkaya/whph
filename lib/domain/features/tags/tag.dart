@@ -16,10 +16,4 @@ class Tag extends BaseEntity<String> {
     this.isArchived = false,
     this.color,
   });
-
-  void mapFromInstance(Tag instance) {
-    name = instance.name;
-    isArchived = instance.isArchived;
-    color = instance.color;
-  }
 }

@@ -13,9 +13,4 @@ class TagTag extends BaseEntity<String> {
       super.deletedDate,
       required this.primaryTagId,
       required this.secondaryTagId});
-
-  void mapFromInstance(TagTag instance) {
-    primaryTagId = instance.primaryTagId;
-    secondaryTagId = instance.secondaryTagId;
-  }
 }

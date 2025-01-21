@@ -18,11 +18,4 @@ class AppUsageTagRule extends BaseEntity<String> {
     this.isActive = true,
     this.description,
   });
-
-  void mapFromInstance(AppUsageTagRule instance) {
-    pattern = instance.pattern;
-    tagId = instance.tagId;
-    isActive = instance.isActive;
-    description = instance.description;
-  }
 }

@@ -30,10 +30,4 @@ class Setting extends BaseEntity<String> {
         return (value == 'true') as T;
     }
   }
-
-  void mapFromInstance(Setting instance) {
-    key = instance.key;
-    value = instance.value;
-    valueType = instance.valueType;
-  }
 }

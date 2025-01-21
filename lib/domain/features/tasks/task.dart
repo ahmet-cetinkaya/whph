@@ -30,14 +30,4 @@ class Task extends BaseEntity<String> {
       this.priority,
       this.estimatedTime,
       required this.isCompleted});
-
-  void mapFromInstance(Task instance) {
-    title = instance.title;
-    description = instance.description;
-    priority = instance.priority;
-    plannedDate = instance.plannedDate;
-    deadlineDate = instance.deadlineDate;
-    estimatedTime = instance.estimatedTime;
-    isCompleted = instance.isCompleted;
-  }
 }

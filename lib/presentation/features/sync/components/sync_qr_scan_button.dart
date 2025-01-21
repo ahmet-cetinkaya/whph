@@ -14,8 +14,12 @@ import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart'
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
+  final VoidCallback? onSyncComplete;
 
-  SyncQrScanButton({super.key});
+  SyncQrScanButton({
+    super.key,
+    this.onSyncComplete,
+  });
 
   _openQRScanner(BuildContext context) async {
     String? scannedMessage = await Navigator.pushNamed(
@@ -72,6 +76,7 @@ class SyncQrScanButton extends StatelessWidget {
   _sync(BuildContext context) async {
     try {
       await _mediator.send<SyncCommand, SyncCommandResponse>(SyncCommand());
+      if (onSyncComplete != null) onSyncComplete!();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {

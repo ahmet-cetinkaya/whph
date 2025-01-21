@@ -16,10 +16,4 @@ class AppUsage extends BaseEntity<String> {
     this.displayName,
     this.color,
   });
-
-  void mapFromInstance(AppUsage instance) {
-    name = instance.name;
-    displayName = instance.displayName;
-    color = instance.color;
-  }
 }

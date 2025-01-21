@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/api/controllers/sync_controller.dart';
@@ -32,34 +31,50 @@ void startWebSocketServer() async {
   }
 }
 
-Future<void> _handleWebSocketMessage(message, WebSocket socket) async {
-  if (kDebugMode) print('Received from client: $message');
+Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
+  try {
+    if (kDebugMode) print('Parsing WebSocket message: $message');
 
-  WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
-  if (parsedMessage == null) throw Exception('Error parsing JSON data: $message');
+    WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
+    if (parsedMessage == null) {
+      throw FormatException('Error parsing WebSocket message');
+    }
 
-  switch (parsedMessage.type) {
-    case 'sync':
-      var controller = SyncController();
-      var syncDataDto = SyncDataDto.fromJson(parsedMessage.data);
-      try {
-        var response = await controller.sync(syncDataDto);
+    switch (parsedMessage.type) {
+      case 'sync':
+        var syncData = parsedMessage.data;
+        if (syncData == null) {
+          throw FormatException('Sync message missing data');
+        }
 
-        WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
-          'syncDataDto': response.syncDataDto,
-          'success': true,
-          'timestamp': DateTime.now().toIso8601String()
-        });
-        socket.add(JsonMapper.serialize(responseMessage));
-      } catch (e) {
-        WebSocketMessage errorMessage =
-            WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
-        socket.add(JsonMapper.serialize(errorMessage));
-      }
-      break;
+        var controller = SyncController();
+        try {
+          var response = await controller.sync(SyncDataDto.fromJson(syncData as Map<String, dynamic>));
 
-    default:
-      socket.add(jsonEncode({'error': 'Unknown message type'}));
-      throw Exception('Unknown message type');
+          WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
+            'syncDataDto': response.syncDataDto,
+            'success': true,
+            'timestamp': DateTime.now().toIso8601String()
+          });
+          socket.add(JsonMapper.serialize(responseMessage));
+        } catch (e) {
+          WebSocketMessage errorMessage =
+              WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
+          socket.add(JsonMapper.serialize(errorMessage));
+        }
+        break;
+
+      default:
+        socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': 'Unknown message type'})));
+        break;
+    }
+  } catch (e, stack) {
+    if (kDebugMode) {
+      print('Error processing WebSocket message: $e');
+      print('Stack trace: $stack');
+      print('JSON data: $message');
+    }
+    socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
+    rethrow;
   }
 }

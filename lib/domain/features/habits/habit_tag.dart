@@ -14,9 +14,4 @@ class HabitTag extends BaseEntity<String> {
     required this.habitId,
     required this.tagId,
   });
-
-  void mapFromInstance(HabitTag instance) {
-    habitId = instance.habitId;
-    tagId = instance.tagId;
-  }
 }

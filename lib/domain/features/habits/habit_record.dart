@@ -14,9 +14,4 @@ class HabitRecord extends BaseEntity<String> {
     required this.habitId,
     required this.date,
   });
-
-  void mapFromInstance(HabitRecord instance) {
-    habitId = instance.habitId;
-    date = instance.date;
-  }
 }

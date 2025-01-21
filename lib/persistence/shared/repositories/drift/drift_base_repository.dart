@@ -1,11 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:meta/meta.dart';
+import 'package:whph/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/persistence/shared/repositories/abstraction/i_repository.dart';
+import 'package:whph/application/shared/services/i_repository.dart';
 
 abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
@@ -149,10 +150,11 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate) async {
-    await database.customStatement(
+    final dateStr = beforeDate.toIso8601String();
+    await (database.customStatement(
       'DELETE FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date < ?',
-      [Variable.withDateTime(beforeDate)],
-    );
+      [dateStr],
+    ));
   }
 
   @override

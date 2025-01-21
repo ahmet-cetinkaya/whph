@@ -14,13 +14,4 @@ class TaskTimeRecord extends BaseEntity<String> {
     super.modifiedDate,
     super.deletedDate,
   });
-
-  void mapFromInstance(TaskTimeRecord record) {
-    super.id = record.id;
-    super.createdDate = record.createdDate;
-    super.modifiedDate = record.modifiedDate;
-    super.deletedDate = record.deletedDate;
-    taskId = record.taskId;
-    duration = record.duration;
-  }
 }

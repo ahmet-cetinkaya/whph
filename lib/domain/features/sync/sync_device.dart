@@ -19,10 +19,27 @@ class SyncDevice extends BaseEntity<String> {
     this.lastSyncDate,
   });
 
-  void mapFromInstance(SyncDevice instance) {
-    fromIp = instance.fromIp;
-    toIp = instance.toIp;
-    name = instance.name;
-    lastSyncDate = instance.lastSyncDate;
+  factory SyncDevice.fromJson(Map<String, dynamic> json) {
+    return SyncDevice(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      fromIp: json['fromIp'] as String,
+      toIp: json['toIp'] as String,
+      name: json['name'] as String?,
+      lastSyncDate: json['lastSyncDate'] != null ? DateTime.parse(json['lastSyncDate'] as String) : null,
+    );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'createdDate': createdDate.toIso8601String(),
+        'modifiedDate': modifiedDate?.toIso8601String(),
+        'deletedDate': deletedDate?.toIso8601String(),
+        'fromIp': fromIp,
+        'toIp': toIp,
+        'name': name,
+        'lastSyncDate': lastSyncDate?.toIso8601String(),
+      };
 }

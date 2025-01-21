@@ -86,6 +86,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
     try {
       var command = SyncCommand();
       await widget.mediator.send<SyncCommand, void>(command);
+      await _refreshDevices();
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to sync devices.');
@@ -97,6 +98,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
         });
       }
     }
+  }
+
+  Future<void> _refreshDevices() async {
+    await _getDevices(pageIndex: 0, pageSize: 10);
   }
 
   List<Widget> _buildAppBarActions() {
@@ -126,11 +131,18 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       appBarTitle: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const AppLogo(width: 32, height: 32),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: const Text('Sync Devices'),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: const Text(
+                'Sync Devices',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           )
         ],
       ),

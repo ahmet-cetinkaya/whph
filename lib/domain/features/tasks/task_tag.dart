@@ -13,9 +13,4 @@ class TaskTag extends BaseEntity<String> {
       super.deletedDate,
       required this.taskId,
       required this.tagId});
-
-  void mapFromInstance(TaskTag instance) {
-    taskId = instance.taskId;
-    tagId = instance.tagId;
-  }
 }

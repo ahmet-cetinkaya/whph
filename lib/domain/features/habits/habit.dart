@@ -14,9 +14,4 @@ class Habit extends BaseEntity<String> {
     required this.name,
     required this.description,
   });
-
-  void mapFromInstance(Habit instance) {
-    name = instance.name;
-    description = instance.description;
-  }
 }
