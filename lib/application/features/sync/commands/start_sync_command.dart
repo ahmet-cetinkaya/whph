@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_service.dart';
 
@@ -10,7 +11,7 @@ class StartSyncCommandHandler implements IRequestHandler<StartSyncCommand, void>
 
   @override
   Future<void> call(StartSyncCommand request) async {
-    print('DEBUG: Starting sync service via command');
+    if (kDebugMode) print('DEBUG: Starting sync service via command');
     _syncService.startSync();
     return;
   }

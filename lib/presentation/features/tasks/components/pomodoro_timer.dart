@@ -38,7 +38,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
     if (kDebugMode) {
-      print('DEBUG: Time will be in seconds. (PomodoroTimer)');
+      if (kDebugMode) print('DEBUG: Time will be in seconds. (PomodoroTimer)');
       return value;
     }
 

@@ -55,10 +55,10 @@ void runBackgroundWorkers() {
   var mediator = container.resolve<Mediator>();
 
   if (Platform.isAndroid || Platform.isIOS) {
-    // Mobile platformlar için sync ve app usage tracking başlat
+    // Start sync and app usage tracking for mobile platforms
     mediator.send(StartSyncCommand());
   }
 
-  // Tüm platformlar için app usage tracking başlat
+  // Start app usage tracking for all platforms
   mediator.send(StartTrackAppUsagesCommand());
 }

@@ -52,7 +52,7 @@ class AppUsageService implements IAppUsageService {
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
           if (kDebugMode) {
-            print('DEBUG: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
+            if (kDebugMode) print('DEBUG: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
           }
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
@@ -197,14 +197,14 @@ class AppUsageService implements IAppUsageService {
             await _appUsageTagRepository.add(appUsageTag);
 
             if (kDebugMode) {
-              print('DEBUG: Tagged ${appUsage.name} with ${rule.tagId} with rule ${rule.id}');
+              if (kDebugMode) print('DEBUG: Tagged ${appUsage.name} with ${rule.tagId} with rule ${rule.id}');
             }
           }
         }
       } catch (e) {
         // Log or handle invalid regex patterns
         if (kDebugMode) {
-          print('Invalid pattern in rule ${rule.id}: ${e.toString()}');
+          if (kDebugMode) print('DEBUG: Invalid pattern in rule ${rule.id}: ${e.toString()}');
         }
       }
     }

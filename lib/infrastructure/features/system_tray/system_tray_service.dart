@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
@@ -26,7 +26,9 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
       trayManager.addListener(this);
     } catch (e) {
-      debugPrint('Error initializing tray: $e');
+      if (kDebugMode) {
+        print('ERROR: Error initializing tray: $e');
+      }
     }
   }
 
@@ -37,7 +39,9 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
         AppAssets.getTrayIcon(type, isWindows: Platform.isWindows),
       );
     } catch (e) {
-      debugPrint('Error setting tray icon: $e');
+      if (kDebugMode) {
+        print('ERROR: Error setting tray icon: $e');
+      }
     }
   }
 

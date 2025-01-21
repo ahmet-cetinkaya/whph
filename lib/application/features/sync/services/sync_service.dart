@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
@@ -24,6 +25,7 @@ class SyncService implements ISyncService {
   static const int _maxReconnectAttempts = 3;
   bool _isInitializing = false;
 
+  @override
   Stream<bool> get onSyncComplete => _syncCompleteController.stream;
   bool get isConnected => _isConnected;
 
@@ -32,19 +34,21 @@ class SyncService implements ISyncService {
   }
 
   Future<void> _initializeWebSocket() async {
-    // Eğer zaten bağlıysak veya başlatma işlemi devam ediyorsa çık
+    // If already connected or initialization is in progress, exit
     if (_isConnected || _isInitializing || _reconnectAttempts >= _maxReconnectAttempts) return;
 
     _isInitializing = true;
 
     try {
-      // Bağlanılacak IP'yi almak için mevcut sync device'ları kontrol et
+      // Check existing sync devices to get the IP to connect to
       var syncDevices = await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(
           GetListSyncDevicesQuery(pageIndex: 0, pageSize: 10));
       var targetIp = syncDevices.items.isNotEmpty ? syncDevices.items.first.fromIp : null;
 
       if (targetIp != null) {
-        print('DEBUG: Attempting to connect to WebSocket at ws://$targetIp:4040 (Attempt ${_reconnectAttempts + 1})');
+        if (kDebugMode) {
+          print('DEBUG: Attempting to connect to WebSocket at ws://$targetIp:4040 (Attempt ${_reconnectAttempts + 1})');
+        }
 
         bool canConnect = await NetworkUtils.testWebSocketConnection(
           targetIp,
@@ -52,7 +56,7 @@ class SyncService implements ISyncService {
         );
 
         if (!canConnect) {
-          print('DEBUG: No WebSocket server available at ws://$targetIp:4040');
+          if (kDebugMode) print('DEBUG: No WebSocket server available at ws://$targetIp:4040');
           _handleDisconnection();
           return;
         }
@@ -67,25 +71,25 @@ class SyncService implements ISyncService {
             _handleWebSocketMessage(message);
           },
           onError: (error) {
-            print('ERROR: WebSocket error: $error');
+            if (kDebugMode) print('ERROR: WebSocket error: $error');
             _handleDisconnection();
           },
           onDone: () {
-            print('DEBUG: WebSocket connection closed');
+            if (kDebugMode) print('DEBUG: WebSocket connection closed');
             _handleDisconnection();
           },
           cancelOnError: false,
         );
 
         _isConnected = true;
-        _reconnectAttempts = 0; // Başarılı bağlantıda deneme sayısını sıfırla
-        print('DEBUG: WebSocket connected successfully');
+        _reconnectAttempts = 0; // Reset the attempt count on successful connection
+        if (kDebugMode) print('DEBUG: WebSocket connected successfully');
       } else {
-        print('DEBUG: No sync devices found to connect to');
+        if (kDebugMode) print('DEBUG: No sync devices found to connect to');
         return;
       }
     } catch (e) {
-      print('ERROR: WebSocket connection error: $e');
+      if (kDebugMode) print('ERROR: WebSocket connection error: $e');
       _handleDisconnection();
     } finally {
       _isInitializing = false;
@@ -97,20 +101,22 @@ class SyncService implements ISyncService {
     _channel?.sink.close();
     _channel = null;
 
-    // Force close durumunda yeniden bağlanmaya çalışma
+    // In case of force close, do not attempt to reconnect
     if (_lastSyncTime != null && DateTime.now().difference(_lastSyncTime!) < const Duration(seconds: 5)) {
-      print('DEBUG: Recent sync completed, skipping reconnection');
+      if (kDebugMode) print('DEBUG: Recent sync completed, skipping reconnection');
       return;
     }
 
-    // Eğer maksimum deneme sayısına ulaştıysak veya başlatma işlemi devam ediyorsa
+    // If maximum attempts reached or initialization is in progress
     if (_reconnectAttempts >= _maxReconnectAttempts || _isInitializing) {
-      print('DEBUG: Max reconnection attempts reached or initialization in progress, resetting counter');
+      if (kDebugMode) {
+        print('DEBUG: Max reconnection attempts reached or initialization in progress, resetting counter');
+      }
       _reconnectAttempts = 0;
       return;
     }
 
-    // Normal disconnect durumunda yeniden bağlanmayı dene
+    // Attempt to reconnect in case of normal disconnect
     _reconnectAttempts++;
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(_reconnectDelay * _reconnectAttempts, _initializeWebSocket);
@@ -118,42 +124,42 @@ class SyncService implements ISyncService {
 
   void _handleWebSocketMessage(dynamic message) {
     try {
-      print('DEBUG: Processing WebSocket message');
+      if (kDebugMode) print('DEBUG: Processing WebSocket message');
       final data = jsonDecode(message);
 
       switch (data['type']) {
         case 'sync':
-          print('DEBUG: Received sync data message');
+          if (kDebugMode) print('DEBUG: Received sync data message');
           _processSyncData(data['data']);
 
           if (_channel != null && _isConnected) {
-            print('DEBUG: Sending sync_complete response');
+            if (kDebugMode) print('DEBUG: Sending sync_complete response');
             _channel!.sink.add(JsonMapper.serialize(WebSocketMessage(
                 type: 'sync_complete', data: {'success': true, 'timestamp': DateTime.now().toIso8601String()})));
           }
           break;
 
         case 'sync_complete':
-          print('DEBUG: Received sync_complete message');
+          if (kDebugMode) print('DEBUG: Received sync_complete message');
           if (data['data']?['success'] == true) {
-            print('DEBUG: Processing sync complete');
+            if (kDebugMode) print('DEBUG: Processing sync complete');
             _processSyncComplete(data['data']);
           }
           break;
 
         default:
-          print('WARNING: Unknown message type: ${data['type']}');
+          if (kDebugMode) print('WARNING: Unknown message type: ${data['type']}');
           break;
       }
     } catch (e, stack) {
-      print('ERROR: Failed to process WebSocket message: $e');
-      print('Stack trace: $stack');
+      if (kDebugMode) print('ERROR: Failed to process WebSocket message: $e');
+      if (kDebugMode) print('ERROR: Stack trace: $stack');
       _forceCloseConnection();
     }
   }
 
   void _forceCloseConnection() {
-    print('DEBUG: Force closing WebSocket connection');
+    if (kDebugMode) print('DEBUG: Force closing WebSocket connection');
     if (_isConnected) {
       // Mark last sync time before closing
       _lastSyncTime = DateTime.now();
@@ -177,10 +183,10 @@ class SyncService implements ISyncService {
       if (data['syncDevice']?['lastSyncDate'] != null) {
         // Update last sync time but don't notify completion yet
         _lastSyncTime = DateTime.parse(data['syncDevice']['lastSyncDate']);
-        print('DEBUG: Updated last sync time to: $_lastSyncTime');
+        if (kDebugMode) print('DEBUG: Updated last sync time to: $_lastSyncTime');
       }
     } catch (e) {
-      print('ERROR: Failed to process sync data: $e');
+      if (kDebugMode) print('ERROR: Failed to process sync data: $e');
     }
   }
 
@@ -192,62 +198,62 @@ class SyncService implements ISyncService {
         _lastSyncTime = DateTime.now();
       }
 
-      print('DEBUG: Sync completed at: $_lastSyncTime');
+      if (kDebugMode) print('DEBUG: Sync completed at: $_lastSyncTime');
       _scheduleNextSync();
     } catch (e) {
-      print('ERROR: Failed to process sync complete: $e');
+      if (kDebugMode) print('ERROR: Failed to process sync complete: $e');
     }
   }
 
   @override
   Future<void> startSync() async {
-    // Önce mevcut timer'ı temizle
+    // First, clear the existing timer
     stopSync();
 
-    // İlk sync'i çalıştır
+    // Run the initial sync
     await runSync();
 
-    // Periyodik sync'i başlat
+    // Start periodic sync
     _periodicTimer = Timer.periodic(_syncInterval, (timer) async {
       try {
-        print('DEBUG: Running periodic sync at ${DateTime.now()}');
+        if (kDebugMode) print('DEBUG: Running periodic sync at ${DateTime.now()}');
         await runSync();
       } catch (e) {
-        print('ERROR: Periodic sync failed: $e');
+        if (kDebugMode) print('ERROR: Periodic sync failed: $e');
       }
     });
 
-    print('DEBUG: Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
+    if (kDebugMode) print('DEBUG: Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
   }
 
   @override
   Future<void> runSync() async {
     try {
       if (!_isConnected) {
-        print('DEBUG: Attempting to reconnect before sync...');
+        if (kDebugMode) print('DEBUG: Attempting to reconnect before sync...');
         await _initializeWebSocket();
 
         if (!_isConnected) {
-          print('DEBUG: Could not establish WebSocket connection, skipping sync');
+          if (kDebugMode) print('DEBUG: Could not establish WebSocket connection, skipping sync');
           return;
         }
       }
 
-      print('DEBUG: Starting sync process at ${DateTime.now()}...');
+      if (kDebugMode) print('DEBUG: Starting sync process at ${DateTime.now()}...');
       await _mediator.send(SyncCommand());
 
-      // Sync başarılı olduysa bağlantı denemelerini sıfırla
+      // Reset the attempt count on successful sync
       _reconnectAttempts = 0;
 
-      // Başarılı bir sync sonrası yeterli süre bekle ve bağlantıyı kapat
+      // After a successful sync, wait for a sufficient time and close the connection
       Timer(const Duration(seconds: 1), () {
         if (_isConnected) {
-          print('DEBUG: Sync completed, closing connection');
+          if (kDebugMode) print('DEBUG: Sync completed, closing connection');
           _forceCloseConnection();
         }
       });
     } catch (e) {
-      print('ERROR: Sync failed: $e');
+      if (kDebugMode) print('ERROR: Sync failed: $e');
       _handleDisconnection();
     }
   }
@@ -255,21 +261,21 @@ class SyncService implements ISyncService {
   @override
   void stopSync() {
     if (_periodicTimer != null) {
-      print('DEBUG: Stopping periodic sync');
+      if (kDebugMode) print('DEBUG: Stopping periodic sync');
       _periodicTimer!.cancel();
       _periodicTimer = null;
     }
   }
 
   void _scheduleNextSync() {
-    // Bu metodu basitleştirelim, sadece son sync zamanını güncellesin
+    // Simplify this method to just update the last sync time
     if (_lastSyncTime != null) {
-      print('DEBUG: Last sync time updated to: $_lastSyncTime');
+      if (kDebugMode) print('DEBUG: Last sync time updated to: $_lastSyncTime');
     }
   }
 
   void notifySyncComplete() {
-    print('DEBUG: Notifying sync completion at ${DateTime.now()}');
+    if (kDebugMode) print('DEBUG: Notifying sync completion at ${DateTime.now()}');
     _syncCompleteController.add(true);
   }
 

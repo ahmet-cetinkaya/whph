@@ -228,7 +228,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
             ? syncDevice.lastSyncDate
             : (syncDevice.lastSyncDate!.isBefore(oldestLastSyncDate) ? syncDevice.lastSyncDate : oldestLastSyncDate);
       } catch (e) {
-        if (kDebugMode) print('Failed to sync with device ${syncDevice.id}: $e');
+        if (kDebugMode) print('DEBUG: Failed to sync with device ${syncDevice.id}: $e');
         allDevicesSynced = false;
       }
     }
@@ -280,12 +280,14 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     while (attempt < maxRetries) {
       WebSocket? socket;
       try {
-        if (kDebugMode) print('Attempting to connect to WebSocket at ws://$ipAddress:4040 (Attempt ${attempt + 1})');
+        if (kDebugMode) {
+          print('DEBUG: Attempting to connect to WebSocket at ws://$ipAddress:4040 (Attempt ${attempt + 1})');
+        }
 
         socket =
             await WebSocket.connect('ws://$ipAddress:4040').timeout(Duration(seconds: baseTimeout * (attempt + 1)));
 
-        if (kDebugMode) print('Connected to WebSocket at ws://$ipAddress:4040');
+        if (kDebugMode) print('DEBUG: Connected to WebSocket at ws://$ipAddress:4040');
 
         // Create a completer to handle sync completion
         final syncCompleter = Completer<bool>();
@@ -304,7 +306,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
         // Listen to responses
         await for (var message in socket) {
-          if (kDebugMode) print('Received message: ${message.replaceAll(RegExp(r'\s+'), '')}');
+          if (kDebugMode) print('DEBUG: Received message: ${message.replaceAll(RegExp(r'\s+'), '')}');
 
           try {
             var receivedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
@@ -329,7 +331,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
               break;
             }
           } catch (e) {
-            if (kDebugMode) print('Error processing message: $e');
+            if (kDebugMode) print('ERROR: Error processing message: $e');
             syncCompleter.complete(false);
             break;
           }
@@ -342,15 +344,15 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         await socket.close();
 
         if (syncSuccess) {
-          if (kDebugMode) print('Sync completed successfully, connection closed.');
+          if (kDebugMode) print('DEBUG: Sync completed successfully, connection closed.');
           return;
         } else {
           throw BusinessException('Sync did not complete successfully');
         }
       } catch (e, stack) {
         if (kDebugMode) {
-          print('Error during WebSocket communication (Attempt ${attempt + 1}): $e');
-          print('Stack trace: $stack');
+          if (kDebugMode) print('ERROR: Error during WebSocket communication (Attempt ${attempt + 1}): $e');
+          if (kDebugMode) print('DEBUG: Stack trace: $stack');
         }
 
         attempt++;
@@ -384,7 +386,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       }));
       return true;
     } catch (e) {
-      if (kDebugMode) print('Error processing incoming data: $e');
+      if (kDebugMode) print('ERROR: Error processing incoming data: $e');
       return false;
     }
   }
@@ -413,7 +415,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
               }
             } catch (e) {
               if (kDebugMode) {
-                print('Error processing item ${item.id}: $e');
+                if (kDebugMode) print('ERROR: Error processing item ${item.id}: $e');
               }
               rethrow;
             }
@@ -432,7 +434,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error processing batch for ${T.toString()}: $e');
+        if (kDebugMode) print('ERROR: Error processing batch for ${T.toString()}: $e');
       }
       rethrow;
     }
@@ -452,7 +454,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         }
       } catch (e) {
         if (kDebugMode) {
-          print('Error processing batch ${i ~/ batchSize + 1}: $e');
+          if (kDebugMode) print('ERROR: Error processing batch ${i ~/ batchSize + 1}: $e');
         }
         rethrow;
       }
@@ -460,7 +462,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   }
 
   Future<void> _cleanupSoftDeletedData(DateTime oldestLastSyncDate) async {
-    if (kDebugMode) print('Cleaning up soft deleted data older than: $oldestLastSyncDate');
+    if (kDebugMode) print('DEBUG: Cleaning up soft deleted data older than: $oldestLastSyncDate');
 
     await Future.wait(
         _syncConfigs.map((config) => config.repository.hardDeleteSoftDeleted(oldestLastSyncDate)).toList());

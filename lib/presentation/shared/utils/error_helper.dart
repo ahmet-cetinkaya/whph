@@ -15,8 +15,8 @@ class ErrorHelper {
   static void showUnexpectedError(BuildContext context, Exception error, StackTrace stackTrace,
       {String message = 'An unexpected error occurred.'}) {
     if (kDebugMode) {
-      print('Error: $error');
-      print('Stack trace: $stackTrace');
+      if (kDebugMode) print('ERROR: $error');
+      if (kDebugMode) print('ERROR: Stack trace: $stackTrace');
     }
 
     ScaffoldMessenger.of(context).showSnackBar(

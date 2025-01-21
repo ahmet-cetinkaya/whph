@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mediatr/mediatr.dart';
@@ -19,11 +20,8 @@ class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
 
   final Mediator mediator = container.resolve<Mediator>();
-  final Key key;
 
-  SyncDevicesPage({key})
-      : key = key ?? UniqueKey(),
-        super(key: key);
+  SyncDevicesPage({super.key});
 
   @override
   State<SyncDevicesPage> createState() => _SyncDevicesPageState();
@@ -48,21 +46,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
-    print('M. Starting _getDevices...'); // Debug log
     try {
       var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
       var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
-      print('N. Received ${response.items.length} devices'); // Debug log
 
       if (mounted) {
-        print('O. Updating state with new devices...'); // Debug log
         setState(() {
           list = response;
         });
-        print('P. State updated'); // Debug log
       }
     } catch (e, stackTrace) {
-      print('Error in _getDevices: $e'); // Debug log
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load sync devices.');
       }
@@ -116,7 +109,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
 
     try {
-      print('DEBUG: Starting sync process...');
+      if (kDebugMode) print('DEBUG: Starting sync process...');
       var command = SyncCommand();
       await widget.mediator.send<SyncCommand, void>(command);
 
@@ -141,9 +134,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             ),
           );
       }
-      print('DEBUG: Sync process completed');
+      if (kDebugMode) print('DEBUG: Sync process completed');
     } catch (e, stackTrace) {
-      print('ERROR: Sync failed: $e');
+      if (kDebugMode) print('ERROR: Sync failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to sync devices.');
@@ -158,7 +151,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   Future<void> _refreshDevices() async {
-    print('X. Starting _refreshDevices...'); // Debug log
     if (mounted) {
       setState(() {
         list = null;

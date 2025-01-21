@@ -8,7 +8,7 @@ import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 void startWebSocketServer() async {
   var url = Uri(scheme: 'ws', host: '0.0.0.0', port: 4040);
   var server = await HttpServer.bind(url.host, url.port);
-  if (kDebugMode) print('WebSocket listening on ${url.scheme}://${url.host}:${url.port}');
+  if (kDebugMode) print('DEBUG: WebSocket listening on ${url.scheme}://${url.host}:${url.port}');
 
   await for (HttpRequest request in server) {
     if (!WebSocketTransformer.isUpgradeRequest(request)) {
@@ -19,21 +19,21 @@ void startWebSocketServer() async {
     }
 
     WebSocket socket = await WebSocketTransformer.upgrade(request);
-    if (kDebugMode) print('WebSocket client connected from: ${request.connectionInfo?.remoteAddress}');
+    if (kDebugMode) print('DEBUG: WebSocket client connected from: ${request.connectionInfo?.remoteAddress}');
 
     socket.listen((message) async {
       await _handleWebSocketMessage(message, socket);
     }, onError: (error) {
       throw Exception('WebSocket error: $error');
     }, onDone: () {
-      if (kDebugMode) print('WebSocket connection closed');
+      if (kDebugMode) print('DEBUG: WebSocket connection closed');
     });
   }
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   try {
-    if (kDebugMode) print('Parsing WebSocket message: ${message.replaceAll(RegExp(r'\s+'), '')}');
+    if (kDebugMode) print('DEBUG: Parsing WebSocket message: ${message.replaceAll(RegExp(r'\s+'), '')}');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -76,8 +76,8 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     }
   } catch (e, stack) {
     if (kDebugMode) {
-      print('Error processing WebSocket message: $e');
-      print('Stack trace: $stack');
+      if (kDebugMode) print('ERROR: Error processing WebSocket message: $e');
+      if (kDebugMode) print('DEBUG: Stack trace: $stack');
     }
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
