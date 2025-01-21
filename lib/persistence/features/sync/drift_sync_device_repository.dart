@@ -41,7 +41,10 @@ class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, 
 
   @override
   Future<SyncDevice?> getByFromToIp(String fromIp, String toIp) async {
-    return await (database.select(table)..where((t) => t.fromIp.equals(fromIp) & t.toIp.equals(toIp)))
+    return await (database.select(table)
+          ..where((t) =>
+              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) | t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
+              t.deletedDate.isNull()))
         .getSingleOrNull();
   }
 }

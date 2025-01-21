@@ -1,18 +1,17 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_service.dart';
 
-class StartSyncCommand implements IRequest<StartSyncCommandResponse> {}
+class StartSyncCommand implements IRequest<void> {}
 
-class StartSyncCommandResponse {}
-
-class StartSyncCommandHandler implements IRequestHandler<StartSyncCommand, StartSyncCommandResponse> {
+class StartSyncCommandHandler implements IRequestHandler<StartSyncCommand, void> {
   final ISyncService _syncService;
 
   StartSyncCommandHandler(this._syncService);
 
   @override
-  Future<StartSyncCommandResponse> call(StartSyncCommand request) {
+  Future<void> call(StartSyncCommand request) async {
+    print('DEBUG: Starting sync service via command');
     _syncService.startSync();
-    return Future.value(StartSyncCommandResponse());
+    return;
   }
 }

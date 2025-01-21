@@ -6,15 +6,15 @@ import 'package:whph/domain/features/sync/sync_device.dart';
 
 class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {
   final String? id;
-  final String fromIp;
-  final String toIp;
+  final String fromIP;
+  final String toIP;
   final String? name;
   final DateTime? lastSyncDate;
 
   SaveSyncDeviceCommand({
     this.id,
-    required this.fromIp,
-    required this.toIp,
+    required this.fromIP,
+    required this.toIP,
     this.name,
     this.lastSyncDate,
   });
@@ -64,8 +64,8 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     syncDevice = SyncDevice(
       id: nanoid(),
       createdDate: DateTime(0),
-      fromIp: request.fromIp,
-      toIp: request.toIp,
+      fromIp: request.fromIP,
+      toIp: request.toIP,
       name: request.name,
       lastSyncDate: request.lastSyncDate,
     );
@@ -74,8 +74,8 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
   }
 
   Future<SyncDevice> _update(SyncDevice syncDevice, SaveSyncDeviceCommand request) async {
-    syncDevice.fromIp = request.fromIp;
-    syncDevice.toIp = request.toIp;
+    syncDevice.fromIp = request.fromIP;
+    syncDevice.toIp = request.toIP;
     syncDevice.name = request.name;
     syncDevice.lastSyncDate = request.lastSyncDate;
     await _syncDeviceRepository.update(syncDevice);

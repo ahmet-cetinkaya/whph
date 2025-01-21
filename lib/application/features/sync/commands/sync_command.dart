@@ -285,84 +285,68 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         socket =
             await WebSocket.connect('ws://$ipAddress:4040').timeout(Duration(seconds: baseTimeout * (attempt + 1)));
 
-        bool responseReceived = false;
-        Timer? timeoutTimer = Timer(Duration(seconds: baseTimeout * (attempt + 1)), () {
-          if (!responseReceived) {
+        if (kDebugMode) print('Connected to WebSocket at ws://$ipAddress:4040');
+
+        // Create a completer to handle sync completion
+        final syncCompleter = Completer<bool>();
+        Timer? timeoutTimer;
+
+        // Set up timeout
+        timeoutTimer = Timer(Duration(seconds: baseTimeout * (attempt + 1)), () {
+          if (!syncCompleter.isCompleted) {
+            syncCompleter.complete(false);
             socket?.close();
-            throw TimeoutException('WebSocket response timeout');
           }
         });
-
-        if (kDebugMode) print('Connected to WebSocket at ws://$ipAddress:4040');
 
         // Send our data first
         socket.add(jsonData);
 
-        bool syncCompleted = false;
+        // Listen to responses
         await for (var message in socket) {
-          responseReceived = true;
-          timeoutTimer.cancel();
-
-          if (kDebugMode) print('Received message: $message');
+          if (kDebugMode) print('Received message: ${message.replaceAll(RegExp(r'\s+'), '')}');
 
           try {
             var receivedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
-            if (receivedMessage?.data == null) {
-              throw FormatException('Invalid message format or null data');
-            }
+            if (receivedMessage?.type == 'sync_complete') {
+              timeoutTimer.cancel();
 
-            var messageData = receivedMessage!.data;
+              if (receivedMessage?.data != null) {
+                var messageData = receivedMessage!.data as Map<String, dynamic>;
+                bool? success = messageData['success'] as bool?;
 
-            // Handle sync complete response
-            if (receivedMessage.type == 'sync_complete' && messageData is Map<String, dynamic>) {
-              bool? success = messageData['success'] as bool?;
-              if (success == true) {
-                syncCompleted = true;
-
-                // Check if we have syncDataDto in the response
-                if (messageData['syncDataDto'] != null) {
-                  var syncDataDtoJson = messageData['syncDataDto'] as Map<String, dynamic>;
-                  var parsedData = SyncDataDto.fromJson(syncDataDtoJson);
-                  await _processIncomingData(parsedData);
-                }
-              } else {
-                throw FormatException('Sync failed: ${messageData['message']}');
-              }
-            }
-            // Handle incoming sync data
-            else if (receivedMessage.type == 'sync' && messageData is Map<String, dynamic>) {
-              var syncDataDtoJson = messageData['syncDataDto'];
-              if (syncDataDtoJson != null) {
-                // Process incoming sync data from the other device
-                var parsedData = SyncDataDto.fromJson(syncDataDtoJson as Map<String, dynamic>);
-                await _checkVersion(parsedData.appVersion);
-                bool syncSuccess = await _processIncomingData(parsedData);
-
-                if (syncSuccess) {
-                  await _saveSyncDevice(parsedData.syncDevice);
-                  socket.add(JsonMapper.serialize(WebSocketMessage(
-                      type: 'sync_complete', data: {'success': true, 'timestamp': DateTime.now().toIso8601String()})));
-                } else {
-                  socket.add(JsonMapper.serialize(WebSocketMessage(
-                      type: 'sync_error', data: {'success': false, 'message': 'Failed to process sync data'})));
+                if (success == true) {
+                  if (messageData['syncDataDto'] != null) {
+                    var syncDataDtoJson = messageData['syncDataDto'] as Map<String, dynamic>;
+                    var parsedData = SyncDataDto.fromJson(syncDataDtoJson);
+                    await _processIncomingData(parsedData);
+                  }
+                  syncCompleter.complete(true);
+                  break; // Exit the stream after successful sync
                 }
               }
+              syncCompleter.complete(false);
+              break;
             }
-          } catch (e, stack) {
-            if (kDebugMode) {
-              print('Error processing WebSocket message: $e');
-              print('Stack trace: $stack');
-            }
-            rethrow;
+          } catch (e) {
+            if (kDebugMode) print('Error processing message: $e');
+            syncCompleter.complete(false);
+            break;
           }
         }
 
-        if (!syncCompleted) {
+        // Wait for sync completion or timeout
+        bool syncSuccess = await syncCompleter.future;
+
+        // Ensure socket is closed
+        await socket.close();
+
+        if (syncSuccess) {
+          if (kDebugMode) print('Sync completed successfully, connection closed.');
+          return;
+        } else {
           throw BusinessException('Sync did not complete successfully');
         }
-
-        socket.close();
-        break;
       } catch (e, stack) {
         if (kDebugMode) {
           print('Error during WebSocket communication (Attempt ${attempt + 1}): $e');
@@ -376,7 +360,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
         await Future.delayed(Duration(seconds: pow(2, attempt).toInt()));
       } finally {
-        socket?.close();
+        await socket?.close();
       }
     }
   }

@@ -54,15 +54,11 @@ void main() async {
 void runBackgroundWorkers() {
   var mediator = container.resolve<Mediator>();
 
-  if (!(Platform.isAndroid || Platform.isIOS)) {
-    var startTrackAppUsagesCommand = StartTrackAppUsagesCommand();
-    mediator.send(startTrackAppUsagesCommand);
-    return;
+  if (Platform.isAndroid || Platform.isIOS) {
+    // Mobile platformlar için sync ve app usage tracking başlat
+    mediator.send(StartSyncCommand());
   }
 
-  var startSyncCommand = StartSyncCommand();
-  mediator.send(startSyncCommand);
-
-  var startTrackAppUsagesCommand = StartTrackAppUsagesCommand();
-  mediator.send(startTrackAppUsagesCommand);
+  // Tüm platformlar için app usage tracking başlat
+  mediator.send(StartTrackAppUsagesCommand());
 }

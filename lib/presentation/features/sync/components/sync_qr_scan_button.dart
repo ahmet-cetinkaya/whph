@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -11,6 +12,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
+import 'dart:async';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -49,41 +51,183 @@ class SyncQrScanButton extends StatelessWidget {
       return;
     }
 
-    SaveSyncDeviceCommand saveCommand;
-    try {
-      var fromIPAndToIPQuery = GetSyncDeviceQuery(fromIP: syncQrCodeMessageFromIP.localIP, toIP: toIP);
-      var fromIPAndToIPResponse =
-          await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse>(fromIPAndToIPQuery);
-      saveCommand = SaveSyncDeviceCommand(
-        fromIp: syncQrCodeMessageFromIP.localIP,
-        toIp: toIP,
-        id: fromIPAndToIPResponse.id,
-        name: syncQrCodeMessageFromIP.deviceName,
-        lastSyncDate: fromIPAndToIPResponse.lastSyncDate,
+    // Show testing connection message
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              SizedBox(width: 16),
+              Text('Testing connection...'),
+            ],
+          ),
+          duration: Duration(seconds: 10),
+        ),
       );
-    } catch (e) {
-      saveCommand = SaveSyncDeviceCommand(
-          fromIp: syncQrCodeMessageFromIP.localIP,
-          toIp: toIP,
+    }
+
+    // Test connection to target device
+    bool canConnect = await NetworkUtils.testWebSocketConnection(
+      syncQrCodeMessageFromIP.localIP,
+      timeout: const Duration(seconds: 5),
+    );
+
+    if (!canConnect) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ErrorHelper.showError(
+          context,
+          BusinessException(
+            'Unable to connect to device. Please ensure both devices are on the same network.',
+          ),
+        );
+      }
+      return;
+    }
+
+    try {
+      GetSyncDeviceQueryResponse? existingDevice;
+      try {
+        // Check existing device
+        var fromIPAndToIPQuery = GetSyncDeviceQuery(fromIP: syncQrCodeMessageFromIP.localIP, toIP: toIP);
+        existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(fromIPAndToIPQuery);
+      } catch (e) {
+        print('DEBUG: Get device error: $e');
+        existingDevice = null;
+      }
+
+      if (existingDevice != null && existingDevice.id.isNotEmpty && existingDevice.deletedDate == null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('This device is already paired')),
+          );
+          return;
+        }
+      }
+
+      // Save new device
+      var saveCommand = SaveSyncDeviceCommand(
+          fromIP: syncQrCodeMessageFromIP.localIP,
+          toIP: toIP,
           name: syncQrCodeMessageFromIP.deviceName,
           lastSyncDate: DateTime(0));
-    }
-    await _mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
 
-    if (context.mounted) _sync(context);
+      await _mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
+
+      if (context.mounted) {
+        // Show syncing message and refresh list immediately
+        final syncSnackBar = SnackBar(
+          content: const Row(
+            children: [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              SizedBox(width: 16),
+              Text('Syncing in progress...'),
+            ],
+          ),
+          duration: const Duration(seconds: 30), // Reduced duration
+        );
+
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars() // Clear all existing snackbars
+          ..showSnackBar(syncSnackBar);
+
+        print('DEBUG: Starting sync process...'); // Debug log
+
+        // Refresh list immediately
+        if (onSyncComplete != null) {
+          onSyncComplete!();
+        }
+
+        try {
+          // Start sync process
+          await _sync(context);
+          print('DEBUG: Sync completed successfully'); // Debug log
+
+          if (context.mounted) {
+            // Ensure we clear any existing snackbars before showing completion
+            ScaffoldMessenger.of(context).clearSnackBars();
+
+            // Show completion message with longer duration
+            await Future.delayed(const Duration(milliseconds: 100)); // Small delay
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Sync completed successfully'),
+                  duration: Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+
+              // Final refresh after sync complete
+              if (onSyncComplete != null) {
+                onSyncComplete!();
+              }
+            }
+          }
+        } catch (e) {
+          print('DEBUG: Sync error: $e'); // Debug log
+          rethrow; // Rethrow to be caught by outer try-catch
+        }
+      }
+    } catch (e, stackTrace) {
+      print('DEBUG: Save device error: $e'); // Debug log
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        if (e is Exception) {
+          ErrorHelper.showUnexpectedError(context, e, stackTrace, message: 'Failed to save sync device.');
+        } else {
+          ErrorHelper.showError(context, BusinessException('Failed to save sync device: ${e.toString()}'));
+        }
+      }
+    }
   }
 
   _sync(BuildContext context) async {
     try {
-      await _mediator.send<SyncCommand, SyncCommandResponse>(SyncCommand());
-      if (onSyncComplete != null) onSyncComplete!();
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while syncing. You must devices are connected to the same network.');
-      }
+      print('DEBUG: Starting sync process...'); // Debug log
+
+      final syncService = container.resolve<ISyncService>();
+      var completer = Completer<void>();
+
+      // Listen for sync completion
+      var subscription = syncService.onSyncComplete.listen((completed) {
+        if (completed && !completer.isCompleted) {
+          completer.complete();
+        }
+      });
+
+      // Run immediate sync and restart timer
+      await syncService.runSync();
+
+      // Wait for completion or timeout
+      await completer.future.timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          subscription.cancel();
+          throw BusinessException('Sync timeout');
+        },
+      );
+
+      subscription.cancel();
+      print('DEBUG: Sync process completed'); // Debug log
+    } catch (e) {
+      // ...existing error handling...
     }
   }
 

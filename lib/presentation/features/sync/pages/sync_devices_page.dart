@@ -19,32 +19,50 @@ class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
 
   final Mediator mediator = container.resolve<Mediator>();
+  final Key key;
 
-  SyncDevicesPage({super.key});
+  SyncDevicesPage({key})
+      : key = key ?? UniqueKey(),
+        super(key: key);
 
   @override
   State<SyncDevicesPage> createState() => _SyncDevicesPageState();
 }
 
-class _SyncDevicesPageState extends State<SyncDevicesPage> {
+class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
   GetListSyncDevicesQueryResponse? list;
+  Key _listKey = UniqueKey(); // Add this
+
+  @override
+  bool get wantKeepAlive => true; // Add this
 
   @override
   void initState() {
-    _getDevices(pageIndex: 0, pageSize: 10);
     super.initState();
+    _getDevices(pageIndex: 0, pageSize: 10);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
+    print('M. Starting _getDevices...'); // Debug log
     try {
       var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
       var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
+      print('N. Received ${response.items.length} devices'); // Debug log
+
       if (mounted) {
+        print('O. Updating state with new devices...'); // Debug log
         setState(() {
           list = response;
         });
+        print('P. State updated'); // Debug log
       }
     } catch (e, stackTrace) {
+      print('Error in _getDevices: $e'); // Debug log
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load sync devices.');
       }
@@ -72,8 +90,22 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
     if (_isSyncing) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Syncing...'),
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            SizedBox(width: 16),
+            Text('Sync in progress...'),
+          ],
+        ),
+        duration: Duration(seconds: 30),
       ),
     );
 
@@ -84,11 +116,36 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
     }
 
     try {
+      print('DEBUG: Starting sync process...');
       var command = SyncCommand();
       await widget.mediator.send<SyncCommand, void>(command);
+
+      // Add a small delay before refreshing the devices list
+      await Future.delayed(const Duration(seconds: 2));
       await _refreshDevices();
-    } catch (e, stackTrace) {
+
       if (mounted) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white),
+                  SizedBox(width: 16),
+                  Text('Sync completed successfully'),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
+          );
+      }
+      print('DEBUG: Sync process completed');
+    } catch (e, stackTrace) {
+      print('ERROR: Sync failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to sync devices.');
       }
     } finally {
@@ -101,7 +158,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
   }
 
   Future<void> _refreshDevices() async {
-    await _getDevices(pageIndex: 0, pageSize: 10);
+    print('X. Starting _refreshDevices...'); // Debug log
+    if (mounted) {
+      setState(() {
+        list = null;
+        _listKey = UniqueKey(); // Force rebuild
+      });
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _getDevices(pageIndex: 0, pageSize: 10);
+    }
   }
 
   List<Widget> _buildAppBarActions() {
@@ -122,13 +188,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
       if (Platform.isAndroid || Platform.isIOS)
         Padding(
           padding: const EdgeInsets.all(4),
-          child: SyncQrScanButton(),
+          child: SyncQrScanButton(
+            onSyncComplete: _refreshDevices,
+          ),
         )
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Add this
     return ResponsiveScaffoldLayout(
       appBarTitle: Row(
         mainAxisSize: MainAxisSize.min,
@@ -153,9 +222,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> {
       defaultRoute: (context) => list == null || list!.items.isEmpty
           ? const Center(child: Text('No synced devices found'))
           : ListView.builder(
+              key: _listKey, // Add this
               itemCount: list!.items.length,
               itemBuilder: (context, index) {
                 return SyncDeviceListItemWidget(
+                  key: ValueKey(list!.items[index].id), // Add this
                   item: list!.items[index],
                   onRemove: _removeDevice,
                 );

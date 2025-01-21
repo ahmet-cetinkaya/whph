@@ -33,7 +33,7 @@ void startWebSocketServer() async {
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   try {
-    if (kDebugMode) print('Parsing WebSocket message: $message');
+    if (kDebugMode) print('Parsing WebSocket message: ${message.replaceAll(RegExp(r'\s+'), '')}');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -57,24 +57,30 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             'timestamp': DateTime.now().toIso8601String()
           });
           socket.add(JsonMapper.serialize(responseMessage));
+
+          // Add a small delay before closing the connection
+          await Future.delayed(const Duration(milliseconds: 500));
+          await socket.close();
         } catch (e) {
           WebSocketMessage errorMessage =
               WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
           socket.add(JsonMapper.serialize(errorMessage));
+          await socket.close();
         }
         break;
 
       default:
         socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': 'Unknown message type'})));
+        await socket.close();
         break;
     }
   } catch (e, stack) {
     if (kDebugMode) {
       print('Error processing WebSocket message: $e');
       print('Stack trace: $stack');
-      print('JSON data: $message');
     }
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
+    await socket.close();
     rethrow;
   }
 }

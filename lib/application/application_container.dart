@@ -294,8 +294,10 @@ void registerSyncFeature(IContainer container, Mediator mediator) {
   mediator.registerHandler<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse, GetListSyncDevicesQueryHandler>(
     () => GetListSyncDevicesQueryHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
   );
-  mediator.registerHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse, GetSyncDeviceQueryHandler>(
-    () => GetSyncDeviceQueryHandler(syncDeviceRepository: container.resolve<ISyncDeviceRepository>()),
+  mediator.registerHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?, GetSyncDeviceQueryHandler>(
+    () => GetSyncDeviceQueryHandler(
+      syncDeviceRepository: container.resolve<ISyncDeviceRepository>(),
+    ),
   );
   mediator.registerHandler<SyncCommand, SyncCommandResponse, SyncCommandHandler>(
     () => SyncCommandHandler(
@@ -315,7 +317,7 @@ void registerSyncFeature(IContainer container, Mediator mediator) {
       taskTimeRecordRepository: container.resolve<ITaskTimeRecordRepository>(),
     ),
   );
-  mediator.registerHandler<StartSyncCommand, StartSyncCommandResponse, StartSyncCommandHandler>(
+  mediator.registerHandler<StartSyncCommand, void, StartSyncCommandHandler>(
     () => StartSyncCommandHandler(container.resolve<ISyncService>()),
   );
   mediator.registerHandler<StopSyncCommand, StopSyncCommandResponse, StopSyncCommandHandler>(

@@ -1,6 +1,5 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 
 class GetSyncDeviceQuery implements IRequest<GetSyncDeviceQueryResponse> {
@@ -24,29 +23,24 @@ class GetSyncDeviceQueryResponse extends SyncDevice {
   });
 }
 
-class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse> {
+class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?> {
   late final ISyncDeviceRepository _syncDeviceRepository;
 
   GetSyncDeviceQueryHandler({required ISyncDeviceRepository syncDeviceRepository})
       : _syncDeviceRepository = syncDeviceRepository;
 
   @override
-  Future<GetSyncDeviceQueryResponse> call(GetSyncDeviceQuery request) async {
+  Future<GetSyncDeviceQueryResponse?> call(GetSyncDeviceQuery request) async {
     SyncDevice? syncDevices;
 
     if (request.id != null) {
-      syncDevices = await _syncDeviceRepository.getById(
-        request.id!,
-      );
+      syncDevices = await _syncDeviceRepository.getById(request.id!);
     } else if (request.fromIP != null && request.toIP != null) {
-      syncDevices = await _syncDeviceRepository.getByFromToIp(
-        request.fromIP!,
-        request.toIP!,
-      );
+      syncDevices = await _syncDeviceRepository.getByFromToIp(request.fromIP!, request.toIP!);
     }
 
     if (syncDevices == null) {
-      throw BusinessException('SyncDevice with id ${request.id} not found');
+      return null; // Return null instead of throwing exception
     }
 
     return GetSyncDeviceQueryResponse(
