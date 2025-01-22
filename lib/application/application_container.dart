@@ -96,8 +96,8 @@ void registerAppUsagesFeature(IContainer container, Mediator mediator) {
   mediator.registerHandler<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse,
       GetListByTopAppUsagesQueryHandler>(
     () => GetListByTopAppUsagesQueryHandler(
-        appUsageRepository: container.resolve<IAppUsageRepository>(),
-        timeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>()),
+      timeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>(),
+    ),
   );
 
   mediator.registerHandler<AddAppUsageTagCommand, AddAppUsageTagCommandResponse, AddAppUsageTagCommandHandler>(

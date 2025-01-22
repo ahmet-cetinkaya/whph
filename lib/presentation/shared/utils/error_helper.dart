@@ -12,7 +12,7 @@ class ErrorHelper {
         .showSnackBar(SnackBar(content: Text(error.toString()), backgroundColor: AppTheme.errorColor));
   }
 
-  static void showUnexpectedError(BuildContext context, Exception error, StackTrace stackTrace,
+  static void showUnexpectedError(BuildContext context, Object error, StackTrace stackTrace,
       {String message = 'An unexpected error occurred.'}) {
     if (kDebugMode) {
       if (kDebugMode) print('ERROR: $error');
@@ -39,7 +39,7 @@ class ErrorHelper {
     );
   }
 
-  static void _sendErrorReport(Exception error, StackTrace stackTrace) {
+  static void _sendErrorReport(Object error, StackTrace stackTrace) {
     final errorBody = "Hi, I encountered an unexpected error while using the WHPH app. \n\n"
         "Here's information that might help you diagnose the issue: \n"
         "App Version: ${AppInfo.version} \n"

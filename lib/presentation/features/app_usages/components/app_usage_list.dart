@@ -65,8 +65,12 @@ class AppUsageListState extends State<AppUsageList> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while getting app usages.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e,
+          stackTrace,
+          message: 'Unexpected error occurred while getting app usages.',
+        );
       }
     }
   }
