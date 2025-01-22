@@ -24,10 +24,10 @@ void registerInfrastructure(IContainer container) {
       (_) => (Platform.isAndroid || Platform.isIOS) ? MobileNotificationService() : NotificationService());
 
   container.registerSingleton<IAppUsageService>((_) {
-    var appUsageRepository = container.resolve<IAppUsageRepository>();
-    var appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
-    var appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
-    var appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
+    final appUsageRepository = container.resolve<IAppUsageRepository>();
+    final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
+    final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
+    final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
 
     if (Platform.isLinux) {
       return LinuxAppUsageService(

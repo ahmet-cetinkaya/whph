@@ -24,8 +24,8 @@ void main() async {
   container = acore.Container();
   initializeJsonMapper();
   registerPersistence(container);
-  registerApplication(container);
   registerInfrastructure(container);
+  registerApplication(container);
   registerPresentation(container);
 
   // Initialize notification service for all platforms
