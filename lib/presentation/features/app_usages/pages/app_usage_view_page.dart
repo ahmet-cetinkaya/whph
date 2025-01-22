@@ -25,11 +25,10 @@ class AppUsageViewPage extends StatefulWidget {
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Key _appUsageListKey = UniqueKey();
   List<String>? _selectedTagFilters;
-  // Initialize with default dates (last 7 days)
   DateTime _filterStartDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _filterEndDate = DateTime.now();
 
-  void _refreshAppUsages() {
+  void _refreshList() {
     if (mounted) {
       setState(() {
         _appUsageListKey = UniqueKey();
@@ -42,12 +41,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       AppUsageDetailsPage.route,
       arguments: {'id': id},
     );
-    _refreshAppUsages();
+    _refreshList();
   }
 
   void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
-    _selectedTagFilters = tagOptions.map((option) => option.value).toList();
-    _refreshAppUsages();
+    setState(() {
+      _selectedTagFilters = tagOptions.map((option) => option.value).toList();
+      _refreshList();
+    });
   }
 
   void _onDateFilterChange(DateTime? start, DateTime? end) {
@@ -59,7 +60,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       }
       _filterEndDate = end ?? DateTime.now();
 
-      _refreshAppUsages();
+      _refreshList();
     });
   }
 
@@ -75,15 +76,16 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.settings),
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppUsageTagRulesPage.route);
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, AppUsageTagRulesPage.route);
+                    _refreshList();
                   },
                   color: AppTheme.primaryColor,
                   tooltip: 'Tag Rules',
                 ),
                 IconButton(
                   icon: const Icon(Icons.refresh),
-                  onPressed: () => _refreshAppUsages(),
+                  onPressed: _refreshList,
                   color: AppTheme.primaryColor,
                 ),
               ],

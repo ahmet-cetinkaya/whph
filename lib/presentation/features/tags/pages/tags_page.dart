@@ -24,19 +24,26 @@ class TagsPage extends StatefulWidget {
 class _TagsPageState extends State<TagsPage> {
   final Mediator _mediator = container.resolve<Mediator>();
 
-  List<String>? _selectedFilters; // Rename from _selectedTagIds to _selectedFilters for clarity
+  List<String>? _selectedFilters;
+
   Key _tagsListKey = UniqueKey();
-  Key _addButtonKey = const ValueKey('tagAddButton');
   bool _showArchived = false;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
+
   Key _chartKey = UniqueKey();
 
-  void _refreshTags() {
+  void _refreshChart() {
+    setState(() {
+      _chartKey = UniqueKey();
+    });
+  }
+
+  void _refreshAllElements() {
     setState(() {
       _selectedFilters = null;
       _tagsListKey = UniqueKey();
-      _addButtonKey = ValueKey(DateTime.now().toString());
+      _chartKey = UniqueKey();
     });
   }
 
@@ -45,22 +52,21 @@ class _TagsPageState extends State<TagsPage> {
       TagDetailsPage.route,
       arguments: {'id': tagId},
     );
-    _refreshTags();
+    _refreshAllElements();
   }
 
   void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     setState(() {
       _selectedFilters = tagOptions.map((option) => option.value).toList();
-      _tagsListKey = UniqueKey();
-      _chartKey = UniqueKey();
+      _refreshAllElements();
     });
   }
 
   void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
-    // Make parameters nullable
     setState(() {
-      _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7)); // Use default if null
-      _endDate = endDate ?? DateTime.now(); // Use default if null
+      _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
+      _endDate = endDate ?? DateTime.now();
+      _refreshChart();
     });
   }
 
@@ -72,7 +78,6 @@ class _TagsPageState extends State<TagsPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TagAddButton(
-            key: _addButtonKey,
             onTagCreated: (tagId) {
               _openTagDetails(tagId);
             },
@@ -122,6 +127,7 @@ class _TagsPageState extends State<TagsPage> {
                 ],
               ),
             ),
+
             // Chart
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -157,7 +163,7 @@ class _TagsPageState extends State<TagsPage> {
                       onPressed: () {
                         setState(() {
                           _showArchived = !_showArchived;
-                          _tagsListKey = UniqueKey();
+                          _refreshAllElements();
                         });
                       },
                     ),
@@ -165,11 +171,12 @@ class _TagsPageState extends State<TagsPage> {
                 ],
               ),
             ),
+
             // List
             TagsList(
               key: _tagsListKey,
               mediator: _mediator,
-              onTagAdded: _refreshTags,
+              onTagAdded: _refreshAllElements,
               onClickTag: (tag) => _openTagDetails(tag.id),
               filterByTags: _selectedFilters,
               showArchived: _showArchived,

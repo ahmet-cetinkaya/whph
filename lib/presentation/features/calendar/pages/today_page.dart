@@ -32,6 +32,8 @@ class _TodayPageState extends State<TodayPage> {
   Key _taskKey = UniqueKey();
   bool _isTaskListEmpty = false;
 
+  Key _timeKey = UniqueKey();
+
   List<String>? _selectedTagFilter;
 
   @override
@@ -40,11 +42,32 @@ class _TodayPageState extends State<TodayPage> {
     UpdateChecker.checkForUpdates(context);
   }
 
+  void _refreshHabits() {
+    setState(() {
+      _habitKey = UniqueKey();
+    });
+  }
+
+  void _refreshTasks() {
+    setState(() {
+      _taskKey = UniqueKey();
+    });
+  }
+
+  void _refreshAllElements() {
+    setState(() {
+      _habitKey = UniqueKey();
+      _taskKey = UniqueKey();
+      _timeKey = UniqueKey();
+    });
+  }
+
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
     await Navigator.of(context).pushNamed(
       TaskDetailsPage.route,
       arguments: {'id': taskId},
     );
+    _refreshTasks();
   }
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
@@ -52,6 +75,7 @@ class _TodayPageState extends State<TodayPage> {
       HabitDetailsPage.route,
       arguments: {'id': id},
     );
+    _refreshHabits();
   }
 
   void _onHabitList(int count) {
@@ -78,12 +102,20 @@ class _TodayPageState extends State<TodayPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
-          _habitKey = UniqueKey();
-          _taskKey = UniqueKey();
           _selectedTagFilter = tagOptions.map((option) => option.value).toList();
+          _refreshAllElements();
         });
       }
     });
+  }
+
+  Future<void> _openMarathonPage(BuildContext context) async {
+    await Navigator.pushNamed(
+      context,
+      MarathonPage.route,
+      arguments: {'fullScreen': true},
+    );
+    _refreshAllElements();
   }
 
   @override
@@ -95,13 +127,7 @@ class _TodayPageState extends State<TodayPage> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: IconButton(
             icon: const Icon(Icons.timer),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                MarathonPage.route,
-                arguments: {'fullScreen': true},
-              );
-            },
+            onPressed: () => _openMarathonPage(context),
           ),
         ),
       ],
@@ -220,6 +246,7 @@ class _TodayPageState extends State<TodayPage> {
               height: 300,
               width: 300,
               child: TagTimeChart(
+                key: _timeKey, // Add key to force refresh
                 filterByTags: _selectedTagFilter,
                 startDate: today,
                 endDate: tomorrow,

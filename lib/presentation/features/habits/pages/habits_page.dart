@@ -23,14 +23,9 @@ class HabitsPage extends StatefulWidget {
 
 class _HabitsPageState extends State<HabitsPage> {
   Key _habitsListKey = UniqueKey();
-
   List<String> _selectedFilterTags = [];
 
-  _openDetails(String habitId, BuildContext context) async {
-    await Navigator.of(context).pushNamed(
-      HabitDetailsPage.route,
-      arguments: {'id': habitId},
-    );
+  void _refreshHabitsList() {
     if (mounted) {
       setState(() {
         _habitsListKey = UniqueKey();
@@ -38,11 +33,19 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  _onFilterTagsSelect(List<DropdownOption<String>> tagOptions) {
+  Future<void> _openDetails(String habitId, BuildContext context) async {
+    await Navigator.of(context).pushNamed(
+      HabitDetailsPage.route,
+      arguments: {'id': habitId},
+    );
+    _refreshHabitsList();
+  }
+
+  void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions) {
     if (mounted) {
       setState(() {
         _selectedFilterTags = tagOptions.map((option) => option.value).toList();
-        _habitsListKey = UniqueKey();
+        _refreshHabitsList();
       });
     }
   }
@@ -70,9 +73,7 @@ class _HabitsPageState extends State<HabitsPage> {
           child: HabitAddButton(
             onHabitCreated: (String habitId) {
               if (!mounted) return;
-              setState(() {
-                _openDetails(habitId, context);
-              });
+              _openDetails(habitId, context);
             },
             buttonColor: AppTheme.primaryColor,
           ),

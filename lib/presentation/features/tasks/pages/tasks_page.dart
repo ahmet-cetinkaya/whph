@@ -37,18 +37,11 @@ class _TasksPageState extends State<TasksPage> {
 
   String? _searchQuery;
 
-  void _onCompletedTask() {
-    if (mounted) {
-      setState(() {
-        _completedTasksListKey = UniqueKey();
-      });
-    }
-  }
-
-  void _onUncompletedTask() {
+  void _refreshAllTasks() {
     if (mounted) {
       setState(() {
         _tasksListKey = UniqueKey();
+        _completedTasksListKey = UniqueKey();
       });
     }
   }
@@ -58,7 +51,7 @@ class _TasksPageState extends State<TasksPage> {
       TaskDetailsPage.route,
       arguments: {'id': taskId},
     );
-    _onCompletedTask();
+    _refreshAllTasks();
   }
 
   void _onTasksList(count) {
@@ -75,7 +68,7 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _selectedTagIds = tagOptions.map((option) => option.value).toList();
-        _onCompletedTask();
+        _refreshAllTasks();
       });
     }
   }
@@ -85,7 +78,7 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _filterStartDate = start;
         _filterEndDate = end;
-        _onCompletedTask();
+        _refreshAllTasks();
       });
     }
   }
@@ -94,7 +87,7 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _searchQuery = query;
-        _onCompletedTask();
+        _refreshAllTasks();
       });
     }
   }
@@ -111,14 +104,7 @@ class _TasksPageState extends State<TasksPage> {
     );
 
     await _mediator.send(command);
-    _onCompletedTask();
-    _refreshTaskList();
-  }
-
-  void _refreshTaskList() {
-    setState(() {
-      _tasksListKey = UniqueKey();
-    });
+    _refreshAllTasks();
   }
 
   @override
@@ -129,7 +115,7 @@ class _TasksPageState extends State<TasksPage> {
         Padding(
           padding: const EdgeInsets.all(8),
           child: TaskAddButton(
-            onTaskCreated: (_) => _onCompletedTask(),
+            onTaskCreated: (_) => _refreshAllTasks(),
             buttonColor: AppTheme.primaryColor,
             initialTagIds: _selectedTagIds,
           ),
@@ -160,7 +146,7 @@ class _TasksPageState extends State<TasksPage> {
                 filterByPlannedEndDate: _filterEndDate,
                 search: _searchQuery,
                 onClickTask: (task) => _openTaskDetails(task.id),
-                onTaskCompleted: _onCompletedTask,
+                onTaskCompleted: _refreshAllTasks,
                 onList: _onTasksList,
                 trailingButtons: (task) => [
                   PopupMenuButton<DateTime>(
@@ -211,7 +197,7 @@ class _TasksPageState extends State<TasksPage> {
                         filterByTags: _selectedTagIds,
                         search: _searchQuery,
                         onClickTask: (task) => _openTaskDetails(task.id),
-                        onTaskCompleted: _onUncompletedTask,
+                        onTaskCompleted: _refreshAllTasks,
                       ),
                       backgroundColor: Colors.transparent,
                       canTapOnHeader: true),
