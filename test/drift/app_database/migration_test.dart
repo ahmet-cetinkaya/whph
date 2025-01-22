@@ -1,20 +1,31 @@
 // dart format width=80
 // ignore_for_file: unused_local_variable, unused_import
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift_dev/api/migrations_native.dart';
-import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:flutter_test/flutter_test.dart' hide test, expect, setUpAll, group, tearDownAll;
 import 'package:test/test.dart';
+import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'generated/schema.dart';
 
 import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late SchemaVerifier verifier;
+  late Directory tempDir;
 
-  setUpAll(() {
+  setUpAll(() async {
+    tempDir = await Directory.systemTemp.createTemp();
+    AppDatabase.testDirectory = tempDir;
+    AppDatabase.isTestMode = true;
     verifier = SchemaVerifier(GeneratedHelper());
+  });
+
+  tearDownAll(() async {
+    await tempDir.delete(recursive: true);
   });
 
   group('simple database migrations', () {
