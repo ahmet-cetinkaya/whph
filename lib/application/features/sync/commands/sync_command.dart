@@ -351,8 +351,8 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         }
       } catch (e, stack) {
         if (kDebugMode) {
-          if (kDebugMode) print('ERROR: Error during WebSocket communication (Attempt ${attempt + 1}): $e');
-          if (kDebugMode) print('DEBUG: Stack trace: $stack');
+          print('ERROR: Error during WebSocket communication (Attempt ${attempt + 1}): $e');
+          print('DEBUG: Stack trace: $stack');
         }
 
         attempt++;
@@ -453,9 +453,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
           await operation(item);
         }
       } catch (e) {
-        if (kDebugMode) {
-          if (kDebugMode) print('ERROR: Error processing batch ${i ~/ batchSize + 1}: $e');
-        }
+        if (kDebugMode) print('ERROR: Error processing batch ${i ~/ batchSize + 1}: $e');
         rethrow;
       }
     }

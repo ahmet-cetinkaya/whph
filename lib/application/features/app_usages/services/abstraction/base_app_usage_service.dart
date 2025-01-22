@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
@@ -12,97 +11,18 @@ import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/domain/shared/constants/app_theme.dart';
-import 'abstraction/i_app_usage_service.dart';
-import 'package:app_usage/app_usage.dart' as app_usage_package;
+import 'i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 
-class AppUsageService implements IAppUsageService {
-  String _activeDesktopWindowOutput = '';
-  int _activeDesktopWindowTime = 0;
-  Timer? _intervalTimer;
-  Timer? _periodicTimer;
+abstract class BaseAppUsageService implements IAppUsageService {
+  @protected
+  Timer? periodicTimer;
 
   final IAppUsageRepository _appUsageRepository;
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageTagRuleRepository _appUsageTagRuleRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
-
-  AppUsageService(
-    this._appUsageRepository,
-    this._appUsageTimeRecordRepository,
-    this._appUsageTagRuleRepository,
-    this._appUsageTagRepository,
-  );
-
-  @override
-  void startTracking() {
-    if (Platform.isWindows || Platform.isLinux) {
-      _startDesktopTracking();
-    } else if (Platform.isAndroid) {
-      _startMobileTracking();
-    }
-  }
-
-  void _startDesktopTracking() {
-    _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      String? currentWindow = await _getDesktopActiveWindow();
-      if (currentWindow == null) return;
-
-      if (currentWindow != _activeDesktopWindowOutput) {
-        if (_activeDesktopWindowOutput.isNotEmpty) {
-          if (kDebugMode) {
-            if (kDebugMode) print('DEBUG: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
-          }
-
-          List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
-          String appName = activeWindowOutputSections[1].isNotEmpty
-              ? activeWindowOutputSections[1]
-              : activeWindowOutputSections[0].isNotEmpty
-                  ? activeWindowOutputSections[0]
-                  : 'Unknown';
-
-          await saveTimeRecord(appName, _activeDesktopWindowTime);
-        }
-
-        _activeDesktopWindowOutput = currentWindow;
-        _activeDesktopWindowTime = 0;
-      }
-
-      _activeDesktopWindowTime += 1;
-    });
-  }
-
-  Future<String?> _getDesktopActiveWindow() async {
-    if (Platform.isLinux) {
-      const scriptPath = 'linux/getActiveWindow.bash';
-      final result = await Process.run('bash', ["${Directory.current.path}/$scriptPath"]);
-      return result.stdout.trim();
-    } else if (Platform.isWindows) {
-      const scriptPath = 'windows/getActiveWindow.ps1';
-      final result = await Process.run('powershell', ["-File", "${Directory.current.path}/$scriptPath"]);
-      return result.stdout.trim();
-    }
-
-    return null;
-  }
-
-  void _startMobileTracking() {
-    _periodicTimer = Timer.periodic(const Duration(hours: 1), (timer) async {
-      if (Platform.isAndroid) {
-        DateTime endDate = DateTime.now();
-        DateTime startDate = endDate.subtract(const Duration(hours: 1));
-        List<app_usage_package.AppUsageInfo> usageStats =
-            await app_usage_package.AppUsage().getAppUsage(startDate, endDate);
-
-        if (usageStats.isEmpty) return;
-
-        for (app_usage_package.AppUsageInfo usage in usageStats) {
-          await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: true);
-        }
-      }
-    });
-  }
 
   static final List<Color> _chartColors = [
     AppTheme.chartColor1,
@@ -117,15 +37,27 @@ class AppUsageService implements IAppUsageService {
     AppTheme.chartColor10,
   ];
 
-  @override
-  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
-    // First, get or create AppUsage
-    var appUsage = await _getOrCreateAppUsage(appName);
+  BaseAppUsageService(
+    this._appUsageRepository,
+    this._appUsageTimeRecordRepository,
+    this._appUsageTagRuleRepository,
+    this._appUsageTagRepository,
+  );
 
-    // Check and apply tag rules
+  @override
+  void startTracking();
+
+  @override
+  void stopTracking() {
+    periodicTimer?.cancel();
+  }
+
+  @override
+  @protected
+  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
+    var appUsage = await _getOrCreateAppUsage(appName);
     await _applyTagRules(appUsage);
 
-    // Then, get or create AppUsageTimeRecord
     var now = DateTime.now().toUtc();
     final recordStartTime = DateTime(now.year, now.month, now.day, now.hour);
 
@@ -138,23 +70,13 @@ class AppUsageService implements IAppUsageService {
 
     if (timeRecords.isNotEmpty) {
       var existingRecord = timeRecords.first;
-      if (overwrite) {
-        existingRecord = AppUsageTimeRecord(
-          id: existingRecord.id,
-          appUsageId: existingRecord.appUsageId,
-          duration: duration,
-          createdDate: existingRecord.createdDate,
-          modifiedDate: DateTime.now().toUtc(),
-        );
-      } else {
-        existingRecord = AppUsageTimeRecord(
-          id: existingRecord.id,
-          appUsageId: existingRecord.appUsageId,
-          duration: existingRecord.duration + duration,
-          createdDate: existingRecord.createdDate,
-          modifiedDate: DateTime.now().toUtc(),
-        );
-      }
+      existingRecord = AppUsageTimeRecord(
+        id: existingRecord.id,
+        appUsageId: existingRecord.appUsageId,
+        duration: overwrite ? duration : existingRecord.duration + duration,
+        createdDate: existingRecord.createdDate,
+        modifiedDate: DateTime.now().toUtc(),
+      );
       await _appUsageTimeRecordRepository.update(existingRecord);
     } else {
       var newRecord = AppUsageTimeRecord(
@@ -229,11 +151,5 @@ class AppUsageService implements IAppUsageService {
     }
 
     return appUsage;
-  }
-
-  @override
-  void stopTracking() {
-    _intervalTimer?.cancel();
-    _periodicTimer?.cancel();
   }
 }

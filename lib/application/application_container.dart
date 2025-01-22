@@ -16,7 +16,6 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/application/features/app_usages/services/app_usage_service.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_command.dart';
@@ -86,12 +85,6 @@ void registerApplication(IContainer container) {
 }
 
 void registerAppUsagesFeature(IContainer container, Mediator mediator) {
-  container.registerSingleton<IAppUsageService>((_) => AppUsageService(
-      container.resolve<IAppUsageRepository>(),
-      container.resolve<IAppUsageTimeRecordRepository>(),
-      container.resolve<IAppUsageTagRuleRepository>(),
-      container.resolve<IAppUsageTagRepository>()));
-
   mediator.registerHandler<StartTrackAppUsagesCommand, StartTrackAppUsagesCommandResponse,
       StartTrackAppUsagesCommandHandler>(
     () => StartTrackAppUsagesCommandHandler(appUsageService: container.resolve<IAppUsageService>()),
