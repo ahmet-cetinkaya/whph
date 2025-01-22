@@ -14,6 +14,7 @@ class AppUsageTable extends Table {
   TextColumn get name => text()();
   TextColumn get displayName => text().nullable()();
   TextColumn get color => text().nullable()();
+  TextColumn get deviceName => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -38,6 +39,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       name: entity.name,
       displayName: Value(entity.displayName),
       color: Value(entity.color),
+      deviceName: Value(entity.deviceName),
     );
   }
 
@@ -78,6 +80,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
           t.id as first_id,
           t.color,
           t.display_name,
+          t.device_name,
           t.created_date,
           ROW_NUMBER() OVER (PARTITION BY t.name ORDER BY t.created_date ASC) as rn
         FROM app_usage_table t
@@ -88,6 +91,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
         fp.name,
         fa.display_name,
         fa.color,
+        fa.device_name,
         fp.total_duration as duration,
         MIN(t.created_date) as created_date,
         MAX(t.modified_date) as modified_date,
@@ -122,6 +126,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
             name: row.read<String>('name'),
             displayName: row.read<String?>('display_name'),
             color: row.read<String?>('color'),
+            deviceName: row.read<String?>('device_name'),
             createdDate: row.read<DateTime>('created_date'),
             modifiedDate: row.read<DateTime?>('modified_date'),
             deletedDate: row.read<DateTime?>('deleted_date')))

@@ -25,6 +25,7 @@ class AppUsageListItem {
   String name;
   String? displayName;
   String? color;
+  String? deviceName;
   int duration;
 
   AppUsageListItem({
@@ -32,6 +33,7 @@ class AppUsageListItem {
     required this.name,
     this.displayName,
     this.color,
+    this.deviceName,
     required this.duration,
   });
 }
@@ -92,6 +94,7 @@ class GetListByTopAppUsagesQueryHandler
         name: appUsage.name,
         displayName: appUsage.displayName,
         color: appUsage.color,
+        deviceName: appUsage.deviceName,
         duration: duration,
       );
     }).toList();

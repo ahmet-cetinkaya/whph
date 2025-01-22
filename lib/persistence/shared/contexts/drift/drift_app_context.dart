@@ -80,7 +80,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -147,6 +147,10 @@ class AppDatabase extends _$AppDatabase {
         from4To5: (m, schema) async {
           // Create AppUsageTagRule table
           await m.createTable(appUsageTagRuleTable);
+        },
+        from5To6: (m, schema) async {
+          // Add deviceName column to AppUsage table
+          await m.addColumn(appUsageTable, appUsageTable.deviceName);
         },
       ),
     );

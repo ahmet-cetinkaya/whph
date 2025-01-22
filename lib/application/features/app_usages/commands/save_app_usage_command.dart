@@ -9,12 +9,14 @@ class SaveAppUsageCommand implements IRequest<SaveAppUsageCommandResponse> {
   final String name;
   final String? displayName;
   final String? color;
+  final String? deviceName;
 
   SaveAppUsageCommand({
     this.id,
     required this.name,
     this.displayName,
     this.color,
+    this.deviceName,
   });
 }
 
@@ -23,6 +25,7 @@ class SaveAppUsageCommandResponse {
   final String name;
   final String? displayName;
   final String? color;
+  final String? deviceName;
   final DateTime createdDate;
   final DateTime? modifiedDate;
 
@@ -31,6 +34,7 @@ class SaveAppUsageCommandResponse {
     required this.name,
     this.displayName,
     this.color,
+    this.deviceName,
     required this.createdDate,
     this.modifiedDate,
   });
@@ -54,6 +58,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
 
       appUsage.displayName = request.displayName;
       appUsage.color = request.color;
+      appUsage.deviceName = request.deviceName;
       await _appUsageRepository.update(appUsage);
     } else {
       appUsage = AppUsage(
@@ -61,6 +66,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
         name: request.name,
         displayName: request.displayName,
         color: request.color,
+        deviceName: request.deviceName,
         createdDate: DateTime(0),
       );
       await _appUsageRepository.add(appUsage);
@@ -71,6 +77,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
       name: appUsage.name,
       displayName: appUsage.displayName,
       color: appUsage.color,
+      deviceName: appUsage.deviceName,
       createdDate: appUsage.createdDate,
       modifiedDate: appUsage.modifiedDate,
     );

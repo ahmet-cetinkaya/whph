@@ -188,6 +188,13 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DetailTable(rowData: [
+            // Device Name
+            DetailTableRowData(
+              label: "Device",
+              icon: Icons.devices,
+              widget: Text(_appUsage!.deviceName ?? 'Unknown Device'),
+            ),
+
             // AppUsage Tags
             DetailTableRowData(
               label: "Tags",

@@ -36,8 +36,13 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
   @override
   late final GeneratedColumn<String> color =
       GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _deviceNameMeta = const VerificationMeta('deviceName');
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, displayName, color];
+  late final GeneratedColumn<String> deviceName =
+      GeneratedColumn<String>('device_name', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdDate, modifiedDate, deletedDate, name, displayName, color, deviceName];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -74,6 +79,9 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
     if (data.containsKey('color')) {
       context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
     }
+    if (data.containsKey('device_name')) {
+      context.handle(_deviceNameMeta, deviceName.isAcceptableOrUnknown(data['device_name']!, _deviceNameMeta));
+    }
     return context;
   }
 
@@ -90,6 +98,7 @@ class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTab
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       displayName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}display_name']),
       color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
+      deviceName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}device_name']),
     );
   }
 
@@ -107,6 +116,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
   final Value<String> name;
   final Value<String?> displayName;
   final Value<String?> color;
+  final Value<String?> deviceName;
   final Value<int> rowid;
   const AppUsageTableCompanion({
     this.id = const Value.absent(),
@@ -116,6 +126,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     this.name = const Value.absent(),
     this.displayName = const Value.absent(),
     this.color = const Value.absent(),
+    this.deviceName = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppUsageTableCompanion.insert({
@@ -126,6 +137,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     required String name,
     this.displayName = const Value.absent(),
     this.color = const Value.absent(),
+    this.deviceName = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -138,6 +150,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     Expression<String>? name,
     Expression<String>? displayName,
     Expression<String>? color,
+    Expression<String>? deviceName,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -148,6 +161,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       if (name != null) 'name': name,
       if (displayName != null) 'display_name': displayName,
       if (color != null) 'color': color,
+      if (deviceName != null) 'device_name': deviceName,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -160,6 +174,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       Value<String>? name,
       Value<String?>? displayName,
       Value<String?>? color,
+      Value<String?>? deviceName,
       Value<int>? rowid}) {
     return AppUsageTableCompanion(
       id: id ?? this.id,
@@ -169,6 +184,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
       name: name ?? this.name,
       displayName: displayName ?? this.displayName,
       color: color ?? this.color,
+      deviceName: deviceName ?? this.deviceName,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -197,6 +213,9 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
     if (color.present) {
       map['color'] = Variable<String>(color.value);
     }
+    if (deviceName.present) {
+      map['device_name'] = Variable<String>(deviceName.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -213,6 +232,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
           ..write('name: $name, ')
           ..write('displayName: $displayName, ')
           ..write('color: $color, ')
+          ..write('deviceName: $deviceName, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3104,6 +3124,7 @@ typedef $$AppUsageTableTableCreateCompanionBuilder = AppUsageTableCompanion Func
   required String name,
   Value<String?> displayName,
   Value<String?> color,
+  Value<String?> deviceName,
   Value<int> rowid,
 });
 typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Function({
@@ -3114,6 +3135,7 @@ typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion Func
   Value<String> name,
   Value<String?> displayName,
   Value<String?> color,
+  Value<String?> deviceName,
   Value<int> rowid,
 });
 
@@ -3143,6 +3165,9 @@ class $$AppUsageTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsa
 
   ColumnFilters<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceName =>
+      $composableBuilder(column: $table.deviceName, builder: (column) => ColumnFilters(column));
 }
 
 class $$AppUsageTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTableTable> {
@@ -3172,6 +3197,9 @@ class $$AppUsageTableTableOrderingComposer extends Composer<_$AppDatabase, $AppU
 
   ColumnOrderings<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceName =>
+      $composableBuilder(column: $table.deviceName, builder: (column) => ColumnOrderings(column));
 }
 
 class $$AppUsageTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTableTable> {
@@ -3199,6 +3227,8 @@ class $$AppUsageTableTableAnnotationComposer extends Composer<_$AppDatabase, $Ap
       $composableBuilder(column: $table.displayName, builder: (column) => column);
 
   GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceName => $composableBuilder(column: $table.deviceName, builder: (column) => column);
 }
 
 class $$AppUsageTableTableTableManager extends RootTableManager<
@@ -3228,6 +3258,7 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String?> displayName = const Value.absent(),
             Value<String?> color = const Value.absent(),
+            Value<String?> deviceName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppUsageTableCompanion(
@@ -3238,6 +3269,7 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             name: name,
             displayName: displayName,
             color: color,
+            deviceName: deviceName,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3248,6 +3280,7 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             required String name,
             Value<String?> displayName = const Value.absent(),
             Value<String?> color = const Value.absent(),
+            Value<String?> deviceName = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppUsageTableCompanion.insert(
@@ -3258,6 +3291,7 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             name: name,
             displayName: displayName,
             color: color,
+            deviceName: deviceName,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

@@ -6,6 +6,7 @@ class AppUsage extends BaseEntity<String> {
   String name;
   String? displayName;
   String? color;
+  String? deviceName;
 
   AppUsage({
     required super.id,
@@ -15,5 +16,6 @@ class AppUsage extends BaseEntity<String> {
     required this.name,
     this.displayName,
     this.color,
+    this.deviceName,
   });
 }

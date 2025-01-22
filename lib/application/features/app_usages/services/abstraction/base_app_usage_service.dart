@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
@@ -141,15 +142,29 @@ abstract class BaseAppUsageService implements IAppUsageService {
     );
 
     if (appUsage == null) {
+      // Get device name from platform info or settings
+      final deviceName = await _getPlatformDeviceName();
+
       appUsage = AppUsage(
         id: nanoid(),
         name: appName,
         color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
+        deviceName: deviceName,
         createdDate: DateTime.now().toUtc(),
       );
       await _appUsageRepository.add(appUsage);
     }
 
     return appUsage;
+  }
+
+  @protected
+  Future<String> _getPlatformDeviceName() async {
+    try {
+      return Platform.localHostname;
+    } catch (e) {
+      if (kDebugMode) print('Failed to get device name: $e');
+      return 'Unknown';
+    }
   }
 }

@@ -13,11 +13,13 @@ class GetAppUsageQueryResponse {
   String name;
   String? displayName;
   String? color;
+  String? deviceName;
 
   GetAppUsageQueryResponse({
     required this.name,
     this.displayName,
     this.color,
+    this.deviceName,
   });
 }
 
@@ -39,6 +41,7 @@ class GetAppUsageQueryHandler implements IRequestHandler<GetAppUsageQuery, GetAp
       name: appUsages.name,
       displayName: appUsages.displayName,
       color: appUsages.color,
+      deviceName: appUsages.deviceName,
     );
   }
 }
