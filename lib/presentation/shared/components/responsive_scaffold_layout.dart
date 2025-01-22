@@ -103,6 +103,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             Row(
               children: [
                 if (widget.showLogo) ...[
+                  const SizedBox(width: 8),
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: 8),
                 ],
