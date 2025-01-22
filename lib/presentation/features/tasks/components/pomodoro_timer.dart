@@ -138,6 +138,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (mounted) {
       _setSystemTrayIcon();
       _addTimerMenuItems();
+      _updateSystemTrayTimer();
 
       setState(() {
         _isRunning = true;
@@ -148,6 +149,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               _remainingTime -= const Duration(seconds: 1);
             });
             widget.onTimeUpdate(_remainingTime);
+            _updateSystemTrayTimer();
           } else {
             _timer.cancel();
             _isRunning = false;
@@ -158,8 +160,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     }
   }
 
-  void _setSystemTrayIcon() {
-    widget._systemTrayService.setTrayIcon(_isWorking ? TrayIconType.play : TrayIconType.pause);
+  void _updateSystemTrayTimer() {
+    final status = _isWorking ? 'Work' : 'Break';
+    widget._systemTrayService.setTitle('$status - ${_getDisplayTime()}');
+    widget._systemTrayService.setBody('Timer running');
   }
 
   void _stopTimer() {
@@ -180,11 +184,17 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
       _resetSystemTrayIcon();
       _removeTimerMenuItems();
+      widget._systemTrayService.setTitle('App Running');
+      widget._systemTrayService.setBody('Tap to open');
     }
   }
 
+  void _setSystemTrayIcon() {
+    widget._systemTrayService.setIcon(_isWorking ? TrayIconType.play : TrayIconType.pause);
+  }
+
   void _resetSystemTrayIcon() {
-    widget._systemTrayService.setTrayIcon(TrayIconType.default_);
+    widget._systemTrayService.setIcon(TrayIconType.default_);
   }
 
   void _toggleWorkBreak() {
@@ -361,22 +371,31 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     );
   }
 
-  static const String _pomodoroTimerSeparatorKey = 'pomodoro_timer_separator';
   static const String _stopTimerMenuKey = 'stop_timer';
+  static const String _pomodoroTimerSeparatorKey = 'pomodoro_timer_separator';
+  bool _isTimerMenuAdded = false;
   void _addTimerMenuItems() {
-    widget._systemTrayService.insertMenuItems([
+    if (_isTimerMenuAdded) return;
+
+    var menuItems = [
+      TrayMenuItem.separator(
+        _pomodoroTimerSeparatorKey,
+      ),
       TrayMenuItem(
         key: _stopTimerMenuKey,
         label: 'Stop Timer',
         onClicked: _stopTimer,
       ),
-      TrayMenuItem.separator(
-        _pomodoroTimerSeparatorKey,
-      ),
-    ], 0); // Insert at index 0 (top of menu)
+    ];
+    for (var item in menuItems) {
+      widget._systemTrayService.insertMenuItem(item, index: 0);
+    }
+    _isTimerMenuAdded = true;
   }
 
   void _removeTimerMenuItems() {
     widget._systemTrayService.removeMenuItem(_stopTimerMenuKey);
+    widget._systemTrayService.removeMenuItem(_pomodoroTimerSeparatorKey);
+    _isTimerMenuAdded = false;
   }
 }

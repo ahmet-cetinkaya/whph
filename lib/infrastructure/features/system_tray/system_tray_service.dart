@@ -7,143 +7,162 @@ import 'package:whph/domain/shared/constants/app_assets.dart';
 
 class SystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
   final List<TrayMenuItem> _menuItems = [];
+  final WindowManager _windowManager = WindowManager.instance;
 
+  // Core methods
   @override
   Future<void> init() async {
-    if (!_isDesktop) return;
-
     try {
       await destroy();
-      windowManager.addListener(this);
+      _windowManager.addListener(this);
 
-      await setTrayIcon(TrayIconType.default_);
+      await setIcon(TrayIconType.default_);
 
       // Add default menu items
-      await addMenuItems([
-        TrayMenuItem(key: 'show_window', label: 'Show Window', onClicked: showWindow),
-        TrayMenuItem(key: 'hide_window', label: 'Hide Window', onClicked: hideWindow),
+      await setMenuItems([
+        TrayMenuItem(key: 'show_window', label: 'Show Window', onClicked: _showWindow),
+        TrayMenuItem(key: 'hide_window', label: 'Hide Window', onClicked: _hideWindow),
         TrayMenuItem.separator('window_separator'),
-        TrayMenuItem(key: 'exit_app', label: 'Exit', onClicked: exitApp),
+        TrayMenuItem(key: 'exit_app', label: 'Exit', onClicked: _exitApp),
       ]);
 
       trayManager.addListener(this);
     } catch (e) {
-      if (kDebugMode) {
-        print('ERROR: Error initializing tray: $e');
-      }
-    }
-  }
-
-  @override
-  Future<void> setTrayIcon(TrayIconType type) async {
-    if (!_isDesktop) return;
-    try {
-      await trayManager.setIcon(
-        AppAssets.getTrayIcon(type, isWindows: Platform.isWindows),
-      );
-    } catch (e) {
-      if (kDebugMode) {
-        print('ERROR: Error setting tray icon: $e');
-      }
+      if (kDebugMode) print('ERROR: Error initializing tray: $e');
     }
   }
 
   @override
   Future<void> destroy() async {
-    if (!_isDesktop) return;
-    windowManager.removeListener(this); // Remove window event listener
+    _windowManager.removeListener(this);
     trayManager.removeListener(this);
     await trayManager.destroy();
   }
 
-  // Capture window close event
   @override
-  void onWindowClose() {
-    hideWindow(); // Hide window instead of closing it
-  }
-
-  @override
-  Future<void> showWindow() async {
-    if (!_isDesktop) return;
-    await windowManager.show();
-    await windowManager.focus();
-  }
-
-  @override
-  Future<void> hideWindow() async {
-    if (!_isDesktop) return;
-    await windowManager.hide();
-  }
-
-  @override
-  Future<void> exitApp() async {
-    if (!_isDesktop) {
-      exit(0);
-      return;
+  Future<void> setIcon(TrayIconType type) async {
+    try {
+      final iconPath = AppAssets.getTrayIcon(type, isWindows: Platform.isWindows);
+      await trayManager.setIcon(iconPath);
+    } catch (e) {
+      if (kDebugMode) print('ERROR: Error setting tray icon: $e');
     }
-
-    await windowManager.destroy();
-    exit(0);
   }
 
   @override
-  void onTrayIconMouseDown() {
-    if (Platform.isLinux) showWindow();
+  Future<void> setTitle(String title) async {
+    try {
+      await trayManager.setTitle(title);
+    } catch (e) {
+      if (kDebugMode) print('ERROR: Error setting tray title: $e');
+    }
   }
 
   @override
-  void onTrayIconRightMouseDown() {
-    if (Platform.isLinux) trayManager.popUpContextMenu();
+  Future<void> setBody(String body) async {
+    // Not applicable for desktop
+  }
+
+  // Menu management methods
+  @override
+  List<TrayMenuItem> getMenuItems() => List.unmodifiable(_menuItems);
+
+  @override
+  Future<void> setMenuItems(List<TrayMenuItem> items) async {
+    _menuItems
+      ..clear()
+      ..addAll(items);
+    await _rebuildMenu();
   }
 
   @override
-  Future<void> addMenuItem(TrayMenuItem item) async {
-    if (!_isDesktop) return;
-    _menuItems.add(item);
-    await rebuildMenu();
+  Future<void> insertMenuItem(TrayMenuItem item, {int? index}) async {
+    if (index != null) {
+      _menuItems.insert(index, item);
+    } else {
+      _menuItems.add(item);
+    }
+    await _rebuildMenu();
   }
 
   @override
-  Future<void> addMenuItems(List<TrayMenuItem> items) async {
-    if (!_isDesktop) return;
-    _menuItems.addAll(items);
-    await rebuildMenu();
+  Future<void> updateMenuItem(String key, TrayMenuItem newItem) async {
+    final index = _menuItems.indexWhere((item) => item.key == key);
+    if (index != -1) {
+      _menuItems[index] = newItem;
+      await _rebuildMenu();
+    }
   }
 
   @override
-  Future<void> insertMenuItems(List<TrayMenuItem> items, int index) async {
-    if (!_isDesktop) return;
-    _menuItems.insertAll(index, items);
-    await rebuildMenu();
+  Future<TrayMenuItem?> getMenuItem(String key) async {
+    return _menuItems.firstWhere(
+      (item) => item.key == key,
+      orElse: () => TrayMenuItem(key: '', label: ''),
+    );
   }
 
   @override
   Future<void> removeMenuItem(String key) async {
-    if (!_isDesktop) return;
     _menuItems.removeWhere((item) => item.key == key);
-    await rebuildMenu();
+    await _rebuildMenu();
   }
 
   @override
-  Future<void> clearMenu() async {
-    if (!_isDesktop) return;
-    _menuItems.clear();
-    await rebuildMenu();
+  Future<void> reset() async {
+    await destroy();
+    await init();
   }
 
-  @override
-  Future<void> rebuildMenu() async {
-    if (!_isDesktop) return;
+  // Private helper methods
+  Future<void> _rebuildMenu() async {
     final menu = Menu(
       items: _menuItems.map((item) {
         if (item.isSeparator) return MenuItem.separator();
-        return MenuItem(
-          key: item.key,
-          label: item.label,
-        );
+        return MenuItem(key: item.key, label: item.label);
       }).toList(),
     );
     await trayManager.setContextMenu(menu);
+  }
+
+  Future<void> _showWindow() async {
+    await _windowManager.show();
+    await _windowManager.focus();
+  }
+
+  Future<void> _hideWindow() async {
+    await _windowManager.hide();
+  }
+
+  Future<void> _exitApp() async {
+    await destroy();
+    exit(0);
+  }
+
+  // Event handlers
+  @override
+  void onWindowClose() {
+    _hideWindow();
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    _showWindow();
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayIconMouseUp() {
+    _showWindow();
+  }
+
+  @override
+  void onTrayIconRightMouseUp() {
+    trayManager.popUpContextMenu();
   }
 
   @override
@@ -154,6 +173,4 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
     );
     item.onClicked?.call();
   }
-
-  bool get _isDesktop => Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }

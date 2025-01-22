@@ -1,30 +1,115 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
 
 class MobileSystemTrayService implements ISystemTrayService {
+  // Constants
   static const int _notificationId = 888;
   static const String _notificationChannelId = 'system_tray';
   static const String _notificationChannelName = 'System Tray';
 
+  // Private fields
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
+  String _currentTitle = 'App Running';
+  String _currentBody = 'Tap to open';
 
+  // Additional private fields for menu items
+  List<TrayMenuItem> _menuItems = [];
+
+  // Core methods
   @override
   Future<void> init() async {
     if (_isInitialized) return;
 
     const initSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      ),
     );
 
-    await _notifications.initialize(initSettings);
+    await _notifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: _handleNotificationAction,
+    );
+    await _createNotificationChannel();
 
+    _isInitialized = true;
+    await _showPersistentNotification();
+  }
+
+  @override
+  Future<void> destroy() async {
+    _menuItems.clear();
+    await _notifications.cancel(_notificationId);
+  }
+
+  @override
+  Future<void> reset() async {
+    destroy();
+  }
+
+  // Tray/notification appearance methods
+  @override
+  Future<void> setIcon(TrayIconType type) async {
+    await _showPersistentNotification();
+  }
+
+  @override
+  Future<void> setTitle(String title) async {
+    _currentTitle = title;
+    await _showPersistentNotification();
+  }
+
+  @override
+  Future<void> setBody(String body) async {
+    _currentBody = body;
+    await _showPersistentNotification();
+  }
+
+  // Menu management methods
+  @override
+  List<TrayMenuItem> getMenuItems() => _menuItems;
+
+  @override
+  Future<void> setMenuItems(List<TrayMenuItem> items) async {
+    _menuItems = items;
+    await _showPersistentNotification();
+  }
+
+  @override
+  Future<void> insertMenuItem(TrayMenuItem item, {int? index}) async {
+    if (index != null) {
+      _menuItems.insert(index, item);
+    } else {
+      _menuItems.add(item);
+    }
+    await _showPersistentNotification();
+  }
+
+  @override
+  Future<void> updateMenuItem(String key, TrayMenuItem newItem) async {}
+
+  @override
+  Future<TrayMenuItem?> getMenuItem(String key) async => null;
+
+  @override
+  Future<void> removeMenuItem(String key) async {
+    _menuItems.removeWhere((item) => item.key == key);
+    await _showPersistentNotification();
+  }
+
+  // Private helper methods
+  Future<void> _createNotificationChannel() async {
     const androidChannel = AndroidNotificationChannel(
       _notificationChannelId,
       _notificationChannelName,
-      importance: Importance.min,
+      importance: Importance.defaultImportance, // Change from min to defaultImportance
       playSound: false,
       enableVibration: false,
     );
@@ -32,73 +117,47 @@ class MobileSystemTrayService implements ISystemTrayService {
     await _notifications
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(androidChannel);
-
-    _isInitialized = true;
-    await _showPersistentNotification();
   }
 
   Future<void> _showPersistentNotification() async {
+    final List<AndroidNotificationAction> actions = _menuItems.map((item) {
+      return AndroidNotificationAction(
+        item.key,
+        item.label,
+        showsUserInterface: true,
+      );
+    }).toList();
+
     final androidDetails = AndroidNotificationDetails(
       _notificationChannelId,
       _notificationChannelName,
       ongoing: true,
       autoCancel: false,
-      importance: Importance.min,
-      priority: Priority.low,
+      importance: Importance.defaultImportance, // Change from min to defaultImportance
+      priority: Priority.high, // Change from low to high
       playSound: false,
       enableVibration: false,
+      actions: actions,
+      category: AndroidNotificationCategory.progress,
+      showWhen: false,
     );
 
     await _notifications.show(
       _notificationId,
-      'App Running',
-      'Tap to open',
+      _currentTitle,
+      _currentBody,
       NotificationDetails(android: androidDetails),
     );
   }
 
-  @override
-  Future<void> setTrayIcon(TrayIconType type) async {
-    // Update notification icon if needed
-    await _showPersistentNotification();
+  void _handleNotificationAction(NotificationResponse response) {
+    if (response.notificationResponseType == NotificationResponseType.selectedNotification) return;
+
+    final selectedItem = _menuItems.firstWhere(
+      (item) => item.key == response.actionId,
+      orElse: () => TrayMenuItem(key: '', label: ''),
+    );
+
+    selectedItem.onClicked?.call();
   }
-
-  @override
-  Future<void> destroy() async {
-    await _notifications.cancel(_notificationId);
-  }
-
-  @override
-  Future<void> showWindow() async {
-    // Not needed for mobile
-  }
-
-  @override
-  Future<void> hideWindow() async {
-    // Not needed for mobile
-  }
-
-  @override
-  Future<void> exitApp() async {
-    await destroy();
-  }
-
-  // Menu related methods - not applicable for mobile but need to be implemented
-  @override
-  Future<void> addMenuItem(dynamic item) async {}
-
-  @override
-  Future<void> addMenuItems(List items) async {}
-
-  @override
-  Future<void> insertMenuItems(List items, int index) async {}
-
-  @override
-  Future<void> removeMenuItem(String key) async {}
-
-  @override
-  Future<void> clearMenu() async {}
-
-  @override
-  Future<void> rebuildMenu() async {}
 }

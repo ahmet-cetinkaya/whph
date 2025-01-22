@@ -13,24 +13,30 @@ class TrayMenuItem {
     this.onClicked,
   });
 
-  static TrayMenuItem separator(String key) => TrayMenuItem(
-        key: key,
-        label: '',
-        isSeparator: true,
-      );
+  TrayMenuItem.separator(String key)
+      : this(
+          key: key,
+          label: '',
+          isSeparator: true,
+        );
 }
 
 abstract class ISystemTrayService {
+  // Core methods
   Future<void> init();
   Future<void> destroy();
-  Future<void> showWindow();
-  Future<void> hideWindow();
-  Future<void> exitApp();
-  Future<void> setTrayIcon(TrayIconType type);
-  Future<void> addMenuItem(TrayMenuItem item);
-  Future<void> addMenuItems(List<TrayMenuItem> items);
+
+  // Tray/notification functionality
+  Future<void> setIcon(TrayIconType type);
+  Future<void> setTitle(String title);
+  Future<void> setBody(String body);
+  Future<void> reset();
+
+  // Menu management
+  List<TrayMenuItem> getMenuItems();
+  Future<void> setMenuItems(List<TrayMenuItem> items);
+  Future<void> insertMenuItem(TrayMenuItem item, {int? index});
+  Future<void> updateMenuItem(String key, TrayMenuItem newItem);
+  Future<TrayMenuItem?> getMenuItem(String key);
   Future<void> removeMenuItem(String key);
-  Future<void> clearMenu();
-  Future<void> rebuildMenu();
-  Future<void> insertMenuItems(List<TrayMenuItem> items, int index);
 }

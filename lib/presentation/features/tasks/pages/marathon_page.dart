@@ -230,71 +230,78 @@ class _MarathonPageState extends State<MarathonPage> {
       },
       child: Material(
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: Column(
-          children: [
-            // Pomodoro Timer
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  PomodoroTimer(
-                    onTimeUpdate: _handleTimerUpdate, // Update this line
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Selected Task
-            if (_selectedTask != null)
-              TaskCard(
-                task: _selectedTask!,
-                onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                onCompleted: _refreshTasks,
-                trailingButtons: [
-                  IconButton(
-                    icon: const Icon(Icons.push_pin),
-                    onPressed: _clearSelectedTask,
-                  ),
-                ],
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Pomodoro Timer
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: PomodoroTimer(
+                          onTimeUpdate: _handleTimerUpdate,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                  ],
+                ),
               ),
 
-            // Filters
-            TaskFilters(
-              selectedTagIds: _selectedTagIds,
-              selectedStartDate: _selectedStartDate,
-              selectedEndDate: _selectedEndDate,
-              onTagFilterChange: _handleTagFilterChange,
-              onDateFilterChange: _handleDateFilterChange,
-              onSearchChange: _handleSearchChange,
-              showDateFilter: false,
-            ),
+              // Selected Task
+              if (_selectedTask != null)
+                TaskCard(
+                  task: _selectedTask!,
+                  onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                  onCompleted: _refreshTasks,
+                  trailingButtons: [
+                    IconButton(
+                      icon: const Icon(Icons.push_pin),
+                      onPressed: _clearSelectedTask,
+                    ),
+                  ],
+                ),
 
-            // Update TaskList with today's date filter
-            Expanded(
-              child: TaskList(
-                key: _tasksListKey,
-                mediator: _mediator,
-                filterByCompleted: false,
-                filterByTags: _selectedTagIds,
-                filterByPlannedStartDate: today,
-                filterByPlannedEndDate: tomorrow,
-                filterDateOr: false,
-                search: _searchQuery,
-                onTaskCompleted: _refreshTasks,
-                onClickTask: (task) => _showTaskDetails(task.id),
-                onSelectTask: _onSelectTask,
-                selectedTask: _selectedTask,
-                showSelectButton: true,
-                transparentCards: true,
+              // Filters
+              TaskFilters(
+                selectedTagIds: _selectedTagIds,
+                selectedStartDate: _selectedStartDate,
+                selectedEndDate: _selectedEndDate,
+                onTagFilterChange: _handleTagFilterChange,
+                onDateFilterChange: _handleDateFilterChange,
+                onSearchChange: _handleSearchChange,
+                showDateFilter: false,
               ),
-            ),
-          ],
+
+              // Update TaskList with today's date filter
+              Expanded(
+                child: TaskList(
+                  key: _tasksListKey,
+                  mediator: _mediator,
+                  filterByCompleted: false,
+                  filterByTags: _selectedTagIds,
+                  filterByPlannedStartDate: today,
+                  filterByPlannedEndDate: tomorrow,
+                  filterDateOr: false,
+                  search: _searchQuery,
+                  onTaskCompleted: _refreshTasks,
+                  onClickTask: (task) => _showTaskDetails(task.id),
+                  onSelectTask: _onSelectTask,
+                  selectedTask: _selectedTask,
+                  showSelectButton: true,
+                  transparentCards: true,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
