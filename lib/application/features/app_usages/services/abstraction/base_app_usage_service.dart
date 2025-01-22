@@ -56,35 +56,27 @@ abstract class BaseAppUsageService implements IAppUsageService {
   @override
   @protected
   Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
-    var appUsage = await _getOrCreateAppUsage(appName);
+    final appUsage = await _getOrCreateAppUsage(appName);
     await _applyTagRules(appUsage);
 
-    var now = DateTime.now().toUtc();
-    final recordStartTime = DateTime(now.year, now.month, now.day, now.hour);
-
-    var timeRecords = await _appUsageTimeRecordRepository.getAll(
-      customWhereFilter: CustomWhereFilter(
-        'app_usage_id = ? AND created_date = ? AND deleted_date IS NULL',
-        [appUsage.id, recordStartTime],
+    final now = DateTime.now();
+    final nowHourStart = DateTime(now.year, now.month, now.day, now.hour);
+    AppUsageTimeRecord? timeRecord = await _appUsageTimeRecordRepository.getFirst(
+      CustomWhereFilter(
+        'app_usage_id = ? AND created_date >= ? AND created_date < ? AND deleted_date IS NULL',
+        [appUsage.id, nowHourStart, now],
       ),
     );
 
-    if (timeRecords.isNotEmpty) {
-      var existingRecord = timeRecords.first;
-      existingRecord = AppUsageTimeRecord(
-        id: existingRecord.id,
-        appUsageId: existingRecord.appUsageId,
-        duration: overwrite ? duration : existingRecord.duration + duration,
-        createdDate: existingRecord.createdDate,
-        modifiedDate: DateTime.now().toUtc(),
-      );
-      await _appUsageTimeRecordRepository.update(existingRecord);
+    if (timeRecord != null) {
+      timeRecord.duration = overwrite ? duration : timeRecord.duration + duration;
+      await _appUsageTimeRecordRepository.update(timeRecord);
     } else {
-      var newRecord = AppUsageTimeRecord(
+      final newRecord = AppUsageTimeRecord(
         id: nanoid(),
         appUsageId: appUsage.id,
         duration: duration,
-        createdDate: recordStartTime,
+        createdDate: now,
       );
       await _appUsageTimeRecordRepository.add(newRecord);
     }
