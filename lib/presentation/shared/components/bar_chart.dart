@@ -68,11 +68,11 @@ class BarChart extends StatelessWidget {
                               children: [
                                 Text(
                                   value.toStringAsFixed(1),
-                                  style: const TextStyle(fontSize: 13),
+                                  style: AppTheme.bodySmall,
                                 ),
                                 Text(
                                   " $unit",
-                                  style: const TextStyle(fontSize: AppTheme.fontSizeSmall),
+                                  style: AppTheme.bodySmall,
                                 ),
                               ],
                             ),
@@ -106,8 +106,7 @@ class BarChart extends StatelessWidget {
   Widget _buildTitle(Color textColor) {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 13, // Reduced from 16
+      style: AppTheme.bodySmall.copyWith(
         fontWeight: FontWeight.bold,
         color: textColor,
       ),

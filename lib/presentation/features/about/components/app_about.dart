@@ -24,24 +24,24 @@ class AppAbout extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     AppInfo.name,
-                    style: TextStyle(fontSize: AppTheme.fontSizeXLarge, fontWeight: FontWeight.bold),
+                    style: AppTheme.headlineMedium,
                   ),
-                  const Text(
+                  Text(
                     'Version ${AppInfo.version}',
-                    style: TextStyle(fontSize: AppTheme.fontSizeMedium),
+                    style: AppTheme.bodyMedium,
                   ),
                 ],
               ),
             ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
           child: Text(
             AppInfo.description,
-            style: TextStyle(fontSize: AppTheme.fontSizeMedium),
+            style: AppTheme.bodyMedium,
           ),
         ),
         Padding(
@@ -60,7 +60,7 @@ class AppAbout extends StatelessWidget {
   Widget _buildExternalLink({required String title, required String url, required IconData icon}) {
     return TextButton.icon(
       onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-      label: Text(title, style: TextStyle(fontSize: AppTheme.fontSizeLarge)),
+      label: Text(title, style: AppTheme.bodyLarge),
       icon: Icon(icon),
     );
   }

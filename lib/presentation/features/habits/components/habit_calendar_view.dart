@@ -51,7 +51,7 @@ class HabitCalendarView extends StatelessWidget {
         ),
         Text(
           DateFormat.yMMMM().format(currentMonth),
-          style: const TextStyle(fontSize: 18),
+          style: AppTheme.bodyLarge,
         ),
         IconButton(
           icon: const Icon(Icons.arrow_forward),
@@ -70,7 +70,7 @@ class HabitCalendarView extends StatelessWidget {
                 child: Center(
                   child: Text(
                     day,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    style: AppTheme.bodySmall.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
               ))
@@ -145,6 +145,7 @@ class HabitCalendarView extends StatelessWidget {
               children: [
                 Text(
                   '${date.day}',
+                  style: AppTheme.bodySmall,
                 ),
                 if (date.isAfter(DateTime.now()))
                   const Icon(Icons.lock, size: 12, color: Colors.grey)

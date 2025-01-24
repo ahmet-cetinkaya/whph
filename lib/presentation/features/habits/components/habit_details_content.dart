@@ -263,6 +263,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     onChanged: _onDescriptionChanged,
                     hintText: 'Add a description...',
                     toolbarBackground: AppTheme.surface1,
+                    style: AppTheme.bodyMedium,
                   ),
                 ),
               ),
@@ -308,7 +309,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           padding: const EdgeInsets.only(right: 8.0),
           child: Icon(icon),
         ),
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(title, style: AppTheme.bodyLarge),
       ],
     );
   }

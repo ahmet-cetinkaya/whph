@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class TagTimeChart extends StatefulWidget {
@@ -115,8 +116,7 @@ class _TagTimeChartState extends State<TagTimeChart> {
         value: item.duration.toDouble(),
         title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
-        titleStyle: const TextStyle(
-          fontSize: 12,
+        titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),

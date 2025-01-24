@@ -68,8 +68,7 @@ class DetailTable extends StatelessWidget {
               padding: const EdgeInsets.only(left: 26, top: 4),
               child: Text(
                 data.hintText!,
-                style: TextStyle(
-                  fontSize: 11,
+                style: AppTheme.bodySmall.copyWith(
                   color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
                 ),
               ),
@@ -115,8 +114,7 @@ class DetailTable extends StatelessWidget {
               Flexible(
                 child: Text(
                   data.label,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: AppTheme.bodySmall.copyWith(
                     fontWeight: FontWeight.w500,
                     color: AppTheme.lightTextColor,
                   ),

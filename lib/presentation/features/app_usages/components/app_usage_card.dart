@@ -79,33 +79,26 @@ class _AppUsageCardState extends State<AppUsageCard> {
       onTap: widget.onTap,
       additionalWidget: _appUsageTags?.items.isNotEmpty == true
           ? Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "•",
-                  style: TextStyle(
-                    color: AppTheme.disabledColor,
-                    fontSize: AppTheme.fontSizeSmall,
-                  ),
+                  style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
                 ),
                 const SizedBox(width: 4),
                 Row(
                   children: [
                     for (var i = 0; i < _appUsageTags!.items.length; i++) ...[
                       if (i > 0)
-                        Text(", ",
-                            style: TextStyle(
-                              color: AppTheme.disabledColor,
-                              fontSize: AppTheme.fontSizeSmall - 1,
-                            )),
+                        Text(
+                          ", ",
+                          style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
+                        ),
                       Text(
                         _appUsageTags!.items[i].tagName,
-                        style: TextStyle(
+                        style: AppTheme.bodySmall.copyWith(
                           color: _appUsageTags!.items[i].tagColor != null
                               ? Color(int.parse('FF${_appUsageTags!.items[i].tagColor}', radix: 16))
                               : AppTheme.disabledColor,
-                          fontSize: AppTheme.fontSizeSmall - 1,
                         ),
                       ),
                     ],

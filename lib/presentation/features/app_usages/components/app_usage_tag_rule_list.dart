@@ -69,13 +69,10 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     }
 
     if (_rules == null || _rules!.items.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No rules found',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-          ),
+          style: AppTheme.bodyMedium.copyWith(color: Colors.grey),
         ),
       );
     }
@@ -102,8 +99,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                   ),
                   child: Text(
                     rule.tagName,
-                    style: TextStyle(
-                      fontSize: 11,
+                    style: AppTheme.bodySmall.copyWith(
                       color: rule.tagColor != null ? Color(int.parse('FF${rule.tagColor}', radix: 16)) : Colors.grey,
                     ),
                   ),
@@ -118,20 +114,14 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                     children: [
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             'Pattern: ',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey,
-                            ),
+                            style: AppTheme.bodySmall.copyWith(color: Colors.grey),
                           ),
                           Expanded(
                             child: Text(
                               rule.pattern,
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 12,
-                              ),
+                              style: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
                             ),
                           ),
                         ],
@@ -141,7 +131,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
                             rule.description!,
-                            style: const TextStyle(fontSize: 11),
+                            style: AppTheme.bodySmall,
                           ),
                         ),
                     ],

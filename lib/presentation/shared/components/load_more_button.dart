@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class LoadMoreButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -9,9 +10,9 @@ class LoadMoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      child: const Text(
+      child: Text(
         'Load More',
-        style: TextStyle(fontSize: 14),
+        style: AppTheme.bodySmall,
       ),
     );
   }

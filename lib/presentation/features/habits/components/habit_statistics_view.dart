@@ -34,7 +34,7 @@ class HabitStatisticsView extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: Icon(Icons.analytics),
         ),
-        Text('Statistics', style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text('Statistics', style: AppTheme.bodyLarge),
       ],
     );
   }
@@ -64,13 +64,13 @@ class HabitStatisticsView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 12),
+              style: AppTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               isCount ? value.toInt().toString() : "${(value * 100).toStringAsFixed(0)}%",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ],
@@ -83,9 +83,9 @@ class HabitStatisticsView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Score Trends',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: AppTheme.bodyLarge,
         ),
         const SizedBox(height: 16),
         SizedBox(
@@ -116,7 +116,7 @@ class HabitStatisticsView extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               DateFormat('MMM').format(statistics.monthlyScores[value.toInt()].key),
-                              style: const TextStyle(fontSize: 12),
+                              style: AppTheme.bodySmall,
                             ),
                           );
                         }
@@ -160,11 +160,11 @@ class HabitStatisticsView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16.0),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
           child: Text(
             'Top Streaks',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: AppTheme.bodyLarge,
           ),
         ),
         ...statistics.topStreaks.take(5).map(
@@ -187,7 +187,7 @@ class HabitStatisticsView extends StatelessWidget {
             width: 60,
             child: Text(
               DateFormat('M/d').format(streak.startDate),
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
+              style: AppTheme.bodySmall.copyWith(color: Colors.grey),
               textAlign: TextAlign.end,
             ),
           ),
@@ -236,10 +236,9 @@ class HabitStatisticsView extends StatelessWidget {
                     // Days text
                     Text(
                       "${streak.days}d",
-                      style: const TextStyle(
+                      style: AppTheme.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.surface1,
-                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -253,7 +252,7 @@ class HabitStatisticsView extends StatelessWidget {
             width: 60,
             child: Text(
               DateFormat('M/d').format(streak.endDate),
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
+              style: const TextStyle(fontSize: AppTheme.fontSizeSmall, color: Colors.grey),
             ),
           ),
         ],

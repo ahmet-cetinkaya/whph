@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
@@ -50,11 +51,11 @@ class DateTimePickerField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       readOnly: true,
-      style: const TextStyle(fontSize: 12),
+      style: AppTheme.bodySmall,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(fontSize: 11),
-        suffixIcon: const Icon(Icons.edit, size: 18),
+        hintStyle: AppTheme.bodySmall,
+        suffixIcon: const Icon(Icons.edit, size: AppTheme.iconSizeSmall),
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),

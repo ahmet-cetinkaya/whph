@@ -30,6 +30,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
   DropdownOption<String>? _selectedTag;
   bool _showValidationErrors = false;
   final Mediator _mediator = container.resolve<Mediator>();
+  bool _isSaved = false;
 
   @override
   void dispose() {
@@ -73,7 +74,17 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
 
         if (mounted) {
           widget.onSave();
+          setState(() {
+            _isSaved = true;
+          });
           _resetForm();
+
+          await Future.delayed(const Duration(seconds: 2));
+          if (mounted) {
+            setState(() {
+              _isSaved = false;
+            });
+          }
         }
       } catch (e, stackTrace) {
         if (!mounted) return;
@@ -91,6 +102,13 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Text(
+            '• Enter one pattern per line\n• Each line will be treated as a separate ignore rule',
+            style: TextStyle(
+              color: Colors.grey,
+              height: 1.4,
+            ),
+          ),
           // Pattern Field
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,16 +121,13 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       controller: _patternController,
                       decoration: InputDecoration(
                         labelText: 'Pattern',
-                        labelStyle: const TextStyle(fontSize: 12),
+                        labelStyle: AppTheme.bodySmall,
                         hintText: 'e.g., .*Chrome.*',
-                        hintStyle: const TextStyle(
-                          fontSize: 11,
-                          fontFamily: 'monospace',
-                        ),
+                        hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
                         prefixIcon: const Icon(Icons.pattern, size: 18),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        errorStyle: const TextStyle(height: 0.7, fontSize: 10),
+                        errorStyle: TextStyle(height: 0.7, fontSize: AppTheme.fontSizeXSmall),
                         errorBorder: _showValidationErrors && _patternController.text.isEmpty
                             ? OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -120,10 +135,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                               )
                             : null,
                       ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'monospace',
-                      ),
+                      style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
                       validator: (value) => (value?.isEmpty ?? true) ? 'Pattern is required' : null,
                     ),
                   ),
@@ -135,7 +147,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(minWidth: 32),
-                      icon: const Icon(Icons.help_outline, size: 18),
+                      icon: const Icon(Icons.help_outline, size: AppTheme.iconSizeSmall),
                       tooltip: 'Pattern Help',
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
@@ -175,11 +187,10 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                           Expanded(
                             child: Text(
                               _selectedTag?.label ?? 'Select a tag',
-                              style: TextStyle(
+                              style: AppTheme.bodySmall.copyWith(
                                 color: _selectedTag != null
                                     ? Theme.of(context).textTheme.bodyMedium?.color
                                     : Theme.of(context).hintColor,
-                                fontSize: 11,
                               ),
                             ),
                           ),
@@ -213,9 +224,8 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   padding: const EdgeInsets.only(top: 4, left: 12),
                   child: Text(
                     'Tag is required',
-                    style: TextStyle(
+                    style: AppTheme.bodySmall.copyWith(
                       color: Theme.of(context).colorScheme.error,
-                      fontSize: 12,
                     ),
                   ),
                 ),
@@ -227,17 +237,17 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           // Description Field
           TextFormField(
             controller: _descriptionController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Description (Optional)',
-              labelStyle: TextStyle(fontSize: 12),
+              labelStyle: AppTheme.bodySmall,
               hintText: 'Enter description for this rule',
-              hintStyle: TextStyle(fontSize: 11),
+              hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: 18),
               isDense: true,
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               constraints: BoxConstraints(maxHeight: 36),
             ),
-            style: const TextStyle(fontSize: 12),
+            style: AppTheme.bodySmall,
             maxLines: 1,
           ),
           const SizedBox(height: 16),
@@ -250,13 +260,17 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 TextButton.icon(
                   onPressed: widget.onCancel,
                   icon: const Icon(Icons.close, size: 18, color: AppTheme.darkTextColor),
-                  label: const Text('Cancel', style: TextStyle(fontSize: 12, color: AppTheme.darkTextColor)),
+                  label: Text('Cancel', style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
                 onPressed: _handleSubmit,
-                icon: const Icon(Icons.add, size: 18, color: AppTheme.darkTextColor),
-                label: const Text('Add', style: TextStyle(fontSize: 12, color: AppTheme.darkTextColor)),
+                icon: Icon(
+                  _isSaved ? Icons.check : Icons.save,
+                  size: AppTheme.iconSizeSmall,
+                  color: AppTheme.darkTextColor,
+                ),
+                label: Text('Add', style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
               ),
             ],
           ),

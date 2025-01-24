@@ -68,7 +68,7 @@ class _SearchFilterState extends State<SearchFilter> {
                     vertical: 8,
                   ),
                   hintText: widget.placeholder,
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.close, size: 16),
                     onPressed: _toggleSearch,

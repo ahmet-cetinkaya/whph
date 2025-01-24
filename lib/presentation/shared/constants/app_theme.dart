@@ -5,15 +5,18 @@ class AppTheme {
   // Colors
   static const Color primaryColor = domain.AppTheme.primaryColor;
 
-  static const Color surface0 = Color(0xFF000000);
-  static const Color surface1 = Color(0xFF171717);
-  static const Color surface2 = Color(0xFF2B2B2B);
-  static const Color surface3 = Color(0xFF464646);
-  static const Color textColor = Color(0xFFEBEBEB);
-  static const Color secondaryTextColor = Color(0xFFBDBDBD);
-  static const Color darkTextColor = Color(0xFF121212);
-  static const Color lightTextColor = Color(0xFFE0E0E0);
-  static const Color dividerColor = Color(0xFF3A3A3A);
+  // Updated surface colors for OLED displays
+  static const Color surface0 = Color(0x00000000);
+  static const Color surface1 = Color(0xFF121212);
+  static const Color surface2 = Color(0xFF181818);
+  static const Color surface3 = Color(0xFF202020);
+
+  // Updated text colors for better OLED contrast
+  static const Color textColor = Color(0xFFFFFFFF);
+  static const Color secondaryTextColor = Color(0xFFB0B0B0);
+  static const Color darkTextColor = Color(0xFF000000);
+  static const Color lightTextColor = Color(0xFFFFFFFF);
+  static const Color dividerColor = Color(0xFF282828);
 
   static const Color successColor = Color(0xFF4CAF50);
   static const Color warningColor = Color(0xFFFFC107);
@@ -36,11 +39,14 @@ class AppTheme {
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);
 
-  static const double fontSizeXSmall = 8.0;
+  // Updated font sizes
+  static const double fontSizeXXSmall = 10.0;
+  static const double fontSizeXSmall = 11.0;
   static const double fontSizeSmall = 12.0;
-  static const double fontSizeMedium = 16.0;
-  static const double fontSizeLarge = 20.0;
-  static const double fontSizeXLarge = 24.0;
+  static const double fontSizeMedium = 14.0;
+  static const double fontSizeLarge = 16.0;
+  static const double fontSizeXLarge = 20.0;
+  static const double fontSizeXXLarge = 24.0;
 
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 24.0;
@@ -52,16 +58,41 @@ class AppTheme {
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
-  // Text Styles
-  static const TextStyle bodySmall = TextStyle(color: textColor, fontSize: fontSizeSmall);
-  static const TextStyle bodyMedium = TextStyle(color: textColor, fontSize: fontSizeMedium);
-  static const TextStyle bodyLarge = TextStyle(color: textColor, fontSize: fontSizeLarge);
-  static const TextStyle headlineSmall =
-      TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
-  static const TextStyle headlineMedium =
-      TextStyle(color: textColor, fontSize: fontSizeXLarge, fontWeight: FontWeight.bold);
-  static const TextStyle headlineLarge =
-      TextStyle(color: textColor, fontSize: fontSizeXLarge + 4, fontWeight: FontWeight.bold);
+  // Updated Text Styles
+  static const TextStyle bodySmall = TextStyle(
+    color: secondaryTextColor,
+    fontSize: fontSizeSmall,
+    height: 1.5,
+  );
+  static const TextStyle bodyMedium = TextStyle(
+    color: textColor,
+    fontSize: fontSizeMedium,
+    height: 1.5,
+  );
+  static const TextStyle bodyLarge = TextStyle(
+    color: textColor,
+    fontSize: fontSizeLarge,
+    height: 1.5,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle headlineSmall = TextStyle(
+    color: textColor,
+    fontSize: fontSizeLarge,
+    fontWeight: FontWeight.bold,
+    height: 1.3,
+  );
+  static const TextStyle headlineMedium = TextStyle(
+    color: textColor,
+    fontSize: fontSizeXLarge,
+    fontWeight: FontWeight.bold,
+    height: 1.3,
+  );
+  static const TextStyle headlineLarge = TextStyle(
+    color: textColor,
+    fontSize: fontSizeXLarge + 8,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+  );
   static const TextStyle displaySmall =
       TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
 
@@ -69,17 +100,21 @@ class AppTheme {
   static final ThemeData themeData = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.dark(
-      primary: domain.AppTheme.primaryColor,
+      primary: primaryColor,
       onPrimary: textColor,
       surface: surface1,
+      onSurface: textColor,
+      secondary: surface3,
+      onSecondary: textColor,
     ),
     primaryColor: domain.AppTheme.primaryColor,
     scaffoldBackgroundColor: AppTheme.surface0,
     highlightColor: surface3,
     cardTheme: CardTheme(
-      color: surface1,
+      color: surface2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       clipBehavior: Clip.antiAlias,
+      elevation: 0,
     ),
     textTheme: TextTheme(
       bodySmall: bodySmall,
@@ -107,15 +142,15 @@ class AppTheme {
         borderRadius: BorderRadius.circular(containerBorderRadius),
         borderSide: BorderSide.none,
       ),
-      labelStyle: TextStyle(color: textColor),
       filled: true,
-      fillColor: surface2,
+      fillColor: surface1,
+      labelStyle: bodyMedium.copyWith(color: secondaryTextColor),
     ),
     checkboxTheme: CheckboxThemeData(
       checkColor: WidgetStateProperty.all(surface1),
     ),
     dropdownMenuTheme: DropdownMenuThemeData(
-      textStyle: TextStyle(fontSize: 12),
+      textStyle: bodySmall,
       menuStyle: MenuStyle(
         backgroundColor: WidgetStateProperty.all(surface1),
         elevation: WidgetStateProperty.all(0),
@@ -153,5 +188,19 @@ class AppTheme {
       side: BorderSide.none,
     ),
     expansionTileTheme: ExpansionTileThemeData(iconColor: textColor, textColor: textColor, backgroundColor: surface2),
+    switchTheme: SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor.withAlpha((255 * 0.5).toInt());
+        }
+        return surface3;
+      }),
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor;
+        }
+        return textColor;
+      }),
+    ),
   );
 }

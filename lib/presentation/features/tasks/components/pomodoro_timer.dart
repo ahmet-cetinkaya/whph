@@ -255,7 +255,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     // Calculate responsive sizes with running state multiplier
     final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0; // Only shrink when stopped
     final double buttonSize = (screenWidth < 600 ? 32.0 : 40.0) * multiplier;
-    final double fontSize = (screenWidth < 600 ? 24.0 : 32.0) * multiplier;
     final double spacing = (screenWidth < 600 ? 8.0 : 16.0) * multiplier;
 
     return AnimatedContainer(
@@ -278,13 +277,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           SizedBox(width: spacing),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              fontFeatures: const [
-                FontFeature.tabularFigures(),
-              ],
-            ),
+            style: AppTheme.headlineMedium,
             child: Text(_getDisplayTime()),
           ),
           SizedBox(width: spacing),
@@ -327,10 +320,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold))),
-          const Text(
+          Center(child: const Text('Settings', style: AppTheme.headlineSmall)),
+          Text(
             'Default timer settings (in minutes):',
-            style: TextStyle(color: AppTheme.secondaryTextColor),
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.secondaryTextColor,
+            ),
           ),
           _buildSettingRow('Work Time', _workDuration, (adjustment) {
             if (!mounted) return;

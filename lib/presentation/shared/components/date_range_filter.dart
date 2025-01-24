@@ -45,7 +45,7 @@ class DateRangeFilter extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Select Date Range', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text('Select Date Range', style: AppTheme.headlineSmall),
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
@@ -101,8 +101,7 @@ class DateRangeFilter extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             _getDateRangeText(),
-            style: TextStyle(
-              fontSize: 12,
+            style: AppTheme.bodySmall.copyWith(
               color: primaryColor,
             ),
           ),

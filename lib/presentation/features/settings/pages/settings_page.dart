@@ -4,6 +4,7 @@ import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 import 'package:whph/presentation/features/about/components/app_about.dart';
 import 'package:whph/presentation/features/settings/components/startup_settings.dart';
 import 'package:whph/presentation/features/settings/components/notification_settings.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String route = '/settings';
@@ -36,7 +37,7 @@ class SettingsPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.sync),
-              title: const Text('Sync Devices'),
+              title: Text('Sync Devices', style: AppTheme.bodyMedium),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.pushNamed(context, SyncDevicesPage.route);
@@ -47,7 +48,7 @@ class SettingsPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.info),
-              title: const Text('About'),
+              title: Text('About', style: AppTheme.bodyMedium),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () => _showAboutModal(context),
             ),

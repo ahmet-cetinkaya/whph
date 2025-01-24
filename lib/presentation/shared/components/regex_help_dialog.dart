@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class RegexHelpDialog extends StatelessWidget {
   const RegexHelpDialog({super.key});
@@ -18,15 +19,14 @@ class RegexHelpDialog extends StatelessWidget {
         children: [
           Text(
             pattern,
-            style: const TextStyle(
+            style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
               fontFamily: 'monospace',
             ),
           ),
           Text(
             description,
-            style: TextStyle(
-              fontSize: 13,
+            style: AppTheme.bodySmall.copyWith(
               color: Theme.of(context).hintColor,
             ),
           ),
@@ -50,12 +50,12 @@ class RegexHelpDialog extends StatelessWidget {
             _buildPatternExample(context, 'Slack|Discord', 'Matches either "Slack" or "Discord"'),
             _buildPatternExample(context, '.*\\.pdf', 'Matches any PDF file'),
             const SizedBox(height: 16),
-            const Text('Tips:', style: TextStyle(fontWeight: FontWeight.bold)),
-            const Text('• Use ".*" to match any characters'),
-            const Text('• "^" matches start of text'),
-            const Text('• "\$" matches end of text'),
-            const Text('• "|" means OR'),
-            const Text('• "\\." matches a dot'),
+            const Text('Tips:', style: AppTheme.bodyMedium),
+            const Text('• Use ".*" to match any characters', style: AppTheme.bodySmall),
+            const Text('• "^" matches start of text', style: AppTheme.bodySmall),
+            const Text('• "\$" matches end of text', style: AppTheme.bodySmall),
+            const Text('• "|" means OR', style: AppTheme.bodySmall),
+            const Text('• "\\." matches a dot', style: AppTheme.bodySmall),
           ],
         ),
       ),

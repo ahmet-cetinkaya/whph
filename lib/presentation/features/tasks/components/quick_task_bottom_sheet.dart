@@ -211,7 +211,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             ? const Icon(Icons.timer_outlined)
             : Text(
                 _getEstimatedTimeText()!,
-                style: const TextStyle(
+                style: AppTheme.bodyMedium.copyWith(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
                 ),

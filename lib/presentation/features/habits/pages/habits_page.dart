@@ -123,20 +123,18 @@ class _HabitsPageState extends State<HabitsPage> {
                                       children: [
                                         Text(
                                           DateTimeHelper.getWeekday(date.weekday),
-                                          style: TextStyle(
+                                          style: AppTheme.bodySmall.copyWith(
                                             color: DateTimeHelper.isSameDay(date, today)
                                                 ? AppTheme.primaryColor
                                                 : AppTheme.textColor,
-                                            fontSize: AppTheme.fontSizeSmall,
                                           ),
                                         ),
                                         Text(
                                           date.day.toString(),
-                                          style: TextStyle(
+                                          style: AppTheme.bodySmall.copyWith(
                                             color: DateTimeHelper.isSameDay(date, today)
                                                 ? AppTheme.primaryColor
                                                 : AppTheme.textColor,
-                                            fontSize: AppTheme.fontSizeSmall,
                                           ),
                                         )
                                       ],

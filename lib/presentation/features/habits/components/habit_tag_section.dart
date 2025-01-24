@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class HabitTagSection extends StatelessWidget {
@@ -47,7 +48,7 @@ class HabitTagSection extends StatelessWidget {
     return Chip(
       label: Text(
         habitTag.tagName,
-        style: TextStyle(
+        style: AppTheme.bodySmall.copyWith(
           color: habitTag.tagColor != null ? Color(int.parse('FF${habitTag.tagColor}', radix: 16)) : null,
         ),
       ),

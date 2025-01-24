@@ -106,10 +106,9 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 '• Enter one pattern per line\n• Each line will be treated as a separate ignore rule',
-                style: TextStyle(
-                  fontSize: 11,
+                style: AppTheme.bodySmall.copyWith(
                   color: Colors.grey,
                   height: 1.4,
                 ),
@@ -121,23 +120,17 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                   Expanded(
                     child: TextFormField(
                       controller: _patternController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Patterns',
-                        labelStyle: TextStyle(fontSize: 12),
+                        labelStyle: AppTheme.bodySmall,
                         hintText: 'e.g., .*Chrome.*\n.*Firefox.*\n.*Edge.*',
-                        hintStyle: TextStyle(
-                          fontSize: 11,
-                          fontFamily: 'monospace',
-                        ),
-                        prefixIcon: Icon(Icons.pattern, size: 18),
+                        hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
+                        prefixIcon: const Icon(Icons.pattern, size: 18),
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         alignLabelWithHint: true,
                       ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'monospace',
-                      ),
+                      style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
                       validator: (value) => (value?.isEmpty ?? true) ? 'At least one pattern is required' : null,
                       maxLines: 20,
                       minLines: 1,
@@ -181,8 +174,7 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                 ),
                 label: Text(
                   _isSaved ? 'Saved' : 'Save',
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: AppTheme.bodySmall.copyWith(
                     color: AppTheme.darkTextColor,
                   ),
                 ),

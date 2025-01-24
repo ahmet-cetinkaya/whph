@@ -5,6 +5,7 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_tag_r
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_list.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_ignore_rule_form.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class AppUsageTagRulesPage extends StatefulWidget {
   static const String route = '/app-usages/tag-rules';
@@ -71,10 +72,7 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with Single
                               children: [
                                 const Text(
                                   'Add New Rule',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: AppTheme.headlineSmall,
                                 ),
                                 const SizedBox(height: 16),
                                 AppUsageTagRuleForm(
@@ -87,10 +85,7 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with Single
                         const SizedBox(height: 24),
                         const Text(
                           'Existing Rules',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: AppTheme.headlineSmall,
                         ),
                         const SizedBox(height: 16),
                         AppUsageTagRuleList(
@@ -116,10 +111,7 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with Single
                               children: [
                                 const Text(
                                   'Ignore Rules',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: AppTheme.headlineSmall,
                                 ),
                                 const SizedBox(height: 16),
                                 AppUsageIgnoreRuleForm(

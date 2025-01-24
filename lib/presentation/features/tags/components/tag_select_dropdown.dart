@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 
@@ -120,7 +121,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         Expanded(
                           child: TextField(
                             controller: _searchController,
-                            decoration: InputDecoration(labelText: 'Search Tags', fillColor: Colors.transparent),
+                            decoration: InputDecoration(
+                              labelText: 'Search Tags',
+                              fillColor: Colors.transparent,
+                              labelStyle: AppTheme.bodySmall,
+                            ),
                             onChanged: (value) {
                               if (!mounted) return;
                               setState(() {
@@ -247,7 +252,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   label: Text(
                     tag.name,
-                    style: TextStyle(fontSize: 12),
+                    style: AppTheme.bodySmall,
                   ),
                   onDeleted: () {
                     final List<DropdownOption<String>> updatedTags = _selectedTags.where((id) => id != tagId).map((id) {

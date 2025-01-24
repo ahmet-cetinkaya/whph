@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskListItem task;
@@ -58,10 +59,10 @@ class TaskCard extends StatelessWidget {
         children: [
           Text(
             task.title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+            style: AppTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 2),
           _buildMetadataRow(),
@@ -78,12 +79,14 @@ class TaskCard extends StatelessWidget {
 
       for (var i = 0; i < task.tags.length; i++) {
         final tag = task.tags[i];
-        if (i > 0) metadata.add(const Text(", ", style: TextStyle(color: Colors.grey, fontSize: 10)));
+        if (i > 0) {
+          metadata.add(Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)));
+        }
 
         metadata.add(Text(
           tag.name,
-          style: TextStyle(
-              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey, fontSize: 10),
+          style: AppTheme.bodySmall
+              .copyWith(color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
         ));
       }
     }
@@ -134,7 +137,7 @@ class TaskCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 14),
           const SizedBox(width: 2),
-          Text(text, style: TextStyle(color: color, fontSize: 12)),
+          Text(text, style: AppTheme.bodySmall.copyWith(color: color)),
         ],
       );
 

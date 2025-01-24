@@ -160,7 +160,7 @@ class _HabitCardState extends State<HabitCard> {
                 children: [
                   Text(
                     widget.habit.name,
-                    style: const TextStyle(fontSize: 14),
+                    style: AppTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
@@ -168,7 +168,7 @@ class _HabitCardState extends State<HabitCard> {
                       padding: const EdgeInsets.only(top: 2),
                       child: Row(
                         children: [
-                          const Icon(Icons.label, color: Colors.grey, size: 12),
+                          const Icon(Icons.label, color: Colors.grey, size: AppTheme.iconSizeSmall),
                           const SizedBox(width: 2),
                           Expanded(
                             child: SingleChildScrollView(
@@ -176,14 +176,14 @@ class _HabitCardState extends State<HabitCard> {
                               child: Row(
                                 children: [
                                   for (var i = 0; i < widget.habit.tags.length; i++) ...[
-                                    if (i > 0) const Text(", ", style: TextStyle(color: Colors.grey, fontSize: 10)),
+                                    if (i > 0) Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)),
                                     Text(
                                       widget.habit.tags[i].name,
-                                      style: TextStyle(
-                                          color: widget.habit.tags[i].color != null
-                                              ? Color(int.parse('FF${widget.habit.tags[i].color}', radix: 16))
-                                              : Colors.grey,
-                                          fontSize: 10),
+                                      style: AppTheme.bodySmall.copyWith(
+                                        color: widget.habit.tags[i].color != null
+                                            ? Color(int.parse('FF${widget.habit.tags[i].color}', radix: 16))
+                                            : Colors.grey,
+                                      ),
                                     ),
                                   ],
                                 ],
@@ -214,8 +214,8 @@ class _HabitCardState extends State<HabitCard> {
         List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index))).toList();
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end, // sağa hizalama
-      mainAxisSize: MainAxisSize.min, // minimum genişlik
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
     );
   }
@@ -233,16 +233,14 @@ class _HabitCardState extends State<HabitCard> {
           if (widget.isDateLabelShowing) ...[
             Text(
               DateTimeHelper.getWeekday(date.weekday),
-              style: TextStyle(
+              style: AppTheme.bodySmall.copyWith(
                 color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                fontSize: 10,
               ),
             ),
             Text(
               date.day.toString(),
-              style: TextStyle(
+              style: AppTheme.bodySmall.copyWith(
                 color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
-                fontSize: 12,
               ),
             ),
           ],

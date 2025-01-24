@@ -37,10 +37,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
                   padding: EdgeInsets.only(bottom: 16),
                   child: Text(
                     'Select Priority',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTheme.headlineSmall,
                   ),
                 ),
                 ...widget.options.map((option) => _buildPriorityOption(context, option)),
@@ -70,8 +67,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           children: [
             Text(
               option.label,
-              style: TextStyle(
-                fontSize: 12,
+              style: AppTheme.bodySmall.copyWith(
                 color: AppTheme.lightTextColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -111,7 +107,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
               Expanded(
                 child: Text(
                   selectedOption.label,
-                  style: const TextStyle(fontSize: 12),
+                  style: AppTheme.bodySmall,
                 ),
               ),
               const Icon(Icons.arrow_drop_down, size: 18),
