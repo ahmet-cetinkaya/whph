@@ -1,17 +1,27 @@
 #!/bin/bash
 
-# This script fixes the ambiguous method call in FlutterLocalNotificationsPlugin
-# Specifically, it resolves the ambiguity between bigLargeIcon(Bitmap) and bigLargeIcon(Icon)
-# by explicitly casting null to Bitmap
+set -e
+cd "$(dirname "$0")/.."
 
 PUB_CACHE="${HOME}/.pub-cache"
-NOTIFICATIONS_PATH="${PUB_CACHE}/hosted/pub.dev/flutter_local_notifications-15.1.3/android/src/main/java/com/dexterous/flutterlocalnotifications/FlutterLocalNotificationsPlugin.java"
+PLUGIN_PATH="${PUB_CACHE}/hosted/pub.dev/flutter_local_notifications-15.1.3"
+
+# Check if package exists
+if [ ! -d "$PLUGIN_PATH" ]; then
+    echo "Error: flutter_local_notifications package not found at $PLUGIN_PATH"
+    exit 1
+fi
+
+NOTIFICATIONS_PATH="${PLUGIN_PATH}/android/src/main/java/com/dexterous/flutterlocalnotifications/FlutterLocalNotificationsPlugin.java"
 
 if [ -f "$NOTIFICATIONS_PATH" ]; then
+    # Create backup
+    cp "$NOTIFICATIONS_PATH" "${NOTIFICATIONS_PATH}.bak"
+    
     # Replace the ambiguous bigLargeIcon call with the Bitmap version
     sed -i 's/bigPictureStyle.bigLargeIcon(null);/bigPictureStyle.bigLargeIcon((Bitmap) null);/' "$NOTIFICATIONS_PATH"
     echo "Successfully modified FlutterLocalNotificationsPlugin.java"
 else
-    echo "FlutterLocalNotificationsPlugin.java not found. Please check the package path."
+    echo "FlutterLocalNotificationsPlugin.java not found at $NOTIFICATIONS_PATH"
     exit 1
 fi
