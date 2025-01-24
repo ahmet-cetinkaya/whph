@@ -24,7 +24,6 @@ class NavigationItems {
         title: 'Buy me a coffee',
         icon: Icons.coffee,
         onTap: (context) async {
-          Navigator.of(context).pop(); // Close drawer if open
           await launchUrl(Uri.parse(AppInfo.supportUrl), mode: LaunchMode.externalApplication);
         }),
   ];

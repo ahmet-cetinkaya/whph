@@ -10,7 +10,7 @@ class AppInfo {
   static const String websiteUrl = "https://whph.ahmetcetinkaya.me/";
   static const String sourceCodeUrl = "https://github.com/ahmet-cetinkaya/whph";
   static const String logoPath = AppAssets.logo;
-  static const String supportUrl = "https://buymeacoffee.com/ahmetcetinkaya";
+  static const String supportUrl = "https://ahmetcetinkaya.me/donate";
   static const String updateCheckerUrl = "https://api.github.com/repos/ahmet-cetinkaya/whph/releases/latest";
   static const String supportEmail = "contact@ahmetcetinkaya.me";
 }
