@@ -277,7 +277,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           SizedBox(width: spacing),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: AppTheme.headlineMedium,
+            style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
             child: Text(_getDisplayTime()),
           ),
           SizedBox(width: spacing),

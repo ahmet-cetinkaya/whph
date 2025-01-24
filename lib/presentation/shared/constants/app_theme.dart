@@ -5,13 +5,11 @@ class AppTheme {
   // Colors
   static const Color primaryColor = domain.AppTheme.primaryColor;
 
-  // Updated surface colors for OLED displays
   static const Color surface0 = Color(0x00000000);
   static const Color surface1 = Color(0xFF121212);
   static const Color surface2 = Color(0xFF181818);
   static const Color surface3 = Color(0xFF202020);
 
-  // Updated text colors for better OLED contrast
   static const Color textColor = Color(0xFFFFFFFF);
   static const Color secondaryTextColor = Color(0xFFB0B0B0);
   static const Color darkTextColor = Color(0xFF000000);
@@ -39,7 +37,6 @@ class AppTheme {
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);
 
-  // Updated font sizes
   static const double fontSizeXXSmall = 10.0;
   static const double fontSizeXSmall = 11.0;
   static const double fontSizeSmall = 12.0;
@@ -58,7 +55,6 @@ class AppTheme {
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
-  // Updated Text Styles
   static const TextStyle bodySmall = TextStyle(
     color: secondaryTextColor,
     fontSize: fontSizeSmall,
@@ -95,6 +91,12 @@ class AppTheme {
   );
   static const TextStyle displaySmall =
       TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
+  static const TextStyle displayLarge = TextStyle(
+    color: textColor,
+    fontSize: 48.0,
+    fontWeight: FontWeight.bold,
+    height: 1.1,
+  );
 
   // ThemeData definition
   static final ThemeData themeData = ThemeData(
@@ -124,6 +126,7 @@ class AppTheme {
       headlineMedium: headlineMedium,
       headlineLarge: headlineLarge,
       displaySmall: displaySmall,
+      displayLarge: displayLarge,
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
