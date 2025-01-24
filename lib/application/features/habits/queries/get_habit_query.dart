@@ -108,8 +108,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     while (hasMoreRecords) {
       var result = await _habitRecordRepository.getListByHabitIdAndRangeDate(
         habitId,
-        DateTime(1970), // Start from a very old date
-        DateTime.now(), // Until now
+        DateTime(1970),
+        DateTime.now(),
         pageIndex,
         pageSize,
       );

@@ -152,7 +152,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     if (mounted) {
       setState(() {
         list = null;
-        _listKey = UniqueKey(); // Force rebuild
+        _listKey = UniqueKey();
       });
 
       await Future.delayed(const Duration(milliseconds: 500));

@@ -246,7 +246,7 @@ class _TodayPageState extends State<TodayPage> {
               height: 300,
               width: 300,
               child: TagTimeChart(
-                key: _timeKey, // Add key to force refresh
+                key: _timeKey,
                 filterByTags: _selectedTagFilter,
                 startDate: today,
                 endDate: tomorrow,

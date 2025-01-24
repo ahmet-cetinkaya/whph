@@ -96,6 +96,7 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with Single
                     ),
                   ),
                 ),
+
                 // Ignore Rules Tab
                 SingleChildScrollView(
                   child: Container(

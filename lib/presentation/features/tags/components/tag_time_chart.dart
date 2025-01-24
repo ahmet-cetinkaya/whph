@@ -52,7 +52,7 @@ class _TagTimeChartState extends State<TagTimeChart> {
         startDate: widget.startDate,
         endDate: widget.endDate,
         limit: 10,
-        filterByTags: widget.filterByTags, // Pass filter to query
+        filterByTags: widget.filterByTags,
       );
 
       final result = await widget._mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);

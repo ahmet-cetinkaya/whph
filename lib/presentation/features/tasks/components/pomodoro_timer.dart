@@ -253,7 +253,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Calculate responsive sizes with running state multiplier
-    final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0; // Only shrink when stopped
+    final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0;
     final double buttonSize = (screenWidth < 600 ? 32.0 : 40.0) * multiplier;
     final double spacing = (screenWidth < 600 ? 8.0 : 16.0) * multiplier;
 

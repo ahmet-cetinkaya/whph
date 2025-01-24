@@ -139,11 +139,11 @@ class SyncQrScanButton extends StatelessWidget {
               Text('Syncing in progress...'),
             ],
           ),
-          duration: const Duration(seconds: 30), // Reduced duration
+          duration: const Duration(seconds: 30),
         );
 
         ScaffoldMessenger.of(context)
-          ..clearSnackBars() // Clear all existing snack bars
+          ..clearSnackBars()
           ..showSnackBar(syncSnackBar);
 
         if (kDebugMode) print('DEBUG: Starting sync process...');
@@ -163,7 +163,7 @@ class SyncQrScanButton extends StatelessWidget {
             ScaffoldMessenger.of(context).clearSnackBars();
 
             // Show completion message with longer duration
-            await Future.delayed(const Duration(milliseconds: 100)); // Small delay
+            await Future.delayed(const Duration(milliseconds: 100));
 
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -182,7 +182,7 @@ class SyncQrScanButton extends StatelessWidget {
           }
         } catch (e) {
           if (kDebugMode) print('DEBUG: Sync error: $e');
-          rethrow; // Rethrow to be caught by outer try-catch
+          rethrow;
         }
       }
     } catch (e, stackTrace) {
@@ -227,7 +227,8 @@ class SyncQrScanButton extends StatelessWidget {
       subscription.cancel();
       if (kDebugMode) print('DEBUG: Sync process completed');
     } catch (e) {
-      // ...existing error handling...
+      if (kDebugMode) print('DEBUG: Sync error: $e');
+      if (context.mounted) ErrorHelper.showError(context, BusinessException('Failed to sync: ${e.toString()}'));
     }
   }
 
