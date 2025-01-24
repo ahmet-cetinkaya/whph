@@ -264,7 +264,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             ),
           ),
 
-        // Add button - always on the right
+        // Add button
         SizedBox(
           width: 32,
           height: 32,

@@ -6,6 +6,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/components/regex_help_dialog.dart';
 
 class AppUsageTagRuleForm extends StatefulWidget {
   final Function() onSave;
@@ -38,8 +39,8 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
   }
 
   void _resetForm() {
-    _formKey.currentState?.reset(); // First reset form state
-    _tagDropdownKey = UniqueKey(); // Then reset tag dropdown key to force refresh
+    _formKey.currentState?.reset();
+    _tagDropdownKey = UniqueKey();
 
     // Then clear controllers after a small delay to ensure UI updates
     Future.microtask(() {
@@ -120,18 +121,24 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                             : null,
                       ),
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         fontFamily: 'monospace',
                       ),
                       validator: (value) => (value?.isEmpty ?? true) ? 'Pattern is required' : null,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.help_outline, size: 18),
-                    padding: const EdgeInsets.all(8),
-                    tooltip: 'Pattern Help',
-                    onPressed: () => _showPatternHelp(context),
+                  SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: IconButton(
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(minWidth: 32),
+                      icon: const Icon(Icons.help_outline, size: 18),
+                      tooltip: 'Pattern Help',
+                      onPressed: () => RegexHelpDialog.show(context),
+                    ),
                   ),
                 ],
               ),
@@ -177,13 +184,13 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                             ),
                           ),
                           if (_selectedTag != null)
-                            GestureDetector(
-                              onTap: () => setState(() => _selectedTag = null),
-                              child: const Icon(
+                            IconButton(
+                              icon: const Icon(
                                 Icons.close,
                                 size: 16,
                                 color: Colors.grey,
                               ),
+                              onPressed: () => setState(() => _selectedTag = null),
                             ),
                         ],
                       ),
@@ -252,69 +259,6 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 label: const Text('Add', style: TextStyle(fontSize: 12, color: AppTheme.darkTextColor)),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showPatternHelp(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Pattern Examples'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildPatternExample('.*Chrome.*', 'Matches any window title containing "Chrome"'),
-              _buildPatternExample('.*Visual Studio Code.*', 'Matches any VS Code window'),
-              _buildPatternExample('^Chrome\$', 'Matches exactly "Chrome"'),
-              _buildPatternExample('Slack|Discord', 'Matches either "Slack" or "Discord"'),
-              _buildPatternExample('.*\\.pdf', 'Matches any PDF file'),
-              const SizedBox(height: 16),
-              const Text(
-                'Tips:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const Text('• Use ".*" to match any characters'),
-              const Text('• "^" matches start of text'),
-              const Text('• "\$" matches end of text'),
-              const Text('• "|" means OR'),
-              const Text('• "\\." matches a dot'),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPatternExample(String pattern, String description) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            pattern,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-            ),
-          ),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 13,
-              color: Theme.of(context).hintColor,
-            ),
           ),
         ],
       ),

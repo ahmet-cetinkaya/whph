@@ -15,6 +15,8 @@ import 'package:whph/domain/shared/constants/app_theme.dart';
 import 'i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/domain/features/settings/constants/settings.dart';
 
 abstract class BaseAppUsageService implements IAppUsageService {
   @protected
@@ -24,6 +26,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageTagRuleRepository _appUsageTagRuleRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
+  final ISettingRepository _settingRepository;
 
   static final List<Color> _chartColors = [
     AppTheme.chartColor1,
@@ -43,6 +46,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     this._appUsageTimeRecordRepository,
     this._appUsageTagRuleRepository,
     this._appUsageTagRepository,
+    this._settingRepository,
   );
 
   @override
@@ -53,9 +57,34 @@ abstract class BaseAppUsageService implements IAppUsageService {
     periodicTimer?.cancel();
   }
 
+  Future<bool> _shouldIgnoreApp(String appName) async {
+    final setting = await _settingRepository.getByKey(Settings.appUsageIgnoreList);
+    if (setting == null || setting.value.isEmpty) return false;
+
+    final patterns = setting.value.split('\n').where((line) => line.trim().isNotEmpty).map((e) => e.trim());
+
+    for (final pattern in patterns) {
+      try {
+        if (RegExp(pattern).hasMatch(appName)) {
+          if (kDebugMode) print('DEBUG: Ignoring $appName (matched pattern: $pattern)');
+          return true;
+        }
+      } catch (e) {
+        if (kDebugMode) print('DEBUG: Invalid ignore pattern "$pattern": ${e.toString()}');
+      }
+    }
+
+    return false;
+  }
+
   @override
   @protected
   Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
+    if (await _shouldIgnoreApp(appName)) {
+      if (kDebugMode) print('DEBUG: Skipping record for ignored app: $appName');
+      return;
+    }
+
     final appUsage = await _getOrCreateAppUsage(appName);
     await _applyTagRules(appUsage);
 

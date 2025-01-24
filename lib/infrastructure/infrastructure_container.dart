@@ -5,6 +5,7 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
@@ -28,20 +29,21 @@ void registerInfrastructure(IContainer container) {
     final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
     final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
     final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
+    final settingRepository = container.resolve<ISettingRepository>();
 
     if (Platform.isLinux) {
-      return LinuxAppUsageService(
-          appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository, appUsageTagRepository);
+      return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, settingRepository);
     }
 
     if (Platform.isWindows) {
-      return WindowsAppUsageService(
-          appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository, appUsageTagRepository);
+      return WindowsAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, settingRepository);
     }
 
     if (Platform.isAndroid) {
-      return AndroidAppUsageService(
-          appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository, appUsageTagRepository);
+      return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, settingRepository);
     }
 
     throw Exception('Unsupported platform');

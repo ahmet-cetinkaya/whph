@@ -4,6 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_form.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_list.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/app_usages/components/app_usage_ignore_rule_form.dart';
 
 class AppUsageTagRulesPage extends StatefulWidget {
   static const String route = '/app-usages/tag-rules';
@@ -14,9 +15,22 @@ class AppUsageTagRulesPage extends StatefulWidget {
   State<AppUsageTagRulesPage> createState() => _AppUsageTagRulesPageState();
 }
 
-class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> {
+class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with SingleTickerProviderStateMixin {
   final Mediator _mediator = container.resolve<Mediator>();
   Key _listKey = UniqueKey();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   void _handleSaveRule() {
     setState(() {
@@ -27,57 +41,102 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      title: 'Tag Rules',
-      builder: (context) => Container(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      title: 'App Usage Rules',
+      builder: (context) => Column(
+        children: [
+          TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'Tag Rules'),
+              Tab(text: 'Ignore Rules'),
+            ],
+            dividerColor: Colors.transparent,
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
               children: [
-                // Title and Form Section
-                Card(
-                  child: Padding(
+                // Tag Rules Tab
+                SingleChildScrollView(
+                  child: Container(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Add New Rule',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                AppUsageTagRuleForm(
+                                  onSave: _handleSaveRule,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
                         const Text(
-                          'Add New Rule',
+                          'Existing Rules',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        AppUsageTagRuleForm(
-                          onSave: _handleSaveRule,
+                        AppUsageTagRuleList(
+                          key: _listKey,
+                          mediator: _mediator,
                         ),
                       ],
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 24),
-
-                // Rules List Section
-                const Text(
-                  'Existing Rules',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                // Ignore Rules Tab
+                SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Ignore Rules',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                AppUsageIgnoreRuleForm(
+                                  onSave: _handleSaveRule,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                AppUsageTagRuleList(
-                  key: _listKey,
-                  mediator: _mediator,
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

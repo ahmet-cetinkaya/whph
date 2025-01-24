@@ -109,7 +109,7 @@ class AppTheme {
       ),
       labelStyle: TextStyle(color: textColor),
       filled: true,
-      fillColor: surface1,
+      fillColor: surface2,
     ),
     checkboxTheme: CheckboxThemeData(
       checkColor: WidgetStateProperty.all(surface1),
