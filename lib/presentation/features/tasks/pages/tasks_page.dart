@@ -40,6 +40,7 @@ class _TasksPageState extends State<TasksPage> {
   void _refreshAllTasks() {
     if (mounted) {
       setState(() {
+        _isTasksListEmpty = false;
         _tasksListKey = UniqueKey();
         _completedTasksListKey = UniqueKey();
       });
