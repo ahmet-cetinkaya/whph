@@ -97,8 +97,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       SELECT COUNT(*) as total_count
       FROM app_durations ad
       INNER JOIN app_usage_table au ON ad.app_usage_id = au.id
+      WHERE au.deleted_date IS NULL
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      WHERE EXISTS (
+      AND EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
         WHERE aut.app_usage_id = au.id
@@ -145,8 +146,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         ad.total_duration as duration
       FROM app_durations ad
       INNER JOIN app_usage_table au ON ad.app_usage_id = au.id
+      WHERE au.deleted_date IS NULL
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      WHERE EXISTS (
+      AND EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
         WHERE aut.app_usage_id = au.id
