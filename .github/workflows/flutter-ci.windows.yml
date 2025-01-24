@@ -67,6 +67,11 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
+      - name: Get tag version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
@@ -75,7 +80,7 @@ jobs:
 
       # Create a zip archive from the build output
       - name: Create zip archive
-        run: cd windows-build && zip -r ../whph-v${{ env.APP_VERSION }}-windows.zip .
+        run: cd windows-build && zip -r ../whph-v${TAG_VERSION}-windows.zip .
 
       - name: Check existing release
         id: check_release
@@ -94,7 +99,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: whph-v${{ env.APP_VERSION }}-windows.zip
+          files: whph-v${{ env.TAG_VERSION }}-windows.zip
           name: Release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           draft: false

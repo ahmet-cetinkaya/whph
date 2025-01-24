@@ -77,8 +77,13 @@ jobs:
           name: whph-v${{ env.APP_VERSION }}-linux
           path: linux-build
 
+      - name: Get tag version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+
       - name: Create tar.gz archive
-        run: tar -czf whph-v${{ env.APP_VERSION }}-linux.tar.gz -C linux-build .
+        run: tar -czf whph-v${TAG_VERSION}-linux.tar.gz -C linux-build .
 
       - name: Check existing release
         id: check_release
@@ -103,7 +108,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: whph-v${{ env.APP_VERSION }}-linux.tar.gz
+          files: whph-v${{ env.TAG_VERSION }}-linux.tar.gz
           name: Release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           draft: false

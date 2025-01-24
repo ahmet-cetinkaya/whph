@@ -92,13 +92,22 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
+      - name: Get tag version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+
+      - name: Rename APK
+        run: |
+          mv android-build/app-release.apk android-build/whph-v${TAG_VERSION}-android.apk
+
       # Create or update the release
       - name: Create or Update Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: android-build/app-release.apk
+          files: android-build/whph-v${{ env.TAG_VERSION }}-android.apk
           name: Release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           draft: false
