@@ -2,7 +2,7 @@ import 'package:whph/domain/shared/constants/app_assets.dart';
 
 class AppInfo {
   static const String name = "WHPH";
-  static const String version = "0.1.0";
+  static const String version = "0.1.1";
   static const String description = "WHPH is a comprehensive app designed to enhance your personal productivity; "
       "it allows you to effectively manage your tasks, develop new habits, and make the most of your time, "
       "while also tracking how much time you spend on different applications to strengthen your focus. "
