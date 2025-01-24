@@ -59,13 +59,6 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
     super.dispose();
   }
 
-  void _resetForm() {
-    _formKey.currentState?.reset();
-    setState(() {
-      _showValidationErrors = false;
-    });
-  }
-
   Future<void> _handleSubmit() async {
     setState(() {
       _showValidationErrors = true;

@@ -9,4 +9,6 @@ abstract class INotificationService {
   });
 
   Future<void> clearAll();
+  Future<bool> isEnabled();
+  Future<void> setEnabled(bool enabled);
 }

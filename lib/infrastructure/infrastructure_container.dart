@@ -10,6 +10,7 @@ import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dar
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/windows_app_usage_service.dart';
+import 'package:whph/infrastructure/features/notification/desktop_notification_service.dart';
 import 'package:whph/infrastructure/features/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/system_tray/mobile_system_tray_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -24,15 +25,23 @@ void registerInfrastructure(IContainer container) {
   container.registerSingleton<ISystemTrayService>(
       (_) => (Platform.isAndroid || Platform.isIOS) ? MobileSystemTrayService() : SystemTrayService());
 
-  container.registerSingleton<INotificationService>(
-      (_) => (Platform.isAndroid || Platform.isIOS) ? MobileNotificationService() : NotificationService());
+  container.registerSingleton<INotificationService>((_) {
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      return DesktopNotificationService(settingRepository);
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return MobileNotificationService(settingRepository);
+    }
+
+    throw Exception('Unsupported platform for notification service.');
+  });
 
   container.registerSingleton<IAppUsageService>((_) {
     final appUsageRepository = container.resolve<IAppUsageRepository>();
     final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
     final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
     final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
-    final settingRepository = container.resolve<ISettingRepository>();
 
     if (Platform.isLinux) {
       return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,

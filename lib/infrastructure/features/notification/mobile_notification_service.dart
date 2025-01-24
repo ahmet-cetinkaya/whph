@@ -1,10 +1,17 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'dart:io';
+import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/domain/features/settings/constants/settings.dart';
 
 class MobileNotificationService implements INotificationService {
-  final FlutterLocalNotificationsPlugin _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
+  final ISettingRepository _settingRepository;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
+
+  MobileNotificationService(this._settingRepository) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
 
   @override
   Future<void> init() async {
@@ -22,6 +29,8 @@ class MobileNotificationService implements INotificationService {
     required String body,
     String? payload,
   }) async {
+    if (!await isEnabled()) return;
+
     final bool? permissionGranted = await _checkPermission();
     if (permissionGranted != true) return;
 
@@ -75,5 +84,32 @@ class MobileNotificationService implements INotificationService {
   @override
   Future<void> destroy() async {
     await clearAll();
+  }
+
+  @override
+  Future<bool> isEnabled() async {
+    final setting = await _settingRepository.getByKey(Settings.notifications);
+    return setting?.value == 'false' ? false : true; // Default to true if no setting
+  }
+
+  @override
+  Future<void> setEnabled(bool enabled) async {
+    if (enabled) {
+      await _checkPermission();
+    }
+
+    final setting = await _settingRepository.getByKey(Settings.notifications);
+    if (setting != null) {
+      setting.value = enabled.toString();
+      await _settingRepository.update(setting);
+    } else {
+      await _settingRepository.add(Setting(
+        id: nanoid(),
+        key: Settings.notifications,
+        value: enabled.toString(),
+        valueType: SettingValueType.bool,
+        createdDate: DateTime.now(),
+      ));
+    }
   }
 }
