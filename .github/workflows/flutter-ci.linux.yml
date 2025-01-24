@@ -109,7 +109,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: whph-v${{ env.TAG_VERSION }}-linux.tar.gz
-          name: Release ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
