@@ -10,11 +10,13 @@ import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
-import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/presentation_container.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
+import 'package:whph/presentation/shared/constants/app_args.dart';
 
 late final IContainer container;
 
@@ -32,26 +34,43 @@ void main() async {
   var notificationService = container.resolve<INotificationService>();
   await notificationService.init();
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await windowManager.ensureInitialized();
-
-    // Update window manager settings
-    await windowManager.setPreventClose(true);
-    await windowManager.setMinimumSize(const Size(800, 600));
-    await windowManager.center();
-
-    // Initialize system tray service
-    var systemTrayService = container.resolve<ISystemTrayService>();
-    await systemTrayService.init();
-  }
-
-  runBackgroundWorkers();
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) startWebSocketServer();
+  await runDesktopWorkers();
+  await runBackgroundWorkers();
 
   runApp(const App());
 }
 
-void runBackgroundWorkers() {
+Future<void> runDesktopWorkers() async {
+  if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) return;
+
+  // Update window manager settings
+  await windowManager.ensureInitialized();
+  await windowManager.setPreventClose(true);
+  await windowManager.setMinimumSize(const Size(800, 600));
+
+  // Initialize system tray service
+  var systemTrayService = container.resolve<ISystemTrayService>();
+  await systemTrayService.init();
+
+  // Ensure startup settings are synced
+  var startupService = container.resolve<IStartupSettingsService>();
+  await startupService.ensureStartupSettingSync();
+
+  // Check if app should start minimized
+  if (Platform.environment.containsKey('FLUTTER_TEST') == false) {
+    final args = Platform.executableArguments;
+    if (args.contains(AppArgs.systemTray)) {
+      await windowManager.hide();
+    } else {
+      await windowManager.show();
+    }
+  }
+
+  // Start WebSocket server
+  startWebSocketServer();
+}
+
+Future<void> runBackgroundWorkers() async {
   var mediator = container.resolve<Mediator>();
 
   if (Platform.isAndroid || Platform.isIOS) {
@@ -60,5 +79,5 @@ void runBackgroundWorkers() {
   }
 
   // Start app usage tracking for all platforms
-  mediator.send(StartTrackAppUsagesCommand());
+  await mediator.send(StartTrackAppUsagesCommand());
 }

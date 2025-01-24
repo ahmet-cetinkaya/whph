@@ -38,6 +38,12 @@ class DriftSettingRepository extends DriftBaseRepository<Setting, String, Settin
 
   @override
   Future<Setting?> getByKey(String key) async {
-    return await (database.select(table)..where((t) => t.key.equals(key))).getSingleOrNull();
+    final query = database.select(table)
+      ..where((tbl) => tbl.key.equals(key))
+      ..orderBy([(t) => OrderingTerm.desc(t.createdDate)])
+      ..limit(1);
+
+    final result = await query.getSingleOrNull();
+    return result;
   }
 }

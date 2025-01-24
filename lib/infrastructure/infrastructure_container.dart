@@ -10,14 +10,17 @@ import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dar
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/windows_app_usage_service.dart';
-import 'package:whph/infrastructure/features/notification/notification_service.dart';
+import 'package:whph/infrastructure/features/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/system_tray/mobile_system_tray_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/infrastructure/features/system_tray/system_tray_service.dart';
 import 'package:whph/infrastructure/features/notification/mobile_notification_service.dart';
 
 void registerInfrastructure(IContainer container) {
+  final settingRepository = container.resolve<ISettingRepository>();
+
   container.registerSingleton<ISystemTrayService>(
       (_) => (Platform.isAndroid || Platform.isIOS) ? MobileSystemTrayService() : SystemTrayService());
 
@@ -46,6 +49,14 @@ void registerInfrastructure(IContainer container) {
           appUsageTagRepository, settingRepository);
     }
 
-    throw Exception('Unsupported platform');
+    throw Exception('Unsupported platform for app usage service.');
+  });
+
+  container.registerSingleton<IStartupSettingsService>((_) {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      return DesktopStartupSettingsService(settingRepository);
+    }
+
+    throw Exception('Unsupported platform for startup settings service.');
   });
 }

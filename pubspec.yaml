@@ -77,6 +77,7 @@ dependencies:
   # Desktop
   qr_flutter: ^4.1.0
   local_notifier: ^0.1.6
+  launch_at_startup: ^0.3.1
 
   # Android
   app_usage: ^3.0.1

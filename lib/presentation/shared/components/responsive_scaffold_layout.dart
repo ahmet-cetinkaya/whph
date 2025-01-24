@@ -144,7 +144,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
           children: [
             if (isMobile)
               SizedBox(
-                height: 80, // slightly taller header
+                height: 80,
                 child: DrawerHeader(
                     margin: EdgeInsets.zero,
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -187,15 +187,13 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   ListTile _buildNavItem(NavItem navItem) {
     return ListTile(
       dense: true,
-      visualDensity: const VisualDensity(horizontal: 0, vertical: -1), // slightly less compact
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16), // adjust content padding
-      leading: navItem.icon != null
-          ? Icon(navItem.icon, size: 22) // slightly larger icon
-          : null,
+      visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      leading: navItem.icon != null ? Icon(navItem.icon, size: 22) : null,
       title: navItem.widget ??
           Text(navItem.title,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontSize: 14, // slightly larger font
+                    fontSize: 14,
                   )),
       onTap: () => _onClickNavItem(navItem),
     );
