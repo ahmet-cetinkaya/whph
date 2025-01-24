@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nanoid2/nanoid2.dart';
@@ -17,6 +16,7 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/presentation/shared/utils/device_info_helper.dart';
 
 abstract class BaseAppUsageService implements IAppUsageService {
   @protected
@@ -164,7 +164,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
 
     if (appUsage == null) {
       // Get device name from platform info or settings
-      final deviceName = await _getPlatformDeviceName();
+      final deviceName = await DeviceInfoHelper.getDeviceName();
 
       appUsage = AppUsage(
         id: nanoid(),
@@ -177,15 +177,5 @@ abstract class BaseAppUsageService implements IAppUsageService {
     }
 
     return appUsage;
-  }
-
-  @protected
-  Future<String> _getPlatformDeviceName() async {
-    try {
-      return Platform.localHostname;
-    } catch (e) {
-      if (kDebugMode) print('Failed to get device name: $e');
-      return 'Unknown';
-    }
   }
 }

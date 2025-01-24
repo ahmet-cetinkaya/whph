@@ -43,11 +43,7 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
-  tray_manager: ^0.2.0
-  window_manager: ^0.4.3
   test: ^1.25.8
-  network_info_plus: ^6.1.3
-  web_socket_channel: ^3.0.1
 
   # Data
   drift: ^2.21.0
@@ -56,35 +52,43 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.26
 
   # Utils
+  audioplayers: ^6.1.0
+  dart_json_mapper: ^2.2.13
+  device_info_plus: ^11.2.1
+  http: ^0.13.6
+  intl: ^0.19.0 # Internationalization
   kiwi: ^5.0.1 # Dependency Injection
   mediatr: ^0.2.1 # Mediator Pattern
   meta: ^1.15.0 # Annotations
+  network_info_plus: ^6.1.3
   path: ^1.9.0
   path_provider: ^2.1.5
-  dart_json_mapper: ^2.2.13
+  tray_manager: ^0.2.0
   url_launcher: ^6.3.1
-  intl: ^0.19.0 # Internationalization
-  http: ^0.13.6
-  audioplayers: ^6.1.0
+  web_socket_channel: ^3.0.1
+  window_manager: ^0.4.3
+
 
   # UI
+  calendar_date_picker2: ^1.1.8
   cupertino_icons: ^1.0.8
-  markdown_editor_plus: ^0.2.15
   fl_chart: ^0.70.1
   flutter_colorpicker: ^1.1.0
-  calendar_date_picker2: ^1.1.8
+  markdown_editor_plus: ^0.2.15
+
 
   # Desktop
-  qr_flutter: ^4.1.0
-  local_notifier: ^0.1.6
   launch_at_startup: ^0.3.1
+  local_notifier: ^0.1.6
+  qr_flutter: ^4.1.0
+
 
   # Android
   app_usage: ^3.0.1
 
   # Mobile
-  qr_code_scanner_plus: ^2.0.6
   flutter_local_notifications: ^15.1.1
+  qr_code_scanner_plus: ^2.0.6
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:whph/presentation/shared/utils/device_info_helper.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -22,7 +21,8 @@ class SyncQrCodeButton extends StatelessWidget {
       return;
     }
 
-    SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(localIP: ipAddress, deviceName: Platform.localHostname);
+    final deviceName = await DeviceInfoHelper.getDeviceName();
+    SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(localIP: ipAddress, deviceName: deviceName);
     var qrData = JsonMapper.serialize(syncQrCodeMessage);
 
     if (context.mounted) {
