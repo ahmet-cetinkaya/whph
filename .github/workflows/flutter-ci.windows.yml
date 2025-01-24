@@ -1,6 +1,7 @@
 name: Flutter CI - Windows
 
 on:
+  workflow_dispatch: # This is a trigger for manual workflow run
   push:
     tags:
       - "v*.*.*"
@@ -43,3 +44,61 @@ jobs:
           compression-level: 6
           overwrite: false
           include-hidden-files: false
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Get application version
+        id: app_version
+        run: |
+          APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
+      - name: Get tag name
+        id: tag_name
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: whph-v${{ env.APP_VERSION }}-windows
+          path: windows-build
+
+      # Create a zip archive from the build output
+      - name: Create zip archive
+        run: cd windows-build && zip -r ../whph-v${{ env.APP_VERSION }}-windows.zip .
+
+      - name: Check existing release
+        id: check_release
+        run: |
+          RELEASE_TAG="${{ github.ref_name }}"
+          if gh release view "$RELEASE_TAG" &>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or Update Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: whph-v${{ env.APP_VERSION }}-windows.zip
+          name: Release ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          generate_release_notes: ${{ steps.check_release.outputs.exists == 'false' }}
+          append_body: ${{ steps.check_release.outputs.exists == 'true' }}
+          replace_artifacts: false
