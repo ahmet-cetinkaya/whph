@@ -11,6 +11,7 @@ import 'package:whph/infrastructure/features/app_usage/android_app_usage_service
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/windows_app_usage_service.dart';
 import 'package:whph/infrastructure/features/notification/desktop_notification_service.dart';
+import 'package:whph/infrastructure/features/settings/android_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/system_tray/mobile_system_tray_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -64,6 +65,10 @@ void registerInfrastructure(IContainer container) {
   container.registerSingleton<IStartupSettingsService>((_) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       return DesktopStartupSettingsService(settingRepository);
+    }
+
+    if (Platform.isAndroid) {
+      return AndroidStartupSettingsService(settingRepository);
     }
 
     throw Exception('Unsupported platform for startup settings service.');

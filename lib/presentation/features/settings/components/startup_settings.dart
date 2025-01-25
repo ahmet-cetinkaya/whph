@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/main.dart';
 
 class StartupSettings extends StatefulWidget {
+  static bool get compatiblePlatform =>
+      Platform.isWindows || Platform.isMacOS || Platform.isLinux || Platform.isAndroid;
+
   const StartupSettings({super.key});
 
   @override
@@ -12,6 +16,7 @@ class StartupSettings extends StatefulWidget {
 
 class _StartupSettingsState extends State<StartupSettings> {
   final _startupService = container.resolve<IStartupSettingsService>();
+  get _isSystemSettingNeeded => Platform.isAndroid;
 
   bool _isEnabled = false;
   bool _isLoading = true;
@@ -24,7 +29,7 @@ class _StartupSettingsState extends State<StartupSettings> {
   }
 
   Future<void> _loadStartupSetting() async {
-    if (!_isDesktop) return;
+    if (!StartupSettings.compatiblePlatform) return;
 
     try {
       final isEnabled = await _startupService.isEnabledAtStartup();
@@ -47,9 +52,11 @@ class _StartupSettingsState extends State<StartupSettings> {
   Future<void> _toggleStartupSetting(bool value) async {
     if (_isUpdating) return;
 
-    setState(() {
-      _isUpdating = true;
-    });
+    if (!_isSystemSettingNeeded) {
+      setState(() {
+        _isUpdating = true;
+      });
+    }
 
     try {
       if (value) {
@@ -68,7 +75,7 @@ class _StartupSettingsState extends State<StartupSettings> {
         );
       }
     } finally {
-      if (mounted) {
+      if (mounted && !_isSystemSettingNeeded) {
         setState(() {
           _isUpdating = false;
         });
@@ -76,26 +83,31 @@ class _StartupSettingsState extends State<StartupSettings> {
     }
   }
 
-  bool get _isDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
-
   @override
   Widget build(BuildContext context) {
-    if (!_isDesktop) return const SizedBox.shrink();
+    if (!StartupSettings.compatiblePlatform) return const SizedBox.shrink();
 
     return Card(
       child: ListTile(
         leading: const Icon(Icons.launch),
         title: const Text('Start at Startup'),
-        trailing: _isLoading || _isUpdating
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Switch(
-                value: _isEnabled,
-                onChanged: _toggleStartupSetting,
-              ),
+        subtitle: Platform.isAndroid
+            ? const Text('Tap to open system settings and enable auto-start permission for the app',
+                style: AppTheme.bodySmall)
+            : null,
+        trailing: Platform.isAndroid
+            ? const Icon(Icons.arrow_forward_ios, size: 16)
+            : _isLoading || _isUpdating
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Switch(
+                    value: _isEnabled,
+                    onChanged: _toggleStartupSetting,
+                  ),
+        onTap: () => _toggleStartupSetting(!_isEnabled),
       ),
     );
   }
