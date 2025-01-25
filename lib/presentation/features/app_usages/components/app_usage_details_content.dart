@@ -12,9 +12,11 @@ import 'package:whph/presentation/features/app_usages/services/app_usages_servic
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/shared/components/color_preview.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -183,23 +185,20 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: AppUsageUiConstants.cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DetailTable(rowData: [
-            // Device Name
             DetailTableRowData(
-              label: "Device",
-              icon: Icons.devices,
-              widget: Text(_appUsage!.deviceName ?? 'Unknown Device'),
+              label: AppUsageUiConstants.deviceLabel,
+              icon: AppUsageUiConstants.deviceIcon,
+              widget: Text(_appUsage!.deviceName ?? AppUsageUiConstants.unknownDeviceLabel),
             ),
-
-            // AppUsage Tags
             DetailTableRowData(
-              label: "Tags",
-              icon: Icons.label,
-              hintText: "Select tags to associate",
+              label: AppUsageUiConstants.tagsLabel,
+              icon: AppUsageUiConstants.tagsIcon,
+              hintText: AppUsageUiConstants.selectTagsHint,
               widget: TagSelectDropdown(
                 key: ValueKey(_appUsageTags!.items.length),
                 isMultiSelect: true,
@@ -208,21 +207,19 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 initialSelectedTags: _appUsageTags!.items
                     .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))
                     .toList(),
-                icon: Icons.add,
+                icon: SharedUiConstants.addIcon,
               ),
             ),
-
-            // Color
             DetailTableRowData(
-              label: "Color",
-              icon: Icons.color_lens,
-              hintText: "Click to change color",
+              label: AppUsageUiConstants.colorLabel,
+              icon: AppUsageUiConstants.colorIcon,
+              hintText: AppUsageUiConstants.clickToChangeColorHint,
               widget: Row(
                 children: [
-                  ColorPreview(color: Color(int.parse("FF${_appUsage!.color!}", radix: 16))),
+                  ColorPreview(color: AppUsageUiConstants.getTagColor(_appUsage!.color)),
                   IconButton(
                     onPressed: _onChangeColorOpen,
-                    icon: Icon(Icons.edit, size: 18),
+                    icon: Icon(AppUsageUiConstants.editIcon, size: AppUsageUiConstants.iconSize),
                   )
                 ],
               ),

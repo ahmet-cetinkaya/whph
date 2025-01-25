@@ -3,7 +3,9 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;
@@ -71,8 +73,8 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     if (_rules == null || _rules!.items.isEmpty) {
       return Center(
         child: Text(
-          'No rules found',
-          style: AppTheme.bodyMedium.copyWith(color: Colors.grey),
+          AppUsageUiConstants.noRulesFoundMessage,
+          style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
         ),
       );
     }
@@ -87,7 +89,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
         return Card(
           margin: EdgeInsets.zero,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: AppUsageUiConstants.cardPadding,
             child: Row(
               children: [
                 // Tag
@@ -95,12 +97,12 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.surface2,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
                   ),
                   child: Text(
                     rule.tagName,
                     style: AppTheme.bodySmall.copyWith(
-                      color: rule.tagColor != null ? Color(int.parse('FF${rule.tagColor}', radix: 16)) : Colors.grey,
+                      color: AppUsageUiConstants.getTagColor(rule.tagColor),
                     ),
                   ),
                 ),
@@ -140,14 +142,14 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
                 // Delete Button
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, size: 18),
+                  icon: Icon(SharedUiConstants.deleteIcon, size: AppUsageUiConstants.iconSize),
                   onPressed: () {
                     if (mounted) _delete(context, rule);
                   },
-                  color: Colors.red,
+                  color: AppTheme.errorColor,
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.only(left: 8),
-                  tooltip: 'Delete rule',
+                  tooltip: AppUsageUiConstants.deleteRuleTooltip,
                 ),
               ],
             ),
@@ -163,17 +165,17 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Rule'),
-        content: Text('Are you sure you want to delete the rule "${rule.pattern}"?'),
+        title: Text(AppUsageUiConstants.deleteRuleConfirmTitle),
+        content: Text(AppUsageUiConstants.getDeleteRuleConfirmMessage(rule.pattern)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(SharedUiConstants.cancelLabel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
+            child: Text(SharedUiConstants.deleteLabel),
           ),
         ],
       ),

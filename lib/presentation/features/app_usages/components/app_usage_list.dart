@@ -5,6 +5,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
@@ -82,8 +83,8 @@ class AppUsageListState extends State<AppUsageList> {
     }
 
     if (_appUsages!.items.isEmpty) {
-      return const Center(
-        child: Text('No app usage data found'),
+      return Center(
+        child: Text(AppUsageUiConstants.noAppUsageDataMessage),
       );
     }
 
@@ -97,12 +98,14 @@ class AppUsageListState extends State<AppUsageList> {
             mediator: widget.mediator,
             appUsage: appUsage,
             maxDurationInListing: maxDuration,
-            onTap: () => widget.onOpenDetails != null ? widget.onOpenDetails!(appUsage.id) : null,
+            onTap: () => widget.onOpenDetails?.call(appUsage.id),
           ),
         if (_appUsages!.hasNext)
-          Center(child: LoadMoreButton(onPressed: () {
-            _getAppUsages(pageIndex: _appUsages!.pageIndex + 1);
-          })),
+          Center(
+            child: LoadMoreButton(
+              onPressed: () => _getAppUsages(pageIndex: _appUsages!.pageIndex + 1),
+            ),
+          ),
       ],
     );
   }

@@ -78,7 +78,6 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
-      decoration: const InputDecoration(border: InputBorder.none, filled: false),
       onChanged: (_) => _saveTag(context),
     );
   }

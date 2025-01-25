@@ -86,7 +86,6 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
             onChanged: (value) {
               _updateHabit();
             },
-            decoration: const InputDecoration(border: InputBorder.none, hintText: 'Enter title', filled: false),
           ),
         ),
       ],

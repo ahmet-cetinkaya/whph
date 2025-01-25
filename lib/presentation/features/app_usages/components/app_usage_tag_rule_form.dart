@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -7,6 +8,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/regex_help_dialog.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageTagRuleForm extends StatefulWidget {
   final Function() onSave;
@@ -103,9 +105,9 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '• Enter one pattern per line\n• Each line will be treated as a separate ignore rule',
-            style: TextStyle(
-              color: Colors.grey,
+            AppUsageUiConstants.onePatternPerLineHint,
+            style: AppTheme.bodySmall.copyWith(
+              color: AppTheme.disabledColor,
               height: 1.4,
             ),
           ),
@@ -120,11 +122,11 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     child: TextFormField(
                       controller: _patternController,
                       decoration: InputDecoration(
-                        labelText: 'Pattern',
+                        labelText: AppUsageUiConstants.patternLabel,
                         labelStyle: AppTheme.bodySmall,
-                        hintText: 'e.g., .*Chrome.*',
+                        hintText: AppUsageUiConstants.patternHint,
                         hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
-                        prefixIcon: const Icon(Icons.pattern, size: 18),
+                        prefixIcon: Icon(AppUsageUiConstants.patternIcon, size: AppUsageUiConstants.iconSize),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         errorStyle: TextStyle(height: 0.7, fontSize: AppTheme.fontSizeXSmall),
@@ -146,9 +148,9 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     child: IconButton(
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(minWidth: 32),
-                      icon: const Icon(Icons.help_outline, size: AppTheme.iconSizeSmall),
-                      tooltip: 'Pattern Help',
+                      constraints: const BoxConstraints(minWidth: 32),
+                      icon: Icon(AppUsageUiConstants.helpIcon, size: AppUsageUiConstants.iconSize),
+                      tooltip: AppUsageUiConstants.patternHelpTooltip,
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
                   ),
@@ -259,18 +261,21 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               if (widget.onCancel != null)
                 TextButton.icon(
                   onPressed: widget.onCancel,
-                  icon: const Icon(Icons.close, size: 18, color: AppTheme.darkTextColor),
-                  label: Text('Cancel', style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                  icon: Icon(SharedUiConstants.closeIcon,
+                      size: AppUsageUiConstants.iconSize, color: AppTheme.darkTextColor),
+                  label: Text(SharedUiConstants.cancelLabel,
+                      style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
                 onPressed: _handleSubmit,
                 icon: Icon(
-                  _isSaved ? Icons.check : Icons.save,
-                  size: AppTheme.iconSizeSmall,
+                  _isSaved ? SharedUiConstants.checkIcon : SharedUiConstants.saveIcon,
+                  size: AppUsageUiConstants.iconSize,
                   color: AppTheme.darkTextColor,
                 ),
-                label: Text('Add', style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                label: Text(_isSaved ? AppUsageUiConstants.savedButtonLabel : AppUsageUiConstants.saveButtonLabel,
+                    style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
               ),
             ],
           ),

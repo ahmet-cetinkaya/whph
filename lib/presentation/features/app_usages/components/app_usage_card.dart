@@ -6,6 +6,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/shared/components/bar_chart.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageCard extends StatefulWidget {
   final Mediator mediator;
@@ -66,7 +67,8 @@ class _AppUsageCardState extends State<AppUsageCard> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final barColor = widget.appUsage.color != null ? Color(int.parse(widget.appUsage.color!, radix: 16)) : primaryColor;
+    final barColor =
+        widget.appUsage.color != null ? AppUsageUiConstants.getTagColor(widget.appUsage.color) : primaryColor;
 
     return BarChart(
       title: widget.appUsage.displayName ?? widget.appUsage.name,
@@ -75,36 +77,38 @@ class _AppUsageCardState extends State<AppUsageCard> {
       unit: "min",
       barColor: barColor,
       onTap: widget.onTap,
-      additionalWidget: _appUsageTags?.items.isNotEmpty == true
-          ? Row(
-              children: [
+      additionalWidget: _buildAdditionalWidget(),
+    );
+  }
+
+  Widget? _buildAdditionalWidget() {
+    if (_appUsageTags?.items.isEmpty ?? true) return null;
+
+    return Row(
+      children: [
+        Text(
+          "•",
+          style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
+        ),
+        const SizedBox(width: 4),
+        Row(
+          children: [
+            for (var i = 0; i < _appUsageTags!.items.length; i++) ...[
+              if (i > 0)
                 Text(
-                  "•",
+                  ", ",
                   style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
                 ),
-                const SizedBox(width: 4),
-                Row(
-                  children: [
-                    for (var i = 0; i < _appUsageTags!.items.length; i++) ...[
-                      if (i > 0)
-                        Text(
-                          ", ",
-                          style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
-                        ),
-                      Text(
-                        _appUsageTags!.items[i].tagName,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: _appUsageTags!.items[i].tagColor != null
-                              ? Color(int.parse('FF${_appUsageTags!.items[i].tagColor}', radix: 16))
-                              : AppTheme.disabledColor,
-                        ),
-                      ),
-                    ],
-                  ],
+              Text(
+                _appUsageTags!.items[i].tagName,
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppUsageUiConstants.getTagColor(_appUsageTags!.items[i].tagColor),
                 ),
-              ],
-            )
-          : null,
+              ),
+            ],
+          ],
+        ),
+      ],
     );
   }
 }
