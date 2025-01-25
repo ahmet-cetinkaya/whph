@@ -7,6 +7,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -53,7 +54,8 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load app usage.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: AppUsageUiConstants.errorLoadingAppUsage);
       }
     }
   }
@@ -101,7 +103,6 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
-      decoration: const InputDecoration(border: InputBorder.none, filled: false),
       onChanged: (_) => _onChange(),
     );
   }

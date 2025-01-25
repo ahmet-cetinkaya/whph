@@ -9,6 +9,7 @@ import 'package:whph/application/features/settings/commands/save_setting_command
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/features/settings/setting.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 
 class AppUsageIgnoreRuleForm extends StatefulWidget {
   final Function() onSave;
@@ -107,9 +108,9 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '• Enter one pattern per line\n• Each line will be treated as a separate ignore rule',
+                AppUsageUiConstants.onePatternPerLineHint,
                 style: AppTheme.bodySmall.copyWith(
-                  color: Colors.grey,
+                  color: AppTheme.disabledColor,
                   height: 1.4,
                 ),
               ),
@@ -121,11 +122,11 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                     child: TextFormField(
                       controller: _patternController,
                       decoration: InputDecoration(
-                        labelText: 'Patterns',
+                        labelText: AppUsageUiConstants.patternsLabel,
                         labelStyle: AppTheme.bodySmall,
-                        hintText: 'e.g., .*Chrome.*\n.*Firefox.*\n.*Edge.*',
+                        hintText: AppUsageUiConstants.patternHint,
                         hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
-                        prefixIcon: const Icon(Icons.pattern, size: 18),
+                        prefixIcon: Icon(AppUsageUiConstants.patternIcon, size: AppUsageUiConstants.iconSize),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         alignLabelWithHint: true,
@@ -144,8 +145,8 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 32),
-                      icon: const Icon(Icons.help_outline, size: 18),
-                      tooltip: 'Pattern Help',
+                      icon: Icon(AppUsageUiConstants.helpIcon, size: AppUsageUiConstants.iconSize),
+                      tooltip: AppUsageUiConstants.patternHelpTooltip,
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
                   ),

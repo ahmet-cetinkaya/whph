@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
-
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class AppUsageDeleteButton extends StatefulWidget {
   final String appUsageId;
@@ -49,16 +50,16 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
     bool? confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this app usage?'),
+        title: Text(AppUsageUiConstants.deleteAppUsageConfirmTitle),
+        content: Text(SharedUiConstants.confirmDeleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(SharedUiConstants.cancelLabel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: Text(SharedUiConstants.deleteLabel),
           ),
         ],
       ),
@@ -71,11 +72,11 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _confirmDelete(context),
-      icon: const Icon(Icons.delete),
+      icon: Icon(SharedUiConstants.deleteIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
         backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }
