@@ -9,6 +9,7 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -161,11 +162,12 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
               icon: TagUiConstants.colorIcon,
               hintText: TagUiConstants.clickToChangeColorHint,
               widget: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ColorPreview(color: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16))),
                   IconButton(
                     onPressed: _onChangeColorOpen,
-                    icon: Icon(TagUiConstants.editIcon, size: TagUiConstants.iconSize),
+                    icon: Icon(TagUiConstants.editIcon, size: AppTheme.iconSizeSmall),
                   )
                 ],
               ),

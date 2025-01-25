@@ -108,7 +108,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                     onTagsSelected: _onTagFilterSelect,
                     showLength: true,
                     icon: Icons.label,
-                    iconSize: 20,
+                    iconSize: AppTheme.iconSizeSmall,
                     color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                     tooltip: 'Filter by tags',
                   ),

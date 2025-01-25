@@ -108,7 +108,7 @@ class DateRangeFilter extends StatelessWidget {
           const SizedBox(width: 4),
           FilterIconButton(
             icon: Icons.close,
-            iconSize: 16,
+            iconSize: AppTheme.iconSizeSmall,
             onPressed: () => onDateFilterChange(null, null),
             tooltip: 'Clear date filter',
           ),

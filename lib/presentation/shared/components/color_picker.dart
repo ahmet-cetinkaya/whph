@@ -12,6 +12,7 @@ class ColorPicker extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TabBar(
             tabs: [
@@ -19,16 +20,21 @@ class ColorPicker extends StatelessWidget {
               Tab(icon: Icon(Icons.gradient), text: "Custom"),
             ],
           ),
-          Expanded(
+          SizedBox(
+            height: 300,
             child: TabBarView(
               children: [
-                flutter_colorpicker.MaterialPicker(
-                  pickerColor: pickerColor,
-                  onColorChanged: onChangeColor,
+                SingleChildScrollView(
+                  child: flutter_colorpicker.MaterialPicker(
+                    pickerColor: pickerColor,
+                    onColorChanged: onChangeColor,
+                  ),
                 ),
-                flutter_colorpicker.ColorPicker(
-                  pickerColor: pickerColor,
-                  onColorChanged: onChangeColor,
+                SingleChildScrollView(
+                  child: flutter_colorpicker.ColorPicker(
+                    pickerColor: pickerColor,
+                    onColorChanged: onChangeColor,
+                  ),
                 ),
               ],
             ),

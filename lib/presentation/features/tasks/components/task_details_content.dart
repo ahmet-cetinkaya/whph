@@ -306,7 +306,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           DetailTableRowData(
             label: TaskUiConstants.descriptionLabel,
             icon: TaskUiConstants.descriptionIcon,
-            hintText: "Click text to edit",
+            hintText: SharedUiConstants.markdownEditorHint,
             widget: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: MarkdownAutoPreview(
@@ -318,7 +318,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                   }
                   _updateTask();
                 },
-                hintText: 'Add a description...',
+                hintText: SharedUiConstants.addDescriptionHint,
                 toolbarBackground: AppTheme.surface1,
               ),
             ),

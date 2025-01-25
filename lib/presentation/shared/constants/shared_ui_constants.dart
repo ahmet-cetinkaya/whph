@@ -31,6 +31,8 @@ class SharedUiConstants {
   static const String confirmDeleteMessage = 'Are you sure you want to delete this item?';
   static const String successMessage = 'Operation completed successfully';
   static const String errorMessage = 'An error occurred';
+  static const String addDescriptionHint = 'Add a description...';
+  static const String markdownEditorHint = 'Tap to edit markdown text';
 
   // Error Messages
   static const String errorLoadingData = 'Failed to load data';

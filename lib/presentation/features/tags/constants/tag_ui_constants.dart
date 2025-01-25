@@ -49,8 +49,5 @@ class TagUiConstants {
   static const String unarchiveTagTooltip = 'Unarchive tag';
 
   // Dimensions
-  static const double tagIconSize = 20.0;
-  static const double searchIconSize = 20.0;
-  static const double iconSize = 20.0;
   static const EdgeInsets tagCardPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 }

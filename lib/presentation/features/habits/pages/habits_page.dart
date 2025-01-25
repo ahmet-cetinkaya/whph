@@ -94,7 +94,7 @@ class _HabitsPageState extends State<HabitsPage> {
                   isMultiSelect: true,
                   onTagsSelected: _onFilterTagsSelect,
                   icon: Icons.label,
-                  iconSize: 20,
+                  iconSize: AppTheme.iconSizeSmall,
                   color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
                   tooltip: 'Filter by tags',
                   showLength: true,

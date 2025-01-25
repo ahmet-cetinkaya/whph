@@ -55,7 +55,6 @@ class AppUsageUiConstants {
   // Styles
   static const EdgeInsets cardPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
   static const double tagContainerBorderRadius = 12.0;
-  static const double iconSize = 18.0;
 
   // Colors
   static Color getTagColor(String? hexColor) {
