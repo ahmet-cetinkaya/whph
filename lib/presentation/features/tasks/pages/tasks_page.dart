@@ -137,7 +137,7 @@ class _TasksPageState extends State<TasksPage> {
             const SizedBox(height: 8),
             if (_isTasksListEmpty)
               const Center(child: DoneOverlay())
-            else ...[
+            else
               TaskList(
                 key: _tasksListKey,
                 mediator: _mediator,
@@ -173,40 +173,39 @@ class _TasksPageState extends State<TasksPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              ExpansionPanelList(
-                expansionCallback: (int index, bool isExpanded) {
-                  if (!mounted) return;
-                  setState(() {
-                    _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
-                  });
-                },
-                children: [
-                  ExpansionPanel(
-                      isExpanded: _isCompletedTasksExpanded,
-                      headerBuilder: (context, isExpanded) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.only(left: 8),
-                          leading: const Icon(Icons.done_all),
-                          title: const Text('Completed tasks'),
-                        );
-                      },
-                      body: TaskList(
-                        key: _completedTasksListKey,
-                        mediator: _mediator,
-                        filterByCompleted: true,
-                        filterByTags: _selectedTagIds,
-                        search: _searchQuery,
-                        onClickTask: (task) => _openTaskDetails(task.id),
-                        onTaskCompleted: _refreshAllTasks,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      canTapOnHeader: true),
-                ],
-                elevation: 0,
-                expandedHeaderPadding: EdgeInsets.zero,
-              ),
-            ],
+            const SizedBox(height: 8),
+            ExpansionPanelList(
+              expansionCallback: (int index, bool isExpanded) {
+                if (!mounted) return;
+                setState(() {
+                  _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+                });
+              },
+              children: [
+                ExpansionPanel(
+                    isExpanded: _isCompletedTasksExpanded,
+                    headerBuilder: (context, isExpanded) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.only(left: 8),
+                        leading: const Icon(Icons.done_all),
+                        title: const Text('Completed tasks'),
+                      );
+                    },
+                    body: TaskList(
+                      key: _completedTasksListKey,
+                      mediator: _mediator,
+                      filterByCompleted: true,
+                      filterByTags: _selectedTagIds,
+                      search: _searchQuery,
+                      onClickTask: (task) => _openTaskDetails(task.id),
+                      onTaskCompleted: _refreshAllTasks,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    canTapOnHeader: true),
+              ],
+              elevation: 0,
+              expandedHeaderPadding: EdgeInsets.zero,
+            ),
           ],
         ),
       ),
