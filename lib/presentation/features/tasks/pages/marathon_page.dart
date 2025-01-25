@@ -256,14 +256,22 @@ class _MarathonPageState extends State<MarathonPage> {
 
               // Selected Task
               if (_selectedTask != null)
-                TaskCard(
-                  task: _selectedTask!,
-                  onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                  onCompleted: _refreshTasks,
-                  trailingButtons: [
-                    IconButton(
-                      icon: const Icon(Icons.push_pin),
-                      onPressed: _clearSelectedTask,
+                Column(
+                  children: [
+                    const Text(
+                      'Currently Working On:',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    TaskCard(
+                      task: _selectedTask!,
+                      onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                      onCompleted: _refreshTasks,
+                      trailingButtons: [
+                        IconButton(
+                          icon: const Icon(Icons.push_pin),
+                          onPressed: _clearSelectedTask,
+                        ),
+                      ],
                     ),
                   ],
                 ),

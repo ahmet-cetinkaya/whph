@@ -104,7 +104,6 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
           child: TextField(
             controller: _titleController,
             onChanged: _onTitleChanged,
-            decoration: const InputDecoration(border: InputBorder.none, filled: false),
           ),
         ),
       ],

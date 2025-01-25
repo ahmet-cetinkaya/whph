@@ -3,6 +3,7 @@ import 'package:whph/presentation/features/tags/components/tag_select_dropdown.d
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 
 class TaskFilters extends StatefulWidget {
   final List<String>? selectedTagIds;
@@ -50,7 +51,7 @@ class _TaskFiltersState extends State<TaskFilters> {
               TagSelectDropdown(
                 isMultiSelect: true,
                 onTagsSelected: widget.onTagFilterChange,
-                icon: Icons.label,
+                icon: TaskUiConstants.tagsIcon,
                 iconSize: iconSize,
                 color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
                 tooltip: 'Filter by tags',

@@ -18,6 +18,8 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TaskDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -48,8 +50,6 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     DropdownOption(label: 'Urgent & Not Important', value: EisenhowerPriority.urgentNotImportant),
     DropdownOption(label: 'Not Urgent & Not Important', value: EisenhowerPriority.notUrgentNotImportant),
   ];
-
-  final List<int> _estimatedTimeOptions = [0, 15, 30, 45, 60, 90, 120, 180, 240];
 
   @override
   void initState() {
@@ -190,156 +190,156 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DetailTable(rowData: [
-              // Tags
-              DetailTableRowData(
-                label: "Tags",
-                icon: Icons.label,
-                hintText: "Select tags to associate",
-                widget: TagSelectDropdown(
-                  key: ValueKey(_taskTags!.items.length),
-                  isMultiSelect: true,
-                  onTagsSelected: _onTagsSelected,
-                  showSelectedInDropdown: true,
-                  initialSelectedTags: _taskTags!.items
-                      .map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId))
-                      .toList(),
-                  icon: Icons.add,
-                ),
-              ),
-
-              // Priority
-              DetailTableRowData(
-                label: "Priority",
-                icon: Icons.priority_high,
-                widget: PrioritySelectField(
-                  value: _task!.priority,
-                  options: _priorityOptions,
-                  onChanged: (value) {
-                    if (!mounted) return;
-                    setState(() {
-                      _task!.priority = value;
-                      _updateTask();
-                    });
-                  },
-                ),
-              ),
-
-              // Planned Date
-              DetailTableRowData(
-                label: "Planned Date",
-                icon: Icons.calendar_today,
-                widget: SizedBox(
-                  height: 36,
-                  child: DateTimePickerField(
-                    controller: _plannedDateController,
-                    hintText: '',
-                    onConfirm: (date) {
-                      _task?.plannedDate = date;
-                      _updateTask();
-                    },
-                  ),
-                ),
-              ),
-
-              // Estimated Time
-              DetailTableRowData(
-                label: "Estimated Time",
-                icon: Icons.question_mark,
-                widget: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) - 1;
-                        if (nextIndex < 0) nextIndex = _estimatedTimeOptions.length - 1;
-                        if (!mounted) return;
-                        setState(() {
-                          _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
-                        });
-                        _updateTask();
-                      },
-                      icon: const Icon(Icons.remove),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _task!.estimatedTime != null ? '${_task!.estimatedTime!} min' : '0 min',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      onPressed: () {
-                        int nextIndex = _estimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0) + 1;
-                        if (nextIndex >= _estimatedTimeOptions.length) nextIndex = 0;
-                        if (!mounted) return;
-                        setState(() {
-                          _task!.estimatedTime = _estimatedTimeOptions[nextIndex];
-                        });
-                        _updateTask();
-                      },
-                      icon: const Icon(Icons.add),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Elapsed Time
-              DetailTableRowData(
-                label: "Elapsed Time",
-                icon: Icons.timelapse_outlined,
-                widget: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Text(
-                    '${_task!.totalDuration ~/ 60} min',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-
-              // Deadline Date
-              DetailTableRowData(
-                  label: "Deadline Date",
-                  icon: Icons.calendar_today,
-                  widget: SizedBox(
-                    height: 36,
-                    child: DateTimePickerField(
-                      controller: _deadlineDateController,
-                      hintText: '',
-                      onConfirm: (date) {
-                        _task?.deadlineDate = date;
-                        _updateTask();
-                      },
-                    ),
-                  )),
+              _buildTagsSection(),
+              _buildPrioritySection(),
+              _buildEstimatedTimeSection(),
+              _buildElapsedTimeSection(),
+              _buildPlannedDateSection(),
+              _buildDeadlineDateSection(),
             ]),
-
-            // Description section with DetailTable
-            DetailTable(
-              forceVertical: true,
-              rowData: [
-                DetailTableRowData(
-                  label: "Description",
-                  icon: Icons.description,
-                  hintText: "Click text to edit",
-                  widget: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: MarkdownAutoPreview(
-                      controller: _descriptionController,
-                      onChanged: (value) {
-                        var isEmptyWhitespace = value.trim().isEmpty;
-                        if (isEmptyWhitespace) {
-                          _descriptionController.clear();
-                        }
-                        _updateTask();
-                      },
-                      hintText: 'Add a description...',
-                      toolbarBackground: AppTheme.surface1,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildDescriptionSection(),
           ],
         ),
       ),
     );
+  }
+
+  DetailTableRowData _buildTagsSection() => DetailTableRowData(
+        label: TaskUiConstants.tagsLabel,
+        icon: TaskUiConstants.tagsIcon,
+        hintText: "Select tags to associate",
+        widget: TagSelectDropdown(
+          key: ValueKey(_taskTags!.items.length),
+          isMultiSelect: true,
+          onTagsSelected: _onTagsSelected,
+          showSelectedInDropdown: true,
+          initialSelectedTags:
+              _taskTags!.items.map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId)).toList(),
+          icon: SharedUiConstants.addIcon,
+        ),
+      );
+
+  DetailTableRowData _buildPrioritySection() => DetailTableRowData(
+        label: TaskUiConstants.priorityLabel,
+        icon: TaskUiConstants.priorityIcon,
+        widget: PrioritySelectField(
+          value: _task!.priority,
+          options: _priorityOptions,
+          onChanged: (value) {
+            if (!mounted) return;
+            setState(() {
+              _task!.priority = value;
+              _updateTask();
+            });
+          },
+        ),
+      );
+
+  DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
+        label: TaskUiConstants.estimatedTimeLabel,
+        icon: TaskUiConstants.estimatedTimeIcon,
+        widget: Row(
+          children: [
+            IconButton(
+              onPressed: () => _adjustEstimatedTime(-1),
+              icon: const Icon(Icons.remove),
+            ),
+            Text(
+              SharedUiConstants.formatMinutes(_task!.estimatedTime),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            IconButton(
+              onPressed: () => _adjustEstimatedTime(1),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+      );
+
+  DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
+        label: TaskUiConstants.elapsedTimeLabel,
+        icon: TaskUiConstants.timerIcon,
+        widget: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Text(
+            SharedUiConstants.formatMinutes(_task!.totalDuration ~/ 60),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+
+  DetailTableRowData _buildPlannedDateSection() => DetailTableRowData(
+        label: TaskUiConstants.plannedDateLabel,
+        icon: TaskUiConstants.plannedDateIcon,
+        widget: SizedBox(
+          height: 36,
+          child: DateTimePickerField(
+            controller: _plannedDateController,
+            hintText: '',
+            onConfirm: (date) {
+              _task?.plannedDate = date;
+              _updateTask();
+            },
+          ),
+        ),
+      );
+
+  DetailTableRowData _buildDeadlineDateSection() => DetailTableRowData(
+        label: TaskUiConstants.deadlineDateLabel,
+        icon: TaskUiConstants.deadlineDateIcon,
+        widget: SizedBox(
+          height: 36,
+          child: DateTimePickerField(
+            controller: _deadlineDateController,
+            hintText: '',
+            onConfirm: (date) {
+              _task?.deadlineDate = date;
+              _updateTask();
+            },
+          ),
+        ),
+      );
+
+  Widget _buildDescriptionSection() => DetailTable(
+        forceVertical: true,
+        rowData: [
+          DetailTableRowData(
+            label: TaskUiConstants.descriptionLabel,
+            icon: TaskUiConstants.descriptionIcon,
+            hintText: "Click text to edit",
+            widget: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: MarkdownAutoPreview(
+                controller: _descriptionController,
+                onChanged: (value) {
+                  var isEmptyWhitespace = value.trim().isEmpty;
+                  if (isEmptyWhitespace) {
+                    _descriptionController.clear();
+                  }
+                  _updateTask();
+                },
+                hintText: 'Add a description...',
+                toolbarBackground: AppTheme.surface1,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  void _adjustEstimatedTime(int adjustment) {
+    if (!mounted) return;
+    setState(() {
+      final currentIndex = TaskUiConstants.defaultEstimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0);
+      if (currentIndex == -1) {
+        _task!.estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions.first;
+      } else {
+        final newIndex = (currentIndex + adjustment).clamp(
+          0,
+          TaskUiConstants.defaultEstimatedTimeOptions.length - 1,
+        );
+        _task!.estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions[newIndex];
+      }
+      _updateTask();
+    });
   }
 }
