@@ -331,7 +331,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               icon: const Icon(Icons.remove),
             ),
             Text(
-              SharedUiConstants.formatMinutes(_habit!.estimatedTime ?? 0),
+              _habit!.estimatedTime == null ? 'Not set' : SharedUiConstants.formatMinutes(_habit!.estimatedTime!),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
