@@ -28,16 +28,6 @@ else
     exit 1
 fi
 
-# Create proguard-rules.pro in app_usage plugin directory
-APP_USAGE_PROGUARD="${APP_USAGE_PATH}/android/proguard-rules.pro"
-cat > "$APP_USAGE_PROGUARD" << 'EOL'
-# Keep app_usage classes
--keep class dk.cachet.app_usage.** { *; }
--keepclassmembers class dk.cachet.app_usage.** { *; }
--keep class com.google.android.gms.** { *; }
--dontwarn dk.cachet.app_usage.**
-EOL
-
 # Fix Stats.java deprecation warnings
 STATS_PATH="${APP_USAGE_PATH}/android/src/main/kotlin/dk/cachet/app_usage/Stats.java"
 if [ -f "$STATS_PATH" ]; then
@@ -53,3 +43,26 @@ else
     echo "Stats.java not found at $STATS_PATH"
     exit 1
 fi
+
+# Update main app's proguard-rules.pro
+PROJECT_PROGUARD="android/app/proguard-rules.pro"
+if [ ! -f "$PROJECT_PROGUARD" ]; then
+    touch "$PROJECT_PROGUARD"
+fi
+
+# Add app_usage specific rules to main project
+cat >> "$PROJECT_PROGUARD" << 'EOL'
+
+# App Usage Plugin
+-keep class dk.cachet.app_usage.** { *; }
+-keepclassmembers class dk.cachet.app_usage.** { *; }
+-keep class com.google.android.gms.** { *; }
+EOL
+
+# Update app/build.gradle to use ProGuard rules
+APP_GRADLE="android/app/build.gradle"
+if ! grep -q "proguardFiles" "$APP_GRADLE"; then
+    sed -i '/buildTypes {/,/}/ s/minifyEnabled true/minifyEnabled true\n            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"/' "$APP_GRADLE"
+fi
+
+echo "App Usage configurations have been updated"

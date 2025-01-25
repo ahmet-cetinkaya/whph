@@ -28,12 +28,11 @@ scripts:
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && dart format ./**/*.g.dart -l 120
   gen-icons: flutter pub run icons_launcher:create
   migrate: flutter pub run drift_dev make-migrations
-  fix-android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh && bash scripts/fix_auto_start_flutter.sh && bash scripts/fix_play_core.sh
+  fix-android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh
   release-linux: flutter build linux --release
   release-windows: flutter build windows --release
   release-android: flutter build apk --release
   test: flutter test
-  test-ci: act # https://github.com/nektos/act
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
