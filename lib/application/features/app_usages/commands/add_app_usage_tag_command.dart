@@ -36,7 +36,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
 
     var appUsageTag = AppUsageTag(
       id: nanoid(),
-      createdDate: DateTime(0),
+      createdDate: DateTime.now(),
       appUsageId: request.appUsageId,
       tagId: request.tagId,
     );

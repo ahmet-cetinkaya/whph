@@ -70,7 +70,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     } else {
       task = Task(
           id: nanoid(),
-          createdDate: DateTime(0),
+          createdDate: DateTime.now(),
           title: request.title,
           description: request.description,
           priority: request.priority,

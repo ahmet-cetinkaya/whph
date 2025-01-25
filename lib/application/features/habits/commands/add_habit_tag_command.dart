@@ -36,7 +36,7 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
 
     var habitTag = HabitTag(
       id: nanoid(),
-      createdDate: DateTime(0),
+      createdDate: DateTime.now(),
       habitId: request.habitId,
       tagId: request.tagId,
     );

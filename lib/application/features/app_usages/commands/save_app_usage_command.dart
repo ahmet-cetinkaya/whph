@@ -67,7 +67,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
         displayName: request.displayName,
         color: request.color,
         deviceName: request.deviceName,
-        createdDate: DateTime(0),
+        createdDate: DateTime.now(),
       );
       await _appUsageRepository.add(appUsage);
     }
