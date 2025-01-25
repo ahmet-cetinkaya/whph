@@ -283,6 +283,7 @@ class _HabitCardState extends State<HabitCard> {
           await _deleteHabitRecord(recordToday.id);
         } else {
           await _createHabitRecord(widget.habit.id, DateTime.now());
+          widget._soundPlayer.play(SharedSounds.done);
         }
       },
       icon: Icon(
