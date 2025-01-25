@@ -278,13 +278,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               DetailTableRowData(
                 label: HabitUiConstants.descriptionLabel,
                 icon: HabitUiConstants.descriptionIcon,
-                hintText: HabitUiConstants.addDescriptionHint,
+                hintText: SharedUiConstants.markdownEditorHint,
                 widget: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: MarkdownAutoPreview(
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
-                    hintText: HabitUiConstants.addDescriptionHint,
+                    hintText: SharedUiConstants.addDescriptionHint,
                     toolbarBackground: AppTheme.surface1,
                     style: AppTheme.bodyMedium,
                   ),

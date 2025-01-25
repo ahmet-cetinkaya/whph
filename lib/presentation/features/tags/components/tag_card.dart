@@ -24,7 +24,7 @@ class TagCard extends StatelessWidget {
             children: [
               Icon(
                 TagUiConstants.tagIcon,
-                size: TagUiConstants.tagIconSize,
+                size: AppTheme.iconSizeSmall,
                 color: TagUiConstants.getTagColor(tag.color),
               ),
               const SizedBox(width: 8),

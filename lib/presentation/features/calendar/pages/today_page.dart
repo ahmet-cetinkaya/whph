@@ -139,7 +139,7 @@ class _TodayPageState extends State<TodayPage> {
             TagSelectDropdown(
                 isMultiSelect: true,
                 icon: Icons.label,
-                iconSize: 20,
+                iconSize: AppTheme.iconSizeSmall,
                 color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                 tooltip: 'Filter by tags',
                 onTagsSelected: _onTagFilterSelect),

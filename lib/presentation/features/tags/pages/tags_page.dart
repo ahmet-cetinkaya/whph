@@ -96,7 +96,7 @@ class _TagsPageState extends State<TagsPage> {
                 isMultiSelect: true,
                 onTagsSelected: _onFilterTags,
                 icon: Icons.label,
-                iconSize: 20,
+                iconSize: AppTheme.iconSizeSmall,
                 color: _selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                 tooltip: 'Filter by tags',
                 showLength: true,
@@ -120,7 +120,7 @@ class _TagsPageState extends State<TagsPage> {
                       onDateFilterChange: (start, end) {
                         _onDateFilterChange(start, end);
                       },
-                      iconSize: 20,
+                      iconSize: AppTheme.iconSizeSmall,
                       iconColor: Colors.grey,
                     ),
                   ),

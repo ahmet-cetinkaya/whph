@@ -91,10 +91,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       onChanged: (_) => _toggleCompleteTask(context),
       activeColor: widget.color,
       shape: const CircleBorder(),
-      side: BorderSide(
-        color: widget.color ?? Colors.white,
-        width: 2,
-      ),
+      side: BorderSide(color: widget.color ?? Colors.white, width: 2),
     );
   }
 }

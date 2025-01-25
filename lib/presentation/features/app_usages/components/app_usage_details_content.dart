@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/app_usages/services/app_usages_servic
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/shared/components/color_preview.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -190,11 +191,14 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DetailTable(rowData: [
+            // Device Label
             DetailTableRowData(
               label: AppUsageUiConstants.deviceLabel,
               icon: AppUsageUiConstants.deviceIcon,
               widget: Text(_appUsage!.deviceName ?? AppUsageUiConstants.unknownDeviceLabel),
             ),
+
+            // Tags
             DetailTableRowData(
               label: AppUsageUiConstants.tagsLabel,
               icon: AppUsageUiConstants.tagsIcon,
@@ -210,16 +214,19 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 icon: SharedUiConstants.addIcon,
               ),
             ),
+
+            // Color
             DetailTableRowData(
               label: AppUsageUiConstants.colorLabel,
               icon: AppUsageUiConstants.colorIcon,
               hintText: AppUsageUiConstants.clickToChangeColorHint,
               widget: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ColorPreview(color: AppUsageUiConstants.getTagColor(_appUsage!.color)),
                   IconButton(
                     onPressed: _onChangeColorOpen,
-                    icon: Icon(AppUsageUiConstants.editIcon, size: AppUsageUiConstants.iconSize),
+                    icon: Icon(AppUsageUiConstants.editIcon, size: AppTheme.iconSizeSmall),
                   )
                 ],
               ),

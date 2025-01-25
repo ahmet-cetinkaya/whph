@@ -31,7 +31,7 @@ class TagSelectDropdown extends StatefulWidget {
     required this.isMultiSelect,
     this.icon = TagUiConstants.tagIcon,
     this.buttonLabel,
-    this.iconSize = TagUiConstants.tagIconSize,
+    this.iconSize = AppTheme.iconSizeSmall,
     this.color,
     this.tooltip = TagUiConstants.selectTagsHint,
     required this.onTagsSelected,
@@ -268,17 +268,20 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           ),
 
         // Add button
-        SizedBox(
-          width: 32,
-          height: 32,
-          child: IconButton(
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 32),
-            icon: Icon(widget.icon, size: widget.iconSize ?? 20),
-            onPressed: () => _showTagSelectionModal(context),
-            tooltip: widget.tooltip,
-            color: widget.color,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: IconButton(
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(minWidth: 32),
+              icon: Icon(widget.icon, size: widget.iconSize ?? 20),
+              onPressed: () => _showTagSelectionModal(context),
+              tooltip: widget.tooltip,
+              color: widget.color,
+            ),
           ),
         ),
       ],

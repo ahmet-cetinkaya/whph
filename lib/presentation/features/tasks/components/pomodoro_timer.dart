@@ -349,12 +349,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         Row(
           children: [
             IconButton(
-              icon: Icon(SharedUiConstants.deleteIcon),
+              icon: const Icon(Icons.remove),
               onPressed: value > _minTimerValue ? () => onAdjust(-5) : null,
             ),
             SizedBox(width: 80, child: Center(child: Text("$value min"))),
             IconButton(
-              icon: Icon(SharedUiConstants.addIcon),
+              icon: const Icon(Icons.add),
               onPressed: value < _maxTimerValue ? () => onAdjust(5) : null,
             ),
           ],

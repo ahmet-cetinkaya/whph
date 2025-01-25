@@ -32,7 +32,7 @@ class HabitUiConstants {
   // Messages
   static const String noHabitsFoundMessage = 'No habits found';
   static const String selectTagsHint = 'Select tags to associate';
-  static const String addDescriptionHint = 'Add a description...';
+
   static const String deleteHabitConfirmTitle = 'Confirm Delete';
   static const String deleteHabitConfirmMessage = 'Are you sure you want to delete this habit?';
 

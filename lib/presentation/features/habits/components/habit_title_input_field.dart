@@ -4,6 +4,7 @@ import 'package:whph/application/features/habits/commands/save_habit_command.dar
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
@@ -89,6 +90,10 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
             onChanged: (value) {
               _updateHabit();
             },
+            decoration: const InputDecoration(
+              suffixIcon: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+              border: InputBorder.none,
+            ),
           ),
         ),
       ],

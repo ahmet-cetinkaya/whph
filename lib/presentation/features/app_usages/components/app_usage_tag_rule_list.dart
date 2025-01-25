@@ -142,7 +142,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
                 // Delete Button
                 IconButton(
-                  icon: Icon(SharedUiConstants.deleteIcon, size: AppUsageUiConstants.iconSize),
+                  icon: Icon(SharedUiConstants.deleteIcon, size: AppTheme.iconSizeSmall),
                   onPressed: () {
                     if (mounted) _delete(context, rule);
                   },
