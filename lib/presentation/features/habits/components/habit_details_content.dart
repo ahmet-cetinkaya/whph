@@ -207,6 +207,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         id: widget.habitId,
         name: _nameController.text,
         description: _descriptionController.text,
+        estimatedTime: _habit!.estimatedTime,
       );
       var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
@@ -252,23 +253,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tags Table
+          // Tags ve Estimated Time Table
           DetailTable(rowData: [
-            DetailTableRowData(
-              label: HabitUiConstants.tagsLabel,
-              icon: HabitUiConstants.tagsIcon,
-              hintText: HabitUiConstants.selectTagsHint,
-              widget: TagSelectDropdown(
-                key: ValueKey(_habitTags!.items.length),
-                isMultiSelect: true,
-                onTagsSelected: _onTagsSelected,
-                showSelectedInDropdown: true,
-                initialSelectedTags: _habitTags!.items
-                    .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
-                    .toList(),
-                icon: SharedUiConstants.addIcon,
-              ),
-            ),
+            _buildTagsSection(),
+            _buildEstimatedTimeSection(),
           ]),
 
           // Description Table
@@ -316,6 +304,59 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         ],
       ),
     );
+  }
+
+  DetailTableRowData _buildTagsSection() => DetailTableRowData(
+        label: HabitUiConstants.tagsLabel,
+        icon: HabitUiConstants.tagsIcon,
+        hintText: HabitUiConstants.selectTagsHint,
+        widget: TagSelectDropdown(
+          key: ValueKey(_habitTags!.items.length),
+          isMultiSelect: true,
+          onTagsSelected: _onTagsSelected,
+          showSelectedInDropdown: true,
+          initialSelectedTags:
+              _habitTags!.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
+          icon: SharedUiConstants.addIcon,
+        ),
+      );
+
+  DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
+        label: HabitUiConstants.estimatedTimeLabel,
+        icon: HabitUiConstants.estimatedTimeIcon,
+        widget: Row(
+          children: [
+            IconButton(
+              onPressed: () => _adjustEstimatedTime(-1),
+              icon: const Icon(Icons.remove),
+            ),
+            Text(
+              SharedUiConstants.formatMinutes(_habit!.estimatedTime ?? 0),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            IconButton(
+              onPressed: () => _adjustEstimatedTime(1),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+      );
+
+  void _adjustEstimatedTime(int adjustment) {
+    if (!mounted) return;
+    setState(() {
+      final currentIndex = HabitUiConstants.defaultEstimatedTimeOptions.indexOf(_habit!.estimatedTime ?? 0);
+      if (currentIndex == -1) {
+        _habit!.estimatedTime = HabitUiConstants.defaultEstimatedTimeOptions.first;
+      } else {
+        final newIndex = (currentIndex + adjustment).clamp(
+          0,
+          HabitUiConstants.defaultEstimatedTimeOptions.length - 1,
+        );
+        _habit!.estimatedTime = HabitUiConstants.defaultEstimatedTimeOptions[newIndex];
+      }
+      _saveHabit();
+    });
   }
 
   Widget _buildRecordsHeader() {

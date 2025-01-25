@@ -12,6 +12,7 @@ class HabitUiConstants {
   static const IconData previousIcon = Icons.arrow_back;
   static const IconData nextIcon = Icons.arrow_forward;
   static const IconData lockIcon = Icons.lock;
+  static const IconData estimatedTimeIcon = Icons.timer_outlined;
 
   // Colors
   static const Color completedColor = Colors.green;
@@ -28,6 +29,7 @@ class HabitUiConstants {
   static const String recordsCountLabel = 'Records';
   static const String scoreTrendsLabel = 'Score Trends';
   static const String topStreaksLabel = 'Top Streaks';
+  static const String estimatedTimeLabel = 'Estimated Time';
 
   // Messages
   static const String noHabitsFoundMessage = 'No habits found';
@@ -57,4 +59,7 @@ class HabitUiConstants {
   static const double maxCalendarWidth = 600.0;
   static const double streakBarHeight = 24.0;
   static const double gridSpacing = 4.0;
+
+  // Options
+  static const List<int> defaultEstimatedTimeOptions = [5, 10, 15, 20, 25, 30, 45, 60, 90, 120, 180, 240];
 }

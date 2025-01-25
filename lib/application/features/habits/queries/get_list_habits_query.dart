@@ -21,11 +21,13 @@ class HabitListItem {
   String id;
   String name;
   List<TagListItem> tags;
+  int? estimatedTime;
 
   HabitListItem({
     required this.id,
     required this.name,
     this.tags = const [],
+    this.estimatedTime,
   });
 }
 
@@ -79,6 +81,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         id: habit.id,
         name: habit.name,
         tags: tagItems,
+        estimatedTime: habit.estimatedTime, // Yeni alan eklendi
       ));
     }
 

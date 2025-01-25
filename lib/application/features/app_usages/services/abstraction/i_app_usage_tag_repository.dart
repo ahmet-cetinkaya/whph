@@ -7,8 +7,12 @@ abstract class IAppUsageTagRepository extends IRepository<AppUsageTag, String> {
 
   Future<bool> anyByAppUsageIdAndTagId(String appUsageId, String tagId);
 
-  Future<List<TagTimeData>> getTopTagsByDuration(DateTime startDate, DateTime endDate,
-      {int? limit, List<String>? filterByTags});
+  Future<List<TagTimeData>> getTopTagsByDuration(
+    DateTime startDate,
+    DateTime endDate, {
+    int? limit,
+    List<String>? filterByTags,
+  });
 }
 
 class TagTimeData {

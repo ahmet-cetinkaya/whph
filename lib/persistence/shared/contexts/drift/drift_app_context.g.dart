@@ -912,8 +912,12 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
   @override
   late final GeneratedColumn<String> description =
       GeneratedColumn<String>('description', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _estimatedTimeMeta = const VerificationMeta('estimatedTime');
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, description];
+  late final GeneratedColumn<int> estimatedTime =
+      GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, description, estimatedTime];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -949,6 +953,10 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
+    if (data.containsKey('estimated_time')) {
+      context.handle(
+          _estimatedTimeMeta, estimatedTime.isAcceptableOrUnknown(data['estimated_time']!, _estimatedTimeMeta));
+    }
     return context;
   }
 
@@ -964,6 +972,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
     );
   }
 
@@ -980,6 +989,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   final Value<DateTime?> deletedDate;
   final Value<String> name;
   final Value<String> description;
+  final Value<int?> estimatedTime;
   final Value<int> rowid;
   const HabitTableCompanion({
     this.id = const Value.absent(),
@@ -988,6 +998,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.deletedDate = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
+    this.estimatedTime = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitTableCompanion.insert({
@@ -997,6 +1008,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.deletedDate = const Value.absent(),
     required String name,
     required String description,
+    this.estimatedTime = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -1009,6 +1021,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     Expression<DateTime>? deletedDate,
     Expression<String>? name,
     Expression<String>? description,
+    Expression<int>? estimatedTime,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1018,6 +1031,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (estimatedTime != null) 'estimated_time': estimatedTime,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1029,6 +1043,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       Value<DateTime?>? deletedDate,
       Value<String>? name,
       Value<String>? description,
+      Value<int?>? estimatedTime,
       Value<int>? rowid}) {
     return HabitTableCompanion(
       id: id ?? this.id,
@@ -1037,6 +1052,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       deletedDate: deletedDate ?? this.deletedDate,
       name: name ?? this.name,
       description: description ?? this.description,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1062,6 +1078,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (estimatedTime.present) {
+      map['estimated_time'] = Variable<int>(estimatedTime.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1077,6 +1096,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
           ..write('deletedDate: $deletedDate, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('estimatedTime: $estimatedTime, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3848,6 +3868,7 @@ typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   Value<DateTime?> deletedDate,
   required String name,
   required String description,
+  Value<int?> estimatedTime,
   Value<int> rowid,
 });
 typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
@@ -3857,6 +3878,7 @@ typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
   Value<DateTime?> deletedDate,
   Value<String> name,
   Value<String> description,
+  Value<int?> estimatedTime,
   Value<int> rowid,
 });
 
@@ -3883,6 +3905,9 @@ class $$HabitTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTabl
 
   ColumnFilters<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get estimatedTime =>
+      $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnFilters(column));
 }
 
 class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -3909,6 +3934,9 @@ class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTa
 
   ColumnOrderings<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get estimatedTime =>
+      $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnOrderings(column));
 }
 
 class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -3934,6 +3962,9 @@ class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $Habit
 
   GeneratedColumn<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<int> get estimatedTime =>
+      $composableBuilder(column: $table.estimatedTime, builder: (column) => column);
 }
 
 class $$HabitTableTableTableManager extends RootTableManager<
@@ -3962,6 +3993,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> description = const Value.absent(),
+            Value<int?> estimatedTime = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion(
@@ -3971,6 +4003,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             name: name,
             description: description,
+            estimatedTime: estimatedTime,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3980,6 +4013,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             required String name,
             required String description,
+            Value<int?> estimatedTime = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion.insert(
@@ -3989,6 +4023,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             name: name,
             description: description,
+            estimatedTime: estimatedTime,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
