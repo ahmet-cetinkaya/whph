@@ -57,7 +57,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     try {
       var command = SaveTaskCommand(
         title: _titleController.text,
-        description: "# Steps\n - [ ] Step 1\n - [ ] Step 2\n# Notes\n",
+        description: "",
         tagIds: widget.initialTagIds,
         priority: _selectedPriority,
         estimatedTime: _estimatedTime,
