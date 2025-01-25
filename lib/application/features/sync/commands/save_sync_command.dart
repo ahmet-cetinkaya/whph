@@ -63,7 +63,7 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
   Future<SyncDevice> _add(SyncDevice? syncDevice, SaveSyncDeviceCommand request) async {
     syncDevice = SyncDevice(
       id: nanoid(),
-      createdDate: DateTime(0),
+      createdDate: DateTime.now(),
       fromIp: request.fromIP,
       toIp: request.toIP,
       name: request.name,

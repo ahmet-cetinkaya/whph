@@ -52,7 +52,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
     } else {
       tag = Tag(
         id: nanoid(),
-        createdDate: DateTime(0),
+        createdDate: DateTime.now(),
         name: request.name,
         isArchived: request.isArchived,
         color: request.color,

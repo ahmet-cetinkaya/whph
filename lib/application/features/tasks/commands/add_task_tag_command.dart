@@ -35,7 +35,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
 
     var taskTag = TaskTag(
       id: nanoid(),
-      createdDate: DateTime(0),
+      createdDate: DateTime.now(),
       taskId: request.taskId,
       tagId: request.tagId,
     );

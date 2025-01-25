@@ -38,7 +38,7 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
 
     var tagTag = TagTag(
       id: nanoid(),
-      createdDate: DateTime(0),
+      createdDate: DateTime.now(),
       primaryTagId: request.primaryTagId,
       secondaryTagId: request.secondaryTagId,
     );
