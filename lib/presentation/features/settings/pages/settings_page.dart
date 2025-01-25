@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
@@ -30,8 +32,10 @@ class SettingsPage extends StatelessWidget {
       builder: (context) => ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const StartupSettings(),
-          const SizedBox(height: 8),
+          if (StartupSettings.compatiblePlatform) ...[
+            const StartupSettings(),
+            const SizedBox(height: 8),
+          ],
           const NotificationSettings(),
           const SizedBox(height: 8),
           Card(
