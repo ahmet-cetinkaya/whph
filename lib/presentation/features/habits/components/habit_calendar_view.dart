@@ -5,6 +5,7 @@ import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.d
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
 class HabitCalendarView extends StatelessWidget {
   final _soundPlayer = container.resolve<ISoundPlayer>();
@@ -53,7 +54,7 @@ class HabitCalendarView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(HabitUiConstants.previousIcon),
           onPressed: onPreviousMonth,
         ),
         Text(
@@ -61,7 +62,7 @@ class HabitCalendarView extends StatelessWidget {
           style: AppTheme.bodyLarge,
         ),
         IconButton(
-          icon: const Icon(Icons.arrow_forward),
+          icon: Icon(HabitUiConstants.nextIcon),
           onPressed: onNextMonth,
         ),
       ],
@@ -69,10 +70,9 @@ class HabitCalendarView extends StatelessWidget {
   }
 
   Widget _buildWeekdayLabels() {
-    const List<String> daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: daysOfWeek
+      children: HabitUiConstants.weekDays
           .map((day) => Expanded(
                 child: Center(
                   child: Text(
@@ -115,58 +115,58 @@ class HabitCalendarView extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      children: days.map((date) {
-        bool hasRecord = records.any((record) => _isSameDay(record.date, date));
-        bool isFutureDate = date.isAfter(DateTime.now());
+      mainAxisSpacing: HabitUiConstants.gridSpacing,
+      crossAxisSpacing: HabitUiConstants.gridSpacing,
+      children: days.map((date) => _buildCalendarDay(date)).toList(),
+    );
+  }
 
-        HabitRecordListItem? recordForDay;
-        if (hasRecord) {
-          recordForDay = records.firstWhere((record) => _isSameDay(record.date, date));
-        }
+  Widget _buildCalendarDay(DateTime date) {
+    bool hasRecord = records.any((record) => _isSameDay(record.date, date));
+    bool isFutureDate = date.isAfter(DateTime.now());
 
-        return ElevatedButton(
-          onPressed: isFutureDate
-              ? null
-              : () async {
-                  if (hasRecord) {
-                    await onDeleteRecord(recordForDay!.id);
-                  } else {
-                    await onCreateRecord(habitId, date);
-                    _soundPlayer.play(SharedSounds.done);
-                  }
-                },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: AppTheme.textColor,
-            disabledBackgroundColor: AppTheme.surface2,
-            padding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            side: BorderSide(color: AppTheme.surface1),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${date.day}',
-                  style: AppTheme.bodySmall,
-                ),
-                if (date.isAfter(DateTime.now()))
-                  const Icon(Icons.lock, size: 12, color: Colors.grey)
-                else
-                  Icon(
-                    hasRecord ? Icons.link : Icons.close,
-                    color: hasRecord ? Colors.green : Colors.red,
-                  ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+    HabitRecordListItem? recordForDay;
+    if (hasRecord) {
+      recordForDay = records.firstWhere((record) => _isSameDay(record.date, date));
+    }
+
+    return ElevatedButton(
+      onPressed: isFutureDate
+          ? null
+          : () async {
+              if (hasRecord) {
+                await onDeleteRecord(recordForDay!.id);
+              } else {
+                await onCreateRecord(habitId, date);
+                _soundPlayer.play(SharedSounds.done);
+              }
+            },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: AppTheme.textColor,
+        disabledBackgroundColor: AppTheme.surface2,
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        side: BorderSide(color: AppTheme.surface1),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('${date.day}', style: AppTheme.bodySmall),
+            if (isFutureDate)
+              Icon(HabitUiConstants.lockIcon, size: HabitUiConstants.calendarIconSize, color: AppTheme.disabledColor)
+            else
+              Icon(
+                hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
+                size: HabitUiConstants.calendarIconSize,
+                color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.incompletedColor,
+              ),
+          ],
+        ),
+      ),
     );
   }
 

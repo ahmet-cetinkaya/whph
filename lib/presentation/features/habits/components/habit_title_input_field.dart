@@ -5,6 +5,7 @@ import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
 class HabitNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -50,7 +51,8 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: HabitUiConstants.errorLoadingHabit);
       }
     }
   }
@@ -67,7 +69,8 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
       widget._habitsService.onHabitSaved.value = result;
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to update habit.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: HabitUiConstants.errorSavingHabit);
       }
     }
   }

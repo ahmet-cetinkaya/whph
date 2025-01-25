@@ -4,6 +4,8 @@ import 'package:whph/application/features/habits/commands/save_habit_command.dar
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class HabitAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -28,12 +30,10 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       var response = await mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
       if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while creating habit.');
+            message: HabitUiConstants.errorSavingHabit);
       }
     }
   }
@@ -42,11 +42,12 @@ class _HabitAddButtonState extends State<HabitAddButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _createHabit(context),
-      icon: const Icon(Icons.add),
+      icon: Icon(SharedUiConstants.addIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
-        backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+        backgroundColor: widget.buttonBackgroundColor != null
+            ? MaterialStatePropertyAll<Color>(widget.buttonBackgroundColor!)
+            : null,
       ),
     );
   }

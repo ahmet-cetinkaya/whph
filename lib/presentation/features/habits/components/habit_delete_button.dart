@@ -4,6 +4,8 @@ import 'package:whph/application/features/habits/commands/delete_habit_command.d
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class HabitDeleteButton extends StatefulWidget {
   final String habitId;
@@ -48,16 +50,16 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
     bool? confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this habit?'),
+        title: Text(HabitUiConstants.deleteHabitConfirmTitle),
+        content: Text(HabitUiConstants.deleteHabitConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(SharedUiConstants.cancelLabel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: Text(SharedUiConstants.deleteLabel),
           ),
         ],
       ),
@@ -70,11 +72,12 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _confirmDelete(context),
-      icon: const Icon(Icons.delete),
+      icon: Icon(SharedUiConstants.deleteIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
-        backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+        backgroundColor: widget.buttonBackgroundColor != null
+            ? MaterialStatePropertyAll<Color>(widget.buttonBackgroundColor!)
+            : null,
       ),
     );
   }

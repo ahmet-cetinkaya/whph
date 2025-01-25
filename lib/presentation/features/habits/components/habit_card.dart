@@ -11,6 +11,7 @@ import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
 class HabitCard extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -151,7 +152,7 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildHabitInfo() => Expanded(
         child: Row(
           children: [
-            const Icon(Icons.refresh, size: 20),
+            Icon(HabitUiConstants.habitIcon, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -168,7 +169,7 @@ class _HabitCardState extends State<HabitCard> {
                       padding: const EdgeInsets.only(top: 2),
                       child: Row(
                         children: [
-                          const Icon(Icons.label, color: Colors.grey, size: AppTheme.iconSizeSmall),
+                          Icon(HabitUiConstants.tagsIcon, color: AppTheme.disabledColor, size: AppTheme.iconSizeSmall),
                           const SizedBox(width: 2),
                           Expanded(
                             child: SingleChildScrollView(
@@ -226,7 +227,7 @@ class _HabitCardState extends State<HabitCard> {
         hasRecord ? _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date)) : null;
 
     return SizedBox(
-      width: 46,
+      width: HabitUiConstants.calendarDaySize,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -255,9 +256,9 @@ class _HabitCardState extends State<HabitCard> {
               }
             },
             icon: Icon(
-              hasRecord ? Icons.link : Icons.close,
-              size: 16,
-              color: hasRecord ? Colors.green : Colors.red,
+              hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
+              size: HabitUiConstants.calendarIconSize,
+              color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.incompletedColor,
             ),
           ),
         ],
