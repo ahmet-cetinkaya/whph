@@ -13,6 +13,8 @@ import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -46,9 +48,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   String _getDisplayTime() {
-    final minutes = _remainingTime.inMinutes;
-    final seconds = _remainingTime.inSeconds % 60;
-    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+    return SharedUiConstants.formatDuration(_remainingTime);
   }
 
   late Timer _timer;
@@ -117,10 +117,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   void _sendNotification() {
-    final sessionType = _isWorking ? 'Work' : 'Break';
     widget._notificationService.show(
-      title: 'Pomodoro Timer',
-      body: '$sessionType session completed!',
+      title: TaskUiConstants.pomodoroNotificationTitle,
+      body: _isWorking ? TaskUiConstants.pomodoroWorkSessionCompleted : TaskUiConstants.pomodoroBreakSessionCompleted,
     );
   }
 
@@ -271,7 +270,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           if (!_isRunning && !_isAlarmPlaying)
             IconButton(
               iconSize: buttonSize * 0.7,
-              icon: const Icon(Icons.settings),
+              icon: Icon(SharedUiConstants.settingsIcon),
               onPressed: _showSettingsModal,
             ),
           SizedBox(width: spacing),
@@ -302,9 +301,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   IconData _getButtonIcon() {
-    if (_isAlarmPlaying) return Icons.arrow_forward;
-    if (_isRunning) return Icons.stop;
-    return Icons.play_arrow;
+    if (_isAlarmPlaying) return TaskUiConstants.pomodoroNextIcon;
+    if (_isRunning) return TaskUiConstants.pomodoroStopIcon;
+    return TaskUiConstants.pomodoroPlayIcon;
   }
 
   VoidCallback _getButtonAction() {
@@ -320,20 +319,18 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: const Text('Settings', style: AppTheme.headlineSmall)),
+          Center(child: Text(TaskUiConstants.pomodoroSettingsLabel, style: AppTheme.headlineSmall)),
           Text(
-            'Default timer settings (in minutes):',
-            style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.secondaryTextColor,
-            ),
+            TaskUiConstants.pomodoroTimerSettingsLabel,
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
           ),
-          _buildSettingRow('Work Time', _workDuration, (adjustment) {
+          _buildSettingRow(TaskUiConstants.pomodoroWorkLabel, _workDuration, (adjustment) {
             if (!mounted) return;
             setState(() {
               _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
             });
           }),
-          _buildSettingRow('Break Time', _breakDuration, (adjustment) {
+          _buildSettingRow(TaskUiConstants.pomodoroBreakLabel, _breakDuration, (adjustment) {
             if (!mounted) return;
             setState(() {
               _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
@@ -352,12 +349,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         Row(
           children: [
             IconButton(
-              icon: Icon(Icons.remove),
+              icon: Icon(SharedUiConstants.deleteIcon),
               onPressed: value > _minTimerValue ? () => onAdjust(-5) : null,
             ),
             SizedBox(width: 80, child: Center(child: Text("$value min"))),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(SharedUiConstants.addIcon),
               onPressed: value < _maxTimerValue ? () => onAdjust(5) : null,
             ),
           ],

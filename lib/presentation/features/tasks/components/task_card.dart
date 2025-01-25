@@ -4,6 +4,8 @@ import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dar
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TaskCard extends StatelessWidget {
   final TaskListItem task;
@@ -74,7 +76,7 @@ class TaskCard extends StatelessWidget {
 
     // Add tags if exist
     if (task.tags.isNotEmpty) {
-      metadata.add(const Icon(Icons.label, size: 12, color: Colors.grey));
+      metadata.add(Icon(TaskUiConstants.tagsIcon, size: 12, color: TaskUiConstants.tagsColor));
       metadata.add(const SizedBox(width: 2));
 
       for (var i = 0; i < task.tags.length; i++) {
@@ -115,7 +117,7 @@ class TaskCard extends StatelessWidget {
   }
 
   List<Widget> _buildDateTimeElements() {
-    final dateFormat = DateFormat('dd.MM.yy');
+    final dateFormat = DateFormat(SharedUiConstants.defaultDateFormat);
     final elements = <Widget>[];
     void addElement(Widget element) {
       if (elements.isNotEmpty) {
@@ -125,13 +127,25 @@ class TaskCard extends StatelessWidget {
     }
 
     if (task.estimatedTime != null) {
-      addElement(_buildInfoRow(Icons.timer, '${task.estimatedTime}m', Colors.blue));
+      addElement(_buildInfoRow(
+        TaskUiConstants.estimatedTimeIcon,
+        SharedUiConstants.formatMinutes(task.estimatedTime),
+        TaskUiConstants.estimatedTimeColor,
+      ));
     }
     if (task.plannedDate != null) {
-      addElement(_buildInfoRow(Icons.calendar_today, dateFormat.format(task.plannedDate!), Colors.blue));
+      addElement(_buildInfoRow(
+        TaskUiConstants.plannedDateIcon,
+        dateFormat.format(task.plannedDate!),
+        TaskUiConstants.plannedDateColor,
+      ));
     }
     if (task.deadlineDate != null) {
-      addElement(_buildInfoRow(Icons.access_time, dateFormat.format(task.deadlineDate!), Colors.red));
+      addElement(_buildInfoRow(
+        TaskUiConstants.deadlineDateIcon,
+        dateFormat.format(task.deadlineDate!),
+        TaskUiConstants.deadlineDateColor,
+      ));
     }
 
     return elements;
@@ -149,17 +163,6 @@ class TaskCard extends StatelessWidget {
   bool get _hasDateOrTime => task.estimatedTime != null || task.plannedDate != null || task.deadlineDate != null;
 
   Color _getPriorityColor(EisenhowerPriority? priority) {
-    switch (priority) {
-      case EisenhowerPriority.urgentImportant:
-        return Colors.red;
-      case EisenhowerPriority.notUrgentImportant:
-        return Colors.green;
-      case EisenhowerPriority.urgentNotImportant:
-        return Colors.blue;
-      case EisenhowerPriority.notUrgentNotImportant:
-        return Colors.grey;
-      default:
-        return Colors.white;
-    }
+    return TaskUiConstants.getPriorityColor(priority);
   }
 }

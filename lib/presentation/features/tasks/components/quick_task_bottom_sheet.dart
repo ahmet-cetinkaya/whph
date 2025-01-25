@@ -5,9 +5,11 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:intl/intl.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -135,72 +137,33 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   }
 
   Color? _getPriorityColor() {
-    switch (_selectedPriority) {
-      case EisenhowerPriority.urgentImportant:
-        return Colors.red;
-      case EisenhowerPriority.notUrgentImportant:
-        return Colors.green;
-      case EisenhowerPriority.urgentNotImportant:
-        return Colors.blue;
-      case EisenhowerPriority.notUrgentNotImportant:
-        return Colors.grey;
-      case null:
-        return Colors.white;
-    }
+    return TaskUiConstants.getPriorityColor(_selectedPriority);
   }
 
   String _getPriorityTooltip() {
-    switch (_selectedPriority) {
-      case EisenhowerPriority.urgentImportant:
-        return 'Urgent & Important';
-      case EisenhowerPriority.notUrgentImportant:
-        return 'Not Urgent & Important';
-      case EisenhowerPriority.urgentNotImportant:
-        return 'Urgent & Not Important';
-      case EisenhowerPriority.notUrgentNotImportant:
-        return 'Not Urgent & Not Important';
-      case null:
-        return 'No Priority';
-    }
+    return TaskUiConstants.getPriorityTooltip(_selectedPriority);
   }
 
   void _toggleEstimatedTime() {
     setState(() {
-      switch (_estimatedTime) {
-        case null:
-          _estimatedTime = 10;
-          break;
-        case 10:
-          _estimatedTime = 30;
-          break;
-        case 30:
-          _estimatedTime = 50;
-          break;
-        case 50:
-          _estimatedTime = 90;
-          break;
-        case 90:
-          _estimatedTime = 120;
-          break;
-        case 120:
-          _estimatedTime = null;
-          break;
-        default:
-          _estimatedTime = null;
+      final currentIndex = TaskUiConstants.defaultEstimatedTimeOptions.indexOf(_estimatedTime ?? 0);
+      if (currentIndex == -1 || currentIndex == TaskUiConstants.defaultEstimatedTimeOptions.length - 1) {
+        _estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions.first;
+      } else {
+        _estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions[currentIndex + 1];
       }
     });
   }
 
   String? _getEstimatedTimeText() {
-    if (_estimatedTime == null) return null;
-    return '${_estimatedTime}m';
+    return _estimatedTime != null ? SharedUiConstants.formatMinutes(_estimatedTime) : null;
   }
 
   List<Widget> _buildQuickActionButtons() {
     return [
       IconButton(
         icon: Icon(
-          _selectedPriority == null ? Icons.flag_outlined : Icons.flag,
+          _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
           color: _getPriorityColor(),
         ),
         onPressed: _togglePriority,
@@ -208,11 +171,11 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       ),
       IconButton(
         icon: _estimatedTime == null
-            ? const Icon(Icons.timer_outlined)
+            ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
             : Text(
                 _getEstimatedTimeText()!,
                 style: AppTheme.bodyMedium.copyWith(
-                  color: Colors.blue,
+                  color: TaskUiConstants.estimatedTimeColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -221,16 +184,16 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       ),
       IconButton(
         icon: Icon(
-          _plannedDate == null ? Icons.event_outlined : Icons.event,
-          color: _plannedDate == null ? null : Colors.green,
+          _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
+          color: _plannedDate == null ? null : TaskUiConstants.plannedDateColor,
         ),
         onPressed: () => _selectDate(false),
         tooltip: 'Planned: ${_getFormattedDate(_plannedDate) ?? 'Not set'}',
       ),
       IconButton(
         icon: Icon(
-          _deadlineDate == null ? Icons.alarm_outlined : Icons.alarm,
-          color: _deadlineDate == null ? null : Colors.orange,
+          _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
+          color: _deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
         ),
         onPressed: () => _selectDate(true),
         tooltip: 'Deadline: ${_getFormattedDate(_deadlineDate) ?? 'Not set'}',

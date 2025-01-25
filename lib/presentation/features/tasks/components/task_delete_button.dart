@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class TaskDeleteButton extends StatefulWidget {
@@ -70,11 +71,11 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _confirmDelete(context),
-      icon: const Icon(Icons.delete),
+      icon: Icon(SharedUiConstants.deleteIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
         backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }

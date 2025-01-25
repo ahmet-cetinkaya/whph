@@ -33,6 +33,17 @@ class AppTheme {
   static const Color chartColor9 = domain.AppTheme.chartColor9;
   static const Color chartColor10 = domain.AppTheme.chartColor10;
 
+  // Common UI Colors
+  static const Color borderColor = Color(0xFFBDBDBD);
+  static const Color shadowColor = Color(0x1F000000);
+
+  static const Color hoverColor = Color(0x0A000000);
+  static const Color focusColor = Color(0x1F000000);
+  static const Color splashColor = Color(0x1F000000);
+
+  static const Color overlayLight = Color(0x1FFFFFFF);
+  static const Color overlayDark = Color(0x1F000000);
+
   // Dimensions
   static const double containerBorderRadius = 15.0;
   static const EdgeInsets containerPadding = EdgeInsets.all(16);

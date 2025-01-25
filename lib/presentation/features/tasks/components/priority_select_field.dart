@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 
 class PrioritySelectField extends StatefulWidget {
   final EisenhowerPriority? value;
@@ -51,6 +52,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
 
   Widget _buildPriorityOption(BuildContext context, DropdownOption<EisenhowerPriority?> option) {
     final isSelected = widget.value == option.value;
+    final textColor = option.value != null ? TaskUiConstants.getPriorityColor(option.value) : AppTheme.lightTextColor;
 
     return InkWell(
       onTap: () {
@@ -65,10 +67,12 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         ),
         child: Row(
           children: [
+            Icon(TaskUiConstants.priorityIcon, color: textColor, size: 16),
+            const SizedBox(width: 8),
             Text(
               option.label,
               style: AppTheme.bodySmall.copyWith(
-                color: AppTheme.lightTextColor,
+                color: textColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

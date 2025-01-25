@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TaskAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -47,11 +48,11 @@ class _TaskAddButtonState extends State<TaskAddButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _createTask(context),
-      icon: const Icon(Icons.add),
+      icon: Icon(SharedUiConstants.addIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
         backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }
