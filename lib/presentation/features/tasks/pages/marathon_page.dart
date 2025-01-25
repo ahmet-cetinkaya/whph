@@ -301,6 +301,7 @@ class _MarathonPageState extends State<MarathonPage> {
                   onTaskCompleted: _refreshTasks,
                   onClickTask: (task) => _showTaskDetails(task.id),
                   onSelectTask: _onSelectTask,
+                  onScheduleTask: (_, __) => _refreshTasks(),
                   selectedTask: _selectedTask,
                   showSelectButton: true,
                   transparentCards: true,

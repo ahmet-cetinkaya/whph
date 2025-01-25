@@ -28,6 +28,7 @@ class TaskList extends StatefulWidget {
   final void Function(int count)? onList;
   final void Function()? onTaskCompleted;
   final void Function(TaskListItem task)? onSelectTask;
+  final void Function(TaskListItem task, DateTime date)? onScheduleTask;
   final List<Widget> Function(TaskListItem task)? trailingButtons;
 
   const TaskList({
@@ -49,6 +50,7 @@ class TaskList extends StatefulWidget {
     this.onList,
     this.onTaskCompleted,
     this.onSelectTask,
+    this.onScheduleTask,
     this.trailingButtons,
   });
 
@@ -172,17 +174,18 @@ class _TaskListState extends State<TaskList> {
               return TaskCard(
                 key: ValueKey(task.id),
                 task: task,
-                onOpenDetails: () => widget.onClickTask(task),
-                onCompleted: _onTaskCompleted,
                 transparent: widget.transparentCards,
                 trailingButtons: [
                   if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
                   if (widget.showSelectButton)
                     IconButton(
-                      icon: Icon(Icons.push_pin_outlined, color: Colors.grey),
+                      icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
                       onPressed: () => widget.onSelectTask?.call(task),
                     ),
                 ],
+                onCompleted: _onTaskCompleted,
+                onOpenDetails: () => widget.onClickTask(task),
+                onScheduled: widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
               );
             },
           ),
