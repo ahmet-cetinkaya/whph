@@ -12,6 +12,7 @@ class HabitTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get name => text()();
   TextColumn get description => text()();
+  IntColumn get estimatedTime => integer().nullable()();
 }
 
 class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
@@ -31,6 +32,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       deletedDate: Value(entity.deletedDate),
       name: entity.name,
       description: entity.description,
+      estimatedTime: Value(entity.estimatedTime),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 class Habit extends BaseEntity<String> {
   String name;
   String description;
+  int? estimatedTime;
 
   Habit({
     required super.id,
@@ -13,5 +14,6 @@ class Habit extends BaseEntity<String> {
     super.deletedDate,
     required this.name,
     required this.description,
+    this.estimatedTime,
   });
 }

@@ -8,11 +8,13 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final String? id;
   final String name;
   final String description;
+  final int? estimatedTime;
 
   SaveHabitCommand({
     this.id,
     required this.name,
     required this.description,
+    this.estimatedTime,
   });
 }
 
@@ -43,9 +45,19 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         throw BusinessException('Habit with id ${request.id} not found');
       }
 
-      await _update(habit, request);
+      habit.name = request.name;
+      habit.description = request.description;
+      habit.estimatedTime = request.estimatedTime;
+      await _habitRepository.update(habit);
     } else {
-      habit = await _add(habit, request);
+      habit = Habit(
+        id: nanoid(),
+        createdDate: DateTime.now(),
+        name: request.name,
+        description: request.description,
+        estimatedTime: request.estimatedTime,
+      );
+      await _habitRepository.add(habit);
     }
 
     return SaveHabitCommandResponse(
@@ -53,23 +65,5 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       createdDate: habit.createdDate,
       modifiedDate: habit.modifiedDate,
     );
-  }
-
-  Future<Habit> _add(Habit? habit, SaveHabitCommand request) async {
-    habit = Habit(
-      id: nanoid(),
-      createdDate: DateTime(0),
-      name: request.name,
-      description: request.description,
-    );
-    await _habitRepository.add(habit);
-    return habit;
-  }
-
-  Future<Habit> _update(Habit habit, SaveHabitCommand request) async {
-    habit.name = request.name;
-    habit.description = request.description;
-    await _habitRepository.update(habit);
-    return habit;
   }
 }

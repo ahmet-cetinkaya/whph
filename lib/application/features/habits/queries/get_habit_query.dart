@@ -63,6 +63,7 @@ class GetHabitQueryResponse extends Habit {
     super.deletedDate,
     required super.name,
     required super.description,
+    super.estimatedTime,
     required this.statistics,
   });
 }
@@ -95,6 +96,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       modifiedDate: habit.modifiedDate,
       name: habit.name,
       description: habit.description,
+      estimatedTime: habit.estimatedTime, // estimatedTime değerini ekle
       statistics: statistics,
     );
   }
