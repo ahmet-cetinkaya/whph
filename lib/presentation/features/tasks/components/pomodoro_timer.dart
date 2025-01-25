@@ -291,11 +291,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    final normalColor = Theme.of(context).colorScheme.surfaceContainerHighest;
-    final breakColor = Theme.of(context).colorScheme.tertiaryContainer;
-    final breakEndColor = Theme.of(context).colorScheme.errorContainer;
+    final normalColor = AppTheme.surface2;
+    final breakColor = AppTheme.successColor.withAlpha((255 * 1).toInt());
+    final workEndColor = AppTheme.successColor.withAlpha((255 * 1).toInt());
+    final breakEndColor = AppTheme.errorColor.withAlpha((255 * 1).toInt());
 
-    if (_isAlarmPlaying) return _isWorking ? breakColor : breakEndColor;
+    if (_isAlarmPlaying) return _isWorking ? workEndColor : breakEndColor;
     if (!_isRunning) return normalColor;
     return _isWorking ? normalColor : breakColor;
   }
