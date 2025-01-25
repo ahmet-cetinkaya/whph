@@ -6,6 +6,7 @@ import 'package:whph/application/features/habits/queries/get_list_habits_query.d
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
 class HabitsList extends StatefulWidget {
   final Mediator mediator;
@@ -86,7 +87,7 @@ class _HabitsListState extends State<HabitsList> {
     }
 
     if (_habits!.items.isEmpty) {
-      return const Center(child: Text('No habits found'));
+      return Center(child: Text(HabitUiConstants.noHabitsFoundMessage));
     }
 
     return widget.mini ? _buildMiniCardList() : _buildColumnList();

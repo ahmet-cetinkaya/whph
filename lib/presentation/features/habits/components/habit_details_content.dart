@@ -19,6 +19,8 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class HabitDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -80,39 +82,60 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _getHabitRecordsForMonth(DateTime month) async {
-    var firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
-    var lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+    try {
+      var firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
+      var lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
 
-    var query = GetListHabitRecordsQuery(
-      pageIndex: 0,
-      pageSize: 37,
-      habitId: widget.habitId,
-      startDate: firstDayOfMonth,
-      endDate: lastDayOfMonth,
-    );
-    var result = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-    _habitRecords = result;
+      var query = GetListHabitRecordsQuery(
+        pageIndex: 0,
+        pageSize: 37,
+        habitId: widget.habitId,
+        startDate: firstDayOfMonth,
+        endDate: lastDayOfMonth,
+      );
+      var result = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      _habitRecords = result;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: HabitUiConstants.errorLoadingRecords);
+      }
+    }
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
-    var command = AddHabitRecordCommand(habitId: habitId, date: date);
-    await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
-    if (mounted) {
-      setState(() {
-        _getHabitRecordsForMonth(currentMonth);
-        _getHabit();
-      });
+    try {
+      var command = AddHabitRecordCommand(habitId: habitId, date: date);
+      await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+      if (mounted) {
+        setState(() {
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabit();
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: HabitUiConstants.errorCreatingRecord);
+      }
     }
   }
 
   Future<void> _deleteHabitRecord(String id) async {
-    var command = DeleteHabitRecordCommand(id: id);
-    await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
-    if (mounted) {
-      setState(() {
-        _getHabitRecordsForMonth(currentMonth);
-        _getHabit();
-      });
+    try {
+      var command = DeleteHabitRecordCommand(id: id);
+      await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+      if (mounted) {
+        setState(() {
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabit();
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: HabitUiConstants.errorDeletingRecord);
+      }
     }
   }
 
@@ -232,9 +255,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Tags Table
           DetailTable(rowData: [
             DetailTableRowData(
-              label: "Tags",
-              icon: Icons.label,
-              hintText: "Select tags to associate",
+              label: HabitUiConstants.tagsLabel,
+              icon: HabitUiConstants.tagsIcon,
+              hintText: HabitUiConstants.selectTagsHint,
               widget: TagSelectDropdown(
                 key: ValueKey(_habitTags!.items.length),
                 isMultiSelect: true,
@@ -243,7 +266,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 initialSelectedTags: _habitTags!.items
                     .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
                     .toList(),
-                icon: Icons.add,
+                icon: SharedUiConstants.addIcon,
               ),
             ),
           ]),
@@ -253,15 +276,15 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             forceVertical: true,
             rowData: [
               DetailTableRowData(
-                label: "Description",
-                icon: Icons.description,
-                hintText: "Click text to edit",
+                label: HabitUiConstants.descriptionLabel,
+                icon: HabitUiConstants.descriptionIcon,
+                hintText: HabitUiConstants.addDescriptionHint,
                 widget: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: MarkdownAutoPreview(
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
-                    hintText: 'Add a description...',
+                    hintText: HabitUiConstants.addDescriptionHint,
                     toolbarBackground: AppTheme.surface1,
                     style: AppTheme.bodyMedium,
                   ),
@@ -298,7 +321,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Widget _buildRecordsHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: _buildSectionHeader(Icons.link, 'Records'),
+      child: _buildSectionHeader(HabitUiConstants.recordIcon, HabitUiConstants.recordsLabel),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 
 class HabitStatisticsView extends StatelessWidget {
   final HabitStatistics statistics;
@@ -32,9 +33,9 @@ class HabitStatisticsView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
-          child: Icon(Icons.analytics),
+          child: Icon(HabitUiConstants.statisticsIcon),
         ),
-        Text('Statistics', style: AppTheme.bodyLarge),
+        Text(HabitUiConstants.statisticsLabel, style: AppTheme.bodyLarge),
       ],
     );
   }
@@ -42,13 +43,15 @@ class HabitStatisticsView extends StatelessWidget {
   Widget _buildStatisticsRow() {
     return Row(
       children: [
-        Expanded(child: _buildStatCard("Overall", statistics.overallScore)),
+        Expanded(child: _buildStatCard(HabitUiConstants.overallLabel, statistics.overallScore)),
         const SizedBox(width: 8),
-        Expanded(child: _buildStatCard("Monthly", statistics.monthlyScore)),
+        Expanded(child: _buildStatCard(HabitUiConstants.monthlyLabel, statistics.monthlyScore)),
         const SizedBox(width: 8),
-        Expanded(child: _buildStatCard("Yearly", statistics.yearlyScore)),
+        Expanded(child: _buildStatCard(HabitUiConstants.yearlyLabel, statistics.yearlyScore)),
         const SizedBox(width: 8),
-        Expanded(child: _buildStatCard("Records", statistics.totalRecords.toDouble(), isCount: true)),
+        Expanded(
+            child:
+                _buildStatCard(HabitUiConstants.recordsCountLabel, statistics.totalRecords.toDouble(), isCount: true)),
       ],
     );
   }
@@ -69,7 +72,7 @@ class HabitStatisticsView extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              isCount ? value.toInt().toString() : "${(value * 100).toStringAsFixed(0)}%",
+              isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
               style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -84,7 +87,7 @@ class HabitStatisticsView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Score Trends',
+          HabitUiConstants.scoreTrendsLabel,
           style: AppTheme.bodyLarge,
         ),
         const SizedBox(height: 16),
@@ -140,7 +143,7 @@ class HabitStatisticsView extends StatelessWidget {
                     dotData: FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                      color: AppTheme.primaryColor.withOpacity(0.2),
                     ),
                   ),
                 ],
@@ -163,7 +166,7 @@ class HabitStatisticsView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
           child: Text(
-            'Top Streaks',
+            HabitUiConstants.topStreaksLabel,
             style: AppTheme.bodyLarge,
           ),
         ),
@@ -235,7 +238,7 @@ class HabitStatisticsView extends StatelessWidget {
                     ),
                     // Days text
                     Text(
-                      "${streak.days}d",
+                      HabitUiConstants.formatDayCount(streak.days),
                       style: AppTheme.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.surface1,
