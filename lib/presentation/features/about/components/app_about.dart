@@ -25,7 +25,7 @@ class AppAbout extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppInfo.name,
+                    "${AppInfo.shortName} (${AppInfo.name})",
                     style: AppTheme.headlineMedium,
                   ),
                   Text(
