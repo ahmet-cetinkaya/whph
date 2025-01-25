@@ -78,23 +78,25 @@ class TaskCard extends StatelessWidget {
       metadata.add(const SizedBox(width: 2));
 
       for (var i = 0; i < task.tags.length; i++) {
-        final tag = task.tags[i];
         if (i > 0) {
           metadata.add(Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)));
         }
 
-        metadata.add(Text(
-          tag.name,
-          style: AppTheme.bodySmall
-              .copyWith(color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+        metadata.add(ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 80),
+          child: Text(
+            task.tags[i].name,
+            style: AppTheme.bodySmall.copyWith(
+                color:
+                    task.tags[i].color != null ? Color(int.parse('FF${task.tags[i].color}', radix: 16)) : Colors.grey),
+            overflow: TextOverflow.ellipsis,
+          ),
         ));
       }
     }
 
     // Add separator if needed
     if (metadata.isNotEmpty && _hasDateOrTime) {
-      metadata.add(const SizedBox(width: 8));
-      metadata.add(const Text("•", style: TextStyle(color: Colors.grey, fontSize: 10)));
       metadata.add(const SizedBox(width: 8));
     }
 
@@ -104,7 +106,10 @@ class TaskCard extends StatelessWidget {
       metadata.addAll(dateTimeWidgets);
     }
 
-    return Row(
+    return Wrap(
+      spacing: 0,
+      runSpacing: 0,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: metadata,
     );
   }
