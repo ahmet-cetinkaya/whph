@@ -85,69 +85,62 @@ class _HabitsPageState extends State<HabitsPage> {
           key: _habitsListKey,
           children: [
             // Filters
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width -
-                    (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) ? 214 : 14),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Filter by tags
-                    TagSelectDropdown(
-                      isMultiSelect: true,
-                      onTagsSelected: _onFilterTagsSelect,
-                      icon: Icons.label,
-                      iconSize: 20,
-                      color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
-                      tooltip: 'Filter by tags',
-                      showLength: true,
-                    ),
-
-                    // Calendar
-                    if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 14),
-                        child: SizedBox(
-                          width: daysToShow * 46.0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: lastDays
-                                .map(
-                                  (date) => SizedBox(
-                                    width: 46,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          DateTimeHelper.getWeekday(date.weekday),
-                                          style: AppTheme.bodySmall.copyWith(
-                                            color: DateTimeHelper.isSameDay(date, today)
-                                                ? AppTheme.primaryColor
-                                                : AppTheme.textColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          date.day.toString(),
-                                          style: AppTheme.bodySmall.copyWith(
-                                            color: DateTimeHelper.isSameDay(date, today)
-                                                ? AppTheme.primaryColor
-                                                : AppTheme.textColor,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                  ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Filter by tags
+                TagSelectDropdown(
+                  isMultiSelect: true,
+                  onTagsSelected: _onFilterTagsSelect,
+                  icon: Icons.label,
+                  iconSize: 20,
+                  color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
+                  tooltip: 'Filter by tags',
+                  showLength: true,
                 ),
-              ),
+
+                // Calendar
+                if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: SizedBox(
+                      width: daysToShow * 46.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: lastDays
+                            .map(
+                              (date) => SizedBox(
+                                width: 46,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      DateTimeHelper.getWeekday(date.weekday),
+                                      style: AppTheme.bodySmall.copyWith(
+                                        color: DateTimeHelper.isSameDay(date, today)
+                                            ? AppTheme.primaryColor
+                                            : AppTheme.textColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      date.day.toString(),
+                                      style: AppTheme.bodySmall.copyWith(
+                                        color: DateTimeHelper.isSameDay(date, today)
+                                            ? AppTheme.primaryColor
+                                            : AppTheme.textColor,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+              ],
             ),
 
             // List
