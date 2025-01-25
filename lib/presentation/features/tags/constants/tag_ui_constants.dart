@@ -6,6 +6,8 @@ class TagUiConstants {
   static const IconData tagIcon = Icons.label;
   static const IconData archiveIcon = Icons.archive;
   static const IconData unarchiveIcon = Icons.unarchive;
+  static const IconData colorIcon = Icons.color_lens;
+  static const IconData editIcon = Icons.edit;
 
   // Colors
   static Color getTagColor(String? hexColor) {
@@ -18,11 +20,13 @@ class TagUiConstants {
   static const String searchTagsLabel = 'Search Tags';
   static const String clearAllLabel = 'Clear All';
   static const String doneLabel = 'Done';
+  static const String colorLabel = 'Color';
 
   // Hints
   static const String selectTagsHint = 'Select tags to associate';
   static const String newTagDefaultName = 'New Tag';
   static const String searchTagsHint = 'Search tags...';
+  static const String clickToChangeColorHint = 'Click to change color';
 
   // Messages
   static const String noTagsFoundMessage = 'No tags found';
@@ -47,5 +51,6 @@ class TagUiConstants {
   // Dimensions
   static const double tagIconSize = 20.0;
   static const double searchIconSize = 20.0;
+  static const double iconSize = 20.0;
   static const EdgeInsets tagCardPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 }
