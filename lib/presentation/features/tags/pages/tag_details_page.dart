@@ -100,6 +100,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                     mediator: mediator,
                     onClickTask: _openTaskDetails,
                     filterByTags: [widget.tagId],
+                    onTaskCompleted: _refreshTasks,
+                    onScheduleTask: (_, __) => _refreshTasks(),
                   ),
                   backgroundColor: Colors.transparent,
                   canTapOnHeader: true)

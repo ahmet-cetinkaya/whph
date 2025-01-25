@@ -2,26 +2,50 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 
 class TaskCard extends StatelessWidget {
+  final Mediator mediator = container.resolve<Mediator>();
+
   final TaskListItem task;
-  final VoidCallback onOpenDetails;
-  final VoidCallback? onCompleted;
+
   final List<Widget>? trailingButtons;
   final bool transparent;
 
-  const TaskCard({
+  final VoidCallback onOpenDetails;
+  final VoidCallback? onCompleted;
+  final VoidCallback? onScheduled;
+
+  TaskCard({
     super.key,
     required this.task,
-    required this.onOpenDetails,
-    this.onCompleted,
     this.trailingButtons,
     this.transparent = false,
+    this.onCompleted,
+    required this.onOpenDetails,
+    this.onScheduled,
   });
+
+  Future<void> _handleSchedule(DateTime date) async {
+    var command = SaveTaskCommand(
+      id: task.id,
+      title: task.title,
+      priority: task.priority,
+      plannedDate: date,
+      deadlineDate: task.deadlineDate,
+      estimatedTime: task.estimatedTime,
+      isCompleted: task.isCompleted,
+    );
+
+    await mediator.send(command);
+    onScheduled?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +76,27 @@ class TaskCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(child: _buildTitleAndMetadata(context)),
+          PopupMenuButton<DateTime>(
+            icon: const Icon(Icons.schedule, color: Colors.grey),
+            tooltip: 'Schedule task',
+            itemBuilder: (context) {
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day);
+              final tomorrow = today.add(const Duration(days: 1));
+
+              return [
+                PopupMenuItem(
+                  value: today,
+                  child: const Text('Schedule for today'),
+                ),
+                PopupMenuItem(
+                  value: tomorrow,
+                  child: const Text('Schedule for tomorrow'),
+                ),
+              ];
+            },
+            onSelected: _handleSchedule,
+          ),
           if (trailingButtons != null) ...trailingButtons!,
         ],
       );

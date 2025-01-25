@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -9,7 +8,6 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
-import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 
 class TasksPage extends StatefulWidget {
@@ -93,21 +91,6 @@ class _TasksPageState extends State<TasksPage> {
     }
   }
 
-  Future<void> _handleScheduleTask(TaskListItem task, DateTime date) async {
-    var command = SaveTaskCommand(
-      id: task.id,
-      title: task.title,
-      priority: task.priority,
-      plannedDate: date,
-      deadlineDate: task.deadlineDate,
-      estimatedTime: task.estimatedTime,
-      isCompleted: task.isCompleted,
-    );
-
-    await _mediator.send(command);
-    _refreshAllTasks();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -149,29 +132,7 @@ class _TasksPageState extends State<TasksPage> {
                 onClickTask: (task) => _openTaskDetails(task.id),
                 onTaskCompleted: _refreshAllTasks,
                 onList: _onTasksList,
-                trailingButtons: (task) => [
-                  PopupMenuButton<DateTime>(
-                    icon: const Icon(Icons.schedule, color: Colors.grey),
-                    tooltip: 'Schedule task',
-                    itemBuilder: (context) {
-                      final now = DateTime.now();
-                      final today = DateTime(now.year, now.month, now.day);
-                      final tomorrow = today.add(const Duration(days: 1));
-
-                      return [
-                        PopupMenuItem(
-                          value: today,
-                          child: const Text('Schedule for today'),
-                        ),
-                        PopupMenuItem(
-                          value: tomorrow,
-                          child: const Text('Schedule for tomorrow'),
-                        ),
-                      ];
-                    },
-                    onSelected: (date) => _handleScheduleTask(task, date),
-                  ),
-                ],
+                onScheduleTask: (_, __) => _refreshAllTasks(),
               ),
             const SizedBox(height: 8),
             ExpansionPanelList(
@@ -199,6 +160,7 @@ class _TasksPageState extends State<TasksPage> {
                       search: _searchQuery,
                       onClickTask: (task) => _openTaskDetails(task.id),
                       onTaskCompleted: _refreshAllTasks,
+                      onScheduleTask: (_, __) => _refreshAllTasks(),
                     ),
                     backgroundColor: Colors.transparent,
                     canTapOnHeader: true),
