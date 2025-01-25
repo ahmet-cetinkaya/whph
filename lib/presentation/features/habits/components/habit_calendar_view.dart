@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 
 class HabitCalendarView extends StatelessWidget {
+  final _soundPlayer = container.resolve<ISoundPlayer>();
+
+  final String habitId;
+
   final DateTime currentMonth;
   final List<HabitRecordListItem> records;
+
   final Function(String) onDeleteRecord;
   final Function(String, DateTime) onCreateRecord;
   final Function() onPreviousMonth;
   final Function() onNextMonth;
-  final String habitId;
 
-  const HabitCalendarView({
+  HabitCalendarView({
     super.key,
     required this.currentMonth,
     required this.records,
@@ -127,6 +134,7 @@ class HabitCalendarView extends StatelessWidget {
                     await onDeleteRecord(recordForDay!.id);
                   } else {
                     await onCreateRecord(habitId, date);
+                    _soundPlayer.play(SharedSounds.done);
                   }
                 },
           style: ElevatedButton.styleFrom(
