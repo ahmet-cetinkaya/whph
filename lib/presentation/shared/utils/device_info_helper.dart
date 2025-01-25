@@ -9,22 +9,30 @@ class DeviceInfoHelper {
     try {
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
-        return androidInfo.device;
-      } else if (Platform.isLinux) {
+        return '${androidInfo.brand.toUpperCase()} ${androidInfo.model}';
+      }
+
+      final userName = Platform.environment['USERNAME'] ?? Platform.environment['USER'];
+
+      if (Platform.isLinux) {
         final linuxInfo = await _deviceInfo.linuxInfo;
-        return linuxInfo.prettyName;
-      } else if (Platform.isWindows) {
+        return userName != null ? '${linuxInfo.prettyName} ($userName)' : linuxInfo.prettyName;
+      }
+
+      if (Platform.isWindows) {
         final windowsInfo = await _deviceInfo.windowsInfo;
-        return windowsInfo.computerName;
-      } else if (Platform.isMacOS) {
+        return userName != null ? '${windowsInfo.computerName} ($userName)' : windowsInfo.computerName;
+      }
+
+      if (Platform.isMacOS) {
         final macOsInfo = await _deviceInfo.macOsInfo;
-        return macOsInfo.computerName;
+        return userName != null ? '${macOsInfo.computerName} ($userName)' : macOsInfo.computerName;
       }
 
       return Platform.localHostname;
     } catch (e) {
       if (kDebugMode) print('Failed to get device name: $e');
-      return 'Unknown';
+      return 'Unknown Device';
     }
   }
 }
