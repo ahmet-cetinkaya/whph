@@ -11,12 +11,16 @@ class TagTimeChart extends StatefulWidget {
   final List<String>? filterByTags;
   final DateTime startDate;
   final DateTime endDate;
+  final double? height;
+  final double? width;
 
   TagTimeChart({
     super.key,
     this.filterByTags,
     required this.startDate,
     required this.endDate,
+    this.height = 300,
+    this.width = 300,
   });
 
   @override
@@ -73,16 +77,20 @@ class _TagTimeChartState extends State<TagTimeChart> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildChart();
+    if (_tagTimes == null || _tagTimes!.items.isEmpty) {
+      return const Center(child: Text('No data available'));
+    }
+
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: _buildChart(),
+    );
   }
 
   Widget _buildChart() {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_tagTimes == null || _tagTimes!.items.isEmpty) {
-      return const Center(child: Text('No data available'));
     }
 
     return PieChart(

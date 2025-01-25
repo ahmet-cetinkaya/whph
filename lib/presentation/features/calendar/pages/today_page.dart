@@ -242,15 +242,11 @@ class _TodayPageState extends State<TodayPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(
-            child: SizedBox(
-              height: 300,
-              width: 300,
-              child: TagTimeChart(
-                key: _timeKey,
-                filterByTags: _selectedTagFilter,
-                startDate: today,
-                endDate: tomorrow,
-              ),
+            child: TagTimeChart(
+              key: _timeKey,
+              filterByTags: _selectedTagFilter,
+              startDate: today,
+              endDate: tomorrow,
             ),
           ),
         ),

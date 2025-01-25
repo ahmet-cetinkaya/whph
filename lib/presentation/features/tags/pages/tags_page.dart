@@ -132,15 +132,11 @@ class _TagsPageState extends State<TagsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: SizedBox(
-                  height: 300,
-                  width: 300,
-                  child: TagTimeChart(
-                    key: _chartKey,
-                    filterByTags: _selectedFilters,
-                    startDate: _startDate,
-                    endDate: _endDate,
-                  ),
+                child: TagTimeChart(
+                  key: _chartKey,
+                  filterByTags: _selectedFilters,
+                  startDate: _startDate,
+                  endDate: _endDate,
                 ),
               ),
             ),
