@@ -260,7 +260,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
                   return Container(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                     ),
                     child: SingleChildScrollView(
