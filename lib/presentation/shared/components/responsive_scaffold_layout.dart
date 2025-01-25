@@ -107,7 +107,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: 8),
                 ],
-                Text(widget.title ?? AppInfo.name),
+                Text(widget.title ?? AppInfo.shortName),
               ],
             ),
         titleSpacing: 0,
@@ -152,7 +152,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                       children: [
                         const AppLogo(width: 32, height: 32),
                         const SizedBox(width: 8),
-                        Text(AppInfo.name),
+                        Text(AppInfo.shortName),
                       ],
                     )),
               ),
