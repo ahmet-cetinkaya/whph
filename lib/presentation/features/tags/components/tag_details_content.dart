@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
+import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
@@ -12,6 +14,8 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
+import 'package:whph/presentation/shared/components/color_preview.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -106,6 +110,41 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     }
   }
 
+  Future<void> _saveTag() async {
+    var command = SaveTagCommand(
+      id: widget.tagId,
+      name: _tag!.name,
+      color: _tag!.color,
+    );
+    try {
+      await widget._mediator.send(command);
+      await _getTag();
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: "Unexpected error occurred while saving tag.");
+      }
+    }
+  }
+
+  void _onChangeColor(Color color) {
+    if (mounted) {
+      setState(() {
+        _tag!.color = color.toHexString();
+      });
+    }
+    _saveTag();
+  }
+
+  void _onChangeColorOpen() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => color_picker.ColorPicker(
+            pickerColor: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16)), onChangeColor: _onChangeColor));
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_tag == null || _tagTags == null) {
@@ -117,6 +156,20 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DetailTable(rowData: [
+            DetailTableRowData(
+              label: TagUiConstants.colorLabel,
+              icon: TagUiConstants.colorIcon,
+              hintText: TagUiConstants.clickToChangeColorHint,
+              widget: Row(
+                children: [
+                  ColorPreview(color: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16))),
+                  IconButton(
+                    onPressed: _onChangeColorOpen,
+                    icon: Icon(TagUiConstants.editIcon, size: TagUiConstants.iconSize),
+                  )
+                ],
+              ),
+            ),
             DetailTableRowData(
               label: TagUiConstants.tagsLabel,
               icon: TagUiConstants.tagIcon,
