@@ -23,12 +23,12 @@ environment:
 
 # https://pub.dev/packages/rps
 scripts:
-  clean: flutter clean && rm -rf ~/.pub-cache && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
+  clean: flutter clean && rm -rf ~/.pub-cache/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
   format: dart format . -l 120
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && dart format ./**/*.g.dart -l 120
   gen-icons: flutter pub run icons_launcher:create
   migrate: flutter pub run drift_dev make-migrations
-  fix-android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh
+  fix-android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh && bash scripts/fix_auto_start_flutter.sh
   release-linux: flutter build linux --release
   release-windows: flutter build windows --release
   release-android: flutter build apk --release
