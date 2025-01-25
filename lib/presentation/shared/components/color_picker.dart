@@ -25,7 +25,6 @@ class ColorPicker extends StatelessWidget {
                 flutter_colorpicker.MaterialPicker(
                   pickerColor: pickerColor,
                   onColorChanged: onChangeColor,
-                  enableLabel: true,
                 ),
                 flutter_colorpicker.ColorPicker(
                   pickerColor: pickerColor,
