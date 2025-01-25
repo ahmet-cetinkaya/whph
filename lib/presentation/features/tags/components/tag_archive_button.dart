@@ -4,7 +4,9 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
@@ -53,22 +55,20 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
 
   Future<void> _toggleArchiveStatus() async {
     final newStatus = !(_isArchived ?? false);
-    final message = newStatus ? 'Archive Tag' : 'Unarchive Tag';
-    final buttonText = newStatus ? 'Archive' : 'Unarchive';
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(message),
-        content: Text('Are you sure you want to ${message.toLowerCase()}?'),
+        title: Text(_isArchived! ? TagUiConstants.unarchiveTagTitle : TagUiConstants.archiveTagTitle),
+        content: Text(_isArchived! ? TagUiConstants.unarchiveTagMessage : TagUiConstants.archiveTagMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(SharedUiConstants.cancelLabel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(buttonText),
+            child: Text(_isArchived! ? 'Unarchive' : 'Archive'),
           ),
         ],
       ),
@@ -110,8 +110,8 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
     }
 
     return IconButton(
-      icon: Icon(_isArchived! ? Icons.unarchive : Icons.archive),
-      tooltip: _isArchived! ? 'Unarchive tag' : 'Archive tag',
+      icon: Icon(_isArchived! ? TagUiConstants.unarchiveIcon : TagUiConstants.archiveIcon),
+      tooltip: _isArchived! ? TagUiConstants.unarchiveTagTooltip : TagUiConstants.archiveTagTooltip,
       onPressed: _toggleArchiveStatus,
       color: widget.buttonColor,
       style: IconButton.styleFrom(

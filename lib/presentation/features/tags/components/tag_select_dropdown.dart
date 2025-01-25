@@ -5,6 +5,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -27,11 +29,11 @@ class TagSelectDropdown extends StatefulWidget {
     this.initialSelectedTags = const [],
     this.excludeTagIds = const [],
     required this.isMultiSelect,
-    this.icon = Icons.label,
+    this.icon = TagUiConstants.tagIcon,
     this.buttonLabel,
-    this.iconSize,
+    this.iconSize = TagUiConstants.tagIconSize,
     this.color,
-    this.tooltip,
+    this.tooltip = TagUiConstants.selectTagsHint,
     required this.onTagsSelected,
     this.showLength = false,
     this.limit,
@@ -85,7 +87,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tags.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorLoadingTags);
       }
     }
   }
@@ -122,7 +124,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              labelText: 'Search Tags',
+                              labelText: TagUiConstants.searchTagsLabel,
                               fillColor: Colors.transparent,
                               labelStyle: AppTheme.bodySmall,
                             ),
@@ -139,13 +141,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         // Clear all button
                         if (tempSelectedTags.isNotEmpty)
                           TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                tempSelectedTags.clear();
-                              });
-                            },
-                            icon: Icon(Icons.clear),
-                            label: Text('Clear All'),
+                            onPressed: () => setState(() => tempSelectedTags.clear()),
+                            icon: Icon(SharedUiConstants.clearIcon),
+                            label: Text(TagUiConstants.clearAllLabel),
                           ),
                       ],
                     ),
@@ -193,7 +191,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+                        TextButton(onPressed: () => Navigator.pop(context), child: Text(SharedUiConstants.cancelLabel)),
                         TextButton(
                           onPressed: () {
                             final selectedOptions = tempSelectedTags.map((id) {
@@ -207,7 +205,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             widget.onTagsSelected(selectedOptions);
                             Navigator.pop(context);
                           },
-                          child: Text('Done'),
+                          child: Text(TagUiConstants.doneLabel),
                         ),
                       ],
                     ),

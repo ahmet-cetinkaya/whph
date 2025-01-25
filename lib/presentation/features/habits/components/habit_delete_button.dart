@@ -75,9 +75,8 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
       icon: Icon(SharedUiConstants.deleteIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
-        backgroundColor: widget.buttonBackgroundColor != null
-            ? MaterialStatePropertyAll<Color>(widget.buttonBackgroundColor!)
-            : null,
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }

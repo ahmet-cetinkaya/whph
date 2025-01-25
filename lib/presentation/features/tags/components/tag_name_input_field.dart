@@ -6,6 +6,7 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 
 class TagNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -42,7 +43,8 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tag name.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: TagUiConstants.errorLoadingTagName);
       }
     }
   }
@@ -60,8 +62,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
         if (context.mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
         if (context.mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-              message: 'Unexpected error occurred while saving tag.');
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorSavingTag);
         }
       }
     });

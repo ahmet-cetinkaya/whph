@@ -10,6 +10,8 @@ import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -53,7 +55,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting tag.");
+            message: TagUiConstants.errorLoadingTagName);
       }
     }
   }
@@ -116,9 +118,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         children: [
           DetailTable(rowData: [
             DetailTableRowData(
-              label: "Tags",
-              icon: Icons.label,
-              hintText: "Select tags to associate",
+              label: TagUiConstants.tagsLabel,
+              icon: TagUiConstants.tagIcon,
+              hintText: TagUiConstants.selectTagsHint,
               widget: TagSelectDropdown(
                 key: ValueKey(_tagTags!.items.length),
                 isMultiSelect: true,
@@ -131,7 +133,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                         ))
                     .toList(),
                 excludeTagIds: [_tag!.id],
-                icon: Icons.add,
+                icon: SharedUiConstants.addIcon,
               ),
             ),
           ]),

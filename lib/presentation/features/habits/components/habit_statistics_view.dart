@@ -143,7 +143,7 @@ class HabitStatisticsView extends StatelessWidget {
                     dotData: FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: AppTheme.primaryColor.withOpacity(0.2),
+                      color: AppTheme.primaryColor.withAlpha((255 * 0.2).toInt()),
                     ),
                   ),
                 ],

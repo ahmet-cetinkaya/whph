@@ -5,6 +5,7 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 
 class TagsList extends StatefulWidget {
   final Mediator mediator;
@@ -63,7 +64,7 @@ class _TagsListState extends State<TagsList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tags.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorLoadingTags);
       }
     }
   }
@@ -75,8 +76,8 @@ class _TagsListState extends State<TagsList> {
     }
 
     if (_tags!.items.isEmpty) {
-      return const Center(
-        child: Text('No tags found'),
+      return Center(
+        child: Text(TagUiConstants.noTagsFoundMessage),
       );
     }
 
