@@ -80,6 +80,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       displayName: _appUsage!.displayName,
       name: _appUsage!.name,
       color: _appUsage!.color,
+      deviceName: _appUsage!.deviceName,
     );
     try {
       var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);

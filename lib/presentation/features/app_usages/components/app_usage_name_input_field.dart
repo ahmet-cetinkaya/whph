@@ -69,6 +69,7 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       displayName: _appUsage!.name != _controller.text ? _controller.text : null,
       name: _appUsage!.name,
       color: _appUsage!.color,
+      deviceName: _appUsage!.deviceName,
     );
 
     try {
