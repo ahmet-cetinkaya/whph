@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TagAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -24,33 +25,24 @@ class _TagAddButtonState extends State<TagAddButton> {
     if (isLoading) return;
 
     if (mounted) {
-      setState(() {
-        isLoading = true;
-      });
+      setState(() => isLoading = true);
     }
 
     try {
       var command = SaveTagCommand(
-        name: "New Tag",
+        name: TagUiConstants.newTagDefaultName,
       );
       var response = await mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
 
       if (widget.onTagCreated != null) {
         widget.onTagCreated!(response.id);
       }
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while creating tag.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorSavingTag);
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -58,11 +50,11 @@ class _TagAddButtonState extends State<TagAddButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _createTag(context),
-      icon: const Icon(Icons.add),
+      icon: Icon(SharedUiConstants.addIcon),
       color: widget.buttonColor,
       style: ButtonStyle(
         backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }
