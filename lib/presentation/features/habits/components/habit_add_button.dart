@@ -23,7 +23,7 @@ class _HabitAddButtonState extends State<HabitAddButton> {
     try {
       var command = SaveHabitCommand(
         name: "New Habit",
-        description: "# Goals\n - [ ] Goal 1\n - [ ] Goal 2",
+        description: "",
       );
       var response = await mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
