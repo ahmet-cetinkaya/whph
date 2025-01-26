@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
-import 'package:whph/presentation/features/app_usages/pages/app_usage_tag_rules_page.dart';
+import 'package:whph/presentation/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
@@ -78,8 +78,8 @@ class AppRoutes {
       case SettingsPage.route:
         page = const SettingsPage();
         break;
-      case AppUsageTagRulesPage.route:
-        page = const AppUsageTagRulesPage();
+      case AppUsageRulesPage.route:
+        page = const AppUsageRulesPage();
         break;
       default:
         page = TodayPage();

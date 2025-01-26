@@ -91,19 +91,116 @@ class _TasksPageState extends State<TasksPage> {
     }
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tasks Overview Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '📋 Tasks help you track and organize your work items and record time spent.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Task Organization:',
+                  '  - Organize with tags',
+                  '  - Set planned dates',
+                  '  - Track deadlines',
+                  '• Time Tracking:',
+                  '  - Record time spent on tasks',
+                  '  - Automatically updates tag times',
+                  '  - Marathon mode for focused work',
+                  '• Task Management:',
+                  '  - Active and completed task views',
+                  '  - Quick task creation',
+                  '  - Flexible task filtering',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '🔍 Filters',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Filter by tags to focus on specific areas',
+                  '• Use date filters for time-based views',
+                  '• Search tasks by name or description',
+                  '• View completed tasks separately',
+                  '• Combine filters for precise results',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use tags to group related tasks',
+                  '• Set realistic planned dates',
+                  '• Break down large tasks into smaller ones',
+                  '• Review completed tasks regularly',
+                  '• Use Marathon mode for focused work sessions',
+                  '• Track time to understand work patterns',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       title: 'Tasks',
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: TaskAddButton(
-            onTaskCreated: (_) => _refreshAllTasks(),
-            buttonColor: AppTheme.primaryColor,
-            initialTagIds: _selectedTagIds,
-          ),
+        TaskAddButton(
+          onTaskCreated: (_) => _refreshAllTasks(),
+          buttonColor: AppTheme.primaryColor,
+          initialTagIds: _selectedTagIds,
         ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8),
