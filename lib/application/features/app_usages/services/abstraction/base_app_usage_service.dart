@@ -109,9 +109,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
 
   Future<void> _applyTagRules(AppUsage appUsage) async {
     // Get all active rules
-    final rules = await _appUsageTagRuleRepository.getAll(
-      customWhereFilter: CustomWhereFilter('is_active = ?', [1]),
-    );
+    final rules = await _appUsageTagRuleRepository.getAll();
 
     for (var rule in rules) {
       try {

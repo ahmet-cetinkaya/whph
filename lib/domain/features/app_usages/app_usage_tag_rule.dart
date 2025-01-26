@@ -5,7 +5,6 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 class AppUsageTagRule extends BaseEntity<String> {
   String pattern;
   String tagId;
-  bool isActive;
   String? description;
 
   AppUsageTagRule({
@@ -15,7 +14,6 @@ class AppUsageTagRule extends BaseEntity<String> {
     super.deletedDate,
     required this.pattern,
     required this.tagId,
-    this.isActive = true,
     this.description,
   });
 }

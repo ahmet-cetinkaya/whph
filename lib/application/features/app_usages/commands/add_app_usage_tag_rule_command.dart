@@ -7,13 +7,11 @@ class AddAppUsageTagRuleCommand implements IRequest<AddAppUsageTagRuleCommandRes
   final String pattern;
   final String tagId;
   final String? description;
-  final bool? isActive;
 
   AddAppUsageTagRuleCommand({
     required this.pattern,
     required this.tagId,
     this.description,
-    this.isActive,
   });
 }
 
@@ -37,7 +35,6 @@ class AddAppUsageTagRuleCommandHandler
       pattern: request.pattern,
       tagId: request.tagId,
       description: request.description,
-      isActive: request.isActive ?? true,
     );
 
     await _repository.add(rule);

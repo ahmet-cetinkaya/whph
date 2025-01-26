@@ -9,13 +9,11 @@ class GetListAppUsageTagRulesQuery implements IRequest<GetListAppUsageTagRulesQu
   final int pageIndex;
   final int pageSize;
   final List<String>? filterByTags;
-  final bool? filterByActive;
 
   GetListAppUsageTagRulesQuery({
     required this.pageIndex,
     required this.pageSize,
     this.filterByTags,
-    this.filterByActive,
   });
 }
 
@@ -36,7 +34,6 @@ class AppUsageTagRuleListItem {
   final String tagName;
   final String? tagColor;
   final String? description;
-  final bool isActive;
   final DateTime createdDate;
 
   AppUsageTagRuleListItem({
@@ -46,7 +43,6 @@ class AppUsageTagRuleListItem {
     required this.tagName,
     this.tagColor,
     this.description,
-    required this.isActive,
     required this.createdDate,
   });
 }
@@ -64,13 +60,6 @@ class GetListAppUsageTagRulesQueryHandler
   @override
   Future<GetListAppUsageTagRulesQueryResponse> call(GetListAppUsageTagRulesQuery request) async {
     CustomWhereFilter? whereFilter;
-
-    // Filter by active status
-    if (request.filterByActive != null) {
-      whereFilter ??= CustomWhereFilter.empty();
-      whereFilter.query += 'is_active = ?';
-      whereFilter.variables.add(request.filterByActive! ? 1 : 0);
-    }
 
     // Filter by tags
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
@@ -104,7 +93,6 @@ class GetListAppUsageTagRulesQueryHandler
         tagName: cachedTags[rule.tagId]!.name,
         tagColor: cachedTags[rule.tagId]?.color,
         description: rule.description,
-        isActive: rule.isActive,
         createdDate: rule.createdDate,
       );
     }).toList());

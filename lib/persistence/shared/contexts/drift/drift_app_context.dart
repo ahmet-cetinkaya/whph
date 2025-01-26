@@ -84,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration {
@@ -149,8 +149,20 @@ class AppDatabase extends _$AppDatabase {
           await m.dropColumn(appUsageTable, "duration");
         },
         from4To5: (m, schema) async {
-          // Create AppUsageTagRule table
-          await m.createTable(appUsageTagRuleTable);
+          // Create AppUsageTagRule table with correct SQLite types and constraints
+          await customStatement('''
+            CREATE TABLE app_usage_tag_rule_table (
+              id TEXT NOT NULL,
+              pattern TEXT NOT NULL,
+              tag_id TEXT NOT NULL,
+              description TEXT NULL,
+              is_active INTEGER NOT NULL DEFAULT (1) CHECK (is_active IN (0, 1)),
+              created_date INTEGER NOT NULL,
+              modified_date INTEGER NULL,
+              deleted_date INTEGER NULL,
+              PRIMARY KEY(id)
+            )
+          ''');
         },
         from5To6: (m, schema) async {
           // Add deviceName column to AppUsage table
@@ -197,6 +209,35 @@ class AppDatabase extends _$AppDatabase {
               ],
             );
           }
+        },
+        from8To9: (m, schema) async {
+          // Drop isActive column using correct SQLite types and constraints
+          await customStatement('''
+            CREATE TABLE app_usage_tag_rule_table_temp (
+              id TEXT NOT NULL,
+              pattern TEXT NOT NULL,
+              tag_id TEXT NOT NULL,
+              description TEXT NULL,
+              created_date INTEGER NOT NULL,
+              modified_date INTEGER NULL,
+              deleted_date INTEGER NULL,
+              PRIMARY KEY(id)
+            )
+          ''');
+
+          await customStatement('''
+            INSERT INTO app_usage_tag_rule_table_temp
+            SELECT id, pattern, tag_id, description, 
+                   strftime('%s000', created_date) as created_date,
+                   CASE WHEN modified_date IS NULL THEN NULL 
+                        ELSE strftime('%s000', modified_date) END as modified_date,
+                   CASE WHEN deleted_date IS NULL THEN NULL 
+                        ELSE strftime('%s000', deleted_date) END as deleted_date
+            FROM app_usage_tag_rule_table
+          ''');
+
+          await customStatement('DROP TABLE app_usage_tag_rule_table');
+          await customStatement('ALTER TABLE app_usage_tag_rule_table_temp RENAME TO app_usage_tag_rule_table');
         },
       ),
     );

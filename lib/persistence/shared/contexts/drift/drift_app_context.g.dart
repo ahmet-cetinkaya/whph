@@ -455,13 +455,6 @@ class $AppUsageTagRuleTableTable extends AppUsageTagRuleTable
   @override
   late final GeneratedColumn<String> tagId =
       GeneratedColumn<String>('tag_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _isActiveMeta = const VerificationMeta('isActive');
-  @override
-  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>('is_active', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
-      defaultValue: const Constant(true));
   static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description =
@@ -479,8 +472,7 @@ class $AppUsageTagRuleTableTable extends AppUsageTagRuleTable
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, pattern, tagId, isActive, description, createdDate, modifiedDate, deletedDate];
+  List<GeneratedColumn> get $columns => [id, pattern, tagId, description, createdDate, modifiedDate, deletedDate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -504,9 +496,6 @@ class $AppUsageTagRuleTableTable extends AppUsageTagRuleTable
       context.handle(_tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
     } else if (isInserting) {
       context.missing(_tagIdMeta);
-    }
-    if (data.containsKey('is_active')) {
-      context.handle(_isActiveMeta, isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
     if (data.containsKey('description')) {
       context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['description']!, _descriptionMeta));
@@ -537,7 +526,6 @@ class $AppUsageTagRuleTableTable extends AppUsageTagRuleTable
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       pattern: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}pattern'])!,
       tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
-      isActive: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description']),
     );
   }
@@ -552,7 +540,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
   final Value<String> id;
   final Value<String> pattern;
   final Value<String> tagId;
-  final Value<bool> isActive;
   final Value<String?> description;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
@@ -562,7 +549,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
     this.id = const Value.absent(),
     this.pattern = const Value.absent(),
     this.tagId = const Value.absent(),
-    this.isActive = const Value.absent(),
     this.description = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
@@ -573,7 +559,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
     required String id,
     required String pattern,
     required String tagId,
-    this.isActive = const Value.absent(),
     this.description = const Value.absent(),
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
@@ -587,7 +572,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
     Expression<String>? id,
     Expression<String>? pattern,
     Expression<String>? tagId,
-    Expression<bool>? isActive,
     Expression<String>? description,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
@@ -598,7 +582,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
       if (id != null) 'id': id,
       if (pattern != null) 'pattern': pattern,
       if (tagId != null) 'tag_id': tagId,
-      if (isActive != null) 'is_active': isActive,
       if (description != null) 'description': description,
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
@@ -611,7 +594,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
       {Value<String>? id,
       Value<String>? pattern,
       Value<String>? tagId,
-      Value<bool>? isActive,
       Value<String?>? description,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
@@ -621,7 +603,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
       id: id ?? this.id,
       pattern: pattern ?? this.pattern,
       tagId: tagId ?? this.tagId,
-      isActive: isActive ?? this.isActive,
       description: description ?? this.description,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
@@ -641,9 +622,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
     }
     if (tagId.present) {
       map['tag_id'] = Variable<String>(tagId.value);
-    }
-    if (isActive.present) {
-      map['is_active'] = Variable<bool>(isActive.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -669,7 +647,6 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
           ..write('id: $id, ')
           ..write('pattern: $pattern, ')
           ..write('tagId: $tagId, ')
-          ..write('isActive: $isActive, ')
           ..write('description: $description, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
@@ -3703,7 +3680,6 @@ typedef $$AppUsageTagRuleTableTableCreateCompanionBuilder = AppUsageTagRuleTable
   required String id,
   required String pattern,
   required String tagId,
-  Value<bool> isActive,
   Value<String?> description,
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
@@ -3714,7 +3690,6 @@ typedef $$AppUsageTagRuleTableTableUpdateCompanionBuilder = AppUsageTagRuleTable
   Value<String> id,
   Value<String> pattern,
   Value<String> tagId,
-  Value<bool> isActive,
   Value<String?> description,
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
@@ -3737,9 +3712,6 @@ class $$AppUsageTagRuleTableTableFilterComposer extends Composer<_$AppDatabase, 
 
   ColumnFilters<String> get tagId =>
       $composableBuilder(column: $table.tagId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isActive =>
-      $composableBuilder(column: $table.isActive, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => ColumnFilters(column));
@@ -3770,9 +3742,6 @@ class $$AppUsageTagRuleTableTableOrderingComposer extends Composer<_$AppDatabase
   ColumnOrderings<String> get tagId =>
       $composableBuilder(column: $table.tagId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get isActive =>
-      $composableBuilder(column: $table.isActive, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => ColumnOrderings(column));
 
@@ -3799,8 +3768,6 @@ class $$AppUsageTagRuleTableTableAnnotationComposer extends Composer<_$AppDataba
   GeneratedColumn<String> get pattern => $composableBuilder(column: $table.pattern, builder: (column) => column);
 
   GeneratedColumn<String> get tagId => $composableBuilder(column: $table.tagId, builder: (column) => column);
-
-  GeneratedColumn<bool> get isActive => $composableBuilder(column: $table.isActive, builder: (column) => column);
 
   GeneratedColumn<String> get description =>
       $composableBuilder(column: $table.description, builder: (column) => column);
@@ -3838,7 +3805,6 @@ class $$AppUsageTagRuleTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> pattern = const Value.absent(),
             Value<String> tagId = const Value.absent(),
-            Value<bool> isActive = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
@@ -3849,7 +3815,6 @@ class $$AppUsageTagRuleTableTableTableManager extends RootTableManager<
             id: id,
             pattern: pattern,
             tagId: tagId,
-            isActive: isActive,
             description: description,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
@@ -3860,7 +3825,6 @@ class $$AppUsageTagRuleTableTableTableManager extends RootTableManager<
             required String id,
             required String pattern,
             required String tagId,
-            Value<bool> isActive = const Value.absent(),
             Value<String?> description = const Value.absent(),
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
@@ -3871,7 +3835,6 @@ class $$AppUsageTagRuleTableTableTableManager extends RootTableManager<
             id: id,
             pattern: pattern,
             tagId: tagId,
-            isActive: isActive,
             description: description,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
