@@ -44,27 +44,124 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
     _refreshTasks();
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tag Details Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🏷️ Tags help you organize and track time across related tasks.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Time tracking across tasks:',
+                  '  - Automatically accumulates time from tasks',
+                  '  - Shows total time investment for the tag',
+                  '  - Helps track project or category focus',
+                  '• Related tags:',
+                  '  - Connect related projects or categories',
+                  '  - Create tag hierarchies',
+                  '  - Track time across related tag groups',
+                  '• Task organization',
+                  '• Archive functionality',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Usage Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use for projects, categories, or contexts',
+                  '• Link related tags to create hierarchies:',
+                  '  - Project tags to department tags',
+                  '  - Subtask tags to main project tags',
+                  '  - Category tags to broader areas',
+                  '• Track time investment across tag groups',
+                  '• Group related tasks together',
+                  '• Archive tags for completed projects',
+                  '• Use meaningful names for better organization',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚙️ Management',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Edit tag name anytime',
+                  '• Add/remove related tags',
+                  '• Add/remove tasks as needed',
+                  '• Archive tags to hide completed projects',
+                  '• Delete tags you no longer need',
+                  '• View time statistics',
+                  '• Track aggregate time across related tags',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       appBarTitle: TagNameInputField(id: widget.tagId),
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TagArchiveButton(
-            tagId: widget.tagId,
-            onArchiveSuccess: () => Navigator.of(context).pop(),
-            buttonColor: AppTheme.primaryColor,
-          ),
+        TagArchiveButton(
+          tagId: widget.tagId,
+          onArchiveSuccess: () => Navigator.of(context).pop(),
+          buttonColor: AppTheme.primaryColor,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TagDeleteButton(
-            tagId: widget.tagId,
-            onDeleteSuccess: () => Navigator.of(context).pop(),
-            buttonColor: AppTheme.primaryColor,
-          ),
+        TagDeleteButton(
+          tagId: widget.tagId,
+          onDeleteSuccess: () => Navigator.of(context).pop(),
+          buttonColor: AppTheme.primaryColor,
         ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => ListView(
         padding: const EdgeInsets.all(16),
@@ -87,11 +184,15 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                     return ListTile(
                       contentPadding: EdgeInsets.only(left: 1),
                       leading: Icon(Icons.task),
-                      title: Text('Tasks'),
-                      trailing: TaskAddButton(
-                        onTaskCreated: (taskId) => _refreshTasks(),
-                        buttonColor: AppTheme.primaryColor,
-                        initialTagIds: [widget.tagId],
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Tasks'),
+                          TaskAddButton(
+                            onTaskCreated: (taskId) => _refreshTasks(),
+                            initialTagIds: [widget.tagId],
+                          ),
+                        ],
                       ),
                     );
                   },
