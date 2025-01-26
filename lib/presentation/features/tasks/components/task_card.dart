@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
@@ -13,7 +14,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 class TaskCard extends StatelessWidget {
   final Mediator mediator = container.resolve<Mediator>();
 
-  final TaskListItem task;
+  final TaskListItem taskItem;
 
   final List<Widget>? trailingButtons;
   final bool transparent;
@@ -24,7 +25,7 @@ class TaskCard extends StatelessWidget {
 
   TaskCard({
     super.key,
-    required this.task,
+    required this.taskItem,
     this.trailingButtons,
     this.transparent = false,
     this.onCompleted,
@@ -33,6 +34,8 @@ class TaskCard extends StatelessWidget {
   });
 
   Future<void> _handleSchedule(DateTime date) async {
+    final task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
+
     var command = SaveTaskCommand(
       id: task.id,
       title: task.title,
@@ -41,6 +44,7 @@ class TaskCard extends StatelessWidget {
       deadlineDate: task.deadlineDate,
       estimatedTime: task.estimatedTime,
       isCompleted: task.isCompleted,
+      description: task.description,
     );
 
     await mediator.send(command);
@@ -68,10 +72,10 @@ class TaskCard extends StatelessWidget {
             width: 32,
             height: 32,
             child: TaskCompleteButton(
-              taskId: task.id,
-              isCompleted: task.isCompleted,
+              taskId: taskItem.id,
+              isCompleted: taskItem.isCompleted,
               onToggleCompleted: onCompleted ?? () {},
-              color: task.priority != null ? _getPriorityColor(task.priority!) : null,
+              color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
             ),
           ),
           const SizedBox(width: 8),
@@ -105,7 +109,7 @@ class TaskCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            task.title,
+            taskItem.title,
             style: AppTheme.bodyMedium.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -120,11 +124,11 @@ class TaskCard extends StatelessWidget {
     final List<Widget> metadata = [];
 
     // Add tags if exist
-    if (task.tags.isNotEmpty) {
+    if (taskItem.tags.isNotEmpty) {
       metadata.add(Icon(TaskUiConstants.tagsIcon, size: 12, color: TaskUiConstants.tagsColor));
       metadata.add(const SizedBox(width: 2));
 
-      for (var i = 0; i < task.tags.length; i++) {
+      for (var i = 0; i < taskItem.tags.length; i++) {
         if (i > 0) {
           metadata.add(Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)));
         }
@@ -132,10 +136,11 @@ class TaskCard extends StatelessWidget {
         metadata.add(ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 80),
           child: Text(
-            task.tags[i].name,
+            taskItem.tags[i].name,
             style: AppTheme.bodySmall.copyWith(
-                color:
-                    task.tags[i].color != null ? Color(int.parse('FF${task.tags[i].color}', radix: 16)) : Colors.grey),
+                color: taskItem.tags[i].color != null
+                    ? Color(int.parse('FF${taskItem.tags[i].color}', radix: 16))
+                    : Colors.grey),
             overflow: TextOverflow.ellipsis,
           ),
         ));
@@ -171,24 +176,24 @@ class TaskCard extends StatelessWidget {
       elements.add(element);
     }
 
-    if (task.estimatedTime != null) {
+    if (taskItem.estimatedTime != null) {
       addElement(_buildInfoRow(
         TaskUiConstants.estimatedTimeIcon,
-        SharedUiConstants.formatMinutes(task.estimatedTime),
+        SharedUiConstants.formatMinutes(taskItem.estimatedTime),
         TaskUiConstants.estimatedTimeColor,
       ));
     }
-    if (task.plannedDate != null) {
+    if (taskItem.plannedDate != null) {
       addElement(_buildInfoRow(
         TaskUiConstants.plannedDateIcon,
-        dateFormat.format(task.plannedDate!),
+        dateFormat.format(taskItem.plannedDate!),
         TaskUiConstants.plannedDateColor,
       ));
     }
-    if (task.deadlineDate != null) {
+    if (taskItem.deadlineDate != null) {
       addElement(_buildInfoRow(
         TaskUiConstants.deadlineDateIcon,
-        dateFormat.format(task.deadlineDate!),
+        dateFormat.format(taskItem.deadlineDate!),
         TaskUiConstants.deadlineDateColor,
       ));
     }
@@ -205,7 +210,8 @@ class TaskCard extends StatelessWidget {
         ],
       );
 
-  bool get _hasDateOrTime => task.estimatedTime != null || task.plannedDate != null || task.deadlineDate != null;
+  bool get _hasDateOrTime =>
+      taskItem.estimatedTime != null || taskItem.plannedDate != null || taskItem.deadlineDate != null;
 
   Color _getPriorityColor(EisenhowerPriority? priority) {
     return TaskUiConstants.getPriorityColor(priority);

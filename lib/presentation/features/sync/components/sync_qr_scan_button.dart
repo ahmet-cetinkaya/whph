@@ -118,10 +118,11 @@ class SyncQrScanButton extends StatelessWidget {
 
       // Save new device
       var saveCommand = SaveSyncDeviceCommand(
-          fromIP: syncQrCodeMessageFromIP.localIP,
-          toIP: toIP,
-          name: syncQrCodeMessageFromIP.deviceName,
-          lastSyncDate: DateTime(0));
+        fromIP: syncQrCodeMessageFromIP.localIP,
+        toIP: toIP,
+        name: syncQrCodeMessageFromIP.deviceName,
+        lastSyncDate: DateTime(0),
+      );
 
       await _mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
 

@@ -394,7 +394,7 @@ class _MarathonPageState extends State<MarathonPage> {
                       style: AppTheme.headlineSmall,
                     ),
                     TaskCard(
-                      task: _selectedTask!,
+                      taskItem: _selectedTask!,
                       onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
                       onCompleted: _refreshTasks,
                       trailingButtons: [

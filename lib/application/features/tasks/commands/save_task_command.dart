@@ -15,7 +15,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? deadlineDate;
   final int? estimatedTime;
   final bool isCompleted;
-  final List<String>? tagIds;
+  final List<String>? tagIdsToAdd;
 
   SaveTaskCommand(
       {this.id,
@@ -26,7 +26,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       this.deadlineDate,
       this.estimatedTime,
       this.isCompleted = false,
-      this.tagIds});
+      this.tagIdsToAdd});
 }
 
 class SaveTaskCommandResponse {
@@ -82,8 +82,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     }
 
     // Add initial tags if provided
-    if (request.tagIds != null) {
-      for (var tagId in request.tagIds!) {
+    if (request.tagIdsToAdd != null) {
+      for (var tagId in request.tagIdsToAdd!) {
         var taskTag = TaskTag(
           id: nanoid(),
           taskId: task.id,
