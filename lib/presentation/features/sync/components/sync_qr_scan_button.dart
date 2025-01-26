@@ -69,28 +69,31 @@ class SyncQrScanButton extends StatelessWidget {
               Text('Testing connection...'),
             ],
           ),
-          duration: Duration(seconds: 10),
+          duration: Duration(seconds: 15),
+          behavior: SnackBarBehavior.fixed,
         ),
       );
     }
 
-    // Test connection to target device
-    bool canConnect = await NetworkUtils.testWebSocketConnection(
+    // Test connection
+    final canConnect = await NetworkUtils.testWebSocketConnection(
       syncQrCodeMessageFromIP.localIP,
-      timeout: const Duration(seconds: 5),
+      timeout: const Duration(seconds: 10),
     );
 
-    if (!canConnect) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
+    // Clear previous snackbar and show result
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      if (!canConnect) {
         ErrorHelper.showError(
-          context,
-          BusinessException(
-            'Unable to connect to device. Please ensure both devices are on the same network.',
-          ),
-        );
+            context,
+            BusinessException('Connection failed. Please ensure:\n\n'
+                '1. Both devices are on the same network\n'
+                '2. Both apps are open and running\n'
+                '3. No firewall is blocking the connection'));
+        return;
       }
-      return;
     }
 
     try {

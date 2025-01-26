@@ -1,39 +1,91 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/api/controllers/sync_controller.dart';
 import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 
-void startWebSocketServer() async {
-  var url = Uri(scheme: 'ws', host: '0.0.0.0', port: 4040);
-  var server = await HttpServer.bind(url.host, url.port);
-  if (kDebugMode) print('DEBUG: WebSocket listening on ${url.scheme}://${url.host}:${url.port}');
+const int webSocketPort = 4040;
 
-  await for (HttpRequest request in server) {
-    if (!WebSocketTransformer.isUpgradeRequest(request)) {
-      request.response
-        ..statusCode = HttpStatus.forbidden
-        ..write('WebSocket connections only.')
-        ..close();
+// Web socket server events
+final streamController = StreamController<Map<String, dynamic>>.broadcast();
+Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
+
+Future<void> _setupSocketPermissions() async {
+  if (Platform.isLinux) {
+    try {
+      // Try to set socket options for non-root access
+      await Process.run('sudo', ['setcap', 'cap_net_bind_service=+ep', Platform.resolvedExecutable]);
+    } catch (e) {
+      if (kDebugMode) {
+        print('WARNING: Could not set socket permissions');
+        print('You may need to run: sudo setcap cap_net_bind_service=+ep ${Platform.resolvedExecutable}');
+      }
+    }
+  }
+}
+
+void startWebSocketServer() async {
+  try {
+    await _setupSocketPermissions();
+
+    final server = await HttpServer.bind(
+      InternetAddress.anyIPv4,
+      webSocketPort,
+    );
+
+    if (kDebugMode) {
+      print('DEBUG: WebSocket Server starting on port $webSocketPort');
     }
 
-    WebSocket socket = await WebSocketTransformer.upgrade(request);
-    if (kDebugMode) print('DEBUG: WebSocket client connected from: ${request.connectionInfo?.remoteAddress}');
+    // Handle incoming connections
+    await for (HttpRequest req in server) {
+      try {
+        if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
+          final ws = await WebSocketTransformer.upgrade(req);
+          if (kDebugMode) print('DEBUG: WebSocket connection established');
 
-    socket.listen((message) async {
-      await _handleWebSocketMessage(message, socket);
-    }, onError: (error) {
-      throw Exception('WebSocket error: $error');
-    }, onDone: () {
-      if (kDebugMode) print('DEBUG: WebSocket connection closed');
-    });
+          ws.listen(
+            (data) async {
+              if (kDebugMode) print('DEBUG: Received message: $data');
+              await _handleWebSocketMessage(data.toString(), ws);
+            },
+            onError: (e) {
+              if (kDebugMode) print('DEBUG: Connection error: $e');
+              ws.close();
+            },
+            onDone: () {
+              if (kDebugMode) print('DEBUG: Connection closed normally');
+            },
+            cancelOnError: true,
+          );
+        } else {
+          req.response
+            ..statusCode = HttpStatus.upgradeRequired
+            ..headers.add('Upgrade', 'websocket')
+            ..headers.add('Connection', 'Upgrade')
+            ..write('WebSocket upgrade required')
+            ..close();
+        }
+      } catch (e) {
+        if (kDebugMode) print('DEBUG: Request handling error: $e');
+        req.response.statusCode = HttpStatus.internalServerError;
+        await req.response.close();
+      }
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('CRITICAL ERROR: WebSocket server failed to start');
+      print('Error: $e');
+    }
+    rethrow;
   }
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   try {
-    if (kDebugMode) print('DEBUG: Parsing WebSocket message: ${message.replaceAll(RegExp(r'\s+'), '')}');
+    if (kDebugMode) print('DEBUG: Received message: $message');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -41,6 +93,17 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     }
 
     switch (parsedMessage.type) {
+      case 'test':
+        // Send test response
+        socket.add(JsonMapper.serialize(WebSocketMessage(
+          type: 'test_response',
+          data: {
+            'success': true,
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        )));
+        break;
+
       case 'sync':
         var syncData = parsedMessage.data;
         if (syncData == null) {
