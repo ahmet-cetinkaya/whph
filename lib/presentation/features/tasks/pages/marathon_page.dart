@@ -211,6 +211,134 @@ class _MarathonPageState extends State<MarathonPage> {
     }
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Marathon Mode Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🎯 Marathon Mode is designed to help you focus on your tasks using the Pomodoro Technique.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⏰ The Pomodoro Technique',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'A time management method that uses a timer to break work into intervals. You can customize work and break durations to your preference:',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Common patterns:',
+                  '  - 25 min work / 5 min break (Classic)',
+                  '  - 50 min work / 10 min break (Extended)',
+                  '• After 4 work sessions, take a longer 15-30 minute break',
+                  '• Choose what works best for you',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '🎯 Benefits',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Increases focus and concentration',
+                  '• Reduces mental fatigue',
+                  '• Maintains motivation through small wins',
+                  '• Creates a sense of urgency',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Pro Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use tags to track time across related tasks',
+                  '• Review tag time reports to understand your focus areas',
+                  '• Organize tasks with relevant tags before starting',
+                  '• Remove all distractions before starting',
+                  '• Use breaks to stretch or move around',
+                  '• Stay hydrated during breaks',
+                  '• Don\'t skip breaks - they\'re important!',
+                  '• Start with your most important task',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '❔ How to Use',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '1. Select a task from the list to work on',
+                  '2. Start the Pomodoro timer',
+                  '3. Focus on your task until the timer ends',
+                  '4. Take a short break when the timer rings',
+                  '5. Repeat the process',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Smart time tracking:',
+                  '  - Automatically records time to tasks',
+                  '  - Updates time spent on associated tags',
+                  '  - Helps track project and category time investments',
+                  '• Task filtering and search',
+                  '• Task details and updates',
+                  '• Progress tracking',
+                  '• Tag-based organization',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Add today's date for filtering
@@ -249,7 +377,10 @@ class _MarathonPageState extends State<MarathonPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 48),
+                    IconButton(
+                      icon: const Icon(Icons.help_outline),
+                      onPressed: _showHelpModal,
+                    ),
                   ],
                 ),
               ),
@@ -277,15 +408,33 @@ class _MarathonPageState extends State<MarathonPage> {
                 ),
 
               // Filters
-              TaskFilters(
-                selectedTagIds: _selectedTagIds,
-                selectedStartDate: _selectedStartDate,
-                selectedEndDate: _selectedEndDate,
-                onTagFilterChange: _handleTagFilterChange,
-                onDateFilterChange: _handleDateFilterChange,
-                onSearchChange: _handleSearchChange,
-                showDateFilter: false,
+              Padding(
+                padding: const EdgeInsets.only(left: 6, top: 8),
+                child: TaskFilters(
+                  selectedTagIds: _selectedTagIds,
+                  selectedStartDate: _selectedStartDate,
+                  selectedEndDate: _selectedEndDate,
+                  onTagFilterChange: _handleTagFilterChange,
+                  onDateFilterChange: _handleDateFilterChange,
+                  onSearchChange: _handleSearchChange,
+                  showDateFilter: false,
+                ),
               ),
+
+              // Hint Text
+              if (_selectedTask == null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 18),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select a task to work on from the list below.',
+                        style: AppTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
 
               // Update TaskList with today's date filter
               Expanded(
