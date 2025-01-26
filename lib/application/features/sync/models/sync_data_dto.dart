@@ -14,6 +14,7 @@ import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
+import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 
 @jsonSerializable
 class SyncDataDto {
@@ -22,6 +23,7 @@ class SyncDataDto {
   SyncData<AppUsageTag>? appUsageTagsSyncData;
   SyncData<AppUsageTimeRecord>? appUsageTimeRecordsSyncData;
   SyncData<AppUsageTagRule>? appUsageTagRulesSyncData;
+  SyncData<AppUsageIgnoreRule>? appUsageIgnoreRulesSyncData;
   SyncData<Habit>? habitsSyncData;
   SyncData<HabitRecord>? habitRecordsSyncData;
   SyncData<HabitTag>? habitTagsSyncData;
@@ -40,6 +42,7 @@ class SyncDataDto {
     this.appUsageTagsSyncData,
     this.appUsageTimeRecordsSyncData,
     this.appUsageTagRulesSyncData,
+    this.appUsageIgnoreRulesSyncData,
     this.habitsSyncData,
     this.habitRecordsSyncData,
     this.habitTagsSyncData,
@@ -59,6 +62,7 @@ class SyncDataDto {
         'appUsageTagsSyncData': appUsageTagsSyncData,
         'appUsageTimeRecordsSyncData': appUsageTimeRecordsSyncData,
         'appUsageTagRulesSyncData': appUsageTagRulesSyncData,
+        'appUsageIgnoreRulesSyncData': appUsageIgnoreRulesSyncData,
         'habitsSyncData': habitsSyncData,
         'habitRecordsSyncData': habitRecordsSyncData,
         'habitTagsSyncData': habitTagsSyncData,
@@ -94,6 +98,10 @@ class SyncDataDto {
           ? SyncData<AppUsageTagRule>.fromJson(
               json['appUsageTagRulesSyncData'] as Map<String, dynamic>, AppUsageTagRule)
           : SyncData<AppUsageTagRule>(createSync: [], updateSync: [], deleteSync: []),
+      appUsageIgnoreRulesSyncData: json['appUsageIgnoreRulesSyncData'] != null
+          ? SyncData<AppUsageIgnoreRule>.fromJson(
+              json['appUsageIgnoreRulesSyncData'] as Map<String, dynamic>, AppUsageIgnoreRule)
+          : SyncData<AppUsageIgnoreRule>(createSync: [], updateSync: [], deleteSync: []),
       habitsSyncData: json['habitsSyncData'] != null
           ? SyncData<Habit>.fromJson(json['habitsSyncData'] as Map<String, dynamic>, Habit)
           : SyncData<Habit>(createSync: [], updateSync: [], deleteSync: []),

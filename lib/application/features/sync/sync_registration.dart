@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/sync/commands/delete_sync_command.dart';
 import 'package:whph/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
@@ -27,7 +28,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_time
 void registerSyncFeature(
   IContainer container,
   Mediator mediator,
-  ISyncDeviceRepository syncDeviceRepository,
+  IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository,
   IAppUsageRepository appUsageRepository,
   IAppUsageTagRepository appUsageTagRepository,
   IAppUsageTagRuleRepository appUsageTagRuleRepository,
@@ -36,6 +37,7 @@ void registerSyncFeature(
   IHabitRepository habitRepository,
   IHabitTagsRepository habitTagRepository,
   ISettingRepository settingRepository,
+  ISyncDeviceRepository syncDeviceRepository,
   ITagRepository tagRepository,
   ITagTagRepository tagTagRepository,
   ITaskRepository taskRepository,
@@ -60,6 +62,7 @@ void registerSyncFeature(
     )
     ..registerHandler<SyncCommand, SyncCommandResponse, SyncCommandHandler>(
       () => SyncCommandHandler(
+        appUsageIgnoreRuleRepository: appUsageIgnoreRuleRepository,
         appUsageRepository: appUsageRepository,
         appUsageTagRepository: appUsageTagRepository,
         appUsageTagRuleRepository: appUsageTagRuleRepository,

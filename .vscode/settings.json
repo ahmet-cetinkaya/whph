@@ -10,6 +10,7 @@
         "RANDOMBLOB",
         "Schyler",
         "sqflite",
+        "strftime",
         "whph",
         "wlan"
     ]

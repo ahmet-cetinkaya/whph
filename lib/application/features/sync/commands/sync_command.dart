@@ -24,6 +24,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_time
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
@@ -39,6 +40,7 @@ import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
 import 'package:whph/application/shared/services/i_repository.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 
 class SyncCommand implements IRequest<SyncCommandResponse> {
   final SyncDataDto? syncDataDto;
@@ -82,6 +84,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   final ITaskTagRepository taskTagRepository;
   final ITaskTimeRecordRepository taskTimeRecordRepository;
   final ISettingRepository settingRepository;
+  final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
 
   late final List<SyncConfig> _syncConfigs;
 
@@ -100,6 +103,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     required this.taskTagRepository,
     required this.taskTimeRecordRepository,
     required this.settingRepository,
+    required this.appUsageIgnoreRuleRepository,
   }) {
     _syncConfigs = [
       SyncConfig<AppUsage>(
@@ -186,6 +190,12 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         getSyncData: syncDeviceRepository.getSyncData,
         getSyncDataFromDto: (dto) => dto.syncDevicesSyncData,
       ),
+      SyncConfig<AppUsageIgnoreRule>(
+        name: 'AppUsageIgnoreRule',
+        repository: appUsageIgnoreRuleRepository,
+        getSyncData: appUsageIgnoreRuleRepository.getSyncData,
+        getSyncDataFromDto: (dto) => dto.appUsageIgnoreRulesSyncData,
+      ),
     ];
   }
 
@@ -262,6 +272,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       taskTimeRecordsSyncData: syncDataResults[11] as SyncData<TaskTimeRecord>,
       settingsSyncData: syncDataResults[12] as SyncData<Setting>,
       syncDevicesSyncData: syncDataResults[13] as SyncData<SyncDevice>,
+      appUsageIgnoreRulesSyncData: syncDataResults[14] as SyncData<AppUsageIgnoreRule>,
     );
 
     return dto;

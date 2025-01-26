@@ -42,16 +42,16 @@ void registerApplication(IContainer container) {
   final settingRepository = container.resolve<ISettingRepository>();
   final syncDeviceRepository = container.resolve<ISyncDeviceRepository>();
   final tagRepository = container.resolve<ITagRepository>();
-  final tagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
+  final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
   final tagTagRepository = container.resolve<ITagTagRepository>();
   final taskRepository = container.resolve<ITaskRepository>();
   final taskTagRepository = container.resolve<ITaskTagRepository>();
   final taskTimeRecordRepository = container.resolve<ITaskTimeRecordRepository>();
-  final timeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
+  final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
 
   // Register Features
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,
-      appUsageTagRepository, tagRuleRepository, timeRecordRepository, appUsageIgnoreRuleRepository);
+      appUsageTagRepository, appUsageTagRuleRepository, appUsageTimeRecordRepository, appUsageIgnoreRuleRepository);
   registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, tagRepository);
   registerTasksFeature(
     container,
@@ -67,7 +67,7 @@ void registerApplication(IContainer container) {
     tagRepository,
     tagTagRepository,
     appUsageTagRepository,
-    timeRecordRepository,
+    appUsageTimeRecordRepository,
     taskRepository,
     taskTagRepository,
     taskTimeRecordRepository,
@@ -80,15 +80,16 @@ void registerApplication(IContainer container) {
   registerSyncFeature(
     container,
     mediator,
-    syncDeviceRepository,
+    appUsageIgnoreRuleRepository,
     appUsageRepository,
     appUsageTagRepository,
-    tagRuleRepository,
-    timeRecordRepository,
+    appUsageTagRuleRepository,
+    appUsageTimeRecordRepository,
     habitRecordRepository,
     habitRepository,
     habitTagRepository,
     settingRepository,
+    syncDeviceRepository,
     tagRepository,
     tagTagRepository,
     taskRepository,
