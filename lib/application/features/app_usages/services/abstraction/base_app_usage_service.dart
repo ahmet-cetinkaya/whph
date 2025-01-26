@@ -14,9 +14,8 @@ import 'package:whph/domain/shared/constants/app_theme.dart';
 import 'i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/presentation/shared/utils/device_info_helper.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 
 abstract class BaseAppUsageService implements IAppUsageService {
   @protected
@@ -26,7 +25,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageTagRuleRepository _appUsageTagRuleRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
-  final ISettingRepository _settingRepository;
+  final IAppUsageIgnoreRuleRepository _appUsageIgnoreRuleRepository;
 
   static final List<Color> _chartColors = [
     AppTheme.chartColor1,
@@ -46,7 +45,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     this._appUsageTimeRecordRepository,
     this._appUsageTagRuleRepository,
     this._appUsageTagRepository,
-    this._settingRepository,
+    this._appUsageIgnoreRuleRepository,
   );
 
   @override
@@ -58,19 +57,16 @@ abstract class BaseAppUsageService implements IAppUsageService {
   }
 
   Future<bool> _shouldIgnoreApp(String appName) async {
-    final setting = await _settingRepository.getByKey(Settings.appUsageIgnoreList);
-    if (setting == null || setting.value.isEmpty) return false;
+    final rules = await _appUsageIgnoreRuleRepository.getAll();
 
-    final patterns = setting.value.split('\n').where((line) => line.trim().isNotEmpty).map((e) => e.trim());
-
-    for (final pattern in patterns) {
+    for (final rule in rules) {
       try {
-        if (RegExp(pattern).hasMatch(appName)) {
-          if (kDebugMode) print('DEBUG: Ignoring $appName (matched pattern: $pattern)');
+        if (RegExp(rule.pattern).hasMatch(appName)) {
+          if (kDebugMode) print('DEBUG: Ignoring $appName (matched rule: ${rule.pattern})');
           return true;
         }
       } catch (e) {
-        if (kDebugMode) print('DEBUG: Invalid ignore pattern "$pattern": ${e.toString()}');
+        if (kDebugMode) print('DEBUG: Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
       }
     }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
@@ -22,6 +23,7 @@ import 'package:whph/infrastructure/features/notification/mobile_notification_se
 
 void registerInfrastructure(IContainer container) {
   final settingRepository = container.resolve<ISettingRepository>();
+  final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
 
   container.registerSingleton<ISystemTrayService>(
       (_) => (Platform.isAndroid || Platform.isIOS) ? MobileSystemTrayService() : SystemTrayService());
@@ -46,17 +48,17 @@ void registerInfrastructure(IContainer container) {
 
     if (Platform.isLinux) {
       return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, settingRepository);
+          appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
 
     if (Platform.isWindows) {
       return WindowsAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, settingRepository);
+          appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
 
     if (Platform.isAndroid) {
       return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, settingRepository);
+          appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
 
     throw Exception('Unsupported platform for app usage service.');

@@ -1,33 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
-import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 
-class AppUsageTagRuleList extends StatefulWidget {
+class AppUsageIgnoreRuleList extends StatefulWidget {
   final Mediator mediator;
-  final Function(String id)? onRuleSelected;
-  final List<String>? filterByTags;
-  final bool? filterByActive;
 
-  const AppUsageTagRuleList({
+  const AppUsageIgnoreRuleList({
     super.key,
     required this.mediator,
-    this.onRuleSelected,
-    this.filterByTags,
-    this.filterByActive,
   });
 
   @override
-  State<AppUsageTagRuleList> createState() => _AppUsageTagRuleListState();
+  State<AppUsageIgnoreRuleList> createState() => _AppUsageIgnoreRuleListState();
 }
 
-class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
-  GetListAppUsageTagRulesQueryResponse? _rules;
+class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
+  GetListAppUsageIgnoreRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
 
@@ -37,29 +30,19 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     _loadRules();
   }
 
-  @override
-  void didUpdateWidget(AppUsageTagRuleList oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.filterByTags != widget.filterByTags || oldWidget.filterByActive != widget.filterByActive) {
-      _loadRules();
-    }
-  }
-
   Future<void> _loadRules({int pageIndex = 0}) async {
     if (_isLoading) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final query = GetListAppUsageTagRulesQuery(
+      final query = GetListAppUsageIgnoreRulesQuery(
         pageIndex: pageIndex,
         pageSize: _pageSize,
-        filterByTags: widget.filterByTags,
-        filterByActive: widget.filterByActive,
       );
 
       final result =
-          await widget.mediator.send<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse>(query);
+          await widget.mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -87,7 +70,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     if (_rules == null || _rules!.items.isEmpty) {
       return Center(
         child: Text(
-          AppUsageUiConstants.noRulesFoundMessage,
+          'No ignore rules found',
           style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
         ),
       );
@@ -106,26 +89,9 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
             return Card(
               margin: EdgeInsets.zero,
               child: Padding(
-                padding: AppUsageUiConstants.cardPadding,
+                padding: const EdgeInsets.all(12),
                 child: Row(
                   children: [
-                    // Tag
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surface1,
-                        borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
-                      ),
-                      child: Text(
-                        rule.tagName,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: AppUsageUiConstants.getTagColor(rule.tagColor),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // Pattern and Description
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,14 +106,14 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                               Expanded(
                                 child: Text(
                                   rule.pattern,
-                                  style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
+                                  style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
                                 ),
                               ),
                             ],
                           ),
                           if (rule.description != null)
                             Padding(
-                              padding: const EdgeInsets.only(top: 2),
+                              padding: const EdgeInsets.only(top: 4),
                               child: Text(
                                 rule.description!,
                                 style: AppTheme.bodySmall,
@@ -156,16 +122,11 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                         ],
                       ),
                     ),
-
-                    // Delete Button
                     IconButton(
-                      icon: Icon(SharedUiConstants.deleteIcon, size: AppTheme.iconSizeSmall),
-                      onPressed: () {
-                        if (mounted) _delete(context, rule);
-                      },
+                      icon: Icon(Icons.delete, size: AppTheme.iconSizeSmall),
+                      onPressed: () => _delete(context, rule),
                       visualDensity: VisualDensity.compact,
                       padding: const EdgeInsets.only(left: 8),
-                      tooltip: AppUsageUiConstants.deleteRuleTooltip,
                     ),
                   ],
                 ),
@@ -178,14 +139,14 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     );
   }
 
-  Future<void> _delete(BuildContext context, AppUsageTagRuleListItem rule) async {
+  Future<void> _delete(BuildContext context, AppUsageIgnoreRuleListItem rule) async {
     if (!mounted) return;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppUsageUiConstants.deleteRuleConfirmTitle),
-        content: Text(AppUsageUiConstants.getDeleteRuleConfirmMessage(rule.pattern)),
+        title: const Text('Delete Rule'),
+        content: Text('Are you sure you want to delete the ignore rule "${rule.pattern}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -202,8 +163,8 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
     if (confirmed == true && context.mounted) {
       try {
-        final command = DeleteAppUsageTagRuleCommand(id: rule.id);
-        await widget.mediator.send<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse>(command);
+        final command = DeleteAppUsageIgnoreRuleCommand(id: rule.id);
+        await widget.mediator.send<DeleteAppUsageIgnoreRuleCommand, DeleteAppUsageIgnoreRuleCommandResponse>(command);
         if (context.mounted) await _loadRules();
       } catch (e, stackTrace) {
         if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);

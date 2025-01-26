@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
+import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
@@ -18,6 +20,7 @@ import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_ignore_rule_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_rule_repository.dart';
@@ -41,20 +44,21 @@ const String databaseName = 'whph.db';
 
 @DriftDatabase(
   tables: [
+    AppUsageIgnoreRuleTable,
     AppUsageTable,
-    AppUsageTagTable,
     AppUsageTagRuleTable,
+    AppUsageTagTable,
     AppUsageTimeRecordTable,
+    HabitRecordTable,
     HabitTable,
     HabitTagTable,
-    HabitRecordTable,
-    TaskTable,
-    TaskTagTable,
+    SettingTable,
+    SyncDeviceTable,
     TagTable,
     TagTagTable,
+    TaskTable,
+    TaskTagTable,
     TaskTimeRecordTable,
-    SettingTable,
-    SyncDeviceTable
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -80,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -155,6 +159,44 @@ class AppDatabase extends _$AppDatabase {
         from6To7: (m, schema) async {
           // Add estimatedTime column to Habit table
           await m.addColumn(habitTable, habitTable.estimatedTime);
+        },
+        from7To8: (m, schema) async {
+          // Create AppUsageIgnoreRule table
+          await m.createTable(appUsageIgnoreRuleTable);
+
+          // Get existing ignore rules from settings
+          final existingRules = await customSelect(
+            'SELECT value FROM setting_table WHERE key = ? AND deleted_date IS NULL',
+            variables: [Variable('APP_USAGE_IGNORE_LIST')],
+          ).getSingleOrNull();
+
+          if (existingRules != null && existingRules.data['value'] != null) {
+            final patterns = (existingRules.data['value'] as String)
+                .split('\n')
+                .where((line) => line.trim().isNotEmpty)
+                .map((line) => line.trim());
+
+            // Insert each pattern as a new ignore rule
+            for (final pattern in patterns) {
+              await customInsert(
+                'INSERT INTO app_usage_ignore_rule_table (id, pattern, created_date) VALUES (?, ?, ?)',
+                variables: [
+                  Variable(nanoid()),
+                  Variable(pattern),
+                  Variable(DateTime.now().toIso8601String()),
+                ],
+              );
+            }
+
+            // Delete the old setting
+            await customUpdate(
+              'UPDATE setting_table SET deleted_date = ? WHERE key = ?',
+              variables: [
+                Variable(DateTime.now().toIso8601String()),
+                Variable('APP_USAGE_IGNORE_LIST'),
+              ],
+            );
+          }
         },
       ),
     );

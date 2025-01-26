@@ -18,6 +18,10 @@ import 'package:whph/application/features/app_usages/commands/remove_tag_tag_com
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/application/features/app_usages/commands/add_app_usage_ignore_rule_command.dart';
+import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 
 void registerAppUsagesFeature(
     IContainer container,
@@ -26,8 +30,9 @@ void registerAppUsagesFeature(
     IAppUsageRepository appUsageRepository,
     ITagRepository tagRepository,
     IAppUsageTagRepository appUsageTagRepository,
-    IAppUsageTagRuleRepository tagRuleRepository,
-    IAppUsageTimeRecordRepository timeRecordRepository) {
+    IAppUsageTagRuleRepository appUsageTagRuleRepository,
+    IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
+    IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository) {
   mediator
     ..registerHandler<StartTrackAppUsagesCommand, StartTrackAppUsagesCommandResponse,
         StartTrackAppUsagesCommandHandler>(
@@ -38,7 +43,7 @@ void registerAppUsagesFeature(
     )
     ..registerHandler<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse,
         GetListByTopAppUsagesQueryHandler>(
-      () => GetListByTopAppUsagesQueryHandler(timeRecordRepository: timeRecordRepository),
+      () => GetListByTopAppUsagesQueryHandler(timeRecordRepository: appUsageTimeRecordRepository),
     )
     ..registerHandler<AddAppUsageTagCommand, AddAppUsageTagCommandResponse, AddAppUsageTagCommandHandler>(
       () => AddAppUsageTagCommandHandler(appUsageTagRepository: appUsageTagRepository),
@@ -62,17 +67,29 @@ void registerAppUsagesFeature(
       () => DeleteAppUsageCommandHandler(appUsageRepository: appUsageRepository),
     )
     ..registerHandler<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse, AddAppUsageTagRuleCommandHandler>(
-      () => AddAppUsageTagRuleCommandHandler(repository: tagRuleRepository),
+      () => AddAppUsageTagRuleCommandHandler(repository: appUsageTagRuleRepository),
     )
     ..registerHandler<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse,
         DeleteAppUsageTagRuleCommandHandler>(
-      () => DeleteAppUsageTagRuleCommandHandler(repository: tagRuleRepository),
+      () => DeleteAppUsageTagRuleCommandHandler(repository: appUsageTagRuleRepository),
     )
     ..registerHandler<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse,
         GetListAppUsageTagRulesQueryHandler>(
       () => GetListAppUsageTagRulesQueryHandler(
-        appUsageRulesRepository: tagRuleRepository,
+        appUsageRulesRepository: appUsageTagRuleRepository,
         tagRepository: tagRepository,
       ),
+    )
+    ..registerHandler<AddAppUsageIgnoreRuleCommand, AddAppUsageIgnoreRuleCommandResponse,
+        AddAppUsageIgnoreRuleCommandHandler>(
+      () => AddAppUsageIgnoreRuleCommandHandler(repository: appUsageIgnoreRuleRepository),
+    )
+    ..registerHandler<DeleteAppUsageIgnoreRuleCommand, DeleteAppUsageIgnoreRuleCommandResponse,
+        DeleteAppUsageIgnoreRuleCommandHandler>(
+      () => DeleteAppUsageIgnoreRuleCommandHandler(repository: appUsageIgnoreRuleRepository),
+    )
+    ..registerHandler<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse,
+        GetListAppUsageIgnoreRulesQueryHandler>(
+      () => GetListAppUsageIgnoreRulesQueryHandler(repository: appUsageIgnoreRuleRepository),
     );
 }
