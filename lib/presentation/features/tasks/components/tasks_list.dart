@@ -173,7 +173,7 @@ class _TaskListState extends State<TaskList> {
               final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
               return TaskCard(
                 key: ValueKey(task.id),
-                task: task,
+                taskItem: task,
                 transparent: widget.transparentCards,
                 trailingButtons: [
                   if (widget.trailingButtons != null) ...widget.trailingButtons!(task),

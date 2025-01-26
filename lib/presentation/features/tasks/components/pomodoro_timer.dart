@@ -101,7 +101,11 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Future<void> _saveSetting(String key, int value) async {
-    var command = SaveSettingCommand(key: key, value: value.toString(), valueType: SettingValueType.int);
+    var command = SaveSettingCommand(
+      key: key,
+      value: value.toString(),
+      valueType: SettingValueType.int,
+    );
     await widget._mediator.send(command);
   }
 

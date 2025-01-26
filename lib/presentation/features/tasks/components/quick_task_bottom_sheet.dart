@@ -68,11 +68,12 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       var command = SaveTaskCommand(
         title: _titleController.text,
         description: "",
-        tagIds: widget.initialTagIds,
+        tagIdsToAdd: widget.initialTagIds,
         priority: _selectedPriority,
         estimatedTime: _estimatedTime,
         plannedDate: _plannedDate,
         deadlineDate: _deadlineDate,
+        isCompleted: false,
       );
       var response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 

@@ -64,6 +64,7 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
         id: widget.habitId,
         name: _titleController.text,
         description: habit!.description,
+        estimatedTime: habit!.estimatedTime,
       );
       var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 

@@ -24,6 +24,7 @@ class TagNameInputField extends StatefulWidget {
 }
 
 class _TagNameInputFieldState extends State<TagNameInputField> {
+  GetTagQueryResponse? _tag;
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
 
@@ -39,6 +40,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
       var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       if (mounted) {
         setState(() {
+          _tag = response;
           _controller.text = response.name;
         });
       }
@@ -56,6 +58,8 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
       var command = SaveTagCommand(
         id: widget.id,
         name: _controller.text,
+        color: _tag!.color,
+        isArchived: _tag!.isArchived,
       );
       try {
         await widget._mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);

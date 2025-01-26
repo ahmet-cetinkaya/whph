@@ -116,6 +116,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       id: widget.tagId,
       name: _tag!.name,
       color: _tag!.color,
+      isArchived: _tag!.isArchived,
     );
     try {
       await widget._mediator.send(command);
