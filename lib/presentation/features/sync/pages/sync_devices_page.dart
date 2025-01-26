@@ -160,32 +160,106 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Sync Devices Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🔄 Sync your data across multiple devices securely.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Device Sync:',
+                  '  - Sync tasks and habits',
+                  '  - Sync time records',
+                  '  - Sync tag configurations',
+                  '• QR Code Connection:',
+                  '  - Easy device pairing',
+                  '  - Secure connection setup',
+                  '  - Quick sync initiation',
+                  '• Device Management:',
+                  '  - View connected devices',
+                  '  - Monitor sync status',
+                  '  - Remove old devices',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Keep devices on the same network',
+                  '• Sync regularly for best results',
+                  '• Remove unused device connections',
+                  '• Check last sync dates',
+                  '• Use QR codes for quick setup',
+                  '• Wait for sync completion',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return ResponsiveScaffoldLayout(
       title: 'Sync Devices',
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: IconButton(
-            onPressed: _sync,
-            icon: Icon(Icons.sync),
-            color: AppTheme.primaryColor,
-          ),
+        IconButton(
+          onPressed: _sync,
+          icon: Icon(Icons.sync),
+          color: AppTheme.primaryColor,
         ),
-        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows)
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: const SyncQrCodeButton(),
-          ),
+        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) const SyncQrCodeButton(),
         if (Platform.isAndroid || Platform.isIOS)
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: SyncQrScanButton(
-              onSyncComplete: _refreshDevices,
-            ),
-          )
+          SyncQrScanButton(
+            onSyncComplete: _refreshDevices,
+          ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => list == null || list!.items.isEmpty
           ? const Center(child: Text('No synced devices found'))
