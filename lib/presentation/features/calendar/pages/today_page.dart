@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/update_checker.dart';
@@ -128,6 +129,7 @@ class _TodayPageState extends State<TodayPage> {
           child: IconButton(
             icon: const Icon(Icons.timer),
             onPressed: () => _openMarathonPage(context),
+            color: AppTheme.primaryColor,
           ),
         ),
       ],
@@ -201,9 +203,22 @@ class _TodayPageState extends State<TodayPage> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-        child: Text(
-          'Tasks',
-          style: Theme.of(context).textTheme.titleSmall,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Tasks',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: TaskAddButton(
+                initialTagIds: _selectedTagFilter,
+                initialPlannedDate: today,
+                onTaskCreated: (_) => _refreshTasks(),
+              ),
+            ),
+          ],
         ),
       ),
       _isTaskListEmpty
