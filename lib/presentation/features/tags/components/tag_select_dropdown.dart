@@ -269,7 +269,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
         // Add button
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: SizedBox(
             width: 32,
             height: 32,

@@ -70,20 +70,113 @@ class _TagsPageState extends State<TagsPage> {
     });
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tags Overview Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🏷️ Tags help you organize and track time investments across your tasks.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '📊 Time Analysis',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• View time distribution by tag',
+                  '• Track time investments over custom periods',
+                  '• Compare time spent across different areas',
+                  '• Monitor daily and weekly patterns',
+                  '• Analyze focus distribution',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Filter by multiple tags',
+                  '• Archive completed project tags',
+                  '• Create tag hierarchies',
+                  '• Track related tag groups',
+                  '• Time tracking across tasks',
+                  '• Tag-based organization',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use meaningful tag names',
+                  '• Create hierarchical structures:',
+                  '  - Projects under departments',
+                  '  - Subtasks under main projects',
+                  '  - Categories under areas',
+                  '• Review time charts regularly',
+                  '• Archive completed projects',
+                  '• Use tag filters to focus analysis',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       title: 'Tags',
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TagAddButton(
-            onTagCreated: (tagId) {
-              _openTagDetails(tagId);
-            },
-            buttonColor: AppTheme.primaryColor,
-          ),
+        TagAddButton(
+          onTagCreated: (tagId) {
+            _openTagDetails(tagId);
+          },
+          buttonColor: AppTheme.primaryColor,
         ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8),
