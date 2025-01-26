@@ -166,28 +166,26 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     return ResponsiveScaffoldLayout(
       title: 'App Usages',
       appBarActions: [
-        if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) ...[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () async {
-              await Navigator.pushNamed(context, AppUsageRulesPage.route);
-              _refreshList();
-            },
-            color: AppTheme.primaryColor,
-            tooltip: 'Tag Rules',
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshList,
-            color: AppTheme.primaryColor,
-          ),
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: _showHelpModal,
-            color: AppTheme.primaryColor,
-          ),
-          const SizedBox(width: 2),
-        ],
+        IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () async {
+            await Navigator.pushNamed(context, AppUsageRulesPage.route);
+            _refreshList();
+          },
+          color: AppTheme.primaryColor,
+          tooltip: 'Tag Rules',
+        ),
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: _refreshList,
+          color: AppTheme.primaryColor,
+        ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => ListView(
         children: [
