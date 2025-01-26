@@ -119,19 +119,117 @@ class _TodayPageState extends State<TodayPage> {
     _refreshAllElements();
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Today View Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '📅 Today view shows your daily tasks, habits, and time investments in one place.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Daily Habits:',
+                  '  - Quick access to your daily habits',
+                  '  - Track habit completion',
+                  '  - Maintain your routines',
+                  '• Today\'s Tasks:',
+                  '  - View planned and due tasks',
+                  '  - Add new tasks quickly',
+                  '  - Track task completion',
+                  '• Time Investment:',
+                  '  - View time spent by tag',
+                  '  - Track productivity patterns',
+                  '  - Monitor daily activity',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use tag filters to focus on specific areas',
+                  '• Complete habits early in the day',
+                  '• Review time charts to optimize your day',
+                  '• Start Marathon mode for focused work',
+                  '• Group related tasks with tags',
+                  '• Schedule important tasks first',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚙️ Quick Actions',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Click timer icon to start Marathon mode',
+                  '• Use tag filter to focus on specific projects',
+                  '• Click on habits to mark them complete',
+                  '• Add new tasks with the + button',
+                  '• Click on tasks to view details',
+                  '• Check time chart for daily insights',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       title: 'Today',
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: IconButton(
-            icon: const Icon(Icons.timer),
-            onPressed: () => _openMarathonPage(context),
-            color: AppTheme.primaryColor,
-          ),
+        IconButton(
+          icon: const Icon(Icons.timer),
+          onPressed: () => _openMarathonPage(context),
+          color: AppTheme.primaryColor,
         ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
