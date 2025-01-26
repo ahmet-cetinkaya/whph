@@ -50,6 +50,99 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Habits Overview Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🔄 Habits help you build and maintain daily routines while tracking time investments.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚡ Features',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Daily Tracking:',
+                  '  - Track habit completion',
+                  '  - View multiple days at once',
+                  '  - Monitor streaks and patterns',
+                  '• Time Investment:',
+                  '  - Record time spent on habits',
+                  '  - Accumulate time by tags',
+                  '  - Track routine durations',
+                  '• Organization:',
+                  '  - Group habits with tags',
+                  '  - Flexible scheduling',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Start with small, manageable habits',
+                  '• Use tags to group related routines',
+                  '• Track time to understand patterns',
+                  '• Complete important habits early',
+                  '• Review your habit history regularly',
+                  '• Adjust habits as needed',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '📊 Calendar View',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• View multiple days at once',
+                  '• Track completion patterns',
+                  '• Quick completion marking',
+                  '• Visual streak tracking',
+                  '• Flexible date navigation',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
@@ -68,16 +161,19 @@ class _HabitsPageState extends State<HabitsPage> {
     return ResponsiveScaffoldLayout(
       title: 'Habits',
       appBarActions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: HabitAddButton(
-            onHabitCreated: (String habitId) {
-              if (!mounted) return;
-              _openDetails(habitId, context);
-            },
-            buttonColor: AppTheme.primaryColor,
-          ),
+        HabitAddButton(
+          onHabitCreated: (String habitId) {
+            if (!mounted) return;
+            _openDetails(habitId, context);
+          },
+          buttonColor: AppTheme.primaryColor,
         ),
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8),
