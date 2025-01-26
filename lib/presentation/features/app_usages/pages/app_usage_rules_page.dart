@@ -7,16 +7,16 @@ import 'package:whph/presentation/shared/components/responsive_scaffold_layout.d
 import 'package:whph/presentation/features/app_usages/components/app_usage_ignore_rule_form.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 
-class AppUsageTagRulesPage extends StatefulWidget {
-  static const String route = '/app-usages/tag-rules';
+class AppUsageRulesPage extends StatefulWidget {
+  static const String route = '/app-usages/rules';
 
-  const AppUsageTagRulesPage({super.key});
+  const AppUsageRulesPage({super.key});
 
   @override
-  State<AppUsageTagRulesPage> createState() => _AppUsageTagRulesPageState();
+  State<AppUsageRulesPage> createState() => _AppUsageRulesPageState();
 }
 
-class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with SingleTickerProviderStateMixin {
+class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTickerProviderStateMixin {
   final Mediator _mediator = container.resolve<Mediator>();
   Key _listKey = UniqueKey();
   late TabController _tabController;
@@ -39,10 +39,111 @@ class _AppUsageTagRulesPageState extends State<AppUsageTagRulesPage> with Single
     });
   }
 
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'App Usage Rules Help',
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '⚙️ App Usage Rules help you automate tag assignment and manage application tracking.',
+                  style: AppTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '🏷️ Tag Rules',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Automatic Tag Assignment:',
+                  '  - Match apps by name patterns',
+                  '  - Assign multiple tags',
+                  '  - Track time automatically',
+                  '• Rule Management:',
+                  '  - Create new rules',
+                  '  - Edit existing rules',
+                  '  - Delete unused rules',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '🚫 Ignore Rules',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Exclude Applications:',
+                  '  - Skip unwanted apps',
+                  '  - Ignore system processes',
+                  '  - Filter background apps',
+                  '• Pattern Matching:',
+                  '  - Use wildcards',
+                  '  - Match exact names',
+                  '  - Case sensitivity options',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+                const SizedBox(height: 16),
+                const Text(
+                  '💡 Tips',
+                  style: AppTheme.headlineMedium,
+                ),
+                const SizedBox(height: 8),
+                ...const [
+                  '• Use specific patterns for better matching',
+                  '• Group similar applications under common tags',
+                  '• Regularly review and update rules',
+                  '• Test rules with different app names',
+                  '• Use ignore rules for system utilities',
+                  '• Combine rules for detailed tracking',
+                ].map((text) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      child: Text(text, style: AppTheme.bodyMedium),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       title: 'App Usage Rules',
+      appBarActions: [
+        IconButton(
+          icon: const Icon(Icons.help_outline),
+          onPressed: _showHelpModal,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 2),
+      ],
       builder: (context) => Column(
         children: [
           TabBar(
