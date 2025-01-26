@@ -9,6 +9,7 @@ class TaskAddButton extends StatefulWidget {
   final Color? buttonBackgroundColor;
   final Function(String taskId)? onTaskCreated;
   final List<String>? initialTagIds;
+  final DateTime? initialPlannedDate;
 
   const TaskAddButton({
     super.key,
@@ -16,6 +17,7 @@ class TaskAddButton extends StatefulWidget {
     this.buttonBackgroundColor,
     this.onTaskCreated,
     this.initialTagIds,
+    this.initialPlannedDate,
   });
 
   @override
@@ -35,6 +37,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       backgroundColor: Colors.transparent,
       builder: (context) => QuickTaskBottomSheet(
         initialTagIds: widget.initialTagIds,
+        initialPlannedDate: widget.initialPlannedDate,
         onTaskCreated: (taskId) {
           if (widget.onTaskCreated != null) {
             widget.onTaskCreated!(taskId);

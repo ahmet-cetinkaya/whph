@@ -13,11 +13,13 @@ import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
+  final DateTime? initialPlannedDate;
   final Function(String taskId)? onTaskCreated;
 
   const QuickTaskBottomSheet({
     super.key,
     this.initialTagIds,
+    this.initialPlannedDate,
     this.onTaskCreated,
   });
 
@@ -36,6 +38,12 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   int? _estimatedTime;
   DateTime? _plannedDate;
   DateTime? _deadlineDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _plannedDate = widget.initialPlannedDate;
+  }
 
   @override
   void dispose() {
