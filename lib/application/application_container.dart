@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/app_usages_registration.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
@@ -31,6 +32,7 @@ void registerApplication(IContainer container) {
   container.registerSingleton((_) => mediator);
 
   // Common Dependencies
+  final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
   final appUsageRepository = container.resolve<IAppUsageRepository>();
   final appUsageService = container.resolve<IAppUsageService>();
   final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
@@ -49,7 +51,7 @@ void registerApplication(IContainer container) {
 
   // Register Features
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,
-      appUsageTagRepository, tagRuleRepository, timeRecordRepository);
+      appUsageTagRepository, tagRuleRepository, timeRecordRepository, appUsageIgnoreRuleRepository);
   registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, tagRepository);
   registerTasksFeature(
     container,

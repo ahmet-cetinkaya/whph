@@ -3,6 +3,204 @@
 part of 'drift_app_context.dart';
 
 // ignore_for_file: type=lint
+class $AppUsageIgnoreRuleTableTable extends AppUsageIgnoreRuleTable
+    with TableInfo<$AppUsageIgnoreRuleTableTable, AppUsageIgnoreRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppUsageIgnoreRuleTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _patternMeta = const VerificationMeta('pattern');
+  @override
+  late final GeneratedColumn<String> pattern =
+      GeneratedColumn<String>('pattern', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta = const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description =
+      GeneratedColumn<String>('description', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, pattern, description, createdDate, modifiedDate, deletedDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_usage_ignore_rule_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppUsageIgnoreRule> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('pattern')) {
+      context.handle(_patternMeta, pattern.isAcceptableOrUnknown(data['pattern']!, _patternMeta));
+    } else if (isInserting) {
+      context.missing(_patternMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(_descriptionMeta, description.isAcceptableOrUnknown(data['description']!, _descriptionMeta));
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppUsageIgnoreRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppUsageIgnoreRule(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      pattern: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}pattern'])!,
+      description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description']),
+    );
+  }
+
+  @override
+  $AppUsageIgnoreRuleTableTable createAlias(String alias) {
+    return $AppUsageIgnoreRuleTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppUsageIgnoreRuleTableCompanion extends UpdateCompanion<AppUsageIgnoreRule> {
+  final Value<String> id;
+  final Value<String> pattern;
+  final Value<String?> description;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<int> rowid;
+  const AppUsageIgnoreRuleTableCompanion({
+    this.id = const Value.absent(),
+    this.pattern = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppUsageIgnoreRuleTableCompanion.insert({
+    required String id,
+    required String pattern,
+    this.description = const Value.absent(),
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        pattern = Value(pattern),
+        createdDate = Value(createdDate);
+  static Insertable<AppUsageIgnoreRule> custom({
+    Expression<String>? id,
+    Expression<String>? pattern,
+    Expression<String>? description,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pattern != null) 'pattern': pattern,
+      if (description != null) 'description': description,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppUsageIgnoreRuleTableCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? pattern,
+      Value<String?>? description,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<int>? rowid}) {
+    return AppUsageIgnoreRuleTableCompanion(
+      id: id ?? this.id,
+      pattern: pattern ?? this.pattern,
+      description: description ?? this.description,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (pattern.present) {
+      map['pattern'] = Variable<String>(pattern.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppUsageIgnoreRuleTableCompanion(')
+          ..write('id: $id, ')
+          ..write('pattern: $pattern, ')
+          ..write('description: $description, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppUsageTableTable extends AppUsageTable with TableInfo<$AppUsageTableTable, AppUsage> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -233,206 +431,6 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
           ..write('displayName: $displayName, ')
           ..write('color: $color, ')
           ..write('deviceName: $deviceName, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $AppUsageTagTableTable extends AppUsageTagTable with TableInfo<$AppUsageTagTableTable, AppUsageTag> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $AppUsageTagTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id =
-      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _appUsageIdMeta = const VerificationMeta('appUsageId');
-  @override
-  late final GeneratedColumn<String> appUsageId = GeneratedColumn<String>('app_usage_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
-  @override
-  late final GeneratedColumn<String> tagId =
-      GeneratedColumn<String>('tag_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, appUsageId, tagId];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'app_usage_tag_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<AppUsageTag> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
-    }
-    if (data.containsKey('app_usage_id')) {
-      context.handle(_appUsageIdMeta, appUsageId.isAcceptableOrUnknown(data['app_usage_id']!, _appUsageIdMeta));
-    } else if (isInserting) {
-      context.missing(_appUsageIdMeta);
-    }
-    if (data.containsKey('tag_id')) {
-      context.handle(_tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
-    } else if (isInserting) {
-      context.missing(_tagIdMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  AppUsageTag map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AppUsageTag(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
-      tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
-    );
-  }
-
-  @override
-  $AppUsageTagTableTable createAlias(String alias) {
-    return $AppUsageTagTableTable(attachedDatabase, alias);
-  }
-}
-
-class AppUsageTagTableCompanion extends UpdateCompanion<AppUsageTag> {
-  final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
-  final Value<String> appUsageId;
-  final Value<String> tagId;
-  final Value<int> rowid;
-  const AppUsageTagTableCompanion({
-    this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    this.appUsageId = const Value.absent(),
-    this.tagId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  AppUsageTagTableCompanion.insert({
-    required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    required String appUsageId,
-    required String tagId,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        createdDate = Value(createdDate),
-        appUsageId = Value(appUsageId),
-        tagId = Value(tagId);
-  static Insertable<AppUsageTag> custom({
-    Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
-    Expression<String>? appUsageId,
-    Expression<String>? tagId,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
-      if (appUsageId != null) 'app_usage_id': appUsageId,
-      if (tagId != null) 'tag_id': tagId,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  AppUsageTagTableCompanion copyWith(
-      {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
-      Value<String>? appUsageId,
-      Value<String>? tagId,
-      Value<int>? rowid}) {
-    return AppUsageTagTableCompanion(
-      id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
-      appUsageId: appUsageId ?? this.appUsageId,
-      tagId: tagId ?? this.tagId,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
-    }
-    if (appUsageId.present) {
-      map['app_usage_id'] = Variable<String>(appUsageId.value);
-    }
-    if (tagId.present) {
-      map['tag_id'] = Variable<String>(tagId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('AppUsageTagTableCompanion(')
-          ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
-          ..write('appUsageId: $appUsageId, ')
-          ..write('tagId: $tagId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -682,6 +680,206 @@ class AppUsageTagRuleTableCompanion extends UpdateCompanion<AppUsageTagRule> {
   }
 }
 
+class $AppUsageTagTableTable extends AppUsageTagTable with TableInfo<$AppUsageTagTableTable, AppUsageTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppUsageTagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _appUsageIdMeta = const VerificationMeta('appUsageId');
+  @override
+  late final GeneratedColumn<String> appUsageId = GeneratedColumn<String>('app_usage_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId =
+      GeneratedColumn<String>('tag_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, appUsageId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_usage_tag_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppUsageTag> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('app_usage_id')) {
+      context.handle(_appUsageIdMeta, appUsageId.isAcceptableOrUnknown(data['app_usage_id']!, _appUsageIdMeta));
+    } else if (isInserting) {
+      context.missing(_appUsageIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(_tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  AppUsageTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppUsageTag(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
+      tagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
+    );
+  }
+
+  @override
+  $AppUsageTagTableTable createAlias(String alias) {
+    return $AppUsageTagTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppUsageTagTableCompanion extends UpdateCompanion<AppUsageTag> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> appUsageId;
+  final Value<String> tagId;
+  final Value<int> rowid;
+  const AppUsageTagTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.appUsageId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppUsageTagTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String appUsageId,
+    required String tagId,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        appUsageId = Value(appUsageId),
+        tagId = Value(tagId);
+  static Insertable<AppUsageTag> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? appUsageId,
+    Expression<String>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (appUsageId != null) 'app_usage_id': appUsageId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppUsageTagTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? appUsageId,
+      Value<String>? tagId,
+      Value<int>? rowid}) {
+    return AppUsageTagTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      appUsageId: appUsageId ?? this.appUsageId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (appUsageId.present) {
+      map['app_usage_id'] = Variable<String>(appUsageId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppUsageTagTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('appUsageId: $appUsageId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
     with TableInfo<$AppUsageTimeRecordTableTable, AppUsageTimeRecord> {
   @override
@@ -877,6 +1075,206 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecordTableTable, HabitRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitRecordTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _habitIdMeta = const VerificationMeta('habitId');
+  @override
+  late final GeneratedColumn<String> habitId =
+      GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date =
+      GeneratedColumn<DateTime>('date', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, date];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_record_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<HabitRecord> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('habit_id')) {
+      context.handle(_habitIdMeta, habitId.isAcceptableOrUnknown(data['habit_id']!, _habitIdMeta));
+    } else if (isInserting) {
+      context.missing(_habitIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  HabitRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitRecord(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
+      date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+    );
+  }
+
+  @override
+  $HabitRecordTableTable createAlias(String alias) {
+    return $HabitRecordTableTable(attachedDatabase, alias);
+  }
+}
+
+class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> habitId;
+  final Value<DateTime> date;
+  final Value<int> rowid;
+  const HabitRecordTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitRecordTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String habitId,
+    required DateTime date,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        habitId = Value(habitId),
+        date = Value(date);
+  static Insertable<HabitRecord> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? habitId,
+    Expression<DateTime>? date,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (habitId != null) 'habit_id': habitId,
+      if (date != null) 'date': date,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitRecordTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? habitId,
+      Value<DateTime>? date,
+      Value<int>? rowid}) {
+    return HabitRecordTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      habitId: habitId ?? this.habitId,
+      date: date ?? this.date,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<String>(habitId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitRecordTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('date: $date, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1303,11 +1701,11 @@ class HabitTagTableCompanion extends UpdateCompanion<HabitTag> {
   }
 }
 
-class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecordTableTable, HabitRecord> {
+class $SettingTableTable extends SettingTable with TableInfo<$SettingTableTable, Setting> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $HabitRecordTableTable(this.attachedDatabase, [this._alias]);
+  $SettingTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id =
@@ -1324,23 +1722,28 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
   @override
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _habitIdMeta = const VerificationMeta('habitId');
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
   @override
-  late final GeneratedColumn<String> habitId =
-      GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  late final GeneratedColumn<String> key =
+      GeneratedColumn<String>('key', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
-  late final GeneratedColumn<DateTime> date =
-      GeneratedColumn<DateTime>('date', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<String> value =
+      GeneratedColumn<String>('value', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _valueTypeMeta = const VerificationMeta('valueType');
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, date];
+  late final GeneratedColumnWithTypeConverter<SettingValueType, int> valueType =
+      GeneratedColumn<int>('value_type', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<SettingValueType>($SettingTableTable.$convertervalueType);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, key, value, valueType];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'habit_record_table';
+  static const String $name = 'setting_table';
   @override
-  VerificationContext validateIntegrity(Insertable<HabitRecord> instance, {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<Setting> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1359,76 +1762,87 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
     if (data.containsKey('deleted_date')) {
       context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
     }
-    if (data.containsKey('habit_id')) {
-      context.handle(_habitIdMeta, habitId.isAcceptableOrUnknown(data['habit_id']!, _habitIdMeta));
+    if (data.containsKey('key')) {
+      context.handle(_keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
     } else if (isInserting) {
-      context.missing(_habitIdMeta);
+      context.missing(_keyMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    if (data.containsKey('value')) {
+      context.handle(_valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
     } else if (isInserting) {
-      context.missing(_dateMeta);
+      context.missing(_valueMeta);
     }
+    context.handle(_valueTypeMeta, const VerificationResult.success());
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  HabitRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Setting map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return HabitRecord(
+    return Setting(
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
-      date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      key: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      value: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}value'])!,
+      valueType: $SettingTableTable.$convertervalueType
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}value_type'])!),
     );
   }
 
   @override
-  $HabitRecordTableTable createAlias(String alias) {
-    return $HabitRecordTableTable(attachedDatabase, alias);
+  $SettingTableTable createAlias(String alias) {
+    return $SettingTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<SettingValueType, int, int> $convertervalueType =
+      const EnumIndexConverter<SettingValueType>(SettingValueType.values);
 }
 
-class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
+class SettingTableCompanion extends UpdateCompanion<Setting> {
   final Value<String> id;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
-  final Value<String> habitId;
-  final Value<DateTime> date;
+  final Value<String> key;
+  final Value<String> value;
+  final Value<SettingValueType> valueType;
   final Value<int> rowid;
-  const HabitRecordTableCompanion({
+  const SettingTableCompanion({
     this.id = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
-    this.habitId = const Value.absent(),
-    this.date = const Value.absent(),
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.valueType = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  HabitRecordTableCompanion.insert({
+  SettingTableCompanion.insert({
     required String id,
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
-    required String habitId,
-    required DateTime date,
+    required String key,
+    required String value,
+    required SettingValueType valueType,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
-        habitId = Value(habitId),
-        date = Value(date);
-  static Insertable<HabitRecord> custom({
+        key = Value(key),
+        value = Value(value),
+        valueType = Value(valueType);
+  static Insertable<Setting> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
-    Expression<String>? habitId,
-    Expression<DateTime>? date,
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? valueType,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1436,27 +1850,30 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
-      if (habitId != null) 'habit_id': habitId,
-      if (date != null) 'date': date,
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (valueType != null) 'value_type': valueType,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  HabitRecordTableCompanion copyWith(
+  SettingTableCompanion copyWith(
       {Value<String>? id,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
-      Value<String>? habitId,
-      Value<DateTime>? date,
+      Value<String>? key,
+      Value<String>? value,
+      Value<SettingValueType>? valueType,
       Value<int>? rowid}) {
-    return HabitRecordTableCompanion(
+    return SettingTableCompanion(
       id: id ?? this.id,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
-      habitId: habitId ?? this.habitId,
-      date: date ?? this.date,
+      key: key ?? this.key,
+      value: value ?? this.value,
+      valueType: valueType ?? this.valueType,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1476,11 +1893,14 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     if (deletedDate.present) {
       map['deleted_date'] = Variable<DateTime>(deletedDate.value);
     }
-    if (habitId.present) {
-      map['habit_id'] = Variable<String>(habitId.value);
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (valueType.present) {
+      map['value_type'] = Variable<int>($SettingTableTable.$convertervalueType.toSql(valueType.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1490,13 +1910,673 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
 
   @override
   String toString() {
-    return (StringBuffer('HabitRecordTableCompanion(')
+    return (StringBuffer('SettingTableCompanion(')
           ..write('id: $id, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
-          ..write('habitId: $habitId, ')
-          ..write('date: $date, ')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('valueType: $valueType, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTableTable, SyncDevice> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncDeviceTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _fromIpMeta = const VerificationMeta('fromIp');
+  @override
+  late final GeneratedColumn<String> fromIp =
+      GeneratedColumn<String>('from_ip', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _toIpMeta = const VerificationMeta('toIp');
+  @override
+  late final GeneratedColumn<String> toIp =
+      GeneratedColumn<String>('to_ip', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _lastSyncDateMeta = const VerificationMeta('lastSyncDate');
+  @override
+  late final GeneratedColumn<DateTime> lastSyncDate = GeneratedColumn<DateTime>('last_sync_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, fromIp, toIp, name, lastSyncDate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_device_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<SyncDevice> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('from_ip')) {
+      context.handle(_fromIpMeta, fromIp.isAcceptableOrUnknown(data['from_ip']!, _fromIpMeta));
+    } else if (isInserting) {
+      context.missing(_fromIpMeta);
+    }
+    if (data.containsKey('to_ip')) {
+      context.handle(_toIpMeta, toIp.isAcceptableOrUnknown(data['to_ip']!, _toIpMeta));
+    } else if (isInserting) {
+      context.missing(_toIpMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('last_sync_date')) {
+      context.handle(_lastSyncDateMeta, lastSyncDate.isAcceptableOrUnknown(data['last_sync_date']!, _lastSyncDateMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  SyncDevice map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncDevice(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      fromIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}from_ip'])!,
+      toIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}to_ip'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name']),
+      lastSyncDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
+    );
+  }
+
+  @override
+  $SyncDeviceTableTable createAlias(String alias) {
+    return $SyncDeviceTableTable(attachedDatabase, alias);
+  }
+}
+
+class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> fromIp;
+  final Value<String> toIp;
+  final Value<String?> name;
+  final Value<DateTime?> lastSyncDate;
+  final Value<int> rowid;
+  const SyncDeviceTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.fromIp = const Value.absent(),
+    this.toIp = const Value.absent(),
+    this.name = const Value.absent(),
+    this.lastSyncDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncDeviceTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String fromIp,
+    required String toIp,
+    this.name = const Value.absent(),
+    this.lastSyncDate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        fromIp = Value(fromIp),
+        toIp = Value(toIp);
+  static Insertable<SyncDevice> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? fromIp,
+    Expression<String>? toIp,
+    Expression<String>? name,
+    Expression<DateTime>? lastSyncDate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (fromIp != null) 'from_ip': fromIp,
+      if (toIp != null) 'to_ip': toIp,
+      if (name != null) 'name': name,
+      if (lastSyncDate != null) 'last_sync_date': lastSyncDate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncDeviceTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? fromIp,
+      Value<String>? toIp,
+      Value<String?>? name,
+      Value<DateTime?>? lastSyncDate,
+      Value<int>? rowid}) {
+    return SyncDeviceTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      fromIp: fromIp ?? this.fromIp,
+      toIp: toIp ?? this.toIp,
+      name: name ?? this.name,
+      lastSyncDate: lastSyncDate ?? this.lastSyncDate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (fromIp.present) {
+      map['from_ip'] = Variable<String>(fromIp.value);
+    }
+    if (toIp.present) {
+      map['to_ip'] = Variable<String>(toIp.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (lastSyncDate.present) {
+      map['last_sync_date'] = Variable<DateTime>(lastSyncDate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncDeviceTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('fromIp: $fromIp, ')
+          ..write('toIp: $toIp, ')
+          ..write('name: $name, ')
+          ..write('lastSyncDate: $lastSyncDate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color =
+      GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
+  @override
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>('is_archived', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, color, isArchived];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tag_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<Tag> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
+    if (data.containsKey('is_archived')) {
+      context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  Tag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Tag(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
+      color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
+    );
+  }
+
+  @override
+  $TagTableTable createAlias(String alias) {
+    return $TagTableTable(attachedDatabase, alias);
+  }
+}
+
+class TagTableCompanion extends UpdateCompanion<Tag> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> name;
+  final Value<String?> color;
+  final Value<bool> isArchived;
+  final Value<int> rowid;
+  const TagTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.isArchived = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TagTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String name,
+    this.color = const Value.absent(),
+    this.isArchived = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        name = Value(name);
+  static Insertable<Tag> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? name,
+    Expression<String>? color,
+    Expression<bool>? isArchived,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (isArchived != null) 'is_archived': isArchived,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TagTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? name,
+      Value<String?>? color,
+      Value<bool>? isArchived,
+      Value<int>? rowid}) {
+    return TagTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      isArchived: isArchived ?? this.isArchived,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TagTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('isArchived: $isArchived, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TagTagTableTable extends TagTagTable with TableInfo<$TagTagTableTable, TagTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TagTagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
+  @override
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
+  @override
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
+  @override
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _primaryTagIdMeta = const VerificationMeta('primaryTagId');
+  @override
+  late final GeneratedColumn<String> primaryTagId = GeneratedColumn<String>('primary_tag_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _secondaryTagIdMeta = const VerificationMeta('secondaryTagId');
+  @override
+  late final GeneratedColumn<String> secondaryTagId = GeneratedColumn<String>('secondary_tag_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, primaryTagId, secondaryTagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tag_tag_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<TagTag> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
+    } else if (isInserting) {
+      context.missing(_createdDateMeta);
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
+    }
+    if (data.containsKey('deleted_date')) {
+      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
+    }
+    if (data.containsKey('primary_tag_id')) {
+      context.handle(_primaryTagIdMeta, primaryTagId.isAcceptableOrUnknown(data['primary_tag_id']!, _primaryTagIdMeta));
+    } else if (isInserting) {
+      context.missing(_primaryTagIdMeta);
+    }
+    if (data.containsKey('secondary_tag_id')) {
+      context.handle(
+          _secondaryTagIdMeta, secondaryTagId.isAcceptableOrUnknown(data['secondary_tag_id']!, _secondaryTagIdMeta));
+    } else if (isInserting) {
+      context.missing(_secondaryTagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  TagTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TagTag(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      primaryTagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}primary_tag_id'])!,
+      secondaryTagId:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}secondary_tag_id'])!,
+    );
+  }
+
+  @override
+  $TagTagTableTable createAlias(String alias) {
+    return $TagTagTableTable(attachedDatabase, alias);
+  }
+}
+
+class TagTagTableCompanion extends UpdateCompanion<TagTag> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> primaryTagId;
+  final Value<String> secondaryTagId;
+  final Value<int> rowid;
+  const TagTagTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.primaryTagId = const Value.absent(),
+    this.secondaryTagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TagTagTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String primaryTagId,
+    required String secondaryTagId,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        primaryTagId = Value(primaryTagId),
+        secondaryTagId = Value(secondaryTagId);
+  static Insertable<TagTag> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? primaryTagId,
+    Expression<String>? secondaryTagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (primaryTagId != null) 'primary_tag_id': primaryTagId,
+      if (secondaryTagId != null) 'secondary_tag_id': secondaryTagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TagTagTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? primaryTagId,
+      Value<String>? secondaryTagId,
+      Value<int>? rowid}) {
+    return TagTagTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      primaryTagId: primaryTagId ?? this.primaryTagId,
+      secondaryTagId: secondaryTagId ?? this.secondaryTagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (primaryTagId.present) {
+      map['primary_tag_id'] = Variable<String>(primaryTagId.value);
+    }
+    if (secondaryTagId.present) {
+      map['secondary_tag_id'] = Variable<String>(secondaryTagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TagTagTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('primaryTagId: $primaryTagId, ')
+          ..write('secondaryTagId: $secondaryTagId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2016,427 +3096,6 @@ class TaskTagTableCompanion extends UpdateCompanion<TaskTag> {
   }
 }
 
-class $TagTableTable extends TagTable with TableInfo<$TagTableTable, Tag> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TagTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id =
-      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name =
-      GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _colorMeta = const VerificationMeta('color');
-  @override
-  late final GeneratedColumn<String> color =
-      GeneratedColumn<String>('color', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
-  @override
-  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>('is_archived', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, color, isArchived];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'tag_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<Tag> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('color')) {
-      context.handle(_colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
-    }
-    if (data.containsKey('is_archived')) {
-      context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  Tag map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Tag(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
-      color: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}color']),
-    );
-  }
-
-  @override
-  $TagTableTable createAlias(String alias) {
-    return $TagTableTable(attachedDatabase, alias);
-  }
-}
-
-class TagTableCompanion extends UpdateCompanion<Tag> {
-  final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
-  final Value<String> name;
-  final Value<String?> color;
-  final Value<bool> isArchived;
-  final Value<int> rowid;
-  const TagTableCompanion({
-    this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    this.name = const Value.absent(),
-    this.color = const Value.absent(),
-    this.isArchived = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  TagTableCompanion.insert({
-    required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    required String name,
-    this.color = const Value.absent(),
-    this.isArchived = const Value.absent(),
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        createdDate = Value(createdDate),
-        name = Value(name);
-  static Insertable<Tag> custom({
-    Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
-    Expression<String>? name,
-    Expression<String>? color,
-    Expression<bool>? isArchived,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
-      if (name != null) 'name': name,
-      if (color != null) 'color': color,
-      if (isArchived != null) 'is_archived': isArchived,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  TagTableCompanion copyWith(
-      {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
-      Value<String>? name,
-      Value<String?>? color,
-      Value<bool>? isArchived,
-      Value<int>? rowid}) {
-    return TagTableCompanion(
-      id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
-      name: name ?? this.name,
-      color: color ?? this.color,
-      isArchived: isArchived ?? this.isArchived,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (color.present) {
-      map['color'] = Variable<String>(color.value);
-    }
-    if (isArchived.present) {
-      map['is_archived'] = Variable<bool>(isArchived.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TagTableCompanion(')
-          ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
-          ..write('name: $name, ')
-          ..write('color: $color, ')
-          ..write('isArchived: $isArchived, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $TagTagTableTable extends TagTagTable with TableInfo<$TagTagTableTable, TagTag> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TagTagTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id =
-      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _primaryTagIdMeta = const VerificationMeta('primaryTagId');
-  @override
-  late final GeneratedColumn<String> primaryTagId = GeneratedColumn<String>('primary_tag_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _secondaryTagIdMeta = const VerificationMeta('secondaryTagId');
-  @override
-  late final GeneratedColumn<String> secondaryTagId = GeneratedColumn<String>('secondary_tag_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, primaryTagId, secondaryTagId];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'tag_tag_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<TagTag> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
-    }
-    if (data.containsKey('primary_tag_id')) {
-      context.handle(_primaryTagIdMeta, primaryTagId.isAcceptableOrUnknown(data['primary_tag_id']!, _primaryTagIdMeta));
-    } else if (isInserting) {
-      context.missing(_primaryTagIdMeta);
-    }
-    if (data.containsKey('secondary_tag_id')) {
-      context.handle(
-          _secondaryTagIdMeta, secondaryTagId.isAcceptableOrUnknown(data['secondary_tag_id']!, _secondaryTagIdMeta));
-    } else if (isInserting) {
-      context.missing(_secondaryTagIdMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  TagTag map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TagTag(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      primaryTagId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}primary_tag_id'])!,
-      secondaryTagId:
-          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}secondary_tag_id'])!,
-    );
-  }
-
-  @override
-  $TagTagTableTable createAlias(String alias) {
-    return $TagTagTableTable(attachedDatabase, alias);
-  }
-}
-
-class TagTagTableCompanion extends UpdateCompanion<TagTag> {
-  final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
-  final Value<String> primaryTagId;
-  final Value<String> secondaryTagId;
-  final Value<int> rowid;
-  const TagTagTableCompanion({
-    this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    this.primaryTagId = const Value.absent(),
-    this.secondaryTagId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  TagTagTableCompanion.insert({
-    required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    required String primaryTagId,
-    required String secondaryTagId,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        createdDate = Value(createdDate),
-        primaryTagId = Value(primaryTagId),
-        secondaryTagId = Value(secondaryTagId);
-  static Insertable<TagTag> custom({
-    Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
-    Expression<String>? primaryTagId,
-    Expression<String>? secondaryTagId,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
-      if (primaryTagId != null) 'primary_tag_id': primaryTagId,
-      if (secondaryTagId != null) 'secondary_tag_id': secondaryTagId,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  TagTagTableCompanion copyWith(
-      {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
-      Value<String>? primaryTagId,
-      Value<String>? secondaryTagId,
-      Value<int>? rowid}) {
-    return TagTagTableCompanion(
-      id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
-      primaryTagId: primaryTagId ?? this.primaryTagId,
-      secondaryTagId: secondaryTagId ?? this.secondaryTagId,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
-    }
-    if (primaryTagId.present) {
-      map['primary_tag_id'] = Variable<String>(primaryTagId.value);
-    }
-    if (secondaryTagId.present) {
-      map['secondary_tag_id'] = Variable<String>(secondaryTagId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TagTagTableCompanion(')
-          ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
-          ..write('primaryTagId: $primaryTagId, ')
-          ..write('secondaryTagId: $secondaryTagId, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $TaskTimeRecordTableTable extends TaskTimeRecordTable with TableInfo<$TaskTimeRecordTableTable, TaskTimeRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2637,505 +3296,214 @@ class TaskTimeRecordTableCompanion extends UpdateCompanion<TaskTimeRecord> {
   }
 }
 
-class $SettingTableTable extends SettingTable with TableInfo<$SettingTableTable, Setting> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SettingTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id =
-      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _keyMeta = const VerificationMeta('key');
-  @override
-  late final GeneratedColumn<String> key =
-      GeneratedColumn<String>('key', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _valueMeta = const VerificationMeta('value');
-  @override
-  late final GeneratedColumn<String> value =
-      GeneratedColumn<String>('value', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _valueTypeMeta = const VerificationMeta('valueType');
-  @override
-  late final GeneratedColumnWithTypeConverter<SettingValueType, int> valueType =
-      GeneratedColumn<int>('value_type', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<SettingValueType>($SettingTableTable.$convertervalueType);
-  @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, key, value, valueType];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'setting_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<Setting> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
-    }
-    if (data.containsKey('key')) {
-      context.handle(_keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
-    } else if (isInserting) {
-      context.missing(_keyMeta);
-    }
-    if (data.containsKey('value')) {
-      context.handle(_valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
-    } else if (isInserting) {
-      context.missing(_valueMeta);
-    }
-    context.handle(_valueTypeMeta, const VerificationResult.success());
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  Setting map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Setting(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      key: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}key'])!,
-      value: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}value'])!,
-      valueType: $SettingTableTable.$convertervalueType
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}value_type'])!),
-    );
-  }
-
-  @override
-  $SettingTableTable createAlias(String alias) {
-    return $SettingTableTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<SettingValueType, int, int> $convertervalueType =
-      const EnumIndexConverter<SettingValueType>(SettingValueType.values);
-}
-
-class SettingTableCompanion extends UpdateCompanion<Setting> {
-  final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
-  final Value<String> key;
-  final Value<String> value;
-  final Value<SettingValueType> valueType;
-  final Value<int> rowid;
-  const SettingTableCompanion({
-    this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    this.key = const Value.absent(),
-    this.value = const Value.absent(),
-    this.valueType = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  SettingTableCompanion.insert({
-    required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    required String key,
-    required String value,
-    required SettingValueType valueType,
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        createdDate = Value(createdDate),
-        key = Value(key),
-        value = Value(value),
-        valueType = Value(valueType);
-  static Insertable<Setting> custom({
-    Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
-    Expression<String>? key,
-    Expression<String>? value,
-    Expression<int>? valueType,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
-      if (key != null) 'key': key,
-      if (value != null) 'value': value,
-      if (valueType != null) 'value_type': valueType,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  SettingTableCompanion copyWith(
-      {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
-      Value<String>? key,
-      Value<String>? value,
-      Value<SettingValueType>? valueType,
-      Value<int>? rowid}) {
-    return SettingTableCompanion(
-      id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
-      key: key ?? this.key,
-      value: value ?? this.value,
-      valueType: valueType ?? this.valueType,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
-    }
-    if (key.present) {
-      map['key'] = Variable<String>(key.value);
-    }
-    if (value.present) {
-      map['value'] = Variable<String>(value.value);
-    }
-    if (valueType.present) {
-      map['value_type'] = Variable<int>($SettingTableTable.$convertervalueType.toSql(valueType.value));
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SettingTableCompanion(')
-          ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
-          ..write('key: $key, ')
-          ..write('value: $value, ')
-          ..write('valueType: $valueType, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTableTable, SyncDevice> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SyncDeviceTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id =
-      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
-  @override
-  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _modifiedDateMeta = const VerificationMeta('modifiedDate');
-  @override
-  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _deletedDateMeta = const VerificationMeta('deletedDate');
-  @override
-  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _fromIpMeta = const VerificationMeta('fromIp');
-  @override
-  late final GeneratedColumn<String> fromIp =
-      GeneratedColumn<String>('from_ip', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _toIpMeta = const VerificationMeta('toIp');
-  @override
-  late final GeneratedColumn<String> toIp =
-      GeneratedColumn<String>('to_ip', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name =
-      GeneratedColumn<String>('name', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _lastSyncDateMeta = const VerificationMeta('lastSyncDate');
-  @override
-  late final GeneratedColumn<DateTime> lastSyncDate = GeneratedColumn<DateTime>('last_sync_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, fromIp, toIp, name, lastSyncDate];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'sync_device_table';
-  @override
-  VerificationContext validateIntegrity(Insertable<SyncDevice> instance, {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('created_date')) {
-      context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
-    } else if (isInserting) {
-      context.missing(_createdDateMeta);
-    }
-    if (data.containsKey('modified_date')) {
-      context.handle(_modifiedDateMeta, modifiedDate.isAcceptableOrUnknown(data['modified_date']!, _modifiedDateMeta));
-    }
-    if (data.containsKey('deleted_date')) {
-      context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
-    }
-    if (data.containsKey('from_ip')) {
-      context.handle(_fromIpMeta, fromIp.isAcceptableOrUnknown(data['from_ip']!, _fromIpMeta));
-    } else if (isInserting) {
-      context.missing(_fromIpMeta);
-    }
-    if (data.containsKey('to_ip')) {
-      context.handle(_toIpMeta, toIp.isAcceptableOrUnknown(data['to_ip']!, _toIpMeta));
-    } else if (isInserting) {
-      context.missing(_toIpMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    }
-    if (data.containsKey('last_sync_date')) {
-      context.handle(_lastSyncDateMeta, lastSyncDate.isAcceptableOrUnknown(data['last_sync_date']!, _lastSyncDateMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  SyncDevice map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SyncDevice(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
-      fromIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}from_ip'])!,
-      toIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}to_ip'])!,
-      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
-      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
-      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name']),
-      lastSyncDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
-    );
-  }
-
-  @override
-  $SyncDeviceTableTable createAlias(String alias) {
-    return $SyncDeviceTableTable(attachedDatabase, alias);
-  }
-}
-
-class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
-  final Value<String> id;
-  final Value<DateTime> createdDate;
-  final Value<DateTime?> modifiedDate;
-  final Value<DateTime?> deletedDate;
-  final Value<String> fromIp;
-  final Value<String> toIp;
-  final Value<String?> name;
-  final Value<DateTime?> lastSyncDate;
-  final Value<int> rowid;
-  const SyncDeviceTableCompanion({
-    this.id = const Value.absent(),
-    this.createdDate = const Value.absent(),
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    this.fromIp = const Value.absent(),
-    this.toIp = const Value.absent(),
-    this.name = const Value.absent(),
-    this.lastSyncDate = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  SyncDeviceTableCompanion.insert({
-    required String id,
-    required DateTime createdDate,
-    this.modifiedDate = const Value.absent(),
-    this.deletedDate = const Value.absent(),
-    required String fromIp,
-    required String toIp,
-    this.name = const Value.absent(),
-    this.lastSyncDate = const Value.absent(),
-    this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        createdDate = Value(createdDate),
-        fromIp = Value(fromIp),
-        toIp = Value(toIp);
-  static Insertable<SyncDevice> custom({
-    Expression<String>? id,
-    Expression<DateTime>? createdDate,
-    Expression<DateTime>? modifiedDate,
-    Expression<DateTime>? deletedDate,
-    Expression<String>? fromIp,
-    Expression<String>? toIp,
-    Expression<String>? name,
-    Expression<DateTime>? lastSyncDate,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (createdDate != null) 'created_date': createdDate,
-      if (modifiedDate != null) 'modified_date': modifiedDate,
-      if (deletedDate != null) 'deleted_date': deletedDate,
-      if (fromIp != null) 'from_ip': fromIp,
-      if (toIp != null) 'to_ip': toIp,
-      if (name != null) 'name': name,
-      if (lastSyncDate != null) 'last_sync_date': lastSyncDate,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  SyncDeviceTableCompanion copyWith(
-      {Value<String>? id,
-      Value<DateTime>? createdDate,
-      Value<DateTime?>? modifiedDate,
-      Value<DateTime?>? deletedDate,
-      Value<String>? fromIp,
-      Value<String>? toIp,
-      Value<String?>? name,
-      Value<DateTime?>? lastSyncDate,
-      Value<int>? rowid}) {
-    return SyncDeviceTableCompanion(
-      id: id ?? this.id,
-      createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
-      fromIp: fromIp ?? this.fromIp,
-      toIp: toIp ?? this.toIp,
-      name: name ?? this.name,
-      lastSyncDate: lastSyncDate ?? this.lastSyncDate,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (createdDate.present) {
-      map['created_date'] = Variable<DateTime>(createdDate.value);
-    }
-    if (modifiedDate.present) {
-      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
-    }
-    if (deletedDate.present) {
-      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
-    }
-    if (fromIp.present) {
-      map['from_ip'] = Variable<String>(fromIp.value);
-    }
-    if (toIp.present) {
-      map['to_ip'] = Variable<String>(toIp.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (lastSyncDate.present) {
-      map['last_sync_date'] = Variable<DateTime>(lastSyncDate.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SyncDeviceTableCompanion(')
-          ..write('id: $id, ')
-          ..write('createdDate: $createdDate, ')
-          ..write('modifiedDate: $modifiedDate, ')
-          ..write('deletedDate: $deletedDate, ')
-          ..write('fromIp: $fromIp, ')
-          ..write('toIp: $toIp, ')
-          ..write('name: $name, ')
-          ..write('lastSyncDate: $lastSyncDate, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $AppUsageIgnoreRuleTableTable appUsageIgnoreRuleTable = $AppUsageIgnoreRuleTableTable(this);
   late final $AppUsageTableTable appUsageTable = $AppUsageTableTable(this);
-  late final $AppUsageTagTableTable appUsageTagTable = $AppUsageTagTableTable(this);
   late final $AppUsageTagRuleTableTable appUsageTagRuleTable = $AppUsageTagRuleTableTable(this);
+  late final $AppUsageTagTableTable appUsageTagTable = $AppUsageTagTableTable(this);
   late final $AppUsageTimeRecordTableTable appUsageTimeRecordTable = $AppUsageTimeRecordTableTable(this);
+  late final $HabitRecordTableTable habitRecordTable = $HabitRecordTableTable(this);
   late final $HabitTableTable habitTable = $HabitTableTable(this);
   late final $HabitTagTableTable habitTagTable = $HabitTagTableTable(this);
-  late final $HabitRecordTableTable habitRecordTable = $HabitRecordTableTable(this);
-  late final $TaskTableTable taskTable = $TaskTableTable(this);
-  late final $TaskTagTableTable taskTagTable = $TaskTagTableTable(this);
-  late final $TagTableTable tagTable = $TagTableTable(this);
-  late final $TagTagTableTable tagTagTable = $TagTagTableTable(this);
-  late final $TaskTimeRecordTableTable taskTimeRecordTable = $TaskTimeRecordTableTable(this);
   late final $SettingTableTable settingTable = $SettingTableTable(this);
   late final $SyncDeviceTableTable syncDeviceTable = $SyncDeviceTableTable(this);
+  late final $TagTableTable tagTable = $TagTableTable(this);
+  late final $TagTagTableTable tagTagTable = $TagTagTableTable(this);
+  late final $TaskTableTable taskTable = $TaskTableTable(this);
+  late final $TaskTagTableTable taskTagTable = $TaskTagTableTable(this);
+  late final $TaskTimeRecordTableTable taskTimeRecordTable = $TaskTimeRecordTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+        appUsageIgnoreRuleTable,
         appUsageTable,
-        appUsageTagTable,
         appUsageTagRuleTable,
+        appUsageTagTable,
         appUsageTimeRecordTable,
+        habitRecordTable,
         habitTable,
         habitTagTable,
-        habitRecordTable,
-        taskTable,
-        taskTagTable,
+        settingTable,
+        syncDeviceTable,
         tagTable,
         tagTagTable,
-        taskTimeRecordTable,
-        settingTable,
-        syncDeviceTable
+        taskTable,
+        taskTagTable,
+        taskTimeRecordTable
       ];
 }
 
+typedef $$AppUsageIgnoreRuleTableTableCreateCompanionBuilder = AppUsageIgnoreRuleTableCompanion Function({
+  required String id,
+  required String pattern,
+  Value<String?> description,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+typedef $$AppUsageIgnoreRuleTableTableUpdateCompanionBuilder = AppUsageIgnoreRuleTableCompanion Function({
+  Value<String> id,
+  Value<String> pattern,
+  Value<String?> description,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<int> rowid,
+});
+
+class $$AppUsageIgnoreRuleTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsageIgnoreRuleTableTable> {
+  $$AppUsageIgnoreRuleTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pattern =>
+      $composableBuilder(column: $table.pattern, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppUsageIgnoreRuleTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageIgnoreRuleTableTable> {
+  $$AppUsageIgnoreRuleTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pattern =>
+      $composableBuilder(column: $table.pattern, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppUsageIgnoreRuleTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageIgnoreRuleTableTable> {
+  $$AppUsageIgnoreRuleTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get pattern => $composableBuilder(column: $table.pattern, builder: (column) => column);
+
+  GeneratedColumn<String> get description =>
+      $composableBuilder(column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+}
+
+class $$AppUsageIgnoreRuleTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageIgnoreRuleTableTable,
+    AppUsageIgnoreRule,
+    $$AppUsageIgnoreRuleTableTableFilterComposer,
+    $$AppUsageIgnoreRuleTableTableOrderingComposer,
+    $$AppUsageIgnoreRuleTableTableAnnotationComposer,
+    $$AppUsageIgnoreRuleTableTableCreateCompanionBuilder,
+    $$AppUsageIgnoreRuleTableTableUpdateCompanionBuilder,
+    (AppUsageIgnoreRule, BaseReferences<_$AppDatabase, $AppUsageIgnoreRuleTableTable, AppUsageIgnoreRule>),
+    AppUsageIgnoreRule,
+    PrefetchHooks Function()> {
+  $$AppUsageIgnoreRuleTableTableTableManager(_$AppDatabase db, $AppUsageIgnoreRuleTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$AppUsageIgnoreRuleTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$AppUsageIgnoreRuleTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$AppUsageIgnoreRuleTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> pattern = const Value.absent(),
+            Value<String?> description = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageIgnoreRuleTableCompanion(
+            id: id,
+            pattern: pattern,
+            description: description,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String pattern,
+            Value<String?> description = const Value.absent(),
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageIgnoreRuleTableCompanion.insert(
+            id: id,
+            pattern: pattern,
+            description: description,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppUsageIgnoreRuleTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageIgnoreRuleTableTable,
+    AppUsageIgnoreRule,
+    $$AppUsageIgnoreRuleTableTableFilterComposer,
+    $$AppUsageIgnoreRuleTableTableOrderingComposer,
+    $$AppUsageIgnoreRuleTableTableAnnotationComposer,
+    $$AppUsageIgnoreRuleTableTableCreateCompanionBuilder,
+    $$AppUsageIgnoreRuleTableTableUpdateCompanionBuilder,
+    (AppUsageIgnoreRule, BaseReferences<_$AppDatabase, $AppUsageIgnoreRuleTableTable, AppUsageIgnoreRule>),
+    AppUsageIgnoreRule,
+    PrefetchHooks Function()>;
 typedef $$AppUsageTableTableCreateCompanionBuilder = AppUsageTableCompanion Function({
   required String id,
   required DateTime createdDate,
@@ -3330,173 +3698,6 @@ typedef $$AppUsageTableTableProcessedTableManager = ProcessedTableManager<
     $$AppUsageTableTableUpdateCompanionBuilder,
     (AppUsage, BaseReferences<_$AppDatabase, $AppUsageTableTable, AppUsage>),
     AppUsage,
-    PrefetchHooks Function()>;
-typedef $$AppUsageTagTableTableCreateCompanionBuilder = AppUsageTagTableCompanion Function({
-  required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  required String appUsageId,
-  required String tagId,
-  Value<int> rowid,
-});
-typedef $$AppUsageTagTableTableUpdateCompanionBuilder = AppUsageTagTableCompanion Function({
-  Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  Value<String> appUsageId,
-  Value<String> tagId,
-  Value<int> rowid,
-});
-
-class $$AppUsageTagTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
-  $$AppUsageTagTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get appUsageId =>
-      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get tagId =>
-      $composableBuilder(column: $table.tagId, builder: (column) => ColumnFilters(column));
-}
-
-class $$AppUsageTagTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
-  $$AppUsageTagTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get appUsageId =>
-      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get tagId =>
-      $composableBuilder(column: $table.tagId, builder: (column) => ColumnOrderings(column));
-}
-
-class $$AppUsageTagTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
-  $$AppUsageTagTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
-
-  GeneratedColumn<String> get appUsageId => $composableBuilder(column: $table.appUsageId, builder: (column) => column);
-
-  GeneratedColumn<String> get tagId => $composableBuilder(column: $table.tagId, builder: (column) => column);
-}
-
-class $$AppUsageTagTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AppUsageTagTableTable,
-    AppUsageTag,
-    $$AppUsageTagTableTableFilterComposer,
-    $$AppUsageTagTableTableOrderingComposer,
-    $$AppUsageTagTableTableAnnotationComposer,
-    $$AppUsageTagTableTableCreateCompanionBuilder,
-    $$AppUsageTagTableTableUpdateCompanionBuilder,
-    (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
-    AppUsageTag,
-    PrefetchHooks Function()> {
-  $$AppUsageTagTableTableTableManager(_$AppDatabase db, $AppUsageTagTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$AppUsageTagTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$AppUsageTagTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$AppUsageTagTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> appUsageId = const Value.absent(),
-            Value<String> tagId = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppUsageTagTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            appUsageId: appUsageId,
-            tagId: tagId,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            required String appUsageId,
-            required String tagId,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              AppUsageTagTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            appUsageId: appUsageId,
-            tagId: tagId,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$AppUsageTagTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $AppUsageTagTableTable,
-    AppUsageTag,
-    $$AppUsageTagTableTableFilterComposer,
-    $$AppUsageTagTableTableOrderingComposer,
-    $$AppUsageTagTableTableAnnotationComposer,
-    $$AppUsageTagTableTableCreateCompanionBuilder,
-    $$AppUsageTagTableTableUpdateCompanionBuilder,
-    (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
-    AppUsageTag,
     PrefetchHooks Function()>;
 typedef $$AppUsageTagRuleTableTableCreateCompanionBuilder = AppUsageTagRuleTableCompanion Function({
   required String id,
@@ -3694,6 +3895,173 @@ typedef $$AppUsageTagRuleTableTableProcessedTableManager = ProcessedTableManager
     (AppUsageTagRule, BaseReferences<_$AppDatabase, $AppUsageTagRuleTableTable, AppUsageTagRule>),
     AppUsageTagRule,
     PrefetchHooks Function()>;
+typedef $$AppUsageTagTableTableCreateCompanionBuilder = AppUsageTagTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String appUsageId,
+  required String tagId,
+  Value<int> rowid,
+});
+typedef $$AppUsageTagTableTableUpdateCompanionBuilder = AppUsageTagTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> appUsageId,
+  Value<String> tagId,
+  Value<int> rowid,
+});
+
+class $$AppUsageTagTableTableFilterComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
+  $$AppUsageTagTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get appUsageId =>
+      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppUsageTagTableTableOrderingComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
+  $$AppUsageTagTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get appUsageId =>
+      $composableBuilder(column: $table.appUsageId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppUsageTagTableTableAnnotationComposer extends Composer<_$AppDatabase, $AppUsageTagTableTable> {
+  $$AppUsageTagTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get appUsageId => $composableBuilder(column: $table.appUsageId, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId => $composableBuilder(column: $table.tagId, builder: (column) => column);
+}
+
+class $$AppUsageTagTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageTagTableTable,
+    AppUsageTag,
+    $$AppUsageTagTableTableFilterComposer,
+    $$AppUsageTagTableTableOrderingComposer,
+    $$AppUsageTagTableTableAnnotationComposer,
+    $$AppUsageTagTableTableCreateCompanionBuilder,
+    $$AppUsageTagTableTableUpdateCompanionBuilder,
+    (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
+    AppUsageTag,
+    PrefetchHooks Function()> {
+  $$AppUsageTagTableTableTableManager(_$AppDatabase db, $AppUsageTagTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$AppUsageTagTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$AppUsageTagTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$AppUsageTagTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> appUsageId = const Value.absent(),
+            Value<String> tagId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTagTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            appUsageId: appUsageId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String appUsageId,
+            required String tagId,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTagTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            appUsageId: appUsageId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppUsageTagTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageTagTableTable,
+    AppUsageTag,
+    $$AppUsageTagTableTableFilterComposer,
+    $$AppUsageTagTableTableOrderingComposer,
+    $$AppUsageTagTableTableAnnotationComposer,
+    $$AppUsageTagTableTableCreateCompanionBuilder,
+    $$AppUsageTagTableTableUpdateCompanionBuilder,
+    (AppUsageTag, BaseReferences<_$AppDatabase, $AppUsageTagTableTable, AppUsageTag>),
+    AppUsageTag,
+    PrefetchHooks Function()>;
 typedef $$AppUsageTimeRecordTableTableCreateCompanionBuilder = AppUsageTimeRecordTableCompanion Function({
   required String id,
   required String appUsageId,
@@ -3860,6 +4228,173 @@ typedef $$AppUsageTimeRecordTableTableProcessedTableManager = ProcessedTableMana
     $$AppUsageTimeRecordTableTableUpdateCompanionBuilder,
     (AppUsageTimeRecord, BaseReferences<_$AppDatabase, $AppUsageTimeRecordTableTable, AppUsageTimeRecord>),
     AppUsageTimeRecord,
+    PrefetchHooks Function()>;
+typedef $$HabitRecordTableTableCreateCompanionBuilder = HabitRecordTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String habitId,
+  required DateTime date,
+  Value<int> rowid,
+});
+typedef $$HabitRecordTableTableUpdateCompanionBuilder = HabitRecordTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> habitId,
+  Value<DateTime> date,
+  Value<int> rowid,
+});
+
+class $$HabitRecordTableTableFilterComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
+  $$HabitRecordTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get habitId =>
+      $composableBuilder(column: $table.habitId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
+}
+
+class $$HabitRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
+  $$HabitRecordTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get habitId =>
+      $composableBuilder(column: $table.habitId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
+}
+
+class $$HabitRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
+  $$HabitRecordTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get habitId => $composableBuilder(column: $table.habitId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date => $composableBuilder(column: $table.date, builder: (column) => column);
+}
+
+class $$HabitRecordTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HabitRecordTableTable,
+    HabitRecord,
+    $$HabitRecordTableTableFilterComposer,
+    $$HabitRecordTableTableOrderingComposer,
+    $$HabitRecordTableTableAnnotationComposer,
+    $$HabitRecordTableTableCreateCompanionBuilder,
+    $$HabitRecordTableTableUpdateCompanionBuilder,
+    (HabitRecord, BaseReferences<_$AppDatabase, $HabitRecordTableTable, HabitRecord>),
+    HabitRecord,
+    PrefetchHooks Function()> {
+  $$HabitRecordTableTableTableManager(_$AppDatabase db, $HabitRecordTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$HabitRecordTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$HabitRecordTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$HabitRecordTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> habitId = const Value.absent(),
+            Value<DateTime> date = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitRecordTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            habitId: habitId,
+            date: date,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String habitId,
+            required DateTime date,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              HabitRecordTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            habitId: habitId,
+            date: date,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$HabitRecordTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $HabitRecordTableTable,
+    HabitRecord,
+    $$HabitRecordTableTableFilterComposer,
+    $$HabitRecordTableTableOrderingComposer,
+    $$HabitRecordTableTableAnnotationComposer,
+    $$HabitRecordTableTableCreateCompanionBuilder,
+    $$HabitRecordTableTableUpdateCompanionBuilder,
+    (HabitRecord, BaseReferences<_$AppDatabase, $HabitRecordTableTable, HabitRecord>),
+    HabitRecord,
     PrefetchHooks Function()>;
 typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   required String id,
@@ -4210,27 +4745,29 @@ typedef $$HabitTagTableTableProcessedTableManager = ProcessedTableManager<
     (HabitTag, BaseReferences<_$AppDatabase, $HabitTagTableTable, HabitTag>),
     HabitTag,
     PrefetchHooks Function()>;
-typedef $$HabitRecordTableTableCreateCompanionBuilder = HabitRecordTableCompanion Function({
+typedef $$SettingTableTableCreateCompanionBuilder = SettingTableCompanion Function({
   required String id,
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
-  required String habitId,
-  required DateTime date,
+  required String key,
+  required String value,
+  required SettingValueType valueType,
   Value<int> rowid,
 });
-typedef $$HabitRecordTableTableUpdateCompanionBuilder = HabitRecordTableCompanion Function({
+typedef $$SettingTableTableUpdateCompanionBuilder = SettingTableCompanion Function({
   Value<String> id,
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
-  Value<String> habitId,
-  Value<DateTime> date,
+  Value<String> key,
+  Value<String> value,
+  Value<SettingValueType> valueType,
   Value<int> rowid,
 });
 
-class $$HabitRecordTableTableFilterComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
-  $$HabitRecordTableTableFilterComposer({
+class $$SettingTableTableFilterComposer extends Composer<_$AppDatabase, $SettingTableTable> {
+  $$SettingTableTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -4248,15 +4785,17 @@ class $$HabitRecordTableTableFilterComposer extends Composer<_$AppDatabase, $Hab
   ColumnFilters<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get habitId =>
-      $composableBuilder(column: $table.habitId, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get key => $composableBuilder(column: $table.key, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<SettingValueType, SettingValueType, int> get valueType =>
+      $composableBuilder(column: $table.valueType, builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
-class $$HabitRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
-  $$HabitRecordTableTableOrderingComposer({
+class $$SettingTableTableOrderingComposer extends Composer<_$AppDatabase, $SettingTableTable> {
+  $$SettingTableTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -4274,15 +4813,18 @@ class $$HabitRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $H
   ColumnOrderings<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get habitId =>
-      $composableBuilder(column: $table.habitId, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get valueType =>
+      $composableBuilder(column: $table.valueType, builder: (column) => ColumnOrderings(column));
 }
 
-class $$HabitRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
-  $$HabitRecordTableTableAnnotationComposer({
+class $$SettingTableTableAnnotationComposer extends Composer<_$AppDatabase, $SettingTableTable> {
+  $$SettingTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -4300,46 +4842,51 @@ class $$HabitRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, 
   GeneratedColumn<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
-  GeneratedColumn<String> get habitId => $composableBuilder(column: $table.habitId, builder: (column) => column);
+  GeneratedColumn<String> get key => $composableBuilder(column: $table.key, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date => $composableBuilder(column: $table.date, builder: (column) => column);
+  GeneratedColumn<String> get value => $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SettingValueType, int> get valueType =>
+      $composableBuilder(column: $table.valueType, builder: (column) => column);
 }
 
-class $$HabitRecordTableTableTableManager extends RootTableManager<
+class $$SettingTableTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $HabitRecordTableTable,
-    HabitRecord,
-    $$HabitRecordTableTableFilterComposer,
-    $$HabitRecordTableTableOrderingComposer,
-    $$HabitRecordTableTableAnnotationComposer,
-    $$HabitRecordTableTableCreateCompanionBuilder,
-    $$HabitRecordTableTableUpdateCompanionBuilder,
-    (HabitRecord, BaseReferences<_$AppDatabase, $HabitRecordTableTable, HabitRecord>),
-    HabitRecord,
+    $SettingTableTable,
+    Setting,
+    $$SettingTableTableFilterComposer,
+    $$SettingTableTableOrderingComposer,
+    $$SettingTableTableAnnotationComposer,
+    $$SettingTableTableCreateCompanionBuilder,
+    $$SettingTableTableUpdateCompanionBuilder,
+    (Setting, BaseReferences<_$AppDatabase, $SettingTableTable, Setting>),
+    Setting,
     PrefetchHooks Function()> {
-  $$HabitRecordTableTableTableManager(_$AppDatabase db, $HabitRecordTableTable table)
+  $$SettingTableTableTableManager(_$AppDatabase db, $SettingTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () => $$HabitRecordTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$HabitRecordTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$HabitRecordTableTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer: () => $$SettingTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$SettingTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$SettingTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> habitId = const Value.absent(),
-            Value<DateTime> date = const Value.absent(),
+            Value<String> key = const Value.absent(),
+            Value<String> value = const Value.absent(),
+            Value<SettingValueType> valueType = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
-              HabitRecordTableCompanion(
+              SettingTableCompanion(
             id: id,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
-            habitId: habitId,
-            date: date,
+            key: key,
+            value: value,
+            valueType: valueType,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -4347,17 +4894,19 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
-            required String habitId,
-            required DateTime date,
+            required String key,
+            required String value,
+            required SettingValueType valueType,
             Value<int> rowid = const Value.absent(),
           }) =>
-              HabitRecordTableCompanion.insert(
+              SettingTableCompanion.insert(
             id: id,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
-            habitId: habitId,
-            date: date,
+            key: key,
+            value: value,
+            valueType: valueType,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
@@ -4365,17 +4914,560 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$HabitRecordTableTableProcessedTableManager = ProcessedTableManager<
+typedef $$SettingTableTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
-    $HabitRecordTableTable,
-    HabitRecord,
-    $$HabitRecordTableTableFilterComposer,
-    $$HabitRecordTableTableOrderingComposer,
-    $$HabitRecordTableTableAnnotationComposer,
-    $$HabitRecordTableTableCreateCompanionBuilder,
-    $$HabitRecordTableTableUpdateCompanionBuilder,
-    (HabitRecord, BaseReferences<_$AppDatabase, $HabitRecordTableTable, HabitRecord>),
-    HabitRecord,
+    $SettingTableTable,
+    Setting,
+    $$SettingTableTableFilterComposer,
+    $$SettingTableTableOrderingComposer,
+    $$SettingTableTableAnnotationComposer,
+    $$SettingTableTableCreateCompanionBuilder,
+    $$SettingTableTableUpdateCompanionBuilder,
+    (Setting, BaseReferences<_$AppDatabase, $SettingTableTable, Setting>),
+    Setting,
+    PrefetchHooks Function()>;
+typedef $$SyncDeviceTableTableCreateCompanionBuilder = SyncDeviceTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String fromIp,
+  required String toIp,
+  Value<String?> name,
+  Value<DateTime?> lastSyncDate,
+  Value<int> rowid,
+});
+typedef $$SyncDeviceTableTableUpdateCompanionBuilder = SyncDeviceTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> fromIp,
+  Value<String> toIp,
+  Value<String?> name,
+  Value<DateTime?> lastSyncDate,
+  Value<int> rowid,
+});
+
+class $$SyncDeviceTableTableFilterComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
+  $$SyncDeviceTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get fromIp =>
+      $composableBuilder(column: $table.fromIp, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastSyncDate =>
+      $composableBuilder(column: $table.lastSyncDate, builder: (column) => ColumnFilters(column));
+}
+
+class $$SyncDeviceTableTableOrderingComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
+  $$SyncDeviceTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get fromIp =>
+      $composableBuilder(column: $table.fromIp, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get toIp =>
+      $composableBuilder(column: $table.toIp, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastSyncDate =>
+      $composableBuilder(column: $table.lastSyncDate, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SyncDeviceTableTableAnnotationComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
+  $$SyncDeviceTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get fromIp => $composableBuilder(column: $table.fromIp, builder: (column) => column);
+
+  GeneratedColumn<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => column);
+
+  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncDate =>
+      $composableBuilder(column: $table.lastSyncDate, builder: (column) => column);
+}
+
+class $$SyncDeviceTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SyncDeviceTableTable,
+    SyncDevice,
+    $$SyncDeviceTableTableFilterComposer,
+    $$SyncDeviceTableTableOrderingComposer,
+    $$SyncDeviceTableTableAnnotationComposer,
+    $$SyncDeviceTableTableCreateCompanionBuilder,
+    $$SyncDeviceTableTableUpdateCompanionBuilder,
+    (SyncDevice, BaseReferences<_$AppDatabase, $SyncDeviceTableTable, SyncDevice>),
+    SyncDevice,
+    PrefetchHooks Function()> {
+  $$SyncDeviceTableTableTableManager(_$AppDatabase db, $SyncDeviceTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$SyncDeviceTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$SyncDeviceTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$SyncDeviceTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> fromIp = const Value.absent(),
+            Value<String> toIp = const Value.absent(),
+            Value<String?> name = const Value.absent(),
+            Value<DateTime?> lastSyncDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SyncDeviceTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            fromIp: fromIp,
+            toIp: toIp,
+            name: name,
+            lastSyncDate: lastSyncDate,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String fromIp,
+            required String toIp,
+            Value<String?> name = const Value.absent(),
+            Value<DateTime?> lastSyncDate = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SyncDeviceTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            fromIp: fromIp,
+            toIp: toIp,
+            name: name,
+            lastSyncDate: lastSyncDate,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SyncDeviceTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SyncDeviceTableTable,
+    SyncDevice,
+    $$SyncDeviceTableTableFilterComposer,
+    $$SyncDeviceTableTableOrderingComposer,
+    $$SyncDeviceTableTableAnnotationComposer,
+    $$SyncDeviceTableTableCreateCompanionBuilder,
+    $$SyncDeviceTableTableUpdateCompanionBuilder,
+    (SyncDevice, BaseReferences<_$AppDatabase, $SyncDeviceTableTable, SyncDevice>),
+    SyncDevice,
+    PrefetchHooks Function()>;
+typedef $$TagTableTableCreateCompanionBuilder = TagTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String name,
+  Value<String?> color,
+  Value<bool> isArchived,
+  Value<int> rowid,
+});
+typedef $$TagTableTableUpdateCompanionBuilder = TagTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> name,
+  Value<String?> color,
+  Value<bool> isArchived,
+  Value<int> rowid,
+});
+
+class $$TagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTableTable> {
+  $$TagTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isArchived =>
+      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnFilters(column));
+}
+
+class $$TagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTableTable> {
+  $$TagTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isArchived =>
+      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTableTable> {
+  $$TagTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(column: $table.isArchived, builder: (column) => column);
+}
+
+class $$TagTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TagTableTable,
+    Tag,
+    $$TagTableTableFilterComposer,
+    $$TagTableTableOrderingComposer,
+    $$TagTableTableAnnotationComposer,
+    $$TagTableTableCreateCompanionBuilder,
+    $$TagTableTableUpdateCompanionBuilder,
+    (Tag, BaseReferences<_$AppDatabase, $TagTableTable, Tag>),
+    Tag,
+    PrefetchHooks Function()> {
+  $$TagTableTableTableManager(_$AppDatabase db, $TagTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$TagTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$TagTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$TagTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> color = const Value.absent(),
+            Value<bool> isArchived = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TagTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            name: name,
+            color: color,
+            isArchived: isArchived,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String name,
+            Value<String?> color = const Value.absent(),
+            Value<bool> isArchived = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TagTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            name: name,
+            color: color,
+            isArchived: isArchived,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TagTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TagTableTable,
+    Tag,
+    $$TagTableTableFilterComposer,
+    $$TagTableTableOrderingComposer,
+    $$TagTableTableAnnotationComposer,
+    $$TagTableTableCreateCompanionBuilder,
+    $$TagTableTableUpdateCompanionBuilder,
+    (Tag, BaseReferences<_$AppDatabase, $TagTableTable, Tag>),
+    Tag,
+    PrefetchHooks Function()>;
+typedef $$TagTagTableTableCreateCompanionBuilder = TagTagTableCompanion Function({
+  required String id,
+  required DateTime createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  required String primaryTagId,
+  required String secondaryTagId,
+  Value<int> rowid,
+});
+typedef $$TagTagTableTableUpdateCompanionBuilder = TagTagTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdDate,
+  Value<DateTime?> modifiedDate,
+  Value<DateTime?> deletedDate,
+  Value<String> primaryTagId,
+  Value<String> secondaryTagId,
+  Value<int> rowid,
+});
+
+class $$TagTagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
+  $$TagTagTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get primaryTagId =>
+      $composableBuilder(column: $table.primaryTagId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get secondaryTagId =>
+      $composableBuilder(column: $table.secondaryTagId, builder: (column) => ColumnFilters(column));
+}
+
+class $$TagTagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
+  $$TagTagTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get primaryTagId =>
+      $composableBuilder(column: $table.primaryTagId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get secondaryTagId =>
+      $composableBuilder(column: $table.secondaryTagId, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TagTagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
+  $$TagTagTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdDate =>
+      $composableBuilder(column: $table.createdDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get modifiedDate =>
+      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedDate =>
+      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<String> get primaryTagId =>
+      $composableBuilder(column: $table.primaryTagId, builder: (column) => column);
+
+  GeneratedColumn<String> get secondaryTagId =>
+      $composableBuilder(column: $table.secondaryTagId, builder: (column) => column);
+}
+
+class $$TagTagTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TagTagTableTable,
+    TagTag,
+    $$TagTagTableTableFilterComposer,
+    $$TagTagTableTableOrderingComposer,
+    $$TagTagTableTableAnnotationComposer,
+    $$TagTagTableTableCreateCompanionBuilder,
+    $$TagTagTableTableUpdateCompanionBuilder,
+    (TagTag, BaseReferences<_$AppDatabase, $TagTagTableTable, TagTag>),
+    TagTag,
+    PrefetchHooks Function()> {
+  $$TagTagTableTableTableManager(_$AppDatabase db, $TagTagTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$TagTagTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$TagTagTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$TagTagTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdDate = const Value.absent(),
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            Value<String> primaryTagId = const Value.absent(),
+            Value<String> secondaryTagId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TagTagTableCompanion(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            primaryTagId: primaryTagId,
+            secondaryTagId: secondaryTagId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdDate,
+            Value<DateTime?> modifiedDate = const Value.absent(),
+            Value<DateTime?> deletedDate = const Value.absent(),
+            required String primaryTagId,
+            required String secondaryTagId,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TagTagTableCompanion.insert(
+            id: id,
+            createdDate: createdDate,
+            modifiedDate: modifiedDate,
+            deletedDate: deletedDate,
+            primaryTagId: primaryTagId,
+            secondaryTagId: secondaryTagId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TagTagTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TagTagTableTable,
+    TagTag,
+    $$TagTagTableTableFilterComposer,
+    $$TagTagTableTableOrderingComposer,
+    $$TagTagTableTableAnnotationComposer,
+    $$TagTagTableTableCreateCompanionBuilder,
+    $$TagTagTableTableUpdateCompanionBuilder,
+    (TagTag, BaseReferences<_$AppDatabase, $TagTagTableTable, TagTag>),
+    TagTag,
     PrefetchHooks Function()>;
 typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   required String id,
@@ -4786,355 +5878,6 @@ typedef $$TaskTagTableTableProcessedTableManager = ProcessedTableManager<
     (TaskTag, BaseReferences<_$AppDatabase, $TaskTagTableTable, TaskTag>),
     TaskTag,
     PrefetchHooks Function()>;
-typedef $$TagTableTableCreateCompanionBuilder = TagTableCompanion Function({
-  required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  required String name,
-  Value<String?> color,
-  Value<bool> isArchived,
-  Value<int> rowid,
-});
-typedef $$TagTableTableUpdateCompanionBuilder = TagTableCompanion Function({
-  Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  Value<String> name,
-  Value<String?> color,
-  Value<bool> isArchived,
-  Value<int> rowid,
-});
-
-class $$TagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTableTable> {
-  $$TagTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get color =>
-      $composableBuilder(column: $table.color, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get isArchived =>
-      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnFilters(column));
-}
-
-class $$TagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTableTable> {
-  $$TagTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get color =>
-      $composableBuilder(column: $table.color, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get isArchived =>
-      $composableBuilder(column: $table.isArchived, builder: (column) => ColumnOrderings(column));
-}
-
-class $$TagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTableTable> {
-  $$TagTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
-
-  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get color => $composableBuilder(column: $table.color, builder: (column) => column);
-
-  GeneratedColumn<bool> get isArchived => $composableBuilder(column: $table.isArchived, builder: (column) => column);
-}
-
-class $$TagTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TagTableTable,
-    Tag,
-    $$TagTableTableFilterComposer,
-    $$TagTableTableOrderingComposer,
-    $$TagTableTableAnnotationComposer,
-    $$TagTableTableCreateCompanionBuilder,
-    $$TagTableTableUpdateCompanionBuilder,
-    (Tag, BaseReferences<_$AppDatabase, $TagTableTable, Tag>),
-    Tag,
-    PrefetchHooks Function()> {
-  $$TagTableTableTableManager(_$AppDatabase db, $TagTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$TagTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$TagTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$TagTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String?> color = const Value.absent(),
-            Value<bool> isArchived = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TagTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            name: name,
-            color: color,
-            isArchived: isArchived,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            required String name,
-            Value<String?> color = const Value.absent(),
-            Value<bool> isArchived = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TagTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            name: name,
-            color: color,
-            isArchived: isArchived,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$TagTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TagTableTable,
-    Tag,
-    $$TagTableTableFilterComposer,
-    $$TagTableTableOrderingComposer,
-    $$TagTableTableAnnotationComposer,
-    $$TagTableTableCreateCompanionBuilder,
-    $$TagTableTableUpdateCompanionBuilder,
-    (Tag, BaseReferences<_$AppDatabase, $TagTableTable, Tag>),
-    Tag,
-    PrefetchHooks Function()>;
-typedef $$TagTagTableTableCreateCompanionBuilder = TagTagTableCompanion Function({
-  required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  required String primaryTagId,
-  required String secondaryTagId,
-  Value<int> rowid,
-});
-typedef $$TagTagTableTableUpdateCompanionBuilder = TagTagTableCompanion Function({
-  Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  Value<String> primaryTagId,
-  Value<String> secondaryTagId,
-  Value<int> rowid,
-});
-
-class $$TagTagTableTableFilterComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
-  $$TagTagTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get primaryTagId =>
-      $composableBuilder(column: $table.primaryTagId, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get secondaryTagId =>
-      $composableBuilder(column: $table.secondaryTagId, builder: (column) => ColumnFilters(column));
-}
-
-class $$TagTagTableTableOrderingComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
-  $$TagTagTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get primaryTagId =>
-      $composableBuilder(column: $table.primaryTagId, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get secondaryTagId =>
-      $composableBuilder(column: $table.secondaryTagId, builder: (column) => ColumnOrderings(column));
-}
-
-class $$TagTagTableTableAnnotationComposer extends Composer<_$AppDatabase, $TagTagTableTable> {
-  $$TagTagTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
-
-  GeneratedColumn<String> get primaryTagId =>
-      $composableBuilder(column: $table.primaryTagId, builder: (column) => column);
-
-  GeneratedColumn<String> get secondaryTagId =>
-      $composableBuilder(column: $table.secondaryTagId, builder: (column) => column);
-}
-
-class $$TagTagTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TagTagTableTable,
-    TagTag,
-    $$TagTagTableTableFilterComposer,
-    $$TagTagTableTableOrderingComposer,
-    $$TagTagTableTableAnnotationComposer,
-    $$TagTagTableTableCreateCompanionBuilder,
-    $$TagTagTableTableUpdateCompanionBuilder,
-    (TagTag, BaseReferences<_$AppDatabase, $TagTagTableTable, TagTag>),
-    TagTag,
-    PrefetchHooks Function()> {
-  $$TagTagTableTableTableManager(_$AppDatabase db, $TagTagTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$TagTagTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$TagTagTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$TagTagTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> primaryTagId = const Value.absent(),
-            Value<String> secondaryTagId = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TagTagTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            primaryTagId: primaryTagId,
-            secondaryTagId: secondaryTagId,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            required String primaryTagId,
-            required String secondaryTagId,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TagTagTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            primaryTagId: primaryTagId,
-            secondaryTagId: secondaryTagId,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$TagTagTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TagTagTableTable,
-    TagTag,
-    $$TagTagTableTableFilterComposer,
-    $$TagTagTableTableOrderingComposer,
-    $$TagTagTableTableAnnotationComposer,
-    $$TagTagTableTableCreateCompanionBuilder,
-    $$TagTagTableTableUpdateCompanionBuilder,
-    (TagTag, BaseReferences<_$AppDatabase, $TagTagTableTable, TagTag>),
-    TagTag,
-    PrefetchHooks Function()>;
 typedef $$TaskTimeRecordTableTableCreateCompanionBuilder = TaskTimeRecordTableCompanion Function({
   required String id,
   required String taskId,
@@ -5302,403 +6045,30 @@ typedef $$TaskTimeRecordTableTableProcessedTableManager = ProcessedTableManager<
     (TaskTimeRecord, BaseReferences<_$AppDatabase, $TaskTimeRecordTableTable, TaskTimeRecord>),
     TaskTimeRecord,
     PrefetchHooks Function()>;
-typedef $$SettingTableTableCreateCompanionBuilder = SettingTableCompanion Function({
-  required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  required String key,
-  required String value,
-  required SettingValueType valueType,
-  Value<int> rowid,
-});
-typedef $$SettingTableTableUpdateCompanionBuilder = SettingTableCompanion Function({
-  Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  Value<String> key,
-  Value<String> value,
-  Value<SettingValueType> valueType,
-  Value<int> rowid,
-});
-
-class $$SettingTableTableFilterComposer extends Composer<_$AppDatabase, $SettingTableTable> {
-  $$SettingTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get key => $composableBuilder(column: $table.key, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get value =>
-      $composableBuilder(column: $table.value, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<SettingValueType, SettingValueType, int> get valueType =>
-      $composableBuilder(column: $table.valueType, builder: (column) => ColumnWithTypeConverterFilters(column));
-}
-
-class $$SettingTableTableOrderingComposer extends Composer<_$AppDatabase, $SettingTableTable> {
-  $$SettingTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get key =>
-      $composableBuilder(column: $table.key, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get value =>
-      $composableBuilder(column: $table.value, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get valueType =>
-      $composableBuilder(column: $table.valueType, builder: (column) => ColumnOrderings(column));
-}
-
-class $$SettingTableTableAnnotationComposer extends Composer<_$AppDatabase, $SettingTableTable> {
-  $$SettingTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
-
-  GeneratedColumn<String> get key => $composableBuilder(column: $table.key, builder: (column) => column);
-
-  GeneratedColumn<String> get value => $composableBuilder(column: $table.value, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<SettingValueType, int> get valueType =>
-      $composableBuilder(column: $table.valueType, builder: (column) => column);
-}
-
-class $$SettingTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SettingTableTable,
-    Setting,
-    $$SettingTableTableFilterComposer,
-    $$SettingTableTableOrderingComposer,
-    $$SettingTableTableAnnotationComposer,
-    $$SettingTableTableCreateCompanionBuilder,
-    $$SettingTableTableUpdateCompanionBuilder,
-    (Setting, BaseReferences<_$AppDatabase, $SettingTableTable, Setting>),
-    Setting,
-    PrefetchHooks Function()> {
-  $$SettingTableTableTableManager(_$AppDatabase db, $SettingTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$SettingTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$SettingTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$SettingTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> key = const Value.absent(),
-            Value<String> value = const Value.absent(),
-            Value<SettingValueType> valueType = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              SettingTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            key: key,
-            value: value,
-            valueType: valueType,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            required String key,
-            required String value,
-            required SettingValueType valueType,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              SettingTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            key: key,
-            value: value,
-            valueType: valueType,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$SettingTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SettingTableTable,
-    Setting,
-    $$SettingTableTableFilterComposer,
-    $$SettingTableTableOrderingComposer,
-    $$SettingTableTableAnnotationComposer,
-    $$SettingTableTableCreateCompanionBuilder,
-    $$SettingTableTableUpdateCompanionBuilder,
-    (Setting, BaseReferences<_$AppDatabase, $SettingTableTable, Setting>),
-    Setting,
-    PrefetchHooks Function()>;
-typedef $$SyncDeviceTableTableCreateCompanionBuilder = SyncDeviceTableCompanion Function({
-  required String id,
-  required DateTime createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  required String fromIp,
-  required String toIp,
-  Value<String?> name,
-  Value<DateTime?> lastSyncDate,
-  Value<int> rowid,
-});
-typedef $$SyncDeviceTableTableUpdateCompanionBuilder = SyncDeviceTableCompanion Function({
-  Value<String> id,
-  Value<DateTime> createdDate,
-  Value<DateTime?> modifiedDate,
-  Value<DateTime?> deletedDate,
-  Value<String> fromIp,
-  Value<String> toIp,
-  Value<String?> name,
-  Value<DateTime?> lastSyncDate,
-  Value<int> rowid,
-});
-
-class $$SyncDeviceTableTableFilterComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
-  $$SyncDeviceTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get fromIp =>
-      $composableBuilder(column: $table.fromIp, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<DateTime> get lastSyncDate =>
-      $composableBuilder(column: $table.lastSyncDate, builder: (column) => ColumnFilters(column));
-}
-
-class $$SyncDeviceTableTableOrderingComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
-  $$SyncDeviceTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get fromIp =>
-      $composableBuilder(column: $table.fromIp, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get toIp =>
-      $composableBuilder(column: $table.toIp, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<DateTime> get lastSyncDate =>
-      $composableBuilder(column: $table.lastSyncDate, builder: (column) => ColumnOrderings(column));
-}
-
-class $$SyncDeviceTableTableAnnotationComposer extends Composer<_$AppDatabase, $SyncDeviceTableTable> {
-  $$SyncDeviceTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdDate =>
-      $composableBuilder(column: $table.createdDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get modifiedDate =>
-      $composableBuilder(column: $table.modifiedDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedDate =>
-      $composableBuilder(column: $table.deletedDate, builder: (column) => column);
-
-  GeneratedColumn<String> get fromIp => $composableBuilder(column: $table.fromIp, builder: (column) => column);
-
-  GeneratedColumn<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => column);
-
-  GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastSyncDate =>
-      $composableBuilder(column: $table.lastSyncDate, builder: (column) => column);
-}
-
-class $$SyncDeviceTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SyncDeviceTableTable,
-    SyncDevice,
-    $$SyncDeviceTableTableFilterComposer,
-    $$SyncDeviceTableTableOrderingComposer,
-    $$SyncDeviceTableTableAnnotationComposer,
-    $$SyncDeviceTableTableCreateCompanionBuilder,
-    $$SyncDeviceTableTableUpdateCompanionBuilder,
-    (SyncDevice, BaseReferences<_$AppDatabase, $SyncDeviceTableTable, SyncDevice>),
-    SyncDevice,
-    PrefetchHooks Function()> {
-  $$SyncDeviceTableTableTableManager(_$AppDatabase db, $SyncDeviceTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () => $$SyncDeviceTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$SyncDeviceTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$SyncDeviceTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<DateTime> createdDate = const Value.absent(),
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            Value<String> fromIp = const Value.absent(),
-            Value<String> toIp = const Value.absent(),
-            Value<String?> name = const Value.absent(),
-            Value<DateTime?> lastSyncDate = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              SyncDeviceTableCompanion(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            fromIp: fromIp,
-            toIp: toIp,
-            name: name,
-            lastSyncDate: lastSyncDate,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required DateTime createdDate,
-            Value<DateTime?> modifiedDate = const Value.absent(),
-            Value<DateTime?> deletedDate = const Value.absent(),
-            required String fromIp,
-            required String toIp,
-            Value<String?> name = const Value.absent(),
-            Value<DateTime?> lastSyncDate = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              SyncDeviceTableCompanion.insert(
-            id: id,
-            createdDate: createdDate,
-            modifiedDate: modifiedDate,
-            deletedDate: deletedDate,
-            fromIp: fromIp,
-            toIp: toIp,
-            name: name,
-            lastSyncDate: lastSyncDate,
-            rowid: rowid,
-          ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$SyncDeviceTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SyncDeviceTableTable,
-    SyncDevice,
-    $$SyncDeviceTableTableFilterComposer,
-    $$SyncDeviceTableTableOrderingComposer,
-    $$SyncDeviceTableTableAnnotationComposer,
-    $$SyncDeviceTableTableCreateCompanionBuilder,
-    $$SyncDeviceTableTableUpdateCompanionBuilder,
-    (SyncDevice, BaseReferences<_$AppDatabase, $SyncDeviceTableTable, SyncDevice>),
-    SyncDevice,
-    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$AppUsageIgnoreRuleTableTableTableManager get appUsageIgnoreRuleTable =>
+      $$AppUsageIgnoreRuleTableTableTableManager(_db, _db.appUsageIgnoreRuleTable);
   $$AppUsageTableTableTableManager get appUsageTable => $$AppUsageTableTableTableManager(_db, _db.appUsageTable);
-  $$AppUsageTagTableTableTableManager get appUsageTagTable =>
-      $$AppUsageTagTableTableTableManager(_db, _db.appUsageTagTable);
   $$AppUsageTagRuleTableTableTableManager get appUsageTagRuleTable =>
       $$AppUsageTagRuleTableTableTableManager(_db, _db.appUsageTagRuleTable);
+  $$AppUsageTagTableTableTableManager get appUsageTagTable =>
+      $$AppUsageTagTableTableTableManager(_db, _db.appUsageTagTable);
   $$AppUsageTimeRecordTableTableTableManager get appUsageTimeRecordTable =>
       $$AppUsageTimeRecordTableTableTableManager(_db, _db.appUsageTimeRecordTable);
-  $$HabitTableTableTableManager get habitTable => $$HabitTableTableTableManager(_db, _db.habitTable);
-  $$HabitTagTableTableTableManager get habitTagTable => $$HabitTagTableTableTableManager(_db, _db.habitTagTable);
   $$HabitRecordTableTableTableManager get habitRecordTable =>
       $$HabitRecordTableTableTableManager(_db, _db.habitRecordTable);
-  $$TaskTableTableTableManager get taskTable => $$TaskTableTableTableManager(_db, _db.taskTable);
-  $$TaskTagTableTableTableManager get taskTagTable => $$TaskTagTableTableTableManager(_db, _db.taskTagTable);
-  $$TagTableTableTableManager get tagTable => $$TagTableTableTableManager(_db, _db.tagTable);
-  $$TagTagTableTableTableManager get tagTagTable => $$TagTagTableTableTableManager(_db, _db.tagTagTable);
-  $$TaskTimeRecordTableTableTableManager get taskTimeRecordTable =>
-      $$TaskTimeRecordTableTableTableManager(_db, _db.taskTimeRecordTable);
+  $$HabitTableTableTableManager get habitTable => $$HabitTableTableTableManager(_db, _db.habitTable);
+  $$HabitTagTableTableTableManager get habitTagTable => $$HabitTagTableTableTableManager(_db, _db.habitTagTable);
   $$SettingTableTableTableManager get settingTable => $$SettingTableTableTableManager(_db, _db.settingTable);
   $$SyncDeviceTableTableTableManager get syncDeviceTable =>
       $$SyncDeviceTableTableTableManager(_db, _db.syncDeviceTable);
+  $$TagTableTableTableManager get tagTable => $$TagTableTableTableManager(_db, _db.tagTable);
+  $$TagTagTableTableTableManager get tagTagTable => $$TagTagTableTableTableManager(_db, _db.tagTagTable);
+  $$TaskTableTableTableManager get taskTable => $$TaskTableTableTableManager(_db, _db.taskTable);
+  $$TaskTagTableTableTableManager get taskTagTable => $$TaskTagTableTableTableManager(_db, _db.taskTagTable);
+  $$TaskTimeRecordTableTableTableManager get taskTimeRecordTable =>
+      $$TaskTimeRecordTableTableTableManager(_db, _db.taskTimeRecordTable);
 }

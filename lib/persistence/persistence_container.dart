@@ -1,3 +1,4 @@
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
@@ -13,6 +14,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/persistence/features/app_usages/drift_app_usage_ignore_rule_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_rule_repository.dart';
@@ -29,18 +31,19 @@ import 'package:whph/persistence/features/tasks/drift_task_tag_repository.dart';
 import 'package:whph/persistence/features/tasks/drift_task_time_record_repository.dart';
 
 void registerPersistence(IContainer container) {
+  container.registerSingleton<IAppUsageIgnoreRuleRepository>((_) => DriftAppUsageIgnoreRuleRepository());
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());
   container.registerSingleton<IAppUsageTagRepository>((_) => DriftAppUsageTagRepository());
   container.registerSingleton<IAppUsageTagRuleRepository>((_) => DriftAppUsageTagRuleRepository());
   container.registerSingleton<IAppUsageTimeRecordRepository>((_) => DriftAppUsageTimeRecordRepository());
+  container.registerSingleton<IHabitRecordRepository>((_) => DriftHabitRecordRepository());
   container.registerSingleton<IHabitRepository>((_) => DriftHabitRepository());
   container.registerSingleton<IHabitTagsRepository>((_) => DriftHabitTagRepository());
-  container.registerSingleton<IHabitRecordRepository>((_) => DriftHabitRecordRepository());
+  container.registerSingleton<ISettingRepository>((_) => DriftSettingRepository());
+  container.registerSingleton<ISyncDeviceRepository>((_) => DriftSyncDeviceRepository());
   container.registerSingleton<ITagRepository>((_) => DriftTagRepository());
   container.registerSingleton<ITagTagRepository>((_) => DriftTagTagRepository());
   container.registerSingleton<ITaskRepository>((_) => DriftTaskRepository());
   container.registerSingleton<ITaskTagRepository>((_) => DriftTaskTagRepository());
   container.registerSingleton<ITaskTimeRecordRepository>((_) => DriftTaskTimeRecordRepository());
-  container.registerSingleton<ISettingRepository>((_) => DriftSettingRepository());
-  container.registerSingleton<ISyncDeviceRepository>((_) => DriftSyncDeviceRepository());
 }

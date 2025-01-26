@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/app_usages/components/app_usage_ignore_rule_list.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_form.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_tag_rule_list.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
@@ -212,7 +213,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Ignore Rules',
+                                  'Add New Rule',
                                   style: AppTheme.headlineSmall,
                                 ),
                                 const SizedBox(height: 16),
@@ -222,6 +223,16 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                               ],
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 24),
+                        const Text(
+                          'Existing Rules',
+                          style: AppTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 16),
+                        AppUsageIgnoreRuleList(
+                          key: _listKey,
+                          mediator: _mediator,
                         ),
                       ],
                     ),
