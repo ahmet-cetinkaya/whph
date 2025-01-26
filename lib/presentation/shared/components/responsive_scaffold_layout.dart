@@ -101,13 +101,19 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 : null),
         title: widget.appBarTitle ??
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: 8),
                 ],
-                Text(widget.title ?? AppInfo.shortName),
+                Flexible(
+                  child: Text(
+                    widget.title ?? AppInfo.shortName,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
         titleSpacing: 0,
