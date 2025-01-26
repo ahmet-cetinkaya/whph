@@ -103,14 +103,8 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
       autovalidateMode: _showValidationErrors ? AutovalidateMode.always : AutovalidateMode.disabled,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppUsageUiConstants.onePatternPerLineHint,
-            style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.disabledColor,
-              height: 1.4,
-            ),
-          ),
           // Pattern Field
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +165,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       height: 36,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: AppTheme.surface2,
+                        color: AppTheme.surface1,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: _showValidationErrors && _selectedTag == null
@@ -209,7 +203,6 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                   TagSelectDropdown(
                     key: _tagDropdownKey,
                     onTagsSelected: (options) => setState(() => _selectedTag = options.first),

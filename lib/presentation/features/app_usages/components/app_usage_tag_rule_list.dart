@@ -96,7 +96,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.surface2,
+                    color: AppTheme.surface1,
                     borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
                   ),
                   child: Text(
@@ -123,7 +123,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                           Expanded(
                             child: Text(
                               rule.pattern,
-                              style: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
+                              style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
                             ),
                           ),
                         ],
@@ -146,7 +146,6 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                   onPressed: () {
                     if (mounted) _delete(context, rule);
                   },
-                  color: AppTheme.errorColor,
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.only(left: 8),
                   tooltip: AppUsageUiConstants.deleteRuleTooltip,
