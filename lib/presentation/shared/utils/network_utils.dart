@@ -1,8 +1,14 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:whph/application/shared/models/websocket_request.dart';
 
 class NetworkUtils {
+  static const int webSocketPort = 4040;
+  static const Duration connectionTimeout = Duration(seconds: 2);
+
   static Future<String?> getLocalIpAddress() async {
     try {
       if (Platform.isAndroid || Platform.isIOS) {
@@ -69,16 +75,32 @@ class NetworkUtils {
 
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {
-      final socket = await Socket.connect(host, 4040, timeout: timeout).catchError((e) async {
-        if (kDebugMode) print('ERROR: WebSocket connection test failed: $e');
-        return Future<Socket>.error(e);
-      });
+      final wsUrl = 'ws://$host:$webSocketPort';
+      final ws = await WebSocket.connect(wsUrl).timeout(const Duration(seconds: 5));
 
-      await socket.close();
+      // Send a test sync message
+      try {
+        final testMessage = WebSocketMessage(
+          type: 'test',
+          data: {'timestamp': DateTime.now().toIso8601String()},
+        );
+        ws.add(JsonMapper.serialize(testMessage));
+
+        await ws
+            .timeout(
+              const Duration(seconds: 2),
+              onTimeout: (_) => throw TimeoutException('No response received'),
+            )
+            .first;
+      } catch (e) {
+        if (kDebugMode) print('DEBUG: Test message failed: $e');
+      }
+
+      await ws.close();
       return true;
     } catch (e) {
-      if (kDebugMode) print('ERROR: WebSocket connection test failed: $e');
+      if (kDebugMode) print('DEBUG: WebSocket connection failed: $e');
+      return false;
     }
-    return false;
   }
 }
