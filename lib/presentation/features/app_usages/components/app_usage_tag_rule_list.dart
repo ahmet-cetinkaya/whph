@@ -12,14 +12,12 @@ class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;
   final Function(String id)? onRuleSelected;
   final List<String>? filterByTags;
-  final bool? filterByActive;
 
   const AppUsageTagRuleList({
     super.key,
     required this.mediator,
     this.onRuleSelected,
     this.filterByTags,
-    this.filterByActive,
   });
 
   @override
@@ -37,14 +35,6 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     _loadRules();
   }
 
-  @override
-  void didUpdateWidget(AppUsageTagRuleList oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.filterByTags != widget.filterByTags || oldWidget.filterByActive != widget.filterByActive) {
-      _loadRules();
-    }
-  }
-
   Future<void> _loadRules({int pageIndex = 0}) async {
     if (_isLoading) return;
 
@@ -55,7 +45,6 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
         pageIndex: pageIndex,
         pageSize: _pageSize,
         filterByTags: widget.filterByTags,
-        filterByActive: widget.filterByActive,
       );
 
       final result =

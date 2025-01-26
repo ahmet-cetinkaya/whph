@@ -69,7 +69,6 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           pattern: _patternController.text,
           tagId: _selectedTag!.value,
           description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
-          isActive: true,
         );
 
         await _mediator.send<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse>(command);

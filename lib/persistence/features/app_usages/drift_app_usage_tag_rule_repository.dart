@@ -9,7 +9,6 @@ class AppUsageTagRuleTable extends Table {
   TextColumn get id => text()();
   TextColumn get pattern => text()();
   TextColumn get tagId => text()();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   TextColumn get description => text().nullable()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
@@ -37,7 +36,6 @@ class DriftAppUsageTagRuleRepository extends DriftBaseRepository<AppUsageTagRule
       deletedDate: Value(entity.deletedDate),
       pattern: entity.pattern,
       tagId: entity.tagId,
-      isActive: Value(entity.isActive),
       description: Value(entity.description),
     );
   }
