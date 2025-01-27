@@ -4,14 +4,31 @@ import 'package:path/path.dart' as path;
 import 'abstraction/base_setup_service.dart';
 
 class WindowsSetupService extends BaseSetupService {
-  static const _updateScriptContent = '''
+  static const _updateScriptTemplate = '''
 @echo off
-timeout /t 2 /nobreak > nul
-cd /d "%~dp0"
-powershell -command "Expand-Archive -Force whph_update.zip ."
-del whph_update.zip
-del update.bat
-start "" "%~dp0whph.exe"
+powershell -ExecutionPolicy Bypass -Command ^
+"Write-Host 'Starting update process...'; ^
+try { ^
+    \$updateZip = '{appDir}\\whph_update.zip'; ^
+    \$extractPath = '{appDir}'; ^
+    Write-Host 'Update file path: ' \$updateZip; ^
+    Write-Host 'Extract path: ' \$extractPath; ^
+    if (-not (Test-Path \$updateZip)) { ^
+        throw 'Update file not found: ' + \$updateZip; ^
+    } ^
+    Write-Host 'Extracting update...'; ^
+    Expand-Archive -Force -Path \$updateZip -DestinationPath \$extractPath; ^
+    Remove-Item -Force \$updateZip; ^
+    Remove-Item -Force '{appDir}\\update.bat'; ^
+    Write-Host 'Starting application...'; ^
+    Start-Process -FilePath '{exePath}' -WorkingDirectory '{appDir}' -NoNewWindow; ^
+    Write-Host 'Application started successfully'; ^
+} catch { ^
+    Write-Host 'Error: ' \$_.Exception.Message -ForegroundColor Red; ^
+    Write-Host 'Stack: ' \$_.ScriptStackTrace -ForegroundColor Red; ^
+    pause; ^
+    exit 1; ^
+}"
 exit
 ''';
 
@@ -54,12 +71,19 @@ exit
   Future<void> downloadAndInstallUpdate(String downloadUrl) async {
     try {
       final appDir = getApplicationDirectory();
+      final exePath = getExecutablePath();
       final updateScript = path.join(appDir, 'update.bat');
       final downloadPath = path.join(appDir, 'whph_update.zip');
 
       await downloadFile(downloadUrl, downloadPath);
-      await writeFile(updateScript, _updateScriptContent);
+      if (kDebugMode) print('DEBUG: Downloaded update file.');
+
+      final scriptContent = _updateScriptTemplate.replaceAll('{appDir}', appDir).replaceAll('{exePath}', exePath);
+      await writeFile(updateScript, scriptContent);
+      if (kDebugMode) print('DEBUG: Written update script.');
+
       await runDetachedProcess('cmd', ['/c', updateScript]);
+      if (kDebugMode) print('DEBUG: Executed update script.');
       exit(0);
     } catch (e) {
       if (kDebugMode) print('ERROR: Failed to download and install update: $e');
