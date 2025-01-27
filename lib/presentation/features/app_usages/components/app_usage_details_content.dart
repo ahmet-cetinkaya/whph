@@ -18,6 +18,8 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class AppUsageDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -37,6 +39,7 @@ class AppUsageDetailsContent extends StatefulWidget {
 class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   GetAppUsageQueryResponse? _appUsage;
   GetListAppUsageTagsQueryResponse? _appUsageTags;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -68,8 +71,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting app usage.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
+        );
       }
     }
   }
@@ -90,8 +97,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while saving app usage.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
+        );
       }
     }
   }
@@ -109,8 +120,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting app usage tags.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
+        );
       }
     }
   }
@@ -123,8 +138,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while adding tag.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.addTagError),
+        );
       }
     }
 
@@ -139,8 +158,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while removing tag.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.removeTagError),
+        );
       }
     }
 
@@ -194,16 +217,17 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           DetailTable(rowData: [
             // Device Label
             DetailTableRowData(
-              label: AppUsageUiConstants.deviceLabel,
+              label: _translationService.translate(AppUsageTranslationKeys.deviceLabel),
               icon: AppUsageUiConstants.deviceIcon,
-              widget: Text(_appUsage!.deviceName ?? AppUsageUiConstants.unknownDeviceLabel),
+              widget: Text(
+                  _appUsage!.deviceName ?? _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
             ),
 
             // Tags
             DetailTableRowData(
-              label: AppUsageUiConstants.tagsLabel,
+              label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
               icon: AppUsageUiConstants.tagsIcon,
-              hintText: AppUsageUiConstants.selectTagsHint,
+              hintText: _translationService.translate(AppUsageTranslationKeys.tagsHint),
               widget: TagSelectDropdown(
                 key: ValueKey(_appUsageTags!.items.length),
                 isMultiSelect: true,
@@ -218,9 +242,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
             // Color
             DetailTableRowData(
-              label: AppUsageUiConstants.colorLabel,
+              label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
               icon: AppUsageUiConstants.colorIcon,
-              hintText: AppUsageUiConstants.clickToChangeColorHint,
+              hintText: _translationService.translate(AppUsageTranslationKeys.colorHint),
               widget: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -6,6 +6,8 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_detai
 import 'package:whph/presentation/features/app_usages/components/app_usage_name_input_field.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -21,84 +23,6 @@ class AppUsageDetailsPage extends StatefulWidget {
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
   final Mediator mediator = container.resolve<Mediator>();
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'App Usage Details Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📱 App Usage Details shows time spent on applications and manages tag associations.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Time Tracking:',
-                  '  - View detailed usage times',
-                  '  - Track daily patterns',
-                  '  - Monitor active windows',
-                  '• Tag Management:',
-                  '  - Associate with tags',
-                  '  - Auto-tag using rules',
-                  '  - Track time by category',
-                  '• Analysis:',
-                  '  - View usage patterns',
-                  '  - Compare with other apps',
-                  '  - Track productivity time',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use tags to categorize apps',
-                  '• Set up auto-tagging rules',
-                  '• Review usage patterns',
-                  '• Group similar applications',
-                  '• Track productive vs unproductive time',
-                  '• Use tag rules for automation',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -109,10 +33,9 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
           onDeleteSuccess: () => Navigator.of(context).pop(),
           buttonColor: AppTheme.primaryColor,
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: AppUsageTranslationKeys.helpTitle,
+          contentKey: AppUsageTranslationKeys.helpContent,
         ),
         const SizedBox(width: 2),
       ],

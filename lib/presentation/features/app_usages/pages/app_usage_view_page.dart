@@ -9,6 +9,9 @@ import 'package:whph/presentation/features/tags/components/tag_select_dropdown.d
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -22,6 +25,7 @@ class AppUsageViewPage extends StatefulWidget {
 }
 
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
+  final _translationService = container.resolve<ITranslationService>();
   Key _appUsageListKey = UniqueKey();
   List<String>? _selectedTagFilters;
   DateTime _filterStartDate = DateTime.now().subtract(const Duration(days: 7));
@@ -63,107 +67,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     });
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'App Usage Overview Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📊 App Usage tracking helps you understand how you spend time on your applications.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Automatic Tracking:',
-                  '  - Monitor application usage',
-                  '  - Track active windows',
-                  '  - Record time spent',
-                  '• Tag Integration:',
-                  '  - Automatic tag assignment',
-                  '  - Rule-based categorization',
-                  '  - Time tracking by category',
-                  '• Analysis Tools:',
-                  '  - Filter by date ranges',
-                  '  - Filter by tags',
-                  '  - View detailed statistics',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚙️ Management',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Configure Tag Rules:',
-                  '  - Set up automatic tagging',
-                  '  - Create ignore rules',
-                  '  - Manage app categories',
-                  '• Data Controls:',
-                  '  - Refresh tracking data',
-                  '  - Filter view periods',
-                  '  - Customize tag filters',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Set up tag rules early',
-                  '• Use meaningful tag categories',
-                  '• Review data regularly',
-                  '• Adjust rules as needed',
-                  '• Group similar applications',
-                  '• Keep tracking rules updated',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      title: 'App Usages',
+      title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       appBarActions: [
         IconButton(
           icon: const Icon(Icons.settings),
@@ -172,17 +79,16 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             _refreshList();
           },
           color: AppTheme.primaryColor,
-          tooltip: 'Tag Rules',
+          tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: _refreshList,
           color: AppTheme.primaryColor,
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: AppUsageTranslationKeys.viewHelpTitle,
+          contentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -203,7 +109,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                     icon: Icons.label,
                     iconSize: AppTheme.iconSizeSmall,
                     color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                    tooltip: 'Filter by tags',
+                    tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
                   ),
 
                   // Date Range Filter

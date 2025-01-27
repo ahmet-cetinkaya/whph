@@ -9,6 +9,9 @@ import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/regex_help_dialog.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageTagRuleForm extends StatefulWidget {
   final Function() onSave;
@@ -32,6 +35,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
   DropdownOption<String>? _selectedTag;
   bool _showValidationErrors = false;
   final Mediator _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   bool _isSaved = false;
 
   @override
@@ -89,8 +93,12 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
         }
       } catch (e, stackTrace) {
         if (!mounted) return;
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while adding app usage tag rule.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
+        );
       }
     }
   }
@@ -115,9 +123,9 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     child: TextFormField(
                       controller: _patternController,
                       decoration: InputDecoration(
-                        labelText: AppUsageUiConstants.patternLabel,
+                        labelText: _translationService.translate(AppUsageTranslationKeys.patternFieldLabel),
                         labelStyle: AppTheme.bodySmall,
-                        hintText: AppUsageUiConstants.patternHint,
+                        hintText: _translationService.translate(AppUsageTranslationKeys.patternFieldHint),
                         hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
                         prefixIcon: Icon(AppUsageUiConstants.patternIcon, size: AppTheme.iconSizeSmall),
                         isDense: true,
@@ -131,7 +139,9 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                             : null,
                       ),
                       style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
-                      validator: (value) => (value?.isEmpty ?? true) ? 'Pattern is required' : null,
+                      validator: (value) => (value?.isEmpty ?? true)
+                          ? _translationService.translate(AppUsageTranslationKeys.patternFieldRequired)
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -143,7 +153,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 32),
                       icon: Icon(AppUsageUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
-                      tooltip: AppUsageUiConstants.patternHelpTooltip,
+                      tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
                   ),
@@ -181,7 +191,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              _selectedTag?.label ?? 'Select a tag',
+                              _selectedTag?.label ?? _translationService.translate(AppUsageTranslationKeys.tagsHint),
                               style: AppTheme.bodySmall.copyWith(
                                 color: _selectedTag != null
                                     ? Theme.of(context).textTheme.bodyMedium?.color
@@ -217,7 +227,8 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 4, left: 12),
                   child: Text(
-                    'Tag is required',
+                    _translationService.translate(SharedTranslationKeys.requiredValidation,
+                        namedArgs: {'field': _translationService.translate(AppUsageTranslationKeys.tagsLabel)}),
                     style: AppTheme.bodySmall.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -232,9 +243,9 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           TextFormField(
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: 'Description (Optional)',
+              labelText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldLabel),
               labelStyle: AppTheme.bodySmall,
-              hintText: 'Enter description for this rule',
+              hintText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldHint),
               hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: 18),
               isDense: true,
@@ -254,7 +265,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 TextButton.icon(
                   onPressed: widget.onCancel,
                   icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: AppTheme.darkTextColor),
-                  label: Text(SharedUiConstants.cancelLabel,
+                  label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
                       style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
                 ),
               const SizedBox(width: 8),
@@ -265,8 +276,12 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   size: AppTheme.iconSizeSmall,
                   color: AppTheme.darkTextColor,
                 ),
-                label: Text(_isSaved ? AppUsageUiConstants.savedButtonLabel : AppUsageUiConstants.saveButtonLabel,
-                    style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                label: Text(
+                  _isSaved
+                      ? _translationService.translate(SharedTranslationKeys.savedButton)
+                      : _translationService.translate(SharedTranslationKeys.saveButton),
+                  style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor),
+                ),
               ),
             ],
           ),

@@ -7,6 +7,9 @@ import 'package:whph/presentation/shared/components/bar_chart.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageCard extends StatefulWidget {
   final Mediator mediator;
@@ -29,6 +32,7 @@ class AppUsageCard extends StatefulWidget {
 
 class _AppUsageCardState extends State<AppUsageCard> {
   GetListAppUsageTagsQueryResponse? _appUsageTags;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
     var query = GetListAppUsageTagsQuery(
       appUsageId: widget.appUsage.id,
       pageIndex: 0,
-      pageSize: 100,
+      pageSize: 5,
     );
 
     try {
@@ -53,13 +57,21 @@ class _AppUsageCardState extends State<AppUsageCard> {
       }
     } on BusinessException catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e, stackTrace,
-            message: 'Error occurred while getting app usage tags.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e,
+          stackTrace,
+          message: _translationService.translate(SharedTranslationKeys.getTagsError),
+        );
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while getting app usage tags.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(SharedTranslationKeys.getTagsError),
+        );
       }
     }
   }
@@ -74,7 +86,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
       title: widget.appUsage.displayName ?? widget.appUsage.name,
       value: widget.appUsage.duration.toDouble() / 60,
       maxValue: widget.maxDurationInListing != null ? widget.maxDurationInListing!.toDouble() : double.infinity,
-      unit: "min",
+      unit: _translationService.translate(SharedTranslationKeys.minutes),
       barColor: barColor,
       onTap: widget.onTap,
       additionalWidget: _buildAdditionalWidget(),

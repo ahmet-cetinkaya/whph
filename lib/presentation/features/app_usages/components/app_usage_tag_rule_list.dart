@@ -7,6 +7,10 @@ import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;
@@ -28,6 +32,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   GetListAppUsageTagRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -76,7 +81,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     if (_rules == null || _rules!.items.isEmpty) {
       return Center(
         child: Text(
-          AppUsageUiConstants.noRulesFoundMessage,
+          _translationService.translate(SharedTranslationKeys.noItemsFoundMessage),
           style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
         ),
       );
@@ -153,8 +158,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                         if (mounted) _delete(context, rule);
                       },
                       visualDensity: VisualDensity.compact,
-                      padding: const EdgeInsets.only(left: 8),
-                      tooltip: AppUsageUiConstants.deleteRuleTooltip,
+                      tooltip: _translationService.translate(AppUsageTranslationKeys.deleteRuleTooltip),
                     ),
                   ],
                 ),
@@ -173,17 +177,18 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppUsageUiConstants.deleteRuleConfirmTitle),
-        content: Text(AppUsageUiConstants.getDeleteRuleConfirmMessage(rule.pattern)),
+        title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleTitle)),
+        content: Text(_translationService
+            .translate(AppUsageTranslationKeys.deleteRuleConfirm, namedArgs: {'pattern': rule.pattern})),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(SharedUiConstants.cancelLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-            child: Text(SharedUiConstants.deleteLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),

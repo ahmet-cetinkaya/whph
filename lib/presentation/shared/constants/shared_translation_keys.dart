@@ -12,4 +12,6 @@ class SharedTranslationKeys {
   static const String loadingError = 'shared.errors.loading';
   static const String savingError = 'shared.errors.saving';
   static const String deletingError = 'shared.errors.deleting';
+  static const String minutes = 'shared.units.minutes';
+  static const String getTagsError = 'shared.errors.get_tags';
 }
