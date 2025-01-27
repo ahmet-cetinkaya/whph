@@ -7,12 +7,12 @@ publish_to: "none"
 # - Android: versionName = version, versionCode = build
 # - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
 # - Windows: product/file version components = version, build suffix = build
-version: 0.1.6+1
+version: 0.1.7+1
 
 environment:
   sdk: ^3.5.3
 
-# https://pub.dev/packages/rps
+# https://pub.dev/packages/rps: dart pub global activate rps
 scripts:
   clean: flutter clean && rm -rf ~/.pub-cache/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
   format: dart format . -l 120
