@@ -20,6 +20,14 @@ static void my_application_activate(GApplication* application) {
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
+  // Set window icon
+  GError *error = nullptr;
+  GdkPixbuf* icon = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/512x512/apps/whph.png", &error);
+  if (icon != nullptr) {
+    gtk_window_set_icon(window, icon);
+    g_object_unref(icon);
+  }
+
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
   // desktop).

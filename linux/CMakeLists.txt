@@ -143,3 +143,40 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endif()
+
+# Install desktop file and icons
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
+)
+
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/domain/shared/assets/whph_logo.png"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons"
+    RENAME "whph.png"
+)
+
+# Create additional icon directories in bundle
+install(CODE "
+    file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\")
+    file(COPY \"${CMAKE_CURRENT_SOURCE_DIR}/../lib/domain/shared/assets/whph_logo.png\"
+         DESTINATION \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\"
+         FILES_MATCHING PATTERN \"whph_logo.png\"
+         )
+    file(RENAME 
+         \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph_logo.png\"
+         \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph.png\"
+    )
+")
+
+# Install system-wide icon for window decoration
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/domain/shared/assets/whph_logo.png"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps"
+    RENAME "whph.png"
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+# Force icon cache update after installation
+install(CODE "
+    execute_process(
+        COMMAND gtk-update-icon-cache -f -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor
+    )
+")

@@ -5,6 +5,7 @@ import 'package:whph/api/api.dart';
 import 'package:whph/application/application_container.dart';
 import 'package:whph/application/features/app_usages/commands/start_track_app_usages_command.dart';
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
 import 'package:whph/infrastructure/infrastructure_container.dart';
@@ -42,6 +43,10 @@ void main() async {
 
 Future<void> runDesktopWorkers() async {
   if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) return;
+
+  // Initialize setup service for desktop platforms
+  final setupService = container.resolve<ISetupService>();
+  await setupService.setupEnvironment();
 
   // Update window manager settings
   await windowManager.ensureInitialized();
