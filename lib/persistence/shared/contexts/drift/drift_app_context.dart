@@ -84,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {
@@ -249,6 +249,22 @@ class AppDatabase extends _$AppDatabase {
 
           await customStatement('DROP TABLE app_usage_tag_rule_table');
           await customStatement('ALTER TABLE app_usage_tag_rule_table_temp RENAME TO app_usage_tag_rule_table');
+        },
+        from9To10: (m, schema) async {
+          // Update existing timestamps to Unix timestamp format (milliseconds)
+          await customStatement('''
+            UPDATE app_usage_ignore_rule_table
+            SET created_date = CAST(strftime('%s', created_date) * 1000 AS INTEGER),
+                modified_date = CASE 
+                  WHEN modified_date IS NULL THEN NULL 
+                  ELSE CAST(strftime('%s', modified_date) * 1000 AS INTEGER)
+                END,
+                deleted_date = CASE 
+                  WHEN deleted_date IS NULL THEN NULL 
+                  ELSE CAST(strftime('%s', deleted_date) * 1000 AS INTEGER)
+                END
+            WHERE created_date LIKE '%T%'
+          ''');
         },
       ),
     );
