@@ -4,10 +4,6 @@ class AppInfo {
   static const String name = "Work Hard Play Hard";
   static const String shortName = "WHPH";
   static const String version = "0.1.7";
-  static const String description = "WHPH is a comprehensive app designed to enhance your personal productivity; "
-      "it allows you to effectively manage your tasks, develop new habits, and make the most of your time, "
-      "while also tracking how much time you spend on different applications to strengthen your focus. "
-      "By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.";
   static const String websiteUrl = "https://whph.ahmetcetinkaya.me/";
   static const String sourceCodeUrl = "https://github.com/ahmet-cetinkaya/whph";
   static const String logoPath = AppAssets.logo;

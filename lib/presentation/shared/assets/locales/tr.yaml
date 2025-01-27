@@ -1,0 +1,34 @@
+about:
+  support_me:
+    button_text: Destek ol
+  app_about:
+    version: Versiyon {version}
+    description: >
+      WHPH, kişisel verimliliğinizi artırmak için tasarlanmış kapsamlı bir uygulamadır; görevlerinizi etkili bir şekilde yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı en iyi şekilde değerlendirmenize olanak tanır. Ayrıca, farklı uygulamalarda ne kadar zaman harcadığınızı takip ederek odaklanmanızı güçlendirir. İlerlemenizi analiz ederek başarılarınızı kutlayabilir ve daha üretken bir yaşam için gereken motivasyonu kazanabilirsiniz.
+    links:
+      website: Web Sitesi
+      source_code: Kaynak Kodu
+settings:
+  language:
+    title: Dil
+    languages:
+      en: İngilizce
+      tr: Türkçe
+shared:
+  buttons:
+    save: Kaydet
+    saved: Kaydedildi
+    add: Ekle
+    cancel: İptal
+    delete: Sil
+    close: Kapat
+  messages:
+    confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
+    no_items_found: Öğe bulunamadı
+  validation:
+    required: "{field} alanı zorunludur"
+  errors:
+    unexpected: Beklenmedik bir hata oluştu
+    loading: Veri yüklenirken hata oluştu
+    saving: Veri kaydedilirken hata oluştu
+    deleting: Veri silinirken hata oluştu

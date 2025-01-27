@@ -1,0 +1,34 @@
+about:
+  support_me:
+    button_text: Support me
+  app_about:
+    version: Version {version}
+    description: >
+      WHPH is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time, while also tracking how much time you spend on different applications to strengthen your focus. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    links:
+      website: Website
+      source_code: Source Code
+settings:
+  language:
+    title: Language
+    languages:
+      en: English
+      tr: Turkish
+shared:
+  buttons:
+    save: Save
+    saved: Saved
+    add: Add
+    cancel: Cancel
+    delete: Delete
+    close: Close
+  messages:
+    confirm_delete: Are you sure you want to delete this item?
+    no_items_found: No items found
+  validation:
+    required: "{field} is required"
+  errors:
+    unexpected: An unexpected error occurred
+    loading: Error loading data
+    saving: Error saving data
+    deleting: Error deleting data

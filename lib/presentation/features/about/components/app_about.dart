@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class AppAbout extends StatelessWidget {
-  const AppAbout({super.key});
+  AppAbout({super.key});
+
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,10 @@ class AppAbout extends StatelessWidget {
                     style: AppTheme.headlineMedium,
                   ),
                   Text(
-                    'Version ${AppInfo.version}',
+                    _translationService.translate(
+                      'about.app_about.version',
+                      namedArgs: {'version': AppInfo.version},
+                    ),
                     style: AppTheme.bodyMedium,
                   ),
                 ],
@@ -40,19 +47,28 @@ class AppAbout extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: Text(
-            AppInfo.description,
+            _translationService.translate('about.app_about.description'),
             style: AppTheme.bodyMedium,
           ),
         ),
         Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                _buildExternalLink(title: 'Website', icon: Icons.web, url: AppInfo.websiteUrl),
-                _buildExternalLink(title: 'Source Code', icon: Icons.code, url: AppInfo.sourceCodeUrl),
-              ],
-            )),
+          padding: const EdgeInsets.only(top: 16),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              _buildExternalLink(
+                title: _translationService.translate('about.app_about.links.website'),
+                icon: Icons.web,
+                url: AppInfo.websiteUrl,
+              ),
+              _buildExternalLink(
+                title: _translationService.translate('about.app_about.links.source_code'),
+                icon: Icons.code,
+                url: AppInfo.sourceCodeUrl,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
