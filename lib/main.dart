@@ -13,6 +13,7 @@ import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
 import 'package:whph/presentation/presentation_container.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -31,14 +32,20 @@ void main() async {
   registerApplication(container);
   registerPresentation(container);
 
-  // Initialize notification service for all platforms
-  var notificationService = container.resolve<INotificationService>();
+  // Initialize services
+  final translationService = container.resolve<ITranslationService>();
+  await translationService.init();
+
+  final notificationService = container.resolve<INotificationService>();
   await notificationService.init();
 
   await runDesktopWorkers();
+
   await runBackgroundWorkers();
 
-  runApp(const App());
+  runApp(
+    translationService.wrapWithTranslations(const App()),
+  );
 }
 
 Future<void> runDesktopWorkers() async {

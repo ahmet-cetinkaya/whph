@@ -34,6 +34,11 @@ scripts:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  easy_localization: ^3.0.2
+  easy_localization_loader: ^2.0.2
   test: ^1.25.8
 
   # Data
@@ -46,8 +51,7 @@ dependencies:
   audioplayers: ^6.1.0
   dart_json_mapper: ^2.2.13
   device_info_plus: ^11.2.1
-  http: ^0.13.6
-  intl: ^0.19.0 # Internationalization
+  http: ^1.3.0
   kiwi: ^5.0.1 # Dependency Injection
   mediatr: ^0.2.1 # Mediator Pattern
   meta: ^1.15.0 # Annotations
@@ -93,7 +97,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
-  rps: ^0.8.2
 
   # Data
   drift_dev: ^2.21.2 # ORM Generator
@@ -114,17 +117,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/domain/shared/assets/
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
+    - lib/domain/shared/assets/images/
+    - lib/domain/shared/assets/images/whph_logo_adaptive_fg.png
+    - lib/domain/shared/assets/images/whph_logo_adaptive_fg.ico
+    - lib/domain/shared/assets/images/whph_logo_fg_pause.png
+    - lib/domain/shared/assets/images/whph_logo_fg_pause.ico
+    - lib/domain/shared/assets/images/whph_logo_fg_play.png
+    - lib/domain/shared/assets/images/whph_logo_fg_play.ico
     - lib/presentation/shared/assets/sounds/level-completed-90734.mp3
     - lib/presentation/shared/assets/sounds/level-up-191997.mp3
-    - lib/domain/shared/assets/whph_logo_adaptive_fg.png
-    - lib/domain/shared/assets/whph_logo_adaptive_fg.ico
-    - lib/domain/shared/assets/whph_logo_fg_pause.png
-    - lib/domain/shared/assets/whph_logo_fg_pause.ico
-    - lib/domain/shared/assets/whph_logo_fg_play.png
-    - lib/domain/shared/assets/whph_logo_fg_play.ico
+    - lib/presentation/shared/assets/locales/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
