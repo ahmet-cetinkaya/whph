@@ -5,7 +5,9 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
 
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
@@ -32,6 +34,7 @@ class AppUsageList extends StatefulWidget {
 
 class AppUsageListState extends State<AppUsageList> {
   GetListByTopAppUsagesQueryResponse? _appUsages;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -70,7 +73,7 @@ class AppUsageListState extends State<AppUsageList> {
           context,
           e,
           stackTrace,
-          message: 'Unexpected error occurred while getting app usages.',
+          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
         );
       }
     }
@@ -84,7 +87,7 @@ class AppUsageListState extends State<AppUsageList> {
 
     if (_appUsages!.items.isEmpty) {
       return Center(
-        child: Text(AppUsageUiConstants.noAppUsageDataMessage),
+        child: Text(_translationService.translate(AppUsageTranslationKeys.noIgnoreRules)),
       );
     }
 

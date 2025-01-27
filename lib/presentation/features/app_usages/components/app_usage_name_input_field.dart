@@ -8,7 +8,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class AppUsageNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -29,6 +30,7 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
   GetAppUsageQueryResponse? _appUsage;
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -55,8 +57,12 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: AppUsageUiConstants.errorLoadingAppUsage);
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
+        );
       }
     }
   }
@@ -80,8 +86,12 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while saving app usage.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
+        );
       }
     }
   }

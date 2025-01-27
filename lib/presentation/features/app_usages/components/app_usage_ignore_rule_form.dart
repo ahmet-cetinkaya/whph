@@ -7,6 +7,9 @@ import 'package:whph/presentation/shared/components/regex_help_dialog.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_ignore_rule_command.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageIgnoreRuleForm extends StatefulWidget {
   final Function() onSave;
@@ -27,6 +30,7 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
   final _formKey = GlobalKey<FormState>();
   final _patternController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _translationService = container.resolve<ITranslationService>();
   bool _showValidationErrors = false;
   bool _isSaved = false;
 
@@ -72,8 +76,12 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
         }
       } catch (e, stackTrace) {
         if (!mounted) return;
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while saving ignore rules.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
+        );
       }
     }
   }
@@ -94,16 +102,25 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                 child: TextFormField(
                   controller: _patternController,
                   decoration: InputDecoration(
-                    labelText: AppUsageUiConstants.patternLabel,
+                    labelText: _translationService.translate(AppUsageTranslationKeys.patternFieldLabel),
                     labelStyle: AppTheme.bodySmall,
-                    hintText: AppUsageUiConstants.patternHint,
+                    hintText: _translationService.translate(AppUsageTranslationKeys.patternFieldHint),
                     hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
                     prefixIcon: Icon(AppUsageUiConstants.patternIcon, size: AppTheme.iconSizeSmall),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    errorStyle: TextStyle(height: 0.7, fontSize: AppTheme.fontSizeXSmall),
+                    errorBorder: _showValidationErrors && _patternController.text.isEmpty
+                        ? OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                          )
+                        : null,
                   ),
                   style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
-                  validator: (value) => (value?.isEmpty ?? true) ? 'Pattern is required' : null,
+                  validator: (value) => (value?.isEmpty ?? true)
+                      ? _translationService.translate(AppUsageTranslationKeys.patternFieldRequired)
+                      : null,
                 ),
               ),
               const SizedBox(width: 8),
@@ -115,7 +132,7 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   icon: Icon(AppUsageUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
-                  tooltip: AppUsageUiConstants.patternHelpTooltip,
+                  tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
                   onPressed: () => RegexHelpDialog.show(context),
                 ),
               ),
@@ -127,13 +144,19 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
           TextFormField(
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: 'Description (Optional)',
+              labelText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldLabel),
               labelStyle: AppTheme.bodySmall,
-              hintText: 'Enter description for this rule',
+              hintText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldHint),
               hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: AppTheme.iconSizeSmall),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              errorBorder: _showValidationErrors && _descriptionController.text.isEmpty
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                    )
+                  : null,
             ),
             style: AppTheme.bodySmall,
           ),
@@ -147,7 +170,8 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                 TextButton.icon(
                   onPressed: widget.onCancel,
                   icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall),
-                  label: Text(SharedUiConstants.cancelLabel, style: AppTheme.bodySmall),
+                  label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
+                      style: AppTheme.bodySmall),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -158,8 +182,12 @@ class _AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                   size: AppTheme.iconSizeSmall,
                   color: AppTheme.darkTextColor,
                 ),
-                label: Text(_isSaved ? AppUsageUiConstants.savedButtonLabel : AppUsageUiConstants.saveButtonLabel,
-                    style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                label: Text(
+                  _isSaved
+                      ? _translationService.translate(SharedTranslationKeys.savedButton)
+                      : _translationService.translate(SharedTranslationKeys.saveButton),
+                  style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor),
+                ),
               ),
             ],
           ),

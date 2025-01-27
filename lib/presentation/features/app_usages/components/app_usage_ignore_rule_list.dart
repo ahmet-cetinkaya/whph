@@ -3,9 +3,12 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final Mediator mediator;
@@ -23,6 +26,7 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   GetListAppUsageIgnoreRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -70,7 +74,7 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     if (_rules == null || _rules!.items.isEmpty) {
       return Center(
         child: Text(
-          'No ignore rules found',
+          _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
           style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
         ),
       );
@@ -100,7 +104,7 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                           Row(
                             children: [
                               Text(
-                                'Pattern: ',
+                                _translationService.translate(AppUsageTranslationKeys.patternLabel),
                                 style: AppTheme.bodySmall.copyWith(color: Colors.grey),
                               ),
                               Expanded(
@@ -122,11 +126,12 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                         ],
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete, size: AppTheme.iconSizeSmall),
-                      onPressed: () => _delete(context, rule),
-                      visualDensity: VisualDensity.compact,
-                      padding: const EdgeInsets.only(left: 8),
+                    SizedBox(
+                      child: IconButton(
+                        icon: Icon(Icons.delete, size: AppTheme.iconSizeSmall),
+                        onPressed: () => _delete(context, rule),
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
                   ],
                 ),
@@ -145,17 +150,18 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Rule'),
-        content: Text('Are you sure you want to delete the ignore rule "${rule.pattern}"?'),
+        title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleTitle)),
+        content: Text(_translationService
+            .translate(AppUsageTranslationKeys.deleteRuleConfirm, namedArgs: {'pattern': rule.pattern})),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(SharedUiConstants.cancelLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
-            child: Text(SharedUiConstants.deleteLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),
