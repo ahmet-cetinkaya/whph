@@ -38,7 +38,7 @@ import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
-import 'package:whph/application/shared/services/i_repository.dart';
+import 'package:whph/application/shared/services/abstraction/i_repository.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 

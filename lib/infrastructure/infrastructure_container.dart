@@ -7,7 +7,9 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:whph/infrastructure/features/setup/services/linux_setup_service.dart';
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/windows_app_usage_service.dart';
@@ -20,6 +22,8 @@ import 'package:whph/presentation/shared/services/abstraction/i_startup_settings
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/infrastructure/features/system_tray/system_tray_service.dart';
 import 'package:whph/infrastructure/features/notification/mobile_notification_service.dart';
+import 'package:whph/infrastructure/features/setup/services/windows_setup_service.dart';
+import 'package:whph/infrastructure/features/setup/services/android_setup_service.dart';
 
 void registerInfrastructure(IContainer container) {
   final settingRepository = container.resolve<ISettingRepository>();
@@ -74,5 +78,12 @@ void registerInfrastructure(IContainer container) {
     }
 
     throw Exception('Unsupported platform for startup settings service.');
+  });
+
+  container.registerSingleton<ISetupService>((_) {
+    if (Platform.isLinux) return LinuxSetupService();
+    if (Platform.isWindows) return WindowsSetupService();
+    if (Platform.isAndroid) return AndroidSetupService();
+    throw Exception('ERROR: Unsupported platform for setup service.');
   });
 }

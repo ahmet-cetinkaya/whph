@@ -211,7 +211,8 @@ class AppDatabase extends _$AppDatabase {
           }
         },
         from8To9: (m, schema) async {
-          // Drop isActive column using correct SQLite types and constraints
+          await customStatement('DROP TABLE IF EXISTS app_usage_tag_rule_table_temp');
+
           await customStatement('''
             CREATE TABLE app_usage_tag_rule_table_temp (
               id TEXT NOT NULL,
@@ -225,14 +226,24 @@ class AppDatabase extends _$AppDatabase {
             )
           ''');
 
+          // Fix timestamp conversion to handle NULL and ensure NOT NULL for created_date
           await customStatement('''
             INSERT INTO app_usage_tag_rule_table_temp
-            SELECT id, pattern, tag_id, description, 
-                   strftime('%s000', created_date) as created_date,
-                   CASE WHEN modified_date IS NULL THEN NULL 
-                        ELSE strftime('%s000', modified_date) END as modified_date,
-                   CASE WHEN deleted_date IS NULL THEN NULL 
-                        ELSE strftime('%s000', deleted_date) END as deleted_date
+            SELECT 
+              id, 
+              pattern, 
+              tag_id, 
+              description,
+              COALESCE(CAST(strftime('%s000', created_date) AS INTEGER), 
+                      CAST(strftime('%s000', 'now') AS INTEGER)) as created_date,
+              CASE 
+                WHEN modified_date IS NULL THEN NULL
+                ELSE CAST(strftime('%s000', modified_date) AS INTEGER)
+              END as modified_date,
+              CASE 
+                WHEN deleted_date IS NULL THEN NULL
+                ELSE CAST(strftime('%s000', deleted_date) AS INTEGER)
+              END as deleted_date
             FROM app_usage_tag_rule_table
           ''');
 

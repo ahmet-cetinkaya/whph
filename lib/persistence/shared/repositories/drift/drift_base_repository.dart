@@ -6,7 +6,7 @@ import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/application/shared/services/i_repository.dart';
+import 'package:whph/application/shared/services/abstraction/i_repository.dart';
 
 abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {

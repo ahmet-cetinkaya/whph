@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/update_checker.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -37,10 +37,17 @@ class _TodayPageState extends State<TodayPage> {
 
   List<String>? _selectedTagFilter;
 
+  bool _isCheckedUpdate = false;
+
   @override
   void initState() {
     super.initState();
-    UpdateChecker.checkForUpdates(context);
+
+    if (!_isCheckedUpdate) {
+      final setupService = container.resolve<ISetupService>();
+      setupService.checkForUpdates(context);
+      _isCheckedUpdate = true;
+    }
   }
 
   void _refreshHabits() {
