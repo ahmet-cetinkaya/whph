@@ -14,4 +14,5 @@ class SharedTranslationKeys {
   static const String deletingError = 'shared.errors.deleting';
   static const String minutes = 'shared.units.minutes';
   static const String getTagsError = 'shared.errors.get_tags';
+  static const String filterByTagsTooltip = 'shared.tooltips.filter_by_tags';
 }
