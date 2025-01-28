@@ -7,7 +7,8 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 
 class TagNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -24,6 +25,7 @@ class TagNameInputField extends StatefulWidget {
 }
 
 class _TagNameInputFieldState extends State<TagNameInputField> {
+  final _translationService = container.resolve<ITranslationService>();
   GetTagQueryResponse? _tag;
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
@@ -47,7 +49,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: TagUiConstants.errorLoadingTagName);
+            message: _translationService.translate(TagTranslationKeys.errorLoading));
       }
     }
   }
@@ -67,7 +69,8 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
         if (context.mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
         if (context.mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorSavingTag);
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+              message: _translationService.translate(TagTranslationKeys.errorSaving));
         }
       }
     });

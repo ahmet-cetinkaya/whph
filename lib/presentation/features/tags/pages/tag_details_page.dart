@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
@@ -11,6 +12,9 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -23,7 +27,8 @@ class TagDetailsPage extends StatefulWidget {
 }
 
 class _TagDetailsPageState extends State<TagDetailsPage> {
-  final Mediator mediator = container.resolve<Mediator>();
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   bool _isTasksExpanded = false;
   Key _tasksListKey = UniqueKey();
@@ -44,103 +49,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
     _refreshTasks();
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Tag Details Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '🏷️ Tags help you organize and track time across related tasks.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Time tracking across tasks:',
-                  '  - Automatically accumulates time from tasks',
-                  '  - Shows total time investment for the tag',
-                  '  - Helps track project or category focus',
-                  '• Related tags:',
-                  '  - Connect related projects or categories',
-                  '  - Create tag hierarchies',
-                  '  - Track time across related tag groups',
-                  '• Task organization',
-                  '• Archive functionality',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Usage Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use for projects, categories, or contexts',
-                  '• Link related tags to create hierarchies:',
-                  '  - Project tags to department tags',
-                  '  - Subtask tags to main project tags',
-                  '  - Category tags to broader areas',
-                  '• Track time investment across tag groups',
-                  '• Group related tasks together',
-                  '• Archive tags for completed projects',
-                  '• Use meaningful names for better organization',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚙️ Management',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Edit tag name anytime',
-                  '• Add/remove related tags',
-                  '• Add/remove tasks as needed',
-                  '• Archive tags to hide completed projects',
-                  '• Delete tags you no longer need',
-                  '• View time statistics',
-                  '• Track aggregate time across related tags',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -150,16 +58,17 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           tagId: widget.tagId,
           onArchiveSuccess: () => Navigator.of(context).pop(),
           buttonColor: AppTheme.primaryColor,
+          tooltip: _translationService.translate(TagTranslationKeys.archiveTagTooltip),
         ),
         TagDeleteButton(
           tagId: widget.tagId,
           onDeleteSuccess: () => Navigator.of(context).pop(),
           buttonColor: AppTheme.primaryColor,
+          tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: TagTranslationKeys.detailsHelpTitle,
+          markdownContentKey: TagTranslationKeys.helpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -187,10 +96,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Tasks'),
-                          TaskAddButton(
-                            onTaskCreated: (taskId) => _refreshTasks(),
-                            initialTagIds: [widget.tagId],
+                          Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
+                          TagAddButton(
+                            onTagCreated: (taskId) => _refreshTasks(),
+                            tooltip: _translationService.translate(TagTranslationKeys.addTaskTooltip),
                           ),
                         ],
                       ),
@@ -198,7 +107,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                   },
                   body: TaskList(
                     key: _tasksListKey,
-                    mediator: mediator,
+                    mediator: _mediator,
                     onClickTask: _openTaskDetails,
                     filterByTags: [widget.tagId],
                     onTaskCompleted: _refreshTasks,

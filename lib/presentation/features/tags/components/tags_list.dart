@@ -5,7 +5,9 @@ import 'package:whph/application/features/tags/queries/get_list_tags_query.dart'
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
-import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 
 class TagsList extends StatefulWidget {
   final Mediator mediator;
@@ -30,6 +32,7 @@ class TagsList extends StatefulWidget {
 }
 
 class _TagsListState extends State<TagsList> {
+  final _translationService = container.resolve<ITranslationService>();
   GetListTagsQueryResponse? _tags;
   final int _pageSize = 20;
 
@@ -64,7 +67,8 @@ class _TagsListState extends State<TagsList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorLoadingTags);
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(TagTranslationKeys.errorLoading));
       }
     }
   }
@@ -77,7 +81,7 @@ class _TagsListState extends State<TagsList> {
 
     if (_tags!.items.isEmpty) {
       return Center(
-        child: Text(TagUiConstants.noTagsFoundMessage),
+        child: Text(_translationService.translate(TagTranslationKeys.noTagsFound)),
       );
     }
 

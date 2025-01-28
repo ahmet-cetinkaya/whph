@@ -7,6 +7,9 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final Mediator mediator = container.resolve<Mediator>();
@@ -33,7 +36,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.buttonLabel,
     this.iconSize = AppTheme.iconSizeSmall,
     this.color,
-    this.tooltip = TagUiConstants.selectTagsHint,
+    this.tooltip,
     required this.onTagsSelected,
     this.showLength = false,
     this.limit,
@@ -45,6 +48,7 @@ class TagSelectDropdown extends StatefulWidget {
 }
 
 class _TagSelectDropdownState extends State<TagSelectDropdown> {
+  final _translationService = container.resolve<ITranslationService>();
   GetListTagsQueryResponse? _tags;
 
   List<String> _selectedTags = [];
@@ -87,7 +91,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: TagUiConstants.errorLoadingTags);
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(TagTranslationKeys.errorLoading));
       }
     }
   }
@@ -124,7 +129,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              labelText: TagUiConstants.searchTagsLabel,
+                              labelText: _translationService.translate(TagTranslationKeys.searchLabel),
                               fillColor: Colors.transparent,
                               labelStyle: AppTheme.bodySmall,
                             ),
@@ -143,7 +148,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           TextButton.icon(
                             onPressed: () => setState(() => tempSelectedTags.clear()),
                             icon: Icon(SharedUiConstants.clearIcon),
-                            label: Text(TagUiConstants.clearAllLabel),
+                            label: Text(_translationService.translate(TagTranslationKeys.clearAllButton)),
                           ),
                       ],
                     ),
@@ -191,7 +196,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(onPressed: () => Navigator.pop(context), child: Text(SharedUiConstants.cancelLabel)),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
+                        ),
                         TextButton(
                           onPressed: () {
                             final selectedOptions = tempSelectedTags.map((id) {
@@ -205,7 +213,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             widget.onTagsSelected(selectedOptions);
                             Navigator.pop(context);
                           },
-                          child: Text(TagUiConstants.doneLabel),
+                          child: Text(_translationService.translate(TagTranslationKeys.doneButton)),
                         ),
                       ],
                     ),

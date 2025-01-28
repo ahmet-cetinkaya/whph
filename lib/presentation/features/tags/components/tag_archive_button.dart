@@ -4,15 +4,17 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
   final VoidCallback? onArchiveSuccess;
   final Color buttonColor;
   final Color buttonBackgroundColor;
+  final String? tooltip;
 
   const TagArchiveButton({
     super.key,
@@ -20,6 +22,7 @@ class TagArchiveButton extends StatefulWidget {
     this.onArchiveSuccess,
     this.buttonColor = AppTheme.primaryColor,
     this.buttonBackgroundColor = Colors.transparent,
+    this.tooltip,
   });
 
   @override
@@ -27,6 +30,8 @@ class TagArchiveButton extends StatefulWidget {
 }
 
 class _TagArchiveButtonState extends State<TagArchiveButton> {
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   bool? _isArchived;
 
   @override
@@ -36,9 +41,8 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
   }
 
   Future<void> _loadArchiveStatus() async {
-    final mediator = container.resolve<Mediator>();
     try {
-      final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
+      final tag = await _mediator.send<GetTagQuery, GetTagQueryResponse>(
         GetTagQuery(id: widget.tagId),
       );
       if (mounted) {
@@ -48,7 +52,12 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load archive status.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(TagTranslationKeys.errorLoadingArchiveStatus),
+        );
       }
     }
   }
@@ -59,29 +68,34 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(_isArchived! ? TagUiConstants.unarchiveTagTitle : TagUiConstants.archiveTagTitle),
-        content: Text(_isArchived! ? TagUiConstants.unarchiveTagMessage : TagUiConstants.archiveTagMessage),
+        title: Text(_translationService.translate(
+          _isArchived! ? TagTranslationKeys.unarchiveTag : TagTranslationKeys.archiveTag,
+        )),
+        content: Text(_translationService.translate(
+          _isArchived! ? TagTranslationKeys.unarchiveTagConfirm : TagTranslationKeys.archiveTagConfirm,
+        )),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(SharedUiConstants.cancelLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(_isArchived! ? 'Unarchive' : 'Archive'),
+            child: Text(_translationService.translate(
+              _isArchived! ? TagTranslationKeys.unarchiveTag : TagTranslationKeys.archiveTag,
+            )),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
-      final mediator = container.resolve<Mediator>();
       try {
-        final tag = await mediator.send<GetTagQuery, GetTagQueryResponse>(
+        final tag = await _mediator.send<GetTagQuery, GetTagQueryResponse>(
           GetTagQuery(id: widget.tagId),
         );
 
-        await mediator.send(SaveTagCommand(
+        await _mediator.send(SaveTagCommand(
           id: widget.tagId,
           name: tag.name,
           isArchived: newStatus,
@@ -96,8 +110,12 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
         widget.onArchiveSuccess?.call();
       } catch (e, stackTrace) {
         if (mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-              message: 'Failed to toggle archive status.');
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(TagTranslationKeys.errorTogglingArchive),
+          );
         }
       }
     }
@@ -110,8 +128,11 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
     }
 
     return IconButton(
-      icon: Icon(_isArchived! ? TagUiConstants.unarchiveIcon : TagUiConstants.archiveIcon),
-      tooltip: _isArchived! ? TagUiConstants.unarchiveTagTooltip : TagUiConstants.archiveTagTooltip,
+      icon: Icon(_isArchived! ? Icons.unarchive : Icons.archive),
+      tooltip: widget.tooltip ??
+          _translationService.translate(
+            _isArchived! ? TagTranslationKeys.unarchiveTagTooltip : TagTranslationKeys.archiveTagTooltip,
+          ),
       onPressed: _toggleArchiveStatus,
       color: widget.buttonColor,
       style: IconButton.styleFrom(

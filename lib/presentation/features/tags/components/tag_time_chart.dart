@@ -4,9 +4,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
 
 class TagTimeChart extends StatefulWidget {
+  final _translationService = container.resolve<ITranslationService>();
   final Mediator _mediator = container.resolve<Mediator>();
   final List<String>? filterByTags;
   final DateTime startDate;
@@ -78,13 +82,33 @@ class _TagTimeChartState extends State<TagTimeChart> {
   @override
   Widget build(BuildContext context) {
     if (_tagTimes == null || _tagTimes!.items.isEmpty) {
-      return const Center(child: Text('No data available'));
+      return Center(
+        child: Text(widget._translationService.translate(TagTranslationKeys.timeChartNoData)),
+      );
     }
 
-    return SizedBox(
-      height: widget.height,
-      width: widget.width,
-      child: _buildChart(),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              widget._translationService.translate(TagTranslationKeys.timeChartTitle),
+              style: AppTheme.bodyMedium,
+            ),
+            HelpMenu(
+              titleKey: TagTranslationKeys.timeChartHelpTitle,
+              markdownContentKey: TagTranslationKeys.timeChartHelpContent,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: widget.height,
+          width: widget.width,
+          child: _buildChart(),
+        ),
+      ],
     );
   }
 

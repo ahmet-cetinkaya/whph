@@ -8,13 +8,15 @@ import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.d
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
-import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/shared/components/color_preview.dart';
 
@@ -33,6 +35,7 @@ class TagDetailsContent extends StatefulWidget {
 }
 
 class _TagDetailsContentState extends State<TagDetailsContent> {
+  final _translationService = container.resolve<ITranslationService>();
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
 
@@ -60,7 +63,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: TagUiConstants.errorLoadingTagName);
+            message: _translationService.translate(TagTranslationKeys.errorLoading));
       }
     }
   }
@@ -79,7 +82,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting tag tags.");
+            message: _translationService.translate(TagTranslationKeys.errorLoading));
       }
     }
   }
@@ -126,7 +129,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while saving tag.");
+            message: _translationService.translate(TagTranslationKeys.errorSaving));
       }
     }
   }
@@ -159,9 +162,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         children: [
           DetailTable(rowData: [
             DetailTableRowData(
-              label: TagUiConstants.colorLabel,
+              label: _translationService.translate(TagTranslationKeys.colorLabel),
               icon: TagUiConstants.colorIcon,
-              hintText: TagUiConstants.clickToChangeColorHint,
+              hintText: _translationService.translate(TagTranslationKeys.colorTooltip),
               widget: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -174,9 +177,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
               ),
             ),
             DetailTableRowData(
-              label: TagUiConstants.tagsLabel,
+              label: _translationService.translate(TagTranslationKeys.nameLabel),
               icon: TagUiConstants.tagIcon,
-              hintText: TagUiConstants.selectTagsHint,
+              hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
               widget: TagSelectDropdown(
                 key: ValueKey(_tagTags!.items.length),
                 isMultiSelect: true,
