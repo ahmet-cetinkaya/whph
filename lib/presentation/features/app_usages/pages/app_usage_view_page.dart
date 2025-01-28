@@ -88,7 +88,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         ),
         HelpMenu(
           titleKey: AppUsageTranslationKeys.viewHelpTitle,
-          contentKey: AppUsageTranslationKeys.viewHelpContent,
+          markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
         const SizedBox(width: 2),
       ],

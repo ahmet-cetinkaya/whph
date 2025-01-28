@@ -143,7 +143,7 @@ class _TodayPageState extends State<TodayPage> {
         ),
         HelpMenu(
           titleKey: CalendarTranslationKeys.todayHelpTitle,
-          contentKey: CalendarTranslationKeys.todayHelpContent,
+          markdownContentKey: CalendarTranslationKeys.todayHelpContent,
         ),
         const SizedBox(width: 2),
       ],

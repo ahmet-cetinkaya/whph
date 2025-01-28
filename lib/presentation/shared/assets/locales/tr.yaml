@@ -35,12 +35,47 @@ shared:
     get_tags: Uygulama kullanım etiketleri alınırken hata oluştu.
   units:
     minutes: dk
+    days: gün
   tooltips:
     filter_by_tags: Etiketlere göre filtrele
   sections:
     habits: Alışkanlıklar
     tasks: Görevler
     time: Zaman
+  calendar:
+    week_days:
+      mon: Pzt
+      tue: Sal
+      wed: Çar
+      thu: Per
+      fri: Cum
+      sat: Cmt
+      sun: Paz
+    months:
+      jan: Ocak
+      feb: Şubat
+      mar: Mart
+      apr: Nisan
+      may: Mayıs
+      jun: Haziran
+      jul: Temmuz
+      aug: Ağustos
+      sep: Eylül
+      oct: Ekim
+      nov: Kasım
+      dec: Aralık
+      jan_short: Oca
+      feb_short: Şub
+      mar_short: Mar
+      apr_short: Nis
+      may_short: May
+      jun_short: Haz
+      jul_short: Tem
+      aug_short: Ağu
+      sep_short: Eyl
+      oct_short: Eki
+      nov_short: Kas
+      dec_short: Ara
 app_usages:
   delete:
     confirm_title: Uygulama Kullanımını Sil
@@ -239,3 +274,139 @@ calendar:
     habits: Alışkanlıklar
     tasks: Görevler
     time: Zaman
+habits:
+  new_habit: Yeni Alışkanlık
+  delete:
+    confirm_title: Alışkanlığı Sil
+    confirm_message: Bu alışkanlığı silmek istediğinize emin misiniz?
+  errors:
+    loading_records: Alışkanlık kayıtları yüklenemedi
+    creating_record: Alışkanlık kaydı oluşturulamadı
+    deleting_record: Alışkanlık kaydı silinemedi
+    deleting: Alışkanlık silinirken beklenmedik bir hata oluştu
+    loading_details: Alışkanlık detayları yüklenemedi
+    saving_details: Alışkanlık kaydedilemedi
+    loading_tags: Alışkanlık etiketleri yüklenemedi
+    adding_tag: Etiket eklenemedi
+    removing_tag: Etiket kaldırılamadı
+    loading_habit: Alışkanlık yüklenemedi
+    saving_habit: Alışkanlık kaydedilemedi
+    loading_habits: Alışkanlıklar yüklenemedi
+  details:
+    description: Açıklama
+    tags: Etiketler
+    tags_hint: İlişkilendirilecek etiketleri seçin
+    estimated_time: Tahmini Süre
+    estimated_time_not_set: Ayarlanmadı
+    records: Kayıtlar
+    statistics_label: İstatistikler
+    statistics:
+      overall: Genel
+      monthly: Aylık
+      yearly: Yıllık
+      records: Kayıtlar
+      score_trends: Puan Trendi
+      top_streaks: En İyi Seriler
+    help:
+      title: Alışkanlık Detayları Yardım
+      description: 🔄 Tutarlı rutinler oluşturmak için alışkanlık detaylarınızı yapılandırın ve takip edin.
+      features_title: ⚡ Özellikler
+      tips_title: 💡 İpuçları
+      features_list:
+        - "• Temel Ayarlar:"
+        - "  - Alışkanlık adını ayarlayın"
+        - "  - Program tanımlayın"
+        - "  - Etiket gruplarına ekleyin"
+        - "• Zaman Takibi:"
+        - "  - Tamamlanma süresini kaydedin"
+        - "  - Zamanı etiketlere göre takip edin"
+        - "  - Zaman modellerini görüntüleyin"
+        - "• Geçmiş:"
+        - "  - Tamamlanma geçmişini görüntüleyin"
+        - "  - Günlük serileri takip edin"
+        - "  - Tutarlılığı izleyin"
+      tips_list:
+        - "• Net, eyleme geçirilebilir isimler verin"
+        - "• Alışkanlık gruplandırması için etiketleri kullanın"
+        - "• Gerçekçi programlar belirleyin"
+        - "• Zamanı tutarlı şekilde takip edin"
+        - "• Gözden geçirin ve gerektiğinde ayarlayın"
+        - "• Kullanılmayan alışkanlıkları silin"
+      content: |
+        🔄 Alışkanlık detaylarınızı yapılandırarak tutarlı rutinler oluşturun.
+
+        ## ⚡ Özellikler
+
+        - **Temel Ayarlar:**
+          - Alışkanlık ismi belirleyin
+          - Program tanımlayın
+          - Etiket gruplarına ekleyin
+        - **Zaman Takibi:**
+          - Tamamlanma zamanını kaydedin
+          - Etiketlere göre zamanı takip edin
+          - Zaman desenlerini görüntüleyin
+        - **Geçmiş:**
+          - Tamamlanma geçmişini görüntüleyin
+          - Günlük serileri takip edin
+          - Tutarlılığı izleyin
+
+        ## 💡 İpuçları
+
+        - Net, eyleme geçirilebilir isimler verin
+        - Alışkanlıkları gruplandırmak için etiketleri kullanın
+        - Gerçekçi programlar belirleyin
+        - Zamanı tutarlı şekilde takip edin
+        - Gözden geçirin ve gerektiğinde ayarlayın
+        - Kullanılmayan alışkanlıkları silin
+  overview:
+    title: Alışkanlıklar
+    filter_by_tags_tooltip: Etiketlere göre filtrele
+    help:
+      title: Alışkanlıklar Genel Bakış Yardım
+      content: |
+        🔄 Alışkanlıklar, zaman yatırımlarını takip ederken günlük rutinler oluşturmanıza ve sürdürmenize yardımcı olur.
+
+        ## ⚡ Özellikler
+
+        - **Günlük Takip:**
+          - Alışkanlık tamamlamayı takip edin
+          - Birden çok günü aynı anda görüntüleyin
+          - Serileri ve desenleri izleyin
+        - **Zaman Yatırımı:**
+          - Alışkanlıklara harcanan zamanı kaydedin
+          - Etiketlere göre zamanı biriktirin
+          - Rutin sürelerini takip edin
+        - **Organizasyon:**
+          - Etiketlerle alışkanlıkları gruplandırın
+          - Esnek programlama
+
+        ## 💡 İpuçları
+
+        - Küçük, yönetilebilir alışkanlıklarla başlayın
+        - İlgili rutinleri gruplamak için etiketleri kullanın
+        - Desenleri anlamak için zamanı takip edin
+        - Önemli alışkanlıkları erken tamamlayın
+        - Alışkanlık geçmişinizi düzenli olarak gözden geçirin
+        - Alışkanlıkları gerektiğinde ayarlayın
+
+        ## 📊 Takvim Görünümü
+
+        - Birden çok günü aynı anda görüntüleyin
+        - Tamamlama desenlerini takip edin
+        - Hızlı tamamlama işaretleme
+        - Görsel seri takibi
+        - Esnek tarih gezinme
+  calendar:
+    week_days:
+      mon: Pzt
+      tue: Sal
+      wed: Çar
+      thu: Per
+      fri: Cum
+      sat: Cmt
+      sun: Paz
+  tags:
+    select_tooltip: İlişkilendirilecek etiketleri seçin
+    add_tooltip: Yeni etiket ekle
+  list:
+    no_habits_found: Alışkanlık bulunamadı

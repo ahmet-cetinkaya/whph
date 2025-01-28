@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class HabitsList extends StatefulWidget {
   final Mediator mediator;
@@ -37,6 +39,7 @@ class HabitsList extends StatefulWidget {
 
 class _HabitsListState extends State<HabitsList> {
   GetListHabitsQueryResponse? _habits;
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -70,7 +73,12 @@ class _HabitsListState extends State<HabitsList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habits.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
+        );
       }
     }
   }
@@ -87,7 +95,9 @@ class _HabitsListState extends State<HabitsList> {
     }
 
     if (_habits!.items.isEmpty) {
-      return Center(child: Text(HabitUiConstants.noHabitsFoundMessage));
+      return Center(
+        child: Text(_translationService.translate(HabitTranslationKeys.noHabitsFound)),
+      );
     }
 
     return widget.mini ? _buildMiniCardList() : _buildColumnList();

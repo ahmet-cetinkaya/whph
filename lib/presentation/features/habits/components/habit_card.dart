@@ -12,6 +12,8 @@ import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitCard extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -40,6 +42,7 @@ class HabitCard extends StatefulWidget {
 }
 
 class _HabitCardState extends State<HabitCard> {
+  final _translationService = container.resolve<ITranslationService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
@@ -67,7 +70,8 @@ class _HabitCardState extends State<HabitCard> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit records.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.loadingRecordsError));
       }
     }
   }
@@ -87,7 +91,8 @@ class _HabitCardState extends State<HabitCard> {
       widget._soundPlayer.play(SharedSounds.done);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to create habit record.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.creatingRecordError));
       }
     }
   }
@@ -106,7 +111,8 @@ class _HabitCardState extends State<HabitCard> {
       widget.onRecordDeleted?.call(response);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to delete habit record.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.deletingRecordError));
       }
     }
   }
@@ -258,7 +264,7 @@ class _HabitCardState extends State<HabitCard> {
             icon: Icon(
               hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
               size: HabitUiConstants.calendarIconSize,
-              color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.incompletedColor,
+              color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.inCompletedColor,
             ),
           ),
         ],

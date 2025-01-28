@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -19,11 +21,12 @@ class HabitAddButton extends StatefulWidget {
 
 class _HabitAddButtonState extends State<HabitAddButton> {
   final Mediator mediator = container.resolve<Mediator>();
+  final translationService = container.resolve<ITranslationService>();
 
   Future<void> _createHabit(BuildContext context) async {
     try {
       var command = SaveHabitCommand(
-        name: "New Habit",
+        name: translationService.translate(HabitTranslationKeys.newHabit),
         description: "",
       );
       var response = await mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
@@ -32,7 +35,7 @@ class _HabitAddButtonState extends State<HabitAddButton> {
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorSavingHabit);
+            message: translationService.translate(SharedTranslationKeys.savingError));
       }
     }
   }

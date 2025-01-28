@@ -6,12 +6,12 @@ import 'package:whph/main.dart';
 
 class HelpMenu extends StatelessWidget {
   final String titleKey;
-  final String contentKey;
+  final String markdownContentKey;
 
   const HelpMenu({
     super.key,
     required this.titleKey,
-    required this.contentKey,
+    required this.markdownContentKey,
   });
 
   void _showHelpModal(BuildContext context) {
@@ -42,7 +42,7 @@ class HelpMenu extends StatelessWidget {
               const SizedBox(height: 16),
               Expanded(
                 child: MarkdownParse(
-                  data: translationService.translate(contentKey),
+                  data: translationService.translate(markdownContentKey),
                 ),
               ),
             ],

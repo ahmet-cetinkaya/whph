@@ -51,7 +51,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
       appBarActions: [
         HelpMenu(
           titleKey: AppUsageTranslationKeys.rulesHelpTitle,
-          contentKey: AppUsageTranslationKeys.rulesHelpContent,
+          markdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
         ),
         const SizedBox(width: 2),
       ],

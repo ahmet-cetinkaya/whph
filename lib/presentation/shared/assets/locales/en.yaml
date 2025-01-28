@@ -4,7 +4,7 @@ about:
   app_about:
     version: Version {version}
     description: >
-      WHPH is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time, while also tracking how much time you spend on different applications to strengthen your focus. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+      WHPH is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
     links:
       website: Website
       source_code: Source Code
@@ -29,30 +29,64 @@ shared:
     required: "{field} is required"
   errors:
     unexpected: An unexpected error occurred
-    loading: Error loading data
-    saving: Error saving data
-    deleting: Error deleting data
-    get_tags: Error occurred while getting app usage tags.
+    loading: Error occurred while loading data
+    saving: Error occurred while saving data
+    deleting: Error occurred while deleting data
+    get_tags: Error occurred while fetching tags
   units:
     minutes: min
+    days: days
   tooltips:
     filter_by_tags: Filter by tags
   sections:
     habits: Habits
     tasks: Tasks
     time: Time
+  calendar:
+    week_days:
+      mon: Mon
+      tue: Tue
+      wed: Wed
+      thu: Thu
+      fri: Fri
+      sat: Sat
+      sun: Sun
+    months:
+      jan: January
+      feb: February
+      mar: March
+      apr: April
+      may: May
+      jun: June
+      jul: July
+      aug: August
+      sep: September
+      oct: October
+      nov: November
+      dec: December
+      jan_short: Jan
+      feb_short: Feb
+      mar_short: Mar
+      apr_short: Apr
+      may_short: May
+      jun_short: Jun
+      jul_short: Jul
+      aug_short: Aug
+      sep_short: Sep
+      oct_short: Oct
+      nov_short: Nov
+      dec_short: Dec
 app_usages:
   delete:
     confirm_title: Delete App Usage
-    error: Unexpected error occurred while deleting app usage.
+    error: An unexpected error occurred while deleting app usage
   errors:
-    get_tags: Error occurred while getting app usage tags.
-    get_tags_unexpected: Unexpected error occurred while getting app usage tags.
-    get_usage: Unexpected error occurred while getting app usage.
-    save_usage: Unexpected error occurred while saving app usage.
-    add_tag: Unexpected error occurred while adding tag.
-    remove_tag: Unexpected error occurred while removing tag.
-    save_rule: Unexpected error occurred while saving ignore rules.
+    get_usage: An unexpected error occurred while fetching app usage
+    save_usage: An unexpected error occurred while saving app usage
+    get_tags: Error occurred while fetching app usage tags
+    add_tag: An unexpected error occurred while adding tag
+    remove_tag: An unexpected error occurred while removing tag
+    save_rule: An unexpected error occurred while saving ignore rules
   units:
     minutes: min
   details:
@@ -68,7 +102,7 @@ app_usages:
     help:
       title: App Usage Details Help
       content: |
-        Shows time spent on applications and manages tag associations.
+        Shows the time spent on apps and manages tag relationships.
 
         ## ⚡ Features
 
@@ -78,7 +112,7 @@ app_usages:
           - Monitor active windows
         - **Tag Management:**
           - Associate with tags
-          - Auto-tag using rules
+          - Use rules for automatic tagging
           - Track time by category
         - **Analysis:**
           - View usage patterns
@@ -88,16 +122,16 @@ app_usages:
         ## 💡 Tips
 
         - Use tags to categorize apps
-        - Set up auto-tagging rules
+        - Create automatic tagging rules
         - Review usage patterns
-        - Group similar applications
-        - Track productive vs unproductive time
+        - Group similar apps
+        - Track productive and unproductive time
         - Use tag rules for automation
   ignore_rules:
     no_rules: No ignore rules found
     pattern_label: Pattern
     delete_title: Delete Rule
-    delete_confirm: Are you sure you want to delete the ignore rule "{pattern}"?
+    delete_confirm: "Are you sure you want to delete the ignore rule \"{pattern}\"?"
     delete_tooltip: Delete rule
   form:
     pattern:
@@ -107,7 +141,7 @@ app_usages:
       help_tooltip: Show regex help
     description:
       label: Description (Optional)
-      hint: Enter description for this rule
+      hint: Enter a description for this rule
     save: Save
     saved: Saved
   rules:
@@ -119,7 +153,7 @@ app_usages:
     help:
       title: App Usage Rules Help
       content: |
-        Help you automate tag assignment and manage application tracking.
+        Helps automate tag assignment and manage app tracking.
 
         ## 🏷️ Tag Rules
 
@@ -134,7 +168,7 @@ app_usages:
 
         ## 🚫 Ignore Rules
 
-        - **Exclude Applications:**
+        - **Exclude Apps:**
           - Skip unwanted apps
           - Ignore system processes
           - Filter background apps
@@ -146,7 +180,7 @@ app_usages:
         ## 💡 Tips
 
         - Use specific patterns for better matching
-        - Group similar applications under common tags
+        - Group similar apps under common tags
         - Regularly review and update rules
         - Test rules with different app names
         - Use ignore rules for system utilities
@@ -170,7 +204,7 @@ app_usages:
             - Monitor active windows
           - **Tag Management:**
             - Assign tags
-            - Auto-tag using rules
+            - Use rules for automatic tagging
             - Track time by category
           - **Analysis:**
             - View usage patterns
@@ -190,10 +224,10 @@ app_usages:
           ## 💡 Tips
 
           - Use tags to categorize apps
-          - Set up auto-tagging rules
+          - Create automatic tagging rules
           - Review usage patterns
-          - Group similar applications
-          - Track productive vs unproductive time
+          - Group similar apps
+          - Track productive and unproductive time
           - Use tag rules for automation
 calendar:
   pages:
@@ -202,22 +236,22 @@ calendar:
       help:
         title: Today View Help
         content: |
-          📅 Today view shows your daily tasks, habits, and time investments in one place.
+          📅 The Today view shows your daily tasks, habits, and time investments in one place.
 
           ## ⚡ Features
 
           - **Daily Habits:**
-            - Quick access to your daily habits
+            - Quick access to daily habits
             - Track habit completion
-            - Maintain your routines
-          - **Today’s Tasks:**
-            - View planned and due tasks
-            - Add new tasks quickly
+            - Maintain routines
+          - **Today's Tasks:**
+            - View scheduled and due tasks
+            - Add new tasks
             - Track task completion
           - **Time Investment:**
             - View time spent by tag
             - Track productivity patterns
-            - Monitor daily activity
+            - Monitor daily activities
 
           ## 💡 Tips
 
@@ -226,17 +260,153 @@ calendar:
           - Review time charts to optimize your day
           - Start Marathon mode for focused work
           - Group related tasks with tags
-          - Schedule important tasks first
+          - Plan important tasks first
 
           ## ⚙️ Quick Actions
 
-          - Click timer icon to start Marathon mode
+          - Click the timer icon to start Marathon mode
           - Use tag filter to focus on specific projects
           - Click on habits to mark them complete
-          - Add new tasks to today’s list
+          - Add new tasks assigned to today
           - Click on tasks to view details
-          - Check time chart for daily insights
+          - Check the time chart for daily insights
   sections:
     habits: Habits
     tasks: Tasks
     time: Time
+habits:
+  new_habit: New Habit
+  delete:
+    confirm_title: Delete Habit
+    confirm_message: Are you sure you want to delete this habit?
+  errors:
+    loading_records: Failed to load habit records
+    creating_record: Failed to create habit record
+    deleting_record: Failed to delete habit record
+    deleting: Unexpected error occurred while deleting habit
+    loading_details: Failed to load habit details
+    saving_details: Failed to save habit
+    loading_tags: Failed to load habit tags
+    adding_tag: Failed to add tag
+    removing_tag: Failed to remove tag
+    loading_habit: Failed to load habit
+    saving_habit: Failed to save habit
+    loading_habits: Failed to load habits
+  details:
+    description: Description
+    tags: Tags
+    tags_hint: Select tags to associate
+    estimated_time: Estimated Time
+    estimated_time_not_set: Not set
+    records: Records
+    statistics_label: Statistics
+    statistics:
+      overall: Overall
+      monthly: Monthly
+      yearly: Yearly
+      records: Records
+      score_trends: Score Trends
+      top_streaks: Top Streaks
+    help:
+      title: Habit Details Help
+      description: 🔄 Configure and track your habit details to build consistent routines.
+      features_title: ⚡ Features
+      tips_title: 💡 Tips
+      features_list:
+        - "• Basic Settings:"
+        - "  - Set habit name"
+        - "  - Define schedule"
+        - "  - Add to tag groups"
+        - "• Time Tracking:"
+        - "  - Record completion time"
+        - "  - Track time by tags"
+        - "  - View time patterns"
+        - "• History:"
+        - "  - View completion history"
+        - "  - Track daily streaks"
+        - "  - Monitor consistency"
+      tips_list:
+        - "• Give clear, actionable names"
+        - "• Use tags for habit grouping"
+        - "• Set realistic schedules"
+        - "• Track time consistently"
+        - "• Review and adjust as needed"
+        - "• Delete unused habits"
+      content: |
+        🔄 Configure and track your habit details to build consistent routines.
+
+        ## ⚡ Features
+
+        - **Basic Settings:**
+          - Set habit name
+          - Define schedule
+          - Add to tag groups
+        - **Time Tracking:**
+          - Record completion time
+          - Track time by tags
+          - View time patterns
+        - **History:**
+          - View completion history
+          - Track daily streaks
+          - Monitor consistency
+
+        ## 💡 Tips
+
+        - Give clear, actionable names
+        - Use tags for habit grouping
+        - Set realistic schedules
+        - Track time consistently
+        - Review and adjust as needed
+        - Delete unused habits
+  overview:
+    title: Habits
+    filter_by_tags_tooltip: Filter by tags
+    help:
+      title: Habits Overview Help
+      content: |
+        🔄 Habits help you build and maintain daily routines while tracking time investments.
+
+        ## ⚡ Features
+
+        - **Daily Tracking:**
+          - Track habit completion
+          - View multiple days at once
+          - Monitor streaks and patterns
+        - **Time Investment:**
+          - Record time spent on habits
+          - Accumulate time by tags
+          - Track routine durations
+        - **Organization:**
+          - Group habits with tags
+          - Flexible scheduling
+
+        ## 💡 Tips
+
+        - Start with small, manageable habits
+        - Use tags to group related routines
+        - Track time to understand patterns
+        - Complete important habits early
+        - Review your habit history regularly
+        - Adjust habits as needed
+
+        ## 📊 Calendar View
+
+        - View multiple days at once
+        - Track completion patterns
+        - Quick completion marking
+        - Visual streak tracking
+        - Flexible date navigation
+  calendar:
+    week_days:
+      mon: Mon
+      tue: Tue
+      wed: Wed
+      thu: Thu
+      fri: Fri
+      sat: Sat
+      sun: Sun
+  tags:
+    select_tooltip: Select tags to associate
+    add_tooltip: Add new tag
+  list:
+    no_habits_found: No habits found
