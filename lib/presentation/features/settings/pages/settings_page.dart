@@ -6,6 +6,9 @@ import 'package:whph/presentation/features/about/components/app_about.dart';
 import 'package:whph/presentation/features/settings/components/startup_settings.dart';
 import 'package:whph/presentation/features/settings/components/notification_settings.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String route = '/settings';
@@ -17,7 +20,7 @@ class SettingsPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
           child: Center(child: SingleChildScrollView(child: AppAbout())),
         );
       },
@@ -26,8 +29,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+
     return ResponsiveScaffoldLayout(
-      title: 'Settings',
+      title: translationService.translate(SettingsTranslationKeys.settingsTitle),
       builder: (context) => ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -49,7 +54,8 @@ class SettingsPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.sync),
-              title: Text('Sync Devices', style: AppTheme.bodyMedium),
+              title: Text(translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
+                  style: AppTheme.bodyMedium),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.pushNamed(context, SyncDevicesPage.route);
@@ -62,7 +68,7 @@ class SettingsPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.info),
-              title: Text('About', style: AppTheme.bodyMedium),
+              title: Text(translationService.translate(SettingsTranslationKeys.aboutTitle), style: AppTheme.bodyMedium),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () => _showAboutModal(context),
             ),

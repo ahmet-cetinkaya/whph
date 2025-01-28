@@ -9,11 +9,25 @@ about:
       website: Website
       source_code: Source Code
 settings:
+  title: Settings
   language:
     title: Language
     languages:
       en: English
       tr: Turkish
+  notifications:
+    title: Notifications
+    enable_error: Failed to enable notifications
+    disable_error: Failed to disable notifications
+  startup:
+    title: Start at Startup
+    subtitle: Tap to open system settings and enable auto-start permission for the app
+    enable_error: Failed to enable startup setting
+    disable_error: Failed to disable startup setting
+  sync_devices:
+    title: Sync Devices
+  about:
+    title: About
 shared:
   buttons:
     save: Save

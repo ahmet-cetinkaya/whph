@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
@@ -5,6 +6,9 @@ import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class NotificationSettings extends StatefulWidget {
   const NotificationSettings({super.key});
@@ -16,6 +20,7 @@ class NotificationSettings extends StatefulWidget {
 class _NotificationSettingsState extends State<NotificationSettings> {
   final _notificationService = container.resolve<INotificationService>();
   final _settingRepository = container.resolve<ISettingRepository>();
+  final _translationService = container.resolve<ITranslationService>();
 
   bool _isEnabled = false;
   bool _isLoading = true;
@@ -50,7 +55,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         });
       }
     } catch (e) {
-      debugPrint('Error loading notification setting: $e');
+      if (kDebugMode) print('ERROR: Error loading notification setting: $e');
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -69,7 +74,10 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       debugPrint('Error toggling notifications: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to ${value ? 'enable' : 'disable'} notifications')),
+          SnackBar(
+              content: Text(_translationService.translate(value
+                  ? SettingsTranslationKeys.enableNotificationsError
+                  : SettingsTranslationKeys.disableNotificationsError))),
         );
       }
     } finally {
@@ -84,7 +92,10 @@ class _NotificationSettingsState extends State<NotificationSettings> {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.notifications),
-        title: const Text('Notifications'),
+        title: Text(
+          _translationService.translate(SettingsTranslationKeys.notificationsTitle),
+          style: AppTheme.bodyMedium,
+        ),
         trailing: _isLoading || _isUpdating
             ? const SizedBox(
                 width: 20,

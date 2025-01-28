@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/features/settings/pages/settings_page.dart';
 
 class LanguageSettings extends StatelessWidget {
   LanguageSettings({super.key}) : _translationService = container.resolve<ITranslationService>();
@@ -21,7 +23,7 @@ class LanguageSettings extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.language),
         title: Text(
-          _translationService.translate('settings.language.title'),
+          _translationService.translate(SettingsTranslationKeys.languageTitle),
           style: AppTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -46,7 +48,7 @@ class _LanguageBottomSheet extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.language),
             title: Text(
-              _translationService.translate('settings.language.languages.en'),
+              _translationService.translate(SettingsTranslationKeys.languageEnglish),
               style: AppTheme.bodyMedium,
             ),
             trailing: _translationService.getCurrentLanguage(context) == 'en'
@@ -55,12 +57,13 @@ class _LanguageBottomSheet extends StatelessWidget {
             onTap: () {
               _translationService.changeLanguage(context, 'en');
               Navigator.pop(context);
+              Navigator.of(context).pushReplacementNamed(SettingsPage.route);
             },
           ),
           ListTile(
             leading: const Icon(Icons.language),
             title: Text(
-              _translationService.translate('settings.language.languages.tr'),
+              _translationService.translate(SettingsTranslationKeys.languageTurkish),
               style: AppTheme.bodyMedium,
             ),
             trailing: _translationService.getCurrentLanguage(context) == 'tr'
@@ -69,6 +72,7 @@ class _LanguageBottomSheet extends StatelessWidget {
             onTap: () {
               _translationService.changeLanguage(context, 'tr');
               Navigator.pop(context);
+              Navigator.of(context).pushReplacementNamed(SettingsPage.route);
             },
           ),
         ],
