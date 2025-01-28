@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,9 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -28,6 +30,7 @@ class SyncDevicesPage extends StatefulWidget {
 class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
   GetListSyncDevicesQueryResponse? list;
   Key _listKey = UniqueKey();
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   bool get wantKeepAlive => true;
@@ -55,7 +58,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load sync devices.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(SyncTranslationKeys.loadDevicesError),
+        );
       }
     }
   }
@@ -71,7 +79,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to remove sync device.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(SyncTranslationKeys.removeDeviceError),
+        );
       }
     }
   }
@@ -81,10 +94,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     if (_isSyncing) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
@@ -92,11 +105,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             ),
-            SizedBox(width: 16),
-            Text('Sync in progress...'),
+            const SizedBox(width: 16),
+            Text(_translationService.translate(SyncTranslationKeys.syncInProgress)),
           ],
         ),
-        duration: Duration(seconds: 30),
+        duration: const Duration(seconds: 30),
       ),
     );
 
@@ -119,16 +132,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Row(
                 children: [
-                  Icon(Icons.check_circle, color: Colors.white),
-                  SizedBox(width: 16),
-                  Text('Sync completed successfully'),
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 16),
+                  Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
                 ],
               ),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
+              duration: const Duration(seconds: 3),
             ),
           );
       }
@@ -137,7 +150,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       if (kDebugMode) print('ERROR: Sync failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to sync devices.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
+        );
       }
     } finally {
       if (mounted) {
@@ -160,109 +178,30 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Sync Devices Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '🔄 Sync your data across multiple devices securely.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Device Sync:',
-                  '  - Sync tasks and habits',
-                  '  - Sync time records',
-                  '  - Sync tag configurations',
-                  '• QR Code Connection:',
-                  '  - Easy device pairing',
-                  '  - Secure connection setup',
-                  '  - Quick sync initiation',
-                  '• Device Management:',
-                  '  - View connected devices',
-                  '  - Monitor sync status',
-                  '  - Remove old devices',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Keep devices on the same network',
-                  '• Sync regularly for best results',
-                  '• Remove unused device connections',
-                  '• Check last sync dates',
-                  '• Use QR codes for quick setup',
-                  '• Wait for sync completion',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return ResponsiveScaffoldLayout(
-      title: 'Sync Devices',
+      title: _translationService.translate(SyncTranslationKeys.pageTitle),
       appBarActions: [
         IconButton(
           onPressed: _sync,
-          icon: Icon(Icons.sync),
+          icon: const Icon(Icons.sync),
           color: AppTheme.primaryColor,
         ),
-        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) const SyncQrCodeButton(),
+        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
         if (Platform.isAndroid || Platform.isIOS)
           SyncQrScanButton(
             onSyncComplete: _refreshDevices,
           ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: SyncTranslationKeys.helpTitle,
+          markdownContentKey: SyncTranslationKeys.helpContent,
         ),
         const SizedBox(width: 2),
       ],
       builder: (context) => list == null || list!.items.isEmpty
-          ? const Center(child: Text('No synced devices found'))
+          ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))
           : ListView.builder(
               key: _listKey,
               itemCount: list!.items.length,
@@ -281,8 +220,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 class SyncDeviceListItemWidget extends StatelessWidget {
   final SyncDeviceListItem item;
   final void Function(String) onRemove;
+  final _translationService = container.resolve<ITranslationService>();
 
-  const SyncDeviceListItemWidget({
+  SyncDeviceListItemWidget({
     super.key,
     required this.item,
     required this.onRemove,
@@ -291,18 +231,19 @@ class SyncDeviceListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(item.name ?? 'Unnamed Device'),
+      title: Text(item.name ?? _translationService.translate(SyncTranslationKeys.unnamedDevice)),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('From: ${item.fromIp}'),
-          Text('To: ${item.toIp}'),
+          Text('${_translationService.translate(SyncTranslationKeys.fromLabel)}: ${item.fromIp}'),
+          Text('${_translationService.translate(SyncTranslationKeys.toLabel)}: ${item.toIp}'),
           Text(
-              'Last Sync: ${item.lastSyncDate != null ? DateFormat('yyyy/MM/dd kk:mm:ss').format(item.lastSyncDate!.toLocal()) : 'Never'}'),
+            '${_translationService.translate(SyncTranslationKeys.lastSyncLabel)}: ${item.lastSyncDate != null ? DateFormat('yyyy/MM/dd kk:mm:ss').format(item.lastSyncDate!.toLocal()) : 'Never'}',
+          ),
         ],
       ),
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: () => onRemove(item.id),
       ),
     );

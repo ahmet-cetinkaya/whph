@@ -424,3 +424,96 @@ habits:
     add_tooltip: Add new tag
   list:
     no_habits_found: No habits found
+sync:
+  messages:
+    testing_connection: Testing connection...
+    sync_in_progress: Syncing in progress...
+    sync_completed: Sync completed successfully
+    device_already_paired: This device is already paired
+  errors:
+    parse_message: Unable to parse scanned message
+    ip_address: Unable to fetch local IP address
+    connection_failed: |
+      Connection failed. Please ensure:
+
+      1. Both devices are on the same network
+      2. Both apps are open and running
+      3. No firewall is blocking the connection
+    save_device: Failed to save sync device
+    sync_failed: Failed to sync
+    sync_timeout: Sync timeout
+  qr_code:
+    dialog_title: Scan QR Code to Sync
+    close_button: Close
+  scanner:
+    title: Scan QR Code
+    help:
+      title: QR Scanner Help 
+      intro: 📱 Scan QR codes to connect and sync with other devices.
+      tips_title: 📸 Scanning Tips
+      tips:
+        - • Hold camera steady
+        - • Ensure good lighting
+        - • Center the QR code
+        - • Keep proper distance
+        - • Wait for auto-focus
+        - • Clean camera lens if needed
+      process_title: ⚡ Process
+      process:
+        - 1. Point camera at QR code
+        - 2. Wait for automatic scan
+        - 3. Keep devices on same network
+        - 4. Wait for connection confirmation
+        - 5. Start syncing data
+      content: |
+        📱 Scan QR codes to connect and sync with other devices.
+
+        ## 📸 Scanning Tips
+
+        - Hold camera steady
+        - Ensure good lighting
+        - Center the QR code
+        - Keep proper distance
+        - Wait for auto-focus
+        - Clean camera lens if needed
+
+        ## ⚡ Process
+
+        1. Point camera at QR code
+        2. Wait for automatic scan
+        3. Keep devices on same network
+        4. Wait for connection confirmation
+        5. Start syncing data
+  devices:
+    title: Sync Devices
+    no_devices_found: No synced devices found
+    errors:
+      loading: Failed to load sync devices
+      removing: Failed to remove sync device
+      sync_failed: Failed to sync devices
+    unnamed_device: Unnamed Device
+    from_label: From
+    to_label: To
+    last_sync_label: Last Sync
+    help:
+      title: Device Synchronization Help
+      content: |
+        🔄 Securely sync your data between multiple devices.
+
+        ## 🔗 QR Code Connection
+        - Easy device pairing
+        - Secure connection setup
+        - Quick sync initiation
+
+        ## 📱 Device Management
+        - View connected devices
+        - Monitor sync status
+        - Remove old devices
+
+        ## 💡 Tips
+        - Keep devices on the same network
+        - Sync regularly for best results
+        - Remove unused device connections
+        - Check last sync dates
+        - Use QR codes for quick setup
+        - Wait for sync completion

@@ -424,3 +424,96 @@ habits:
     add_tooltip: Yeni etiket ekle
   list:
     no_habits_found: Alışkanlık bulunamadı
+sync:
+  messages:
+    testing_connection: Bağlantı test ediliyor...
+    sync_in_progress: Senkronizasyon devam ediyor...
+    sync_completed: Senkronizasyon başarıyla tamamlandı
+    device_already_paired: Bu cihaz zaten eşleştirilmiş
+  errors:
+    parse_message: Taranan mesaj işlenemedi
+    ip_address: Yerel IP adresi alınamadı
+    connection_failed: |
+      Bağlantı başarısız oldu. Lütfen şunlardan emin olun:
+
+      1. Her iki cihaz aynı ağda
+      2. Her iki uygulama açık ve çalışıyor
+      3. Güvenlik duvarı bağlantıyı engellemiyor
+    save_device: Senkronizasyon cihazı kaydedilemedi
+    sync_failed: Senkronizasyon başarısız oldu
+    sync_timeout: Senkronizasyon zaman aşımına uğradı
+  qr_code:
+    dialog_title: Senkronize Etmek için QR Kodu Tarayın
+    close_button: Kapat
+  scanner:
+    title: QR Kodu Tara
+    help:
+      title: QR Tarayıcı Yardım
+      intro: 📱 Diğer cihazlarla bağlantı kurmak ve senkronize etmek için QR kodlarını tarayın.
+      tips_title: 📸 Tarama İpuçları
+      tips:
+        - • Kamerayı sabit tutun
+        - • İyi aydınlatma olduğundan emin olun
+        - • QR kodu ortalayın
+        - • Uygun mesafede tutun
+        - • Otomatik odaklanmayı bekleyin
+        - • Gerekirse kamera lensini temizleyin
+      process_title: ⚡ Süreç
+      process:
+        - 1. Kamerayı QR koduna yöneltin
+        - 2. Otomatik tarama için bekleyin
+        - 3. Cihazları aynı ağda tutun
+        - 4. Bağlantı onayını bekleyin
+        - 5. Verileri senkronize etmeye başlayın
+      content: |
+        📱 Diğer cihazlarla bağlantı kurmak ve senkronize etmek için QR kodlarını tarayın.
+
+        ## 📸 Tarama İpuçları
+
+        - Kamerayı sabit tutun
+        - İyi aydınlatma olduğundan emin olun
+        - QR kodu ortalayın
+        - Uygun mesafede tutun
+        - Otomatik odaklanmayı bekleyin
+        - Gerekirse kamera lensini temizleyin
+
+        ## ⚡ Süreç
+
+        1. Kamerayı QR koduna yöneltin
+        2. Otomatik tarama için bekleyin
+        3. Cihazları aynı ağda tutun
+        4. Bağlantı onayını bekleyin
+        5. Verileri senkronize etmeye başlayın
+  devices:
+    title: Cihazları Senkronize Et
+    no_devices_found: Senkronize edilmiş cihaz bulunamadı
+    errors:
+      loading: Senkronizasyon cihazları yüklenemedi
+      removing: Senkronizasyon cihazı kaldırılamadı
+      sync_failed: Cihazlar senkronize edilirken hata oluştu
+    unnamed_device: İsimsiz Cihaz
+    from_label: Kimden
+    to_label: Kime
+    last_sync_label: Son Senkronizasyon
+    help:
+      title: Cihaz Senkronizasyonu Yardım
+      content: |
+        🔄 Verilerinizi birden fazla cihaz arasında güvenli bir şekilde senkronize edin.
+
+        ## 🔗 QR Kod Bağlantısı
+        - Kolay cihaz eşleştirme
+        - Güvenli bağlantı kurulumu
+        - Hızlı senkronizasyon başlatma
+
+        ## 📱 Cihaz Yönetimi
+        - Bağlı cihazları görüntüleyin
+        - Senkronizasyon durumunu izleyin
+        - Eski cihazları kaldırın
+
+        ## 💡 İpuçları
+        - Cihazları aynı ağda tutun
+        - Düzenli olarak senkronize edin
+        - Kullanılmayan cihaz bağlantılarını kaldırın
+        - Son senkronizasyon tarihlerini kontrol edin
+        - Hızlı kurulum için QR kodları kullanın
+        - Senkronizasyonun tamamlanmasını bekleyin
