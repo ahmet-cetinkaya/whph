@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
@@ -11,6 +12,8 @@ import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -23,6 +26,7 @@ class TagsPage extends StatefulWidget {
 
 class _TagsPageState extends State<TagsPage> {
   final Mediator _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   List<String>? _selectedFilters;
 
@@ -70,111 +74,21 @@ class _TagsPageState extends State<TagsPage> {
     });
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Tags Overview Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '🏷️ Tags help you organize and track time investments across your tasks.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📊 Time Analysis',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• View time distribution by tag',
-                  '• Track time investments over custom periods',
-                  '• Compare time spent across different areas',
-                  '• Monitor daily and weekly patterns',
-                  '• Analyze focus distribution',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Filter by multiple tags',
-                  '• Archive completed project tags',
-                  '• Create tag hierarchies',
-                  '• Track related tag groups',
-                  '• Time tracking across tasks',
-                  '• Tag-based organization',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use meaningful tag names',
-                  '• Create hierarchical structures:',
-                  '  - Projects under departments',
-                  '  - Subtasks under main projects',
-                  '  - Categories under areas',
-                  '• Review time charts regularly',
-                  '• Archive completed projects',
-                  '• Use tag filters to focus analysis',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      title: 'Tags',
+      title: _translationService.translate(TagTranslationKeys.title),
       appBarActions: [
         TagAddButton(
           onTagCreated: (tagId) {
             _openTagDetails(tagId);
           },
           buttonColor: AppTheme.primaryColor,
+          tooltip: _translationService.translate(TagTranslationKeys.addTagTooltip),
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: TagTranslationKeys.overviewHelpTitle,
+          markdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -182,7 +96,7 @@ class _TagsPageState extends State<TagsPage> {
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: [
-            // Tag filter
+            // Tag filter with translation
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: TagSelectDropdown(
@@ -191,18 +105,18 @@ class _TagsPageState extends State<TagsPage> {
                 icon: Icons.label,
                 iconSize: AppTheme.iconSizeSmall,
                 color: _selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                tooltip: 'Filter by tags',
+                tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
                 showLength: true,
               ),
             ),
 
-            // Tag Times Section with Date Filter
+            // Tag Times Section with translation
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8),
               child: Row(
                 children: [
                   Text(
-                    'Tag Times',
+                    _translationService.translate(TagTranslationKeys.timesSectionTitle),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   Padding(
@@ -234,13 +148,13 @@ class _TagsPageState extends State<TagsPage> {
               ),
             ),
 
-            // Tags Section with Archive Filter
+            // Tags Section with translation
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8),
               child: Row(
                 children: [
                   Text(
-                    'Tags',
+                    _translationService.translate(TagTranslationKeys.listSectionTitle),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   Padding(
@@ -248,7 +162,8 @@ class _TagsPageState extends State<TagsPage> {
                     child: FilterIconButton(
                       icon: _showArchived ? Icons.archive : Icons.archive_outlined,
                       color: _showArchived ? AppTheme.primaryColor : null,
-                      tooltip: _showArchived ? 'Hide archived tags' : 'Show archived tags',
+                      tooltip: _translationService
+                          .translate(_showArchived ? TagTranslationKeys.hideArchived : TagTranslationKeys.showArchived),
                       onPressed: () {
                         setState(() {
                           _showArchived = !_showArchived;

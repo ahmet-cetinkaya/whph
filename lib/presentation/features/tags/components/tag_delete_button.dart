@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
-import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
-
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 
 class TagDeleteButton extends StatefulWidget {
   final String tagId;
   final VoidCallback? onDeleteSuccess;
   final Color? buttonColor;
   final Color? buttonBackgroundColor;
+  final String? tooltip;
 
   const TagDeleteButton({
     super.key,
@@ -20,6 +22,7 @@ class TagDeleteButton extends StatefulWidget {
     this.onDeleteSuccess,
     this.buttonColor,
     this.buttonBackgroundColor,
+    this.tooltip,
   });
 
   @override
@@ -27,12 +30,13 @@ class TagDeleteButton extends StatefulWidget {
 }
 
 class _TagDeleteButtonState extends State<TagDeleteButton> {
-  final Mediator mediator = container.resolve<Mediator>();
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteTag(BuildContext context) async {
     try {
       var command = DeleteTagCommand(id: widget.tagId);
-      await mediator.send(command);
+      await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
@@ -41,8 +45,12 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while deleting tag.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(TagTranslationKeys.errorDeleting),
+        );
       }
     }
   }
@@ -51,16 +59,16 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
     bool? confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(TagUiConstants.deleteTagTitle),
-        content: Text(TagUiConstants.deleteTagMessage),
+        title: Text(_translationService.translate(TagTranslationKeys.deleteTag)),
+        content: Text(_translationService.translate(TagTranslationKeys.confirmDelete)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(SharedUiConstants.cancelLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(SharedUiConstants.deleteLabel),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),
@@ -73,11 +81,13 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _confirmDelete(context),
-      icon: Icon(SharedUiConstants.deleteIcon),
+      icon: const Icon(Icons.delete),
       color: widget.buttonColor,
+      tooltip: widget.tooltip,
       style: ButtonStyle(
-        backgroundColor:
-            widget.buttonBackgroundColor != null ? WidgetStateProperty.all<Color>(widget.buttonBackgroundColor!) : null,
+        backgroundColor: widget.buttonBackgroundColor != null
+            ? MaterialStatePropertyAll<Color>(widget.buttonBackgroundColor!)
+            : null,
       ),
     );
   }
