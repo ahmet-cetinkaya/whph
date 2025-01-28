@@ -14,10 +14,12 @@ class TagNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
 
   final String id;
+  final VoidCallback onTagUpdated;
 
   TagNameInputField({
     super.key,
     required this.id,
+    required this.onTagUpdated,
   });
 
   @override
@@ -65,6 +67,7 @@ class _TagNameInputFieldState extends State<TagNameInputField> {
       );
       try {
         await widget._mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
+        widget.onTagUpdated();
       } on BusinessException catch (e) {
         if (context.mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {

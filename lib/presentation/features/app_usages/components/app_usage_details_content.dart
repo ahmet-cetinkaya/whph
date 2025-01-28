@@ -26,10 +26,12 @@ class AppUsageDetailsContent extends StatefulWidget {
   final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
 
   final String id;
+  final VoidCallback? onAppUsageUpdated;
 
   AppUsageDetailsContent({
     super.key,
     required this.id,
+    this.onAppUsageUpdated,
   });
 
   @override
@@ -93,6 +95,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
       widget._appUsagesService.onAppUsageSaved.value = result;
+      widget.onAppUsageUpdated?.call();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {

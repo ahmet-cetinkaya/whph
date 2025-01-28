@@ -14,10 +14,12 @@ class HabitNameInputField extends StatefulWidget {
   final HabitsService _habitsService = container.resolve<HabitsService>();
 
   final String habitId;
+  final VoidCallback? onHabitUpdated;
 
   HabitNameInputField({
     super.key,
     required this.habitId,
+    this.onHabitUpdated,
   });
 
   @override
@@ -75,6 +77,7 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
       var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
       widget._habitsService.onHabitSaved.value = result;
+      widget.onHabitUpdated?.call();
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(

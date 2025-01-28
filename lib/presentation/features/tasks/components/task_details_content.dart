@@ -30,10 +30,12 @@ class TaskDetailsContent extends StatefulWidget {
   final _translationService = container.resolve<ITranslationService>();
 
   final String taskId;
+  final VoidCallback? onTaskUpdated;
 
   TaskDetailsContent({
     super.key,
     required this.taskId,
+    this.onTaskUpdated,
   });
 
   @override
@@ -149,6 +151,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
       widget._tasksService.onTaskSaved.value = result;
+      widget.onTaskUpdated?.call();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {

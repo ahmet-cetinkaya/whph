@@ -18,6 +18,25 @@ class TaskDetailsPage extends StatefulWidget {
 }
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
+  Key _titleKey = UniqueKey();
+  Key _contentKey = UniqueKey();
+
+  void _refreshTitle() {
+    if (mounted) {
+      setState(() {
+        _titleKey = UniqueKey();
+      });
+    }
+  }
+
+  void _refreshContent() {
+    if (mounted) {
+      setState(() {
+        _contentKey = UniqueKey();
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +45,11 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: TaskTitleInputField(taskId: widget.taskId),
+      appBarTitle: TaskTitleInputField(
+        key: _titleKey,
+        taskId: widget.taskId,
+        onTaskUpdated: _refreshContent,
+      ),
       appBarActions: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -47,7 +70,11 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
       builder: (context) => Container(
         width: double.infinity,
         alignment: Alignment.topLeft,
-        child: TaskDetailsContent(taskId: widget.taskId),
+        child: TaskDetailsContent(
+          key: _contentKey,
+          taskId: widget.taskId,
+          onTaskUpdated: _refreshTitle,
+        ),
       ),
     );
   }
