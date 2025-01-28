@@ -7,7 +7,6 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/presentation/shared/components/help_menu.dart';
 
 class TagTimeChart extends StatefulWidget {
   final _translationService = container.resolve<ITranslationService>();

@@ -930,6 +930,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.12"
+  rps:
+    dependency: "direct dev"
+    description:
+      name: rps
+      sha256: "7a2b9a1751506a9fcaba0af11e0d84115295a7a4b8cbf84ea178283588f7c010"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   screen_retriever:
     dependency: transitive
     description:

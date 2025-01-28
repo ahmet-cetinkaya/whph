@@ -14,7 +14,7 @@ environment:
 
 # https://pub.dev/packages/rps: dart pub global activate rps
 scripts:
-  clean: flutter clean && rm -rf ~/.pub-cache/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
+  clean: flutter clean && rm -rf ~/.pub-cache/hosted/pub.dev/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
   format: dart format . -l 120
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && dart format ./**/*.g.dart -l 120
   gen-icons: flutter pub run icons_launcher:create
@@ -96,6 +96,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
+  
+  rps: ^0.7.0
 
   # Data
   drift_dev: ^2.21.2 # ORM Generator
