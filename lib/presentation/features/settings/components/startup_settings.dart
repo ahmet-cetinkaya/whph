@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class StartupSettings extends StatefulWidget {
   static bool get compatiblePlatform =>
@@ -16,6 +18,7 @@ class StartupSettings extends StatefulWidget {
 
 class _StartupSettingsState extends State<StartupSettings> {
   final _startupService = container.resolve<IStartupSettingsService>();
+  final _translationService = container.resolve<ITranslationService>();
   get _isSystemSettingNeeded => Platform.isAndroid;
 
   bool _isEnabled = false;
@@ -70,7 +73,8 @@ class _StartupSettingsState extends State<StartupSettings> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to ${value ? 'enable' : 'disable'} startup setting'),
+            content: Text(_translationService.translate(
+                value ? SettingsTranslationKeys.enableStartupError : SettingsTranslationKeys.disableStartupError)),
           ),
         );
       }
@@ -90,10 +94,15 @@ class _StartupSettingsState extends State<StartupSettings> {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.launch),
-        title: const Text('Start at Startup'),
+        title: Text(
+          _translationService.translate(SettingsTranslationKeys.startupTitle),
+          style: AppTheme.bodyMedium,
+        ),
         subtitle: Platform.isAndroid
-            ? const Text('Tap to open system settings and enable auto-start permission for the app',
-                style: AppTheme.bodySmall)
+            ? Text(
+                _translationService.translate(SettingsTranslationKeys.startupSubtitle),
+                style: AppTheme.bodySmall,
+              )
             : null,
         trailing: Platform.isAndroid
             ? const Icon(Icons.arrow_forward_ios, size: 16)
