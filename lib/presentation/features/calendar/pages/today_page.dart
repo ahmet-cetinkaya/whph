@@ -14,6 +14,10 @@ import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/calendar/constants/calendar_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -26,6 +30,7 @@ class TodayPage extends StatefulWidget {
 
 class _TodayPageState extends State<TodayPage> {
   final Mediator mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   Key _habitKey = UniqueKey();
   bool _isHabitListEmpty = false;
@@ -126,115 +131,19 @@ class _TodayPageState extends State<TodayPage> {
     _refreshAllElements();
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Today View Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📅 Today view shows your daily tasks, habits, and time investments in one place.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Daily Habits:',
-                  '  - Quick access to your daily habits',
-                  '  - Track habit completion',
-                  '  - Maintain your routines',
-                  '• Today\'s Tasks:',
-                  '  - View planned and due tasks',
-                  '  - Add new tasks quickly',
-                  '  - Track task completion',
-                  '• Time Investment:',
-                  '  - View time spent by tag',
-                  '  - Track productivity patterns',
-                  '  - Monitor daily activity',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use tag filters to focus on specific areas',
-                  '• Complete habits early in the day',
-                  '• Review time charts to optimize your day',
-                  '• Start Marathon mode for focused work',
-                  '• Group related tasks with tags',
-                  '• Schedule important tasks first',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚙️ Quick Actions',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Click timer icon to start Marathon mode',
-                  '• Use tag filter to focus on specific projects',
-                  '• Click on habits to mark them complete',
-                  '• Add new tasks with the + button',
-                  '• Click on tasks to view details',
-                  '• Check time chart for daily insights',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      title: 'Today',
+      title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
         IconButton(
           icon: const Icon(Icons.timer),
           onPressed: () => _openMarathonPage(context),
           color: AppTheme.primaryColor,
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: CalendarTranslationKeys.todayHelpTitle,
+          contentKey: CalendarTranslationKeys.todayHelpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -248,7 +157,7 @@ class _TodayPageState extends State<TodayPage> {
                 icon: Icons.label,
                 iconSize: AppTheme.iconSizeSmall,
                 color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                tooltip: 'Filter by tags',
+                tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
                 onTagsSelected: _onTagFilterSelect),
 
             // Habits
@@ -275,7 +184,7 @@ class _TodayPageState extends State<TodayPage> {
         Padding(
           padding: const EdgeInsets.only(left: 8, bottom: 4),
           child: Text(
-            'Habits',
+            _translationService.translate(CalendarTranslationKeys.habitsTitle),
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
@@ -312,7 +221,7 @@ class _TodayPageState extends State<TodayPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Tasks',
+              _translationService.translate(CalendarTranslationKeys.tasksTitle),
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
@@ -356,7 +265,7 @@ class _TodayPageState extends State<TodayPage> {
         Padding(
           padding: const EdgeInsets.only(left: 8, bottom: 4),
           child: Text(
-            'Time',
+            _translationService.translate(CalendarTranslationKeys.timeTitle),
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
