@@ -7,6 +7,8 @@ import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.d
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskCompleteButton extends StatefulWidget {
   final String taskId;
@@ -28,6 +30,7 @@ class TaskCompleteButton extends StatefulWidget {
 
 class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
   bool _isCompleted = false;
 
   @override
@@ -79,7 +82,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while saving task.');
+            message: _translationService.translate(TaskTranslationKeys.taskCompleteError));
       }
     }
   }

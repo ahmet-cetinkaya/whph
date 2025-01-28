@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 
 class TaskList extends StatefulWidget {
   final Mediator mediator;
+  final ITranslationService translationService;
   final int size;
 
   // Update filter props to match query parameters
@@ -34,6 +38,7 @@ class TaskList extends StatefulWidget {
   const TaskList({
     super.key,
     required this.mediator,
+    required this.translationService,
     this.size = 10,
     this.filterByTags,
     this.filterByPlannedStartDate,
@@ -127,7 +132,12 @@ class _TaskListState extends State<TaskList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load tasks.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget.translationService.translate(TaskTranslationKeys.getTaskError),
+        );
       }
       setState(() {
         _isLoading = false;
@@ -154,8 +164,8 @@ class _TaskListState extends State<TaskList> {
     }
 
     if (_tasks!.items.isEmpty) {
-      return const Center(
-        child: Text('No tasks found'),
+      return Center(
+        child: Text(widget.translationService.translate(SharedTranslationKeys.noItemsFoundMessage)),
       );
     }
 

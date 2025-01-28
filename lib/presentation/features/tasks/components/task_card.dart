@@ -10,9 +10,12 @@ import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dar
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskCard extends StatelessWidget {
   final Mediator mediator = container.resolve<Mediator>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   final TaskListItem taskItem;
 
@@ -82,7 +85,7 @@ class TaskCard extends StatelessWidget {
           Expanded(child: _buildTitleAndMetadata(context)),
           PopupMenuButton<DateTime>(
             icon: const Icon(Icons.schedule, color: Colors.grey),
-            tooltip: 'Schedule task',
+            tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
             itemBuilder: (context) {
               final now = DateTime.now();
               final today = DateTime(now.year, now.month, now.day);
@@ -91,11 +94,11 @@ class TaskCard extends StatelessWidget {
               return [
                 PopupMenuItem(
                   value: today,
-                  child: const Text('Schedule for today'),
+                  child: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
                 ),
                 PopupMenuItem(
                   value: tomorrow,
-                  child: const Text('Schedule for tomorrow'),
+                  child: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
                 ),
               ];
             },

@@ -4,14 +4,17 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 
 class TaskTitleInputField extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final TasksService _tasksService = container.resolve<TasksService>();
+  final _mediator = container.resolve<Mediator>();
+  final _tasksService = container.resolve<TasksService>();
+  final _translationService = container.resolve<ITranslationService>();
 
   final String taskId;
 
@@ -54,7 +57,12 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load task.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.getTaskError),
+        );
       }
     }
   }
@@ -83,7 +91,12 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
       widget._tasksService.onTaskSaved.value = result;
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to update task.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.saveTaskError),
+        );
       }
     }
   }
@@ -105,8 +118,11 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
           child: TextField(
             controller: _titleController,
             onChanged: _onTitleChanged,
-            decoration: const InputDecoration(
-              suffixIcon: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+            decoration: InputDecoration(
+              suffixIcon: Tooltip(
+                message: widget._translationService.translate(TaskTranslationKeys.editTitleTooltip),
+                child: const Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+              ),
               border: InputBorder.none,
             ),
           ),

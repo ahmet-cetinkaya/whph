@@ -3,7 +3,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -85,9 +84,8 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
       color: widget.buttonColor,
       tooltip: widget.tooltip,
       style: ButtonStyle(
-        backgroundColor: widget.buttonBackgroundColor != null
-            ? MaterialStatePropertyAll<Color>(widget.buttonBackgroundColor!)
-            : null,
+        backgroundColor:
+            widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
     );
   }

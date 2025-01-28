@@ -87,28 +87,10 @@ class _TagTimeChartState extends State<TagTimeChart> {
       );
     }
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              widget._translationService.translate(TagTranslationKeys.timeChartTitle),
-              style: AppTheme.bodyMedium,
-            ),
-            HelpMenu(
-              titleKey: TagTranslationKeys.timeChartHelpTitle,
-              markdownContentKey: TagTranslationKeys.timeChartHelpContent,
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: widget.height,
-          width: widget.width,
-          child: _buildChart(),
-        ),
-      ],
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: _buildChart(),
     );
   }
 

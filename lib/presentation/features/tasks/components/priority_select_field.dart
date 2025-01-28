@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class PrioritySelectField extends StatefulWidget {
   final EisenhowerPriority? value;
@@ -21,6 +24,7 @@ class PrioritySelectField extends StatefulWidget {
 }
 
 class _PrioritySelectFieldState extends State<PrioritySelectField> {
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
   bool isHovered = false;
 
   void _showPrioritySelection(BuildContext context) {
@@ -34,10 +38,10 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 16),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
                   child: Text(
-                    'Select Priority',
+                    _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
                     style: AppTheme.headlineSmall,
                   ),
                 ),

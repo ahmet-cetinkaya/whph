@@ -109,6 +109,25 @@ class AppTheme {
     height: 1.1,
   );
 
+  // Text Styles
+  static const TextStyle labelLarge = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle labelMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle labelSmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
   // ThemeData definition
   static final ThemeData themeData = ThemeData(
     useMaterial3: true,

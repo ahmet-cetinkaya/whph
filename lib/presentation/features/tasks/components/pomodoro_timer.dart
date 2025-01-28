@@ -15,12 +15,15 @@ import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
   final INotificationService _notificationService = container.resolve<INotificationService>();
   final ISystemTrayService _systemTrayService = container.resolve<ISystemTrayService>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   final Function(Duration) onTimeUpdate;
 
@@ -122,8 +125,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _sendNotification() {
     widget._notificationService.show(
-      title: TaskUiConstants.pomodoroNotificationTitle,
-      body: _isWorking ? TaskUiConstants.pomodoroWorkSessionCompleted : TaskUiConstants.pomodoroBreakSessionCompleted,
+      title: widget._translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+      body: _isWorking
+          ? widget._translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
+          : widget._translationService.translate(TaskTranslationKeys.pomodoroBreakSessionCompleted),
     );
   }
 
@@ -324,18 +329,22 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: Text(TaskUiConstants.pomodoroSettingsLabel, style: AppTheme.headlineSmall)),
+          Center(
+              child: Text(widget._translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel),
+                  style: AppTheme.headlineSmall)),
           Text(
-            TaskUiConstants.pomodoroTimerSettingsLabel,
+            widget._translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
             style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
           ),
-          _buildSettingRow(TaskUiConstants.pomodoroWorkLabel, _workDuration, (adjustment) {
+          _buildSettingRow(widget._translationService.translate(TaskTranslationKeys.pomodoroWorkLabel), _workDuration,
+              (adjustment) {
             if (!mounted) return;
             setState(() {
               _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
             });
           }),
-          _buildSettingRow(TaskUiConstants.pomodoroBreakLabel, _breakDuration, (adjustment) {
+          _buildSettingRow(widget._translationService.translate(TaskTranslationKeys.pomodoroBreakLabel), _breakDuration,
+              (adjustment) {
             if (!mounted) return;
             setState(() {
               _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
@@ -380,7 +389,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       ),
       TrayMenuItem(
         key: _stopTimerMenuKey,
-        label: 'Stop Timer',
+        label: widget._translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
         onClicked: _stopTimer,
       ),
     ];

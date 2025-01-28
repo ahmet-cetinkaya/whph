@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/components/bar_chart.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -61,7 +62,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
           context,
           e,
           stackTrace,
-          message: _translationService.translate(SharedTranslationKeys.getTagsError),
+          message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
         );
       }
     } catch (e, stackTrace) {
@@ -70,7 +71,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
           context,
           e as Exception,
           stackTrace,
-          message: _translationService.translate(SharedTranslationKeys.getTagsError),
+          message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
         );
       }
     }

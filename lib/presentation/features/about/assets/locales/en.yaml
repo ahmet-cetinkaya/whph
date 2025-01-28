@@ -1,0 +1,10 @@
+about:
+  support_me:
+    button_text: Support me
+  app_about:
+    version: Version {version}
+    description: >
+      WHPH is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    links:
+      website: Website
+      source_code: Source Code

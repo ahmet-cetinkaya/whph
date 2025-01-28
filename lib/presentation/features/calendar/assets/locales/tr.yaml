@@ -1,0 +1,45 @@
+calendar:
+  pages:
+    today:
+      title: Bugün
+      help:
+        title: Bugün Görünümü Yardım
+        content: |
+          📅 Bugün görünümü, günlük görevlerinizi, alışkanlıklarınızı ve zaman yatırımlarınızı tek bir yerde gösterir.
+
+          ## ⚡ Özellikler
+
+          - **Günlük Alışkanlıklar:**
+            - Günlük alışkanlıklarınıza hızlı erişim
+            - Alışkanlık tamamlama takibi
+            - Rutinlerinizi sürdürme
+          - **Bugünün Görevleri:**
+            - Planlanan ve vadesi gelen görevleri görüntüleyin
+            - Yeni görevler ekleyin
+            - Görev tamamlama takibi
+          - **Zaman Yatırımı:**
+            - Etikete göre harcanan zamanı görüntüleyin
+            - Üretkenlik desenlerini takip edin
+            - Günlük aktiviteleri izleyin
+
+          ## 💡 İpuçları
+
+          - Belirli alanlara odaklanmak için etiket filtrelerini kullanın
+          - Alışkanlıkları günün erken saatlerinde tamamlayın
+          - Gününüzü optimize etmek için zaman grafiklerini gözden geçirin
+          - Odaklanmış çalışma için Marathon modunu başlatın
+          - İlgili görevleri etiketlerle gruplayın
+          - Önemli görevleri önce planlayın
+
+          ## ⚙️ Hızlı Eylemler
+
+          - Marathon modunu başlatmak için zamanlayıcı simgesine tıklayın
+          - Belirli projelere odaklanmak için etiket filtresini kullanın
+          - Alışkanlıkları tamamlamak için üzerine tıklayın
+          - Bugüne atanmış yeni görevler ekleyin
+          - Görev detaylarını görüntülemek için görevlerin üzerine tıklayın
+          - Günlük içgörüler için zaman grafiğini kontrol edin
+  sections:
+    habits: Alışkanlıklar
+    tasks: Görevler
+    time: Zaman

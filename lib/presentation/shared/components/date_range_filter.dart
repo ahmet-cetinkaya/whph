@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import '../constants/shared_translation_keys.dart';
 
 class DateRangeFilter extends StatelessWidget {
   final DateTime? selectedStartDate;
@@ -10,7 +13,9 @@ class DateRangeFilter extends StatelessWidget {
   final double iconSize;
   final Color? iconColor;
 
-  const DateRangeFilter({
+  final _translationService = container.resolve<ITranslationService>();
+
+  DateRangeFilter({
     super.key,
     this.selectedStartDate,
     this.selectedEndDate,
@@ -25,6 +30,8 @@ class DateRangeFilter extends StatelessWidget {
   }
 
   Future<void> _showDatePicker(BuildContext context) async {
+    final translationService = container.resolve<ITranslationService>();
+
     final result = await showModalBottomSheet<List<DateTime?>>(
       context: context,
       backgroundColor: AppTheme.surface1,
@@ -45,7 +52,10 @@ class DateRangeFilter extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Select Date Range', style: AppTheme.headlineSmall),
+                        Text(
+                          translationService.translate(SharedTranslationKeys.dateRangeTitle),
+                          style: AppTheme.headlineSmall,
+                        ),
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
@@ -94,7 +104,7 @@ class DateRangeFilter extends StatelessWidget {
           icon: Icons.calendar_today,
           iconSize: iconSize,
           color: hasDateFilter ? primaryColor : iconColor,
-          tooltip: 'Filter by date',
+          tooltip: _translationService.translate(SharedTranslationKeys.dateFilterTooltip),
           onPressed: () => _showDatePicker(context),
         ),
         if (hasDateFilter) ...[
@@ -110,7 +120,7 @@ class DateRangeFilter extends StatelessWidget {
             icon: Icons.close,
             iconSize: AppTheme.iconSizeSmall,
             onPressed: () => onDateFilterChange(null, null),
-            tooltip: 'Clear date filter',
+            tooltip: _translationService.translate(SharedTranslationKeys.clearDateFilterTooltip),
           ),
         ],
       ],

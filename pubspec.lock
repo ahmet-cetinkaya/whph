@@ -254,22 +254,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
-  connectivity_plus:
-    dependency: transitive
-    description:
-      name: connectivity_plus
-      sha256: "8a68739d3ee113e51ad35583fdf9ab82c55d09d693d3c39da1aebab87c938412"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.2"
-  connectivity_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_plus_platform_interface
-      sha256: "42657c1715d48b167930d5f34d00222ac100475f73d10162ddf43e714932f204"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -294,14 +278,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
-  csv:
-    dependency: transitive
-    description:
-      name: csv
-      sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -374,14 +350,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7+1"
-  easy_localization_loader:
+  easy_localization_multi:
     dependency: "direct main"
     description:
-      name: easy_localization_loader
-      sha256: cc0ca78f5f9013f3cdb80480a2efab10c9abadc82560dc412e977c372b09268f
+      name: easy_localization_multi
+      sha256: e8d73006e9b4521cd0322f1425b3e91295001fb86c787a6cbfbb7c75f5cb3b91
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "0.2.0"
+  easy_localization_yaml:
+    dependency: "direct main"
+    description:
+      name: easy_localization_yaml
+      sha256: cc12514559b72556ce561d44ba876a039c4bdee09af10595e1b00d8038038227
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   easy_logger:
     dependency: transitive
     description:
@@ -492,7 +476,7 @@ packages:
     source: hosted
     version: "7.2.0"
   flutter_localizations:
-    dependency: "direct main"
+    dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"

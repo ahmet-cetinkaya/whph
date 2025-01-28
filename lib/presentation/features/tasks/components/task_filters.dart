@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskFilters extends StatefulWidget {
   final List<String>? selectedTagIds;
@@ -34,6 +37,8 @@ class TaskFilters extends StatefulWidget {
 }
 
 class _TaskFiltersState extends State<TaskFilters> {
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
@@ -54,7 +59,7 @@ class _TaskFiltersState extends State<TaskFilters> {
                 icon: TaskUiConstants.tagsIcon,
                 iconSize: iconSize,
                 color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
-                tooltip: 'Filter by tags',
+                tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
                 showLength: true,
               ),
 
@@ -72,7 +77,7 @@ class _TaskFiltersState extends State<TaskFilters> {
             if (widget.showSearchFilter)
               SearchFilter(
                 onSearch: widget.onSearchChange,
-                placeholder: 'Search tasks',
+                placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
                 iconSize: iconSize,
                 iconColor: Colors.grey,
                 expandedWidth: 200,

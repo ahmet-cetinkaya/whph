@@ -7,7 +7,6 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
 import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';
-import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
@@ -108,6 +107,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                   body: TaskList(
                     key: _tasksListKey,
                     mediator: _mediator,
+                    translationService: _translationService,
                     onClickTask: _openTaskDetails,
                     filterByTags: [widget.tagId],
                     onTaskCompleted: _refreshTasks,

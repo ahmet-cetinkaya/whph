@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import '../constants/shared_translation_keys.dart';
 
 class RegexHelpDialog extends StatelessWidget {
   const RegexHelpDialog({super.key});
@@ -37,32 +40,72 @@ class RegexHelpDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+
     return AlertDialog(
-      title: const Text('Pattern Examples'),
+      title: Text(translationService.translate(SharedTranslationKeys.regexHelpTitle)),
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildPatternExample(context, '.*Chrome.*', 'Matches any window title containing "Chrome"'),
-            _buildPatternExample(context, '.*Visual Studio Code.*', 'Matches any VS Code window'),
-            _buildPatternExample(context, '^Chrome\$', 'Matches exactly "Chrome"'),
-            _buildPatternExample(context, 'Slack|Discord', 'Matches either "Slack" or "Discord"'),
-            _buildPatternExample(context, '.*\\.pdf', 'Matches any PDF file'),
+            _buildPatternExample(
+              context,
+              '.*Chrome.*',
+              translationService.translate(SharedTranslationKeys.regexHelpExamplesChrome),
+            ),
+            _buildPatternExample(
+              context,
+              '.*Visual Studio Code.*',
+              translationService.translate(SharedTranslationKeys.regexHelpExamplesVscode),
+            ),
+            _buildPatternExample(
+              context,
+              '^Chrome\$',
+              translationService.translate(SharedTranslationKeys.regexHelpExamplesExactChrome),
+            ),
+            _buildPatternExample(
+              context,
+              'Slack|Discord',
+              translationService.translate(SharedTranslationKeys.regexHelpExamplesChat),
+            ),
+            _buildPatternExample(
+              context,
+              '.*\\.pdf',
+              translationService.translate(SharedTranslationKeys.regexHelpExamplesPdf),
+            ),
             const SizedBox(height: 16),
-            const Text('Tips:', style: AppTheme.bodyMedium),
-            const Text('• Use ".*" to match any characters', style: AppTheme.bodySmall),
-            const Text('• "^" matches start of text', style: AppTheme.bodySmall),
-            const Text('• "\$" matches end of text', style: AppTheme.bodySmall),
-            const Text('• "|" means OR', style: AppTheme.bodySmall),
-            const Text('• "\\." matches a dot', style: AppTheme.bodySmall),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTips),
+              style: AppTheme.bodyMedium,
+            ),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTipAny),
+              style: AppTheme.bodySmall,
+            ),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTipStart),
+              style: AppTheme.bodySmall,
+            ),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTipEnd),
+              style: AppTheme.bodySmall,
+            ),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTipOr),
+              style: AppTheme.bodySmall,
+            ),
+            Text(
+              translationService.translate(SharedTranslationKeys.regexHelpTipDot),
+              style: AppTheme.bodySmall,
+            ),
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+          child: Text(translationService.translate(SharedTranslationKeys.closeButton)),
         ),
       ],
     );
