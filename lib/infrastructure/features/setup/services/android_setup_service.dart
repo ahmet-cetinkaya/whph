@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'abstraction/base_setup_service.dart';
 
 class AndroidSetupService extends BaseSetupService {
+  static const platform = MethodChannel('me.ahmetcetinkaya.whph/app_installer');
+
   @override
   Future<void> setupEnvironment() async {
     if (!Platform.isAndroid) return;
@@ -22,18 +24,8 @@ class AndroidSetupService extends BaseSetupService {
       await downloadFile(downloadUrl, downloadPath);
       await makeFileExecutable(downloadPath);
 
-      // Install APK using package installer
-      final uri = Uri.file(downloadPath);
-      if (!await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-        webViewConfiguration: const WebViewConfiguration(
-          enableJavaScript: true,
-          enableDomStorage: true,
-        ),
-      )) {
-        throw Exception('Could not launch package installer');
-      }
+      // Install APK using system package installer
+      await platform.invokeMethod('installApk', {'filePath': downloadPath});
 
       // Android system will handle the installation process
       exit(0);
