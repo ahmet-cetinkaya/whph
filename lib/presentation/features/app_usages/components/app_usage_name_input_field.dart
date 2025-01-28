@@ -16,10 +16,12 @@ class AppUsageNameInputField extends StatefulWidget {
   final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
 
   final String id;
+  final VoidCallback? onAppUsageUpdated;
 
   AppUsageNameInputField({
     super.key,
     required this.id,
+    this.onAppUsageUpdated,
   });
 
   @override
@@ -82,6 +84,7 @@ class _AppUsageNameInputFieldState extends State<AppUsageNameInputField> {
       var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
       widget._appUsagesService.onAppUsageSaved.value = result;
+      widget.onAppUsageUpdated?.call();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {

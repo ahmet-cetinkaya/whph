@@ -22,11 +22,33 @@ class AppUsageDetailsPage extends StatefulWidget {
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
   final Mediator mediator = container.resolve<Mediator>();
+  Key _titleKey = UniqueKey();
+  Key _contentKey = UniqueKey();
+
+  void _refreshTitle() {
+    if (mounted) {
+      setState(() {
+        _titleKey = UniqueKey();
+      });
+    }
+  }
+
+  void _refreshContent() {
+    if (mounted) {
+      setState(() {
+        _contentKey = UniqueKey();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: AppUsageNameInputField(id: widget.appUsageId),
+      appBarTitle: AppUsageNameInputField(
+        key: _titleKey,
+        id: widget.appUsageId,
+        onAppUsageUpdated: _refreshContent,
+      ),
       appBarActions: [
         AppUsageDeleteButton(
           appUsageId: widget.appUsageId,
@@ -41,7 +63,11 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          AppUsageDetailsContent(id: widget.appUsageId),
+          AppUsageDetailsContent(
+            key: _contentKey,
+            id: widget.appUsageId,
+            onAppUsageUpdated: _refreshTitle,
+          ),
         ],
       ),
     );

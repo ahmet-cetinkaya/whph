@@ -18,10 +18,33 @@ class HabitDetailsPage extends StatefulWidget {
 }
 
 class _HabitDetailsPageState extends State<HabitDetailsPage> {
+  Key _titleKey = UniqueKey();
+  Key _contentKey = UniqueKey();
+
+  void _refreshTitle() {
+    if (mounted) {
+      setState(() {
+        _titleKey = UniqueKey();
+      });
+    }
+  }
+
+  void _refreshContent() {
+    if (mounted) {
+      setState(() {
+        _contentKey = UniqueKey();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: HabitNameInputField(habitId: widget.habitId),
+      appBarTitle: HabitNameInputField(
+        key: _titleKey,
+        habitId: widget.habitId,
+        onHabitUpdated: _refreshContent,
+      ),
       appBarActions: [
         HabitDeleteButton(
           habitId: widget.habitId,
@@ -36,7 +59,11 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8.0),
-        child: HabitDetailsContent(habitId: widget.habitId),
+        child: HabitDetailsContent(
+          key: _contentKey,
+          habitId: widget.habitId,
+          onHabitUpdated: _refreshTitle,
+        ),
       ),
     );
   }

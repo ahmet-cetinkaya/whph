@@ -31,11 +31,29 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
   bool _isTasksExpanded = false;
   Key _tasksListKey = UniqueKey();
+  Key _contentKey = UniqueKey();
+  Key _titleKey = UniqueKey();
 
   void _refreshTasks() {
     if (mounted) {
       setState(() {
         _tasksListKey = UniqueKey();
+      });
+    }
+  }
+
+  void _refreshTitle() {
+    if (mounted) {
+      setState(() {
+        _titleKey = UniqueKey();
+      });
+    }
+  }
+
+  void _refreshContent() {
+    if (mounted) {
+      setState(() {
+        _contentKey = UniqueKey();
       });
     }
   }
@@ -51,7 +69,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: TagNameInputField(id: widget.tagId),
+      appBarTitle: TagNameInputField(
+        key: _titleKey,
+        id: widget.tagId,
+        onTagUpdated: _refreshContent,
+      ),
       appBarActions: [
         TagArchiveButton(
           tagId: widget.tagId,
@@ -75,7 +97,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
         padding: const EdgeInsets.all(16),
         children: [
           // Details
-          TagDetailsContent(tagId: widget.tagId),
+          TagDetailsContent(
+            key: _contentKey,
+            tagId: widget.tagId,
+            onTagUpdated: _refreshTitle,
+          ),
 
           // Tasks
           ExpansionPanelList(

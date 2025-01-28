@@ -17,10 +17,12 @@ class TaskTitleInputField extends StatefulWidget {
   final _translationService = container.resolve<ITranslationService>();
 
   final String taskId;
+  final VoidCallback? onTaskUpdated;
 
   TaskTitleInputField({
     super.key,
     required this.taskId,
+    this.onTaskUpdated,
   });
 
   @override
@@ -89,6 +91,7 @@ class _TaskTitleInputFieldState extends State<TaskTitleInputField> {
       var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       widget._tasksService.onTaskSaved.value = result;
+      widget.onTaskUpdated?.call();
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(

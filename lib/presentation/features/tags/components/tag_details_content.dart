@@ -24,10 +24,12 @@ class TagDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
 
   final String tagId;
+  final VoidCallback onTagUpdated;
 
   TagDetailsContent({
     super.key,
     required this.tagId,
+    required this.onTagUpdated,
   });
 
   @override
@@ -124,6 +126,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     try {
       await widget._mediator.send(command);
       await _getTag();
+      widget.onTagUpdated();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
