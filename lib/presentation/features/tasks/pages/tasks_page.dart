@@ -9,6 +9,9 @@ import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -21,6 +24,7 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   final Mediator _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   List<String>? _selectedTagIds;
 
@@ -91,114 +95,19 @@ class _TasksPageState extends State<TasksPage> {
     }
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Tasks Overview Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📋 Tasks help you track and organize your work items and record time spent.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Task Organization:',
-                  '  - Organize with tags',
-                  '  - Set planned dates',
-                  '  - Track deadlines',
-                  '• Time Tracking:',
-                  '  - Record time spent on tasks',
-                  '  - Automatically updates tag times',
-                  '  - Marathon mode for focused work',
-                  '• Task Management:',
-                  '  - Active and completed task views',
-                  '  - Quick task creation',
-                  '  - Flexible task filtering',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '🔍 Filters',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Filter by tags to focus on specific areas',
-                  '• Use date filters for time-based views',
-                  '• Search tasks by name or description',
-                  '• View completed tasks separately',
-                  '• Combine filters for precise results',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use tags to group related tasks',
-                  '• Set realistic planned dates',
-                  '• Break down large tasks into smaller ones',
-                  '• Review completed tasks regularly',
-                  '• Use Marathon mode for focused work sessions',
-                  '• Track time to understand work patterns',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      title: 'Tasks',
+      title: _translationService.translate(TaskTranslationKeys.tasksPageTitle),
       appBarActions: [
         TaskAddButton(
           onTaskCreated: (_) => _refreshAllTasks(),
           buttonColor: AppTheme.primaryColor,
           initialTagIds: _selectedTagIds,
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: TaskTranslationKeys.tasksHelpTitle,
+          markdownContentKey: TaskTranslationKeys.tasksHelpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -221,6 +130,7 @@ class _TasksPageState extends State<TasksPage> {
               TaskList(
                 key: _tasksListKey,
                 mediator: _mediator,
+                translationService: _translationService,
                 filterByCompleted: false,
                 filterByTags: _selectedTagIds,
                 filterByPlannedStartDate: _filterStartDate,
@@ -246,12 +156,13 @@ class _TasksPageState extends State<TasksPage> {
                       return ListTile(
                         contentPadding: EdgeInsets.only(left: 8),
                         leading: const Icon(Icons.done_all),
-                        title: const Text('Completed tasks'),
+                        title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
                       );
                     },
                     body: TaskList(
                       key: _completedTasksListKey,
                       mediator: _mediator,
+                      translationService: _translationService,
                       filterByCompleted: true,
                       filterByTags: _selectedTagIds,
                       search: _searchQuery,

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_localization_loader/easy_localization_loader.dart';
+import 'package:easy_localization_multi/easy_localization_multi.dart';
+import 'package:easy_localization_yaml/easy_localization_yaml.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/settings/pages/settings_page.dart';
 import '../services/abstraction/i_translation_service.dart';
@@ -33,9 +34,19 @@ class TranslationService implements ITranslationService {
   Widget wrapWithTranslations(Widget child) {
     return EasyLocalization(
       supportedLocales: _supportedLocales,
-      path: 'lib/presentation/shared/assets/locales',
+      path: 'null',
       fallbackLocale: const Locale('en'),
-      assetLoader: YamlAssetLoader(),
+      assetLoader: MultiAssetLoader([
+        YamlAssetLoader(directory: 'lib/presentation/shared/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/about/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/app_usages/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/calendar/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/habits/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/settings/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/tags/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/sync/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/tasks/assets/locales'),
+      ]),
       child: child,
     );
   }

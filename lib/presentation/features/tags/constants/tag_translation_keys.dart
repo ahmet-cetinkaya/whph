@@ -58,11 +58,7 @@ class TagTranslationKeys {
   static const String doneButton = 'tags.selection.done';
 
   // Time Chart
-  static const String timeChartTitle = 'tags.time_chart.title';
   static const String timeChartNoData = 'tags.time_chart.no_data';
-  // static const String timeChartTotalTime = 'tags.time_chart.total_time';
-  static const String timeChartHelpTitle = 'tags.time_chart.help.title';
-  static const String timeChartHelpContent = 'tags.time_chart.help.content';
 
   // Details Page
   static const String detailsHelpTitle = 'tags.details.help.title';

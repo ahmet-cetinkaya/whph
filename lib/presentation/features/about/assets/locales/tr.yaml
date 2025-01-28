@@ -1,0 +1,10 @@
+about:
+  support_me:
+    button_text: Destek ol
+  app_about:
+    version: Versiyon {version}
+    description: >
+      WHPH, kişisel verimliliğinizi artırmak için tasarlanmış kapsamlı bir uygulamadır; görevlerinizi etkili bir şekilde yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı en iyi şekilde değerlendirmenize olanak tanır. Ayrıca, farklı uygulamalarda ne kadar zaman harcadığınızı takip ederek odaklanmanızı güçlendirir. İlerlemenizi analiz ederek başarılarınızı kutlayabilir ve daha üretken bir yaşam için gereken motivasyonu kazanabilirsiniz.
+    links:
+      website: Web Sitesi
+      source_code: Kaynak Kodu

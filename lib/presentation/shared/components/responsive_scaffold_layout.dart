@@ -4,6 +4,8 @@ import 'package:whph/presentation/shared/components/app_logo.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/constants/navigation_items.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class RouteOptions {
   final WidgetBuilder builder;
@@ -13,13 +15,19 @@ class RouteOptions {
 }
 
 class NavItem {
-  final String title;
+  final String titleKey;
   final IconData? icon;
   final Widget? widget;
   final String? route;
   final Function(BuildContext context)? onTap;
 
-  NavItem({required this.title, this.icon, this.widget, this.route, this.onTap});
+  NavItem({
+    required this.titleKey,
+    this.icon,
+    this.widget,
+    this.route,
+    this.onTap,
+  });
 }
 
 class ResponsiveScaffoldLayout extends StatefulWidget {
@@ -104,7 +112,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 16),
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: 8),
                 ],
@@ -191,16 +199,20 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   }
 
   ListTile _buildNavItem(NavItem navItem) {
+    final translationService = container.resolve<ITranslationService>();
+
     return ListTile(
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: navItem.icon != null ? Icon(navItem.icon, size: 22) : null,
       title: navItem.widget ??
-          Text(navItem.title,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontSize: 14,
-                  )),
+          Text(
+            translationService.translate(navItem.titleKey),
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontSize: 14,
+                ),
+          ),
       onTap: () => _onClickNavItem(navItem),
     );
   }

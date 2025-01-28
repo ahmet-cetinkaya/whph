@@ -5,6 +5,8 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskDeleteButton extends StatefulWidget {
   final String taskId;
@@ -25,9 +27,10 @@ class TaskDeleteButton extends StatefulWidget {
 }
 
 class _TaskDeleteButtonState extends State<TaskDeleteButton> {
-  Future<void> _deleteTask(BuildContext context) async {
-    final Mediator mediator = container.resolve<Mediator>();
+  final Mediator mediator = container.resolve<Mediator>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
+  Future<void> _deleteTask(BuildContext context) async {
     try {
       var command = DeleteTaskCommand(id: widget.taskId);
       await mediator.send(command);
@@ -40,7 +43,7 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Unexpected error occurred while deleting task.');
+            message: _translationService.translate(TaskTranslationKeys.taskDeleteError));
       }
     }
   }
@@ -49,16 +52,16 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
     bool? confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this task?'),
+        title: Text(_translationService.translate(TaskTranslationKeys.taskDeleteTitle)),
+        content: Text(_translationService.translate(TaskTranslationKeys.taskDeleteMessage)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(_translationService.translate(TaskTranslationKeys.taskDeleteCancel)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
+            child: Text(_translationService.translate(TaskTranslationKeys.taskDeleteConfirm)),
           ),
         ],
       ),

@@ -15,6 +15,10 @@ import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -26,7 +30,8 @@ class MarathonPage extends StatefulWidget {
 }
 
 class _MarathonPageState extends State<MarathonPage> {
-  final Mediator _mediator = container.resolve<Mediator>();
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   Key _tasksListKey = UniqueKey();
   TaskListItem? _selectedTask;
 
@@ -112,13 +117,14 @@ class _MarathonPageState extends State<MarathonPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Task Details',
+                  Text(
+                    _translationService.translate(TaskTranslationKeys.marathonDetailsTitle),
                     style: AppTheme.headlineSmall,
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
+                    tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                   ),
                 ],
               ),
@@ -154,7 +160,12 @@ class _MarathonPageState extends State<MarathonPage> {
         }
       } catch (e, stackTrace) {
         if (mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load task details.');
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(TaskTranslationKeys.getTaskError),
+          );
         }
       }
     }
@@ -175,8 +186,12 @@ class _MarathonPageState extends State<MarathonPage> {
       _refreshSelectedTask(); // Refresh to show updated duration
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Failed to save task time record.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(TaskTranslationKeys.saveTaskError),
+        );
       }
     }
   }
@@ -205,138 +220,14 @@ class _MarathonPageState extends State<MarathonPage> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: 'Failed to refresh selected task.');
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(TaskTranslationKeys.getTaskError),
+        );
       }
     }
-  }
-
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Marathon Mode Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '🎯 Marathon Mode is designed to help you focus on your tasks using the Pomodoro Technique.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⏰ The Pomodoro Technique',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'A time management method that uses a timer to break work into intervals. You can customize work and break durations to your preference:',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Common patterns:',
-                  '  - 25 min work / 5 min break (Classic)',
-                  '  - 50 min work / 10 min break (Extended)',
-                  '• After 4 work sessions, take a longer 15-30 minute break',
-                  '• Choose what works best for you',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '🎯 Benefits',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Increases focus and concentration',
-                  '• Reduces mental fatigue',
-                  '• Maintains motivation through small wins',
-                  '• Creates a sense of urgency',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Pro Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use tags to track time across related tasks',
-                  '• Review tag time reports to understand your focus areas',
-                  '• Organize tasks with relevant tags before starting',
-                  '• Remove all distractions before starting',
-                  '• Use breaks to stretch or move around',
-                  '• Stay hydrated during breaks',
-                  '• Don\'t skip breaks - they\'re important!',
-                  '• Start with your most important task',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '❔ How to Use',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '1. Select a task from the list to work on',
-                  '2. Start the Pomodoro timer',
-                  '3. Focus on your task until the timer ends',
-                  '4. Take a short break when the timer rings',
-                  '5. Repeat the process',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Smart time tracking:',
-                  '  - Automatically records time to tasks',
-                  '  - Updates time spent on associated tags',
-                  '  - Helps track project and category time investments',
-                  '• Task filtering and search',
-                  '• Task details and updates',
-                  '• Progress tracking',
-                  '• Tag-based organization',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -369,6 +260,7 @@ class _MarathonPageState extends State<MarathonPage> {
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
+                      tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                     ),
                     Expanded(
                       child: Center(
@@ -377,9 +269,9 @@ class _MarathonPageState extends State<MarathonPage> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.help_outline),
-                      onPressed: _showHelpModal,
+                    HelpMenu(
+                      titleKey: TaskTranslationKeys.marathonHelpTitle,
+                      markdownContentKey: TaskTranslationKeys.marathonHelpContent,
                     ),
                   ],
                 ),
@@ -389,8 +281,8 @@ class _MarathonPageState extends State<MarathonPage> {
               if (_selectedTask != null)
                 Column(
                   children: [
-                    const Text(
-                      'Currently Working On:',
+                    Text(
+                      _translationService.translate(TaskTranslationKeys.marathonCurrentTask),
                       style: AppTheme.headlineSmall,
                     ),
                     TaskCard(
@@ -401,6 +293,7 @@ class _MarathonPageState extends State<MarathonPage> {
                         IconButton(
                           icon: const Icon(Icons.push_pin),
                           onPressed: _clearSelectedTask,
+                          tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
                         ),
                       ],
                     ),
@@ -429,7 +322,7 @@ class _MarathonPageState extends State<MarathonPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Select a task to work on from the list below.',
+                        _translationService.translate(TaskTranslationKeys.marathonSelectTaskHint),
                         style: AppTheme.bodySmall,
                       ),
                     ],
@@ -441,6 +334,7 @@ class _MarathonPageState extends State<MarathonPage> {
                 child: TaskList(
                   key: _tasksListKey,
                   mediator: _mediator,
+                  translationService: _translationService,
                   filterByCompleted: false,
                   filterByTags: _selectedTagIds,
                   filterByPlannedStartDate: today,

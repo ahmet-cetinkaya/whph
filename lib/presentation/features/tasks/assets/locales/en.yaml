@@ -1,0 +1,189 @@
+tasks:
+  pomodoro:
+    notifications:
+      title: Pomodoro Timer
+      work_completed: Work session completed!
+      break_completed: Break session completed!
+    settings:
+      title: Timer Settings
+      timer_label: Session durations
+      work_duration: Work Duration
+      break_duration: Break Duration
+    actions:
+      stop_timer: Stop Timer
+  priority:
+    selection:
+      title: Select Priority  
+    types:
+      urgent_important: Urgent & Important
+      not_urgent_important: Not Urgent but Important
+      urgent_not_important: Urgent but Not Important  
+      not_urgent_not_important: Not Urgent & Not Important
+      none: No Priority
+    tooltips:
+      urgent_important: Urgent & Important
+      not_urgent_important: Not Urgent but Important
+      urgent_not_important: Urgent but Not Important
+      not_urgent_not_important: Not Urgent & Not Important
+      none: No Priority
+  quick_task:
+    title: Quick Task
+    title_hint: Task title
+    create_error: Error creating task
+    tooltips:
+      estimated_time: 'Estimated Time: {time}'
+      estimated_time_not_set: 'Estimated Time: Not set'
+      planned_date: 'Planned: {date}'
+      planned_date_not_set: 'Planned: Not set'
+      deadline_date: 'Deadline: {date}'
+      deadline_date_not_set: 'Deadline: Not set'
+  add_button:
+    tooltip: Add new task
+  card:
+    tooltips:
+      schedule: Schedule task
+      edit_title: Edit title
+    schedule:
+      today: Schedule for today
+      tomorrow: Schedule for tomorrow
+  delete:
+    title: Delete Task
+    message: Are you sure you want to delete this task?
+    error: Unexpected error occurred while deleting task.
+    cancel: Cancel
+    confirm: Delete
+  complete:
+    error: Unexpected error occurred while saving task completion.
+  filters:
+    tooltips:
+      filter_by_tags: Filter by tags
+    search:
+      placeholder: Search tasks
+  details:
+    tags:
+      label: Tags
+      hint: Select tags to associate
+    priority:
+      label: Priority
+    estimated_time:
+      label: Estimated Time
+    elapsed_time:
+      label: Elapsed Time  
+    planned_date:
+      label: Planned Date
+    deadline_date:
+      label: Deadline Date
+    description:
+      label: Description
+      hint: Add description...
+  help:
+    details:
+      title: Task Details Help
+      content: |
+        📝 Manage your task details.
+
+        ## ⚡ Features
+
+        - **Basic Information:**
+          - Organize with tags
+          - Set priority
+          - Add estimated time
+
+        - **Time Management:**
+          - Planned date
+          - Deadline date
+          - Time tracking
+
+        - **Details:**
+          - Markdown support
+          - Rich text editing
+          - File attachments
+
+        ## 💡 Tips
+
+        - Use tags effectively
+        - Prioritize important tasks
+        - Set realistic durations
+        - Track progress regularly
+
+        ## 📊 Eisenhower Matrix
+
+        The Eisenhower Matrix helps you prioritize tasks by urgency and importance:
+
+        - **Urgent & Important:** Tasks that need immediate attention. These are critical tasks that must be done as soon as possible.
+        - **Not Urgent but Important:** Tasks that are important but can be scheduled for later. These tasks help you achieve long-term goals.
+        - **Urgent but Not Important:** Tasks that can be delegated to others. These tasks are often interruptions or distractions.
+        - **Not Urgent & Not Important:** Tasks that can be eliminated. These tasks do not contribute significantly to your goals.
+    overview:
+      title: Tasks Overview Help
+      content: |
+        📝 Manage and organize your tasks efficiently.
+
+        ## ⚡ Features
+
+        - **Task Management:**
+          - Create and edit tasks
+          - Set priorities and deadlines
+          - Track progress
+        
+        - **Organization:**
+          - Group tasks with tags
+          - Filter and search
+          - Quick actions
+        
+        - **Time Tracking:**
+          - Marathon mode for focus
+          - Track time per task
+          - View completion history
+
+        ## 💡 Tips
+
+        - Break down large tasks
+        - Use tags for projects
+        - Set realistic deadlines
+        - Track your progress
+        - Review regularly
+  page:
+    title: Tasks
+    completed_tasks_title: Completed tasks
+  errors:
+    get_task: Unexpected error occurred while loading task
+    save_task: Unexpected error occurred while saving task
+    add_tag: Unexpected error occurred while adding tag
+    remove_tag: Unexpected error occurred while removing tag
+    get_tags: Error occurred while fetching tags
+  marathon:
+    help:
+      title: Marathon Mode Help
+      content: |
+        🎯 Marathon Mode is designed to help you focus on your tasks using the Pomodoro Technique.
+
+        ## ⏰ The Pomodoro Technique
+        A time management method that uses a timer to break work into intervals. You can customize work and break durations to your preference:
+
+        - **Common Patterns:**
+          - 25 min work / 5 min break (Classic)
+          - 50 min work / 10 min break (Extended)
+        - After 4 work sessions, take a longer 15-30 minute break
+        - Choose what works best for you
+
+        ## 🎯 Benefits
+        - Increases focus and concentration
+        - Reduces mental fatigue
+        - Maintains motivation through small wins
+        - Creates a sense of urgency
+
+        ## 💡 Pro Tips
+        - Use tags to track time across related tasks
+        - Review tag time reports to understand your focus areas
+        - Organize tasks with relevant tags before starting
+        - Remove all distractions before starting
+        - Use breaks to stretch or move around
+        - Stay hydrated during breaks
+        - Don't skip breaks - they're important!
+        - Start with your most important task
+    details:
+      title: Task Details
+    current_task: "Currently Working On:"
+    select_task_hint: Select a task to work on from the list below.
+    unpin_task_tooltip: Unpin current task

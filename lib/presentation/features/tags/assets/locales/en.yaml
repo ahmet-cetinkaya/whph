@@ -1,0 +1,121 @@
+tags:
+  title: Tags
+  filter_tooltip: Filter by tags
+  sections:
+    times: Tag Times
+    list: Tags
+  actions:
+    show_archived: Show archived tags
+    hide_archived: Hide archived tags
+    add: Add Tag
+    edit: Edit Tag
+    delete: Delete Tag
+    archive: Archive Tag
+    unarchive: Unarchive Tag
+  help:
+    overview:
+      title: Tags Overview Help
+      content: |
+        🏷️ Tags help you organize and track time investments across your tasks.
+
+        ## 📊 Time Analysis
+        - View time distribution by tag
+        - Track time investments over custom periods
+        - Compare time spent across different areas
+        - Monitor daily and weekly patterns
+        - Analyze focus distribution
+
+        ## ⚡ Features
+        - Filter by multiple tags
+        - Archive completed project tags
+        - Create tag hierarchies
+        - Track related tag groups
+        - Time tracking across tasks
+        - Tag-based organization
+
+        ## 💡 Tips
+        - Use meaningful tag names
+        - Create hierarchical structures:
+          - Projects under departments
+          - Subtasks under main projects
+          - Categories under areas
+        - Review time charts regularly
+        - Archive completed projects
+        - Use tag filters to focus analysis
+    title: Tag Management Help
+    content: |
+      🏷️ Tags help you group and organize items.
+
+      ## ⚡ Features
+      - Categorize items
+      - Create visual organization with colors
+      - Easily find related items
+
+      ## 💡 Tips
+      - Use clear and descriptive names
+      - Group similar items with the same tag
+      - Use color coding for visual organization
+      - Keep order with archiving feature
+  default_name: New Tag
+  messages:
+    confirm_delete: Are you sure you want to delete this tag?
+    confirm_archive: Are you sure you want to archive this tag?
+    confirm_unarchive: Are you sure you want to unarchive this tag?
+  errors:
+    loading: Failed to load tags
+    saving: Failed to save tag
+    deleting: Failed to delete tag
+    creating: Failed to create tag
+    loading_archive_status: Failed to load archive status
+    toggling_archive: Failed to toggle archive status
+    get_tags: Error occurred while fetching tags
+  labels:
+    name: Name
+    color: Color
+    description: Description
+  list:
+    no_tags_found: No tags found
+    filter_tooltip: Filter by tags
+  tooltips:
+    color: Click to assign color to tag
+    select: Click to select tag
+    add_tag: Add new tag
+    delete_tag: Delete tag
+    archive_tag: Archive tag
+    unarchive_tag: Unarchive tag
+    add_task: Add new task
+  search:
+    label: Search tags
+    clear_all: Clear All
+  selection:
+    done: Done
+  time_chart:
+    no_data: No data found
+  details:
+    help:
+      title: Tag Details Help
+      description: 🏷️ Tags help you organize and track time across related tasks.
+      features_title: ⚡ Features
+      features_list:
+        - • Time tracking across tasks:
+        - • Related tags:
+        - • Task organization
+        - • Archive functionality
+      tips_title: 💡 Usage Tips
+      tips_list:
+        - • Use for projects, categories, or contexts
+        - • Link related tags to create hierarchies
+        - • Track time investment across tag groups
+        - • Group related tasks together
+        - • Archive tags for completed projects
+        - • Use meaningful names for better organization
+      management_title: ⚙️ Management
+      management_list:
+        - • Edit tag name anytime
+        - • Add/remove related tags
+        - • Add/remove tasks as needed
+        - • Archive tags to hide completed projects
+        - • Delete tags you no longer need
+        - • View time statistics
+        - • Track aggregate time across related tags
+    tasks_label: Tasks

@@ -14,16 +14,20 @@ import 'package:whph/presentation/features/tasks/components/priority_select_fiel
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TaskDetailsContent extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final TasksService _tasksService = container.resolve<TasksService>();
+  final _mediator = container.resolve<Mediator>();
+  final _tasksService = container.resolve<TasksService>();
+  final _translationService = container.resolve<ITranslationService>();
 
   final String taskId;
 
@@ -43,13 +47,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final List<DropdownOption<EisenhowerPriority?>> _priorityOptions = [
-    DropdownOption(label: 'None', value: null),
-    DropdownOption(label: 'Urgent & Important', value: EisenhowerPriority.urgentImportant),
-    DropdownOption(label: 'Not Urgent & Important', value: EisenhowerPriority.notUrgentImportant),
-    DropdownOption(label: 'Urgent & Not Important', value: EisenhowerPriority.urgentNotImportant),
-    DropdownOption(label: 'Not Urgent & Not Important', value: EisenhowerPriority.notUrgentNotImportant),
-  ];
+  late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
   @override
   void initState() {
@@ -72,9 +70,25 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       var query = GetTaskQuery(id: widget.taskId);
       var response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+
       if (mounted) {
         setState(() {
           _task = response;
+          _priorityOptions = [
+            DropdownOption(label: widget._translationService.translate(TaskTranslationKeys.priorityNone), value: null),
+            DropdownOption(
+                label: widget._translationService.translate(TaskTranslationKeys.priorityUrgentImportant),
+                value: EisenhowerPriority.urgentImportant),
+            DropdownOption(
+                label: widget._translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant),
+                value: EisenhowerPriority.notUrgentImportant),
+            DropdownOption(
+                label: widget._translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant),
+                value: EisenhowerPriority.urgentNotImportant),
+            DropdownOption(
+                label: widget._translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
+                value: EisenhowerPriority.notUrgentNotImportant),
+          ];
           _plannedDateController.text =
               _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
           _deadlineDateController.text =
@@ -83,9 +97,17 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         });
       }
     } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting task.");
+      if (!mounted) return;
+
+      if (e is BusinessException) {
+        ErrorHelper.showError(context, e);
+      } else {
+        ErrorHelper.showUnexpectedError(
+          context,
+          Exception(e.toString()), // Wrap the error in an Exception
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.getTaskError),
+        );
       }
     }
   }
@@ -103,8 +125,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting task tags.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.getTagsError),
+        );
       }
     }
   }
@@ -127,8 +153,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while saving task.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.saveTaskError),
+        );
       }
     }
   }
@@ -142,8 +172,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while adding tag.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.addTagError),
+        );
       }
     }
   }
@@ -157,8 +191,12 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while removing tag.");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget._translationService.translate(TaskTranslationKeys.removeTagError),
+        );
       }
     }
   }
@@ -205,9 +243,9 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
-        label: TaskUiConstants.tagsLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.tagsLabel),
         icon: TaskUiConstants.tagsIcon,
-        hintText: "Select tags to associate",
+        hintText: widget._translationService.translate(TaskTranslationKeys.tagsHint),
         widget: TagSelectDropdown(
           key: ValueKey(_taskTags!.items.length),
           isMultiSelect: true,
@@ -220,7 +258,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildPrioritySection() => DetailTableRowData(
-        label: TaskUiConstants.priorityLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.priorityLabel),
         icon: TaskUiConstants.priorityIcon,
         widget: PrioritySelectField(
           value: _task!.priority,
@@ -236,7 +274,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
-        label: TaskUiConstants.estimatedTimeLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
         icon: TaskUiConstants.estimatedTimeIcon,
         widget: Row(
           children: [
@@ -257,7 +295,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
-        label: TaskUiConstants.elapsedTimeLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -269,7 +307,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildPlannedDateSection() => DetailTableRowData(
-        label: TaskUiConstants.plannedDateLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.plannedDateLabel),
         icon: TaskUiConstants.plannedDateIcon,
         widget: SizedBox(
           height: 36,
@@ -285,7 +323,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildDeadlineDateSection() => DetailTableRowData(
-        label: TaskUiConstants.deadlineDateLabel,
+        label: widget._translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         icon: TaskUiConstants.deadlineDateIcon,
         widget: SizedBox(
           height: 36,
@@ -304,9 +342,9 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         forceVertical: true,
         rowData: [
           DetailTableRowData(
-            label: TaskUiConstants.descriptionLabel,
+            label: widget._translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            hintText: SharedUiConstants.markdownEditorHint,
+            hintText: widget._translationService.translate(SharedTranslationKeys.markdownEditorHint),
             widget: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: MarkdownAutoPreview(
@@ -318,7 +356,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
                   }
                   _updateTask();
                 },
-                hintText: SharedUiConstants.addDescriptionHint,
+                hintText: widget._translationService.translate(TaskTranslationKeys.addDescriptionHint),
                 toolbarBackground: AppTheme.surface1,
               ),
             ),

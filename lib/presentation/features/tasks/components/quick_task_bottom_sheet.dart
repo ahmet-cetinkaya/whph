@@ -10,6 +10,8 @@ import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -30,6 +32,7 @@ class QuickTaskBottomSheet extends StatefulWidget {
 class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   final _titleController = TextEditingController();
   final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   final _focusNode = FocusNode();
   bool _isLoading = false;
 
@@ -145,14 +148,6 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     });
   }
 
-  Color? _getPriorityColor() {
-    return TaskUiConstants.getPriorityColor(_selectedPriority);
-  }
-
-  String _getPriorityTooltip() {
-    return TaskUiConstants.getPriorityTooltip(_selectedPriority);
-  }
-
   void _toggleEstimatedTime() {
     setState(() {
       final currentIndex = TaskUiConstants.defaultEstimatedTimeOptions.indexOf(_estimatedTime ?? 0);
@@ -164,8 +159,30 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     });
   }
 
-  String? _getEstimatedTimeText() {
-    return _estimatedTime != null ? SharedUiConstants.formatMinutes(_estimatedTime) : null;
+  String _getEstimatedTimeTooltip() {
+    if (_estimatedTime == null) {
+      return _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet);
+    }
+    return _translationService.translate(
+      TaskTranslationKeys.quickTaskEstimatedTime,
+      namedArgs: {'time': SharedUiConstants.formatMinutes(_estimatedTime)},
+    );
+  }
+
+  String _getDateTooltip(bool isDeadline) {
+    final date = isDeadline ? _deadlineDate : _plannedDate;
+    final formattedDate = _getFormattedDate(date);
+
+    if (date == null) {
+      return _translationService.translate(
+        isDeadline ? TaskTranslationKeys.quickTaskDeadlineDateNotSet : TaskTranslationKeys.quickTaskPlannedDateNotSet,
+      );
+    }
+
+    return _translationService.translate(
+      isDeadline ? TaskTranslationKeys.quickTaskDeadlineDate : TaskTranslationKeys.quickTaskPlannedDate,
+      namedArgs: {'date': formattedDate.toString()},
+    );
   }
 
   List<Widget> _buildQuickActionButtons() {
@@ -173,23 +190,23 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       IconButton(
         icon: Icon(
           _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
-          color: _getPriorityColor(),
+          color: TaskUiConstants.getPriorityColor(_selectedPriority),
         ),
         onPressed: _togglePriority,
-        tooltip: _getPriorityTooltip(),
+        tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
       ),
       IconButton(
         icon: _estimatedTime == null
             ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
             : Text(
-                _getEstimatedTimeText()!,
+                SharedUiConstants.formatMinutes(_estimatedTime!),
                 style: AppTheme.bodyMedium.copyWith(
                   color: TaskUiConstants.estimatedTimeColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
         onPressed: _toggleEstimatedTime,
-        tooltip: 'Estimated Time: ${_getEstimatedTimeText() ?? 'Not set'}',
+        tooltip: _getEstimatedTimeTooltip(),
       ),
       IconButton(
         icon: Icon(
@@ -197,7 +214,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           color: _plannedDate == null ? null : TaskUiConstants.plannedDateColor,
         ),
         onPressed: () => _selectDate(false),
-        tooltip: 'Planned: ${_getFormattedDate(_plannedDate) ?? 'Not set'}',
+        tooltip: _getDateTooltip(false),
       ),
       IconButton(
         icon: Icon(
@@ -205,7 +222,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           color: _deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
         ),
         onPressed: () => _selectDate(true),
-        tooltip: 'Deadline: ${_getFormattedDate(_deadlineDate) ?? 'Not set'}',
+        tooltip: _getDateTooltip(true),
       ),
     ];
   }
@@ -260,7 +277,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
                             focusNode: _focusNode,
                             autofocus: true,
                             decoration: InputDecoration(
-                              hintText: 'Task title',
+                              hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitleHint),
                               suffixIcon: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [

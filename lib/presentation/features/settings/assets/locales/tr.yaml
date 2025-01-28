@@ -1,0 +1,20 @@
+settings:
+  title: Ayarlar
+  language:
+    title: Dil
+    languages:
+      en: İngilizce
+      tr: Türkçe
+  notifications:
+    title: Bildirimler
+    enable_error: Bildirimler etkinleştirilemedi
+    disable_error: Bildirimler devre dışı bırakılamadı
+  startup:
+    title: Başlangıçta Başlat
+    subtitle: Uygulama için otomatik başlatma iznini etkinleştirmek üzere sistem ayarlarını açmak için dokunun
+    enable_error: Başlangıç ayarı etkinleştirilemedi
+    disable_error: Başlangıç ayarı devre dışı bırakılamadı
+  sync_devices:
+    title: Cihazları Senkronize Et
+  about:
+    title: Hakkında

@@ -1,0 +1,153 @@
+app_usages:
+  delete:
+    confirm_title: Uygulama Kullanımını Sil
+    error: Uygulama kullanımı silinirken beklenmedik bir hata oluştu.
+  errors:
+    get_usage: Uygulama kullanımı alınırken beklenmedik bir hata oluştu.
+    save_usage: Uygulama kullanımı kaydedilirken beklenmedik bir hata oluştu.
+    get_tags: Uygulama kullanım etiketleri alınırken hata oluştu.
+    add_tag: Etiket eklenirken beklenmedik bir hata oluştu.
+    remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu.
+    save_rule: Yok sayma kuralları kaydedilirken beklenmedik bir hata oluştu.
+  units:
+    minutes: dk
+  details:
+    device:
+      label: Cihaz
+      unknown: Bilinmeyen Cihaz
+    tags:
+      label: Etiketler
+      hint: Etiket seç
+    color:
+      label: Renk
+      hint: Renk değiştirmek için tıkla
+    help:
+      title: Uygulama Kullanım Detayları Yardım
+      content: |
+        Uygulamalarda harcanan zamanı gösterir ve etiket ilişkilerini yönetir.
+
+        ## ⚡ Özellikler
+
+        - **Zaman Takibi:**
+          - Ayrıntılı kullanım sürelerini görüntüleyin
+          - Günlük desenleri takip edin
+          - Aktif pencereleri izleyin
+        - **Etiket Yönetimi:**
+          - Etiketlerle ilişkilendirin
+          - Kuralları kullanarak otomatik etiketleme
+          - Kategoriye göre zamanı takip edin
+        - **Analiz:**
+          - Kullanım desenlerini görüntüleyin
+          - Diğer uygulamalarla karşılaştırın
+          - Verimlilik zamanını takip edin
+
+        ## 💡 İpuçları
+
+        - Uygulamaları kategorize etmek için etiketleri kullanın
+        - Otomatik etiketleme kuralları oluşturun
+        - Kullanım desenlerini gözden geçirin
+        - Benzer uygulamaları gruplandırın
+        - Verimli ve verimsiz zamanı takip edin
+        - Otomasyon için etiket kurallarını kullanın
+  ignore_rules:
+    no_rules: Yok sayma kuralı bulunamadı
+    pattern_label: Desen
+    delete_title: Kural Sil
+    delete_confirm: "\"{pattern}\" yok sayma kuralını silmek istediğinize emin misiniz?"
+    delete_tooltip: Kuralı sil
+  form:
+    pattern:
+      label: Desen
+      hint: Regex deseni girin
+      required: Desen gerekli
+      help_tooltip: Regex yardımını göster
+    description:
+      label: Açıklama (İsteğe bağlı)
+      hint: Bu kural için açıklama girin
+    save: Kaydet
+    saved: Kaydedildi
+  rules:
+    title: Uygulama Kullanım Kuralları
+    tag_rules: Etiket Kuralları
+    ignore_rules: Yok Sayma Kuralları
+    add_new_rule: Yeni Kural Ekle
+    existing_rules: Mevcut Kurallar
+    help:
+      title: Uygulama Kullanım Kuralları Yardım
+      content: |
+        Etiket atamayı otomatikleştirmenize ve uygulama takibini yönetmenize yardımcı olur.
+
+        ## 🏷️ Etiket Kuralları
+
+        - **Otomatik Etiket Atama:**
+          - Uygulamaları isim desenlerine göre eşleştirin
+          - Birden fazla etiket atayın
+          - Zamanı otomatik olarak takip edin
+        - **Kural Yönetimi:**
+          - Yeni kurallar oluşturun
+          - Mevcut kuralları düzenleyin
+          - Kullanılmayan kuralları silin
+
+        ## 🚫 Yok Sayma Kuralları
+
+        - **Uygulamaları Hariç Tutma:**
+          - İstenmeyen uygulamaları atlayın
+          - Sistem süreçlerini yok sayın
+          - Arka plan uygulamalarını filtreleyin
+        - **Desen Eşleştirme:**
+          - Joker karakterler kullanın
+          - Tam isimleri eşleştirin
+          - Büyük/küçük harf duyarlılığı seçenekleri
+
+        ## 💡 İpuçları
+
+        - Daha iyi eşleştirme için belirli desenler kullanın
+        - Benzer uygulamaları ortak etiketler altında gruplandırın
+        - Kuralları düzenli olarak gözden geçirin ve güncelleyin
+        - Farklı uygulama isimleriyle kuralları test edin
+        - Sistem yardımcı programları için yok sayma kurallarını kullanın
+        - Ayrıntılı takip için kuralları birleştirin
+  pages:
+    view:
+      title: Uygulama Kullanımı
+      buttons:
+        tag_rules: Etiket Kuralları
+        filter_tags: Etiketleri Filtrele
+      help:
+        title: Uygulama Kullanımı Yardım
+        content: |
+          Uygulama kullanımınızı etkili bir şekilde yönetin ve takip edin.
+
+          ## ⚡ Özellikler
+
+          - **Detaylı Kullanım:**
+            - Kullanım sürelerini görüntüleyin
+            - Günlük desenleri takip edin
+            - Aktif pencereleri izleyin
+          - **Etiket Yönetimi:**
+            - Etiket atayın
+            - Kuralları kullanarak otomatik etiketleme
+            - Kategoriye göre zamanı takip edin
+          - **Analiz:**
+            - Kullanım desenlerini görüntüleyin
+            - Diğer uygulamalarla karşılaştırın
+            - Verimlilik zamanını takip edin
+
+          ## 🛠️ Yönetim
+
+          - **Kurallar:**
+            - Yeni kurallar oluşturun
+            - Mevcut kuralları düzenleyin
+            - Kullanılmayan kuralları silin
+          - **Filtreler:**
+            - Etiketlere göre filtreleyin
+            - Tarih aralığına göre filtreleyin
+
+          ## 💡 İpuçları
+
+          - Uygulamaları kategorize etmek için etiketleri kullanın
+          - Otomatik etiketleme kuralları oluşturun
+          - Kullanım desenlerini gözden geçirin
+          - Benzer uygulamaları gruplandırın
+          - Verimli ve verimsiz zamanı takip edin
+          - Otomasyon için etiket kurallarını kullanın

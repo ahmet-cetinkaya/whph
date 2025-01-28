@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' as flutter_colorpicker;
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import '../constants/shared_translation_keys.dart';
 
 class ColorPicker extends StatelessWidget {
   final Color pickerColor;
@@ -9,6 +12,8 @@ class ColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+
     return DefaultTabController(
       length: 2,
       child: Column(
@@ -16,8 +21,16 @@ class ColorPicker extends StatelessWidget {
         children: <Widget>[
           TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.palette), text: "Colors"),
-              Tab(icon: Icon(Icons.gradient), text: "Custom"),
+              Tab(
+                icon: Icon(Icons.palette),
+                text: translationService.translate(SharedTranslationKeys.colorPickerPaletteTab),
+                key: const Key('color_picker_palette_tab'),
+              ),
+              Tab(
+                icon: Icon(Icons.gradient),
+                text: translationService.translate(SharedTranslationKeys.colorPickerCustomTab),
+                key: const Key('color_picker_custom_tab'),
+              ),
             ],
           ),
           SizedBox(

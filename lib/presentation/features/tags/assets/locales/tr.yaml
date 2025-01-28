@@ -1,0 +1,122 @@
+tags:
+  title: Etiketler
+  filter_tooltip: Etiketlere göre filtrele
+  sections:
+    times: Etiket Süreleri
+    list: Etiketler
+  actions:
+    show_archived: Arşivlenen etiketleri göster
+    hide_archived: Arşivlenen etiketleri gizle
+    add: Etiket Ekle
+    edit: Etiketi Düzenle
+    delete: Etiketi Sil
+    archive: Etiketi Arşivle
+    unarchive: Etiketi Arşivden Çıkar
+  help:
+    overview:
+      title: Etiketler Genel Bakış Yardımı
+      content: |
+        🏷️ Etiketler, görevleriniz arasında zamanı organize etmenize ve takip etmenize yardımcı olur.
+
+        ## 📊 Zaman Analizi
+        - Etiketlere göre zaman dağılımını görüntüle
+        - Özel dönemler için zaman yatırımlarını takip et
+        - Farklı alanlarda harcanan zamanı karşılaştır
+        - Günlük ve haftalık desenleri izle
+        - Odaklanma dağılımını analiz et
+
+        ## ⚡ Özellikler
+        - Birden fazla etikete göre filtrele
+        - Tamamlanan proje etiketlerini arşivle
+        - Etiket hiyerarşileri oluştur
+        - İlgili etiket gruplarını takip et
+        - Görevler arası zaman takibi
+        - Etiket tabanlı organizasyon
+
+        ## 💡 İpuçları
+        - Anlamlı etiket isimleri kullan
+        - Hiyerarşik yapılar oluştur:
+          - Departmanlar altında projeler
+          - Ana projeler altında alt görevler
+          - Alanlar altında kategoriler
+        - Zaman grafiklerini düzenli olarak gözden geçir
+        - Tamamlanan projeleri arşivle
+        - Odaklanmak için etiket filtrelerini kullan
+    title: Etiket Yönetimi Yardım
+    content: |
+      🏷️ Etiketler, öğeleri gruplandırmanıza ve organize etmenize yardımcı olur.
+
+      ## ⚡ Özellikler
+      - Öğeleri kategorilere ayırın
+      - Renklerle görsel düzen oluşturun
+      - İlgili öğeleri kolayca bulun
+
+      ## 💡 İpuçları
+      - Net ve anlaşılır isimler kullanın
+      - Benzer öğeleri aynı etiketle gruplandırın
+      - Renk kodlaması ile görsel düzen sağlayın
+      - Arşivleme özelliği ile düzeni koruyun
+  default_name: Yeni Etiket
+  messages:
+    confirm_delete: Bu etiketi silmek istediğinize emin misiniz?
+    confirm_archive: Bu etiketi arşivlemek istediğinize emin misiniz?
+    confirm_unarchive: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
+  errors:
+    loading: Etiketler yüklenirken hata oluştu
+    saving: Etiket kaydedilirken hata oluştu
+    deleting: Etiket silinirken hata oluştu
+    creating: Etiket oluşturulurken hata oluştu
+    loading_archive_status: Arşiv durumu yüklenemedi
+    toggling_archive: Arşiv durumu değiştirilirken hata oluştu
+    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+  labels:
+    name: İsim
+    color: Renk
+    description: Açıklama
+  list:
+    no_habits_found: Alışkanlık bulunamadı
+    no_tags_found: Etiket bulunamadı
+    filter_tooltip: Etiketlere göre filtrele
+  tooltips:
+    add_tag: Yeni etiket ekle
+    delete_tag: Etiketi sil
+    archive_tag: Etiketi arşivle
+    unarchive_tag: Etiketi arşivden çıkar
+    add_task: Yeni görev ekle
+    color: Etikete renk atamak için tıklayın
+    select: Etiket seçmek için tıklayın
+  search:
+    label: Etiket ara
+    clear_all: Tümünü Temizle
+  selection:
+    done: Tamam
+  time_chart:
+    no_data: Veri bulunamadı
+  details:
+    help:
+      title: Etiket Detayları Yardım
+      description: 🏷️ Etiketler, ilgili görevler arasında zamanı organize etmenize ve takip etmenize yardımcı olur.
+      features_title: ⚡ Özellikler
+      features_list:
+        - • Görevler arası zaman takibi:
+        - • İlgili etiketler:
+        - • Görev organizasyonu
+        - • Arşivleme fonksiyonu
+      tips_title: 💡 Kullanım İpuçları
+      tips_list:
+        - • Projeler, kategoriler veya bağlamlar için kullanın
+        - • Hiyerarşiler oluşturmak için ilgili etiketleri bağlayın
+        - • Etiket grupları arasında zaman yatırımını takip edin
+        - • İlgili görevleri gruplandırın
+        - • Tamamlanan projeler için etiketleri arşivleyin
+        - • Daha iyi organizasyon için anlamlı isimler kullanın
+      management_title: ⚙️ Yönetim
+      management_list:
+        - • İstediğiniz zaman etiket adını düzenleyin
+        - • İlgili etiketleri ekleyin/kaldırın
+        - • Gerektiğinde görevleri ekleyin/kaldırın
+        - • Tamamlanan projeleri gizlemek için etiketleri arşivleyin
+        - • İhtiyacınız olmayan etiketleri silin
+        - • Zaman istatistiklerini görüntüleyin
+        - • İlgili etiketler arasında toplam zamanı takip edin
+    tasks_label: Görevler

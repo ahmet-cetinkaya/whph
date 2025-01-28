@@ -3,6 +3,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -26,6 +28,7 @@ class TaskAddButton extends StatefulWidget {
 
 class _TaskAddButtonState extends State<TaskAddButton> {
   final Mediator mediator = container.resolve<Mediator>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
   bool isLoading = false;
 
   Future<void> _createTask(BuildContext context) async {
@@ -53,6 +56,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       onPressed: () => _createTask(context),
       icon: Icon(SharedUiConstants.addIcon),
       color: widget.buttonColor,
+      tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
       style: ButtonStyle(
         backgroundColor:
             widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,

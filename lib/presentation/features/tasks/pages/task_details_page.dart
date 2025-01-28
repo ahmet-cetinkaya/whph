@@ -4,6 +4,8 @@ import 'package:whph/presentation/features/tasks/components/task_delete_button.d
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_title_input_field.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -16,84 +18,6 @@ class TaskDetailsPage extends StatefulWidget {
 }
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Task Details Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '📝 Configure task details and track time investments effectively.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Task Management:',
-                  '  - Set task title and description',
-                  '  - Plan dates and deadlines',
-                  '  - Track estimated time',
-                  '• Time Tracking:',
-                  '  - Record time spent',
-                  '  - View time history',
-                  '  - Track by tags',
-                  '• Organization:',
-                  '  - Add/remove tags',
-                  '  - Set task priority',
-                  '  - Mark completion status',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Use clear, actionable titles',
-                  '• Set realistic time estimates',
-                  '• Add relevant tags for tracking',
-                  '• Update status regularly',
-                  '• Use Marathon mode for focus',
-                  '• Review time records',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -114,10 +38,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             buttonColor: AppTheme.primaryColor,
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: TaskTranslationKeys.detailsHelpTitle,
+          markdownContentKey: TaskTranslationKeys.detailsHelpContent,
         ),
         const SizedBox(width: 2),
       ],

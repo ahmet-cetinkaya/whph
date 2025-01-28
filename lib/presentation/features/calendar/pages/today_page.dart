@@ -240,6 +240,7 @@ class _TodayPageState extends State<TodayPage> {
           : TaskList(
               key: _taskKey,
               mediator: mediator,
+              translationService: _translationService,
               filterByCompleted: false,
               filterByTags: _selectedTagFilter,
               filterByPlannedStartDate: today,
