@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitStatisticsView extends StatelessWidget {
   final HabitStatistics statistics;
+  final _translationService = container.resolve<ITranslationService>();
 
-  const HabitStatisticsView({super.key, required this.statistics});
+  HabitStatisticsView({super.key, required this.statistics});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,7 @@ class HabitStatisticsView extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: Icon(HabitUiConstants.statisticsIcon),
         ),
-        Text(HabitUiConstants.statisticsLabel, style: AppTheme.bodyLarge),
+        Text(_translationService.translate(HabitTranslationKeys.statisticsLabel), style: AppTheme.bodyLarge),
       ],
     );
   }
@@ -43,15 +48,21 @@ class HabitStatisticsView extends StatelessWidget {
   Widget _buildStatisticsRow() {
     return Row(
       children: [
-        Expanded(child: _buildStatCard(HabitUiConstants.overallLabel, statistics.overallScore)),
-        const SizedBox(width: 8),
-        Expanded(child: _buildStatCard(HabitUiConstants.monthlyLabel, statistics.monthlyScore)),
-        const SizedBox(width: 8),
-        Expanded(child: _buildStatCard(HabitUiConstants.yearlyLabel, statistics.yearlyScore)),
+        Expanded(
+            child:
+                _buildStatCard(_translationService.translate(HabitTranslationKeys.overall), statistics.overallScore)),
         const SizedBox(width: 8),
         Expanded(
             child:
-                _buildStatCard(HabitUiConstants.recordsCountLabel, statistics.totalRecords.toDouble(), isCount: true)),
+                _buildStatCard(_translationService.translate(HabitTranslationKeys.monthly), statistics.monthlyScore)),
+        const SizedBox(width: 8),
+        Expanded(
+            child: _buildStatCard(_translationService.translate(HabitTranslationKeys.yearly), statistics.yearlyScore)),
+        const SizedBox(width: 8),
+        Expanded(
+            child: _buildStatCard(
+                _translationService.translate(HabitTranslationKeys.records), statistics.totalRecords.toDouble(),
+                isCount: true)),
       ],
     );
   }
@@ -87,7 +98,7 @@ class HabitStatisticsView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          HabitUiConstants.scoreTrendsLabel,
+          _translationService.translate(HabitTranslationKeys.scoreTrends),
           style: AppTheme.bodyLarge,
         ),
         const SizedBox(height: 16),
@@ -115,10 +126,11 @@ class HabitStatisticsView extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() >= 0 && value.toInt() < statistics.monthlyScores.length) {
+                          final date = statistics.monthlyScores[value.toInt()].key;
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              DateFormat('MMM').format(statistics.monthlyScores[value.toInt()].key),
+                              _translationService.translate(SharedTranslationKeys.getShortMonthKey(date.month)),
                               style: AppTheme.bodySmall,
                             ),
                           );
@@ -166,7 +178,7 @@ class HabitStatisticsView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
           child: Text(
-            HabitUiConstants.topStreaksLabel,
+            _translationService.translate(HabitTranslationKeys.topStreaks),
             style: AppTheme.bodyLarge,
           ),
         ),
@@ -238,7 +250,7 @@ class HabitStatisticsView extends StatelessWidget {
                     ),
                     // Days text
                     Text(
-                      HabitUiConstants.formatDayCount(streak.days),
+                      '${streak.days} ${_translationService.translate(SharedTranslationKeys.days)}',
                       style: AppTheme.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.surface1,

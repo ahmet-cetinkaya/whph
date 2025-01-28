@@ -21,6 +21,8 @@ import 'package:whph/presentation/features/habits/components/habit_calendar_view
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -43,6 +45,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetListHabitTagsQueryResponse? _habitTags;
 
   DateTime currentMonth = DateTime.now();
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -76,7 +79,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to load habit details.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.loadingDetailsError));
       }
     }
   }
@@ -98,7 +102,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorLoadingRecords);
+            message: _translationService.translate(HabitTranslationKeys.loadingRecordsError));
       }
     }
   }
@@ -116,7 +120,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorCreatingRecord);
+            message: _translationService.translate(HabitTranslationKeys.creatingRecordError));
       }
     }
   }
@@ -134,7 +138,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorDeletingRecord);
+            message: _translationService.translate(HabitTranslationKeys.deletingRecordError));
       }
     }
   }
@@ -151,7 +155,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while getting habit tags.");
+            message: _translationService.translate(HabitTranslationKeys.loadingTagsError));
       }
     }
   }
@@ -164,7 +168,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while adding tag.");
+            message: _translationService.translate(HabitTranslationKeys.addingTagError));
       }
     }
   }
@@ -177,7 +181,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: "Unexpected error occurred while removing tag.");
+            message: _translationService.translate(HabitTranslationKeys.removingTagError));
       }
     }
   }
@@ -218,7 +222,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Failed to save habit.');
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.savingDetailsError));
       }
     }
   }
@@ -264,7 +269,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             forceVertical: true,
             rowData: [
               DetailTableRowData(
-                label: HabitUiConstants.descriptionLabel,
+                label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
                 icon: HabitUiConstants.descriptionIcon,
                 hintText: SharedUiConstants.markdownEditorHint,
                 widget: Padding(
@@ -307,9 +312,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
-        label: HabitUiConstants.tagsLabel,
+        label: _translationService.translate(HabitTranslationKeys.tagsLabel),
         icon: HabitUiConstants.tagsIcon,
-        hintText: HabitUiConstants.selectTagsHint,
+        hintText: _translationService.translate(HabitTranslationKeys.tagsHint),
         widget: TagSelectDropdown(
           key: ValueKey(_habitTags!.items.length),
           isMultiSelect: true,
@@ -322,7 +327,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
-        label: HabitUiConstants.estimatedTimeLabel,
+        label: _translationService.translate(HabitTranslationKeys.estimatedTimeLabel),
         icon: HabitUiConstants.estimatedTimeIcon,
         widget: Row(
           children: [
@@ -331,7 +336,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               icon: const Icon(Icons.remove),
             ),
             Text(
-              _habit!.estimatedTime == null ? 'Not set' : SharedUiConstants.formatMinutes(_habit!.estimatedTime!),
+              _habit!.estimatedTime == null
+                  ? _translationService.translate(HabitTranslationKeys.estimatedTimeNotSet)
+                  : SharedUiConstants.formatMinutes(_habit!.estimatedTime!),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
@@ -362,7 +369,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Widget _buildRecordsHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: _buildSectionHeader(HabitUiConstants.recordIcon, HabitUiConstants.recordsLabel),
+      child: _buildSectionHeader(
+          HabitUiConstants.recordIcon, _translationService.translate(HabitTranslationKeys.recordsLabel)),
     );
   }
 

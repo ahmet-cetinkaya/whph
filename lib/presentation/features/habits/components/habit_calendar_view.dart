@@ -6,9 +6,13 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitCalendarView extends StatelessWidget {
   final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _translationService = container.resolve<ITranslationService>();
 
   final String habitId;
 
@@ -49,6 +53,11 @@ class HabitCalendarView extends StatelessWidget {
     );
   }
 
+  String _formatYearMonth(DateTime date) {
+    final month = _translationService.translate(SharedTranslationKeys.getShortMonthKey(date.month));
+    return '$month ${date.year}';
+  }
+
   Widget _buildMonthNavigation() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +67,7 @@ class HabitCalendarView extends StatelessWidget {
           onPressed: onPreviousMonth,
         ),
         Text(
-          DateFormat.yMMMM().format(currentMonth),
+          _formatYearMonth(currentMonth),
           style: AppTheme.bodyLarge,
         ),
         IconButton(
@@ -70,9 +79,19 @@ class HabitCalendarView extends StatelessWidget {
   }
 
   Widget _buildWeekdayLabels() {
+    final List<String> weekDays = [
+      _translationService.translate(HabitTranslationKeys.weekDayMon),
+      _translationService.translate(HabitTranslationKeys.weekDayTue),
+      _translationService.translate(HabitTranslationKeys.weekDayWed),
+      _translationService.translate(HabitTranslationKeys.weekDayThu),
+      _translationService.translate(HabitTranslationKeys.weekDayFri),
+      _translationService.translate(HabitTranslationKeys.weekDaySat),
+      _translationService.translate(HabitTranslationKeys.weekDaySun),
+    ];
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: HabitUiConstants.weekDays
+      children: weekDays
           .map((day) => Expanded(
                 child: Center(
                   child: Text(
@@ -162,7 +181,7 @@ class HabitCalendarView extends StatelessWidget {
               Icon(
                 hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
                 size: HabitUiConstants.calendarIconSize,
-                color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.incompletedColor,
+                color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.inCompletedColor,
               ),
           ],
         ),

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class HabitTagSection extends StatelessWidget {
   final GetListHabitTagsQueryResponse habitTags;
   final Function(List<DropdownOption<String>>) onTagsSelected;
   final Function(String) onRemoveTag;
+  final _translationService = container.resolve<ITranslationService>();
 
-  const HabitTagSection({
+  HabitTagSection({
     super.key,
     required this.habitTags,
     required this.onTagsSelected,
@@ -43,7 +46,7 @@ class HabitTagSection extends StatelessWidget {
       initialSelectedTags:
           habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
       icon: SharedUiConstants.addIcon,
-      tooltip: HabitUiConstants.selectTagsHint,
+      tooltip: _translationService.translate(HabitTranslationKeys.selectTagsTooltip),
     );
   }
 

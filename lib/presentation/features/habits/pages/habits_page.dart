@@ -5,11 +5,15 @@ import 'package:whph/presentation/features/habits/components/habit_add_button.da
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -22,6 +26,7 @@ class HabitsPage extends StatefulWidget {
 }
 
 class _HabitsPageState extends State<HabitsPage> {
+  final _translationService = container.resolve<ITranslationService>();
   Key _habitsListKey = UniqueKey();
   List<String> _selectedFilterTags = [];
 
@@ -50,95 +55,25 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  void _showHelpModal() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Habits Overview Help',
-                      style: AppTheme.headlineSmall,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '🔄 Habits help you build and maintain daily routines while tracking time investments.',
-                  style: AppTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '⚡ Features',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Daily Tracking:',
-                  '  - Track habit completion',
-                  '  - View multiple days at once',
-                  '  - Monitor streaks and patterns',
-                  '• Time Investment:',
-                  '  - Record time spent on habits',
-                  '  - Accumulate time by tags',
-                  '  - Track routine durations',
-                  '• Organization:',
-                  '  - Group habits with tags',
-                  '  - Flexible scheduling',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '💡 Tips',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• Start with small, manageable habits',
-                  '• Use tags to group related routines',
-                  '• Track time to understand patterns',
-                  '• Complete important habits early',
-                  '• Review your habit history regularly',
-                  '• Adjust habits as needed',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-                const SizedBox(height: 16),
-                const Text(
-                  '📊 Calendar View',
-                  style: AppTheme.headlineMedium,
-                ),
-                const SizedBox(height: 8),
-                ...const [
-                  '• View multiple days at once',
-                  '• Track completion patterns',
-                  '• Quick completion marking',
-                  '• Visual streak tracking',
-                  '• Flexible date navigation',
-                ].map((text) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
-                      child: Text(text, style: AppTheme.bodyMedium),
-                    )),
-              ],
-            ),
+  Widget _buildCalendarDay(DateTime date, DateTime today) {
+    final bool isToday = DateTimeHelper.isSameDay(date, today);
+    final color = isToday ? AppTheme.primaryColor : AppTheme.textColor;
+
+    return SizedBox(
+      width: 46,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            _translationService.translate(SharedTranslationKeys.getWeekDayKey(date.weekday)),
+            style: AppTheme.bodySmall.copyWith(color: color),
           ),
-        ),
+          Text(
+            date.day.toString(),
+            style: AppTheme.bodySmall.copyWith(color: color),
+          )
+        ],
       ),
     );
   }
@@ -159,7 +94,7 @@ class _HabitsPageState extends State<HabitsPage> {
     List<DateTime> lastDays = List.generate(daysToShow, (index) => today.subtract(Duration(days: index)));
 
     return ResponsiveScaffoldLayout(
-      title: 'Habits',
+      title: _translationService.translate(HabitTranslationKeys.pageTitle),
       appBarActions: [
         HabitAddButton(
           onHabitCreated: (String habitId) {
@@ -168,10 +103,9 @@ class _HabitsPageState extends State<HabitsPage> {
           },
           buttonColor: AppTheme.primaryColor,
         ),
-        IconButton(
-          icon: const Icon(Icons.help_outline),
-          onPressed: _showHelpModal,
-          color: AppTheme.primaryColor,
+        HelpMenu(
+          titleKey: HabitTranslationKeys.overviewHelpTitle,
+          markdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
         const SizedBox(width: 2),
       ],
@@ -192,7 +126,7 @@ class _HabitsPageState extends State<HabitsPage> {
                   icon: Icons.label,
                   iconSize: AppTheme.iconSizeSmall,
                   color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
-                  tooltip: 'Filter by tags',
+                  tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
                   showLength: true,
                 ),
 
@@ -204,35 +138,7 @@ class _HabitsPageState extends State<HabitsPage> {
                       width: daysToShow * 46.0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: lastDays
-                            .map(
-                              (date) => SizedBox(
-                                width: 46,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      DateTimeHelper.getWeekday(date.weekday),
-                                      style: AppTheme.bodySmall.copyWith(
-                                        color: DateTimeHelper.isSameDay(date, today)
-                                            ? AppTheme.primaryColor
-                                            : AppTheme.textColor,
-                                      ),
-                                    ),
-                                    Text(
-                                      date.day.toString(),
-                                      style: AppTheme.bodySmall.copyWith(
-                                        color: DateTimeHelper.isSameDay(date, today)
-                                            ? AppTheme.primaryColor
-                                            : AppTheme.textColor,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
                       ),
                     ),
                   ),

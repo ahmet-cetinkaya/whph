@@ -6,7 +6,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class HabitNameInputField extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -26,6 +27,7 @@ class HabitNameInputField extends StatefulWidget {
 class _HabitNameInputFieldState extends State<HabitNameInputField> {
   GetHabitQueryResponse? habit;
   final TextEditingController _titleController = TextEditingController();
+  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -52,8 +54,12 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorLoadingHabit);
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(HabitTranslationKeys.loadingHabitError),
+        );
       }
     }
   }
@@ -71,8 +77,12 @@ class _HabitNameInputFieldState extends State<HabitNameInputField> {
       widget._habitsService.onHabitSaved.value = result;
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: HabitUiConstants.errorSavingHabit);
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(HabitTranslationKeys.savingHabitError),
+        );
       }
     }
   }

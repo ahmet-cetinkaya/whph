@@ -35,7 +35,7 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
         ),
         HelpMenu(
           titleKey: AppUsageTranslationKeys.helpTitle,
-          contentKey: AppUsageTranslationKeys.helpContent,
+          markdownContentKey: AppUsageTranslationKeys.helpContent,
         ),
         const SizedBox(width: 2),
       ],
