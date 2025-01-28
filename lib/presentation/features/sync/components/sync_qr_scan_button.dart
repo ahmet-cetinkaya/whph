@@ -8,14 +8,17 @@ import 'package:whph/application/features/sync/services/abstraction/i_sync_servi
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
+import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
 import 'dart:async';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   final VoidCallback? onSyncComplete;
 
   SyncQrScanButton({
@@ -34,7 +37,8 @@ class SyncQrScanButton extends StatelessWidget {
     var parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
     if (parsedMessage == null) {
       if (context.mounted) {
-        ErrorHelper.showError(context, BusinessException('Error: Unable to parse scanned message.'));
+        ErrorHelper.showError(
+            context, BusinessException(_translationService.translate(SyncTranslationKeys.parseError)));
       }
       return;
     }
@@ -46,18 +50,18 @@ class SyncQrScanButton extends StatelessWidget {
     String? toIP = await NetworkUtils.getLocalIpAddress();
     if (toIP == null) {
       if (context.mounted) {
-        ErrorHelper.showError(context, BusinessException('Error: Unable to fetch local IP address.'));
+        ErrorHelper.showError(
+            context, BusinessException(_translationService.translate(SyncTranslationKeys.ipAddressError)));
       }
       return;
     }
 
-    // Show testing connection message
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -65,33 +69,27 @@ class SyncQrScanButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
-              SizedBox(width: 16),
-              Text('Testing connection...'),
+              const SizedBox(width: 16),
+              Text(_translationService.translate(SyncTranslationKeys.testingConnection)),
             ],
           ),
-          duration: Duration(seconds: 15),
+          duration: const Duration(seconds: 15),
           behavior: SnackBarBehavior.fixed,
         ),
       );
     }
 
-    // Test connection
     final canConnect = await NetworkUtils.testWebSocketConnection(
       syncQrCodeMessageFromIP.localIP,
       timeout: const Duration(seconds: 10),
     );
 
-    // Clear previous snackbar and show result
     if (context.mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
 
       if (!canConnect) {
         ErrorHelper.showError(
-            context,
-            BusinessException('Connection failed. Please ensure:\n\n'
-                '1. Both devices are on the same network\n'
-                '2. Both apps are open and running\n'
-                '3. No firewall is blocking the connection'));
+            context, BusinessException(_translationService.translate(SyncTranslationKeys.connectionFailedError)));
         return;
       }
     }
@@ -99,7 +97,6 @@ class SyncQrScanButton extends StatelessWidget {
     try {
       GetSyncDeviceQueryResponse? existingDevice;
       try {
-        // Check existing device
         var fromIPAndToIPQuery = GetSyncDeviceQuery(fromIP: syncQrCodeMessageFromIP.localIP, toIP: toIP);
         existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(fromIPAndToIPQuery);
       } catch (e) {
@@ -110,13 +107,14 @@ class SyncQrScanButton extends StatelessWidget {
       if (existingDevice != null && existingDevice.id.isNotEmpty && existingDevice.deletedDate == null) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('This device is already paired')),
+            SnackBar(
+              content: Text(_translationService.translate(SyncTranslationKeys.deviceAlreadyPaired)),
+            ),
           );
           return;
         }
       }
 
-      // Save new device
       var saveCommand = SaveSyncDeviceCommand(
         fromIP: syncQrCodeMessageFromIP.localIP,
         toIP: toIP,
@@ -127,11 +125,10 @@ class SyncQrScanButton extends StatelessWidget {
       await _mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
 
       if (context.mounted) {
-        // Show syncing message and refresh list immediately
         final syncSnackBar = SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -139,8 +136,8 @@ class SyncQrScanButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
-              SizedBox(width: 16),
-              Text('Syncing in progress...'),
+              const SizedBox(width: 16),
+              Text(_translationService.translate(SyncTranslationKeys.syncInProgress)),
             ],
           ),
           duration: const Duration(seconds: 30),
@@ -152,33 +149,27 @@ class SyncQrScanButton extends StatelessWidget {
 
         if (kDebugMode) print('DEBUG: Starting sync process...');
 
-        // Refresh list immediately
         if (onSyncComplete != null) {
           onSyncComplete!();
         }
 
         try {
-          // Start sync process
           await _sync(context);
           if (kDebugMode) print('DEBUG: Sync completed successfully');
 
           if (context.mounted) {
-            // Ensure we clear any existing snack bars before showing completion
             ScaffoldMessenger.of(context).clearSnackBars();
-
-            // Show completion message with longer duration
             await Future.delayed(const Duration(milliseconds: 100));
 
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Sync completed successfully'),
-                  duration: Duration(seconds: 3),
+                SnackBar(
+                  content: Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
+                  duration: const Duration(seconds: 3),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
 
-              // Final refresh after sync complete
               if (onSyncComplete != null) {
                 onSyncComplete!();
               }
@@ -194,9 +185,11 @@ class SyncQrScanButton extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
         if (e is Exception) {
-          ErrorHelper.showUnexpectedError(context, e, stackTrace, message: 'Failed to save sync device.');
+          ErrorHelper.showUnexpectedError(context, e, stackTrace,
+              message: _translationService.translate(SyncTranslationKeys.saveDeviceError));
         } else {
-          ErrorHelper.showError(context, BusinessException('Failed to save sync device: ${e.toString()}'));
+          ErrorHelper.showError(
+              context, BusinessException(_translationService.translate(SyncTranslationKeys.saveDeviceError)));
         }
       }
     }
@@ -209,22 +202,19 @@ class SyncQrScanButton extends StatelessWidget {
       final syncService = container.resolve<ISyncService>();
       var completer = Completer<void>();
 
-      // Listen for sync completion
       var subscription = syncService.onSyncComplete.listen((completed) {
         if (completed && !completer.isCompleted) {
           completer.complete();
         }
       });
 
-      // Run immediate sync and restart timer
       await syncService.runSync();
 
-      // Wait for completion or timeout
       await completer.future.timeout(
         const Duration(seconds: 30),
         onTimeout: () {
           subscription.cancel();
-          throw BusinessException('Sync timeout');
+          throw BusinessException(_translationService.translate(SyncTranslationKeys.syncTimeoutError));
         },
       );
 
@@ -232,7 +222,9 @@ class SyncQrScanButton extends StatelessWidget {
       if (kDebugMode) print('DEBUG: Sync process completed');
     } catch (e) {
       if (kDebugMode) print('DEBUG: Sync error: $e');
-      if (context.mounted) ErrorHelper.showError(context, BusinessException('Failed to sync: ${e.toString()}'));
+      if (context.mounted) {
+        ErrorHelper.showError(context, BusinessException(_translationService.translate(SyncTranslationKeys.syncError)));
+      }
     }
   }
 
