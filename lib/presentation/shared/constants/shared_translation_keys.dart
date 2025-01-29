@@ -72,6 +72,15 @@ class SharedTranslationKeys {
   static const String navSettings = 'shared.nav.items.settings';
   static const String navBuyMeCoffee = 'shared.nav.items.buy_me_coffee';
 
+  // Update Dialog
+  static const String updateAvailableTitle = 'shared.update_dialog.title';
+  static const String updateAvailableMessage = 'shared.update_dialog.message';
+  static const String updateQuestionMessage = 'shared.update_dialog.question';
+  static const String updateLaterButton = 'shared.update_dialog.buttons.later';
+  static const String updateDownloadPageButton = 'shared.update_dialog.buttons.download_page';
+  static const String updateNowButton = 'shared.update_dialog.buttons.update_now';
+  static const String updateFailedMessage = 'shared.update_dialog.failed';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     final day = switch (weekday) {

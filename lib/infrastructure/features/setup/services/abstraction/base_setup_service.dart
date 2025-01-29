@@ -8,6 +8,9 @@ import 'package:whph/application/shared/services/abstraction/i_setup_service.dar
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/features/setup/models/update_info.dart';
 import 'package:path/path.dart' as path;
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 abstract class BaseSetupService implements ISetupService {
   @override
@@ -28,23 +31,28 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   void _showUpdateDialog(BuildContext context, UpdateInfo updateInfo) {
+    final translationService = container.resolve<ITranslationService>();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Update Available!'),
+        title: Text(translationService.translate(SharedTranslationKeys.updateAvailableTitle)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('A new version (${updateInfo.version}) is available.'),
+            Text(translationService.translate(
+              SharedTranslationKeys.updateAvailableMessage,
+              namedArgs: {'version': updateInfo.version},
+            )),
             const SizedBox(height: 8),
-            const Text('Would you like to update now?'),
+            Text(translationService.translate(SharedTranslationKeys.updateQuestionMessage)),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Later'),
+            child: Text(translationService.translate(SharedTranslationKeys.updateLaterButton)),
           ),
           TextButton(
             onPressed: () async {
@@ -53,10 +61,10 @@ abstract class BaseSetupService implements ISetupService {
                 throw Exception('Could not launch $url');
               }
             },
-            child: const Text('Download Page'),
+            child: Text(translationService.translate(SharedTranslationKeys.updateDownloadPageButton)),
           ),
           if (updateInfo.platformSpecificDownloadUrl != null)
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 try {
                   Navigator.of(context).pop();
@@ -64,12 +72,12 @@ abstract class BaseSetupService implements ISetupService {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to update: $e')),
+                      SnackBar(content: Text(translationService.translate(SharedTranslationKeys.updateFailedMessage))),
                     );
                   }
                 }
               },
-              child: const Text('Update Now'),
+              child: Text(translationService.translate(SharedTranslationKeys.updateNowButton)),
             ),
         ],
       ),
