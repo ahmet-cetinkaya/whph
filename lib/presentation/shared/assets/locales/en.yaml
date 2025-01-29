@@ -100,3 +100,12 @@ shared:
       tags: Tags
       settings: Settings
       buy_me_coffee: Buy me a coffee
+  update_dialog:
+    title: Update Available!
+    message: A new version ({version}) is available.
+    question: Would you like to update now?
+    buttons:
+      later: Later
+      download_page: Download Page
+      update_now: Update Now
+    failed: Failed to update.

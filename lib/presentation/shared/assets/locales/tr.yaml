@@ -100,3 +100,12 @@ shared:
       tags: Etiketler
       settings: Ayarlar
       buy_me_coffee: Bana bir kahve ısmarla
+  update_dialog:
+    title: Güncelleme Mevcut!
+    message: Yeni bir sürüm ({version}) mevcut.
+    question: Şimdi güncellemek ister misiniz?
+    buttons:
+      later: Sonra
+      download_page: İndirme Sayfası
+      update_now: Şimdi Güncelle
+    failed: Güncelleme başarısız oldu.
