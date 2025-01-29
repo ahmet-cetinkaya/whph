@@ -28,13 +28,13 @@ class AppUsageDeleteButton extends StatefulWidget {
 }
 
 class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
-  final Mediator mediator = container.resolve<Mediator>();
+  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteAppUsage(BuildContext context) async {
     var command = DeleteAppUsageCommand(id: widget.appUsageId);
     try {
-      await mediator.send(command);
+      await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
@@ -85,6 +85,7 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
         backgroundColor:
             widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
+      tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
     );
   }
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
-import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_delete_button.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_details_content.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_name_input_field.dart';
@@ -21,7 +19,6 @@ class AppUsageDetailsPage extends StatefulWidget {
 }
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
-  final Mediator mediator = container.resolve<Mediator>();
   Key _titleKey = UniqueKey();
   Key _contentKey = UniqueKey();
 

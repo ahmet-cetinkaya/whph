@@ -20,22 +20,22 @@ class HabitAddButton extends StatefulWidget {
 }
 
 class _HabitAddButtonState extends State<HabitAddButton> {
-  final Mediator mediator = container.resolve<Mediator>();
-  final translationService = container.resolve<ITranslationService>();
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   Future<void> _createHabit(BuildContext context) async {
     try {
       var command = SaveHabitCommand(
-        name: translationService.translate(HabitTranslationKeys.newHabit),
+        name: _translationService.translate(HabitTranslationKeys.newHabit),
         description: "",
       );
-      var response = await mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+      var response = await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
       if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: translationService.translate(SharedTranslationKeys.savingError));
+            message: _translationService.translate(SharedTranslationKeys.savingError));
       }
     }
   }

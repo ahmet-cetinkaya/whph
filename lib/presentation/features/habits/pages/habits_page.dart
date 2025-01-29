@@ -17,16 +17,17 @@ import 'package:whph/presentation/features/habits/constants/habit_translation_ke
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
-  final Mediator mediator = container.resolve<Mediator>();
 
-  HabitsPage({super.key});
+  const HabitsPage({super.key});
 
   @override
   State<HabitsPage> createState() => _HabitsPageState();
 }
 
 class _HabitsPageState extends State<HabitsPage> {
+  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+
   Key _habitsListKey = UniqueKey();
   List<String> _selectedFilterTags = [];
 
@@ -148,7 +149,7 @@ class _HabitsPageState extends State<HabitsPage> {
             // List
             HabitsList(
               key: _habitsListKey,
-              mediator: widget.mediator,
+              mediator: _mediator,
               dateRange: daysToShow,
               filterByTags: _selectedFilterTags,
               onClickHabit: (item) {

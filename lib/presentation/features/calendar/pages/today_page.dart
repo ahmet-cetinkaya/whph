@@ -29,7 +29,7 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> {
-  final Mediator mediator = container.resolve<Mediator>();
+  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
   Key _habitKey = UniqueKey();
@@ -197,7 +197,7 @@ class _TodayPageState extends State<TodayPage> {
                   scrollDirection: Axis.horizontal,
                   child: HabitsList(
                     key: _habitKey,
-                    mediator: mediator,
+                    mediator: _mediator,
                     size: 5,
                     mini: true,
                     filterByTags: _selectedTagFilter,
@@ -239,7 +239,7 @@ class _TodayPageState extends State<TodayPage> {
           ? DoneOverlay()
           : TaskList(
               key: _taskKey,
-              mediator: mediator,
+              mediator: _mediator,
               translationService: _translationService,
               filterByCompleted: false,
               filterByTags: _selectedTagFilter,

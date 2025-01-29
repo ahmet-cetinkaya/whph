@@ -84,7 +84,7 @@ Future<void> runDesktopWorkers() async {
 }
 
 Future<void> runBackgroundWorkers() async {
-  var mediator = container.resolve<Mediator>();
+  final mediator = container.resolve<Mediator>();
 
   if (Platform.isAndroid || Platform.isIOS) {
     // Start sync and app usage tracking for mobile platforms

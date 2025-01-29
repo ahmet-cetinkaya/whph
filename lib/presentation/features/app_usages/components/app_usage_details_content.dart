@@ -13,6 +13,7 @@ import 'package:whph/presentation/shared/components/color_picker.dart' as color_
 import 'package:whph/presentation/shared/components/color_preview.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';

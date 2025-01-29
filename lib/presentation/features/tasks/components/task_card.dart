@@ -14,8 +14,8 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TaskCard extends StatelessWidget {
-  final Mediator mediator = container.resolve<Mediator>();
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
 
   final TaskListItem taskItem;
 
@@ -37,7 +37,7 @@ class TaskCard extends StatelessWidget {
   });
 
   Future<void> _handleSchedule(DateTime date) async {
-    final task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
+    final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
 
     var command = SaveTaskCommand(
       id: task.id,
@@ -50,7 +50,7 @@ class TaskCard extends StatelessWidget {
       description: task.description,
     );
 
-    await mediator.send(command);
+    await _mediator.send(command);
     onScheduled?.call();
   }
 

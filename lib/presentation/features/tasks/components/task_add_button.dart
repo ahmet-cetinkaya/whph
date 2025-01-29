@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
@@ -27,8 +26,7 @@ class TaskAddButton extends StatefulWidget {
 }
 
 class _TaskAddButtonState extends State<TaskAddButton> {
-  final Mediator mediator = container.resolve<Mediator>();
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _translationService = container.resolve<ITranslationService>();
   bool isLoading = false;
 
   Future<void> _createTask(BuildContext context) async {

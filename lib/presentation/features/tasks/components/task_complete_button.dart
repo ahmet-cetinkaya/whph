@@ -29,8 +29,9 @@ class TaskCompleteButton extends StatefulWidget {
 }
 
 class _TaskCompleteButtonState extends State<TaskCompleteButton> {
-  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _mediator = container.resolve<Mediator>();
+  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _translationService = container.resolve<ITranslationService>();
   bool _isCompleted = false;
 
   @override
@@ -48,10 +49,8 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   }
 
   Future<void> _toggleCompleteTask(BuildContext context) async {
-    final mediator = container.resolve<Mediator>();
-
     try {
-      var task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+      var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
         GetTaskQuery(id: widget.taskId),
       );
 
@@ -66,7 +65,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         isCompleted: !_isCompleted,
       );
 
-      await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (command.isCompleted) {
         _soundPlayer.play(SharedSounds.done);

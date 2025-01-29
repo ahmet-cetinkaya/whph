@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -27,13 +28,13 @@ class TaskDeleteButton extends StatefulWidget {
 }
 
 class _TaskDeleteButtonState extends State<TaskDeleteButton> {
-  final Mediator mediator = container.resolve<Mediator>();
+  final Mediator _mediator = container.resolve<Mediator>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteTask(BuildContext context) async {
     try {
       var command = DeleteTaskCommand(id: widget.taskId);
-      await mediator.send(command);
+      await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
@@ -80,6 +81,7 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
         backgroundColor:
             widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
+      tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
     );
   }
 }
