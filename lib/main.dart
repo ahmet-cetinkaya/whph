@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/api/api.dart';
@@ -58,7 +59,7 @@ Future<void> runDesktopWorkers() async {
   // Update window manager settings
   await windowManager.ensureInitialized();
   await windowManager.setPreventClose(true);
-  await windowManager.setMinimumSize(const Size(800, 600));
+  if (!kDebugMode) await windowManager.setMinimumSize(const Size(800, 600));
 
   // Initialize system tray service
   var systemTrayService = container.resolve<ISystemTrayService>();
