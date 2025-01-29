@@ -7,7 +7,7 @@ publish_to: "none"
 # - Android: versionName = version, versionCode = build
 # - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
 # - Windows: product/file version components = version, build suffix = build
-version: 0.1.7+1
+version: 0.2.0+2
 
 environment:
   sdk: ^3.5.3
@@ -24,6 +24,10 @@ scripts:
   release-windows: flutter build windows --release
   release-android: flutter build apk --release
   test: flutter test
+  test-ci: act -j build
+  test-ci-android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test-ci-linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
+  test-ci-windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
