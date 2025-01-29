@@ -11,6 +11,7 @@
 migrate_working_dir/
 *.keystore
 *.base64
+.secrets
 
 # IntelliJ related
 *.iml
