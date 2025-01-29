@@ -51,8 +51,7 @@ class AppAbout extends StatelessWidget {
             style: AppTheme.bodyMedium,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16),
+        Center(
           child: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
