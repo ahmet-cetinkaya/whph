@@ -19,18 +19,18 @@ import 'package:whph/presentation/features/sync/constants/sync_translation_keys.
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
 
-  final Mediator mediator = container.resolve<Mediator>();
-
-  SyncDevicesPage({super.key});
+  const SyncDevicesPage({super.key});
 
   @override
   State<SyncDevicesPage> createState() => _SyncDevicesPageState();
 }
 
 class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
+
   GetListSyncDevicesQueryResponse? list;
   Key _listKey = UniqueKey();
-  final _translationService = container.resolve<ITranslationService>();
 
   @override
   bool get wantKeepAlive => true;
@@ -49,7 +49,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
     try {
       var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
-      var response = await widget.mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
+      var response = await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -71,7 +71,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   Future<void> _removeDevice(String id) async {
     try {
       var command = DeleteSyncDeviceCommand(id: id);
-      await widget.mediator.send<DeleteSyncDeviceCommand, void>(command);
+      await _mediator.send<DeleteSyncDeviceCommand, void>(command);
       if (mounted) {
         setState(() {
           list!.items.removeWhere((item) => item.id == id);
@@ -122,7 +122,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     try {
       if (kDebugMode) print('DEBUG: Starting sync process...');
       var command = SyncCommand();
-      await widget.mediator.send<SyncCommand, void>(command);
+      await _mediator.send<SyncCommand, void>(command);
 
       // Add a small delay before refreshing the devices list
       await Future.delayed(const Duration(seconds: 2));

@@ -12,8 +12,6 @@ import 'package:whph/presentation/features/tags/constants/tag_translation_keys.d
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TagSelectDropdown extends StatefulWidget {
-  final Mediator mediator = container.resolve<Mediator>();
-
   final List<DropdownOption<String>> initialSelectedTags;
   final List<String> excludeTagIds;
   final bool isMultiSelect;
@@ -48,6 +46,7 @@ class TagSelectDropdown extends StatefulWidget {
 }
 
 class _TagSelectDropdownState extends State<TagSelectDropdown> {
+  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   GetListTagsQueryResponse? _tags;
 
@@ -66,7 +65,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   Future<void> _getTags({required int pageIndex, String? search}) async {
     try {
       var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 20, search: search);
-      var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+      var result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
       if (mounted) {
         setState(() {

@@ -28,13 +28,13 @@ class HabitDeleteButton extends StatefulWidget {
 }
 
 class _HabitDeleteButtonState extends State<HabitDeleteButton> {
-  final Mediator mediator = container.resolve<Mediator>();
-  final ITranslationService translationService = container.resolve<ITranslationService>();
+  final Mediator _mediator = container.resolve<Mediator>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteHabit(BuildContext context) async {
     try {
       var command = DeleteHabitCommand(id: widget.habitId);
-      await mediator.send(command);
+      await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
@@ -44,7 +44,7 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: translationService.translate(HabitTranslationKeys.deletingError));
+            message: _translationService.translate(HabitTranslationKeys.deletingError));
       }
     }
   }
@@ -53,16 +53,16 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
     bool? confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(translationService.translate(HabitTranslationKeys.deleteConfirmTitle)),
-        content: Text(translationService.translate(HabitTranslationKeys.deleteConfirmMessage)),
+        title: Text(_translationService.translate(HabitTranslationKeys.deleteConfirmTitle)),
+        content: Text(_translationService.translate(HabitTranslationKeys.deleteConfirmMessage)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(translationService.translate(SharedTranslationKeys.cancelButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(translationService.translate(SharedTranslationKeys.deleteButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),
@@ -81,6 +81,7 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
         backgroundColor:
             widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
+      tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
     );
   }
 }

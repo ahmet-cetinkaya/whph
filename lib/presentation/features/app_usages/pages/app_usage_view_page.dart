@@ -16,15 +16,14 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_transl
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
 
-  final Mediator mediator = container.resolve<Mediator>();
-
-  AppUsageViewPage({super.key});
+  const AppUsageViewPage({super.key});
 
   @override
   State<AppUsageViewPage> createState() => _AppUsageViewPageState();
 }
 
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
+  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   Key _appUsageListKey = UniqueKey();
   List<String>? _selectedTagFilters;
@@ -128,7 +127,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: AppUsageList(
               key: _appUsageListKey,
-              mediator: widget.mediator,
+              mediator: _mediator,
               onOpenDetails: _openDetails,
               filterByTags: _selectedTagFilters,
               filterStartDate: _filterStartDate,
