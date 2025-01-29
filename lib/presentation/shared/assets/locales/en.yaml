@@ -22,6 +22,7 @@ shared:
     days: days
   tooltips:
     filter_by_tags: Filter by tags
+    refresh: Refresh
   sections:
     habits: Habits
     tasks: Tasks
@@ -109,3 +110,5 @@ shared:
       download_page: Download Page
       update_now: Update Now
     failed: Failed to update.
+  help:
+    tooltip: Help

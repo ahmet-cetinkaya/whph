@@ -153,6 +153,7 @@ tasks:
     remove_tag: Unexpected error occurred while removing tag
     get_tags: Error occurred while fetching tags
   marathon:
+    label: Marathon Mode
     help:
       title: Marathon Mode Help
       content: |
@@ -187,3 +188,5 @@ tasks:
     current_task: "Currently Working On:"
     select_task_hint: Select a task to work on from the list below.
     unpin_task_tooltip: Unpin current task
+  tooltips:
+    edit_title: Edit title

@@ -5,6 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -140,6 +141,7 @@ class _TodayPageState extends State<TodayPage> {
           icon: const Icon(Icons.timer),
           onPressed: () => _openMarathonPage(context),
           color: AppTheme.primaryColor,
+          tooltip: _translationService.translate(TaskTranslationKeys.marathon),
         ),
         HelpMenu(
           titleKey: CalendarTranslationKeys.todayHelpTitle,

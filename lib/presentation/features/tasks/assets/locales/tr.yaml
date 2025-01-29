@@ -179,6 +179,7 @@ tasks:
         - İlerlemenizi takip edin
         - Düzenli olarak gözden geçirin
   marathon:
+    label: Maraton Modu
     help:
       title: Maraton Modu Yardımı
       content: |
@@ -216,3 +217,5 @@ tasks:
   page:
     title: Görevler
     completed_tasks_title: Tamamlanan görevler
+  tooltips:
+    edit_title: Başlığı düzenle

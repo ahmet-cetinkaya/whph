@@ -90,6 +90,7 @@ class TaskTranslationKeys {
   static const String editTitleTooltip = 'tasks.tooltips.edit_title';
 
   // Marathon Mode
+  static const String marathon = 'tasks.marathon.label';
   static const String marathonHelpTitle = 'tasks.marathon.help.title';
   static const String marathonHelpContent = 'tasks.marathon.help.content';
   static const String marathonHelpTooltip = 'tasks.marathon.help.tooltip';

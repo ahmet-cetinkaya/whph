@@ -8,6 +8,7 @@ class SharedTranslationKeys {
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
   static const String requiredValidation = 'shared.validation.required';
+  static const String refreshTooltip = 'shared.tooltips.refresh';
 
   // Keep only generic errors
   static const String unexpectedError = 'shared.errors.unexpected';
@@ -80,6 +81,9 @@ class SharedTranslationKeys {
   static const String updateDownloadPageButton = 'shared.update_dialog.buttons.download_page';
   static const String updateNowButton = 'shared.update_dialog.buttons.update_now';
   static const String updateFailedMessage = 'shared.update_dialog.failed';
+
+  // Help
+  static const String helpTooltip = 'shared.help.tooltip';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {
