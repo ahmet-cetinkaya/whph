@@ -38,18 +38,8 @@ jobs:
 
     - name: Setup Keystore
       run: |
-        # Create directory if it doesn't exist
-        mkdir -p android/app
-        
-        # Decode with strict mode and verify
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/whph-release.keystore
-        
-        # Verify the keystore file
-        if ! keytool -list -keystore android/app/whph-release.keystore -storepass "${{ secrets.KEYSTORE_PASSWORD }}" > /dev/null 2>&1; then
-          echo "Invalid keystore file"
-          exit 1
-        fi
-        
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/whph-release.keystore
+
     - name: Update Gradle Properties
       run: |
         cat << EOF > android/key.properties
@@ -105,8 +95,9 @@ jobs:
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
+          fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get tag name
         id: tag_name
@@ -136,4 +127,3 @@ jobs:
           prerelease: false
           generate_release_notes: ${{ steps.check_release.outputs.exists == 'false' }}
           append_body: ${{ steps.check_release.outputs.exists == 'true' }}
-          replace_artifacts: false

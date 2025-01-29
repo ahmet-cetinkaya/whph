@@ -95,13 +95,7 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get tag name
-        id: tag_name
-        run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create or Update Release
         uses: softprops/action-gh-release@v1
@@ -115,4 +109,3 @@ jobs:
           prerelease: false
           generate_release_notes: ${{ steps.check_release.outputs.exists == 'false' }}
           append_body: ${{ steps.check_release.outputs.exists == 'true' }}
-          replace_artifacts: false
