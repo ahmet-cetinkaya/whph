@@ -112,9 +112,9 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  const SizedBox(width: 16),
+                  if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: 16),
                   const AppLogo(width: 32, height: 32),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                 ],
                 Flexible(
                   child: Text(
