@@ -22,6 +22,7 @@ shared:
     days: gün
   tooltips:
     filter_by_tags: Etiketlere göre filtrele
+    refresh: Yenile
   sections:
     habits: Alışkanlıklar
     tasks: Görevler
@@ -109,3 +110,5 @@ shared:
       download_page: İndirme Sayfası
       update_now: Şimdi Güncelle
     failed: Güncelleme başarısız oldu.
+  help:
+    tooltip: Yardım

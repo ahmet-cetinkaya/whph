@@ -8,6 +8,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
@@ -84,6 +85,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           icon: const Icon(Icons.refresh),
           onPressed: _refreshList,
           color: AppTheme.primaryColor,
+          tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
         HelpMenu(
           titleKey: AppUsageTranslationKeys.viewHelpTitle,
