@@ -73,6 +73,7 @@ tags:
     name: Name
     color: Color
     description: Description
+    tags: Tags
   list:
     no_tags_found: No tags found
     filter_tooltip: Filter by tags

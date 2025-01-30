@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
-import 'package:whph/presentation/features/tags/components/tag_name_input_field.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
@@ -29,10 +28,9 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
+  String? _title;
   bool _isTasksExpanded = false;
   Key _tasksListKey = UniqueKey();
-  Key _contentKey = UniqueKey();
-  Key _titleKey = UniqueKey();
 
   void _refreshTasks() {
     if (mounted) {
@@ -42,18 +40,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
     }
   }
 
-  void _refreshTitle() {
+  void _refreshTitle(String title) {
     if (mounted) {
       setState(() {
-        _titleKey = UniqueKey();
-      });
-    }
-  }
-
-  void _refreshContent() {
-    if (mounted) {
-      setState(() {
-        _contentKey = UniqueKey();
+        _title = title.replaceAll('\n', ' ');
       });
     }
   }
@@ -69,24 +59,25 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: TagNameInputField(
-        key: _titleKey,
-        id: widget.tagId,
-        onTagUpdated: _refreshContent,
-      ),
+      appBarTitle: _title != null ? Text(_title!) : null,
       appBarActions: [
+        // Archive
         TagArchiveButton(
           tagId: widget.tagId,
           onArchiveSuccess: () => Navigator.of(context).pop(),
           buttonColor: AppTheme.primaryColor,
           tooltip: _translationService.translate(TagTranslationKeys.archiveTagTooltip),
         ),
+
+        // Delete
         TagDeleteButton(
           tagId: widget.tagId,
           onDeleteSuccess: () => Navigator.of(context).pop(),
           buttonColor: AppTheme.primaryColor,
           tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
         ),
+
+        // Help
         HelpMenu(
           titleKey: TagTranslationKeys.detailsHelpTitle,
           markdownContentKey: TagTranslationKeys.helpContent,
@@ -98,9 +89,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
         children: [
           // Details
           TagDetailsContent(
-            key: _contentKey,
             tagId: widget.tagId,
-            onTagUpdated: _refreshTitle,
+            onNameUpdated: _refreshTitle,
           ),
 
           // Tasks
@@ -112,6 +102,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
               });
             },
             children: [
+              // Tasks
               ExpansionPanel(
                   isExpanded: _isTasksExpanded,
                   headerBuilder: (BuildContext context, bool isExpanded) {
@@ -122,14 +113,18 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
-                          TagAddButton(
-                            onTagCreated: (taskId) => _refreshTasks(),
-                            tooltip: _translationService.translate(TagTranslationKeys.addTaskTooltip),
+
+                          // Add Task
+                          TaskAddButton(
+                            onTaskCreated: (taskId) => _refreshTasks(),
+                            initialTagIds: [widget.tagId],
                           ),
                         ],
                       ),
                     );
                   },
+
+                  // Tasks List
                   body: TaskList(
                     key: _tasksListKey,
                     mediator: _mediator,

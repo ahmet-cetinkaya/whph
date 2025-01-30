@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
@@ -24,12 +25,14 @@ class TagDetailsContent extends StatefulWidget {
   final Mediator _mediator = container.resolve<Mediator>();
 
   final String tagId;
-  final VoidCallback onTagUpdated;
+  final VoidCallback? onTagUpdated;
+  final Function(String)? onNameUpdated;
 
   TagDetailsContent({
     super.key,
     required this.tagId,
-    required this.onTagUpdated,
+    this.onTagUpdated,
+    this.onNameUpdated,
   });
 
   @override
@@ -38,13 +41,22 @@ class TagDetailsContent extends StatefulWidget {
 
 class _TagDetailsContentState extends State<TagDetailsContent> {
   final _translationService = container.resolve<ITranslationService>();
+  final _nameController = TextEditingController();
+  Timer? _debounce;
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
 
   @override
   void initState() {
-    super.initState();
     _getInitialData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _debounce?.cancel();
+    super.dispose();
   }
 
   Future<void> _getInitialData() async {
@@ -58,6 +70,10 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       if (mounted) {
         setState(() {
           _tag = response;
+          if (_nameController.text != response.name) {
+            _nameController.text = response.name;
+            widget.onNameUpdated?.call(response.name);
+          }
         });
       }
     } on BusinessException catch (e) {
@@ -117,24 +133,33 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   Future<void> _saveTag() async {
-    var command = SaveTagCommand(
-      id: widget.tagId,
-      name: _tag!.name,
-      color: _tag!.color,
-      isArchived: _tag!.isArchived,
-    );
-    try {
-      await widget._mediator.send(command);
-      await _getTag();
-      widget.onTagUpdated();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorSaving));
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    final currentSelection = _nameController.selection;
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      var command = SaveTagCommand(
+        id: widget.tagId,
+        name: _nameController.text,
+        color: _tag!.color,
+        isArchived: _tag!.isArchived,
+      );
+      try {
+        await widget._mediator.send(command);
+        widget.onTagUpdated?.call();
+
+        // Restore cursor position after save
+        if (mounted) {
+          _nameController.selection = currentSelection;
+        }
+      } on BusinessException catch (e) {
+        if (mounted) ErrorHelper.showError(context, e);
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+              message: _translationService.translate(TagTranslationKeys.errorSaving));
+        }
       }
-    }
+    });
   }
 
   void _onChangeColor(Color color) {
@@ -163,7 +188,25 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Tag Name
+          TextFormField(
+            controller: _nameController,
+            maxLines: null,
+            onChanged: (value) async {
+              await _saveTag();
+              widget.onNameUpdated?.call(value);
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+
+          // Tag Details
           DetailTable(rowData: [
+            // Color
             DetailTableRowData(
               label: _translationService.translate(TagTranslationKeys.colorLabel),
               icon: TagUiConstants.colorIcon,
@@ -179,8 +222,10 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                 ],
               ),
             ),
+
+            // Tags
             DetailTableRowData(
-              label: _translationService.translate(TagTranslationKeys.nameLabel),
+              label: _translationService.translate(TagTranslationKeys.tagsLabel),
               icon: TagUiConstants.tagIcon,
               hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
               widget: TagSelectDropdown(

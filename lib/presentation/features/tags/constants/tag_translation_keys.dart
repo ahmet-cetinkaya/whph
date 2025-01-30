@@ -20,6 +20,7 @@ class TagTranslationKeys {
   static const String nameLabel = 'tags.labels.name';
   static const String colorLabel = 'tags.labels.color';
   static const String descriptionLabel = 'tags.labels.description';
+  static const String tagsLabel = 'tags.labels.tags';
 
   // Archive Actions
   static const String archiveTag = 'tags.actions.archive';

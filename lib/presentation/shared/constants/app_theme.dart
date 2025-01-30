@@ -109,6 +109,13 @@ class AppTheme {
     height: 1.1,
   );
 
+  // Sizes
+  static const double sizeXSmall = 4.0;
+  static const double sizeSmall = 8.0;
+  static const double sizeMedium = 12.0;
+  static const double sizeLarge = 16.0;
+  static const double sizeXLarge = 24.0;
+
   // Text Styles
   static const TextStyle labelLarge = TextStyle(
     fontSize: 16,
