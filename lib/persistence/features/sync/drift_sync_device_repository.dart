@@ -12,6 +12,8 @@ class SyncDeviceTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get fromIp => text()();
   TextColumn get toIp => text()();
+  TextColumn get fromDeviceId => text()();
+  TextColumn get toDeviceId => text()();
   TextColumn get name => text().nullable()();
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
 }
@@ -34,6 +36,8 @@ class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, 
       deletedDate: Value(entity.deletedDate),
       fromIp: entity.fromIp,
       toIp: entity.toIp,
+      fromDeviceId: entity.fromDeviceId,
+      toDeviceId: entity.toDeviceId,
       lastSyncDate: Value(entity.lastSyncDate),
       name: Value(entity.name),
     );

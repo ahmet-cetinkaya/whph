@@ -13,6 +13,7 @@ import 'package:whph/application/features/habits/services/i_habit_repository.dar
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/application/features/sync/models/sync_data.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -41,6 +42,7 @@ import 'package:whph/domain/features/tasks/task_time_record.dart';
 import 'package:whph/application/shared/services/abstraction/i_repository.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph/presentation/shared/utils/network_utils.dart';
 
 class SyncCommand implements IRequest<SyncCommandResponse> {
   final SyncDataDto? syncDataDto;
@@ -71,6 +73,7 @@ class SyncConfig<T extends BaseEntity<String>> {
 
 class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResponse> {
   final ISyncDeviceRepository syncDeviceRepository;
+  final IDeviceIdService deviceIdService;
   final IAppUsageRepository appUsageRepository;
   final IAppUsageTagRepository appUsageTagRepository;
   final IAppUsageTimeRecordRepository appUsageTimeRecordRepository;
@@ -90,6 +93,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
   SyncCommandHandler({
     required this.syncDeviceRepository,
+    required this.deviceIdService,
     required this.appUsageRepository,
     required this.appUsageTagRepository,
     required this.appUsageTimeRecordRepository,
@@ -203,6 +207,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   Future<SyncCommandResponse> call(SyncCommand request) async {
     if (request.syncDataDto != null) {
       await _checkVersion(request.syncDataDto!.appVersion);
+      await _validateDeviceId(request.syncDataDto!.syncDevice);
     }
 
     List<SyncDevice> syncDevices;
@@ -384,6 +389,20 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         'Version mismatch. Local version: ${AppInfo.version}, Remote version: $remoteVersion. Please update both applications to the same version.',
       );
     }
+  }
+
+  Future<void> _validateDeviceId(SyncDevice remoteDevice) async {
+    final localDeviceIP = await NetworkUtils.getLocalIpAddress();
+    final localDeviceID = await deviceIdService.getDeviceId();
+
+    if (remoteDevice.fromIp == localDeviceIP && remoteDevice.fromDeviceId == localDeviceID ||
+        remoteDevice.toIp == localDeviceIP && remoteDevice.toDeviceId == localDeviceID) {
+      return;
+    }
+
+    throw BusinessException(
+      'Device ID mismatch. The device attempting to sync is not properly paired with this device.',
+    );
   }
 
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {

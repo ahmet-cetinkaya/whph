@@ -3,8 +3,10 @@ import 'package:whph/core/acore/repository/models/base_entity.dart';
 
 @jsonSerializable
 class SyncDevice extends BaseEntity<String> {
-  String fromIp;
-  String toIp;
+  String fromIp; // Host/Desktop Device
+  String toIp; // Client/Mobile Device
+  String fromDeviceId;
+  String toDeviceId;
   String? name;
   DateTime? lastSyncDate;
 
@@ -15,6 +17,8 @@ class SyncDevice extends BaseEntity<String> {
     required this.toIp,
     super.modifiedDate,
     super.deletedDate,
+    required this.fromDeviceId,
+    required this.toDeviceId,
     this.name,
     this.lastSyncDate,
   });
@@ -27,6 +31,8 @@ class SyncDevice extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       fromIp: json['fromIp'] as String,
       toIp: json['toIp'] as String,
+      fromDeviceId: json['fromDeviceId'] as String,
+      toDeviceId: json['toDeviceId'] as String,
       name: json['name'] as String?,
       lastSyncDate: json['lastSyncDate'] != null ? DateTime.parse(json['lastSyncDate'] as String) : null,
     );
@@ -39,6 +45,8 @@ class SyncDevice extends BaseEntity<String> {
         'deletedDate': deletedDate?.toIso8601String(),
         'fromIp': fromIp,
         'toIp': toIp,
+        'fromDeviceId': fromDeviceId,
+        'toDeviceId': toDeviceId,
         'name': name,
         'lastSyncDate': lastSyncDate?.toIso8601String(),
       };

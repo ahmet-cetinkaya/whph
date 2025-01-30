@@ -10,9 +10,11 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
 
 class SyncQrCodeButton extends StatelessWidget {
   final _translationService = container.resolve<ITranslationService>();
+  final _deviceIdService = container.resolve<IDeviceIdService>();
 
   SyncQrCodeButton({super.key});
 
@@ -28,8 +30,15 @@ class SyncQrCodeButton extends StatelessWidget {
     }
 
     final deviceName = await DeviceInfoHelper.getDeviceName();
-    SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(localIP: ipAddress, deviceName: deviceName);
-    var qrData = JsonMapper.serialize(syncQrCodeMessage);
+    final deviceId = await _deviceIdService.getDeviceId();
+
+    SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(
+      localIP: ipAddress,
+      deviceName: deviceName,
+      deviceId: deviceId,
+    );
+
+    final qrData = JsonMapper.serialize(syncQrCodeMessage);
 
     if (context.mounted) {
       showDialog(
@@ -59,9 +68,7 @@ class SyncQrCodeButton extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 child: Text(_translationService.translate(SyncTranslationKeys.qrDialogCloseButton)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           );

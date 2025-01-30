@@ -12,15 +12,20 @@ class GetListSyncDevicesQuery implements IRequest<GetListSyncDevicesQueryRespons
 
 class SyncDeviceListItem {
   final String id;
-  final String fromIp;
-  final String toIp;
+  final String fromIP;
+  final String fromDeviceID;
+  final String toIP;
+  final String toDeviceID;
+
   final String? name;
   final DateTime? lastSyncDate;
 
   SyncDeviceListItem({
     required this.id,
-    required this.fromIp,
-    required this.toIp,
+    required this.fromIP,
+    required this.toIP,
+    required this.fromDeviceID,
+    required this.toDeviceID,
     this.name,
     this.lastSyncDate,
   });
@@ -53,8 +58,10 @@ class GetListSyncDevicesQueryHandler
       items: list.items
           .map((e) => SyncDeviceListItem(
                 id: e.id,
-                fromIp: e.fromIp,
-                toIp: e.toIp,
+                fromIP: e.fromIp,
+                fromDeviceID: e.fromDeviceId,
+                toIP: e.toIp,
+                toDeviceID: e.toDeviceId,
                 name: e.name,
                 lastSyncDate: e.lastSyncDate,
               ))

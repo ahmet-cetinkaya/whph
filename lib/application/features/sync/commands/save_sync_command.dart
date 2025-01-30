@@ -8,6 +8,8 @@ class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {
   final String? id;
   final String fromIP;
   final String toIP;
+  final String fromDeviceId;
+  final String toDeviceId;
   final String? name;
   final DateTime? lastSyncDate;
 
@@ -15,6 +17,8 @@ class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {
     this.id,
     required this.fromIP,
     required this.toIP,
+    required this.fromDeviceId,
+    required this.toDeviceId,
     this.name,
     this.lastSyncDate,
   });
@@ -35,8 +39,9 @@ class SaveSyncDeviceCommandResponse {
 class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse> {
   final ISyncDeviceRepository _syncDeviceRepository;
 
-  SaveSyncDeviceCommandHandler({required ISyncDeviceRepository syncDeviceRepository})
-      : _syncDeviceRepository = syncDeviceRepository;
+  SaveSyncDeviceCommandHandler({
+    required ISyncDeviceRepository syncDeviceRepository,
+  }) : _syncDeviceRepository = syncDeviceRepository;
 
   @override
   Future<SaveSyncDeviceCommandResponse> call(SaveSyncDeviceCommand request) async {
@@ -66,6 +71,8 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
       createdDate: DateTime.now(),
       fromIp: request.fromIP,
       toIp: request.toIP,
+      fromDeviceId: request.fromDeviceId,
+      toDeviceId: request.toDeviceId,
       name: request.name,
       lastSyncDate: request.lastSyncDate,
     );
@@ -78,6 +85,8 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     syncDevice.toIp = request.toIP;
     syncDevice.name = request.name;
     syncDevice.lastSyncDate = request.lastSyncDate;
+    syncDevice.fromDeviceId = request.fromDeviceId;
+    syncDevice.toDeviceId = request.toDeviceId;
     await _syncDeviceRepository.update(syncDevice);
     return syncDevice;
   }

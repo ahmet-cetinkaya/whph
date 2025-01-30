@@ -1930,6 +1930,14 @@ class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTa
   @override
   late final GeneratedColumn<String> toIp =
       GeneratedColumn<String>('to_ip', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _fromDeviceIdMeta = const VerificationMeta('fromDeviceId');
+  @override
+  late final GeneratedColumn<String> fromDeviceId = GeneratedColumn<String>('from_device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _toDeviceIdMeta = const VerificationMeta('toDeviceId');
+  @override
+  late final GeneratedColumn<String> toDeviceId = GeneratedColumn<String>('to_device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name =
@@ -1939,7 +1947,8 @@ class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTa
   late final GeneratedColumn<DateTime> lastSyncDate = GeneratedColumn<DateTime>('last_sync_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, fromIp, toIp, name, lastSyncDate];
+  List<GeneratedColumn> get $columns =>
+      [id, createdDate, modifiedDate, deletedDate, fromIp, toIp, fromDeviceId, toDeviceId, name, lastSyncDate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1975,6 +1984,16 @@ class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTa
     } else if (isInserting) {
       context.missing(_toIpMeta);
     }
+    if (data.containsKey('from_device_id')) {
+      context.handle(_fromDeviceIdMeta, fromDeviceId.isAcceptableOrUnknown(data['from_device_id']!, _fromDeviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_fromDeviceIdMeta);
+    }
+    if (data.containsKey('to_device_id')) {
+      context.handle(_toDeviceIdMeta, toDeviceId.isAcceptableOrUnknown(data['to_device_id']!, _toDeviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_toDeviceIdMeta);
+    }
     if (data.containsKey('name')) {
       context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     }
@@ -1996,6 +2015,8 @@ class $SyncDeviceTableTable extends SyncDeviceTable with TableInfo<$SyncDeviceTa
       toIp: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}to_ip'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      fromDeviceId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}from_device_id'])!,
+      toDeviceId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}to_device_id'])!,
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name']),
       lastSyncDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_sync_date']),
     );
@@ -2014,6 +2035,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
   final Value<DateTime?> deletedDate;
   final Value<String> fromIp;
   final Value<String> toIp;
+  final Value<String> fromDeviceId;
+  final Value<String> toDeviceId;
   final Value<String?> name;
   final Value<DateTime?> lastSyncDate;
   final Value<int> rowid;
@@ -2024,6 +2047,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
     this.deletedDate = const Value.absent(),
     this.fromIp = const Value.absent(),
     this.toIp = const Value.absent(),
+    this.fromDeviceId = const Value.absent(),
+    this.toDeviceId = const Value.absent(),
     this.name = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2035,13 +2060,17 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
     this.deletedDate = const Value.absent(),
     required String fromIp,
     required String toIp,
+    required String fromDeviceId,
+    required String toDeviceId,
     this.name = const Value.absent(),
     this.lastSyncDate = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
         fromIp = Value(fromIp),
-        toIp = Value(toIp);
+        toIp = Value(toIp),
+        fromDeviceId = Value(fromDeviceId),
+        toDeviceId = Value(toDeviceId);
   static Insertable<SyncDevice> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
@@ -2049,6 +2078,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
     Expression<DateTime>? deletedDate,
     Expression<String>? fromIp,
     Expression<String>? toIp,
+    Expression<String>? fromDeviceId,
+    Expression<String>? toDeviceId,
     Expression<String>? name,
     Expression<DateTime>? lastSyncDate,
     Expression<int>? rowid,
@@ -2060,6 +2091,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (fromIp != null) 'from_ip': fromIp,
       if (toIp != null) 'to_ip': toIp,
+      if (fromDeviceId != null) 'from_device_id': fromDeviceId,
+      if (toDeviceId != null) 'to_device_id': toDeviceId,
       if (name != null) 'name': name,
       if (lastSyncDate != null) 'last_sync_date': lastSyncDate,
       if (rowid != null) 'rowid': rowid,
@@ -2073,6 +2106,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
       Value<DateTime?>? deletedDate,
       Value<String>? fromIp,
       Value<String>? toIp,
+      Value<String>? fromDeviceId,
+      Value<String>? toDeviceId,
       Value<String?>? name,
       Value<DateTime?>? lastSyncDate,
       Value<int>? rowid}) {
@@ -2083,6 +2118,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
       deletedDate: deletedDate ?? this.deletedDate,
       fromIp: fromIp ?? this.fromIp,
       toIp: toIp ?? this.toIp,
+      fromDeviceId: fromDeviceId ?? this.fromDeviceId,
+      toDeviceId: toDeviceId ?? this.toDeviceId,
       name: name ?? this.name,
       lastSyncDate: lastSyncDate ?? this.lastSyncDate,
       rowid: rowid ?? this.rowid,
@@ -2110,6 +2147,12 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
     if (toIp.present) {
       map['to_ip'] = Variable<String>(toIp.value);
     }
+    if (fromDeviceId.present) {
+      map['from_device_id'] = Variable<String>(fromDeviceId.value);
+    }
+    if (toDeviceId.present) {
+      map['to_device_id'] = Variable<String>(toDeviceId.value);
+    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -2131,6 +2174,8 @@ class SyncDeviceTableCompanion extends UpdateCompanion<SyncDevice> {
           ..write('deletedDate: $deletedDate, ')
           ..write('fromIp: $fromIp, ')
           ..write('toIp: $toIp, ')
+          ..write('fromDeviceId: $fromDeviceId, ')
+          ..write('toDeviceId: $toDeviceId, ')
           ..write('name: $name, ')
           ..write('lastSyncDate: $lastSyncDate, ')
           ..write('rowid: $rowid')
@@ -4896,6 +4941,8 @@ typedef $$SyncDeviceTableTableCreateCompanionBuilder = SyncDeviceTableCompanion 
   Value<DateTime?> deletedDate,
   required String fromIp,
   required String toIp,
+  required String fromDeviceId,
+  required String toDeviceId,
   Value<String?> name,
   Value<DateTime?> lastSyncDate,
   Value<int> rowid,
@@ -4907,6 +4954,8 @@ typedef $$SyncDeviceTableTableUpdateCompanionBuilder = SyncDeviceTableCompanion 
   Value<DateTime?> deletedDate,
   Value<String> fromIp,
   Value<String> toIp,
+  Value<String> fromDeviceId,
+  Value<String> toDeviceId,
   Value<String?> name,
   Value<DateTime?> lastSyncDate,
   Value<int> rowid,
@@ -4935,6 +4984,12 @@ class $$SyncDeviceTableTableFilterComposer extends Composer<_$AppDatabase, $Sync
       $composableBuilder(column: $table.fromIp, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get fromDeviceId =>
+      $composableBuilder(column: $table.fromDeviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get toDeviceId =>
+      $composableBuilder(column: $table.toDeviceId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -4967,6 +5022,12 @@ class $$SyncDeviceTableTableOrderingComposer extends Composer<_$AppDatabase, $Sy
   ColumnOrderings<String> get toIp =>
       $composableBuilder(column: $table.toIp, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get fromDeviceId =>
+      $composableBuilder(column: $table.fromDeviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get toDeviceId =>
+      $composableBuilder(column: $table.toDeviceId, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -4996,6 +5057,11 @@ class $$SyncDeviceTableTableAnnotationComposer extends Composer<_$AppDatabase, $
   GeneratedColumn<String> get fromIp => $composableBuilder(column: $table.fromIp, builder: (column) => column);
 
   GeneratedColumn<String> get toIp => $composableBuilder(column: $table.toIp, builder: (column) => column);
+
+  GeneratedColumn<String> get fromDeviceId =>
+      $composableBuilder(column: $table.fromDeviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get toDeviceId => $composableBuilder(column: $table.toDeviceId, builder: (column) => column);
 
   GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -5029,6 +5095,8 @@ class $$SyncDeviceTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> fromIp = const Value.absent(),
             Value<String> toIp = const Value.absent(),
+            Value<String> fromDeviceId = const Value.absent(),
+            Value<String> toDeviceId = const Value.absent(),
             Value<String?> name = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -5040,6 +5108,8 @@ class $$SyncDeviceTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             fromIp: fromIp,
             toIp: toIp,
+            fromDeviceId: fromDeviceId,
+            toDeviceId: toDeviceId,
             name: name,
             lastSyncDate: lastSyncDate,
             rowid: rowid,
@@ -5051,6 +5121,8 @@ class $$SyncDeviceTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             required String fromIp,
             required String toIp,
+            required String fromDeviceId,
+            required String toDeviceId,
             Value<String?> name = const Value.absent(),
             Value<DateTime?> lastSyncDate = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -5062,6 +5134,8 @@ class $$SyncDeviceTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             fromIp: fromIp,
             toIp: toIp,
+            fromDeviceId: fromDeviceId,
+            toDeviceId: toDeviceId,
             name: name,
             lastSyncDate: lastSyncDate,
             rowid: rowid,

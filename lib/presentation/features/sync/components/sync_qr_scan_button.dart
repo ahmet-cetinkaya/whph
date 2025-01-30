@@ -9,16 +9,19 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/device_info_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/utils/network_utils.dart';
 import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'dart:async';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _deviceIdService = container.resolve<IDeviceIdService>();
   final VoidCallback? onSyncComplete;
 
   SyncQrScanButton({
@@ -55,6 +58,9 @@ class SyncQrScanButton extends StatelessWidget {
       }
       return;
     }
+
+    // Get local device ID
+    final localDeviceId = await _deviceIdService.getDeviceId();
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -97,8 +103,8 @@ class SyncQrScanButton extends StatelessWidget {
     try {
       GetSyncDeviceQueryResponse? existingDevice;
       try {
-        var fromIPAndToIPQuery = GetSyncDeviceQuery(fromIP: syncQrCodeMessageFromIP.localIP, toIP: toIP);
-        existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(fromIPAndToIPQuery);
+        existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
+            GetSyncDeviceQuery(fromDeviceId: syncQrCodeMessageFromIP.deviceId, toDeviceId: localDeviceId));
       } catch (e) {
         if (kDebugMode) print('DEBUG: Get device error: $e');
         existingDevice = null;
@@ -115,10 +121,13 @@ class SyncQrScanButton extends StatelessWidget {
         }
       }
 
-      var saveCommand = SaveSyncDeviceCommand(
+      final localDeviceName = await DeviceInfoHelper.getDeviceName();
+      final saveCommand = SaveSyncDeviceCommand(
         fromIP: syncQrCodeMessageFromIP.localIP,
         toIP: toIP,
-        name: syncQrCodeMessageFromIP.deviceName,
+        fromDeviceId: syncQrCodeMessageFromIP.deviceId, // Host device's ID
+        toDeviceId: localDeviceId, // Clint device's ID
+        name: "${syncQrCodeMessageFromIP.deviceName} > $localDeviceName",
         lastSyncDate: DateTime(0),
       );
 
