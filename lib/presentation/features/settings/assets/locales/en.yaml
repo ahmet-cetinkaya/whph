@@ -18,3 +18,22 @@ settings:
     title: Sync Devices
   about:
     title: About
+  import_export:
+    title: Import/Export
+    select_action: Please select an action
+  import:
+    title: Import
+    strategy:
+      title: Import Strategy
+      replace: Delete Existing Data and Add New Data
+      merge: Merge with Existing Data
+    success: Import successful
+    error: Import failed
+  export:
+    title: Export
+    select_path: Select save location
+    success: "Export successful. File location:"
+    error: Export failed
+    select_type: Select export format
+    json_description: You can use this file to import data back to the app.
+    csv_description: You can use this to view in Excel and similar applications.
