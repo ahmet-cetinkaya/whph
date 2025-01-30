@@ -64,7 +64,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
     try {
-      var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 20, search: search);
+      var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 10, search: search);
       var result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
       if (mounted) {

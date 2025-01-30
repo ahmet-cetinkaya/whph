@@ -87,20 +87,35 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   Future<void> _getTagTags() async {
-    try {
-      var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: 0, pageSize: 100);
-      var response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
-      if (mounted) {
-        setState(() {
-          _tagTags = response;
-        });
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorLoading));
+    int pageIndex = 0;
+    const int pageSize = 50;
+
+    while (true) {
+      var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: pageIndex, pageSize: pageSize);
+      try {
+        var response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
+        if (response.items.isEmpty) break;
+
+        if (mounted) {
+          setState(() {
+            if (_tagTags == null) {
+              _tagTags = response;
+            } else {
+              _tagTags!.items.addAll(response.items);
+            }
+          });
+        }
+        pageIndex++;
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(TagTranslationKeys.errorLoading),
+          );
+          break;
+        }
       }
     }
   }

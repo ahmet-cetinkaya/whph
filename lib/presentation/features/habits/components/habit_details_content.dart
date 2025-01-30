@@ -158,18 +158,35 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _getHabitTags() async {
-    try {
-      var query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: 0, pageSize: 100);
-      var response = await widget._mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
-      if (mounted) {
-        setState(() {
-          _habitTags = response;
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.loadingTagsError));
+    int pageIndex = 0;
+    const int pageSize = 50;
+
+    while (true) {
+      var query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
+      try {
+        var response = await widget._mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
+        if (response.items.isEmpty) break;
+
+        if (mounted) {
+          setState(() {
+            if (_habitTags == null) {
+              _habitTags = response;
+            } else {
+              _habitTags!.items.addAll(response.items);
+            }
+          });
+        }
+        pageIndex++;
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(HabitTranslationKeys.loadingTagsError),
+          );
+          break;
+        }
       }
     }
   }
