@@ -84,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -265,6 +265,14 @@ class AppDatabase extends _$AppDatabase {
                 END
             WHERE created_date LIKE '%T%'
           ''');
+        },
+        from10To11: (m, schema) async {
+          // First, delete all existing sync device records since we're changing the sync logic
+          await customStatement('DELETE FROM sync_device_table');
+
+          // Add new device ID columns
+          await m.addColumn(syncDeviceTable, syncDeviceTable.fromDeviceId);
+          await m.addColumn(syncDeviceTable, syncDeviceTable.toDeviceId);
         },
       ),
     );

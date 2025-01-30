@@ -135,6 +135,12 @@ class AppTheme {
     letterSpacing: 0.5,
   );
 
+  static const TextStyle labelXSmall = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
   // ThemeData definition
   static final ThemeData themeData = ThemeData(
     useMaterial3: true,

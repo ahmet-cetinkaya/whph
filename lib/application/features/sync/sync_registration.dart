@@ -7,6 +7,8 @@ import 'package:whph/application/features/sync/commands/stop_sync_command.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/application/features/sync/services/device_id_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/application/features/sync/services/sync_service.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_service.dart';
@@ -47,6 +49,9 @@ void registerSyncFeature(
   container.registerSingleton<ISyncService>((_) => SyncService(mediator));
   final syncService = container.resolve<ISyncService>();
 
+  container.registerSingleton<IDeviceIdService>((_) => DeviceIdService());
+  final deviceIdService = container.resolve<IDeviceIdService>();
+
   mediator
     ..registerHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse, SaveSyncDeviceCommandHandler>(
       () => SaveSyncDeviceCommandHandler(syncDeviceRepository: syncDeviceRepository),
@@ -77,6 +82,7 @@ void registerSyncFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        deviceIdService: deviceIdService,
       ),
     )
     ..registerHandler<StartSyncCommand, void, StartSyncCommandHandler>(

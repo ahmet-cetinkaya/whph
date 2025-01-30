@@ -202,16 +202,19 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       ],
       builder: (context) => list == null || list!.items.isEmpty
           ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))
-          : ListView.builder(
-              key: _listKey,
-              itemCount: list!.items.length,
-              itemBuilder: (context, index) {
-                return SyncDeviceListItemWidget(
-                  key: ValueKey(list!.items[index].id),
-                  item: list!.items[index],
-                  onRemove: _removeDevice,
-                );
-              },
+          : Padding(
+              padding: const EdgeInsets.all(8),
+              child: ListView.builder(
+                key: _listKey,
+                itemCount: list!.items.length,
+                itemBuilder: (context, index) {
+                  return SyncDeviceListItemWidget(
+                    key: ValueKey(list!.items[index].id),
+                    item: list!.items[index],
+                    onRemove: _removeDevice,
+                  );
+                },
+              ),
             ),
     );
   }
@@ -230,21 +233,103 @@ class SyncDeviceListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(item.name ?? _translationService.translate(SyncTranslationKeys.unnamedDevice)),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${_translationService.translate(SyncTranslationKeys.fromLabel)}: ${item.fromIp}'),
-          Text('${_translationService.translate(SyncTranslationKeys.toLabel)}: ${item.toIp}'),
-          Text(
-            '${_translationService.translate(SyncTranslationKeys.lastSyncLabel)}: ${item.lastSyncDate != null ? DateFormat('yyyy/MM/dd kk:mm:ss').format(item.lastSyncDate!.toLocal()) : 'Never'}',
+    return Card(
+      child: ListTile(
+        title: Text(item.name ?? _translationService.translate(SyncTranslationKeys.unnamedDevice)),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (Platform.isAndroid || Platform.isIOS) ...[
+                // Host
+                Row(
+                  children: [
+                    Text(
+                      '${_translationService.translate(SyncTranslationKeys.fromLabel)}:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Chip(
+                          label: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              'IP: ${item.fromIP} | ID: ${item.fromDeviceID}',
+                              style: AppTheme.labelXSmall,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 2),
+              ],
+              if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) ...[
+                // Client
+                Row(
+                  children: [
+                    Text(
+                      '${_translationService.translate(SyncTranslationKeys.toLabel)}:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Chip(
+                          label: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              'IP: ${item.toIP} | ID: ${item.toDeviceID}',
+                              style: AppTheme.labelXSmall,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 2),
+              ],
+              Row(
+                children: [
+                  Text(
+                    '${_translationService.translate(SyncTranslationKeys.lastSyncLabel)}:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 6),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Chip(
+                        label: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            item.lastSyncDate != null
+                                ? DateFormat('yyyy/MM/dd kk:mm:ss').format(item.lastSyncDate!.toLocal())
+                                : 'Never',
+                            style: AppTheme.labelXSmall,
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete),
-        onPressed: () => onRemove(item.id),
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () => onRemove(item.id),
+        ),
       ),
     );
   }
