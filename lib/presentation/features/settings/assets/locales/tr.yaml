@@ -18,3 +18,22 @@ settings:
     title: Cihazları Senkronize Et
   about:
     title: Hakkında
+  import_export:
+    title: İçe/Dışa Aktar
+    select_action: Lütfen bir işlem seçin
+  import:
+    title: İçe Aktar
+    strategy:
+      title: İçe Aktarma Stratejisi
+      replace: Mevcut Verileri Sil ve Yeni Verileri Ekle
+      merge: Mevcut Verilerle Birleştir
+    success: İçe aktarma başarılı
+    error: İçe aktarma başarısız
+  export:
+    title: Dışa Aktar
+    select_path: Kayıt konumu seçin
+    success: "Dışa aktarma başarılı. Dosya konumu:"
+    error: Dışa aktarma başarısız
+    select_type: Dışa aktarma formatını seçin
+    json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
+    csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.

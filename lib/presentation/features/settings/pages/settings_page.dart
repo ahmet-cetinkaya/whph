@@ -9,6 +9,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/features/settings/components/import_export_settings.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String route = '/settings';
@@ -62,6 +63,10 @@ class SettingsPage extends StatelessWidget {
               },
             ),
           ),
+          const SizedBox(height: 8),
+
+          // Import/Export Settings
+          const ImportExportSettings(),
           const SizedBox(height: 8),
 
           // About

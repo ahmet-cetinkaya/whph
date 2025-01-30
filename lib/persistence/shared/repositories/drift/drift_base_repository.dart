@@ -201,4 +201,9 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
       throw Exception('Unsupported variable type');
     }
   }
+
+  @override
+  Future<void> truncate() async {
+    await database.customStatement('DELETE FROM ${table.actualTableName}');
+  }
 }

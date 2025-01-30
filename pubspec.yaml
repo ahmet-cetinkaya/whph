@@ -62,6 +62,8 @@ dependencies:
   web_socket_channel: ^3.0.1
   window_manager: ^0.4.3
   archive: ^3.4.9
+  file_picker: ^8.3.1
+  csv: ^6.0.0
 
   # UI
   calendar_date_picker2: ^1.1.8
@@ -87,6 +89,7 @@ dependencies:
   # Mobile
   flutter_local_notifications: ^15.1.1
   qr_code_scanner_plus: ^2.0.6
+
 
 
 dev_dependencies:
