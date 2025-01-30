@@ -131,3 +131,5 @@ habits:
       fri: Cum
       sat: Cmt
       sun: Paz
+  list:
+    no_habits_found: Alışkanlık bulunamadı
