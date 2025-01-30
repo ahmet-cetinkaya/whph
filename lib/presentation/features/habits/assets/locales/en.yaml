@@ -1,5 +1,7 @@
 habits:
   new_habit: New Habit
+  tooltips:
+    edit_name: Edit Name
   delete:
     confirm_title: Delete Habit
     confirm_message: Are you sure you want to delete this habit?

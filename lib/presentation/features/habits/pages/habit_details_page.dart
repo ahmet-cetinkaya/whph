@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/habits/components/habit_delete_button.dart';
 import 'package:whph/presentation/features/habits/components/habit_details_content.dart';
-import 'package:whph/presentation/features/habits/components/habit_title_input_field.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
@@ -18,21 +17,12 @@ class HabitDetailsPage extends StatefulWidget {
 }
 
 class _HabitDetailsPageState extends State<HabitDetailsPage> {
-  Key _titleKey = UniqueKey();
-  Key _contentKey = UniqueKey();
+  String? _title;
 
-  void _refreshTitle() {
+  void _refreshTitle(String title) {
     if (mounted) {
       setState(() {
-        _titleKey = UniqueKey();
-      });
-    }
-  }
-
-  void _refreshContent() {
-    if (mounted) {
-      setState(() {
-        _contentKey = UniqueKey();
+        _title = title.replaceAll('\n', ' ');
       });
     }
   }
@@ -40,11 +30,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
-      appBarTitle: HabitNameInputField(
-        key: _titleKey,
-        habitId: widget.habitId,
-        onHabitUpdated: _refreshContent,
-      ),
+      appBarTitle: _title != null ? Text(_title!) : null,
       appBarActions: [
         HabitDeleteButton(
           habitId: widget.habitId,
@@ -60,9 +46,8 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: HabitDetailsContent(
-          key: _contentKey,
           habitId: widget.habitId,
-          onHabitUpdated: _refreshTitle,
+          onNameUpdated: _refreshTitle,
         ),
       ),
     );

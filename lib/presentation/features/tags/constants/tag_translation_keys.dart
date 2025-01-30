@@ -80,4 +80,6 @@ class TagTranslationKeys {
   // Overview Help
   static const String overviewHelpTitle = 'tags.help.overview.title';
   static const String overviewHelpContent = 'tags.help.overview.content';
+
+  static const String editNameTooltip = 'tags.tooltips.edit_name';
 }

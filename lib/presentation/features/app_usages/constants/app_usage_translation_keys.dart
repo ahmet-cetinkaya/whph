@@ -40,4 +40,6 @@ class AppUsageTranslationKeys {
   static const String filterTagsButton = 'app_usages.pages.view.buttons.filter_tags';
   static const String viewHelpTitle = 'app_usages.pages.view.help.title';
   static const String viewHelpContent = 'app_usages.pages.view.help.content';
+
+  static const String editNameTooltip = 'app_usages.tooltips.edit_name';
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
@@ -13,7 +15,6 @@ import 'package:whph/presentation/shared/components/color_picker.dart' as color_
 import 'package:whph/presentation/shared/components/color_preview.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -28,11 +29,13 @@ class AppUsageDetailsContent extends StatefulWidget {
 
   final String id;
   final VoidCallback? onAppUsageUpdated;
+  final Function(String)? onNameUpdated;
 
   AppUsageDetailsContent({
     super.key,
     required this.id,
     this.onAppUsageUpdated,
+    this.onNameUpdated,
   });
 
   @override
@@ -43,6 +46,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   GetAppUsageQueryResponse? _appUsage;
   GetListAppUsageTagsQueryResponse? _appUsageTags;
   final _translationService = container.resolve<ITranslationService>();
+  final _nameController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -53,6 +58,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _debounce?.cancel();
     widget._appUsagesService.onAppUsageSaved.removeListener(_getAppUsage);
     super.dispose();
   }
@@ -68,6 +75,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       if (mounted) {
         setState(() {
           _appUsage = response;
+          if (_nameController.text != response.displayName) {
+            // Check displayName instead of name
+            _nameController.text = response.displayName ?? response.name;
+            widget.onNameUpdated?.call(response.displayName ?? response.name);
+          }
         });
       }
     } on BusinessException catch (e) {
@@ -85,30 +97,39 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _saveAppUsage() async {
-    var command = SaveAppUsageCommand(
-      id: widget.id,
-      displayName: _appUsage!.displayName,
-      name: _appUsage!.name,
-      color: _appUsage!.color,
-      deviceName: _appUsage!.deviceName,
-    );
-    try {
-      var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    final currentSelection = _nameController.selection;
 
-      widget._appUsagesService.onAppUsageSaved.value = result;
-      widget.onAppUsageUpdated?.call();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
-        );
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      var command = SaveAppUsageCommand(
+        id: widget.id,
+        name: _appUsage!.name,
+        displayName: _nameController.text,
+        color: _appUsage!.color,
+        deviceName: _appUsage!.deviceName,
+      );
+      try {
+        var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+
+        widget._appUsagesService.onAppUsageSaved.value = result;
+        widget.onAppUsageUpdated?.call();
+
+        if (mounted) {
+          _nameController.selection = currentSelection;
+        }
+      } on BusinessException catch (e) {
+        if (mounted) ErrorHelper.showError(context, e);
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
+          );
+        }
       }
-    }
+    });
   }
 
   Future<void> _getAppUsageAppUsages() async {
@@ -218,6 +239,24 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextFormField(
+            controller: _nameController,
+            maxLines: null,
+            onChanged: (value) async {
+              await _saveAppUsage();
+              widget.onNameUpdated?.call(value);
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              suffixIcon: Tooltip(
+                message: _translationService.translate(AppUsageTranslationKeys.editNameTooltip),
+                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+              ),
+            ),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
           DetailTable(rowData: [
             // Device Label
             DetailTableRowData(

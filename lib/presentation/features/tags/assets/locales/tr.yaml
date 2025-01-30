@@ -84,8 +84,9 @@ tags:
     archive_tag: Etiketi arşivle
     unarchive_tag: Etiketi arşivden çıkar
     add_task: Yeni görev ekle
-    color: Etikete renk atamak için tıklayın
-    select: Etiket seçmek için tıklayın
+    color: Etikete renk ata
+    select: Etiket seç
+    edit_name: İsmi düzenle
   search:
     label: Etiket ara
     clear_all: Tümünü Temizle

@@ -1,4 +1,6 @@
 app_usages:
+  tooltips:
+    edit_name: İsmi düzenle
   delete:
     confirm_title: Uygulama Kullanımını Sil
     error: Uygulama kullanımı silinirken beklenmedik bir hata oluştu.
