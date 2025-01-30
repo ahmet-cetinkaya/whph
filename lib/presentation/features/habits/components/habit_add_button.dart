@@ -50,6 +50,7 @@ class _HabitAddButtonState extends State<HabitAddButton> {
         backgroundColor:
             widget.buttonBackgroundColor != null ? WidgetStatePropertyAll<Color>(widget.buttonBackgroundColor!) : null,
       ),
+      tooltip: _translationService.translate(HabitTranslationKeys.addHabit),
     );
   }
 }

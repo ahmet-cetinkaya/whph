@@ -73,4 +73,6 @@ class HabitTranslationKeys {
   static const String filterByTagsTooltip = 'habits.overview.filter_by_tags_tooltip';
 
   static const String editNameTooltip = 'habits.tooltips.edit_name';
+
+  static const String addHabit = 'habits.tooltips.add_habit';
 }
