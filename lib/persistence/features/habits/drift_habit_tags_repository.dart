@@ -37,7 +37,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
 
   @override
   Future<bool> anyByHabitIdAndTagId(String habitId, String tagId) {
-    var query = database.customSelect(
+    final query = database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND tag_id = ? AND deleted_date IS NULL',
       variables: [Variable.withString(habitId), Variable.withString(tagId)],
     );

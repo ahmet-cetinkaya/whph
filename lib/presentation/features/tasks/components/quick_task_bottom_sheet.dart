@@ -68,7 +68,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     setState(() => _isLoading = true);
 
     try {
-      var command = SaveTaskCommand(
+      final command = SaveTaskCommand(
         title: _titleController.text,
         description: "",
         tagIdsToAdd: widget.initialTagIds,
@@ -78,7 +78,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         deadlineDate: _deadlineDate,
         isCompleted: false,
       );
-      var response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+      final response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (widget.onTaskCreated != null) {
         widget.onTaskCreated!(response.id);

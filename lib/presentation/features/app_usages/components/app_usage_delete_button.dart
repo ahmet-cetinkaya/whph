@@ -32,7 +32,7 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   final _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteAppUsage(BuildContext context) async {
-    var command = DeleteAppUsageCommand(id: widget.appUsageId);
+    final command = DeleteAppUsageCommand(id: widget.appUsageId);
     try {
       await _mediator.send(command);
 

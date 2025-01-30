@@ -62,11 +62,11 @@ Future<void> runDesktopWorkers() async {
   if (!kDebugMode) await windowManager.setMinimumSize(const Size(800, 600));
 
   // Initialize system tray service
-  var systemTrayService = container.resolve<ISystemTrayService>();
+  final systemTrayService = container.resolve<ISystemTrayService>();
   await systemTrayService.init();
 
   // Ensure startup settings are synced
-  var startupService = container.resolve<IStartupSettingsService>();
+  final startupService = container.resolve<IStartupSettingsService>();
   await startupService.ensureStartupSettingSync();
 
   // Check if app should start minimized

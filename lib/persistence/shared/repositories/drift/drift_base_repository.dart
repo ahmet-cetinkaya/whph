@@ -160,16 +160,16 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   @override
   Future<SyncData<TEntity>> getSyncData(DateTime lastSyncDate) async {
     Future<List<TEntity>> queryToGetSyncData(String columnName) async {
-      var a = database.customSelect(
+      final a = database.customSelect(
         'SELECT * FROM ${table.actualTableName} WHERE $columnName > ?',
         variables: [Variable.withDateTime(lastSyncDate)],
         readsFrom: {table},
       );
-      var b = a.map((row) => table.map(row.data));
-      var c = b.asyncMap(
+      final b = a.map((row) => table.map(row.data));
+      final c = b.asyncMap(
         (entity) async => entity is Future<TEntity> ? await entity : entity,
       );
-      var d = await c.get();
+      final d = await c.get();
       return d;
     }
 

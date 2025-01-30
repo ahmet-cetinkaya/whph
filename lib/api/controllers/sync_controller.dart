@@ -7,7 +7,7 @@ class SyncController {
   final Mediator _mediator = container.resolve<Mediator>();
 
   Future<SyncCommandResponse> sync(SyncDataDto syncData) async {
-    var command = SyncCommand(syncDataDto: syncData);
+    final command = SyncCommand(syncDataDto: syncData);
     SyncCommandResponse response = await _mediator.send<SyncCommand, SyncCommandResponse>(command);
     return response;
   }

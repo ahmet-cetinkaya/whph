@@ -49,7 +49,7 @@ class GetListHabitTagsQueryHandler implements IRequestHandler<GetListHabitTagsQu
         customWhereFilter: CustomWhereFilter("habit_id = ?", [request.habitId]));
 
     List<HabitTagListItem> listItems = [];
-    for (var habitTag in habitTags.items) {
+    for (final habitTag in habitTags.items) {
       Tag secondaryTag = (await _tagRepository.getById(habitTag.tagId))!;
       listItems.add(HabitTagListItem(
         id: habitTag.id,

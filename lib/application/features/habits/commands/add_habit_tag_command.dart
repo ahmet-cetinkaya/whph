@@ -34,7 +34,7 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
       throw BusinessException('Habit tag already exists');
     }
 
-    var habitTag = HabitTag(
+    final habitTag = HabitTag(
       id: nanoid(),
       createdDate: DateTime.now(),
       habitId: request.habitId,

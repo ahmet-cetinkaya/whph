@@ -94,13 +94,13 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     List<TaskListItem> taskListItems = [];
 
-    for (var task in tasks.items) {
+    for (final task in tasks.items) {
       // Fetch tags for each task
       PaginatedList<TaskTag> taskTags =
           await _taskTagRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("task_id = ?", [task.id]));
 
-      var tagItems = await Future.wait(taskTags.items.map((tt) async {
-        var tag = await _tagRepository.getById(tt.tagId);
+      final tagItems = await Future.wait(taskTags.items.map((tt) async {
+        final tag = await _tagRepository.getById(tt.tagId);
 
         return TagListItem(
           id: tt.tagId,
@@ -146,8 +146,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
       customWhereFilter ??= CustomWhereFilter.empty();
 
-      var plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
-      var plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
+      final plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
+      final plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
 
       customWhereFilter.query += "(planned_date >= ? AND planned_date < ?)";
 
@@ -158,8 +158,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
       customWhereFilter ??= CustomWhereFilter.empty();
 
-      var dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
-      var dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
+      final dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
+      final dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
 
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += request.filterDateOr ? " OR " : " AND ";
       customWhereFilter.query += "(deadline_date >= ? AND deadline_date < ?)";

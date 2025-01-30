@@ -85,10 +85,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // Get all records for statistics calculation using pagination
-    var records = await _getAllHabitRecords(habit.id);
-    var habitRecords = records.where((r) => r.deletedDate == null).toList();
+    final records = await _getAllHabitRecords(habit.id);
+    final habitRecords = records.where((r) => r.deletedDate == null).toList();
 
-    var statistics = await _calculateStatistics(habit, habitRecords);
+    final statistics = await _calculateStatistics(habit, habitRecords);
 
     return GetHabitQueryResponse(
       id: habit.id,
@@ -96,7 +96,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       modifiedDate: habit.modifiedDate,
       name: habit.name,
       description: habit.description,
-      estimatedTime: habit.estimatedTime, // estimatedTime değerini ekle
+      estimatedTime: habit.estimatedTime,
       statistics: statistics,
     );
   }
@@ -108,7 +108,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     bool hasMoreRecords = true;
 
     while (hasMoreRecords) {
-      var result = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+      final result = await _habitRecordRepository.getListByHabitIdAndRangeDate(
         habitId,
         DateTime(1970),
         DateTime.now(),
@@ -125,47 +125,48 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   }
 
   Future<HabitStatistics> _calculateStatistics(Habit habit, List<HabitRecord> records) async {
-    var now = DateTime.now();
-    var startOfMonth = DateTime(now.year, now.month, 1);
-    var startOfYear = DateTime(now.year, 1, 1);
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final startOfYear = DateTime(now.year, 1, 1);
 
     // Calculate overall score based on first record date
     var overallScore = 0.0;
     if (records.isNotEmpty) {
-      var sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
-      var firstRecordDate = sortedRecords.first.date;
-      var daysFromFirstRecord = now.difference(firstRecordDate).inDays + 1;
+      final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+      final firstRecordDate = sortedRecords.first.date;
+      final daysFromFirstRecord = now.difference(firstRecordDate).inDays + 1;
       overallScore = records.length / daysFromFirstRecord;
     }
 
     // Calculate monthly score
-    var daysInCurrentMonth = now.difference(startOfMonth).inDays + 1;
-    var monthlyRecords = records.where((r) => r.date.isAfter(startOfMonth) || _isSameDay(r.date, startOfMonth)).length;
-    var monthlyScore = monthlyRecords / daysInCurrentMonth;
+    final daysInCurrentMonth = now.difference(startOfMonth).inDays + 1;
+    final monthlyRecords =
+        records.where((r) => r.date.isAfter(startOfMonth) || _isSameDay(r.date, startOfMonth)).length;
+    final monthlyScore = monthlyRecords / daysInCurrentMonth;
 
     // Calculate yearly score
-    var daysInCurrentYear = now.difference(startOfYear).inDays + 1;
-    var yearlyRecords = records.where((r) => r.date.isAfter(startOfYear) || _isSameDay(r.date, startOfYear)).length;
-    var yearlyScore = yearlyRecords / daysInCurrentYear;
+    final daysInCurrentYear = now.difference(startOfYear).inDays + 1;
+    final yearlyRecords = records.where((r) => r.date.isAfter(startOfYear) || _isSameDay(r.date, startOfYear)).length;
+    final yearlyScore = yearlyRecords / daysInCurrentYear;
 
     // Calculate monthly scores for the last 12 months
-    var monthlyScores = <MapEntry<DateTime, double>>[];
+    final monthlyScores = <MapEntry<DateTime, double>>[];
     for (var i = 11; i >= 0; i--) {
-      var month = DateTime(now.year, now.month - i, 1);
-      var nextMonth = DateTime(month.year, month.month + 1, 1);
-      var monthRecords = records.where((r) => r.date.isAfter(month) && r.date.isBefore(nextMonth)).length;
-      var daysInMonth = nextMonth.difference(month).inDays;
+      final month = DateTime(now.year, now.month - i, 1);
+      final nextMonth = DateTime(month.year, month.month + 1, 1);
+      final monthRecords = records.where((r) => r.date.isAfter(month) && r.date.isBefore(nextMonth)).length;
+      final daysInMonth = nextMonth.difference(month).inDays;
       monthlyScores.add(MapEntry(month, monthRecords / daysInMonth));
     }
 
     // Calculate top streaks
-    var streaks = _calculateStreaks(records);
-    var topStreaks = streaks.take(5).toList();
+    final streaks = _calculateStreaks(records);
+    final topStreaks = streaks.take(5).toList();
 
     // Calculate yearly frequency
-    var yearlyFrequency = <int, int>{};
-    for (var record in records) {
-      var dayOfYear = record.date.difference(DateTime(record.date.year, 1, 1)).inDays;
+    final yearlyFrequency = <int, int>{};
+    for (final record in records) {
+      final dayOfYear = record.date.difference(DateTime(record.date.year, 1, 1)).inDays;
       yearlyFrequency[dayOfYear] = (yearlyFrequency[dayOfYear] ?? 0) + 1;
     }
 
@@ -187,14 +188,14 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   List<HabitStreak> _calculateStreaks(List<HabitRecord> records) {
     if (records.isEmpty) return [];
 
-    var sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
 
-    var streaks = <HabitStreak>[];
+    final streaks = <HabitStreak>[];
     var streakStart = sortedRecords.first.date;
     var lastDate = streakStart;
 
     for (var i = 1; i < sortedRecords.length; i++) {
-      var record = sortedRecords[i];
+      final record = sortedRecords[i];
       if (record.date.difference(lastDate).inDays > 1) {
         if (lastDate.difference(streakStart).inDays >= 2) {
           streaks.add(HabitStreak(

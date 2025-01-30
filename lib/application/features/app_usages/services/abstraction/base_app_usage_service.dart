@@ -111,7 +111,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     // Get all active rules
     final rules = await _appUsageTagRuleRepository.getAll();
 
-    for (var rule in rules) {
+    for (final rule in rules) {
       try {
         // Check if pattern matches
         final pattern = RegExp(rule.pattern);

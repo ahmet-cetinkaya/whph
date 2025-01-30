@@ -47,7 +47,7 @@ class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuer
         customWhereFilter: CustomWhereFilter("task_id = ?", [request.taskId]));
 
     List<TaskTagListItem> listItems = [];
-    for (var taskTag in taskTags.items) {
+    for (final taskTag in taskTags.items) {
       Tag secondaryTag = (await _tagRepository.getById(taskTag.tagId))!;
       listItems.add(TaskTagListItem(
         id: taskTag.id,

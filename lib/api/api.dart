@@ -105,14 +105,14 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'sync':
-        var syncData = parsedMessage.data;
+        final syncData = parsedMessage.data;
         if (syncData == null) {
           throw FormatException('Sync message missing data');
         }
 
-        var controller = SyncController();
+        final controller = SyncController();
         try {
-          var response = await controller.sync(SyncDataDto.fromJson(syncData as Map<String, dynamic>));
+          final response = await controller.sync(SyncDataDto.fromJson(syncData as Map<String, dynamic>));
 
           WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
             'syncDataDto': response.syncDataDto,

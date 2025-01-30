@@ -42,14 +42,14 @@ class _AppUsageCardState extends State<AppUsageCard> {
   }
 
   Future<void> _getAppUsageTags() async {
-    var query = GetListAppUsageTagsQuery(
+    final query = GetListAppUsageTagsQuery(
       appUsageId: widget.appUsage.id,
       pageIndex: 0,
       pageSize: 5,
     );
 
     try {
-      var result = await widget.mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+      final result = await widget.mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
 
       if (mounted) {
         setState(() {

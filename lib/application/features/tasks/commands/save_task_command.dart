@@ -83,8 +83,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
     // Add initial tags if provided
     if (request.tagIdsToAdd != null) {
-      for (var tagId in request.tagIdsToAdd!) {
-        var taskTag = TaskTag(
+      for (final tagId in request.tagIdsToAdd!) {
+        final taskTag = TaskTag(
           id: nanoid(),
           taskId: task.id,
           tagId: tagId,

@@ -25,11 +25,11 @@ class _HabitAddButtonState extends State<HabitAddButton> {
 
   Future<void> _createHabit(BuildContext context) async {
     try {
-      var command = SaveHabitCommand(
+      final command = SaveHabitCommand(
         name: _translationService.translate(HabitTranslationKeys.newHabit),
         description: "",
       );
-      var response = await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+      final response = await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
       if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
     } catch (e, stackTrace) {

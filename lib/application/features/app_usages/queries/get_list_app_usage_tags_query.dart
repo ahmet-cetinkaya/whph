@@ -52,7 +52,7 @@ class GetListAppUsageTagsQueryHandler
     );
 
     List<AppUsageTagListItem> listItems = [];
-    for (var appUsageTag in appUsageTags.items) {
+    for (final appUsageTag in appUsageTags.items) {
       Tag secondaryTag = (await _tagRepository.getById(appUsageTag.tagId))!;
       listItems.add(AppUsageTagListItem(
         id: appUsageTag.id,

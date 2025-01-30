@@ -102,7 +102,7 @@ class _TaskListState extends State<TaskList> {
     });
 
     try {
-      var query = GetListTasksQuery(
+      final query = GetListTasksQuery(
           pageIndex: pageIndex,
           pageSize: widget.size,
           filterByPlannedStartDate: widget.filterByPlannedStartDate,
@@ -113,7 +113,7 @@ class _TaskListState extends State<TaskList> {
           filterByTags: widget.filterByTags,
           filterByCompleted: widget.filterByCompleted,
           searchQuery: widget.search);
-      var result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
+      final result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
       if (mounted) {
         setState(() {

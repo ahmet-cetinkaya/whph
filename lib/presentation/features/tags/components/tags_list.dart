@@ -44,13 +44,13 @@ class _TagsListState extends State<TagsList> {
 
   Future<void> _getTags({int pageIndex = 0}) async {
     try {
-      var query = GetListTagsQuery(
+      final query = GetListTagsQuery(
         pageIndex: pageIndex,
         pageSize: _pageSize,
         filterByTags: widget.filterByTags,
         showArchived: widget.showArchived,
       );
-      var result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+      final result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
       if (mounted) {
         setState(() {

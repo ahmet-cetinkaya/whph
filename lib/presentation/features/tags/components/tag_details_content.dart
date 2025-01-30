@@ -65,8 +65,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   Future<void> _getTag() async {
     try {
-      var query = GetTagQuery(id: widget.tagId);
-      var response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
+      final query = GetTagQuery(id: widget.tagId);
+      final response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       if (mounted) {
         setState(() {
           _tag = response;
@@ -91,10 +91,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     const int pageSize = 50;
 
     while (true) {
-      var query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: pageIndex, pageSize: pageSize);
+      final query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        var response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
-        if (response.items.isEmpty) break;
+        final response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -121,28 +120,28 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   Future<void> _addTag(String tagId) async {
-    var command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
+    final command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
     await widget._mediator.send(command);
     await _getTagTags();
   }
 
   Future<void> _removeTag(String id) async {
-    var command = RemoveTagTagCommand(id: id);
+    final command = RemoveTagTagCommand(id: id);
     await widget._mediator.send(command);
     await _getTagTags();
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
-    var tagOptionsToAdd = tagOptions
+    final tagOptionsToAdd = tagOptions
         .where((tagOption) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagOption.value))
         .toList();
-    var tagTagsToRemove =
+    final tagTagsToRemove =
         _tagTags!.items.where((tagTag) => !tagOptions.map((tag) => tag.value).contains(tagTag.secondaryTagId)).toList();
 
-    for (var tagOption in tagOptionsToAdd) {
+    for (final tagOption in tagOptionsToAdd) {
       _addTag(tagOption.value);
     }
-    for (var tagTag in tagTagsToRemove) {
+    for (final tagTag in tagTagsToRemove) {
       _removeTag(tagTag.id);
     }
   }
@@ -152,7 +151,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     final currentSelection = _nameController.selection;
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      var command = SaveTagCommand(
+      final command = SaveTagCommand(
         id: widget.tagId,
         name: _nameController.text,
         color: _tag!.color,

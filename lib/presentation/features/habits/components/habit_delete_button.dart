@@ -33,7 +33,7 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
 
   Future<void> _deleteHabit(BuildContext context) async {
     try {
-      var command = DeleteHabitCommand(id: widget.habitId);
+      final command = DeleteHabitCommand(id: widget.habitId);
       await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {

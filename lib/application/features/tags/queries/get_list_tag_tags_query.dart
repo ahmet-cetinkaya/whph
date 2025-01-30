@@ -58,7 +58,7 @@ class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery,
     );
 
     List<TagTagListItem> listItems = [];
-    for (var tagTag in tagTags.items) {
+    for (final tagTag in tagTags.items) {
       Tag primaryTag = (await _tagRepository.getById(tagTag.primaryTagId))!;
       Tag secondaryTag = (await _tagRepository.getById(tagTag.secondaryTagId))!;
       listItems.add(TagTagListItem(

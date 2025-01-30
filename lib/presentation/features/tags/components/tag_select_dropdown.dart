@@ -64,8 +64,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
     try {
-      var query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 10, search: search);
-      var result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+      final query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 10, search: search);
+      final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -160,7 +160,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       controller: _scrollController,
                       itemCount: _tags?.items.length ?? 0,
                       itemBuilder: (context, index) {
-                        var tag = _tags!.items[index];
+                        final tag = _tags!.items[index];
                         return CheckboxListTile(
                           title: Text(tag.name),
                           value: tempSelectedTags.contains(tag.id),

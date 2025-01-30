@@ -47,7 +47,7 @@ class SaveTaskTimeRecordCommandHandler
       return SaveTaskTimeRecordCommandResponse(id: existingRecord.id);
     }
 
-    var taskTimeRecord = TaskTimeRecord(
+    final taskTimeRecord = TaskTimeRecord(
       id: nanoid(),
       taskId: request.taskId,
       duration: request.duration,

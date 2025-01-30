@@ -33,7 +33,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
       throw BusinessException('Task tag already exists');
     }
 
-    var taskTag = TaskTag(
+    final taskTag = TaskTag(
       id: nanoid(),
       createdDate: DateTime.now(),
       taskId: request.taskId,

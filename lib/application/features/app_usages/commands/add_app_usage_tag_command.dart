@@ -34,7 +34,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
       throw BusinessException('App usage tag already exists');
     }
 
-    var appUsageTag = AppUsageTag(
+    final appUsageTag = AppUsageTag(
       id: nanoid(),
       createdDate: DateTime.now(),
       appUsageId: request.appUsageId,

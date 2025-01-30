@@ -39,7 +39,7 @@ class TaskCard extends StatelessWidget {
   Future<void> _handleSchedule(DateTime date) async {
     final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
 
-    var command = SaveTaskCommand(
+    final command = SaveTaskCommand(
       id: task.id,
       title: task.title,
       priority: task.priority,

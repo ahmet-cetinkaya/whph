@@ -24,11 +24,11 @@ class NetworkUtils {
         );
 
         // Check the most probable interfaces first
-        for (var interface in interfaces) {
+        for (final interface in interfaces) {
           if (interface.name.toLowerCase().contains('wlan') ||
               interface.name.toLowerCase().contains('wi-fi') ||
               interface.name.toLowerCase().contains('eth')) {
-            for (var addr in interface.addresses) {
+            for (final addr in interface.addresses) {
               // Check for local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
               if (_isValidLocalNetworkIP(addr.address)) {
                 if (kDebugMode) print('DEBUG: Found local IP: ${addr.address} on interface: ${interface.name}');
@@ -39,8 +39,8 @@ class NetworkUtils {
         }
 
         // If not found, check all interfaces
-        for (var interface in interfaces) {
-          for (var addr in interface.addresses) {
+        for (final interface in interfaces) {
+          for (final addr in interface.addresses) {
             if (_isValidLocalNetworkIP(addr.address)) {
               if (kDebugMode) print('DEBUG: Found fallback IP: ${addr.address} on interface: ${interface.name}');
               return addr.address;

@@ -48,8 +48,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
     try {
-      var query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
-      var response = await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
+      final query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
+      final response = await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -70,7 +70,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
   Future<void> _removeDevice(String id) async {
     try {
-      var command = DeleteSyncDeviceCommand(id: id);
+      final command = DeleteSyncDeviceCommand(id: id);
       await _mediator.send<DeleteSyncDeviceCommand, void>(command);
       if (mounted) {
         setState(() {
@@ -121,7 +121,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
     try {
       if (kDebugMode) print('DEBUG: Starting sync process...');
-      var command = SyncCommand();
+      final command = SyncCommand();
       await _mediator.send<SyncCommand, void>(command);
 
       // Add a small delay before refreshing the devices list
