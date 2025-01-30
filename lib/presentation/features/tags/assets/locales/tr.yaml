@@ -73,6 +73,7 @@ tags:
     name: İsim
     color: Renk
     description: Açıklama
+    tags: Etiketler
   list:
     no_habits_found: Alışkanlık bulunamadı
     no_tags_found: Etiket bulunamadı
