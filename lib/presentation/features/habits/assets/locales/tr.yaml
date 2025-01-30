@@ -1,5 +1,7 @@
 habits:
   new_habit: Yeni Alışkanlık
+  tooltips:
+    edit_name: İsmi düzenle
   delete:
     confirm_title: Alışkanlığı Sil
     confirm_message: Bu alışkanlığı silmek istediğinize emin misiniz?

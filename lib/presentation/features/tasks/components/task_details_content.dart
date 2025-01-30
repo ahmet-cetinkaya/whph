@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:markdown_editor_plus/widgets/markdown_auto_preview.dart';
@@ -31,11 +33,15 @@ class TaskDetailsContent extends StatefulWidget {
 
   final String taskId;
   final VoidCallback? onTaskUpdated;
+  final Function(String)? onTitleUpdated;
+  final Function(bool)? onCompletedChanged;
 
   TaskDetailsContent({
     super.key,
     required this.taskId,
     this.onTaskUpdated,
+    this.onTitleUpdated,
+    this.onCompletedChanged,
   });
 
   @override
@@ -48,6 +54,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _plannedDateController = TextEditingController();
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final _titleController = TextEditingController();
+  Timer? _debounce;
 
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
@@ -60,6 +68,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   @override
   void dispose() {
+    _titleController.dispose();
+    _debounce?.cancel();
     widget._tasksService.onTaskSaved.removeListener(_getTask);
     super.dispose();
   }
@@ -76,6 +86,11 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted) {
         setState(() {
           _task = response;
+          if (_titleController.text != response.title) {
+            _titleController.text = response.title;
+            widget.onTitleUpdated?.call(response.title);
+          }
+          widget.onCompletedChanged?.call(response.isCompleted);
           _priorityOptions = [
             DropdownOption(label: widget._translationService.translate(TaskTranslationKeys.priorityNone), value: null),
             DropdownOption(
@@ -138,32 +153,41 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _updateTask() async {
-    var saveCommand = SaveTaskCommand(
-      id: _task!.id,
-      title: _task!.title,
-      description: _descriptionController.text,
-      plannedDate: DateTime.tryParse(_plannedDateController.text),
-      deadlineDate: DateTime.tryParse(_deadlineDateController.text),
-      priority: _task!.priority,
-      estimatedTime: _task!.estimatedTime,
-      isCompleted: _task!.isCompleted,
-    );
-    try {
-      var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-      widget._tasksService.onTaskSaved.value = result;
-      widget.onTaskUpdated?.call();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: widget._translationService.translate(TaskTranslationKeys.saveTaskError),
-        );
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    final currentSelection = _titleController.selection;
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      var saveCommand = SaveTaskCommand(
+        id: _task!.id,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        plannedDate: DateTime.tryParse(_plannedDateController.text),
+        deadlineDate: DateTime.tryParse(_deadlineDateController.text),
+        priority: _task!.priority,
+        estimatedTime: _task!.estimatedTime,
+        isCompleted: _task!.isCompleted,
+      );
+      try {
+        var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+        widget._tasksService.onTaskSaved.value = result;
+        widget.onTaskUpdated?.call();
+
+        if (mounted) {
+          _titleController.selection = currentSelection;
+        }
+      } on BusinessException catch (e) {
+        if (mounted) ErrorHelper.showError(context, e);
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: widget._translationService.translate(TaskTranslationKeys.saveTaskError),
+          );
+        }
       }
-    }
+    });
   }
 
   Future<void> _addTag(String tagId) async {
@@ -230,6 +254,25 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Task Title
+            TextFormField(
+              controller: _titleController,
+              maxLines: null,
+              onChanged: (value) async {
+                await _updateTask();
+                widget.onTitleUpdated?.call(value);
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                suffixIcon: Tooltip(
+                  message: widget._translationService.translate(TaskTranslationKeys.editTitleTooltip),
+                  child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+                ),
+              ),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: AppTheme.sizeMedium),
             DetailTable(rowData: [
               _buildTagsSection(),
               _buildPrioritySection(),

@@ -85,6 +85,7 @@ tags:
     archive_tag: Archive tag
     unarchive_tag: Unarchive tag
     add_task: Add new task
+    edit_name: Edit name
   search:
     label: Search tags
     clear_all: Clear All

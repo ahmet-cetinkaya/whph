@@ -25,7 +25,7 @@ class TagSelectDropdown extends StatefulWidget {
   final int? limit;
   final bool showSelectedInDropdown;
 
-  TagSelectDropdown({
+  const TagSelectDropdown({
     super.key,
     this.initialSelectedTags = const [],
     this.excludeTagIds = const [],

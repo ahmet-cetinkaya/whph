@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:mediatr/mediatr.dart';
@@ -30,11 +32,13 @@ class HabitDetailsContent extends StatefulWidget {
 
   final String habitId;
   final VoidCallback? onHabitUpdated;
+  final Function(String)? onNameUpdated;
 
   HabitDetailsContent({
     super.key,
     required this.habitId,
     this.onHabitUpdated,
+    this.onNameUpdated,
   });
 
   @override
@@ -45,6 +49,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  Timer? _debounce;
 
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
@@ -67,6 +72,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     widget._habitsService.onHabitSaved.removeListener(_getHabit);
     _nameController.dispose();
     _descriptionController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -78,7 +84,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (mounted) {
         setState(() {
           _habit = result;
-          _nameController.text = _habit!.name;
+          if (_nameController.text != result.name) {
+            _nameController.text = result.name;
+            widget.onNameUpdated?.call(result.name);
+          }
           _descriptionController.text = _habit!.description;
         });
       }
@@ -211,27 +220,36 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _saveHabit() async {
-    try {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    final currentSelection = _nameController.selection;
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
       var command = SaveHabitCommand(
         id: widget.habitId,
         name: _nameController.text,
         description: _descriptionController.text,
         estimatedTime: _habit!.estimatedTime,
       );
-      var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+      try {
+        var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-      widget._habitsService.onHabitSaved.value = result;
-      widget.onHabitUpdated?.call();
-    } on BusinessException catch (e) {
-      if (mounted) {
-        ErrorHelper.showError(context, e);
+        widget._habitsService.onHabitSaved.value = result;
+        widget.onHabitUpdated?.call();
+
+        if (mounted) {
+          _nameController.selection = currentSelection;
+        }
+      } on BusinessException catch (e) {
+        if (mounted) {
+          ErrorHelper.showError(context, e);
+        }
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
+              message: _translationService.translate(HabitTranslationKeys.savingDetailsError));
+        }
       }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.savingDetailsError));
-      }
-    }
+    });
   }
 
   void _previousMonth() {
@@ -264,6 +282,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextFormField(
+            controller: _nameController,
+            maxLines: null,
+            onChanged: (value) async {
+              await _saveHabit();
+              widget.onNameUpdated?.call(value);
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              suffixIcon: Tooltip(
+                message: _translationService.translate(HabitTranslationKeys.editNameTooltip),
+                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+              ),
+            ),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
           // Tags ve Estimated Time Table
           DetailTable(rowData: [
             _buildTagsSection(),
@@ -321,15 +357,18 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         label: _translationService.translate(HabitTranslationKeys.tagsLabel),
         icon: HabitUiConstants.tagsIcon,
         hintText: _translationService.translate(HabitTranslationKeys.tagsHint),
-        widget: TagSelectDropdown(
-          key: ValueKey(_habitTags!.items.length),
-          isMultiSelect: true,
-          onTagsSelected: _onTagsSelected,
-          showSelectedInDropdown: true,
-          initialSelectedTags:
-              _habitTags!.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
-          icon: SharedUiConstants.addIcon,
-        ),
+        widget: _habitTags != null
+            ? TagSelectDropdown(
+                key: ValueKey(_habitTags!.items.length),
+                isMultiSelect: true,
+                onTagsSelected: _onTagsSelected,
+                showSelectedInDropdown: true,
+                initialSelectedTags: _habitTags!.items
+                    .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
+                    .toList(),
+                icon: SharedUiConstants.addIcon,
+              )
+            : Container(),
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(

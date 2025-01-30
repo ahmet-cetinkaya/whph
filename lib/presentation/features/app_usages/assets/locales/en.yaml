@@ -1,4 +1,6 @@
 app_usages:
+  tooltips:
+    edit_name: Edit Name
   delete:
     confirm_title: Delete App Usage
     error: An unexpected error occurred while deleting app usage
