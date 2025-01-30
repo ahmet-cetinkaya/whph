@@ -106,6 +106,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 value: _isEnabled,
                 onChanged: _toggleNotifications,
               ),
+        onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
       ),
     );
   }
