@@ -56,7 +56,7 @@ class SettingsPage extends StatelessWidget {
               leading: const Icon(Icons.sync),
               title: Text(translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
                   style: AppTheme.bodyMedium),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
               onTap: () {
                 Navigator.pushNamed(context, SyncDevicesPage.route);
               },
@@ -69,7 +69,7 @@ class SettingsPage extends StatelessWidget {
             child: ListTile(
               leading: const Icon(Icons.info),
               title: Text(translationService.translate(SettingsTranslationKeys.aboutTitle), style: AppTheme.bodyMedium),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
               onTap: () => _showAboutModal(context),
             ),
           ),

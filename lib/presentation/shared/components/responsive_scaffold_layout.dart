@@ -99,7 +99,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
                 ? Builder(
                     builder: (BuildContext context) => IconButton(
-                      icon: const Icon(Icons.menu, size: 22),
+                      icon: const Icon(Icons.menu, size: AppTheme.fontSizeXLarge),
                       padding: const EdgeInsets.all(12),
                       onPressed: () {
                         _scaffoldKey.currentState?.openDrawer();
@@ -205,12 +205,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      leading: navItem.icon != null ? Icon(navItem.icon, size: 22) : null,
+      leading: navItem.icon != null ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge) : null,
       title: navItem.widget ??
           Text(
             translationService.translate(navItem.titleKey),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontSize: 14,
+                  fontSize: AppTheme.fontSizeMedium,
                 ),
           ),
       onTap: () => _onClickNavItem(navItem),

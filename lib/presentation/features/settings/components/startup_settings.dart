@@ -105,7 +105,7 @@ class _StartupSettingsState extends State<StartupSettings> {
               )
             : null,
         trailing: Platform.isAndroid
-            ? const Icon(Icons.arrow_forward_ios, size: 16)
+            ? const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge)
             : _isLoading || _isUpdating
                 ? const SizedBox(
                     width: 20,

@@ -5,23 +5,27 @@ class AppTheme {
   // Colors
   static const Color primaryColor = domain.AppTheme.primaryColor;
 
+  // Surface Colors
   static const Color surface0 = Color(0x00000000);
   static const Color surface1 = Color(0xFF121212);
   static const Color surface2 = Color(0xFF181818);
   static const Color surface3 = Color(0xFF202020);
 
+  // Text Colors
   static const Color textColor = Color(0xFFFFFFFF);
   static const Color secondaryTextColor = Color(0xFFB0B0B0);
   static const Color darkTextColor = Color(0xFF000000);
   static const Color lightTextColor = Color(0xFFFFFFFF);
-  static const Color dividerColor = Color(0xFF282828);
 
+  // Other Colors
+  static const Color dividerColor = Color(0xFF282828);
   static const Color successColor = Color(0xFF4CAF50);
   static const Color warningColor = Color(0xFFFFC107);
   static const Color errorColor = Color(0xFFF44336);
   static const Color infoColor = Color(0xFF2196F3);
   static const Color disabledColor = Color(0xFF9E9E9E);
 
+  // Chart Colors
   static const Color chartColor1 = domain.AppTheme.chartColor1;
   static const Color chartColor2 = domain.AppTheme.chartColor2;
   static const Color chartColor3 = domain.AppTheme.chartColor3;
@@ -36,18 +40,17 @@ class AppTheme {
   // Common UI Colors
   static const Color borderColor = Color(0xFFBDBDBD);
   static const Color shadowColor = Color(0x1F000000);
-
   static const Color hoverColor = Color(0x0A000000);
   static const Color focusColor = Color(0x1F000000);
   static const Color splashColor = Color(0x1F000000);
-
   static const Color overlayLight = Color(0x1FFFFFFF);
   static const Color overlayDark = Color(0x1F000000);
 
   // Dimensions
   static const double containerBorderRadius = 15.0;
-  static const EdgeInsets containerPadding = EdgeInsets.all(16);
+  static const EdgeInsets containerPadding = EdgeInsets.all(sizeMedium);
 
+  // Font Sizes
   static const double fontSizeXXSmall = 10.0;
   static const double fontSizeXSmall = 11.0;
   static const double fontSizeSmall = 12.0;
@@ -56,16 +59,19 @@ class AppTheme {
   static const double fontSizeXLarge = 20.0;
   static const double fontSizeXXLarge = 24.0;
 
+  // Icon Sizes
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 32.0;
   static const double iconSizeXLarge = 48.0;
 
+  // Screen Sizes
   static const double screenSmall = 320.0;
   static const double screenMedium = 768.0;
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
+  // Text Styles
   static const TextStyle bodySmall = TextStyle(
     color: secondaryTextColor,
     fontSize: fontSizeSmall,
@@ -100,8 +106,11 @@ class AppTheme {
     fontWeight: FontWeight.bold,
     height: 1.2,
   );
-  static const TextStyle displaySmall =
-      TextStyle(color: textColor, fontSize: fontSizeLarge, fontWeight: FontWeight.bold);
+  static const TextStyle displaySmall = TextStyle(
+    color: textColor,
+    fontSize: fontSizeLarge,
+    fontWeight: FontWeight.bold,
+  );
   static const TextStyle displayLarge = TextStyle(
     color: textColor,
     fontSize: 48.0,
@@ -116,27 +125,24 @@ class AppTheme {
   static const double sizeLarge = 16.0;
   static const double sizeXLarge = 24.0;
 
-  // Text Styles
+  // Label Text Styles
   static const TextStyle labelLarge = TextStyle(
-    fontSize: 16,
+    fontSize: fontSizeLarge,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
   );
-
   static const TextStyle labelMedium = TextStyle(
-    fontSize: 14,
+    fontSize: fontSizeMedium,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
   );
-
   static const TextStyle labelSmall = TextStyle(
-    fontSize: 12,
+    fontSize: fontSizeSmall,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
   );
-
   static const TextStyle labelXSmall = TextStyle(
-    fontSize: 10,
+    fontSize: fontSizeXXSmall,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
   );
@@ -203,7 +209,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: EdgeInsets.symmetric(horizontal: sizeSmall, vertical: sizeXSmall),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(containerBorderRadius),
           borderSide: BorderSide.none,
@@ -229,11 +235,15 @@ class AppTheme {
       thickness: 1,
     ),
     chipTheme: ChipThemeData(
-      labelPadding: EdgeInsets.all(4),
+      labelPadding: EdgeInsets.all(sizeXSmall),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       side: BorderSide.none,
     ),
-    expansionTileTheme: ExpansionTileThemeData(iconColor: textColor, textColor: textColor, backgroundColor: surface2),
+    expansionTileTheme: ExpansionTileThemeData(
+      iconColor: textColor,
+      textColor: textColor,
+      backgroundColor: surface2,
+    ),
     switchTheme: SwitchThemeData(
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {

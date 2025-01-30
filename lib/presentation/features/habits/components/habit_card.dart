@@ -158,7 +158,7 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildHabitInfo() => Expanded(
         child: Row(
           children: [
-            Icon(HabitUiConstants.habitIcon, size: 20),
+            Icon(HabitUiConstants.habitIcon, size: AppTheme.fontSizeXLarge),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -295,7 +295,7 @@ class _HabitCardState extends State<HabitCard> {
       },
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,
-        size: 16,
+        size: AppTheme.fontSizeLarge,
         color: hasRecordToday ? Colors.green : Colors.red,
       ),
     );

@@ -186,7 +186,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                         children: [
                           Icon(
                             Icons.label,
-                            size: 18,
+                            size: AppTheme.fontSizeLarge,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -203,7 +203,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                             IconButton(
                               icon: const Icon(
                                 Icons.close,
-                                size: 16,
+                                size: AppTheme.fontSizeLarge,
                                 color: Colors.grey,
                               ),
                               onPressed: () => setState(() => _selectedTag = null),
@@ -247,7 +247,7 @@ class _AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               labelStyle: AppTheme.bodySmall,
               hintText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldHint),
               hintStyle: AppTheme.bodySmall,
-              prefixIcon: Icon(Icons.description, size: 18),
+              prefixIcon: Icon(Icons.description, size: AppTheme.fontSizeMedium),
               isDense: true,
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               constraints: BoxConstraints(maxHeight: 36),
