@@ -104,9 +104,10 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                           Row(
                             children: [
                               Text(
-                                _translationService.translate(AppUsageTranslationKeys.patternLabel),
+                                "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
                                 style: AppTheme.bodySmall.copyWith(color: Colors.grey),
                               ),
+                              const SizedBox(width: AppTheme.sizeXSmall),
                               Expanded(
                                 child: Text(
                                   rule.pattern,

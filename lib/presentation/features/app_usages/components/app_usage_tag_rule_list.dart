@@ -128,9 +128,10 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                           Row(
                             children: [
                               Text(
-                                'Pattern: ',
+                                "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
                                 style: AppTheme.bodySmall.copyWith(color: Colors.grey),
                               ),
+                              const SizedBox(width: AppTheme.sizeXSmall),
                               Expanded(
                                 child: Text(
                                   rule.pattern,
