@@ -64,7 +64,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    var query = database.customSelect(
+    final query = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
         SELECT t.id, t.name, SUM(t.duration) as total_duration
@@ -132,7 +132,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
             deletedDate: row.read<DateTime?>('deleted_date')))
         .get();
 
-    var totalCountQuery = database.customSelect(
+    final totalCountQuery = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
         SELECT DISTINCT t.name

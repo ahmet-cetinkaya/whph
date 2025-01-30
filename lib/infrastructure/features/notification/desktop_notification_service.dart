@@ -38,7 +38,7 @@ class DesktopNotificationService implements INotificationService {
 
   @override
   Future<void> clearAll() async {
-    for (var notification in _activeDesktopNotifications) {
+    for (final notification in _activeDesktopNotifications) {
       await notification.close();
     }
     _activeDesktopNotifications.clear();

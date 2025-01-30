@@ -54,14 +54,14 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _getHabitRecords() async {
     try {
-      var query = GetListHabitRecordsQuery(
+      final query = GetListHabitRecordsQuery(
         pageIndex: 0,
         pageSize: widget.dateRange,
         habitId: widget.habit.id,
         startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
         endDate: DateTime.now(),
       );
-      var response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      final response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -78,8 +78,8 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     try {
-      var command = AddHabitRecordCommand(habitId: habitId, date: date);
-      var response = await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+      final command = AddHabitRecordCommand(habitId: habitId, date: date);
+      final response = await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
       if (mounted) {
         setState(() {
@@ -99,8 +99,8 @@ class _HabitCardState extends State<HabitCard> {
 
   Future<void> _deleteHabitRecord(String id) async {
     try {
-      var command = DeleteHabitRecordCommand(id: id);
-      var response = await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+      final command = DeleteHabitRecordCommand(id: id);
+      final response = await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
       if (mounted) {
         setState(() {

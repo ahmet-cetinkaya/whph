@@ -34,7 +34,7 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
 
   Future<void> _deleteTag(BuildContext context) async {
     try {
-      var command = DeleteTagCommand(id: widget.tagId);
+      final command = DeleteTagCommand(id: widget.tagId);
       await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {

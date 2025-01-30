@@ -49,12 +49,12 @@ class _HabitsListState extends State<HabitsList> {
 
   Future<void> _getHabits({int pageIndex = 0}) async {
     try {
-      var query = GetListHabitsQuery(
+      final query = GetListHabitsQuery(
           pageIndex: pageIndex,
           pageSize: widget.size,
           excludeCompleted: widget.mini,
           filterByTags: widget.filterByTags);
-      var result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
+      final result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
 
       if (!mounted) return;
 

@@ -50,11 +50,11 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
 
   Future<void> _toggleCompleteTask(BuildContext context) async {
     try {
-      var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
         GetTaskQuery(id: widget.taskId),
       );
 
-      var command = SaveTaskCommand(
+      final command = SaveTaskCommand(
         id: task.id,
         title: task.title,
         description: task.description,

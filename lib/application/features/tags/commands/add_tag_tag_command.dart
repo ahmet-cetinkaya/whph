@@ -36,7 +36,7 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
       throw BusinessException('Tag tag already exists');
     }
 
-    var tagTag = TagTag(
+    final tagTag = TagTag(
       id: nanoid(),
       createdDate: DateTime.now(),
       primaryTagId: request.primaryTagId,

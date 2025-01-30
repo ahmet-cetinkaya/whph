@@ -140,9 +140,9 @@ class _MarathonPageState extends State<MarathonPage> {
     // Update selected task after dialog closes
     if (_selectedTask?.id == taskId) {
       try {
-        var query = GetTaskQuery(id: taskId);
-        var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-        var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        final query = GetTaskQuery(id: taskId);
+        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
             GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
 
         if (mounted) {
@@ -176,7 +176,7 @@ class _MarathonPageState extends State<MarathonPage> {
   void _handleTimerUpdate(Duration elapsed) async {
     if (_selectedTask == null) return;
 
-    var command = SaveTaskTimeRecordCommand(
+    final command = SaveTaskTimeRecordCommand(
       taskId: _selectedTask!.id,
       duration: elapsed.inSeconds,
     );
@@ -200,9 +200,9 @@ class _MarathonPageState extends State<MarathonPage> {
     if (_selectedTask == null) return;
 
     try {
-      var query = GetTaskQuery(id: _selectedTask!.id);
-      var task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-      var taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+      final query = GetTaskQuery(id: _selectedTask!.id);
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
 
       if (mounted) {

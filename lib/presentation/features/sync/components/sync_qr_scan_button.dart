@@ -37,7 +37,7 @@ class SyncQrScanButton extends StatelessWidget {
 
     if (scannedMessage == null) return;
 
-    var parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
+    final parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
     if (parsedMessage == null) {
       if (context.mounted) {
         ErrorHelper.showError(
@@ -209,9 +209,9 @@ class SyncQrScanButton extends StatelessWidget {
       if (kDebugMode) print('DEBUG: Starting sync process...');
 
       final syncService = container.resolve<ISyncService>();
-      var completer = Completer<void>();
+      final completer = Completer<void>();
 
-      var subscription = syncService.onSyncComplete.listen((completed) {
+      final subscription = syncService.onSyncComplete.listen((completed) {
         if (completed && !completer.isCompleted) {
           completer.complete();
         }

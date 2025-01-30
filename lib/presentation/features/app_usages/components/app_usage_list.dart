@@ -96,7 +96,7 @@ class AppUsageListState extends State<AppUsageList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var appUsage in _appUsages!.items)
+        for (final appUsage in _appUsages!.items)
           AppUsageCard(
             mediator: widget.mediator,
             appUsage: appUsage,

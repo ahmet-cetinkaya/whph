@@ -63,13 +63,13 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
 
     List<HabitListItem> habitItems = [];
 
-    for (var habit in habits.items) {
+    for (final habit in habits.items) {
       // Fetch tags for each habit
-      var habitTags =
+      final habitTags =
           await _habitTagsRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("habit_id = ?", [habit.id]));
 
-      var tagItems = await Future.wait(habitTags.items.map((ht) async {
-        var tag = await _tagRepository.getById(ht.tagId);
+      final tagItems = await Future.wait(habitTags.items.map((ht) async {
+        final tag = await _tagRepository.getById(ht.tagId);
         return TagListItem(
           id: ht.tagId,
           name: tag?.name ?? "",
@@ -100,8 +100,8 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     if (request.excludeCompleted) {
       customWhereFilter = CustomWhereFilter.empty();
 
-      var startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-      var endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
+      final startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      final endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
       customWhereFilter.query =
           "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0";
       customWhereFilter.variables.add(startDate);

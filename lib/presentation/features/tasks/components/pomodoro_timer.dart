@@ -94,7 +94,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      var response = await widget._mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await widget._mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: key),
       );
       return response.getValue<int>();
@@ -104,7 +104,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Future<void> _saveSetting(String key, int value) async {
-    var command = SaveSettingCommand(
+    final command = SaveSettingCommand(
       key: key,
       value: value.toString(),
       valueType: SettingValueType.int,
@@ -383,7 +383,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   void _addTimerMenuItems() {
     if (_isTimerMenuAdded) return;
 
-    var menuItems = [
+    final menuItems = [
       TrayMenuItem.separator(
         _pomodoroTimerSeparatorKey,
       ),
@@ -393,7 +393,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         onClicked: _stopTimer,
       ),
     ];
-    for (var item in menuItems) {
+    for (final item in menuItems) {
       widget._systemTrayService.insertMenuItem(item, index: 0);
     }
     _isTimerMenuAdded = true;

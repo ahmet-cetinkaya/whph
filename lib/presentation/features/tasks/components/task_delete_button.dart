@@ -33,7 +33,7 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
 
   Future<void> _deleteTask(BuildContext context) async {
     try {
-      var command = DeleteTaskCommand(id: widget.taskId);
+      final command = DeleteTaskCommand(id: widget.taskId);
       await _mediator.send(command);
 
       if (widget.onDeleteSuccess != null) {

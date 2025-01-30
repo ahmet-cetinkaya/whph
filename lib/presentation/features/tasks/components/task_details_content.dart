@@ -80,8 +80,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   Future<void> _getTask() async {
     try {
-      var query = GetTaskQuery(id: widget.taskId);
-      var response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      final query = GetTaskQuery(id: widget.taskId);
+      final response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -134,10 +134,9 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     const int pageSize = 50;
 
     while (true) {
-      var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: pageIndex, pageSize: pageSize);
+      final query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        var response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
-        if (response.items.isEmpty) break;
+        final response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -168,7 +167,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     final currentSelection = _titleController.selection;
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      var saveCommand = SaveTaskCommand(
+      final saveCommand = SaveTaskCommand(
         id: _task!.id,
         title: _titleController.text,
         description: _descriptionController.text,
@@ -179,7 +178,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         isCompleted: _task!.isCompleted,
       );
       try {
-        var result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+        final result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
         widget._tasksService.onTaskSaved.value = result;
         widget.onTaskUpdated?.call();
 
@@ -203,7 +202,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   Future<void> _addTag(String tagId) async {
     try {
-      var command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
+      final command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
       await widget._mediator.send(command);
       await _getTaskTags();
     } on BusinessException catch (e) {
@@ -222,7 +221,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   Future<void> _removeTag(String id) async {
     try {
-      var command = RemoveTaskTagCommand(id: id);
+      final command = RemoveTaskTagCommand(id: id);
       await widget._mediator.send(command);
       await _getTaskTags();
     } on BusinessException catch (e) {
@@ -240,15 +239,15 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
-    var tagOptionsToAdd =
+    final tagOptionsToAdd =
         tagOptions.where((tagOption) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagOption.value)).toList();
-    var tagsToRemove =
+    final tagsToRemove =
         _taskTags!.items.where((taskTag) => !tagOptions.map((tag) => tag.value).contains(taskTag.tagId)).toList();
 
-    for (var tagOption in tagOptionsToAdd) {
+    for (final tagOption in tagOptionsToAdd) {
       _addTag(tagOption.value);
     }
-    for (var taskTag in tagsToRemove) {
+    for (final taskTag in tagsToRemove) {
       _removeTag(taskTag.id);
     }
   }
@@ -407,7 +406,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
               child: MarkdownAutoPreview(
                 controller: _descriptionController,
                 onChanged: (value) {
-                  var isEmptyWhitespace = value.trim().isEmpty;
+                  final isEmptyWhitespace = value.trim().isEmpty;
                   if (isEmptyWhitespace) {
                     _descriptionController.clear();
                   }

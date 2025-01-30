@@ -45,7 +45,7 @@ class GetListAppUsageIgnoreRulesQueryHandler
 
   @override
   Future<GetListAppUsageIgnoreRulesQueryResponse> call(GetListAppUsageIgnoreRulesQuery request) async {
-    var result = await _repository.getList(
+    final result = await _repository.getList(
       request.pageIndex,
       request.pageSize,
     );

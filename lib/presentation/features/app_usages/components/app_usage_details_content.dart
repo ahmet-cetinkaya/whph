@@ -69,9 +69,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _getAppUsage() async {
-    var query = GetAppUsageQuery(id: widget.id);
+    final query = GetAppUsageQuery(id: widget.id);
     try {
-      var response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+      final response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       if (mounted) {
         setState(() {
           _appUsage = response;
@@ -101,7 +101,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     final currentSelection = _nameController.selection;
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      var command = SaveAppUsageCommand(
+      final command = SaveAppUsageCommand(
         id: widget.id,
         name: _appUsage!.name,
         displayName: _nameController.text,
@@ -109,7 +109,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         deviceName: _appUsage!.deviceName,
       );
       try {
-        var result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+        final result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
         widget._appUsagesService.onAppUsageSaved.value = result;
         widget.onAppUsageUpdated?.call();
@@ -137,9 +137,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     const int pageSize = 50;
 
     while (true) {
-      var query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
+      final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        var result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+        final result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
         if (result.items.isEmpty) break;
 
         if (mounted) {
@@ -172,7 +172,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _addTag(String appUsageId) async {
-    var command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: appUsageId);
+    final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: appUsageId);
     try {
       await widget._mediator.send(command);
     } on BusinessException catch (e) {
@@ -192,7 +192,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _removeTag(String id) async {
-    var command = RemoveAppUsageTagCommand(id: id);
+    final command = RemoveAppUsageTagCommand(id: id);
     try {
       await widget._mediator.send(command);
     } on BusinessException catch (e) {
@@ -212,18 +212,18 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
-    var tagOptionsToAdd = tagOptions
+    final tagOptionsToAdd = tagOptions
         .where(
             (tagOption) => !_appUsageTags!.items.any((appUsageAppUsage) => appUsageAppUsage.tagId == tagOption.value))
         .toList();
-    var appUsageTagsToRemove = _appUsageTags!.items
+    final appUsageTagsToRemove = _appUsageTags!.items
         .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
         .toList();
 
-    for (var tagOption in tagOptionsToAdd) {
+    for (final tagOption in tagOptionsToAdd) {
       _addTag(tagOption.value);
     }
-    for (var appUsageAppUsage in appUsageTagsToRemove) {
+    for (final appUsageAppUsage in appUsageTagsToRemove) {
       _removeTag(appUsageAppUsage.id);
     }
   }

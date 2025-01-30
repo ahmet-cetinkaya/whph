@@ -38,10 +38,10 @@ class _TagAddButtonState extends State<TagAddButton> {
     }
 
     try {
-      var command = SaveTagCommand(
+      final command = SaveTagCommand(
         name: _translationService.translate(TagTranslationKeys.defaultTagName),
       );
-      var response = await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
+      final response = await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
 
       if (widget.onTagCreated != null) {
         widget.onTagCreated!(response.id);

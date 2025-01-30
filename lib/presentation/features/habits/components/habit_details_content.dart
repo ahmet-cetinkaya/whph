@@ -78,8 +78,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _getHabit() async {
     try {
-      var query = GetHabitQuery(id: widget.habitId);
-      var result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      final query = GetHabitQuery(id: widget.habitId);
+      final result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -101,17 +101,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _getHabitRecordsForMonth(DateTime month) async {
     try {
-      var firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
-      var lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+      final firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
+      final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
 
-      var query = GetListHabitRecordsQuery(
+      final query = GetListHabitRecordsQuery(
         pageIndex: 0,
         pageSize: 37,
         habitId: widget.habitId,
         startDate: firstDayOfMonth,
         endDate: lastDayOfMonth,
       );
-      var result = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      final result = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       _habitRecords = result;
     } catch (e, stackTrace) {
       if (mounted) {
@@ -123,7 +123,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     try {
-      var command = AddHabitRecordCommand(habitId: habitId, date: date);
+      final command = AddHabitRecordCommand(habitId: habitId, date: date);
       await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
       if (mounted) {
         setState(() {
@@ -141,7 +141,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _deleteHabitRecord(String id) async {
     try {
-      var command = DeleteHabitRecordCommand(id: id);
+      final command = DeleteHabitRecordCommand(id: id);
       await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
       if (mounted) {
         setState(() {
@@ -162,10 +162,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     const int pageSize = 50;
 
     while (true) {
-      var query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
+      final query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        var response = await widget._mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
-        if (response.items.isEmpty) break;
+        final response = await widget._mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -193,7 +192,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _addTag(String tagId) async {
     try {
-      var command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
+      final command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
       await widget._mediator.send(command);
       await _getHabitTags();
     } catch (e, stackTrace) {
@@ -206,7 +205,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _removeTag(String id) async {
     try {
-      var command = RemoveHabitTagCommand(id: id);
+      final command = RemoveHabitTagCommand(id: id);
       await widget._mediator.send(command);
       await _getHabitTags();
     } catch (e, stackTrace) {
@@ -220,18 +219,18 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     if (_habitTags == null) return;
 
-    var tagsToAdd = tagOptions
+    final tagsToAdd = tagOptions
         .where((tagOption) => !_habitTags!.items.any((habitTag) => habitTag.tagId == tagOption.value))
         .map((option) => option.value)
         .toList();
 
-    var tagsToRemove =
+    final tagsToRemove =
         _habitTags!.items.where((habitTag) => !tagOptions.map((tag) => tag.value).contains(habitTag.tagId)).toList();
 
-    for (var tagId in tagsToAdd) {
+    for (final tagId in tagsToAdd) {
       _addTag(tagId);
     }
-    for (var habitTag in tagsToRemove) {
+    for (final habitTag in tagsToRemove) {
       _removeTag(habitTag.id);
     }
   }
@@ -241,14 +240,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final currentSelection = _nameController.selection;
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      var command = SaveHabitCommand(
+      final command = SaveHabitCommand(
         id: widget.habitId,
         name: _nameController.text,
         description: _descriptionController.text,
         estimatedTime: _habit!.estimatedTime,
       );
       try {
-        var result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+        final result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
         widget._habitsService.onHabitSaved.value = result;
         widget.onHabitUpdated?.call();

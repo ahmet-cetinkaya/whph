@@ -226,7 +226,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         WebSocketMessage message = WebSocketMessage(type: 'sync', data: combinedData);
         String jsonData = JsonMapper.serialize(message);
 
-        var response = SyncCommandResponse(syncDataDto: combinedData);
+        final response = SyncCommandResponse(syncDataDto: combinedData);
         if (request.syncDataDto != null) {
           bool syncSuccess = await _processIncomingData(request.syncDataDto!);
           if (syncSuccess) {
@@ -260,7 +260,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
     final syncDataResults = await Future.wait(_syncConfigs.map((config) => config.getSyncData(lastSyncDate)));
 
-    var dto = SyncDataDto(
+    final dto = SyncDataDto(
       appVersion: AppInfo.version,
       syncDevice: syncDevice,
       appUsagesSyncData: syncDataResults[0] as SyncData<AppUsage>,
@@ -321,22 +321,22 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         socket.add(jsonData);
 
         // Listen to responses
-        await for (var message in socket) {
+        await for (final message in socket) {
           if (kDebugMode) print('DEBUG: Received message: ${message.replaceAll(RegExp(r'\s+'), '')}');
 
           try {
-            var receivedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
+            final receivedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
             if (receivedMessage?.type == 'sync_complete') {
               timeoutTimer.cancel();
 
               if (receivedMessage?.data != null) {
-                var messageData = receivedMessage!.data as Map<String, dynamic>;
+                final messageData = receivedMessage!.data as Map<String, dynamic>;
                 bool? success = messageData['success'] as bool?;
 
                 if (success == true) {
                   if (messageData['syncDataDto'] != null) {
-                    var syncDataDtoJson = messageData['syncDataDto'] as Map<String, dynamic>;
-                    var parsedData = SyncDataDto.fromJson(syncDataDtoJson);
+                    final syncDataDtoJson = messageData['syncDataDto'] as Map<String, dynamic>;
+                    final parsedData = SyncDataDto.fromJson(syncDataDtoJson);
                     await _processIncomingData(parsedData);
                   }
                   syncCompleter.complete(true);
@@ -408,7 +408,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {
     try {
       await Future.wait(_syncConfigs.map((config) {
-        var syncData = config.getSyncDataFromDto(syncDataDto);
+        final syncData = config.getSyncDataFromDto(syncDataDto);
         if (syncData != null) {
           return _processSyncDataBatch(syncData, config.repository);
         }
@@ -427,7 +427,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       const batchSize = 100;
 
       // Process creates and updates together
-      var upsertItems = [...syncData.createSync, ...syncData.updateSync];
+      final upsertItems = [...syncData.createSync, ...syncData.updateSync];
 
       if (upsertItems.isNotEmpty) {
         await _processBatchOperation(
@@ -476,10 +476,10 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     int batchSize,
   ) async {
     for (var i = 0; i < items.length; i += batchSize) {
-      var end = (i + batchSize < items.length) ? i + batchSize : items.length;
+      final end = (i + batchSize < items.length) ? i + batchSize : items.length;
       try {
         // Process items sequentially in each batch to maintain order
-        for (var item in items.sublist(i, end)) {
+        for (final item in items.sublist(i, end)) {
           await operation(item);
         }
       } catch (e) {

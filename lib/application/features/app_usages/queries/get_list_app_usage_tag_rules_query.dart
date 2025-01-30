@@ -71,7 +71,7 @@ class GetListAppUsageTagRulesQueryHandler
       whereFilter.variables.add(request.filterByTags!);
     }
 
-    var result = await _repository.getList(
+    final result = await _repository.getList(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: whereFilter,
