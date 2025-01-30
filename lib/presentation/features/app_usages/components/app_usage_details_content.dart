@@ -65,7 +65,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _getInitialData() async {
-    await Future.wait([_getAppUsage(), _getAppUsageAppUsages()]);
+    await Future.wait([_getAppUsage(), _getAppUsageTags()]);
   }
 
   Future<void> _getAppUsage() async {
@@ -132,25 +132,41 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     });
   }
 
-  Future<void> _getAppUsageAppUsages() async {
-    var query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: 0, pageSize: 999);
-    try {
-      var result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
-      if (mounted) {
-        setState(() {
-          _appUsageTags = result;
-        });
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
-        );
+  Future<void> _getAppUsageTags() async {
+    int pageIndex = 0;
+    const int pageSize = 50;
+
+    while (true) {
+      var query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
+      try {
+        var result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+        if (result.items.isEmpty) break;
+
+        if (mounted) {
+          setState(() {
+            if (_appUsageTags == null) {
+              _appUsageTags = result;
+            } else {
+              _appUsageTags!.items.addAll(result.items);
+            }
+          });
+        }
+        pageIndex++;
+      } on BusinessException catch (e) {
+        if (mounted) {
+          ErrorHelper.showError(context, e);
+          break;
+        }
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
+          );
+          break;
+        }
       }
     }
   }
@@ -172,7 +188,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       }
     }
 
-    await _getAppUsageAppUsages();
+    await _getAppUsageTags();
   }
 
   Future<void> _removeTag(String id) async {
@@ -192,7 +208,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       }
     }
 
-    await _getAppUsageAppUsages();
+    await _getAppUsageTags();
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {

@@ -130,24 +130,35 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _getTaskTags() async {
-    try {
-      var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: 0, pageSize: 100);
-      var response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
-      if (mounted) {
-        setState(() {
-          _taskTags = response;
-        });
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: widget._translationService.translate(TaskTranslationKeys.getTagsError),
-        );
+    int pageIndex = 0;
+    const int pageSize = 50;
+
+    while (true) {
+      var query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: pageIndex, pageSize: pageSize);
+      try {
+        var response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
+        if (response.items.isEmpty) break;
+
+        if (mounted) {
+          setState(() {
+            if (_taskTags == null) {
+              _taskTags = response;
+            } else {
+              _taskTags!.items.addAll(response.items);
+            }
+          });
+        }
+        pageIndex++;
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: widget._translationService.translate(TaskTranslationKeys.getTagsError),
+          );
+          break;
+        }
       }
     }
   }
