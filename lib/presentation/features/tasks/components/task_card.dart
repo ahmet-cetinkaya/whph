@@ -128,7 +128,7 @@ class TaskCard extends StatelessWidget {
 
     // Add tags if exist
     if (taskItem.tags.isNotEmpty) {
-      metadata.add(Icon(TaskUiConstants.tagsIcon, size: 12, color: TaskUiConstants.tagsColor));
+      metadata.add(Icon(TaskUiConstants.tagsIcon, size: AppTheme.fontSizeSmall, color: TaskUiConstants.tagsColor));
       metadata.add(const SizedBox(width: 2));
 
       for (var i = 0; i < taskItem.tags.length; i++) {
@@ -207,7 +207,7 @@ class TaskCard extends StatelessWidget {
   Widget _buildInfoRow(IconData icon, String text, Color color) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 14),
+          Icon(icon, color: color, size: AppTheme.fontSizeMedium),
           const SizedBox(width: 2),
           Text(text, style: AppTheme.bodySmall.copyWith(color: color)),
         ],

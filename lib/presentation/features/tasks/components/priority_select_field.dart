@@ -71,7 +71,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         ),
         child: Row(
           children: [
-            Icon(TaskUiConstants.priorityIcon, color: textColor, size: 16),
+            Icon(TaskUiConstants.priorityIcon, color: textColor, size: AppTheme.fontSizeLarge),
             const SizedBox(width: 8),
             Text(
               option.label,
@@ -82,7 +82,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
             ),
             if (isSelected) ...[
               const Spacer(),
-              const Icon(Icons.check, size: 16),
+              const Icon(Icons.check, size: AppTheme.fontSizeLarge),
             ],
           ],
         ),
@@ -118,7 +118,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
                   style: AppTheme.bodySmall,
                 ),
               ),
-              const Icon(Icons.arrow_drop_down, size: 18),
+              const Icon(Icons.arrow_drop_down, size: AppTheme.fontSizeLarge),
             ],
           ),
         ),

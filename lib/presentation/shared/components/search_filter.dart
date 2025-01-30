@@ -74,7 +74,7 @@ class _SearchFilterState extends State<SearchFilter> {
                 hintText: widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
                 hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.close, size: 16),
+                  icon: const Icon(Icons.close, size: AppTheme.fontSizeMedium),
                   onPressed: _toggleSearch,
                   padding: EdgeInsets.zero,
                 ),

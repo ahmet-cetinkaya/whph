@@ -26,7 +26,7 @@ class LanguageSettings extends StatelessWidget {
           _translationService.translate(SettingsTranslationKeys.languageTitle),
           style: AppTheme.bodyMedium,
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
         onTap: () => _showLanguageBottomSheet(context),
       ),
     );

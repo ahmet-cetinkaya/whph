@@ -103,7 +103,7 @@ class DetailTable extends StatelessWidget {
       children: [
         Icon(
           data.icon,
-          size: 18,
+          size: AppTheme.fontSizeLarge,
           color: AppTheme.lightTextColor,
         ),
         const SizedBox(width: 8),
@@ -127,7 +127,7 @@ class DetailTable extends StatelessWidget {
                   message: data.tooltip!,
                   child: Icon(
                     Icons.help_outline,
-                    size: 14,
+                    size: AppTheme.fontSizeLarge,
                     color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
                   ),
                 ),
