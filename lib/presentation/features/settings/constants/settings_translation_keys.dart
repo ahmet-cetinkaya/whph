@@ -29,15 +29,16 @@ class SettingsTranslationKeys {
   static const String exportSelectDirectory = 'settings.export.select_directory';
 
   // Import/Export
-  static const String importExportTitle = 'settings.import_export.title';
-  static const String importExportSelectAction = 'settings.import_export.select_action';
-  static const String importTitle = 'settings.import.title';
-  static const String exportTitle = 'settings.export.title';
-  static const String importStrategyTitle = 'settings.import.strategy.title';
-  static const String importStrategyReplace = 'settings.import.strategy.replace';
-  static const String importStrategyMerge = 'settings.import.strategy.merge';
-  static const String importSuccess = 'settings.import.success';
-  static const String importError = 'settings.import.error';
-  static const String exportJsonDescription = 'settings.export.json_description';
   static const String exportCsvDescription = 'settings.export.csv_description';
+  static const String exportJsonDescription = 'settings.export.json_description';
+  static const String exportTitle = 'settings.export.title';
+  static const String importError = 'settings.import.error';
+  static const String importExportSelectAction = 'settings.import_export.select_action';
+  static const String importExportTitle = 'settings.import_export.title';
+  static const String importSelectFile = 'settings.import.select_file';
+  static const String importStrategyMerge = 'settings.import.strategy.merge';
+  static const String importStrategyReplace = 'settings.import.strategy.replace';
+  static const String importStrategyTitle = 'settings.import.strategy.title';
+  static const String importSuccess = 'settings.import.success';
+  static const String importTitle = 'settings.import.title';
 }

@@ -9,6 +9,7 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/infrastructure/features/setup/services/linux_setup_service.dart';
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
@@ -24,6 +25,8 @@ import 'package:whph/infrastructure/features/system_tray/system_tray_service.dar
 import 'package:whph/infrastructure/features/notification/mobile_notification_service.dart';
 import 'package:whph/infrastructure/features/setup/services/windows_setup_service.dart';
 import 'package:whph/infrastructure/features/setup/services/android_setup_service.dart';
+import 'package:whph/infrastructure/features/file/android_file_service.dart';
+import 'package:whph/infrastructure/features/file/desktop_file_service.dart';
 
 void registerInfrastructure(IContainer container) {
   final settingRepository = container.resolve<ISettingRepository>();
@@ -85,5 +88,17 @@ void registerInfrastructure(IContainer container) {
     if (Platform.isWindows) return WindowsSetupService();
     if (Platform.isAndroid) return AndroidSetupService();
     throw Exception('ERROR: Unsupported platform for setup service.');
+  });
+
+  container.registerSingleton<IFileService>((_) {
+    if (Platform.isAndroid) {
+      return AndroidFileService();
+    }
+
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      return DesktopFileService();
+    }
+
+    throw Exception('Unsupported platform for file service');
   });
 }

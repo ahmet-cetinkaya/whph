@@ -147,12 +147,14 @@ class _TaskListState extends State<TaskList> {
 
   void _onTaskCompleted() {
     Future.delayed(const Duration(seconds: 3), () {
-      final pageIndex = _tasks!.pageIndex;
-      _tasks = null;
-      _getTasks(pageIndex: pageIndex);
+      if (_tasks != null) {
+        final pageIndex = _tasks!.pageIndex;
+        _tasks = null;
+        _getTasks(pageIndex: pageIndex);
 
-      if (widget.onTaskCompleted != null) {
-        widget.onTaskCompleted!();
+        if (widget.onTaskCompleted != null) {
+          widget.onTaskCompleted!();
+        }
       }
     });
   }
