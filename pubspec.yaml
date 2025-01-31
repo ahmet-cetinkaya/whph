@@ -7,7 +7,7 @@ publish_to: "none"
 # - Android: versionName = version, versionCode = build
 # - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
 # - Windows: product/file version components = version, build suffix = build
-version: 0.3.0+4
+version: 0.3.1+4
 
 environment:
   sdk: ^3.5.3
