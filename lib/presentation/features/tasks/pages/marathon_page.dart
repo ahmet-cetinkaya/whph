@@ -258,7 +258,7 @@ class _MarathonPageState extends State<MarathonPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.close, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+                      icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
                       tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                     ),
@@ -273,7 +273,7 @@ class _MarathonPageState extends State<MarathonPage> {
                       titleKey: TaskTranslationKeys.marathonHelpTitle,
                       markdownContentKey: TaskTranslationKeys.marathonHelpContent,
                     ),
-                    const SizedBox(width: 8), // Adjusted spacing
+                    const SizedBox(width: 8),
                   ],
                 ),
               ),

@@ -138,7 +138,7 @@ class _TodayPageState extends State<TodayPage> {
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
         IconButton(
-          icon: const Icon(Icons.timer, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+          icon: const Icon(Icons.timer),
           onPressed: () => _openMarathonPage(context),
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(TaskTranslationKeys.marathon),
@@ -147,7 +147,7 @@ class _TodayPageState extends State<TodayPage> {
           titleKey: CalendarTranslationKeys.todayHelpTitle,
           markdownContentKey: CalendarTranslationKeys.todayHelpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
