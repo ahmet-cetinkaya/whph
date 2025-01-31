@@ -73,7 +73,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       appBarActions: [
         IconButton(
-          icon: const Icon(Icons.settings, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+          icon: const Icon(Icons.settings),
           onPressed: () async {
             await Navigator.pushNamed(context, AppUsageRulesPage.route);
             _refreshList();
@@ -82,7 +82,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
-          icon: const Icon(Icons.refresh, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+          icon: const Icon(Icons.refresh),
           onPressed: _refreshList,
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),

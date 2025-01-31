@@ -54,11 +54,10 @@ class SettingsPage extends StatelessWidget {
           // Sync Devices
           Card(
             child: ListTile(
-              leading: const Icon(Icons.sync, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+              leading: const Icon(Icons.sync),
               title: Text(translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
                   style: AppTheme.bodyMedium),
-              trailing:
-                  const Icon(Icons.arrow_forward_ios, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 Navigator.pushNamed(context, SyncDevicesPage.route);
               },

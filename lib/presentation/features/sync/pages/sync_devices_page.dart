@@ -186,7 +186,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       appBarActions: [
         IconButton(
           onPressed: _sync,
-          icon: const Icon(Icons.sync, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
+          icon: const Icon(Icons.sync),
           color: AppTheme.primaryColor,
         ),
         if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
