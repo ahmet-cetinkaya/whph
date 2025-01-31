@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
+import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
 
 class DeleteHabitRecordCommand implements IRequest<DeleteHabitRecordCommandResponse> {
   final String id;
@@ -22,7 +23,7 @@ class DeleteHabitRecordCommandHandler
   Future<DeleteHabitRecordCommandResponse> call(DeleteHabitRecordCommand request) async {
     HabitRecord? habitRecord = await _habitRecordRepository.getById(request.id);
     if (habitRecord == null) {
-      throw BusinessException('HabitRecord with id ${request.id} not found');
+      throw BusinessException(HabitTranslationKeys.habitRecordNotFoundError);
     }
 
     await _habitRecordRepository.delete(habitRecord);

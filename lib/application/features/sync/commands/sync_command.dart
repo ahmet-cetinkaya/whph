@@ -43,6 +43,7 @@ import 'package:whph/application/shared/services/abstraction/i_repository.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/presentation/shared/utils/network_utils.dart';
+import 'package:whph/application/features/sync/constants/sync_translation_keys.dart';
 
 class SyncCommand implements IRequest<SyncCommandResponse> {
   final SyncDataDto? syncDataDto;
@@ -363,7 +364,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
           if (kDebugMode) print('DEBUG: Sync completed successfully, connection closed.');
           return;
         } else {
-          throw BusinessException('Sync did not complete successfully');
+          throw BusinessException(SyncTranslationKeys.syncFailedError);
         }
       } catch (e, stack) {
         if (kDebugMode) {
@@ -373,7 +374,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
         attempt++;
         if (attempt >= maxRetries) {
-          throw BusinessException('Failed to sync after $maxRetries attempts. Last error: $e');
+          throw BusinessException(SyncTranslationKeys.syncFailedError);
         }
 
         await Future.delayed(Duration(seconds: pow(2, attempt).toInt()));
@@ -386,7 +387,11 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   Future<void> _checkVersion(String remoteVersion) async {
     if (remoteVersion != AppInfo.version) {
       throw BusinessException(
-        'Version mismatch. Local version: ${AppInfo.version}, Remote version: $remoteVersion. Please update both applications to the same version.',
+        SyncTranslationKeys.versionMismatchError,
+        args: {
+          'currentVersion': AppInfo.version,
+          'remoteVersion': remoteVersion,
+        },
       );
     }
   }
@@ -400,9 +405,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       return;
     }
 
-    throw BusinessException(
-      'Device ID mismatch. The device attempting to sync is not properly paired with this device.',
-    );
+    throw BusinessException(SyncTranslationKeys.deviceMismatchError);
   }
 
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {

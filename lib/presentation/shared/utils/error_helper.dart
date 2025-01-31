@@ -3,17 +3,42 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class ErrorHelper {
+  static bool _isShowingError = false;
+  static late ITranslationService _translationService;
+
+  static void initialize(ITranslationService translationService) {
+    _translationService = translationService;
+  }
+
   static void showError(BuildContext context, Exception error) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(error.toString()), backgroundColor: AppTheme.errorColor));
+    if (_isShowingError) return;
+    _isShowingError = true;
+
+    final message = error is BusinessException
+        ? _translationService.translate(error.messageKey, namedArgs: error.args)
+        : error.toString();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppTheme.errorColor,
+        duration: const Duration(seconds: 5),
+        onVisible: () => _isShowingError = false,
+      ),
+    );
   }
 
   static void showUnexpectedError(BuildContext context, Object error, StackTrace stackTrace,
       {String message = 'An unexpected error occurred.'}) {
+    if (_isShowingError) return;
+    _isShowingError = true;
+
     if (kDebugMode) {
       if (kDebugMode) print('ERROR: $error');
       if (kDebugMode) print('ERROR: Stack trace: $stackTrace');

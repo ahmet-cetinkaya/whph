@@ -1,5 +1,8 @@
 tags:
   title: Etiketler
+  new_tag: Yeni Etiket
+  tag_details: Etiket Detayları
+  no_tags: Etiket bulunamadı
   filter_tooltip: Etiketlere göre filtrele
   sections:
     times: Etiket Süreleri
@@ -42,7 +45,8 @@ tags:
         - Zaman grafiklerini düzenli olarak gözden geçir
         - Tamamlanan projeleri arşivle
         - Odaklanmak için etiket filtrelerini kullan
-    title: Etiket Yönetimi Yardım
+    title: Etiket Yardım
+    description: Etiketler, öğeleri kategorize etmenize ve gruplandırmanıza yardımcı olur
     content: |
       🏷️ Etiketler, öğeleri gruplandırmanıza ve organize etmenize yardımcı olur.
 
@@ -61,6 +65,8 @@ tags:
     confirm_delete: Bu etiketi silmek istediğinize emin misiniz?
     confirm_archive: Bu etiketi arşivlemek istediğinize emin misiniz?
     confirm_unarchive: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
+    unarchive_confirm: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
+    archive_confirm: Bu etiketi arşivlemek istediğinize emin misiniz?
   errors:
     loading: Etiketler yüklenirken hata oluştu
     saving: Etiket kaydedilirken hata oluştu
@@ -69,17 +75,20 @@ tags:
     loading_archive_status: Arşiv durumu yüklenemedi
     toggling_archive: Arşiv durumu değiştirilirken hata oluştu
     get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    tag_not_found: Etiket bulunamadı
+    tag_tag_not_found: Etiket ilişkisi bulunamadı
+    tag_tag_already_exists: Bu etiket ilişkisi zaten mevcut
+    same_tag: Birincil ve ikincil etiketler aynı olamaz
   labels:
     name: İsim
     color: Renk
     description: Açıklama
     tags: Etiketler
   list:
-    no_habits_found: Alışkanlık bulunamadı
     no_tags_found: Etiket bulunamadı
     filter_tooltip: Etiketlere göre filtrele
   tooltips:
-    add_tag: Yeni etiket ekle
+    add_tag: Etiket ekle
     delete_tag: Etiketi sil
     archive_tag: Etiketi arşivle
     unarchive_tag: Etiketi arşivden çıkar
@@ -95,6 +104,12 @@ tags:
   time_chart:
     no_data: Veri bulunamadı
   details:
+    name: İsim
+    color: Renk
+    archived: Arşivlenmiş
+    parent_tags: Üst Etiketler
+    child_tags: Alt Etiketler
+    select_tag: Etiket seç
     help:
       title: Etiket Detayları Yardım
       description: 🏷️ Etiketler, ilgili görevler arasında zamanı organize etmenize ve takip etmenize yardımcı olur.

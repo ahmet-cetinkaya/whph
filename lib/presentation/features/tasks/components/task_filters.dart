@@ -3,6 +3,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -42,7 +43,7 @@ class _TaskFiltersState extends State<TaskFilters> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final iconSize = 20.0;
+    final iconSize = AppTheme.iconSizeMedium;
 
     return Container(
       alignment: Alignment.centerLeft,

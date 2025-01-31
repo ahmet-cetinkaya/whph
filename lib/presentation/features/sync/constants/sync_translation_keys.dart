@@ -12,6 +12,9 @@ class SyncTranslationKeys {
   static const String saveDeviceError = 'sync.errors.save_device';
   static const String syncError = 'sync.errors.sync_failed';
   static const String syncTimeoutError = 'sync.errors.sync_timeout';
+  static const String syncDeviceNotFoundError = 'sync.errors.device_not_found';
+  static const String versionMismatchError = 'sync.errors.version_mismatch';
+  static const String deviceMismatchError = 'sync.errors.device_mismatch';
 
   // QR Code Dialog
   static const String qrDialogTitle = 'sync.qr_code.dialog_title';

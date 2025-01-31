@@ -186,7 +186,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       appBarActions: [
         IconButton(
           onPressed: _sync,
-          icon: const Icon(Icons.sync),
+          icon: const Icon(Icons.sync, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
           color: AppTheme.primaryColor,
         ),
         if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
@@ -198,7 +198,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
           titleKey: SyncTranslationKeys.helpTitle,
           markdownContentKey: SyncTranslationKeys.helpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => list == null || list!.items.isEmpty
           ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))

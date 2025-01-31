@@ -3,6 +3,7 @@ import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit_tag.dart';
+import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
 
 class AddHabitTagCommand implements IRequest<AddHabitTagCommandResponse> {
   String habitId;
@@ -31,7 +32,7 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
   @override
   Future<AddHabitTagCommandResponse> call(AddHabitTagCommand request) async {
     if (await _habitTagRepository.anyByHabitIdAndTagId(request.habitId, request.tagId)) {
-      throw BusinessException('Habit tag already exists');
+      throw BusinessException(HabitTranslationKeys.habitTagAlreadyExistsError);
     }
 
     final habitTag = HabitTag(

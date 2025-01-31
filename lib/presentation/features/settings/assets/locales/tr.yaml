@@ -30,6 +30,7 @@ settings:
     success: İçe aktarma başarılı
     error: İçe aktarma başarısız
     select_file: Dosya seçin
+    version_mismatch: "Sürüm uyumsuzluğu: içe aktarılan veri sürümü {importedVersion}, ancak mevcut sürüm {currentVersion}. Daha iyi uyumluluk ve güvenlik için doğru uygulama sürümünü kullanın."
   export:
     title: Dışa Aktar
     select_path: Kayıt konumu seçin
@@ -38,3 +39,10 @@ settings:
     select_type: Dışa aktarma formatını seçin
     json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
+  errors:
+    setting_not_found: Ayar bulunamadı
+    import:
+      version_mismatch: "Sürüm uyumsuzluğu: İçe aktarılan veri {importedVersion} sürümünden, ancak mevcut sürüm {currentVersion}. Daha iyi uyumluluk ve güvenlik için lütfen doğru uygulama sürümünü kullanın."
+      error: İçe aktarma işlemi başarısız oldu. Lütfen dosyayı kontrol edin ve tekrar deneyin.
+    export:
+      error: Dışa aktarma işlemi başarısız oldu. Lütfen tekrar deneyin.

@@ -70,50 +70,46 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
 
   @override
   Future<ExportDataCommandResponse> call(ExportDataCommand request) async {
-    try {
-      final appUsages = await appUsageRepository.getAll();
-      final appUsageTags = await appUsageTagRepository.getAll();
-      final appUsageTimeRecords = await appUsageTimeRecordRepository.getAll();
-      final appUsageTagRules = await appUsageTagRuleRepository.getAll();
-      final habits = await habitRepository.getAll();
-      final habitRecords = await habitRecordRepository.getAll();
-      final habitTags = await habitTagRepository.getAll();
-      final tags = await tagRepository.getAll();
-      final tagTags = await tagTagRepository.getAll();
-      final tasks = await taskRepository.getAll();
-      final taskTags = await taskTagRepository.getAll();
-      final taskTimeRecords = await taskTimeRecordRepository.getAll();
-      final settings = await settingRepository.getAll();
-      final syncDevices = await syncDeviceRepository.getAll();
-      final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
+    final appUsages = await appUsageRepository.getAll();
+    final appUsageTags = await appUsageTagRepository.getAll();
+    final appUsageTimeRecords = await appUsageTimeRecordRepository.getAll();
+    final appUsageTagRules = await appUsageTagRuleRepository.getAll();
+    final habits = await habitRepository.getAll();
+    final habitRecords = await habitRecordRepository.getAll();
+    final habitTags = await habitTagRepository.getAll();
+    final tags = await tagRepository.getAll();
+    final tagTags = await tagTagRepository.getAll();
+    final tasks = await taskRepository.getAll();
+    final taskTags = await taskTagRepository.getAll();
+    final taskTimeRecords = await taskTimeRecordRepository.getAll();
+    final settings = await settingRepository.getAll();
+    final syncDevices = await syncDeviceRepository.getAll();
+    final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
 
-      final data = {
-        'appInfo': {
-          'version': AppInfo.version,
-        },
-        'appUsages': appUsages,
-        'appUsageTags': appUsageTags,
-        'appUsageTimeRecords': appUsageTimeRecords,
-        'appUsageTagRules': appUsageTagRules,
-        'habits': habits,
-        'habitRecords': habitRecords,
-        'habitTags': habitTags,
-        'tags': tags,
-        'tagTags': tagTags,
-        'tasks': tasks,
-        'taskTags': taskTags,
-        'taskTimeRecords': taskTimeRecords,
-        'settings': settings,
-        'syncDevices': syncDevices,
-        'appUsageIgnoreRules': appUsageIgnoreRules,
-      };
+    final data = {
+      'appInfo': {
+        'version': AppInfo.version,
+      },
+      'appUsages': appUsages,
+      'appUsageTags': appUsageTags,
+      'appUsageTimeRecords': appUsageTimeRecords,
+      'appUsageTagRules': appUsageTagRules,
+      'habits': habits,
+      'habitRecords': habitRecords,
+      'habitTags': habitTags,
+      'tags': tags,
+      'tagTags': tagTags,
+      'tasks': tasks,
+      'taskTags': taskTags,
+      'taskTimeRecords': taskTimeRecords,
+      'settings': settings,
+      'syncDevices': syncDevices,
+      'appUsageIgnoreRules': appUsageIgnoreRules,
+    };
 
-      return ExportDataCommandResponse(
-        request.fileOption == ExportDataFileOptions.json ? JsonMapper.serialize(data) : _convertToCSV(data),
-      );
-    } catch (e) {
-      throw Exception('Export failed: $e');
-    }
+    return ExportDataCommandResponse(
+      request.fileOption == ExportDataFileOptions.json ? JsonMapper.serialize(data) : _convertToCSV(data),
+    );
   }
 
   String _convertToCSV(Map<String, dynamic> data) {

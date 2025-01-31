@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
 
 import 'package:whph/domain/features/habits/habit_tag.dart';
 
@@ -30,7 +31,7 @@ class RemoveHabitTagCommandHandler implements IRequestHandler<RemoveHabitTagComm
   Future<RemoveHabitTagCommandResponse> call(RemoveHabitTagCommand request) async {
     HabitTag? habitTag = await _habitTagRepository.getById(request.id);
     if (habitTag == null) {
-      throw BusinessException('HabitTag with id ${request.id} not found');
+      throw BusinessException(HabitTranslationKeys.habitTagNotFoundError);
     }
     await _habitTagRepository.delete(habitTag);
 

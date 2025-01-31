@@ -35,6 +35,7 @@ import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
 
 enum ImportStrategy { replace, merge }
 
@@ -176,34 +177,33 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
   @override
   Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
-    try {
-      final Map<String, dynamic> data = json.decode(request.fileContent);
+    final Map<String, dynamic> data = json.decode(request.fileContent);
 
-      // Check version compatibility
-      final importedVersion = data['appInfo']?['version'];
-      if (importedVersion != AppInfo.version) {
-        throw BusinessException(
-          'Version mismatch: imported data is from version $importedVersion, but current version is ${AppInfo.version}. '
-          'Please use the correct application version to import this data for better compatibility and security.',
-        );
-      }
-
-      if (request.strategy == ImportStrategy.replace) {
-        await _clearAllData();
-      }
-
-      // Import data sequentially using configs
-      for (final config in _importConfigs) {
-        if (data[config.name] != null) {
-          final items = (data[config.name] as List).cast<Map<String, dynamic>>();
-          await _importDataWithConfig(items, config, request.strategy);
-        }
-      }
-
-      return ImportDataCommandResponse();
-    } catch (e) {
-      throw Exception('Import failed: $e');
+    // Check version compatibility
+    final importedVersion = data['appInfo']?['version'];
+    if (importedVersion != AppInfo.version) {
+      throw BusinessException(
+        SettingTranslationKeys.versionMismatchError,
+        args: {
+          'importedVersion': importedVersion ?? 'unknown',
+          'currentVersion': AppInfo.version,
+        },
+      );
     }
+
+    if (request.strategy == ImportStrategy.replace) {
+      await _clearAllData();
+    }
+
+    // Import data sequentially using configs
+    for (final config in _importConfigs) {
+      if (data[config.name] != null) {
+        final items = (data[config.name] as List).cast<Map<String, dynamic>>();
+        await _importDataWithConfig(items, config, request.strategy);
+      }
+    }
+
+    return ImportDataCommandResponse();
   }
 
   Future<void> _clearAllData() async {
@@ -253,7 +253,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         await config.repository.add(entity);
       }
     } catch (e) {
-      rethrow;
+      throw BusinessException(SettingTranslationKeys.importFailedError);
     }
   }
 }

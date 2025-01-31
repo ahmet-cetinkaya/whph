@@ -3,6 +3,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
 
 class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
   late String id;
@@ -42,7 +43,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
   Future<GetTaskQueryResponse> call(GetTaskQuery request) async {
     Task? task = await _taskRepository.getById(request.id);
     if (task == null) {
-      throw BusinessException('Task with id ${request.id} not found');
+      throw BusinessException(TaskTranslationKeys.taskNotFoundError);
     }
 
     final totalDuration = await _taskTimeRecordRepository.getTotalDurationByTaskId(request.id);

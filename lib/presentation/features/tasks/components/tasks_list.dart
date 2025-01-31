@@ -139,15 +139,17 @@ class _TaskListState extends State<TaskList> {
           message: widget.translationService.translate(TaskTranslationKeys.getTaskError),
         );
       }
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   void _onTaskCompleted() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (_tasks != null) {
+      if (mounted && _tasks != null) {
         final pageIndex = _tasks!.pageIndex;
         _tasks = null;
         _getTasks(pageIndex: pageIndex);

@@ -1,5 +1,8 @@
 tags:
   title: Tags
+  new_tag: New Tag
+  tag_details: Tag Details
+  no_tags: No tags found
   filter_tooltip: Filter by tags
   sections:
     times: Tag Times
@@ -42,7 +45,8 @@ tags:
         - Review time charts regularly
         - Archive completed projects
         - Use tag filters to focus analysis
-    title: Tag Management Help
+    title: Tag Help
+    description: Tags help you categorize and group items
     content: |
       🏷️ Tags help you group and organize items.
 
@@ -61,6 +65,8 @@ tags:
     confirm_delete: Are you sure you want to delete this tag?
     confirm_archive: Are you sure you want to archive this tag?
     confirm_unarchive: Are you sure you want to unarchive this tag?
+    unarchive_confirm: Are you sure you want to unarchive this tag?
+    archive_confirm: Are you sure you want to archive this tag?
   errors:
     loading: Failed to load tags
     saving: Failed to save tag
@@ -69,6 +75,10 @@ tags:
     loading_archive_status: Failed to load archive status
     toggling_archive: Failed to toggle archive status
     get_tags: Error occurred while fetching tags
+    tag_not_found: Tag not found
+    tag_tag_not_found: Tag relationship not found
+    tag_tag_already_exists: This tag relationship already exists
+    same_tag: Primary and secondary tags cannot be the same
   labels:
     name: Name
     color: Color
@@ -80,7 +90,7 @@ tags:
   tooltips:
     color: Click to assign color to tag
     select: Click to select tag
-    add_tag: Add new tag
+    add_tag: Add tag
     delete_tag: Delete tag
     archive_tag: Archive tag
     unarchive_tag: Unarchive tag
@@ -121,3 +131,9 @@ tags:
         - • View time statistics
         - • Track aggregate time across related tags
     tasks_label: Tasks
+    name: Name
+    color: Color
+    archived: Archived
+    parent_tags: Parent Tags
+    child_tags: Child Tags
+    select_tag: Select tag

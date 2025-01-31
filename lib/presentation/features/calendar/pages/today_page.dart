@@ -138,7 +138,7 @@ class _TodayPageState extends State<TodayPage> {
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
         IconButton(
-          icon: const Icon(Icons.timer),
+          icon: const Icon(Icons.timer, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
           onPressed: () => _openMarathonPage(context),
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(TaskTranslationKeys.marathon),
@@ -147,17 +147,16 @@ class _TodayPageState extends State<TodayPage> {
           titleKey: CalendarTranslationKeys.todayHelpTitle,
           markdownContentKey: CalendarTranslationKeys.todayHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
         child: ListView(
           children: [
             // Filters
             TagSelectDropdown(
                 isMultiSelect: true,
                 icon: Icons.label,
-                iconSize: AppTheme.iconSizeSmall,
                 color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                 tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
                 onTagsSelected: _onTagFilterSelect),

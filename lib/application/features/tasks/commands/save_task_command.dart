@@ -5,6 +5,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
+import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -56,7 +57,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.id != null) {
       task = await _taskRepository.getById(request.id!);
       if (task == null) {
-        throw BusinessException('Task with id ${request.id} not found');
+        throw BusinessException(TaskTranslationKeys.taskNotFoundError);
       }
 
       task.title = request.title;

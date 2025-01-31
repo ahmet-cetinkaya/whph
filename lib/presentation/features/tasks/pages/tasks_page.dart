@@ -109,7 +109,7 @@ class _TasksPageState extends State<TasksPage> {
           titleKey: TaskTranslationKeys.tasksHelpTitle,
           markdownContentKey: TaskTranslationKeys.tasksHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => Padding(
         padding: const EdgeInsets.all(8),

@@ -32,7 +32,7 @@ class TagSelectDropdown extends StatefulWidget {
     required this.isMultiSelect,
     this.icon = TagUiConstants.tagIcon,
     this.buttonLabel,
-    this.iconSize = AppTheme.iconSizeSmall,
+    this.iconSize = AppTheme.iconSizeMedium,
     this.color,
     this.tooltip,
     required this.onTagsSelected,
