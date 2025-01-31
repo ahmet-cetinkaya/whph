@@ -140,7 +140,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
       try {
         final result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
-        if (result.items.isEmpty) break;
 
         if (mounted) {
           setState(() {

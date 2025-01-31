@@ -59,7 +59,15 @@ tasks:
       filter_by_tags: Filter by tags
     search:
       placeholder: Search tasks
+    planned_date: By Planned Date
+    deadline_date: By Deadline Date
+    completion: By Completion Status
+    tags: By Tags
   details:
+    title: Title
+    tags_hint: Select tags for task
+    total_elapsed_time: Total Elapsed Time
+    is_completed: Completed
     tags:
       label: Tags
       hint: Select tags to associate
@@ -152,6 +160,16 @@ tasks:
     add_tag: Unexpected error occurred while adding tag
     remove_tag: Unexpected error occurred while removing tag
     get_tags: Error occurred while fetching tags
+    task_not_found: Task not found
+    task_tag_not_found: Task tag not found
+    task_tag_already_deleted: Task tag is already deleted
+    task_tag_already_exists: This task tag already exists
+    loading_task: Failed to load task
+    saving_task: Failed to save task
+    loading_tasks: Failed to load tasks
+    loading_tags: Failed to load task tags
+    adding_tag: Failed to add tag
+    removing_tag: Failed to remove tag
   marathon:
     label: Marathon Mode
     help:
@@ -190,3 +208,13 @@ tasks:
     unpin_task_tooltip: Unpin current task
   tooltips:
     edit_title: Edit title
+  title: Tasks
+  new_task: New Task
+  task_details: Task Details
+  no_tasks: No tasks found
+  priorities:
+    urgent_important: Urgent and Important
+    not_urgent_important: Not Urgent but Important
+    urgent_not_important: Urgent but Not Important
+    not_urgent_not_important: Not Urgent or Important
+

@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
+import 'package:whph/application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class DeleteAppUsageIgnoreRuleCommand implements IRequest<DeleteAppUsageIgnoreRuleCommandResponse> {
   final String id;
@@ -30,7 +31,7 @@ class DeleteAppUsageIgnoreRuleCommandHandler
   Future<DeleteAppUsageIgnoreRuleCommandResponse> call(DeleteAppUsageIgnoreRuleCommand request) async {
     AppUsageIgnoreRule? rule = await _repository.getById(request.id);
     if (rule == null) {
-      throw BusinessException('AppUsageIgnoreRule with id ${request.id} not found');
+      throw BusinessException(AppUsageTranslationKeys.appUsageIgnoreRuleNotFoundError);
     }
 
     await _repository.delete(rule);

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -5,16 +6,19 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/api/api.dart';
 import 'package:whph/application/application_container.dart';
 import 'package:whph/application/features/app_usages/commands/start_track_app_usages_command.dart';
+import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/persistence/persistence_container.dart';
 import 'package:whph/presentation/app.dart';
 import 'package:whph/presentation/presentation_container.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:window_manager/window_manager.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -27,31 +31,68 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 late final IContainer container;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  await runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  container = acore.Container();
-  initializeJsonMapper();
-  registerPersistence(container);
-  registerInfrastructure(container);
-  registerApplication(container);
-  registerPresentation(container);
+    // Global error handling for Flutter errors
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Material(
+        child: Container(
+          color: Colors.red,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Error: ${details.exception}',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    };
 
-  // Initialize services
-  final translationService = container.resolve<ITranslationService>();
-  await translationService.init();
+    container = acore.Container();
+    initializeJsonMapper();
+    registerPersistence(container);
+    registerInfrastructure(container);
+    registerApplication(container);
+    registerPresentation(container);
 
-  final notificationService = container.resolve<INotificationService>();
-  await notificationService.init();
+    // Initialize services
+    final translationService = container.resolve<ITranslationService>();
+    await translationService.init();
 
-  await runDesktopWorkers();
+    // Initialize ErrorHelper
+    ErrorHelper.initialize(translationService);
 
-  await runBackgroundWorkers();
+    final notificationService = container.resolve<INotificationService>();
+    await notificationService.init();
 
-  runApp(
-    translationService.wrapWithTranslations(
-      App(navigatorKey: navigatorKey), // Pass navigator key to App
-    ),
-  );
+    await runDesktopWorkers();
+
+    await runBackgroundWorkers();
+
+    runApp(
+      translationService.wrapWithTranslations(
+        App(navigatorKey: navigatorKey), // Pass navigator key to App
+      ),
+    );
+  }, (error, stack) {
+    if (navigatorKey.currentContext != null) {
+      if (error is BusinessException) {
+        ErrorHelper.showError(navigatorKey.currentContext!, error);
+      } else {
+        ErrorHelper.showUnexpectedError(
+          navigatorKey.currentContext!,
+          error,
+          stack,
+        );
+      }
+    }
+    if (kDebugMode) {
+      print('Caught error: $error');
+      print('Stack trace: $stack');
+    }
+  });
 }
 
 Future<void> runDesktopWorkers() async {

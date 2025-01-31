@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
+import 'package:whph/application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class DeleteAppUsageTagRuleCommand implements IRequest<DeleteAppUsageTagRuleCommandResponse> {
   final String id;
@@ -29,7 +30,7 @@ class DeleteAppUsageTagRuleCommandHandler
   Future<DeleteAppUsageTagRuleCommandResponse> call(DeleteAppUsageTagRuleCommand request) async {
     AppUsageTagRule? rule = await _repository.getById(request.id);
     if (rule == null) {
-      throw BusinessException('AppUsageTagRule with id ${request.id} not found');
+      throw BusinessException(AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
     }
 
     await _repository.delete(rule);

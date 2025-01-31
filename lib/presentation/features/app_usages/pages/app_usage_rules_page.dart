@@ -53,7 +53,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
           titleKey: AppUsageTranslationKeys.rulesHelpTitle,
           markdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => Column(
         children: [

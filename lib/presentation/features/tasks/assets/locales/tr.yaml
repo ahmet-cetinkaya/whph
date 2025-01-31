@@ -59,12 +59,20 @@ tasks:
       filter_by_tags: Etiketlere göre filtrele
     search:
       placeholder: Görev ara
+    planned_date: Planlanan Tarihe Göre
+    deadline_date: Son Tarihe Göre
+    completion: Tamamlanma Durumuna Göre
+    tags: Etiketlere Göre
   details:
+    title: Başlık
+    tags_hint: Görev için etiket seçin
+    total_elapsed_time: Toplam Geçen Süre
+    is_completed: Tamamlandı
     tags:
       label: Etiketler
-      hint: İlişkilendirilecek etiketleri seçin
+      hint: Etiket seç
     priority:
-      label: Öncelik 
+      label: Öncelik
     estimated_time:
       label: Tahmini Süre
     elapsed_time:
@@ -76,7 +84,8 @@ tasks:
     description:
       label: Açıklama
       hint: Açıklama ekle...
-    help:
+  help:
+    details:
       title: Görev Detayları Yardım
       content: |
         📝 Görev detaylarınızı yönetin ve takip edin.
@@ -114,41 +123,6 @@ tasks:
         - **Acil Değil ama Önemli:** Önemli ancak daha sonra planlanabilecek görevler. Bu görevler uzun vadeli hedeflerinize ulaşmanıza yardımcı olur.
         - **Acil ama Önemli Değil:** Başkalarına devredilebilecek görevler. Bu görevler genellikle kesintiler veya dikkat dağıtıcı unsurlardır.
         - **Acil ve Önemli Değil:** Ortadan kaldırılabilecek görevler. Bu görevler hedeflerinize önemli ölçüde katkıda bulunmaz.
-  errors:
-    get_task: Görev yüklenirken beklenmedik bir hata oluştu
-    save_task: Görev kaydedilirken beklenmedik bir hata oluştu
-    add_tag: Etiket eklenirken beklenmedik bir hata oluştu
-    remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu
-    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
-  help:
-    details:
-      title: Görev Detayları Yardım 
-      content: |
-        📝 Görev detaylarınızı yönetin.
-
-        ## ⚡ Özellikler
-
-        - **Temel Bilgiler:**
-          - Etiketlerle organize edin
-          - Öncelik belirleyin
-          - Tahmini süre ekleyin
-
-        - **Zaman Yönetimi:**
-          - Planlanan tarih
-          - Son teslim tarihi
-          - Harcanan zaman takibi
-
-        - **Detaylar:**
-          - Markdown desteği
-          - Zengin metin düzenleme
-          - Dosya ekleri
-
-        ## 💡 İpuçları
-
-        - Etiketleri etkin kullanın
-        - Önemli görevlere öncelik verin
-        - Gerçekçi süreler belirleyin
-        - İlerlemeyi düzenli takip edin
     overview:
       title: Görevler Genel Bakış Yardım
       content: |
@@ -178,6 +152,31 @@ tasks:
         - Gerçekçi son tarihler belirleyin
         - İlerlemenizi takip edin
         - Düzenli olarak gözden geçirin
+  page:
+    title: Görevler
+    completed_tasks_title: Tamamlanan görevler
+  tooltips:
+    edit_title: Başlığı düzenle
+  title: Görevler
+  new_task: Yeni Görev
+  task_details: Görev Detayları
+  no_tasks: Görev bulunamadı
+  errors:
+    get_task: Görev yüklenirken beklenmedik bir hata oluştu
+    save_task: Görev kaydedilirken beklenmedik bir hata oluştu
+    add_tag: Etiket eklenirken beklenmedik bir hata oluştu
+    remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu
+    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    task_not_found: Görev bulunamadı
+    task_tag_not_found: Görev etiketi bulunamadı
+    task_tag_already_deleted: Görev etiketi zaten silinmiş
+    task_tag_already_exists: Bu görev etiketi zaten mevcut
+    loading_task: Görev yüklenemedi
+    saving_task: Görev kaydedilemedi
+    loading_tasks: Görevler yüklenemedi
+    loading_tags: Görev etiketleri yüklenemedi
+    adding_tag: Etiket eklenemedi
+    removing_tag: Etiket kaldırılamadı
   marathon:
     label: Maraton Modu
     help:
@@ -214,8 +213,8 @@ tasks:
     current_task: "Şu Anda Çalışılan:"
     select_task_hint: Aşağıdaki listeden çalışmak için bir görev seçin.
     unpin_task_tooltip: Mevcut görevi kaldır
-  page:
-    title: Görevler
-    completed_tasks_title: Tamamlanan görevler
-  tooltips:
-    edit_title: Başlığı düzenle
+  priorities:
+    urgent_important: Acil ve Önemli
+    not_urgent_important: Acil Değil ama Önemli
+    urgent_not_important: Acil ama Önemli Değil
+    not_urgent_not_important: Acil ve Önemli Değil

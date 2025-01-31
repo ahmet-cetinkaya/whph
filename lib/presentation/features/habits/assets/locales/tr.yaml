@@ -19,6 +19,10 @@ habits:
     loading_habit: Alışkanlık yüklenemedi
     saving_habit: Alışkanlık kaydedilemedi
     loading_habits: Alışkanlıklar yüklenemedi
+    habit_not_found: Alışkanlık bulunamadı
+    habit_tag_not_found: Alışkanlık etiketi bulunamadı
+    habit_record_not_found: Alışkanlık kaydı bulunamadı
+    tag_already_exists: Bu etiket zaten eklenmiş
   details:
     description: Açıklama
     tags: Etiketler

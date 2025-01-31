@@ -3,6 +3,7 @@ import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
+import 'package:whph/application/features/tags/constants/tag_translation_keys.dart';
 
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
   final String? id;
@@ -42,7 +43,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
     if (request.id != null) {
       tag = await _tagRepository.getById(request.id!);
       if (tag == null) {
-        throw BusinessException('Tag with id ${request.id} not found');
+        throw BusinessException(TagTranslationKeys.tagNotFoundError);
       }
 
       tag.name = request.name;

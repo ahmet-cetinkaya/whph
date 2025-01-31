@@ -19,6 +19,10 @@ habits:
     loading_habit: Failed to load habit
     saving_habit: Failed to save habit
     loading_habits: Failed to load habits
+    habit_not_found: Habit not found
+    habit_tag_not_found: Habit tag not found
+    habit_record_not_found: Habit record not found
+    tag_already_exists: This tag is already added
   details:
     description: Description
     tags: Tags

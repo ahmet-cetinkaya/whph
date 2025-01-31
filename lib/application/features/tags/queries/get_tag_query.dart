@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
+import 'package:whph/application/features/tags/constants/tag_translation_keys.dart';
 
 class GetTagQuery implements IRequest<GetTagQueryResponse> {
   late String id;
@@ -32,7 +33,7 @@ class GetTagQueryHandler implements IRequestHandler<GetTagQuery, GetTagQueryResp
       request.id,
     );
     if (tags == null) {
-      throw BusinessException('Tag with id ${request.id} not found');
+      throw BusinessException(TagTranslationKeys.tagNotFoundError);
     }
 
     return GetTagQueryResponse(

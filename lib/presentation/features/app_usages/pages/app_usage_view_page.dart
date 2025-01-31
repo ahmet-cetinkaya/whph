@@ -73,7 +73,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       appBarActions: [
         IconButton(
-          icon: const Icon(Icons.settings),
+          icon: const Icon(Icons.settings, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
           onPressed: () async {
             await Navigator.pushNamed(context, AppUsageRulesPage.route);
             _refreshList();
@@ -82,7 +82,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh, size: AppTheme.iconSizeSmall), // Ensure consistent icon size
           onPressed: _refreshList,
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
@@ -91,7 +91,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           titleKey: AppUsageTranslationKeys.viewHelpTitle,
           markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => ListView(
         children: [
@@ -108,7 +108,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                     onTagsSelected: _onTagFilterSelect,
                     showLength: true,
                     icon: Icons.label,
-                    iconSize: AppTheme.iconSizeSmall,
                     color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                     tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
                   ),

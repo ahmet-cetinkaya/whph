@@ -4,6 +4,7 @@ import 'package:whph/application/features/habits/services/i_habit_repository.dar
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
+import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
 
 class GetHabitQuery implements IRequest<GetHabitQueryResponse> {
   late String? id;
@@ -81,7 +82,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   Future<GetHabitQueryResponse> call(GetHabitQuery request) async {
     Habit? habit = await _habitRepository.getById(request.id!);
     if (habit == null) {
-      throw BusinessException('Habit with id ${request.id} not found');
+      throw BusinessException(HabitTranslationKeys.habitNotFoundError);
     }
 
     // Get all records for statistics calculation using pagination

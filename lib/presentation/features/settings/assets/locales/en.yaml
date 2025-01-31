@@ -30,6 +30,7 @@ settings:
     success: Import successful
     error: Import failed
     select_file: Select file
+    version_mismatch: "Version mismatch: imported data is from version {importedVersion}, but current version is {currentVersion}. Please use the correct application version for better compatibility and security."
   export:
     title: Export
     select_path: Select save location
@@ -38,3 +39,10 @@ settings:
     select_type: Select export format
     json_description: You can use this file to import data back to the app.
     csv_description: You can use this to view in Excel and similar applications.
+  errors:
+    setting_not_found: Setting not found
+    import:
+      version_mismatch: "Version mismatch: imported data is from version {importedVersion}, but current version is {currentVersion}. Please use the correct application version for better compatibility and security."
+      error: Import operation failed. Please check the file and try again.
+    export:
+      error: Export operation failed. Please try again.

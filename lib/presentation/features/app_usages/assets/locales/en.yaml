@@ -1,30 +1,15 @@
 app_usages:
-  tooltips:
-    edit_name: Edit Name
   delete:
     confirm_title: Delete App Usage
     error: An unexpected error occurred while deleting app usage
-  errors:
-    get_usage: An unexpected error occurred while fetching app usage
-    save_usage: An unexpected error occurred while saving app usage
-    get_tags: Error occurred while fetching app usage tags
-    add_tag: An unexpected error occurred while adding tag
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-  units:
-    minutes: min
   details:
+    color:
+      hint: Click to change color
+      label: Color
     device:
       label: Device
       unknown: Unknown Device
-    tags:
-      label: Tags
-      hint: Select tags
-    color:
-      label: Color
-      hint: Click to change color
     help:
-      title: App Usage Details Help
       content: |
         Shows the time spent on apps and manages tag relationships.
 
@@ -51,72 +36,45 @@ app_usages:
         - Group similar apps
         - Track productive and unproductive time
         - Use tag rules for automation
-  ignore_rules:
-    no_rules: No ignore rules found
-    pattern_label: Pattern
-    delete_title: Delete Rule
-    delete_confirm: "Are you sure you want to delete the ignore rule \"{pattern}\"?"
-    delete_tooltip: Delete rule
+      title: App Usage Details Help
+    tags:
+      hint: Select tags
+      label: Tags
+  errors:
+    add_tag: An unexpected error occurred while adding tag
+    app_usage_ignore_rule_not_found: Ignore rule not found
+    app_usage_not_found: App usage not found
+    app_usage_tag_not_found: App usage tag not found
+    app_usage_tag_rule_not_found: Tag rule not found
+    get_tags: Error occurred while fetching app usage tags
+    get_usage: An unexpected error occurred while fetching app usage
+    remove_tag: An unexpected error occurred while removing tag
+    save_rule: An unexpected error occurred while saving ignore rules
+    save_usage: An unexpected error occurred while saving app usage
+    tag_already_exists: This tag is already added
   form:
-    pattern:
-      label: Pattern
-      hint: Enter regex pattern
-      required: Pattern is required
-      help_tooltip: Show regex help
     description:
-      label: Description (Optional)
       hint: Enter a description for this rule
+      label: Description (Optional)
+    pattern:
+      help_tooltip: Show regex help
+      hint: Enter regex pattern
+      label: Pattern
+      required: Pattern is required
     save: Save
     saved: Saved
-  rules:
-    title: App Usage Rules
-    tag_rules: Tag Rules
-    ignore_rules: Ignore Rules
-    add_new_rule: Add New Rule
-    existing_rules: Existing Rules
-    help:
-      title: App Usage Rules Help
-      content: |
-        Helps automate tag assignment and manage app tracking.
-
-        ## 🏷️ Tag Rules
-
-        - **Automatic Tag Assignment:**
-          - Match apps by name patterns
-          - Assign multiple tags
-          - Track time automatically
-        - **Rule Management:**
-          - Create new rules
-          - Edit existing rules
-          - Delete unused rules
-
-        ## 🚫 Ignore Rules
-
-        - **Exclude Apps:**
-          - Skip unwanted apps
-          - Ignore system processes
-          - Filter background apps
-        - **Pattern Matching:**
-          - Use wildcards
-          - Match exact names
-          - Case sensitivity options
-
-        ## 💡 Tips
-
-        - Use specific patterns for better matching
-        - Group similar apps under common tags
-        - Regularly review and update rules
-        - Test rules with different app names
-        - Use ignore rules for system utilities
-        - Combine rules for detailed tracking
+  ignore_rules:
+    delete_confirm: "Are you sure you want to delete the ignore rule \"{pattern}\"?"
+    delete_title: Delete Rule
+    delete_tooltip: Delete rule
+    no_rules: No ignore rules found
+    pattern_label: Pattern
   pages:
     view:
-      title: App Usage
       buttons:
-        tag_rules: Tag Rules
         filter_tags: Filter Tags
+        tag_rules: Tag Rules
       help:
-        title: App Usage Help
         content: |
           Manage and track your app usage effectively.
 
@@ -153,3 +111,50 @@ app_usages:
           - Group similar apps
           - Track productive and unproductive time
           - Use tag rules for automation
+        title: App Usage Help
+      title: App Usage
+  rules:
+    add_new_rule: Add New Rule
+    existing_rules: Existing Rules
+    help:
+      content: |
+        Helps automate tag assignment and manage app tracking.
+
+        ## 🏷️ Tag Rules
+
+        - **Automatic Tag Assignment:**
+          - Match apps by name patterns
+          - Assign multiple tags
+          - Track time automatically
+        - **Rule Management:**
+          - Create new rules
+          - Edit existing rules
+          - Delete unused rules
+
+        ## 🚫 Ignore Rules
+
+        - **Exclude Apps:**
+          - Skip unwanted apps
+          - Ignore system processes
+          - Filter background apps
+        - **Pattern Matching:**
+          - Use wildcards
+          - Match exact names
+          - Case sensitivity options
+
+        ## 💡 Tips
+
+        - Use specific patterns for better matching
+        - Group similar apps under common tags
+        - Regularly review and update rules
+        - Test rules with different app names
+        - Use ignore rules for system utilities
+        - Combine rules for detailed tracking
+      title: App Usage Rules Help
+    ignore_rules: Ignore Rules
+    tag_rules: Tag Rules
+    title: App Usage Rules
+  tooltips:
+    edit_name: Edit Name
+  units:
+    minutes: min

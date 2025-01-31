@@ -1,9 +1,11 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/tags/tag.dart';
+import 'package:whph/application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class GetListAppUsageTagRulesQuery implements IRequest<GetListAppUsageTagRulesQueryResponse> {
   final int pageIndex;
@@ -81,7 +83,7 @@ class GetListAppUsageTagRulesQueryHandler
     List<AppUsageTagRuleListItem> items = await Future.wait(result.items.map((rule) async {
       if (!cachedTags.containsKey(rule.tagId)) {
         Tag? tag = await _tagRepository.getById(rule.tagId);
-        if (tag == null) throw Exception('Tag not found');
+        if (tag == null) throw BusinessException(AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
 
         cachedTags[rule.tagId] = tag;
       }

@@ -90,10 +90,10 @@ class _TagsPageState extends State<TagsPage> {
           titleKey: TagTranslationKeys.overviewHelpTitle,
           markdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
         child: ListView(
           children: [
             // Tag filter with translation
@@ -103,7 +103,6 @@ class _TagsPageState extends State<TagsPage> {
                 isMultiSelect: true,
                 onTagsSelected: _onFilterTags,
                 icon: Icons.label,
-                iconSize: AppTheme.iconSizeSmall,
                 color: _selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
                 tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
                 showLength: true,

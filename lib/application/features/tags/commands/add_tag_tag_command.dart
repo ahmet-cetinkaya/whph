@@ -3,6 +3,7 @@ import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
+import 'package:whph/application/features/tags/constants/tag_translation_keys.dart';
 
 class AddTagTagCommand implements IRequest<AddTagTagCommandResponse> {
   String primaryTagId;
@@ -30,10 +31,10 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
   @override
   Future<AddTagTagCommandResponse> call(AddTagTagCommand request) async {
     if (request.primaryTagId == request.secondaryTagId) {
-      throw BusinessException('Primary tag and secondary tag cannot be the same');
+      throw BusinessException(TagTranslationKeys.sameTagError);
     }
     if (await _tagTagRepository.anyByPrimaryAndSecondaryId(request.primaryTagId, request.secondaryTagId)) {
-      throw BusinessException('Tag tag already exists');
+      throw BusinessException(TagTranslationKeys.tagTagAlreadyExistsError);
     }
 
     final tagTag = TagTag(

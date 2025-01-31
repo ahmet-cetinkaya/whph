@@ -108,24 +108,23 @@ class _HabitsPageState extends State<HabitsPage> {
           titleKey: HabitTranslationKeys.overviewHelpTitle,
           markdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8), // Adjusted spacing
       ],
       builder: (context) => Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
         child: ListView(
           key: _habitsListKey,
           children: [
             // Filters
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Filter by tags
                 TagSelectDropdown(
                   isMultiSelect: true,
                   onTagsSelected: _onFilterTagsSelect,
                   icon: Icons.label,
-                  iconSize: AppTheme.iconSizeSmall,
                   color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
                   tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
                   showLength: true,
