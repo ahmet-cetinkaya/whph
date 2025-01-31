@@ -21,6 +21,9 @@ import 'package:whph/presentation/shared/services/abstraction/i_notification_ser
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/shared/constants/app_args.dart';
 
+// Global navigator key for accessing context anywhere
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 late final IContainer container;
 
 void main() async {
@@ -45,7 +48,9 @@ void main() async {
   await runBackgroundWorkers();
 
   runApp(
-    translationService.wrapWithTranslations(const App()),
+    translationService.wrapWithTranslations(
+      App(navigatorKey: navigatorKey), // Pass navigator key to App
+    ),
   );
 }
 

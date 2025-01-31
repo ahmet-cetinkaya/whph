@@ -25,10 +25,11 @@ settings:
     title: İçe Aktar
     strategy:
       title: İçe Aktarma Stratejisi
-      replace: Mevcut Verileri Sil ve Yeni Verileri Ekle
+      replace: Mevcut Verileri Sil ve Yenisini Ekle
       merge: Mevcut Verilerle Birleştir
     success: İçe aktarma başarılı
     error: İçe aktarma başarısız
+    select_file: Dosya seçin
   export:
     title: Dışa Aktar
     select_path: Kayıt konumu seçin

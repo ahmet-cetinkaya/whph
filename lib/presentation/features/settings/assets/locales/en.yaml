@@ -25,10 +25,11 @@ settings:
     title: Import
     strategy:
       title: Import Strategy
-      replace: Delete Existing Data and Add New Data
+      replace: Delete Existing Data and Add New
       merge: Merge with Existing Data
     success: Import successful
     error: Import failed
+    select_file: Select file
   export:
     title: Export
     select_path: Select save location
