@@ -98,4 +98,7 @@ class TaskTranslationKeys {
   static const String marathonCurrentTask = 'tasks.marathon.current_task';
   static const String marathonSelectTaskHint = 'tasks.marathon.select_task_hint';
   static const String marathonUnpinTaskTooltip = 'tasks.marathon.unpin_task_tooltip';
+
+  // Sub Tasks
+  static const String subTasksLabel = 'tasks.details.sub_tasks.label';
 }

@@ -7,6 +7,7 @@ import 'package:whph/persistence/shared/repositories/drift/drift_base_repository
 @UseRowClass(Task)
 class TaskTable extends Table {
   TextColumn get id => text()();
+  TextColumn get parentTaskId => text().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
   IntColumn get priority => intEnum<EisenhowerPriority>().nullable()();
@@ -30,16 +31,18 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   @override
   Insertable<Task> toCompanion(Task entity) {
     return TaskTableCompanion.insert(
-        id: entity.id,
-        createdDate: entity.createdDate,
-        modifiedDate: Value(entity.modifiedDate),
-        deletedDate: Value(entity.deletedDate),
-        title: entity.title,
-        description: Value(entity.description),
-        priority: Value(entity.priority),
-        plannedDate: Value(entity.plannedDate),
-        deadlineDate: Value(entity.deadlineDate),
-        estimatedTime: Value(entity.estimatedTime),
-        isCompleted: Value(entity.isCompleted));
+      id: entity.id,
+      parentTaskId: Value(entity.parentTaskId),
+      title: entity.title,
+      description: Value(entity.description),
+      priority: Value(entity.priority),
+      plannedDate: Value(entity.plannedDate),
+      deadlineDate: Value(entity.deadlineDate),
+      estimatedTime: Value(entity.estimatedTime),
+      isCompleted: Value(entity.isCompleted),
+      createdDate: entity.createdDate,
+      modifiedDate: Value(entity.modifiedDate),
+      deletedDate: Value(entity.deletedDate),
+    );
   }
 }

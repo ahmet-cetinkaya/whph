@@ -11,6 +11,7 @@ class TaskAddButton extends StatefulWidget {
   final Function(String taskId)? onTaskCreated;
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
+  final String? initialParentTaskId;
 
   const TaskAddButton({
     super.key,
@@ -19,6 +20,7 @@ class TaskAddButton extends StatefulWidget {
     this.onTaskCreated,
     this.initialTagIds,
     this.initialPlannedDate,
+    this.initialParentTaskId,
   });
 
   @override
@@ -39,6 +41,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       builder: (context) => QuickTaskBottomSheet(
         initialTagIds: widget.initialTagIds,
         initialPlannedDate: widget.initialPlannedDate,
+        initialParentTaskId: widget.initialParentTaskId,
         onTaskCreated: (taskId) {
           if (widget.onTaskCreated != null) {
             widget.onTaskCreated!(taskId);

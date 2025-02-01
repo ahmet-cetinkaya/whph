@@ -84,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration {
@@ -273,6 +273,10 @@ class AppDatabase extends _$AppDatabase {
           // Add new device ID columns
           await m.addColumn(syncDeviceTable, syncDeviceTable.fromDeviceId);
           await m.addColumn(syncDeviceTable, syncDeviceTable.toDeviceId);
+        },
+        from11To12: (m, schema) async {
+          // Add parentTaskId column to Task table
+          await m.addColumn(taskTable, taskTable.parentTaskId);
         },
       ),
     );

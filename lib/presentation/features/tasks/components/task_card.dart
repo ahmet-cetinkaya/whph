@@ -21,6 +21,7 @@ class TaskCard extends StatelessWidget {
 
   final List<Widget>? trailingButtons;
   final bool transparent;
+  final bool showSubTasks;
 
   final VoidCallback onOpenDetails;
   final VoidCallback? onCompleted;
@@ -34,6 +35,7 @@ class TaskCard extends StatelessWidget {
     this.onCompleted,
     required this.onOpenDetails,
     this.onScheduled,
+    this.showSubTasks = false,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -63,7 +65,13 @@ class TaskCard extends StatelessWidget {
         onTap: onOpenDetails,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: _buildMainContent(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMainContent(context),
+              if (showSubTasks && taskItem.subTasks.isNotEmpty) ..._buildSubTasks(context),
+            ],
+          ),
         ),
       ),
     );
@@ -161,6 +169,18 @@ class TaskCard extends StatelessWidget {
       metadata.addAll(dateTimeWidgets);
     }
 
+    // Add separator and completion percentage if available
+    if (taskItem.subTasks.isNotEmpty) {
+      if (metadata.isNotEmpty) {
+        metadata.add(const SizedBox(width: 8));
+      }
+      metadata.add(_buildInfoRow(
+        Icons.check_circle_outline,
+        '${taskItem.subTasksCompletionPercentage.toStringAsFixed(0)}%',
+        Colors.green,
+      ));
+    }
+
     return Wrap(
       spacing: 0,
       runSpacing: 0,
@@ -202,6 +222,22 @@ class TaskCard extends StatelessWidget {
     }
 
     return elements;
+  }
+
+  List<Widget> _buildSubTasks(BuildContext context) {
+    return taskItem.subTasks.map((subTask) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+        child: TaskCard(
+          taskItem: subTask,
+          onOpenDetails: () => onOpenDetails(),
+          onCompleted: onCompleted,
+          trailingButtons: trailingButtons,
+          transparent: true,
+          showSubTasks: showSubTasks,
+        ),
+      );
+    }).toList();
   }
 
   Widget _buildInfoRow(IconData icon, String text, Color color) => Row(

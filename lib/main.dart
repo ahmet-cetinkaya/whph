@@ -6,7 +6,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/api/api.dart';
 import 'package:whph/application/application_container.dart';
 import 'package:whph/application/features/app_usages/commands/start_track_app_usages_command.dart';
-import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';

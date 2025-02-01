@@ -17,12 +17,14 @@ class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
   final Function(String taskId)? onTaskCreated;
+  final String? initialParentTaskId;
 
   const QuickTaskBottomSheet({
     super.key,
     this.initialTagIds,
     this.initialPlannedDate,
     this.onTaskCreated,
+    this.initialParentTaskId,
   });
 
   @override
@@ -77,6 +79,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         plannedDate: _plannedDate,
         deadlineDate: _deadlineDate,
         isCompleted: false,
+        parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
       );
       final response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 

@@ -17,6 +17,7 @@ class Task extends BaseEntity<String> {
   DateTime? deadlineDate;
   int? estimatedTime;
   bool isCompleted = false;
+  String? parentTaskId;
 
   Task(
       {required super.id,
@@ -29,5 +30,6 @@ class Task extends BaseEntity<String> {
       this.deadlineDate,
       this.priority,
       this.estimatedTime,
-      required this.isCompleted});
+      required this.isCompleted,
+      this.parentTaskId});
 }
