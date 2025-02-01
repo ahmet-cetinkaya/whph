@@ -2614,6 +2614,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   late final GeneratedColumn<String> id =
       GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _parentTaskIdMeta = const VerificationMeta('parentTaskId');
+  @override
+  late final GeneratedColumn<String> parentTaskId = GeneratedColumn<String>('parent_task_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title =
@@ -2661,6 +2665,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
+        parentTaskId,
         title,
         description,
         priority,
@@ -2685,6 +2690,9 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('parent_task_id')) {
+      context.handle(_parentTaskIdMeta, parentTaskId.isAcceptableOrUnknown(data['parent_task_id']!, _parentTaskIdMeta));
     }
     if (data.containsKey('title')) {
       context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
@@ -2740,6 +2748,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}priority'])),
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
       isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
+      parentTaskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}parent_task_id']),
     );
   }
 
@@ -2756,6 +2765,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
 
 class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<String> id;
+  final Value<String?> parentTaskId;
   final Value<String> title;
   final Value<String?> description;
   final Value<EisenhowerPriority?> priority;
@@ -2769,6 +2779,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
+    this.parentTaskId = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.priority = const Value.absent(),
@@ -2783,6 +2794,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   });
   TaskTableCompanion.insert({
     required String id,
+    this.parentTaskId = const Value.absent(),
     required String title,
     this.description = const Value.absent(),
     this.priority = const Value.absent(),
@@ -2799,6 +2811,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
         createdDate = Value(createdDate);
   static Insertable<Task> custom({
     Expression<String>? id,
+    Expression<String>? parentTaskId,
     Expression<String>? title,
     Expression<String>? description,
     Expression<int>? priority,
@@ -2813,6 +2826,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (parentTaskId != null) 'parent_task_id': parentTaskId,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
       if (priority != null) 'priority': priority,
@@ -2829,6 +2843,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
 
   TaskTableCompanion copyWith(
       {Value<String>? id,
+      Value<String?>? parentTaskId,
       Value<String>? title,
       Value<String?>? description,
       Value<EisenhowerPriority?>? priority,
@@ -2842,6 +2857,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
+      parentTaskId: parentTaskId ?? this.parentTaskId,
       title: title ?? this.title,
       description: description ?? this.description,
       priority: priority ?? this.priority,
@@ -2861,6 +2877,9 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (parentTaskId.present) {
+      map['parent_task_id'] = Variable<String>(parentTaskId.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -2902,6 +2921,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   String toString() {
     return (StringBuffer('TaskTableCompanion(')
           ..write('id: $id, ')
+          ..write('parentTaskId: $parentTaskId, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('priority: $priority, ')
@@ -5508,6 +5528,7 @@ typedef $$TagTagTableTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function()>;
 typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   required String id,
+  Value<String?> parentTaskId,
   required String title,
   Value<String?> description,
   Value<EisenhowerPriority?> priority,
@@ -5522,6 +5543,7 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<String> id,
+  Value<String?> parentTaskId,
   Value<String> title,
   Value<String?> description,
   Value<EisenhowerPriority?> priority,
@@ -5544,6 +5566,9 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get parentTaskId =>
+      $composableBuilder(column: $table.parentTaskId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
@@ -5586,6 +5611,9 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
   });
   ColumnOrderings<String> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get parentTaskId =>
+      $composableBuilder(column: $table.parentTaskId, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
 
@@ -5626,6 +5654,9 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
     super.$removeJoinBuilderFromRootComposer,
   });
   GeneratedColumn<String> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get parentTaskId =>
+      $composableBuilder(column: $table.parentTaskId, builder: (column) => column);
 
   GeneratedColumn<String> get title => $composableBuilder(column: $table.title, builder: (column) => column);
 
@@ -5677,6 +5708,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
           createComputedFieldComposer: () => $$TaskTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<String> id = const Value.absent(),
+            Value<String?> parentTaskId = const Value.absent(),
             Value<String> title = const Value.absent(),
             Value<String?> description = const Value.absent(),
             Value<EisenhowerPriority?> priority = const Value.absent(),
@@ -5691,6 +5723,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
           }) =>
               TaskTableCompanion(
             id: id,
+            parentTaskId: parentTaskId,
             title: title,
             description: description,
             priority: priority,
@@ -5705,6 +5738,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             required String id,
+            Value<String?> parentTaskId = const Value.absent(),
             required String title,
             Value<String?> description = const Value.absent(),
             Value<EisenhowerPriority?> priority = const Value.absent(),
@@ -5719,6 +5753,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
           }) =>
               TaskTableCompanion.insert(
             id: id,
+            parentTaskId: parentTaskId,
             title: title,
             description: description,
             priority: priority,

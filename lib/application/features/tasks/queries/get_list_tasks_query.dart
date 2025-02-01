@@ -20,6 +20,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final List<String>? filterByTags;
   final bool? filterByCompleted;
   final String? searchQuery;
+  final String? parentTaskId;
+  final bool fetchParentAndSubTasks;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -32,6 +34,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.filterByTags,
     this.filterByCompleted,
     this.searchQuery,
+    this.parentTaskId,
+    this.fetchParentAndSubTasks = false,
   });
 }
 
@@ -45,6 +49,9 @@ class TaskListItem {
   List<TagListItem> tags;
   int? estimatedTime;
   int totalElapsedTime = 0;
+  String? parentTaskId;
+  double subTasksCompletionPercentage = 0;
+  List<TaskListItem> subTasks;
 
   TaskListItem({
     required this.id,
@@ -55,7 +62,41 @@ class TaskListItem {
     this.deadlineDate,
     this.tags = const [],
     this.estimatedTime,
+    this.parentTaskId,
+    this.subTasksCompletionPercentage = 0,
+    this.subTasks = const [],
+    this.totalElapsedTime = 0,
   });
+
+  TaskListItem copyWith({
+    String? id,
+    String? title,
+    EisenhowerPriority? priority,
+    DateTime? plannedDate,
+    DateTime? deadlineDate,
+    bool? isCompleted,
+    List<TagListItem>? tags,
+    int? estimatedTime,
+    int? totalElapsedTime,
+    String? parentTaskId,
+    double? subTasksCompletionPercentage,
+    List<TaskListItem>? subTasks,
+  }) {
+    return TaskListItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      priority: priority ?? this.priority,
+      plannedDate: plannedDate ?? this.plannedDate,
+      deadlineDate: deadlineDate ?? this.deadlineDate,
+      isCompleted: isCompleted ?? this.isCompleted,
+      tags: tags ?? this.tags,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      totalElapsedTime: totalElapsedTime ?? this.totalElapsedTime,
+      parentTaskId: parentTaskId ?? this.parentTaskId,
+      subTasksCompletionPercentage: subTasksCompletionPercentage ?? this.subTasksCompletionPercentage,
+      subTasks: subTasks ?? this.subTasks,
+    );
+  }
 }
 
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
@@ -109,6 +150,16 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         );
       }).toList());
 
+      final subTasks = await _taskRepository.getAll(
+        customWhereFilter: CustomWhereFilter("parent_task_id = ?", [task.id]),
+      );
+
+      double subTasksCompletionPercentage = 0;
+      if (subTasks.isNotEmpty) {
+        final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
+        subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
+      }
+
       taskListItems.add(TaskListItem(
         id: task.id,
         title: task.title,
@@ -118,6 +169,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         deadlineDate: task.deadlineDate,
         tags: tagItems,
         estimatedTime: task.estimatedTime,
+        parentTaskId: task.parentTaskId,
+        subTasksCompletionPercentage: subTasksCompletionPercentage,
       ));
     }
 
@@ -188,6 +241,19 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
       customWhereFilter.query += "(is_completed = ?)";
       customWhereFilter.variables.add(request.filterByCompleted! ? 1 : 0);
+    }
+
+    // Parent task filter
+    if (!request.fetchParentAndSubTasks) {
+      customWhereFilter ??= CustomWhereFilter.empty();
+
+      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
+      if (request.parentTaskId != null) {
+        customWhereFilter.query += "(parent_task_id = ?)";
+        customWhereFilter.variables.add(request.parentTaskId!);
+      } else {
+        customWhereFilter.query += "(parent_task_id IS NULL)";
+      }
     }
 
     return customWhereFilter;

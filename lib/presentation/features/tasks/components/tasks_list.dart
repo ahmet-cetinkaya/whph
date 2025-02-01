@@ -23,6 +23,7 @@ class TaskList extends StatefulWidget {
   final bool filterDateOr;
   final bool? filterByCompleted;
   final String? search;
+  final String? parentTaskId;
 
   final TaskListItem? selectedTask;
   final bool showSelectButton;
@@ -48,6 +49,7 @@ class TaskList extends StatefulWidget {
     this.filterDateOr = false,
     this.filterByCompleted,
     this.search,
+    this.parentTaskId,
     this.selectedTask,
     this.showSelectButton = false,
     this.transparentCards = false,
@@ -112,7 +114,8 @@ class _TaskListState extends State<TaskList> {
           filterDateOr: widget.filterDateOr,
           filterByTags: widget.filterByTags,
           filterByCompleted: widget.filterByCompleted,
-          searchQuery: widget.search);
+          searchQuery: widget.search,
+          parentTaskId: widget.parentTaskId);
       final result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
       if (mounted) {
@@ -185,21 +188,43 @@ class _TaskListState extends State<TaskList> {
             itemCount: _tasks!.items.where((task) => task.id != widget.selectedTask?.id).length,
             itemBuilder: (context, index) {
               final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
-              return TaskCard(
-                key: ValueKey(task.id),
-                taskItem: task,
-                transparent: widget.transparentCards,
-                trailingButtons: [
-                  if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                  if (widget.showSelectButton)
-                    IconButton(
-                      icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                      onPressed: () => widget.onSelectTask?.call(task),
+              return FutureBuilder<GetListTasksQueryResponse>(
+                future: widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+                  GetListTasksQuery(
+                    pageIndex: 0,
+                    pageSize: 10,
+                    parentTaskId: task.id,
+                  ),
+                ),
+                builder: (context, snapshot) {
+                  final subTasks = snapshot.data?.items ?? [];
+                  double subTasksCompletionPercentage = 0;
+                  if (subTasks.isNotEmpty) {
+                    final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
+                    subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
+                  }
+
+                  return TaskCard(
+                    key: ValueKey(task.id),
+                    taskItem: task.copyWith(
+                      subTasks: subTasks,
+                      subTasksCompletionPercentage: subTasksCompletionPercentage,
                     ),
-                ],
-                onCompleted: _onTaskCompleted,
-                onOpenDetails: () => widget.onClickTask(task),
-                onScheduled: widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
+                    transparent: widget.transparentCards,
+                    trailingButtons: [
+                      if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                      if (widget.showSelectButton)
+                        IconButton(
+                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                          onPressed: () => widget.onSelectTask?.call(task),
+                        ),
+                    ],
+                    onCompleted: _onTaskCompleted,
+                    onOpenDetails: () => widget.onClickTask(task),
+                    onScheduled:
+                        widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
+                  );
+                },
               );
             },
           ),

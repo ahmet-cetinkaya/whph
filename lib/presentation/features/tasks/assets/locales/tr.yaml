@@ -84,6 +84,8 @@ tasks:
     description:
       label: Açıklama
       hint: Açıklama ekle...
+    sub_tasks:
+      label: Alt görevler
   help:
     details:
       title: Görev Detayları Yardım

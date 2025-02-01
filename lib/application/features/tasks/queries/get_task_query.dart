@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
@@ -13,6 +14,8 @@ class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
 
 class GetTaskQueryResponse extends Task {
   int totalDuration = 0;
+  double subTasksCompletionPercentage = 0;
+  List<Task> subTasks = [];
 
   GetTaskQueryResponse(
       {required super.id,
@@ -26,7 +29,10 @@ class GetTaskQueryResponse extends Task {
       super.deadlineDate,
       super.estimatedTime,
       required this.totalDuration,
-      required super.isCompleted});
+      required super.isCompleted,
+      required super.parentTaskId,
+      required this.subTasksCompletionPercentage,
+      required this.subTasks});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
@@ -48,6 +54,16 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
 
     final totalDuration = await _taskTimeRecordRepository.getTotalDurationByTaskId(request.id);
 
+    final subTasks = await _taskRepository.getAll(
+      customWhereFilter: CustomWhereFilter("parent_task_id = ?", [task.id]),
+    );
+
+    double subTasksCompletionPercentage = 0;
+    if (subTasks.isNotEmpty) {
+      final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
+      subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
+    }
+
     return GetTaskQueryResponse(
         id: task.id,
         createdDate: task.createdDate,
@@ -59,6 +75,9 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
         deadlineDate: task.deadlineDate,
         estimatedTime: task.estimatedTime,
         totalDuration: totalDuration,
-        isCompleted: task.isCompleted);
+        isCompleted: task.isCompleted,
+        parentTaskId: task.parentTaskId,
+        subTasksCompletionPercentage: subTasksCompletionPercentage,
+        subTasks: subTasks);
   }
 }

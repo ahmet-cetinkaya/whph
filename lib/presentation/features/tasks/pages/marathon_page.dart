@@ -69,10 +69,11 @@ class _MarathonPageState extends State<MarathonPage> {
     }
   }
 
-  void _onSelectTask(TaskListItem task) {
+  void _onSelectTask(TaskListItem task) async {
     setState(() {
       _selectedTask = task;
     });
+    await _refreshSelectedTask(); // Refresh task to get sub-tasks
   }
 
   void _clearSelectedTask() {
@@ -204,18 +205,22 @@ class _MarathonPageState extends State<MarathonPage> {
       final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
       final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+      final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+          GetListTasksQuery(pageIndex: 0, pageSize: 10, parentTaskId: _selectedTask!.id));
 
       if (mounted) {
         setState(() {
           _selectedTask = TaskListItem(
-              id: task.id,
-              title: task.title,
-              isCompleted: task.isCompleted,
-              deadlineDate: task.deadlineDate,
-              estimatedTime: task.estimatedTime,
-              plannedDate: task.plannedDate,
-              priority: task.priority,
-              tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+            id: task.id,
+            title: task.title,
+            isCompleted: task.isCompleted,
+            deadlineDate: task.deadlineDate,
+            estimatedTime: task.estimatedTime,
+            plannedDate: task.plannedDate,
+            priority: task.priority,
+            tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList(),
+            subTasks: subTasks.items,
+          );
         });
       }
     } catch (e, stackTrace) {
@@ -297,6 +302,7 @@ class _MarathonPageState extends State<MarathonPage> {
                           tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
                         ),
                       ],
+                      showSubTasks: true, // Enable sub-tasks display
                     ),
                   ],
                 ),
