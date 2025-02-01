@@ -15,34 +15,36 @@ class AppAbout extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Image(
-              image: AssetImage(AppInfo.logoPath),
-              width: 100,
-              height: 100,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${AppInfo.shortName} (${AppInfo.name})",
-                    style: AppTheme.headlineMedium,
-                  ),
-                  Text(
-                    _translationService.translate(
-                      'about.app_about.version',
-                      namedArgs: {'version': AppInfo.version},
-                    ),
-                    style: AppTheme.bodyMedium,
-                  ),
-                ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              const Image(
+                image: AssetImage(AppInfo.logoPath),
+                width: 100,
+                height: 100,
               ),
-            ),
-          ],
+              const SizedBox(width: 16),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${AppInfo.shortName} (${AppInfo.name})",
+                      style: AppTheme.headlineMedium,
+                    ),
+                    Text(
+                      _translationService.translate(
+                        'about.app_about.version',
+                        namedArgs: {'version': AppInfo.version},
+                      ),
+                      style: AppTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 16),
