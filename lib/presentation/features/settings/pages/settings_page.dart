@@ -35,14 +35,12 @@ class SettingsPage extends StatelessWidget {
     return ResponsiveScaffoldLayout(
       title: translationService.translate(SettingsTranslationKeys.settingsTitle),
       builder: (context) => ListView(
-        padding: const EdgeInsets.all(16),
         children: [
           // Startup
           if (StartupSettings.compatiblePlatform) ...[
             const StartupSettings(),
             const SizedBox(height: 8),
           ],
-
           // Notification
           const NotificationSettings(),
           const SizedBox(height: 8),

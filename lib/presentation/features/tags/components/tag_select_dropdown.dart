@@ -10,6 +10,7 @@ import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -144,10 +145,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
                         // Clear all button
                         if (tempSelectedTags.isNotEmpty)
-                          TextButton.icon(
+                          IconButton(
                             onPressed: () => setState(() => tempSelectedTags.clear()),
                             icon: Icon(SharedUiConstants.clearIcon),
-                            label: Text(_translationService.translate(TagTranslationKeys.clearAllButton)),
+                            tooltip: _translationService.translate(TagTranslationKeys.clearAllButton),
                           ),
                       ],
                     ),
@@ -277,18 +278,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         // Add button
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: SizedBox(
-            width: 32,
-            height: 32,
-            child: IconButton(
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: BoxConstraints(minWidth: 32),
-              icon: Icon(widget.icon, size: widget.iconSize ?? 20),
-              onPressed: () => _showTagSelectionModal(context),
-              tooltip: widget.tooltip,
-              color: widget.color,
-            ),
+          child: FilterIconButton(
+            icon: widget.icon,
+            iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+            onPressed: () => _showTagSelectionModal(context),
+            tooltip: widget.tooltip,
+            color: widget.color,
           ),
         ),
       ],

@@ -294,7 +294,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -259,41 +259,38 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
     }
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Task Title
-            TextFormField(
-              controller: _titleController,
-              maxLines: null,
-              onChanged: (value) async {
-                await _updateTask();
-                widget.onTitleUpdated?.call(value);
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                suffixIcon: Tooltip(
-                  message: widget._translationService.translate(TaskTranslationKeys.editTitleTooltip),
-                  child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Task Title
+          TextFormField(
+            controller: _titleController,
+            maxLines: null,
+            onChanged: (value) async {
+              await _updateTask();
+              widget.onTitleUpdated?.call(value);
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              suffixIcon: Tooltip(
+                message: widget._translationService.translate(TaskTranslationKeys.editTitleTooltip),
+                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
               ),
-              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            const SizedBox(height: AppTheme.sizeMedium),
-            DetailTable(rowData: [
-              _buildTagsSection(),
-              _buildPrioritySection(),
-              _buildEstimatedTimeSection(),
-              _buildElapsedTimeSection(),
-              _buildPlannedDateSection(),
-              _buildDeadlineDateSection(),
-            ]),
-            _buildDescriptionSection(),
-          ],
-        ),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+          DetailTable(rowData: [
+            _buildTagsSection(),
+            _buildPrioritySection(),
+            _buildEstimatedTimeSection(),
+            _buildElapsedTimeSection(),
+            _buildPlannedDateSection(),
+            _buildDeadlineDateSection(),
+          ]),
+          _buildDescriptionSection(),
+        ],
       ),
     );
   }
@@ -333,10 +330,13 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         label: widget._translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
         icon: TaskUiConstants.estimatedTimeIcon,
         widget: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               onPressed: () => _adjustEstimatedTime(-1),
               icon: const Icon(Icons.remove),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
             ),
             Text(
               SharedUiConstants.formatMinutes(_task!.estimatedTime),
@@ -345,6 +345,8 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
             IconButton(
               onPressed: () => _adjustEstimatedTime(1),
               icon: const Icon(Icons.add),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
             ),
           ],
         ),

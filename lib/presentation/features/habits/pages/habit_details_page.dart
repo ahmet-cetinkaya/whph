@@ -43,12 +43,9 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
         ),
         const SizedBox(width: 2),
       ],
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: HabitDetailsContent(
-          habitId: widget.habitId,
-          onNameUpdated: _refreshTitle,
-        ),
+      builder: (context) => HabitDetailsContent(
+        habitId: widget.habitId,
+        onNameUpdated: _refreshTitle,
       ),
     );
   }

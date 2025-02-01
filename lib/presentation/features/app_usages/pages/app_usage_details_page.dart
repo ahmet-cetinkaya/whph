@@ -44,13 +44,12 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
         ),
         const SizedBox(width: 2),
       ],
-      builder: (context) => ListView(
-        children: [
-          AppUsageDetailsContent(
-            id: widget.appUsageId,
-            onNameUpdated: _refreshTitle,
-          ),
-        ],
+      builder: (context) => Align(
+        alignment: Alignment.topLeft,
+        child: AppUsageDetailsContent(
+          id: widget.appUsageId,
+          onNameUpdated: _refreshTitle,
+        ),
       ),
     );
   }

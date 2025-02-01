@@ -100,84 +100,86 @@ class _TasksPageState extends State<TasksPage> {
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(TaskTranslationKeys.tasksPageTitle),
       appBarActions: [
-        TaskAddButton(
-          onTaskCreated: (_) => _refreshAllTasks(),
-          buttonColor: AppTheme.primaryColor,
-          initialTagIds: _selectedTagIds,
-        ),
-        HelpMenu(
-          titleKey: TaskTranslationKeys.tasksHelpTitle,
-          markdownContentKey: TaskTranslationKeys.tasksHelpContent,
-        ),
-        const SizedBox(width: 8), // Adjusted spacing
-      ],
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView(
+        Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            TaskFilters(
-              selectedTagIds: _selectedTagIds,
-              selectedStartDate: _filterStartDate,
-              selectedEndDate: _filterEndDate,
-              onTagFilterChange: _onFilterTags,
-              onDateFilterChange: _onDateFilterChange,
-              onSearchChange: _onSearchChange,
+            TaskAddButton(
+              onTaskCreated: (_) => _refreshAllTasks(),
+              buttonColor: AppTheme.primaryColor,
+              initialTagIds: _selectedTagIds,
             ),
-            const SizedBox(height: 8),
-            if (_isTasksListEmpty)
-              const Center(child: DoneOverlay())
-            else
-              TaskList(
-                key: _tasksListKey,
-                mediator: _mediator,
-                translationService: _translationService,
-                filterByCompleted: false,
-                filterByTags: _selectedTagIds,
-                filterByPlannedStartDate: _filterStartDate,
-                filterByPlannedEndDate: _filterEndDate,
-                search: _searchQuery,
-                onClickTask: (task) => _openTaskDetails(task.id),
-                onTaskCompleted: _refreshAllTasks,
-                onList: _onTasksList,
-                onScheduleTask: (_, __) => _refreshAllTasks(),
-              ),
-            const SizedBox(height: 8),
-            ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                if (!mounted) return;
-                setState(() {
-                  _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
-                });
-              },
-              children: [
-                ExpansionPanel(
-                    isExpanded: _isCompletedTasksExpanded,
-                    headerBuilder: (context, isExpanded) {
-                      return ListTile(
-                        contentPadding: EdgeInsets.only(left: 8),
-                        leading: const Icon(Icons.done_all),
-                        title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
-                      );
-                    },
-                    body: TaskList(
-                      key: _completedTasksListKey,
-                      mediator: _mediator,
-                      translationService: _translationService,
-                      filterByCompleted: true,
-                      filterByTags: _selectedTagIds,
-                      search: _searchQuery,
-                      onClickTask: (task) => _openTaskDetails(task.id),
-                      onTaskCompleted: _refreshAllTasks,
-                      onScheduleTask: (_, __) => _refreshAllTasks(),
-                    ),
-                    backgroundColor: Colors.transparent,
-                    canTapOnHeader: true),
-              ],
-              elevation: 0,
-              expandedHeaderPadding: EdgeInsets.zero,
+            HelpMenu(
+              titleKey: TaskTranslationKeys.tasksHelpTitle,
+              markdownContentKey: TaskTranslationKeys.tasksHelpContent,
             ),
+            const SizedBox(width: 8),
           ],
         ),
+      ],
+      builder: (context) => ListView(
+        children: [
+          TaskFilters(
+            selectedTagIds: _selectedTagIds,
+            selectedStartDate: _filterStartDate,
+            selectedEndDate: _filterEndDate,
+            onTagFilterChange: _onFilterTags,
+            onDateFilterChange: _onDateFilterChange,
+            onSearchChange: _onSearchChange,
+          ),
+          const SizedBox(height: 8),
+          if (_isTasksListEmpty)
+            const Center(child: DoneOverlay())
+          else
+            TaskList(
+              key: _tasksListKey,
+              mediator: _mediator,
+              translationService: _translationService,
+              filterByCompleted: false,
+              filterByTags: _selectedTagIds,
+              filterByPlannedStartDate: _filterStartDate,
+              filterByPlannedEndDate: _filterEndDate,
+              search: _searchQuery,
+              onClickTask: (task) => _openTaskDetails(task.id),
+              onTaskCompleted: _refreshAllTasks,
+              onList: _onTasksList,
+              onScheduleTask: (_, __) => _refreshAllTasks(),
+            ),
+          const SizedBox(height: 8),
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              if (!mounted) return;
+              setState(() {
+                _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+              });
+            },
+            children: [
+              ExpansionPanel(
+                  isExpanded: _isCompletedTasksExpanded,
+                  headerBuilder: (context, isExpanded) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(left: 8),
+                      leading: const Icon(Icons.done_all),
+                      title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
+                    );
+                  },
+                  body: TaskList(
+                    key: _completedTasksListKey,
+                    mediator: _mediator,
+                    translationService: _translationService,
+                    filterByCompleted: true,
+                    filterByTags: _selectedTagIds,
+                    search: _searchQuery,
+                    onClickTask: (task) => _openTaskDetails(task.id),
+                    onTaskCompleted: _refreshAllTasks,
+                    onScheduleTask: (_, __) => _refreshAllTasks(),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  canTapOnHeader: true),
+            ],
+            elevation: 0,
+            expandedHeaderPadding: EdgeInsets.zero,
+          ),
+        ],
       ),
     );
   }

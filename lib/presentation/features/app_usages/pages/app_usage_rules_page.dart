@@ -71,81 +71,75 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
               children: [
                 // Tag Rules Tab
                 SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _translationService.translate(AppUsageTranslationKeys.addNewRule),
-                                  style: AppTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: 16),
-                                AppUsageTagRuleForm(
-                                  onSave: _handleSaveRule,
-                                ),
-                              ],
-                            ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _translationService.translate(AppUsageTranslationKeys.addNewRule),
+                                style: AppTheme.headlineSmall,
+                              ),
+                              const SizedBox(height: 16),
+                              AppUsageTagRuleForm(
+                                onSave: _handleSaveRule,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          _translationService.translate(AppUsageTranslationKeys.existingRules),
-                          style: AppTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 16),
-                        AppUsageTagRuleList(
-                          key: _listKey,
-                          mediator: _mediator,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        _translationService.translate(AppUsageTranslationKeys.existingRules),
+                        style: AppTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 16),
+                      AppUsageTagRuleList(
+                        key: _listKey,
+                        mediator: _mediator,
+                      ),
+                    ],
                   ),
                 ),
 
                 // Ignore Rules Tab
                 SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _translationService.translate(AppUsageTranslationKeys.addNewRule),
-                                  style: AppTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: 16),
-                                AppUsageIgnoreRuleForm(
-                                  onSave: _handleSaveRule,
-                                ),
-                              ],
-                            ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _translationService.translate(AppUsageTranslationKeys.addNewRule),
+                                style: AppTheme.headlineSmall,
+                              ),
+                              const SizedBox(height: 16),
+                              AppUsageIgnoreRuleForm(
+                                onSave: _handleSaveRule,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          _translationService.translate(AppUsageTranslationKeys.existingRules),
-                          style: AppTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 16),
-                        AppUsageIgnoreRuleList(
-                          key: _listKey,
-                          mediator: _mediator,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        _translationService.translate(AppUsageTranslationKeys.existingRules),
+                        style: AppTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 16),
+                      AppUsageIgnoreRuleList(
+                        key: _listKey,
+                        mediator: _mediator,
+                      ),
+                    ],
                   ),
                 ),
               ],
