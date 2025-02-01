@@ -93,7 +93,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
         const SizedBox(width: 2),
       ],
       builder: (context) => ListView(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
         children: [
           // Task Details Content
           TaskDetailsContent(

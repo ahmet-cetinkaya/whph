@@ -96,44 +96,38 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       builder: (context) => ListView(
         children: [
           // Filters
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  // Tag Filter
-                  TagSelectDropdown(
-                    isMultiSelect: true,
-                    onTagsSelected: _onTagFilterSelect,
-                    showLength: true,
-                    icon: Icons.label,
-                    color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                    tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
-                  ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                // Tag Filter
+                TagSelectDropdown(
+                  isMultiSelect: true,
+                  onTagsSelected: _onTagFilterSelect,
+                  showLength: true,
+                  icon: Icons.label,
+                  color: _selectedTagFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                  tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
+                ),
 
-                  // Date Range Filter
-                  DateRangeFilter(
-                    selectedStartDate: _filterStartDate,
-                    selectedEndDate: _filterEndDate,
-                    onDateFilterChange: _onDateFilterChange,
-                  ),
-                ],
-              ),
+                // Date Range Filter
+                DateRangeFilter(
+                  selectedStartDate: _filterStartDate,
+                  selectedEndDate: _filterEndDate,
+                  onDateFilterChange: _onDateFilterChange,
+                ),
+              ],
             ),
           ),
 
           // App Usage List
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: AppUsageList(
-              key: _appUsageListKey,
-              mediator: _mediator,
-              onOpenDetails: _openDetails,
-              filterByTags: _selectedTagFilters,
-              filterStartDate: _filterStartDate,
-              filterEndDate: _filterEndDate,
-            ),
+          AppUsageList(
+            key: _appUsageListKey,
+            mediator: _mediator,
+            onOpenDetails: _openDetails,
+            filterByTags: _selectedTagFilters,
+            filterStartDate: _filterStartDate,
+            filterEndDate: _filterEndDate,
           ),
         ],
       ),

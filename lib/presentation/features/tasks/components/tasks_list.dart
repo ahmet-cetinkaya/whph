@@ -176,59 +176,51 @@ class _TaskListState extends State<TaskList> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      controller: _scrollController,
       children: [
-        SizedBox(
-          child: ListView.builder(
-            controller: _scrollController,
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            itemCount: _tasks!.items.where((task) => task.id != widget.selectedTask?.id).length,
-            itemBuilder: (context, index) {
-              final task = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()[index];
-              return FutureBuilder<GetListTasksQueryResponse>(
-                future: widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-                  GetListTasksQuery(
-                    pageIndex: 0,
-                    pageSize: 10,
-                    parentTaskId: task.id,
-                  ),
-                ),
-                builder: (context, snapshot) {
-                  final subTasks = snapshot.data?.items ?? [];
-                  double subTasksCompletionPercentage = 0;
-                  if (subTasks.isNotEmpty) {
-                    final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
-                    subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
-                  }
-
-                  return TaskCard(
-                    key: ValueKey(task.id),
-                    taskItem: task.copyWith(
-                      subTasks: subTasks,
-                      subTasksCompletionPercentage: subTasksCompletionPercentage,
+        ...(_tasks!.items
+            .where((task) => task.id != widget.selectedTask?.id)
+            .map((task) => FutureBuilder<GetListTasksQueryResponse>(
+                  future: widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+                    GetListTasksQuery(
+                      pageIndex: 0,
+                      pageSize: 10,
+                      parentTaskId: task.id,
                     ),
-                    transparent: widget.transparentCards,
-                    trailingButtons: [
-                      if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                      if (widget.showSelectButton)
-                        IconButton(
-                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                          onPressed: () => widget.onSelectTask?.call(task),
-                        ),
-                    ],
-                    onCompleted: _onTaskCompleted,
-                    onOpenDetails: () => widget.onClickTask(task),
-                    onScheduled:
-                        widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
-                  );
-                },
-              );
-            },
-          ),
-        ),
+                  ),
+                  builder: (context, snapshot) {
+                    final subTasks = snapshot.data?.items ?? [];
+                    double subTasksCompletionPercentage = 0;
+                    if (subTasks.isNotEmpty) {
+                      final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
+                      subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
+                    }
+
+                    return TaskCard(
+                      key: ValueKey(task.id),
+                      taskItem: task.copyWith(
+                        subTasks: subTasks,
+                        subTasksCompletionPercentage: subTasksCompletionPercentage,
+                      ),
+                      transparent: widget.transparentCards,
+                      trailingButtons: [
+                        if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                        if (widget.showSelectButton)
+                          IconButton(
+                            icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                            onPressed: () => widget.onSelectTask?.call(task),
+                          ),
+                      ],
+                      onCompleted: _onTaskCompleted,
+                      onOpenDetails: () => widget.onClickTask(task),
+                      onScheduled:
+                          widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
+                    );
+                  },
+                ))),
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
       ],
     );

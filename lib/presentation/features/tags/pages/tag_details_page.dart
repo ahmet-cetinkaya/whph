@@ -85,7 +85,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
         const SizedBox(width: 2),
       ],
       builder: (context) => ListView(
-        padding: const EdgeInsets.all(16),
         children: [
           // Details
           TagDetailsContent(

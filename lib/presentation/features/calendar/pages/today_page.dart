@@ -149,31 +149,29 @@ class _TodayPageState extends State<TodayPage> {
         ),
         const SizedBox(width: 8),
       ],
-      builder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
-        child: ListView(
-          children: [
-            // Filters
-            TagSelectDropdown(
-                isMultiSelect: true,
-                icon: Icons.label,
-                color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-                tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
-                onTagsSelected: _onTagFilterSelect),
+      builder: (context) => ListView(
+        children: [
+          // Filters
+          TagSelectDropdown(
+            isMultiSelect: true,
+            icon: Icons.label,
+            color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : null,
+            tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
+            onTagsSelected: _onTagFilterSelect,
+          ),
 
-            // Habits
-            const SizedBox(height: 16),
-            _buildHabitSection(context),
+          // Habits
+          const SizedBox(height: 16),
+          _buildHabitSection(context),
 
-            // Tasks
-            const SizedBox(height: 16),
-            _buildTaskSection(context),
+          // Tasks
+          const SizedBox(height: 16),
+          _buildTaskSection(context),
 
-            // Times
-            const SizedBox(height: 16),
-            _buildTimeSection(context),
-          ],
-        ),
+          // Times
+          const SizedBox(height: 16),
+          _buildTimeSection(context),
+        ],
       ),
     );
   }

@@ -135,7 +135,10 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
           if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium))
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
-            child: widget.builder(context),
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+              child: widget.builder(context),
+            ),
           ),
         ],
       ),

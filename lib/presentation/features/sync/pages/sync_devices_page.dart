@@ -202,19 +202,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       ],
       builder: (context) => list == null || list!.items.isEmpty
           ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))
-          : Padding(
-              padding: const EdgeInsets.all(8),
-              child: ListView.builder(
-                key: _listKey,
-                itemCount: list!.items.length,
-                itemBuilder: (context, index) {
-                  return SyncDeviceListItemWidget(
-                    key: ValueKey(list!.items[index].id),
-                    item: list!.items[index],
-                    onRemove: _removeDevice,
-                  );
-                },
-              ),
+          : ListView.builder(
+              key: _listKey,
+              itemCount: list!.items.length,
+              itemBuilder: (context, index) {
+                return SyncDeviceListItemWidget(
+                  key: ValueKey(list!.items[index].id),
+                  item: list!.items[index],
+                  onRemove: _removeDevice,
+                );
+              },
             ),
     );
   }

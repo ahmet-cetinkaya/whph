@@ -110,53 +110,50 @@ class _HabitsPageState extends State<HabitsPage> {
         ),
         const SizedBox(width: 8), // Adjusted spacing
       ],
-      builder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeMedium),
-        child: ListView(
-          key: _habitsListKey,
-          children: [
-            // Filters
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Filter by tags
-                TagSelectDropdown(
-                  isMultiSelect: true,
-                  onTagsSelected: _onFilterTagsSelect,
-                  icon: Icons.label,
-                  color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
-                  tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
-                  showLength: true,
-                ),
+      builder: (context) => ListView(
+        key: _habitsListKey,
+        children: [
+          // Filters
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Filter by tags
+              TagSelectDropdown(
+                isMultiSelect: true,
+                onTagsSelected: _onFilterTagsSelect,
+                icon: Icons.label,
+                color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
+                tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
+                showLength: true,
+              ),
 
-                // Calendar
-                if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: SizedBox(
-                      width: daysToShow * 46.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
-                      ),
+              // Calendar
+              if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: SizedBox(
+                    width: daysToShow * 46.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
+          ),
 
-            // List
-            HabitsList(
-              key: _habitsListKey,
-              mediator: _mediator,
-              dateRange: daysToShow,
-              filterByTags: _selectedFilterTags,
-              onClickHabit: (item) {
-                _openDetails(item.id, context);
-              },
-            ),
-          ],
-        ),
+          // List
+          HabitsList(
+            key: _habitsListKey,
+            mediator: _mediator,
+            dateRange: daysToShow,
+            filterByTags: _selectedFilterTags,
+            onClickHabit: (item) {
+              _openDetails(item.id, context);
+            },
+          ),
+        ],
       ),
     );
   }
