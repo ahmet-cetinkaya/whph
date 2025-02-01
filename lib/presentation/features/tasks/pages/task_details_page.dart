@@ -160,10 +160,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                       key: _subTasksListKey,
                       mediator: container.resolve<Mediator>(),
                       translationService: container.resolve<ITranslationService>(),
-                      onClickTask: (task) => Navigator.of(context).pushNamed(
-                        TaskDetailsPage.route,
-                        arguments: {'id': task.id},
-                      ),
+                      onClickTask: (task) async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsPage(taskId: task.id),
+                          ),
+                        );
+                        _refreshSubTasks();
+                      },
                       parentTaskId: widget.taskId,
                       onTaskCompleted: _refreshSubTasks,
                       onScheduleTask: (_, __) => _refreshSubTasks(),
