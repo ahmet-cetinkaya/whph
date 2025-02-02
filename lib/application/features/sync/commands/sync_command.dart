@@ -236,13 +236,22 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
           }
           throw BusinessException('Failed to process sync data');
         } else {
-          await _sendDataToWebSocket(syncDevice.fromIp, jsonData);
-          await _saveSyncDevice(syncDevice);
-        }
+          try {
+            if (kDebugMode) print('DEBUG: Syncing with device ${syncDevice.id} at ${syncDevice.fromIp}');
+            await _sendDataToWebSocket(syncDevice.fromIp, jsonData);
+            await _saveSyncDevice(syncDevice);
 
-        oldestLastSyncDate = oldestLastSyncDate == null
-            ? syncDevice.lastSyncDate
-            : (syncDevice.lastSyncDate!.isBefore(oldestLastSyncDate) ? syncDevice.lastSyncDate : oldestLastSyncDate);
+            oldestLastSyncDate = oldestLastSyncDate == null
+                ? syncDevice.lastSyncDate
+                : (syncDevice.lastSyncDate!.isBefore(oldestLastSyncDate)
+                    ? syncDevice.lastSyncDate
+                    : oldestLastSyncDate);
+          } catch (e) {
+            if (kDebugMode) print('DEBUG: Failed to sync with device ${syncDevice.id}: $e');
+            allDevicesSynced = false;
+            continue; // Continue with next device even if this one fails
+          }
+        }
       } catch (e) {
         if (kDebugMode) print('DEBUG: Failed to sync with device ${syncDevice.id}: $e');
         allDevicesSynced = false;
@@ -346,6 +355,18 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
               }
               syncCompleter.complete(false);
               break;
+            } else if (receivedMessage?.type == 'sync_error') {
+              timeoutTimer.cancel();
+              final messageData = receivedMessage!.data as Map<String, dynamic>;
+              String? errorMessage = messageData['message'] as String?;
+
+              if (errorMessage == SyncTranslationKeys.deviceMismatchError) {
+                if (kDebugMode) print('DEBUG: Device ID mismatch received from server');
+                return; // Exit immediately without retrying for device mismatch
+              }
+
+              syncCompleter.complete(false);
+              break;
             }
           } catch (e) {
             if (kDebugMode) print('ERROR: Error processing message: $e');
@@ -370,6 +391,12 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         if (kDebugMode) {
           print('ERROR: Error during WebSocket communication (Attempt ${attempt + 1}): $e');
           print('DEBUG: Stack trace: $stack');
+        }
+
+        // For device mismatch errors, just return without retrying
+        if (e is BusinessException && e.messageKey == SyncTranslationKeys.deviceMismatchError) {
+          if (kDebugMode) print('DEBUG: Device ID mismatch, skipping this device');
+          return;
         }
 
         attempt++;
