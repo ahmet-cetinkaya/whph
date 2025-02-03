@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
@@ -42,11 +41,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
-    if (kDebugMode) {
-      if (kDebugMode) print('DEBUG: Time will be in seconds. (PomodoroTimer)');
-      return value;
-    }
-
     return value * 60;
   }
 

@@ -6,11 +6,11 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
-import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
@@ -105,40 +105,41 @@ class _MarathonPageState extends State<MarathonPage> {
   }
 
   Future<void> _showTaskDetails(String taskId) async {
-    await showDialog(
+    final wasDeleted = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height * 0.8,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    _translationService.translate(TaskTranslationKeys.marathonDetailsTitle),
-                    style: AppTheme.headlineSmall,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                    tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: TaskDetailsContent(taskId: taskId),
-              ),
-            ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: TaskDetailsPage(
+              taskId: taskId,
+              hideSidebar: true,
+              onTaskDeleted: () {
+                // Only close the dialog here, don't pop twice
+                Navigator.of(context).pop(true);
+              },
+            ),
           ),
         ),
       ),
     );
 
-    // Update selected task after dialog closes
+    // If task was deleted, clear selection and refresh
+    if (wasDeleted == true && _selectedTask?.id == taskId) {
+      setState(() {
+        _selectedTask = null;
+      });
+      _refreshTasks();
+      return;
+    }
+
+    // Update selected task after dialog closes (only if not deleted)
     if (_selectedTask?.id == taskId) {
       try {
         final query = GetTaskQuery(id: taskId);
@@ -160,7 +161,18 @@ class _MarathonPageState extends State<MarathonPage> {
           });
         }
       } catch (e, stackTrace) {
+        // Task might have been deleted or other error occurred
         if (mounted) {
+          setState(() {
+            _selectedTask = null; // Clear selected task on error
+          });
+
+          // Only show error if it's not a "not found" error
+          if (e.toString().toLowerCase().contains('not found')) {
+            // Task was deleted, silently clear selection
+            return;
+          }
+
           ErrorHelper.showUnexpectedError(
             context,
             e as Exception,
@@ -174,17 +186,19 @@ class _MarathonPageState extends State<MarathonPage> {
     _refreshTasks();
   }
 
-  void _handleTimerUpdate(Duration elapsed) async {
+  void _handleTimerUpdate(Duration _) async {
     if (_selectedTask == null) return;
+
+    final nextDuration = _selectedTask!.totalElapsedTime + 1;
 
     final command = SaveTaskTimeRecordCommand(
       taskId: _selectedTask!.id,
-      duration: elapsed.inSeconds,
+      duration: nextDuration,
     );
 
     try {
       await _mediator.send(command);
-      _refreshSelectedTask(); // Refresh to show updated duration
+      _selectedTask!.totalElapsedTime = nextDuration;
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(
@@ -302,7 +316,6 @@ class _MarathonPageState extends State<MarathonPage> {
                           tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
                         ),
                       ],
-                      showSubTasks: true, // Enable sub-tasks display
                     ),
                   ],
                 ),

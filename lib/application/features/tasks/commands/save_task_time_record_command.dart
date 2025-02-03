@@ -42,7 +42,7 @@ class SaveTaskTimeRecordCommandHandler
     final existingRecord = await _taskTimeRecordRepository.getFirst(filter);
 
     if (existingRecord != null) {
-      existingRecord.duration += request.duration;
+      existingRecord.duration = request.duration;
       await _taskTimeRecordRepository.update(existingRecord);
       return SaveTaskTimeRecordCommandResponse(id: existingRecord.id);
     }
