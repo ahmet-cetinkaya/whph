@@ -29,7 +29,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   final _translationService = container.resolve<ITranslationService>();
 
   String? _title;
-  bool _isTasksExpanded = false;
   Key _tasksListKey = UniqueKey();
 
   void _refreshTasks() {
@@ -92,52 +91,33 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             onNameUpdated: _refreshTitle,
           ),
 
-          // Tasks
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              if (!mounted) return;
-              setState(() {
-                _isTasksExpanded = isExpanded;
-              });
-            },
-            children: [
-              // Tasks
-              ExpansionPanel(
-                  isExpanded: _isTasksExpanded,
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.only(left: 1),
-                      leading: Icon(Icons.task),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
+          // Tasks Header
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 1),
+            leading: const Icon(Icons.task),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
 
-                          // Add Task
-                          TaskAddButton(
-                            onTaskCreated: (taskId) => _refreshTasks(),
-                            initialTagIds: [widget.tagId],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                // Add Task
+                TaskAddButton(
+                  onTaskCreated: (taskId) => _refreshTasks(),
+                  initialTagIds: [widget.tagId],
+                ),
+              ],
+            ),
+          ),
 
-                  // Tasks List
-                  body: TaskList(
-                    key: _tasksListKey,
-                    mediator: _mediator,
-                    translationService: _translationService,
-                    onClickTask: _openTaskDetails,
-                    filterByTags: [widget.tagId],
-                    onTaskCompleted: _refreshTasks,
-                    onScheduleTask: (_, __) => _refreshTasks(),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  canTapOnHeader: true)
-            ],
-            elevation: 0,
-            expandedHeaderPadding: EdgeInsets.zero,
+          // Tasks List
+          TaskList(
+            key: _tasksListKey,
+            mediator: _mediator,
+            translationService: _translationService,
+            onClickTask: _openTaskDetails,
+            filterByTags: [widget.tagId],
+            onTaskCompleted: _refreshTasks,
+            onScheduleTask: (_, __) => _refreshTasks(),
           ),
         ],
       ),
