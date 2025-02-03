@@ -16,8 +16,15 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
   final String taskId;
+  final bool hideSidebar;
+  final VoidCallback? onTaskDeleted;
 
-  const TaskDetailsPage({super.key, required this.taskId});
+  const TaskDetailsPage({
+    super.key,
+    required this.taskId,
+    this.hideSidebar = false,
+    this.onTaskDeleted,
+  });
 
   @override
   State<TaskDetailsPage> createState() => _TaskDetailsPageState();
@@ -27,7 +34,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   String? _title;
   Key _contentKey = UniqueKey();
   bool _isCompleted = false;
-  bool _isSubTasksExpanded = false;
   Key _subTasksListKey = UniqueKey();
 
   final _translationService = container.resolve<ITranslationService>();
@@ -81,7 +87,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           child: TaskDeleteButton(
             taskId: widget.taskId,
             onDeleteSuccess: () {
-              Navigator.of(context).pop();
+              widget.onTaskDeleted?.call();
+              // Remove the Navigator.pop() from here since we'll handle navigation in the parent
             },
             buttonColor: AppTheme.primaryColor,
           ),
@@ -106,82 +113,64 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             },
           ),
 
-          // Sub-Tasks
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              setState(() {
-                _isSubTasksExpanded = !_isSubTasksExpanded;
-              });
-            },
-            children: [
-              ExpansionPanel(
-                isExpanded: _isSubTasksExpanded,
-                canTapOnHeader: true,
-                backgroundColor: Colors.transparent,
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.only(left: 16),
-                    leading: Icon(Icons.list),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(_translationService.translate(TaskTranslationKeys.subTasksLabel)),
-                            const SizedBox(width: 8),
-                            StreamBuilder<GetTaskQueryResponse>(
-                              stream: Stream.fromFuture(
-                                container.resolve<Mediator>().send(GetTaskQuery(id: widget.taskId)),
-                              ),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData || snapshot.data?.subTasks.isEmpty == true) {
-                                  return const SizedBox.shrink();
-                                }
-
-                                return Text(
-                                  '${snapshot.data!.subTasksCompletionPercentage.toStringAsFixed(0)}%',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        TaskAddButton(
-                          onTaskCreated: (taskId) => _refreshSubTasks(),
-                          initialParentTaskId: widget.taskId,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                body: Column(
+          // Sub-Tasks Header
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
-                    TaskList(
-                      key: _subTasksListKey,
-                      mediator: container.resolve<Mediator>(),
-                      translationService: container.resolve<ITranslationService>(),
-                      onClickTask: (task) async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => TaskDetailsPage(taskId: task.id),
-                          ),
+                    Icon(Icons.list),
+                    const SizedBox(width: 8),
+                    Text(_translationService.translate(TaskTranslationKeys.subTasksLabel)),
+                    const SizedBox(width: 8),
+                    StreamBuilder<GetTaskQueryResponse>(
+                      stream: Stream.fromFuture(
+                        container.resolve<Mediator>().send(GetTaskQuery(id: widget.taskId)),
+                      ),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData || snapshot.data?.subTasks.isEmpty == true) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return Text(
+                          '${snapshot.data!.subTasksCompletionPercentage.toStringAsFixed(0)}%',
+                          style: Theme.of(context).textTheme.bodyMedium,
                         );
-                        _refreshSubTasks();
                       },
-                      parentTaskId: widget.taskId,
-                      onTaskCompleted: _refreshSubTasks,
-                      onScheduleTask: (_, __) => _refreshSubTasks(),
                     ),
-                    const SizedBox(height: 8),
                   ],
                 ),
-              ),
-            ],
-            elevation: 0,
-            expandedHeaderPadding: EdgeInsets.zero,
+                TaskAddButton(
+                  onTaskCreated: (taskId) => _refreshSubTasks(),
+                  initialParentTaskId: widget.taskId,
+                ),
+              ],
+            ),
           ),
+
+          // Sub-Tasks List
+          TaskList(
+            key: _subTasksListKey,
+            mediator: container.resolve<Mediator>(),
+            translationService: container.resolve<ITranslationService>(),
+            onClickTask: (task) async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TaskDetailsPage(taskId: task.id),
+                ),
+              );
+              _refreshSubTasks();
+            },
+            parentTaskId: widget.taskId,
+            onTaskCompleted: _refreshSubTasks,
+            onScheduleTask: (_, __) => _refreshSubTasks(),
+          ),
+          const SizedBox(height: 8),
         ],
       ),
+      hideSidebar: widget.hideSidebar,
     );
   }
 }
