@@ -1,4 +1,6 @@
 class AppUsageTranslationKeys {
+  static const String noUsage = 'app_usages.no_usage';
+
   // Device
   static const String deviceLabel = 'app_usages.details.device.label';
   static const String unknownDeviceLabel = 'app_usages.details.device.unknown';

@@ -69,6 +69,7 @@ app_usages:
     delete_tooltip: Delete rule
     no_rules: No ignore rules found
     pattern_label: Pattern
+  no_usage: No app usage yet
   pages:
     view:
       buttons:
