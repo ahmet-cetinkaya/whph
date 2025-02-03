@@ -2,10 +2,10 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
 enum EisenhowerPriority {
-  urgentImportant,
-  notUrgentImportant,
-  urgentNotImportant,
   notUrgentNotImportant,
+  urgentNotImportant,
+  notUrgentImportant,
+  urgentImportant,
 }
 
 @jsonSerializable

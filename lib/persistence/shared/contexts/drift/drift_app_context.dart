@@ -84,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration {
@@ -277,6 +277,31 @@ class AppDatabase extends _$AppDatabase {
         from11To12: (m, schema) async {
           // Add parentTaskId column to Task table
           await m.addColumn(taskTable, taskTable.parentTaskId);
+        },
+        from12To13: (m, schema) async {
+          // Add temporary column
+          await customStatement('ALTER TABLE task_table ADD COLUMN temp_priority INTEGER');
+
+          // Copy and convert values (3->0, 2->1, 1->2, 0->3)
+          await customStatement('''
+            UPDATE task_table 
+            SET temp_priority = CASE priority
+              WHEN 0 THEN 3
+              WHEN 1 THEN 2
+              WHEN 2 THEN 1
+              WHEN 3 THEN 0
+              ELSE NULL
+            END
+          ''');
+
+          // Update the original priority column
+          await customStatement('''
+            UPDATE task_table 
+            SET priority = temp_priority
+          ''');
+
+          // Drop temporary column
+          await customStatement('ALTER TABLE task_table DROP COLUMN temp_priority');
         },
       ),
     );
