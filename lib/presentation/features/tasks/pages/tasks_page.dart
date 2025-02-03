@@ -118,6 +118,7 @@ class _TasksPageState extends State<TasksPage> {
       ],
       builder: (context) => ListView(
         children: [
+          // Filters
           TaskFilters(
             selectedTagIds: _selectedTagIds,
             selectedStartDate: _filterStartDate,
@@ -127,8 +128,11 @@ class _TasksPageState extends State<TasksPage> {
             onSearchChange: _onSearchChange,
           ),
           const SizedBox(height: 8),
+
+          // Empty List Overlay
           if (_isTasksListEmpty)
             const Center(child: DoneOverlay())
+          // Tasks List
           else
             TaskList(
               key: _tasksListKey,
@@ -145,6 +149,8 @@ class _TasksPageState extends State<TasksPage> {
               onScheduleTask: (_, __) => _refreshAllTasks(),
             ),
           const SizedBox(height: 8),
+
+          // Completed Tasks
           ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
               if (!mounted) return;
