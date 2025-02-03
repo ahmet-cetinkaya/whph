@@ -87,7 +87,7 @@ class AppUsageListState extends State<AppUsageList> {
 
     if (_appUsages!.items.isEmpty) {
       return Center(
-        child: Text(_translationService.translate(AppUsageTranslationKeys.noIgnoreRules)),
+        child: Text(_translationService.translate(AppUsageTranslationKeys.noUsage)),
       );
     }
 

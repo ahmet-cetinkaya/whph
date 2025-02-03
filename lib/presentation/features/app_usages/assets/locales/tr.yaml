@@ -69,6 +69,7 @@ app_usages:
     delete_tooltip: Kuralı sil
     no_rules: Yok sayma kuralı bulunamadı
     pattern_label: Desen
+  no_usage: Henüz uygulama kullanımı yok
   pages:
     view:
       buttons:
