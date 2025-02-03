@@ -128,7 +128,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       request.pageSize,
       customWhereFilter: _getFilters(request),
       customOrder: [
-        CustomOrder(field: "priority"),
+        CustomOrder(field: "priority", ascending: false),
         CustomOrder(field: "created_date", ascending: false),
       ],
     );
