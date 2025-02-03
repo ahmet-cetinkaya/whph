@@ -38,6 +38,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final Widget Function(BuildContext) builder;
   final bool showLogo;
   final bool fullScreen;
+  final bool hideSidebar;
 
   const ResponsiveScaffoldLayout({
     super.key,
@@ -48,6 +49,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     this.appBarActions,
     this.showLogo = true,
     this.fullScreen = false,
+    this.hideSidebar = false,
   });
 
   @override
@@ -127,12 +129,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         titleSpacing: 0,
         actions: widget.appBarActions,
       ),
-      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium)
+      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) || widget.hideSidebar
           ? null
           : _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
       body: Row(
         children: [
-          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium))
+          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) && !widget.hideSidebar)
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
             child: Padding(
