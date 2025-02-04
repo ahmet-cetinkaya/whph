@@ -87,8 +87,11 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           child: TaskDeleteButton(
             taskId: widget.taskId,
             onDeleteSuccess: () {
-              widget.onTaskDeleted?.call();
-              // Remove the Navigator.pop() from here since we'll handle navigation in the parent
+              if (widget.onTaskDeleted != null) {
+                widget.onTaskDeleted!();
+              } else {
+                Navigator.of(context).pop();
+              }
             },
             buttonColor: AppTheme.primaryColor,
           ),
