@@ -228,7 +228,12 @@ class _TodayPageState extends State<TodayPage> {
               child: TaskAddButton(
                 initialTagIds: _selectedTagFilter,
                 initialPlannedDate: today,
-                onTaskCreated: (_) => _refreshTasks(),
+                onTaskCreated: (_) {
+                  setState(() {
+                    _taskKey = UniqueKey();
+                    _timeKey = UniqueKey();
+                  });
+                },
               ),
             ),
           ],

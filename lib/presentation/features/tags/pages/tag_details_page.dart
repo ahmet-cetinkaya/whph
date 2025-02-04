@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
@@ -30,11 +31,14 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
   String? _title;
   Key _tasksListKey = UniqueKey();
+  bool _isCompletedTasksExpanded = false;
+  Key _completedTasksListKey = UniqueKey();
 
   void _refreshTasks() {
     if (mounted) {
       setState(() {
         _tasksListKey = UniqueKey();
+        _completedTasksListKey = UniqueKey();
       });
     }
   }
@@ -109,15 +113,53 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             ),
           ),
 
-          // Tasks List
+          // Active Tasks List
           TaskList(
             key: _tasksListKey,
             mediator: _mediator,
             translationService: _translationService,
             onClickTask: _openTaskDetails,
             filterByTags: [widget.tagId],
+            filterByCompleted: false,
             onTaskCompleted: _refreshTasks,
             onScheduleTask: (_, __) => _refreshTasks(),
+          ),
+          const SizedBox(height: 8),
+
+          // Completed Tasks
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              if (!mounted) return;
+              setState(() {
+                _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+              });
+            },
+            children: [
+              ExpansionPanel(
+                isExpanded: _isCompletedTasksExpanded,
+                headerBuilder: (context, isExpanded) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.only(left: 8),
+                    leading: const Icon(Icons.done_all),
+                    title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
+                  );
+                },
+                body: TaskList(
+                  key: _completedTasksListKey,
+                  mediator: _mediator,
+                  translationService: _translationService,
+                  onClickTask: _openTaskDetails,
+                  filterByTags: [widget.tagId],
+                  filterByCompleted: true,
+                  onTaskCompleted: _refreshTasks,
+                  onScheduleTask: (_, __) => _refreshTasks(),
+                ),
+                backgroundColor: Colors.transparent,
+                canTapOnHeader: true,
+              ),
+            ],
+            elevation: 0,
+            expandedHeaderPadding: EdgeInsets.zero,
           ),
         ],
       ),
