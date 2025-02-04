@@ -35,6 +35,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   Key _contentKey = UniqueKey();
   bool _isCompleted = false;
   Key _subTasksListKey = UniqueKey();
+  bool _isCompletedTasksExpanded = false;
+  Key _completedSubTasksListKey = UniqueKey();
 
   final _translationService = container.resolve<ITranslationService>();
 
@@ -58,6 +60,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     if (mounted) {
       setState(() {
         _subTasksListKey = UniqueKey();
+        _completedSubTasksListKey = UniqueKey();
       });
     }
   }
@@ -118,7 +121,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
 
           // Sub-Tasks Header
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppTheme.sizeSmall),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -145,15 +148,18 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     ),
                   ],
                 ),
-                TaskAddButton(
-                  onTaskCreated: (taskId) => _refreshSubTasks(),
-                  initialParentTaskId: widget.taskId,
+                Padding(
+                  padding: const EdgeInsets.only(right: AppTheme.sizeXSmall),
+                  child: TaskAddButton(
+                    onTaskCreated: (taskId) => _refreshSubTasks(),
+                    initialParentTaskId: widget.taskId,
+                  ),
                 ),
               ],
             ),
           ),
 
-          // Sub-Tasks List
+          // Active Sub-Tasks List
           TaskList(
             key: _subTasksListKey,
             mediator: container.resolve<Mediator>(),
@@ -167,10 +173,54 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
               _refreshSubTasks();
             },
             parentTaskId: widget.taskId,
+            filterByCompleted: false,
             onTaskCompleted: _refreshSubTasks,
             onScheduleTask: (_, __) => _refreshSubTasks(),
           ),
           const SizedBox(height: 8),
+
+          // Completed Sub-Tasks
+          ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              if (!mounted) return;
+              setState(() {
+                _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
+              });
+            },
+            children: [
+              ExpansionPanel(
+                isExpanded: _isCompletedTasksExpanded,
+                headerBuilder: (context, isExpanded) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.only(left: 8),
+                    leading: const Icon(Icons.done_all),
+                    title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
+                  );
+                },
+                body: TaskList(
+                  key: _completedSubTasksListKey,
+                  mediator: container.resolve<Mediator>(),
+                  translationService: container.resolve<ITranslationService>(),
+                  onClickTask: (task) async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TaskDetailsPage(taskId: task.id),
+                      ),
+                    );
+                    _refreshSubTasks();
+                  },
+                  parentTaskId: widget.taskId,
+                  filterByCompleted: true,
+                  onTaskCompleted: _refreshSubTasks,
+                  onScheduleTask: (_, __) => _refreshSubTasks(),
+                ),
+                backgroundColor: Colors.transparent,
+                canTapOnHeader: true,
+              ),
+            ],
+            elevation: 0,
+            expandedHeaderPadding: EdgeInsets.zero,
+          ),
         ],
       ),
       hideSidebar: widget.hideSidebar,
