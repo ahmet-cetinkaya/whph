@@ -28,6 +28,7 @@ class TaskUiConstants {
   static const Color plannedDateColor = Colors.green;
   static const Color deadlineDateColor = Colors.orange;
   static const Color tagsColor = Colors.grey;
+  static const Color tagColor = AppTheme.primaryColor;
 
   // Time options
   static const List<int> defaultEstimatedTimeOptions = [10, 30, 50, 90, 120];

@@ -6,12 +6,14 @@ import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -43,11 +45,13 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   int? _estimatedTime;
   DateTime? _plannedDate;
   DateTime? _deadlineDate;
+  List<DropdownOption<String>> _selectedTags = [];
 
   @override
   void initState() {
     super.initState();
     _plannedDate = widget.initialPlannedDate;
+    _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
   }
 
   @override
@@ -58,10 +62,18 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   }
 
   void _resetState() {
-    _selectedPriority = null;
-    _estimatedTime = null;
-    _plannedDate = null;
-    _deadlineDate = null;
+    _titleController.clear();
+  }
+
+  void _clearAll() {
+    setState(() {
+      _titleController.clear();
+      _selectedPriority = null;
+      _estimatedTime = null;
+      _plannedDate = widget.initialPlannedDate;
+      _deadlineDate = null;
+      _selectedTags = [];
+    });
   }
 
   Future<void> _createTask() async {
@@ -73,7 +85,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       final command = SaveTaskCommand(
         title: _titleController.text,
         description: "",
-        tagIdsToAdd: widget.initialTagIds,
+        tagIdsToAdd: _selectedTags.map((t) => t.value).toList(),
         priority: _selectedPriority,
         estimatedTime: _estimatedTime,
         plannedDate: _plannedDate,
@@ -190,6 +202,20 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
 
   List<Widget> _buildQuickActionButtons() {
     return [
+      IconButton(
+        icon: const Icon(Icons.close, color: AppTheme.secondaryTextColor),
+        onPressed: _clearAll,
+        tooltip: 'Clear all fields',
+      ),
+      TagSelectDropdown(
+        initialSelectedTags: _selectedTags,
+        isMultiSelect: true,
+        onTagsSelected: (tags) {
+          setState(() => _selectedTags = tags);
+        },
+        iconSize: AppTheme.iconSizeMedium,
+        color: _selectedTags.isEmpty ? AppTheme.secondaryTextColor : TaskUiConstants.tagColor,
+      ),
       IconButton(
         icon: Icon(
           _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
