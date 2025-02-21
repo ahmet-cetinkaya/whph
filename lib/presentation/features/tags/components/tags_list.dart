@@ -28,10 +28,10 @@ class TagsList extends StatefulWidget {
   });
 
   @override
-  State<TagsList> createState() => _TagsListState();
+  State<TagsList> createState() => TagsListState();
 }
 
-class _TagsListState extends State<TagsList> {
+class TagsListState extends State<TagsList> {
   final _translationService = container.resolve<ITranslationService>();
   GetListTagsQueryResponse? _tags;
   final int _pageSize = 20;
@@ -39,14 +39,18 @@ class _TagsListState extends State<TagsList> {
   @override
   void initState() {
     super.initState();
-    _getTags();
+    refresh();
   }
 
-  Future<void> _getTags({int pageIndex = 0}) async {
+  Future<void> refresh() async {
+    await _getTags(isRefresh: true);
+  }
+
+  Future<void> _getTags({int pageIndex = 0, bool isRefresh = false}) async {
     try {
       final query = GetListTagsQuery(
         pageIndex: pageIndex,
-        pageSize: _pageSize,
+        pageSize: isRefresh ? _tags?.items.length ?? _pageSize : _pageSize,
         filterByTags: widget.filterByTags,
         showArchived: widget.showArchived,
       );

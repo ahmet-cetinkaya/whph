@@ -27,28 +27,18 @@ class TagsPage extends StatefulWidget {
 class _TagsPageState extends State<TagsPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tagsListKey = GlobalKey<TagsListState>();
+  final _timeChartKey = GlobalKey<TagTimeChartState>();
 
   List<String>? _selectedFilters;
-
-  Key _tagsListKey = UniqueKey();
   bool _showArchived = false;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
 
-  Key _chartKey = UniqueKey();
-
-  void _refreshChart() {
-    setState(() {
-      _chartKey = UniqueKey();
-    });
-  }
-
   void _refreshAllElements() {
-    setState(() {
-      _selectedFilters = null;
-      _tagsListKey = UniqueKey();
-      _chartKey = UniqueKey();
-    });
+    _selectedFilters = null;
+    _tagsListKey.currentState?.refresh();
+    _timeChartKey.currentState?.refresh();
   }
 
   Future<void> _openTagDetails(String tagId) async {
@@ -70,7 +60,7 @@ class _TagsPageState extends State<TagsPage> {
     setState(() {
       _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
       _endDate = endDate ?? DateTime.now();
-      _refreshChart();
+      _timeChartKey.currentState?.refresh();
     });
   }
 
@@ -90,7 +80,7 @@ class _TagsPageState extends State<TagsPage> {
           titleKey: TagTranslationKeys.overviewHelpTitle,
           markdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => ListView(
         children: [
@@ -132,7 +122,7 @@ class _TagsPageState extends State<TagsPage> {
           // Chart
           Center(
             child: TagTimeChart(
-              key: _chartKey,
+              key: _timeChartKey,
               filterByTags: _selectedFilters,
               startDate: _startDate,
               endDate: _endDate,
@@ -156,7 +146,7 @@ class _TagsPageState extends State<TagsPage> {
                   onPressed: () {
                     setState(() {
                       _showArchived = !_showArchived;
-                      _refreshAllElements();
+                      _tagsListKey.currentState?.refresh();
                     });
                   },
                 ),

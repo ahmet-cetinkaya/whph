@@ -14,7 +14,6 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -33,7 +32,7 @@ class MarathonPage extends StatefulWidget {
 class _MarathonPageState extends State<MarathonPage> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  Key _tasksListKey = UniqueKey();
+  final _tasksListKey = GlobalKey<TaskListState>();
   TaskListItem? _selectedTask;
 
   // Add new state variables for filters
@@ -63,11 +62,7 @@ class _MarathonPageState extends State<MarathonPage> {
   }
 
   void _refreshTasks() {
-    if (mounted) {
-      setState(() {
-        _tasksListKey = UniqueKey();
-      });
-    }
+    _tasksListKey.currentState?.refresh();
   }
 
   void _onSelectTask(TaskListItem task) async {
@@ -80,28 +75,6 @@ class _MarathonPageState extends State<MarathonPage> {
   void _clearSelectedTask() {
     setState(() {
       _selectedTask = null;
-    });
-  }
-
-  void _handleTagFilterChange(List<DropdownOption<String>> tagOptions) {
-    setState(() {
-      _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
-      _tasksListKey = UniqueKey();
-    });
-  }
-
-  void _handleDateFilterChange(DateTime? start, DateTime? end) {
-    setState(() {
-      _selectedStartDate = start;
-      _selectedEndDate = end;
-      _tasksListKey = UniqueKey();
-    });
-  }
-
-  void _handleSearchChange(String? query) {
-    setState(() {
-      _searchQuery = query;
-      _tasksListKey = UniqueKey();
     });
   }
 
@@ -333,9 +306,25 @@ class _MarathonPageState extends State<MarathonPage> {
                         selectedTagIds: _selectedTagIds,
                         selectedStartDate: _selectedStartDate,
                         selectedEndDate: _selectedEndDate,
-                        onTagFilterChange: _handleTagFilterChange,
-                        onDateFilterChange: _handleDateFilterChange,
-                        onSearchChange: _handleSearchChange,
+                        onTagFilterChange: (tags) {
+                          setState(() {
+                            _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                          });
+                          _refreshTasks();
+                        },
+                        onDateFilterChange: (start, end) {
+                          setState(() {
+                            _selectedStartDate = start;
+                            _selectedEndDate = end;
+                          });
+                          _refreshTasks();
+                        },
+                        onSearchChange: (query) {
+                          setState(() {
+                            _searchQuery = query;
+                          });
+                          _refreshTasks();
+                        },
                         showDateFilter: false,
                       ),
                     ),

@@ -28,19 +28,15 @@ class TagDetailsPage extends StatefulWidget {
 class _TagDetailsPageState extends State<TagDetailsPage> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _activeTasksListKey = GlobalKey<TaskListState>();
+  final _completedTasksListKey = GlobalKey<TaskListState>();
 
   String? _title;
-  Key _tasksListKey = UniqueKey();
   bool _isCompletedTasksExpanded = false;
-  Key _completedTasksListKey = UniqueKey();
 
   void _refreshTasks() {
-    if (mounted) {
-      setState(() {
-        _tasksListKey = UniqueKey();
-        _completedTasksListKey = UniqueKey();
-      });
-    }
+    _activeTasksListKey.currentState?.refresh();
+    _completedTasksListKey.currentState?.refresh();
   }
 
   void _refreshTitle(String title) {
@@ -115,7 +111,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
           // Active Tasks List
           TaskList(
-            key: _tasksListKey,
+            key: _activeTasksListKey,
             mediator: _mediator,
             translationService: _translationService,
             onClickTask: _openTaskDetails,

@@ -19,10 +19,10 @@ class AppUsageIgnoreRuleList extends StatefulWidget {
   });
 
   @override
-  State<AppUsageIgnoreRuleList> createState() => _AppUsageIgnoreRuleListState();
+  State<AppUsageIgnoreRuleList> createState() => AppUsageIgnoreRuleListState();
 }
 
-class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
+class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   GetListAppUsageIgnoreRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
@@ -34,7 +34,7 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     _loadRules();
   }
 
-  Future<void> _loadRules({int pageIndex = 0}) async {
+  Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false}) async {
     if (_isLoading) return;
 
     setState(() => _isLoading = true);
@@ -42,7 +42,7 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     try {
       final query = GetListAppUsageIgnoreRulesQuery(
         pageIndex: pageIndex,
-        pageSize: _pageSize,
+        pageSize: isRefresh ? _rules?.items.length ?? _pageSize : _pageSize,
       );
 
       final result =
@@ -63,6 +63,10 @@ class _AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Future<void> refresh() async {
+    await _loadRules(isRefresh: true);
   }
 
   @override

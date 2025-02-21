@@ -23,7 +23,8 @@ class AppUsageRulesPage extends StatefulWidget {
 class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTickerProviderStateMixin {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  Key _listKey = UniqueKey();
+  final _tagRulesListKey = GlobalKey<AppUsageTagRuleListState>();
+  final _ignoreRulesListKey = GlobalKey<AppUsageIgnoreRuleListState>();
   late TabController _tabController;
 
   @override
@@ -39,9 +40,8 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
   }
 
   void _handleSaveRule() {
-    setState(() {
-      _listKey = UniqueKey();
-    });
+    _tagRulesListKey.currentState?.refresh();
+    _ignoreRulesListKey.currentState?.refresh();
   }
 
   @override
@@ -53,7 +53,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
           titleKey: AppUsageTranslationKeys.rulesHelpTitle,
           markdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => Column(
         children: [
@@ -99,7 +99,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                       ),
                       const SizedBox(height: 16),
                       AppUsageTagRuleList(
-                        key: _listKey,
+                        key: _tagRulesListKey,
                         mediator: _mediator,
                       ),
                     ],
@@ -136,7 +136,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                       ),
                       const SizedBox(height: 16),
                       AppUsageIgnoreRuleList(
-                        key: _listKey,
+                        key: _ignoreRulesListKey,
                         mediator: _mediator,
                       ),
                     ],

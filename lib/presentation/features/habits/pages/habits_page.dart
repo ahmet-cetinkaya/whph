@@ -27,16 +27,11 @@ class HabitsPage extends StatefulWidget {
 class _HabitsPageState extends State<HabitsPage> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-
-  Key _habitsListKey = UniqueKey();
+  final _habitsListKey = GlobalKey<HabitsListState>();
   List<String> _selectedFilterTags = [];
 
   void _refreshHabitsList() {
-    if (mounted) {
-      setState(() {
-        _habitsListKey = UniqueKey();
-      });
-    }
+    _habitsListKey.currentState?.refresh();
   }
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
@@ -108,10 +103,9 @@ class _HabitsPageState extends State<HabitsPage> {
           titleKey: HabitTranslationKeys.overviewHelpTitle,
           markdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => ListView(
-        key: _habitsListKey,
         children: [
           // Filters
           Row(

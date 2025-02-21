@@ -32,21 +32,17 @@ class TaskDetailsPage extends StatefulWidget {
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
   String? _title;
-  Key _contentKey = UniqueKey();
-  bool _isCompleted = false;
-  Key _subTasksListKey = UniqueKey();
-  bool _isCompletedTasksExpanded = false;
-  Key _completedSubTasksListKey = UniqueKey();
-  double? _subTasksCompletionPercentage;
-
+  final _contentKey = GlobalKey<TaskDetailsContentState>();
+  final _activeTasksListKey = GlobalKey<TaskListState>();
+  final _completedTasksListKey = GlobalKey<TaskListState>();
   final _translationService = container.resolve<ITranslationService>();
 
+  bool _isCompleted = false;
+  bool _isCompletedTasksExpanded = false;
+  double? _subTasksCompletionPercentage;
+
   void _refreshContent() {
-    if (mounted) {
-      setState(() {
-        _contentKey = UniqueKey();
-      });
-    }
+    _contentKey.currentState?.refresh();
   }
 
   void _refreshTitle(String title) {
@@ -58,13 +54,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   void _refreshSubTasks() {
-    if (mounted) {
-      setState(() {
-        _subTasksListKey = UniqueKey();
-        _completedSubTasksListKey = UniqueKey();
-      });
-      _loadTaskDetails(); // Moved after setState to ensure UI updates first
-    }
+    _activeTasksListKey.currentState?.refresh();
+    _completedTasksListKey.currentState?.refresh();
+    _loadTaskDetails();
   }
 
   Future<void> _loadTaskDetails() async {
@@ -176,7 +168,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
 
           // Active Sub-Tasks List
           TaskList(
-            key: _subTasksListKey,
+            key: _activeTasksListKey,
             mediator: container.resolve<Mediator>(),
             translationService: container.resolve<ITranslationService>(),
             onClickTask: (task) async {
@@ -213,7 +205,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                   );
                 },
                 body: TaskList(
-                  key: _completedSubTasksListKey,
+                  key: _completedTasksListKey,
                   mediator: container.resolve<Mediator>(),
                   translationService: container.resolve<ITranslationService>(),
                   onClickTask: (task) async {
