@@ -6,20 +6,22 @@ class BarChart extends StatelessWidget {
   final double value;
   final double maxValue;
   final Color? barColor;
-  final String unit;
+  final String? unit;
   final Widget? additionalWidget;
   final VoidCallback? onTap;
   final String title;
+  final String Function(double value)? formatValue;
 
   const BarChart({
     super.key,
     required this.value,
     required this.maxValue,
     this.barColor,
-    this.unit = "",
+    this.unit,
     this.additionalWidget,
     this.onTap,
     required this.title,
+    this.formatValue,
   });
 
   @override
@@ -67,13 +69,14 @@ class BarChart extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  value.toStringAsFixed(1),
+                                  formatValue?.call(value) ?? value.toStringAsFixed(1),
                                   style: AppTheme.bodySmall,
                                 ),
-                                Text(
-                                  " $unit",
-                                  style: AppTheme.bodySmall,
-                                ),
+                                if (unit != null)
+                                  Text(
+                                    " $unit",
+                                    style: AppTheme.bodySmall,
+                                  ),
                               ],
                             ),
                             Padding(

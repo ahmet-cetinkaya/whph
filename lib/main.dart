@@ -72,7 +72,7 @@ void main() async {
 
     runApp(
       translationService.wrapWithTranslations(
-        App(navigatorKey: navigatorKey), // Pass navigator key to App
+        App(navigatorKey: navigatorKey),
       ),
     );
   }, (error, stack) {

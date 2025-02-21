@@ -339,7 +339,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
               padding: EdgeInsets.zero,
             ),
             Text(
-              SharedUiConstants.formatMinutes(_task!.estimatedTime),
+              SharedUiConstants.formatDurationHuman(_task!.estimatedTime, widget._translationService),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
@@ -358,7 +358,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
         widget: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
-            SharedUiConstants.formatMinutes(_task!.totalDuration ~/ 60),
+            SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, widget._translationService),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

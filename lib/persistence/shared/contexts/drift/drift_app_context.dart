@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nanoid2/nanoid2.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +21,7 @@ import 'package:whph/domain/features/tags/tag_tag.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_ignore_rule_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_repository.dart';
 import 'package:whph/persistence/features/app_usages/drift_app_usage_tag_repository.dart';
@@ -39,8 +41,8 @@ import 'package:whph/persistence/shared/contexts/drift/drift_app_context.steps.d
 
 part 'drift_app_context.g.dart';
 
-const String folderName = "whph";
-const String databaseName = 'whph.db';
+String folderName = AppInfo.shortName.toLowerCase();
+String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
 
 @DriftDatabase(
   tables: [
@@ -314,7 +316,7 @@ class AppDatabase extends _$AppDatabase {
         file = File(p.join(testDirectory?.path ?? Directory.systemTemp.path, databaseName));
       } else {
         final dbFolder = await getApplicationDocumentsDirectory();
-        file = File(p.join(dbFolder.path, folderName, databaseName));
+        file = File(p.join(dbFolder.path, folderName, kDebugMode ? 'debug_$databaseName' : databaseName));
         await file.parent.create(recursive: true);
       }
       return NativeDatabase.createInBackground(file);
