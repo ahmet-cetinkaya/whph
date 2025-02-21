@@ -211,7 +211,7 @@ class _TodayPageState extends State<TodayPage> {
   Widget _buildTaskSection(BuildContext context) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final tomorrowStart = DateTime(now.year, now.month, now.day + 1);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
@@ -247,10 +247,8 @@ class _TodayPageState extends State<TodayPage> {
               translationService: _translationService,
               filterByCompleted: false,
               filterByTags: _selectedTagFilter,
-              filterByPlannedStartDate: today,
-              filterByPlannedEndDate: tomorrow,
-              filterByDeadlineStartDate: today,
-              filterByDeadlineEndDate: tomorrow,
+              filterByPlannedEndDate: tomorrowStart,
+              filterByDeadlineEndDate: tomorrowStart,
               filterDateOr: true,
               onClickTask: (task) => _openTaskDetails(context, task.id),
               onList: _onTaskList,
