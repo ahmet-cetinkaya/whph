@@ -19,6 +19,7 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -323,14 +324,29 @@ class _MarathonPageState extends State<MarathonPage> {
               // Filters
               Padding(
                 padding: const EdgeInsets.only(left: 6, top: 8),
-                child: TaskFilters(
-                  selectedTagIds: _selectedTagIds,
-                  selectedStartDate: _selectedStartDate,
-                  selectedEndDate: _selectedEndDate,
-                  onTagFilterChange: _handleTagFilterChange,
-                  onDateFilterChange: _handleDateFilterChange,
-                  onSearchChange: _handleSearchChange,
-                  showDateFilter: false,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TaskFilters(
+                        selectedTagIds: _selectedTagIds,
+                        selectedStartDate: _selectedStartDate,
+                        selectedEndDate: _selectedEndDate,
+                        onTagFilterChange: _handleTagFilterChange,
+                        onDateFilterChange: _handleDateFilterChange,
+                        onSearchChange: _handleSearchChange,
+                        showDateFilter: false,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: TaskAddButton(
+                        initialTagIds: _selectedTagIds,
+                        initialPlannedDate: today,
+                        onTaskCreated: (_) => _refreshTasks(),
+                        buttonColor: AppTheme.primaryColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
