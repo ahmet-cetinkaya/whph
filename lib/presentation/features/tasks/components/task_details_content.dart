@@ -372,6 +372,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           child: DateTimePickerField(
             controller: _plannedDateController,
             hintText: '',
+            minDateTime: DateTime.now(),
             onConfirm: (date) {
               _task?.plannedDate = date;
               _updateTask();
@@ -388,6 +389,7 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
           child: DateTimePickerField(
             controller: _deadlineDateController,
             hintText: '',
+            minDateTime: DateTime.now(),
             onConfirm: (date) {
               _task?.deadlineDate = date;
               _updateTask();
