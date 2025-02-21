@@ -11,7 +11,6 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageCard extends StatefulWidget {
   final Mediator mediator;

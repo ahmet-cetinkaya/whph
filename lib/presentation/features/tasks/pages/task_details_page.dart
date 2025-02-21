@@ -37,6 +37,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   Key _subTasksListKey = UniqueKey();
   bool _isCompletedTasksExpanded = false;
   Key _completedSubTasksListKey = UniqueKey();
+  double? _subTasksCompletionPercentage;
 
   final _translationService = container.resolve<ITranslationService>();
 
@@ -62,12 +63,36 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
         _subTasksListKey = UniqueKey();
         _completedSubTasksListKey = UniqueKey();
       });
+      _loadTaskDetails(); // Moved after setState to ensure UI updates first
+    }
+  }
+
+  Future<void> _loadTaskDetails() async {
+    try {
+      final response =
+          await container.resolve<Mediator>().send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: widget.taskId));
+      if (mounted) {
+        setState(() {
+          _subTasksCompletionPercentage = response.subTasksCompletionPercentage;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading task details: $e');
+    }
+  }
+
+  @override
+  void didUpdateWidget(TaskDetailsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.taskId != widget.taskId) {
+      _loadTaskDetails();
     }
   }
 
   @override
   void initState() {
     super.initState();
+    _loadTaskDetails();
   }
 
   @override
@@ -131,21 +156,11 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     const SizedBox(width: 8),
                     Text(_translationService.translate(TaskTranslationKeys.subTasksLabel)),
                     const SizedBox(width: 8),
-                    StreamBuilder<GetTaskQueryResponse>(
-                      stream: Stream.fromFuture(
-                        container.resolve<Mediator>().send(GetTaskQuery(id: widget.taskId)),
+                    if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                      Text(
+                        '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData || snapshot.data?.subTasks.isEmpty == true) {
-                          return const SizedBox.shrink();
-                        }
-
-                        return Text(
-                          '${snapshot.data!.subTasksCompletionPercentage.toStringAsFixed(0)}%',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        );
-                      },
-                    ),
                   ],
                 ),
                 Padding(
@@ -207,6 +222,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                         builder: (context) => TaskDetailsPage(taskId: task.id),
                       ),
                     );
+                    _loadTaskDetails();
                     _refreshSubTasks();
                   },
                   parentTaskId: widget.taskId,
