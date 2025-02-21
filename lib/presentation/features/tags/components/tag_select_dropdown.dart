@@ -54,6 +54,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   List<String> _selectedTags = [];
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -61,6 +62,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     _getTags(pageIndex: 0);
     _scrollController.addListener(_scrollListener);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
@@ -106,6 +113,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   Future<void> _showTagSelectionModal(BuildContext context) async {
     List<String> tempSelectedTags = _selectedTags;
 
+    // Schedule focus request for the next frame after modal is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _searchFocusNode.requestFocus();
+    });
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -128,6 +140,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         Expanded(
                           child: TextField(
                             controller: _searchController,
+                            focusNode: _searchFocusNode,
                             decoration: InputDecoration(
                               labelText: _translationService.translate(TagTranslationKeys.searchLabel),
                               fillColor: Colors.transparent,
