@@ -6,26 +6,31 @@ class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final Function(DateTime?) onConfirm;
+  final DateTime? minDateTime;
+  final DateTime? maxDateTime;
 
   const DateTimePickerField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.onConfirm,
+    this.minDateTime,
+    this.maxDateTime,
   });
 
   Future<void> _selectDateTime(BuildContext context) async {
+    final now = DateTime.now();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1980),
-      lastDate: DateTime(2101),
+      initialDate: DateTime.tryParse(controller.text) ?? now,
+      firstDate: minDateTime ?? DateTime(1980),
+      lastDate: maxDateTime ?? DateTime(2101),
     );
 
     if (pickedDate != null && context.mounted) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+        initialTime: TimeOfDay.fromDateTime(DateTime.tryParse(controller.text) ?? now),
       );
 
       if (pickedTime != null && context.mounted) {
@@ -37,9 +42,12 @@ class DateTimePickerField extends StatelessWidget {
           pickedTime.minute,
         );
 
-        // Format the selected DateTime for better readability
-        final String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDateTime);
+        if ((minDateTime != null && pickedDateTime.isBefore(minDateTime!)) ||
+            (maxDateTime != null && pickedDateTime.isAfter(maxDateTime!))) {
+          return;
+        }
 
+        final String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDateTime);
         controller.text = formattedDateTime;
         onConfirm(pickedDateTime);
       }
