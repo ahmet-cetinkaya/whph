@@ -232,6 +232,7 @@ class _TodayPageState extends State<TodayPage> {
                   setState(() {
                     _taskKey = UniqueKey();
                     _timeKey = UniqueKey();
+                    _isTaskListEmpty = false; // Add this line
                   });
                 },
               ),
