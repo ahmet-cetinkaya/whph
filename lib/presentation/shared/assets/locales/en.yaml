@@ -20,6 +20,7 @@ shared:
   units:
     minutes: min
     days: days
+    hours: hr
   tooltips:
     filter_by_tags: Filter by tags
     refresh: Refresh
@@ -112,3 +113,5 @@ shared:
     failed: Failed to update.
   help:
     tooltip: Help
+  time:
+    not_set: "Not set"

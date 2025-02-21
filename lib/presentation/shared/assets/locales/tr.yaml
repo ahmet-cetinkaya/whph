@@ -20,6 +20,7 @@ shared:
   units:
     minutes: dk
     days: gün
+    hours: sa
   tooltips:
     filter_by_tags: Etiketlere göre filtrele
     refresh: Yenile
@@ -112,3 +113,5 @@ shared:
     failed: Güncelleme başarısız oldu.
   help:
     tooltip: Yardım
+  time:
+    not_set: Ayarlanmadı

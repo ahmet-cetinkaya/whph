@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class SharedUiConstants {
   // Common Icons
@@ -50,5 +52,20 @@ class SharedUiConstants {
   static String formatMinutes(int? minutes) {
     if (minutes == null) return 'Not set';
     return '${minutes}m';
+  }
+
+  /// Converts [minutes] to a human-readable format.
+  /// Uses the translation service to get localized strings.
+  static String formatDurationHuman(int? minutes, ITranslationService translationService) {
+    if (minutes == null) return translationService.translate(SharedTranslationKeys.notSetTime);
+    if (minutes < 60) {
+      return '$minutes${translationService.translate(SharedTranslationKeys.minutes)}';
+    }
+    final hoursCount = minutes ~/ 60;
+    final remainingMinutes = minutes % 60;
+    if (remainingMinutes == 0) {
+      return '$hoursCount${translationService.translate(SharedTranslationKeys.hours)}';
+    }
+    return '$hoursCount${translationService.translate(SharedTranslationKeys.hours)} $remainingMinutes${translationService.translate(SharedTranslationKeys.minutes)}';
   }
 }

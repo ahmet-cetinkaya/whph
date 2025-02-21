@@ -6,6 +6,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/components/bar_chart.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -87,7 +88,7 @@ class _AppUsageCardState extends State<AppUsageCard> {
       title: widget.appUsage.displayName ?? widget.appUsage.name,
       value: widget.appUsage.duration.toDouble() / 60,
       maxValue: widget.maxDurationInListing != null ? widget.maxDurationInListing!.toDouble() : double.infinity,
-      unit: _translationService.translate(SharedTranslationKeys.minutes),
+      formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), _translationService),
       barColor: barColor,
       onTap: widget.onTap,
       additionalWidget: _buildAdditionalWidget(),

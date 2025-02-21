@@ -18,6 +18,11 @@ class SharedTranslationKeys {
 
   static const String minutes = 'shared.units.minutes';
   static const String days = 'shared.units.days';
+
+  // New constants
+  static const String notSetTime = 'shared.time.not_set';
+  static const String hours = 'shared.units.hours';
+
   static const String filterByTagsTooltip = 'shared.tooltips.filter_by_tags';
 
   // Calendar
