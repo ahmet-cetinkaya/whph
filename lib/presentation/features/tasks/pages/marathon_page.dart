@@ -309,7 +309,9 @@ class _MarathonPageState extends State<MarathonPage> {
                     TaskCard(
                       taskItem: _selectedTask!,
                       onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                      onCompleted: _refreshTasks,
+                      onCompleted: () {
+                        Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _refreshTasks()});
+                      },
                       trailingButtons: [
                         IconButton(
                           icon: const Icon(Icons.push_pin),
