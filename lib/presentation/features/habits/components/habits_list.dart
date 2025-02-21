@@ -34,12 +34,13 @@ class HabitsList extends StatefulWidget {
       this.onHabitCompleted});
 
   @override
-  State<HabitsList> createState() => _HabitsListState();
+  State<HabitsList> createState() => HabitsListState();
 }
 
-class _HabitsListState extends State<HabitsList> {
+class HabitsListState extends State<HabitsList> {
   GetListHabitsQueryResponse? _habits;
   final _translationService = container.resolve<ITranslationService>();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -47,13 +48,15 @@ class _HabitsListState extends State<HabitsList> {
     _getHabits();
   }
 
-  Future<void> _getHabits({int pageIndex = 0}) async {
+  Future<void> _getHabits({int pageIndex = 0, bool isRefresh = false}) async {
     try {
+      _isLoading = true;
       final query = GetListHabitsQuery(
-          pageIndex: pageIndex,
-          pageSize: widget.size,
-          excludeCompleted: widget.mini,
-          filterByTags: widget.filterByTags);
+        pageIndex: pageIndex,
+        pageSize: isRefresh ? _habits?.items.length ?? widget.size : widget.size,
+        excludeCompleted: widget.mini,
+        filterByTags: widget.filterByTags,
+      );
       final result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
 
       if (!mounted) return;
@@ -80,7 +83,13 @@ class _HabitsListState extends State<HabitsList> {
           message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
         );
       }
+    } finally {
+      _isLoading = false;
     }
+  }
+
+  Future<void> refresh() async {
+    await _getHabits(isRefresh: true);
   }
 
   void _refreshHabits() {

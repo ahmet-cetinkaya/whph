@@ -62,14 +62,18 @@ class TaskList extends StatefulWidget {
   });
 
   @override
-  State<TaskList> createState() => _TaskListState();
+  State<TaskList> createState() => TaskListState();
 }
 
-class _TaskListState extends State<TaskList> {
+class TaskListState extends State<TaskList> {
   GetListTasksQueryResponse? _tasks;
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
   double? _savedScrollPosition;
+
+  Future<void> refresh() async {
+    await _getTasks(isRefresh: true);
+  }
 
   @override
   void dispose() {
@@ -96,7 +100,7 @@ class _TaskListState extends State<TaskList> {
     _getTasks();
   }
 
-  Future<void> _getTasks({int pageIndex = 0}) async {
+  Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false}) async {
     if (_isLoading) return;
 
     setState(() {
@@ -106,7 +110,7 @@ class _TaskListState extends State<TaskList> {
     try {
       final query = GetListTasksQuery(
           pageIndex: pageIndex,
-          pageSize: widget.size,
+          pageSize: isRefresh ? _tasks!.items.length : widget.size,
           filterByPlannedStartDate: widget.filterByPlannedStartDate,
           filterByPlannedEndDate: widget.filterByPlannedEndDate,
           filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
@@ -151,16 +155,8 @@ class _TaskListState extends State<TaskList> {
   }
 
   void _onTaskCompleted() {
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted && _tasks != null) {
-        final pageIndex = _tasks!.pageIndex;
-        _tasks = null;
-        _getTasks(pageIndex: pageIndex);
-
-        if (widget.onTaskCompleted != null) {
-          widget.onTaskCompleted!();
-        }
-      }
+    Future.delayed(const Duration(seconds: 2), () {
+      widget.onTaskCompleted?.call();
     });
   }
 

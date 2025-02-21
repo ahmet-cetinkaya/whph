@@ -27,18 +27,18 @@ class TagTimeChart extends StatefulWidget {
   });
 
   @override
-  State<TagTimeChart> createState() => _TagTimeChartState();
+  State<TagTimeChart> createState() => TagTimeChartState();
 }
 
-class _TagTimeChartState extends State<TagTimeChart> {
+class TagTimeChartState extends State<TagTimeChart> {
   GetTopTagsByTimeQueryResponse? _tagTimes;
-  bool _isLoading = true;
+  bool _isLoading = false;
   int? _touchedIndex;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    refresh();
   }
 
   @override
@@ -47,8 +47,13 @@ class _TagTimeChartState extends State<TagTimeChart> {
     if (oldWidget.startDate != widget.startDate ||
         oldWidget.endDate != widget.endDate ||
         oldWidget.filterByTags != widget.filterByTags) {
-      _loadData();
+      refresh();
     }
+  }
+
+  Future<void> refresh() async {
+    if (_isLoading) return;
+    await _loadData();
   }
 
   Future<void> _loadData() async {
@@ -72,7 +77,11 @@ class _TagTimeChartState extends State<TagTimeChart> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: "Error loading tag times");
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+        );
         setState(() => _isLoading = false);
       }
     }

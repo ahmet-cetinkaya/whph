@@ -33,16 +33,13 @@ class _TodayPageState extends State<TodayPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
-  Key _habitKey = UniqueKey();
+  final _habitsListKey = GlobalKey<HabitsListState>();
+  final _tasksListKey = GlobalKey<TaskListState>();
+  final _timeChartKey = GlobalKey<TagTimeChartState>();
+
   bool _isHabitListEmpty = false;
-
-  Key _taskKey = UniqueKey();
   bool _isTaskListEmpty = false;
-
-  Key _timeKey = UniqueKey();
-
   List<String>? _selectedTagFilter;
-
   bool _isCheckedUpdate = false;
 
   @override
@@ -57,23 +54,17 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   void _refreshHabits() {
-    setState(() {
-      _habitKey = UniqueKey();
-    });
+    _habitsListKey.currentState?.refresh();
   }
 
   void _refreshTasks() {
-    setState(() {
-      _taskKey = UniqueKey();
-    });
+    _tasksListKey.currentState?.refresh();
   }
 
   void _refreshAllElements() {
-    setState(() {
-      _habitKey = UniqueKey();
-      _taskKey = UniqueKey();
-      _timeKey = UniqueKey();
-    });
+    _habitsListKey.currentState?.refresh();
+    _tasksListKey.currentState?.refresh();
+    _timeChartKey.currentState?.refresh();
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
@@ -162,129 +153,110 @@ class _TodayPageState extends State<TodayPage> {
 
           // Habits
           const SizedBox(height: 16),
-          _buildHabitSection(context),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              _isHabitListEmpty
+                  ? DoneOverlay()
+                  : SizedBox(
+                      height: 60,
+                      width: MediaQuery.of(context).size.width,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: HabitsList(
+                          key: _habitsListKey,
+                          mediator: _mediator,
+                          size: 5,
+                          mini: true,
+                          filterByTags: _selectedTagFilter,
+                          onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                          onList: _onHabitList,
+                        ),
+                      )),
+            ],
+          ),
 
           // Tasks
           const SizedBox(height: 16),
-          _buildTaskSection(context),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _translationService.translate(CalendarTranslationKeys.tasksTitle),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: TaskAddButton(
+                        initialTagIds: _selectedTagFilter,
+                        initialPlannedDate: DateTime.now(),
+                        onTaskCreated: (_) {
+                          setState(() {
+                            _isTaskListEmpty = false;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _isTaskListEmpty
+                  ? DoneOverlay()
+                  : TaskList(
+                      key: _tasksListKey,
+                      mediator: _mediator,
+                      translationService: _translationService,
+                      filterByCompleted: false,
+                      filterByTags: _selectedTagFilter,
+                      filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
+                      filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
+                      filterDateOr: true,
+                      onClickTask: (task) => _openTaskDetails(context, task.id),
+                      onList: _onTaskList,
+                      onScheduleTask: (_, __) => _refreshTasks(),
+                    ),
+            ],
+          ),
 
           // Times
           const SizedBox(height: 16),
-          _buildTimeSection(context),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 4),
+                child: Text(
+                  _translationService.translate(CalendarTranslationKeys.timeTitle),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: TagTimeChart(
+                    key: _timeChartKey,
+                    filterByTags: _selectedTagFilter,
+                    startDate: DateTime.now(),
+                    endDate: DateTime.now().add(const Duration(days: 1)),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHabitSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 4),
-          child: Text(
-            _translationService.translate(CalendarTranslationKeys.habitsTitle),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        _isHabitListEmpty
-            ? DoneOverlay()
-            : SizedBox(
-                height: 60,
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: HabitsList(
-                    key: _habitKey,
-                    mediator: _mediator,
-                    size: 5,
-                    mini: true,
-                    filterByTags: _selectedTagFilter,
-                    onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                    onList: _onHabitList,
-                  ),
-                )),
-      ],
-    );
-  }
-
-  Widget _buildTaskSection(BuildContext context) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrowStart = DateTime(now.year, now.month, now.day + 1);
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              _translationService.translate(CalendarTranslationKeys.tasksTitle),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: TaskAddButton(
-                initialTagIds: _selectedTagFilter,
-                initialPlannedDate: today,
-                onTaskCreated: (_) {
-                  setState(() {
-                    _taskKey = UniqueKey();
-                    _timeKey = UniqueKey();
-                    _isTaskListEmpty = false; // Add this line
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      _isTaskListEmpty
-          ? DoneOverlay()
-          : TaskList(
-              key: _taskKey,
-              mediator: _mediator,
-              translationService: _translationService,
-              filterByCompleted: false,
-              filterByTags: _selectedTagFilter,
-              filterByPlannedEndDate: tomorrowStart,
-              filterByDeadlineEndDate: tomorrowStart,
-              filterDateOr: true,
-              onClickTask: (task) => _openTaskDetails(context, task.id),
-              onList: _onTaskList,
-              onScheduleTask: (_, __) => _refreshTasks(),
-            ),
-    ]);
-  }
-
-  Widget _buildTimeSection(BuildContext context) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 4),
-          child: Text(
-            _translationService.translate(CalendarTranslationKeys.timeTitle),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: TagTimeChart(
-              key: _timeKey,
-              filterByTags: _selectedTagFilter,
-              startDate: today,
-              endDate: tomorrow,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

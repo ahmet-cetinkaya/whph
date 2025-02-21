@@ -45,10 +45,10 @@ class TaskDetailsContent extends StatefulWidget {
   });
 
   @override
-  State<TaskDetailsContent> createState() => _TaskDetailsContentState();
+  State<TaskDetailsContent> createState() => TaskDetailsContentState();
 }
 
-class _TaskDetailsContentState extends State<TaskDetailsContent> {
+class TaskDetailsContentState extends State<TaskDetailsContent> {
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
   final TextEditingController _plannedDateController = TextEditingController();
@@ -61,9 +61,13 @@ class _TaskDetailsContentState extends State<TaskDetailsContent> {
 
   @override
   void initState() {
-    _getInitialData();
-    widget._tasksService.onTaskSaved.addListener(_getTask);
     super.initState();
+    refresh();
+    widget._tasksService.onTaskSaved.addListener(_getTask);
+  }
+
+  Future<void> refresh() async {
+    await _getInitialData();
   }
 
   @override

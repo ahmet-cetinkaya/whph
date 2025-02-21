@@ -26,17 +26,14 @@ class AppUsageViewPage extends StatefulWidget {
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  Key _appUsageListKey = UniqueKey();
+  final _appUsageListKey = GlobalKey<AppUsageListState>();
+
   List<String>? _selectedTagFilters;
   DateTime _filterStartDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _filterEndDate = DateTime.now();
 
   void _refreshList() {
-    if (mounted) {
-      setState(() {
-        _appUsageListKey = UniqueKey();
-      });
-    }
+    _appUsageListKey.currentState?.refresh();
   }
 
   Future<void> _openDetails(String id) async {
@@ -50,21 +47,19 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
     setState(() {
       _selectedTagFilters = tagOptions.map((option) => option.value).toList();
-      _refreshList();
     });
+    _refreshList();
   }
 
   void _onDateFilterChange(DateTime? start, DateTime? end) {
     setState(() {
       _filterStartDate = start ?? DateTime.now().subtract(const Duration(days: 7));
-
       if (end != null) {
         end = DateTime(end!.year, end!.month, end!.day, 23, 59, 59);
       }
       _filterEndDate = end ?? DateTime.now();
-
-      _refreshList();
     });
+    _refreshList();
   }
 
   @override
@@ -91,7 +86,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           titleKey: AppUsageTranslationKeys.viewHelpTitle,
           markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => ListView(
         children: [

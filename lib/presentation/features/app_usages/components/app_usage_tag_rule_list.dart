@@ -25,10 +25,10 @@ class AppUsageTagRuleList extends StatefulWidget {
   });
 
   @override
-  State<AppUsageTagRuleList> createState() => _AppUsageTagRuleListState();
+  State<AppUsageTagRuleList> createState() => AppUsageTagRuleListState();
 }
 
-class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
+class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   GetListAppUsageTagRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
@@ -37,10 +37,14 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   @override
   void initState() {
     super.initState();
-    _loadRules();
+    refresh();
   }
 
-  Future<void> _loadRules({int pageIndex = 0}) async {
+  Future<void> refresh() async {
+    await _loadRules(isRefresh: true);
+  }
+
+  Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false}) async {
     if (_isLoading) return;
 
     setState(() => _isLoading = true);
@@ -48,7 +52,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     try {
       final query = GetListAppUsageTagRulesQuery(
         pageIndex: pageIndex,
-        pageSize: _pageSize,
+        pageSize: isRefresh ? _rules?.items.length ?? _pageSize : _pageSize,
         filterByTags: widget.filterByTags,
       );
 
@@ -63,10 +67,12 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
             _rules!.items.addAll(result.items);
             _rules!.pageIndex = result.pageIndex;
           }
+          _isLoading = false;
         });
       }
-    } finally {
+    } catch (e, stackTrace) {
       if (mounted) {
+        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
         setState(() => _isLoading = false);
       }
     }
@@ -199,7 +205,7 @@ class _AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       try {
         final command = DeleteAppUsageTagRuleCommand(id: rule.id);
         await widget.mediator.send<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse>(command);
-        if (context.mounted) await _loadRules();
+        if (context.mounted) await refresh();
       } catch (e, stackTrace) {
         if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
       }

@@ -30,7 +30,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   final _translationService = container.resolve<ITranslationService>();
 
   GetListSyncDevicesQueryResponse? list;
-  Key _listKey = UniqueKey();
+  bool _isSyncing = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -38,12 +38,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   @override
   void initState() {
     super.initState();
-    _getDevices(pageIndex: 0, pageSize: 10);
+    refresh();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> refresh() async {
+    await _getDevices(pageIndex: 0, pageSize: 10);
   }
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
@@ -68,28 +67,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
   }
 
-  Future<void> _removeDevice(String id) async {
-    try {
-      final command = DeleteSyncDeviceCommand(id: id);
-      await _mediator.send<DeleteSyncDeviceCommand, void>(command);
-      if (mounted) {
-        setState(() {
-          list!.items.removeWhere((item) => item.id == id);
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(SyncTranslationKeys.removeDeviceError),
-        );
-      }
-    }
-  }
-
-  bool _isSyncing = false;
   Future<void> _sync() async {
     if (_isSyncing) return;
 
@@ -113,20 +90,15 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       ),
     );
 
-    if (mounted) {
-      setState(() {
-        _isSyncing = true;
-      });
-    }
+    setState(() => _isSyncing = true);
 
     try {
       if (kDebugMode) print('DEBUG: Starting sync process...');
       final command = SyncCommand();
       await _mediator.send<SyncCommand, void>(command);
 
-      // Add a small delay before refreshing the devices list
       await Future.delayed(const Duration(seconds: 2));
-      await _refreshDevices();
+      await refresh();
 
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -145,7 +117,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             ),
           );
       }
-      if (kDebugMode) print('DEBUG: Sync process completed');
     } catch (e, stackTrace) {
       if (kDebugMode) print('ERROR: Sync failed: $e');
       if (mounted) {
@@ -158,23 +129,28 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isSyncing = false;
-        });
-      }
+      if (mounted) setState(() => _isSyncing = false);
     }
   }
 
-  Future<void> _refreshDevices() async {
-    if (mounted) {
-      setState(() {
-        list = null;
-        _listKey = UniqueKey();
-      });
-
-      await Future.delayed(const Duration(milliseconds: 500));
-      await _getDevices(pageIndex: 0, pageSize: 10);
+  Future<void> _removeDevice(String id) async {
+    try {
+      final command = DeleteSyncDeviceCommand(id: id);
+      await _mediator.send<DeleteSyncDeviceCommand, void>(command);
+      if (mounted) {
+        setState(() {
+          list!.items.removeWhere((item) => item.id == id);
+        });
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(SyncTranslationKeys.removeDeviceError),
+        );
+      }
     }
   }
 
@@ -192,18 +168,17 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
         if (Platform.isAndroid || Platform.isIOS)
           SyncQrScanButton(
-            onSyncComplete: _refreshDevices,
+            onSyncComplete: refresh,
           ),
         HelpMenu(
           titleKey: SyncTranslationKeys.helpTitle,
           markdownContentKey: SyncTranslationKeys.helpContent,
         ),
-        const SizedBox(width: 8), // Adjusted spacing
+        const SizedBox(width: 8),
       ],
       builder: (context) => list == null || list!.items.isEmpty
           ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))
           : ListView.builder(
-              key: _listKey,
               itemCount: list!.items.length,
               itemBuilder: (context, index) {
                 return SyncDeviceListItemWidget(

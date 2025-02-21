@@ -25,28 +25,22 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _activeTasksListKey = GlobalKey<TaskListState>();
+  final _completedTasksListKey = GlobalKey<TaskListState>();
 
   List<String>? _selectedTagIds;
-
-  Key _tasksListKey = UniqueKey();
   bool _isTasksListEmpty = false;
-
   bool _isCompletedTasksExpanded = false;
-  Key _completedTasksListKey = UniqueKey();
-
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
-
   String? _searchQuery;
 
   void _refreshAllTasks() {
-    if (mounted) {
-      setState(() {
-        _isTasksListEmpty = false;
-        _tasksListKey = UniqueKey();
-        _completedTasksListKey = UniqueKey();
-      });
-    }
+    _activeTasksListKey.currentState?.refresh();
+    _completedTasksListKey.currentState?.refresh();
+    setState(() {
+      _isTasksListEmpty = false;
+    });
   }
 
   Future<void> _openTaskDetails(String taskId) async {
@@ -71,8 +65,8 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _selectedTagIds = tagOptions.map((option) => option.value).toList();
-        _refreshAllTasks();
       });
+      _refreshAllTasks();
     }
   }
 
@@ -81,8 +75,8 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _filterStartDate = start;
         _filterEndDate = end;
-        _refreshAllTasks();
       });
+      _refreshAllTasks();
     }
   }
 
@@ -90,8 +84,8 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _searchQuery = query;
-        _refreshAllTasks();
       });
+      _refreshAllTasks();
     }
   }
 
@@ -135,7 +129,7 @@ class _TasksPageState extends State<TasksPage> {
           // Tasks List
           else
             TaskList(
-              key: _tasksListKey,
+              key: _activeTasksListKey,
               mediator: _mediator,
               translationService: _translationService,
               filterByCompleted: false,
