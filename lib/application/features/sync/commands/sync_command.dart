@@ -307,13 +307,13 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       WebSocket? socket;
       try {
         if (kDebugMode) {
-          print('DEBUG: Attempting to connect to WebSocket at ws://$ipAddress:4040 (Attempt ${attempt + 1})');
+          print('DEBUG: Attempting to connect to WebSocket at ws://$ipAddress:44040 (Attempt ${attempt + 1})');
         }
 
         socket =
-            await WebSocket.connect('ws://$ipAddress:4040').timeout(Duration(seconds: baseTimeout * (attempt + 1)));
+            await WebSocket.connect('ws://$ipAddress:44040').timeout(Duration(seconds: baseTimeout * (attempt + 1)));
 
-        if (kDebugMode) print('DEBUG: Connected to WebSocket at ws://$ipAddress:4040');
+        if (kDebugMode) print('DEBUG: Connected to WebSocket at ws://$ipAddress:44040');
 
         // Create a completer to handle sync completion
         final syncCompleter = Completer<bool>();
