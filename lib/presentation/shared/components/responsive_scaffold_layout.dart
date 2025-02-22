@@ -74,7 +74,9 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         _closeAllDialogs();
         Navigator.of(context).pushReplacementNamed(
           routeName,
-          arguments: {'noAnimation': true},
+          arguments: {
+            'useFadeTransition': true,
+          },
         );
       }
     });
