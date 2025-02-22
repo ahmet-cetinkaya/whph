@@ -6,7 +6,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:whph/application/shared/models/websocket_request.dart';
 
 class NetworkUtils {
-  static const int webSocketPort = 4040;
+  static const int webSocketPort = 44040;
   static const Duration connectionTimeout = Duration(seconds: 2);
 
   static Future<String?> getLocalIpAddress() async {

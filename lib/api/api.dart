@@ -6,30 +6,14 @@ import 'package:whph/api/controllers/sync_controller.dart';
 import 'package:whph/application/shared/models/websocket_request.dart';
 import 'package:whph/application/features/sync/models/sync_data_dto.dart';
 
-const int webSocketPort = 4040;
+const int webSocketPort = 44040;
 
 // Web socket server events
 final streamController = StreamController<Map<String, dynamic>>.broadcast();
 Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
 
-Future<void> _setupSocketPermissions() async {
-  if (Platform.isLinux) {
-    try {
-      // Try to set socket options for non-root access
-      await Process.run('sudo', ['setcap', 'cap_net_bind_service=+ep', Platform.resolvedExecutable]);
-    } catch (e) {
-      if (kDebugMode) {
-        print('WARNING: Could not set socket permissions');
-        print('You may need to run: sudo setcap cap_net_bind_service=+ep ${Platform.resolvedExecutable}');
-      }
-    }
-  }
-}
-
 void startWebSocketServer() async {
   try {
-    await _setupSocketPermissions();
-
     final server = await HttpServer.bind(
       InternetAddress.anyIPv4,
       webSocketPort,
