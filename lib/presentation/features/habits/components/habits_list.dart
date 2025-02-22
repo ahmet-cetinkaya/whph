@@ -40,7 +40,6 @@ class HabitsList extends StatefulWidget {
 class HabitsListState extends State<HabitsList> {
   GetListHabitsQueryResponse? _habits;
   final _translationService = container.resolve<ITranslationService>();
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,7 +49,6 @@ class HabitsListState extends State<HabitsList> {
 
   Future<void> _getHabits({int pageIndex = 0, bool isRefresh = false}) async {
     try {
-      _isLoading = true;
       final query = GetListHabitsQuery(
         pageIndex: pageIndex,
         pageSize: isRefresh ? _habits?.items.length ?? widget.size : widget.size,
@@ -83,8 +81,6 @@ class HabitsListState extends State<HabitsList> {
           message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
         );
       }
-    } finally {
-      _isLoading = false;
     }
   }
 
