@@ -134,6 +134,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _getTaskTags() async {
+    if (mounted) {
+      setState(() {
+        _taskTags = null; // Clear existing tags before fetching
+      });
+    }
+
     int pageIndex = 0;
     const int pageSize = 50;
 
@@ -151,6 +157,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             }
           });
         }
+
+        if (response.items.length < pageSize) break; // Exit if we've fetched all items
         pageIndex++;
       } catch (e, stackTrace) {
         if (mounted) {
