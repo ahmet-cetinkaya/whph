@@ -94,15 +94,22 @@ exit 0
 
   Future<void> _installSystemIcon(String sourceIcon) async {
     try {
-      final systemIconDir = '/usr/share/icons/hicolor/512x512/apps';
-      if (await Directory(systemIconDir).exists()) {
-        final result = await Process.run('sudo', ['cp', sourceIcon, path.join(systemIconDir, 'whph.png')]);
-        if (result.exitCode == 0) {
-          await Process.run('sudo', ['gtk-update-icon-cache', '-f', '-t', '/usr/share/icons/hicolor']);
-        }
+      final userIconDir = path.join(
+        Platform.environment['HOME']!,
+        '.local',
+        'share',
+        'icons',
+        'hicolor',
+        '512x512',
+        'apps',
+      );
+
+      if (await Directory(userIconDir).exists()) {
+        await File(sourceIcon).copy(path.join(userIconDir, 'whph.png'));
+        await Process.run('gtk-update-icon-cache', ['-f', '-t', path.join(userIconDir, '..')]);
       }
     } catch (e) {
-      if (kDebugMode) print('ERROR: Could not install system-wide icon: $e');
+      if (kDebugMode) print('ERROR: Could not install icon: $e');
     }
   }
 }
