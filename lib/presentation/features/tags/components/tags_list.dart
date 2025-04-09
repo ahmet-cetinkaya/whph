@@ -50,7 +50,7 @@ class TagsListState extends State<TagsList> {
     try {
       final query = GetListTagsQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh ? _tags?.items.length ?? _pageSize : _pageSize,
+        pageSize: isRefresh && _tags!.items.length > _pageSize ? _tags?.items.length ?? _pageSize : _pageSize,
         filterByTags: widget.filterByTags,
         showArchived: widget.showArchived,
       );

@@ -226,6 +226,7 @@ class _TodayPageState extends State<TodayPage> {
                       onClickTask: (task) => _openTaskDetails(context, task.id),
                       onList: _onTaskList,
                       onScheduleTask: (_, __) => _refreshTasks(),
+                      enableReordering: true,
                     ),
             ],
           ),

@@ -50,6 +50,8 @@ class TaskListItem {
   int? estimatedTime;
   int totalElapsedTime = 0;
   String? parentTaskId;
+  double order = 0;
+
   double subTasksCompletionPercentage = 0;
   List<TaskListItem> subTasks;
 
@@ -64,6 +66,7 @@ class TaskListItem {
     this.estimatedTime,
     this.parentTaskId,
     this.subTasksCompletionPercentage = 0,
+    this.order = 0,
     this.subTasks = const [],
     this.totalElapsedTime = 0,
   });
@@ -123,15 +126,31 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    PaginatedList<Task> tasks = await _taskRepository.getList(
+    final tasks = await _taskRepository.getList(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getFilters(request),
       customOrder: [
-        CustomOrder(field: "priority", ascending: false),
-        CustomOrder(field: "created_date", ascending: false),
+        CustomOrder(field: "order", ascending: true),
+        CustomOrder(field: "created_date", ascending: true),
       ],
     );
+
+    // Fixing task orders with order value 0
+    var needsReorder = tasks.items.any((task) => task.order == 0);
+    if (needsReorder) {
+      const int orderStep = 1000;
+      var orderCounter = orderStep;
+
+      for (var task in tasks.items) {
+        if (task.order == 0) {
+          task.order = orderCounter.toDouble();
+          task.modifiedDate = DateTime.now();
+          await _taskRepository.update(task);
+          orderCounter += orderStep;
+        }
+      }
+    }
 
     List<TaskListItem> taskListItems = [];
 
@@ -170,6 +189,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         tags: tagItems,
         estimatedTime: task.estimatedTime,
         parentTaskId: task.parentTaskId,
+        order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
       ));
     }

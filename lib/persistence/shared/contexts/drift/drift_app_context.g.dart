@@ -2662,6 +2662,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
+  late final GeneratedColumn<double> order = GeneratedColumn<double>('order', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: false, defaultValue: const Constant(0.0));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2675,7 +2679,8 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         isCompleted,
         createdDate,
         modifiedDate,
-        deletedDate
+        deletedDate,
+        order
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2727,6 +2732,9 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
     if (data.containsKey('deleted_date')) {
       context.handle(_deletedDateMeta, deletedDate.isAcceptableOrUnknown(data['deleted_date']!, _deletedDateMeta));
     }
+    if (data.containsKey('order')) {
+      context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
+    }
     return context;
   }
 
@@ -2749,6 +2757,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
       isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
       parentTaskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}parent_task_id']),
+      order: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}order'])!,
     );
   }
 
@@ -2776,6 +2785,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
+  final Value<double> order;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
@@ -2790,6 +2800,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
@@ -2805,6 +2816,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
@@ -2822,6 +2834,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
+    Expression<double>? order,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2837,6 +2850,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
+      if (order != null) 'order': order,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2854,6 +2868,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
+      Value<double>? order,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
@@ -2868,6 +2883,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
+      order: order ?? this.order,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2911,6 +2927,9 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     if (deletedDate.present) {
       map['deleted_date'] = Variable<DateTime>(deletedDate.value);
     }
+    if (order.present) {
+      map['order'] = Variable<double>(order.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2932,6 +2951,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
+          ..write('order: $order, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5539,6 +5559,7 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
+  Value<double> order,
   Value<int> rowid,
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
@@ -5554,6 +5575,7 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
+  Value<double> order,
   Value<int> rowid,
 });
 
@@ -5599,6 +5621,9 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
 
   ColumnFilters<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get order =>
+      $composableBuilder(column: $table.order, builder: (column) => ColumnFilters(column));
 }
 
 class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -5643,6 +5668,9 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
 
   ColumnOrderings<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get order =>
+      $composableBuilder(column: $table.order, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -5685,6 +5713,8 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
 
   GeneratedColumn<DateTime> get deletedDate =>
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
+
+  GeneratedColumn<double> get order => $composableBuilder(column: $table.order, builder: (column) => column);
 }
 
 class $$TaskTableTableTableManager extends RootTableManager<
@@ -5719,6 +5749,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
+            Value<double> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion(
@@ -5734,6 +5765,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
+            order: order,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5749,6 +5781,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
+            Value<double> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion.insert(
@@ -5764,6 +5797,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
+            order: order,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

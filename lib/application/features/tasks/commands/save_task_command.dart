@@ -3,6 +3,8 @@ import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
@@ -18,6 +20,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final bool isCompleted;
   final List<String>? tagIdsToAdd;
   final String? parentTaskId;
+  final double? order;
 
   SaveTaskCommand(
       {this.id,
@@ -29,7 +32,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       this.estimatedTime,
       this.isCompleted = false,
       this.tagIdsToAdd,
-      this.parentTaskId});
+      this.parentTaskId,
+      this.order});
 }
 
 class SaveTaskCommandResponse {
@@ -69,8 +73,24 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime;
       task.isCompleted = request.isCompleted;
+      task.order = request.order ?? task.order;
       await _taskRepository.update(task);
     } else {
+      // Get the last task to determine the order
+      final lastTasks = await _taskRepository.getList(
+        0,
+        1,
+        customWhereFilter: CustomWhereFilter(
+          "parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND deleted_date IS NULL",
+          request.parentTaskId != null ? [request.parentTaskId!] : [],
+        ),
+        customOrder: [CustomOrder(field: "order", ascending: false)],
+      );
+
+      const int orderStep = 1000;
+      final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : 0;
+      final newOrder = request.order ?? ((lastOrder + orderStep).toDouble());
+
       task = Task(
           id: nanoid(),
           createdDate: DateTime.now(),
@@ -81,7 +101,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           deadlineDate: request.deadlineDate,
           estimatedTime: request.estimatedTime,
           isCompleted: false,
-          parentTaskId: request.parentTaskId);
+          parentTaskId: request.parentTaskId,
+          order: newOrder);
       await _taskRepository.add(task);
     }
 

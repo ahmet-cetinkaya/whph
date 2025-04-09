@@ -91,27 +91,42 @@ class TaskCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(child: _buildTitleAndMetadata(context)),
-          PopupMenuButton<DateTime>(
-            icon: const Icon(Icons.schedule, color: Colors.grey),
-            tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
-            itemBuilder: (context) {
-              final now = DateTime.now();
-              final today = DateTime(now.year, now.month, now.day);
-              final tomorrow = today.add(const Duration(days: 1));
+          if (onScheduled != null)
+            StatefulBuilder(
+              builder: (context, setState) => IconButton(
+                icon: const Icon(Icons.schedule, color: Colors.grey),
+                onPressed: () {
+                  final now = DateTime.now();
+                  final today = DateTime(now.year, now.month, now.day);
+                  final tomorrow = today.add(const Duration(days: 1));
 
-              return [
-                PopupMenuItem(
-                  value: today,
-                  child: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
-                ),
-                PopupMenuItem(
-                  value: tomorrow,
-                  child: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
-                ),
-              ];
-            },
-            onSelected: _handleSchedule,
-          ),
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
+                            onTap: () {
+                              _handleSchedule(today);
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
+                            onTap: () {
+                              _handleSchedule(tomorrow);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           if (trailingButtons != null) ...trailingButtons!,
         ],
       );

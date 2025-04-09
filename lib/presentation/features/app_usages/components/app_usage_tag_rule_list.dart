@@ -52,7 +52,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     try {
       final query = GetListAppUsageTagRulesQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh ? _rules?.items.length ?? _pageSize : _pageSize,
+        pageSize: isRefresh && _rules!.items.length > _pageSize ? _rules?.items.length ?? _pageSize : _pageSize,
         filterByTags: widget.filterByTags,
       );
 

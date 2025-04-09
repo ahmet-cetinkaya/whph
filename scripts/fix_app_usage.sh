@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 PUB_CACHE="${HOME}/.pub-cache"
-APP_USAGE_PATH="${PUB_CACHE}/hosted/pub.dev/app_usage-3.0.1"
+APP_USAGE_PATH="${PUB_CACHE}/hosted/pub.dev/app_usage-4.0.1"
 
 # Check if package exists
 if [ ! -d "$APP_USAGE_PATH" ]; then
