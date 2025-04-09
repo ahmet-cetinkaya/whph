@@ -57,6 +57,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   DateTime currentMonth = DateTime.now();
   final _translationService = container.resolve<ITranslationService>();
 
+  // Set to track which optional fields are visible
+  final Set<String> _visibleOptionalFields = {};
+
+  // Define optional field keys
+  static const String keyTags = 'tags';
+  static const String keyEstimatedTime = 'estimatedTime';
+  static const String keyDescription = 'description';
+
   @override
   void initState() {
     _getHabit();
@@ -90,6 +98,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           }
           _descriptionController.text = _habit!.description;
         });
+        _processFieldVisibility();
       }
     } catch (e, stackTrace) {
       if (mounted) {
@@ -287,11 +296,119 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     });
   }
 
+  // Process field content and update UI after habit data is loaded
+  void _processFieldVisibility() {
+    if (_habit == null) return;
+
+    setState(() {
+      // Make fields with content automatically visible
+      if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
+      if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
+      if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
+    });
+  }
+
+  // Toggles visibility of an optional field
+  void _toggleOptionalField(String fieldKey) {
+    setState(() {
+      if (_visibleOptionalFields.contains(fieldKey)) {
+        _visibleOptionalFields.remove(fieldKey);
+      } else {
+        _visibleOptionalFields.add(fieldKey);
+      }
+    });
+  }
+
+  // Checks if field should be shown in the content
+  bool _isFieldVisible(String fieldKey) {
+    return _visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Check if the field should be displayed in the chips section
+  bool _shouldShowAsChip(String fieldKey) {
+    return !_visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Method to determine if a field has content
+  bool _hasFieldContent(String fieldKey) {
+    if (_habit == null) return false;
+
+    switch (fieldKey) {
+      case keyTags:
+        return _habitTags != null && _habitTags!.items.isNotEmpty;
+      case keyEstimatedTime:
+        return _habit!.estimatedTime != null && _habit!.estimatedTime! > 0;
+      case keyDescription:
+        return _habit!.description != null && _habit!.description!.isNotEmpty;
+      default:
+        return false;
+    }
+  }
+
+  // Get descriptive label for field chips
+  String _getFieldLabel(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return _translationService.translate(HabitTranslationKeys.tagsLabel);
+      case keyEstimatedTime:
+        return _translationService.translate(HabitTranslationKeys.estimatedTimeLabel);
+      case keyDescription:
+        return _translationService.translate(HabitTranslationKeys.descriptionLabel);
+      default:
+        return '';
+    }
+  }
+
+  // Get icon for field chips
+  IconData _getFieldIcon(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return HabitUiConstants.tagsIcon;
+      case keyEstimatedTime:
+        return HabitUiConstants.estimatedTimeIcon;
+      case keyDescription:
+        return HabitUiConstants.descriptionIcon;
+      default:
+        return Icons.add;
+    }
+  }
+
+  // Widget to build optional field chips
+  Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
+    return FilterChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(_getFieldLabel(fieldKey)),
+          const SizedBox(width: 4),
+          Icon(Icons.add, size: AppTheme.iconSizeSmall),
+        ],
+      ),
+      avatar: Icon(
+        _getFieldIcon(fieldKey),
+        size: AppTheme.iconSizeSmall,
+      ),
+      selected: _isFieldVisible(fieldKey),
+      onSelected: (_) => _toggleOptionalField(fieldKey),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      showCheckmark: false,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_habit == null) {
       return const SizedBox.shrink();
     }
+
+    // Don't show fields with content in the chips section
+    final List<String> availableChipFields = [
+      keyTags,
+      keyEstimatedTime,
+      keyDescription,
+    ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
       child: Column(
@@ -314,36 +431,49 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeMedium),
-          // Tags ve Estimated Time Table
-          DetailTable(rowData: [
-            _buildTagsSection(),
-            _buildEstimatedTimeSection(),
-          ]),
+          const SizedBox(height: AppTheme.sizeSmall),
+
+          // Tags and Estimated Time Table
+          if (_isFieldVisible(keyTags) || _isFieldVisible(keyEstimatedTime))
+            DetailTable(rowData: [
+              if (_isFieldVisible(keyTags)) _buildTagsSection(),
+              if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
+            ]),
 
           // Description Table
-          DetailTable(
-            forceVertical: true,
-            rowData: [
-              DetailTableRowData(
-                label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
-                icon: HabitUiConstants.descriptionIcon,
-                hintText: SharedUiConstants.markdownEditorHint,
-                widget: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: MarkdownAutoPreview(
-                    controller: _descriptionController,
-                    onChanged: _onDescriptionChanged,
-                    hintText: SharedUiConstants.addDescriptionHint,
-                    toolbarBackground: AppTheme.surface1,
-                    style: AppTheme.bodyMedium,
+          if (_isFieldVisible(keyDescription))
+            DetailTable(
+              forceVertical: true,
+              rowData: [
+                DetailTableRowData(
+                  label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
+                  icon: HabitUiConstants.descriptionIcon,
+                  hintText: SharedUiConstants.markdownEditorHint,
+                  widget: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: MarkdownAutoPreview(
+                      controller: _descriptionController,
+                      onChanged: _onDescriptionChanged,
+                      hintText: SharedUiConstants.addDescriptionHint,
+                      toolbarBackground: AppTheme.surface1,
+                      style: AppTheme.bodyMedium,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
           const SizedBox(height: 16),
+
+          // Optional field chips moved to just above Records header
+          if (availableChipFields.isNotEmpty) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+          ],
 
           // Records and Statistics Section
           _buildRecordsHeader(),
