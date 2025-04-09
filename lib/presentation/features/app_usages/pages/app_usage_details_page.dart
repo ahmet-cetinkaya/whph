@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_delete_button.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_details_content.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 
@@ -19,6 +18,7 @@ class AppUsageDetailsPage extends StatefulWidget {
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
   String? _title;
+  bool _hasChanges = false;
 
   void _refreshTitle(String title) {
     if (mounted) {
@@ -30,25 +30,41 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveScaffoldLayout(
-      appBarTitle: _title != null ? Text(_title!) : null,
-      appBarActions: [
-        AppUsageDeleteButton(
-          appUsageId: widget.appUsageId,
-          onDeleteSuccess: () => Navigator.of(context).pop(),
-          buttonColor: AppTheme.primaryColor,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.of(context).pop(_hasChanges);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: _title != null ? Text(_title!) : null,
+          actions: [
+            AppUsageDeleteButton(
+              appUsageId: widget.appUsageId,
+              onDeleteSuccess: () {
+                _hasChanges = true;
+                Navigator.of(context).pop(_hasChanges);
+              },
+              buttonColor: AppTheme.primaryColor,
+            ),
+            HelpMenu(
+              titleKey: AppUsageTranslationKeys.helpTitle,
+              markdownContentKey: AppUsageTranslationKeys.helpContent,
+            ),
+            const SizedBox(width: 2),
+          ],
         ),
-        HelpMenu(
-          titleKey: AppUsageTranslationKeys.helpTitle,
-          markdownContentKey: AppUsageTranslationKeys.helpContent,
-        ),
-        const SizedBox(width: 2),
-      ],
-      builder: (context) => Align(
-        alignment: Alignment.topLeft,
-        child: AppUsageDetailsContent(
-          id: widget.appUsageId,
-          onNameUpdated: _refreshTitle,
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: AppUsageDetailsContent(
+            id: widget.appUsageId,
+            onNameUpdated: (name) {
+              _refreshTitle(name);
+              _hasChanges = true;
+            },
+          ),
         ),
       ),
     );

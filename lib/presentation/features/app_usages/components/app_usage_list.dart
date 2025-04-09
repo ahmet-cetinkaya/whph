@@ -33,25 +33,58 @@ class AppUsageList extends StatefulWidget {
 }
 
 class AppUsageListState extends State<AppUsageList> {
-  GetListByTopAppUsagesQueryResponse? _appUsages;
+  List<AppUsageListItem> _appUsages = [];
+  bool _isLoading = false;
+  bool _isRefreshing = false;
+
   final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
     super.initState();
-    refresh();
+    _loadAppUsages();
   }
 
   Future<void> refresh() async {
-    await _getAppUsages(isRefresh: true);
+    if (_isRefreshing) return;
+
+    setState(() {
+      _isRefreshing = true;
+    });
+
+    await _loadAppUsages();
+
+    setState(() {
+      _isRefreshing = false;
+    });
   }
 
-  Future<void> _getAppUsages({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _loadAppUsages() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final appUsages = await _fetchAppUsages();
+
+      setState(() {
+        _appUsages = appUsages;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // Handle error appropriately
+    }
+  }
+
+  Future<List<AppUsageListItem>> _fetchAppUsages() async {
     final query = GetListByTopAppUsagesQuery(
-      pageIndex: pageIndex,
-      pageSize: isRefresh && _appUsages != null && _appUsages!.items.length > widget.size
-          ? _appUsages?.items.length ?? widget.size
-          : widget.size,
+      pageIndex: 0,
+      pageSize: widget.size,
       filterByTags: widget.filterByTags,
       startDate: widget.filterStartDate,
       endDate: widget.filterEndDate,
@@ -59,59 +92,48 @@ class AppUsageListState extends State<AppUsageList> {
 
     try {
       final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
-
-      if (mounted) {
-        setState(() {
-          if (_appUsages == null) {
-            _appUsages = result;
-          } else {
-            _appUsages!.items.addAll(result.items);
-            _appUsages!.pageIndex = result.pageIndex;
-          }
-        });
-      }
+      return result.items;
     } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
+      ErrorHelper.showError(context, e);
+      return [];
     } catch (e, stackTrace) {
-      if (mounted) {
+      if (context.mounted) {
         ErrorHelper.showUnexpectedError(
+          // ignore: use_build_context_synchronously
           context,
           e,
           stackTrace,
           message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
         );
       }
+      return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_appUsages == null) {
-      return const SizedBox.shrink();
-    }
-
-    if (_appUsages!.items.isEmpty) {
+    if (_appUsages.isEmpty) {
       return Center(
         child: Text(_translationService.translate(AppUsageTranslationKeys.noUsage)),
       );
     }
 
-    double maxDuration = _appUsages!.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
+    double maxDuration = _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final appUsage in _appUsages!.items)
+        for (final appUsage in _appUsages)
           AppUsageCard(
             mediator: widget.mediator,
             appUsage: appUsage,
             maxDurationInListing: maxDuration,
             onTap: () => widget.onOpenDetails?.call(appUsage.id),
           ),
-        if (_appUsages!.hasNext)
+        if (_appUsages.length >= widget.size)
           Center(
             child: LoadMoreButton(
-              onPressed: () => _getAppUsages(pageIndex: _appUsages!.pageIndex + 1),
+              onPressed: () => _loadAppUsages(),
             ),
           ),
       ],
