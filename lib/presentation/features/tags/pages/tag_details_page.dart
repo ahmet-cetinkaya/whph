@@ -119,6 +119,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             filterByCompleted: false,
             onTaskCompleted: _refreshTasks,
             onScheduleTask: (_, __) => _refreshTasks(),
+            enableReordering: true,
           ),
           const SizedBox(height: 8),
 

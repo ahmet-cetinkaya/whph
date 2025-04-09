@@ -51,7 +51,7 @@ class HabitsListState extends State<HabitsList> {
     try {
       final query = GetListHabitsQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh ? _habits?.items.length ?? widget.size : widget.size,
+        pageSize: isRefresh && _habits!.items.length > widget.size ? _habits?.items.length ?? widget.size : widget.size,
         excludeCompleted: widget.mini,
         filterByTags: widget.filterByTags,
       );

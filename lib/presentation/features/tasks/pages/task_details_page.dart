@@ -183,6 +183,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             filterByCompleted: false,
             onTaskCompleted: _refreshSubTasks,
             onScheduleTask: (_, __) => _refreshSubTasks(),
+            enableReordering: true,
           ),
           const SizedBox(height: 8),
 

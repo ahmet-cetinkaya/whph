@@ -70,7 +70,7 @@ class MobileNotificationService implements INotificationService {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-      return await androidImplementation?.requestPermission();
+      return await androidImplementation?.requestNotificationsPermission();
     }
 
     return false;

@@ -18,6 +18,7 @@ class TaskTable extends Table {
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
+  RealColumn get order => real().withDefault(const Constant(0.0))();
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
@@ -43,6 +44,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
+      order: Value(entity.order),
     );
   }
 }

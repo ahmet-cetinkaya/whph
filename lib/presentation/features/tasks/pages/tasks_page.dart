@@ -141,6 +141,7 @@ class _TasksPageState extends State<TasksPage> {
               onTaskCompleted: _refreshAllTasks,
               onList: _onTasksList,
               onScheduleTask: (_, __) => _refreshAllTasks(),
+              enableReordering: true,
             ),
           const SizedBox(height: 8),
 

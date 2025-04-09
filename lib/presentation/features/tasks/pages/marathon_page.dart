@@ -375,6 +375,7 @@ class _MarathonPageState extends State<MarathonPage> {
                   selectedTask: _selectedTask,
                   showSelectButton: true,
                   transparentCards: true,
+                  enableReordering: true,
                 ),
               ),
             ],

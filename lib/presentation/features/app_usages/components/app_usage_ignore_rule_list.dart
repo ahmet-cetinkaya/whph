@@ -42,7 +42,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     try {
       final query = GetListAppUsageIgnoreRulesQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh ? _rules?.items.length ?? _pageSize : _pageSize,
+        pageSize: isRefresh && _rules!.items.length > _pageSize ? _rules?.items.length ?? _pageSize : _pageSize,
       );
 
       final result =

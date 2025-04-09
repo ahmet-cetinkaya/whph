@@ -49,7 +49,8 @@ class AppUsageListState extends State<AppUsageList> {
   Future<void> _getAppUsages({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
       pageIndex: pageIndex,
-      pageSize: isRefresh ? _appUsages?.items.length ?? widget.size : widget.size,
+      pageSize:
+          isRefresh && _appUsages!.items.length > widget.size ? _appUsages?.items.length ?? widget.size : widget.size,
       filterByTags: widget.filterByTags,
       startDate: widget.filterStartDate,
       endDate: widget.filterEndDate,

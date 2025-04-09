@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -8,6 +10,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/acore/utils/order_rank.dart';
 
 class TaskList extends StatefulWidget {
   final Mediator mediator;
@@ -28,6 +31,7 @@ class TaskList extends StatefulWidget {
   final TaskListItem? selectedTask;
   final bool showSelectButton;
   final bool transparentCards;
+  final bool enableReordering;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
@@ -53,6 +57,7 @@ class TaskList extends StatefulWidget {
     this.selectedTask,
     this.showSelectButton = false,
     this.transparentCards = false,
+    this.enableReordering = false,
     required this.onClickTask,
     this.onList,
     this.onTaskCompleted,
@@ -110,7 +115,7 @@ class TaskListState extends State<TaskList> {
     try {
       final query = GetListTasksQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _tasks!.items.length : widget.size,
+          pageSize: isRefresh && _tasks!.items.length > widget.size ? _tasks!.items.length : widget.size,
           filterByPlannedStartDate: widget.filterByPlannedStartDate,
           filterByPlannedEndDate: widget.filterByPlannedEndDate,
           filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
@@ -160,6 +165,106 @@ class TaskListState extends State<TaskList> {
     });
   }
 
+  Widget _buildProxyDecorator(Widget child, int index, Animation<double> animation) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final double animValue = Curves.easeInOut.transform(animation.value);
+        final double elevation = lerpDouble(1, 6, animValue)!;
+        final double scale = lerpDouble(1, 1.02, animValue)!;
+        return Transform.scale(
+          scale: scale,
+          child: Material(
+            elevation: elevation,
+            child: child,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+
+  Future<void> _onReorder(int oldIndex, int newIndex) async {
+    if (!mounted) return;
+
+    final items = List<TaskListItem>.from(_tasks!.items)..sort((a, b) => a.order.compareTo(b.order));
+    final task = items[oldIndex];
+
+    // Adjust newIndex for removal of item
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    // Get existing orders for calculation
+    List<double> existingOrders = items.map((item) => item.order).toList();
+    // Remove the task being moved from the order list
+    existingOrders.removeAt(oldIndex);
+
+    // Calculate target order using OrderRank utility
+    double targetOrder;
+    try {
+      targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+    } on RankGapTooSmallException {
+      // If gap is too small, place at end using a larger step to ensure proper ordering
+      targetOrder = items.last.order + OrderRank.INITIAL_STEP * 2;
+    }
+
+    try {
+      await widget.mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+        UpdateTaskOrderCommand(
+          taskId: task.id,
+          parentTaskId: widget.parentTaskId,
+          beforeTaskOrder: task.order, // Original order
+          afterTaskOrder: targetOrder,
+        ),
+      );
+
+      await refresh();
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: widget.translationService.translate(SharedTranslationKeys.unexpectedError),
+        );
+      }
+    }
+  }
+
+  List<Widget> _buildTaskCards() {
+    final items = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
+
+    return items.map((task) {
+      final index = items.indexOf(task);
+      return Material(
+        key: ValueKey(task.id),
+        type: MaterialType.transparency,
+        child: TaskCard(
+          taskItem: task,
+          transparent: widget.transparentCards,
+          trailingButtons: [
+            if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+            if (widget.showSelectButton)
+              IconButton(
+                icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                onPressed: () => widget.onSelectTask?.call(task),
+              ),
+            if (widget.enableReordering)
+              ReorderableDragStartListener(
+                index: index,
+                child: const Icon(Icons.drag_handle, color: Colors.grey),
+              ),
+          ],
+          onCompleted: _onTaskCompleted,
+          onOpenDetails: () => widget.onClickTask(task),
+          onScheduled: widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
+        ),
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_tasks == null) {
@@ -172,51 +277,26 @@ class TaskListState extends State<TaskList> {
       );
     }
 
+    if (widget.enableReordering) {
+      return Material(
+        type: MaterialType.transparency,
+        child: ReorderableListView(
+          buildDefaultDragHandles: false,
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          proxyDecorator: _buildProxyDecorator,
+          onReorder: _onReorder,
+          children: _buildTaskCards(),
+        ),
+      );
+    }
+
     return ListView(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       controller: _scrollController,
       children: [
-        ...(_tasks!.items
-            .where((task) => task.id != widget.selectedTask?.id)
-            .map((task) => FutureBuilder<GetListTasksQueryResponse>(
-                  future: widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-                    GetListTasksQuery(
-                      pageIndex: 0,
-                      pageSize: 10,
-                      parentTaskId: task.id,
-                    ),
-                  ),
-                  builder: (context, snapshot) {
-                    final subTasks = snapshot.data?.items ?? [];
-                    double subTasksCompletionPercentage = 0;
-                    if (subTasks.isNotEmpty) {
-                      final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
-                      subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
-                    }
-
-                    return TaskCard(
-                      key: ValueKey(task.id),
-                      taskItem: task.copyWith(
-                        subTasks: subTasks,
-                        subTasksCompletionPercentage: subTasksCompletionPercentage,
-                      ),
-                      transparent: widget.transparentCards,
-                      trailingButtons: [
-                        if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                        if (widget.showSelectButton)
-                          IconButton(
-                            icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                            onPressed: () => widget.onSelectTask?.call(task),
-                          ),
-                      ],
-                      onCompleted: _onTaskCompleted,
-                      onOpenDetails: () => widget.onClickTask(task),
-                      onScheduled:
-                          widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
-                    );
-                  },
-                ))),
+        ..._buildTaskCards(),
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
       ],
     );

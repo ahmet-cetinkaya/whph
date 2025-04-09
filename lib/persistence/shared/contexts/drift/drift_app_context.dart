@@ -86,7 +86,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration {
@@ -304,6 +304,10 @@ class AppDatabase extends _$AppDatabase {
 
           // Drop temporary column
           await customStatement('ALTER TABLE task_table DROP COLUMN temp_priority');
+        },
+        from13To14: (m, schema) {
+          // Add order column to Task table
+          return m.addColumn(taskTable, taskTable.order);
         },
       ),
     );

@@ -18,6 +18,7 @@ class Task extends BaseEntity<String> {
   int? estimatedTime;
   bool isCompleted = false;
   String? parentTaskId;
+  double order = 0;
 
   Task(
       {required super.id,
@@ -31,5 +32,6 @@ class Task extends BaseEntity<String> {
       this.priority,
       this.estimatedTime,
       required this.isCompleted,
-      this.parentTaskId});
+      this.parentTaskId,
+      this.order = 0.0});
 }

@@ -57,17 +57,17 @@ dependencies:
   network_info_plus: ^6.1.3
   path: ^1.8.3
   path_provider: ^2.1.1
-  tray_manager: ^0.2.0
+  tray_manager: ^0.4.0
   url_launcher: ^6.3.1
   web_socket_channel: ^3.0.1
   window_manager: ^0.4.3
-  archive: ^3.4.9
-  file_picker: ^8.3.1
+  archive: ^4.0.5
+  file_picker: ^10.0.0
   csv: ^6.0.0
   file_saver: ^0.2.12
 
   # UI
-  calendar_date_picker2: ^1.1.8
+  calendar_date_picker2: ^2.0.0
   cupertino_icons: ^1.0.8
   fl_chart: ^0.70.1
   flutter_colorpicker: ^1.1.0
@@ -78,20 +78,18 @@ dependencies:
   easy_localization_yaml: ^0.1.2
 
   # Desktop
-  launch_at_startup: ^0.3.1
+  launch_at_startup: ^0.5.1
   local_notifier: ^0.1.6
   qr_flutter: ^4.1.0
 
 
   # Android
-  app_usage: ^3.0.1
+  app_usage: ^4.0.1
   auto_start_flutter: ^0.1.3
 
   # Mobile
-  flutter_local_notifications: ^15.1.1
+  flutter_local_notifications: ^19.0.0
   qr_code_scanner_plus: ^2.0.6
-
-
 
 dev_dependencies:
   flutter_test:
@@ -165,7 +163,6 @@ flutter:
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
-  #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700

@@ -4,6 +4,7 @@ import 'package:whph/application/features/tasks/commands/delete_task_command.dar
 import 'package:whph/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:whph/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
@@ -55,5 +56,8 @@ void registerTasksFeature(
     )
     ..registerHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
       () => SaveTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
+    )
+    ..registerHandler<UpdateTaskOrderCommand, void, UpdateTaskOrderCommandHandler>(
+      () => UpdateTaskOrderCommandHandler(taskRepository),
     );
 }
