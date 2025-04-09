@@ -33,15 +33,21 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   DateTime _filterEndDate = DateTime.now();
 
   void _refreshList() {
-    _appUsageListKey.currentState?.refresh();
+    if (_appUsageListKey.currentState != null) {
+      _appUsageListKey.currentState!.refresh();
+    }
   }
 
   Future<void> _openDetails(String id) async {
-    await Navigator.of(context).pushNamed(
+    final result = await Navigator.of(context).pushNamed(
       AppUsageDetailsPage.route,
       arguments: {'id': id},
     );
-    _refreshList();
+
+    // Only refresh if there were actual changes to prevent duplication
+    if (result == true) {
+      _refreshList();
+    }
   }
 
   void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
