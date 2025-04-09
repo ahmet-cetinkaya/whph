@@ -46,6 +46,13 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
 
+  // Set to track which optional fields are visible
+  final Set<String> _visibleOptionalFields = {};
+
+  // Define optional field keys
+  static const String keyTags = 'tags';
+  static const String keyColor = 'color';
+
   @override
   void initState() {
     _getInitialData();
@@ -61,6 +68,101 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   Future<void> _getInitialData() async {
     await Future.wait([_getTag(), _getTagTags()]);
+    _processFieldVisibility();
+  }
+
+  // Process field content and update UI after tag data is loaded
+  void _processFieldVisibility() {
+    if (_tag == null) return;
+
+    setState(() {
+      // Make fields with content automatically visible
+      if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
+      if (_hasFieldContent(keyColor)) _visibleOptionalFields.add(keyColor);
+    });
+  }
+
+  // Toggles visibility of an optional field
+  void _toggleOptionalField(String fieldKey) {
+    setState(() {
+      if (_visibleOptionalFields.contains(fieldKey)) {
+        _visibleOptionalFields.remove(fieldKey);
+      } else {
+        _visibleOptionalFields.add(fieldKey);
+      }
+    });
+  }
+
+  // Checks if field should be shown in the content
+  bool _isFieldVisible(String fieldKey) {
+    return _visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Check if the field should be displayed in the chips section
+  bool _shouldShowAsChip(String fieldKey) {
+    return !_visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Method to determine if a field has content
+  bool _hasFieldContent(String fieldKey) {
+    if (_tag == null) return false;
+
+    switch (fieldKey) {
+      case keyTags:
+        return _tagTags != null && _tagTags!.items.isNotEmpty;
+      case keyColor:
+        return _tag!.color != null && _tag!.color != 'FFFFFF';
+      default:
+        return false;
+    }
+  }
+
+  // Get descriptive label for field chips
+  String _getFieldLabel(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return _translationService.translate(TagTranslationKeys.tagsLabel);
+      case keyColor:
+        return _translationService.translate(TagTranslationKeys.colorLabel);
+      default:
+        return '';
+    }
+  }
+
+  // Get icon for field chips
+  IconData _getFieldIcon(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return TagUiConstants.tagIcon;
+      case keyColor:
+        return TagUiConstants.colorIcon;
+      default:
+        return Icons.add;
+    }
+  }
+
+  // Widget to build optional field chips
+  Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
+    return FilterChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(_getFieldLabel(fieldKey)),
+          const SizedBox(width: 4),
+          Icon(Icons.add, size: AppTheme.iconSizeSmall),
+        ],
+      ),
+      avatar: Icon(
+        _getFieldIcon(fieldKey),
+        size: AppTheme.iconSizeSmall,
+      ),
+      selected: _isFieldVisible(fieldKey),
+      onSelected: (_) => _toggleOptionalField(fieldKey),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      showCheckmark: false,
+      visualDensity: VisualDensity.compact,
+    );
   }
 
   Future<void> _getTag() async {
@@ -222,45 +324,54 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           ),
           const SizedBox(height: AppTheme.sizeMedium),
 
+          // Optional Field Chips
+          Wrap(
+            spacing: AppTheme.sizeSmall,
+            children: [
+              _buildOptionalFieldChip(keyTags, _hasFieldContent(keyTags)),
+              _buildOptionalFieldChip(keyColor, _hasFieldContent(keyColor)),
+            ],
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+
           // Tag Details
           DetailTable(rowData: [
-            // Color
-            DetailTableRowData(
-              label: _translationService.translate(TagTranslationKeys.colorLabel),
-              icon: TagUiConstants.colorIcon,
-              hintText: _translationService.translate(TagTranslationKeys.colorTooltip),
-              widget: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ColorPreview(color: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16))),
-                  IconButton(
-                    onPressed: _onChangeColorOpen,
-                    icon: Icon(TagUiConstants.editIcon, size: AppTheme.iconSizeSmall),
-                  )
-                ],
+            if (_isFieldVisible(keyColor))
+              DetailTableRowData(
+                label: _translationService.translate(TagTranslationKeys.colorLabel),
+                icon: TagUiConstants.colorIcon,
+                hintText: _translationService.translate(TagTranslationKeys.colorTooltip),
+                widget: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ColorPreview(color: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16))),
+                    IconButton(
+                      onPressed: _onChangeColorOpen,
+                      icon: Icon(TagUiConstants.editIcon, size: AppTheme.iconSizeSmall),
+                    )
+                  ],
+                ),
               ),
-            ),
-
-            // Tags
-            DetailTableRowData(
-              label: _translationService.translate(TagTranslationKeys.tagsLabel),
-              icon: TagUiConstants.tagIcon,
-              hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
-              widget: TagSelectDropdown(
-                key: ValueKey(_tagTags!.items.length),
-                isMultiSelect: true,
-                onTagsSelected: _onTagsSelected,
-                showSelectedInDropdown: true,
-                initialSelectedTags: _tagTags!.items
-                    .map((tag) => DropdownOption<String>(
-                          value: tag.secondaryTagId,
-                          label: tag.secondaryTagName,
-                        ))
-                    .toList(),
-                excludeTagIds: [_tag!.id],
-                icon: SharedUiConstants.addIcon,
+            if (_isFieldVisible(keyTags))
+              DetailTableRowData(
+                label: _translationService.translate(TagTranslationKeys.tagsLabel),
+                icon: TagUiConstants.tagIcon,
+                hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
+                widget: TagSelectDropdown(
+                  key: ValueKey(_tagTags!.items.length),
+                  isMultiSelect: true,
+                  onTagsSelected: _onTagsSelected,
+                  showSelectedInDropdown: true,
+                  initialSelectedTags: _tagTags!.items
+                      .map((tag) => DropdownOption<String>(
+                            value: tag.secondaryTagId,
+                            label: tag.secondaryTagName,
+                          ))
+                      .toList(),
+                  excludeTagIds: [_tag!.id],
+                  icon: SharedUiConstants.addIcon,
+                ),
               ),
-            ),
           ]),
         ],
       ),

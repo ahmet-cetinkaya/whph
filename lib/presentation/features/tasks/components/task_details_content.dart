@@ -57,6 +57,17 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final _titleController = TextEditingController();
   Timer? _debounce;
 
+  // Set to track which optional fields are visible
+  final Set<String> _visibleOptionalFields = {};
+
+  // Define optional field keys
+  static const String keyTags = 'tags';
+  static const String keyPriority = 'priority';
+  static const String keyEstimatedTime = 'estimatedTime';
+  static const String keyPlannedDate = 'plannedDate';
+  static const String keyDeadlineDate = 'deadlineDate';
+  static const String keyDescription = 'description';
+
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
   @override
@@ -64,6 +75,72 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     super.initState();
     refresh();
     widget._tasksService.onTaskSaved.addListener(_getTask);
+  }
+
+  @override
+  void didUpdateWidget(TaskDetailsContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.taskId != widget.taskId) {
+      refresh();
+    }
+  }
+
+  // Process field content and update UI after task data is loaded
+  void _processFieldVisibility() {
+    if (_task == null) return;
+
+    setState(() {
+      // Make fields with content automatically visible
+      if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
+      if (_hasFieldContent(keyPriority)) _visibleOptionalFields.add(keyPriority);
+      if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
+      if (_hasFieldContent(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDate);
+      if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
+      if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
+    });
+  }
+
+  // Toggles visibility of an optional field
+  void _toggleOptionalField(String fieldKey) {
+    setState(() {
+      if (_visibleOptionalFields.contains(fieldKey)) {
+        _visibleOptionalFields.remove(fieldKey);
+      } else {
+        _visibleOptionalFields.add(fieldKey);
+      }
+    });
+  }
+
+  // Checks if field should be shown in the content
+  bool _isFieldVisible(String fieldKey) {
+    return _visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Check if the field should be displayed in the chips section
+  bool _shouldShowAsChip(String fieldKey) {
+    return !_visibleOptionalFields.contains(fieldKey);
+  }
+
+  // Method to determine if a field has content
+  bool _hasFieldContent(String fieldKey) {
+    if (_task == null) return false;
+
+    switch (fieldKey) {
+      case keyTags:
+        return _taskTags != null && _taskTags!.items.isNotEmpty;
+      case keyPriority:
+        return _task!.priority != null;
+      case keyEstimatedTime:
+        return _task!.estimatedTime != null && _task!.estimatedTime! > 0;
+      case keyPlannedDate:
+        return _task!.plannedDate != null;
+      case keyDeadlineDate:
+        return _task!.deadlineDate != null;
+      case keyDescription:
+        return _task!.description != null && _task!.description!.trim().isNotEmpty;
+      default:
+        return false;
+    }
   }
 
   Future<void> refresh() async {
@@ -116,6 +193,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
           _descriptionController.text = _task!.description ?? '';
         });
+        _processFieldVisibility();
       }
     } catch (e, stackTrace) {
       if (!mounted) return;
@@ -270,11 +348,24 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       return const SizedBox.shrink();
     }
 
+    // Don't show fields with content in the chips section
+    final List<String> availableChipFields = [
+      keyTags,
+      keyPriority,
+      keyEstimatedTime,
+      keyPlannedDate,
+      keyDeadlineDate,
+      keyDescription,
+    ].where((field) => _shouldShowAsChip(field)).toList();
+
+    // Should hide elapsed time if it's 0
+    final bool showElapsedTime = _task!.totalDuration > 0;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Task Title
+          // Task Title (always visible - mandatory field)
           TextFormField(
             controller: _titleController,
             maxLines: null,
@@ -292,16 +383,40 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeMedium),
-          DetailTable(rowData: [
-            _buildTagsSection(),
-            _buildPrioritySection(),
-            _buildEstimatedTimeSection(),
-            _buildElapsedTimeSection(),
-            _buildPlannedDateSection(),
-            _buildDeadlineDateSection(),
-          ]),
-          _buildDescriptionSection(),
+          const SizedBox(height: AppTheme.sizeSmall),
+
+          // Only show elapsed time if greater than 0
+          if (showElapsedTime)
+            DetailTable(rowData: [
+              _buildElapsedTimeSection(),
+            ]),
+
+          // Display optional fields section
+          if (_visibleOptionalFields.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.sizeXSmall),
+            // Only fields that are manually set as visible (excluding description which is handled separately)
+            DetailTable(
+                rowData: [
+              if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
+              if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
+              if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
+              if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
+              if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
+            ].where((item) => item != null).toList()),
+          ],
+
+          // Description section if enabled (handled separately due to its different layout)
+          if (_visibleOptionalFields.contains(keyDescription)) _buildDescriptionSection(),
+
+          // Only show chip section if we have available fields to add
+          if (availableChipFields.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.sizeSmall),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
+            ),
+          ],
         ],
       ),
     );
@@ -451,5 +566,69 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       }
       _updateTask();
     });
+  }
+
+  // Widget to build optional field chips
+  Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
+    return FilterChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(_getFieldLabel(fieldKey)),
+          const SizedBox(width: 4),
+          Icon(Icons.add, size: AppTheme.iconSizeSmall),
+        ],
+      ),
+      avatar: Icon(
+        _getFieldIcon(fieldKey),
+        size: AppTheme.iconSizeSmall,
+      ),
+      selected: _isFieldVisible(fieldKey),
+      onSelected: (_) => _toggleOptionalField(fieldKey),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      showCheckmark: false,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
+  // Get descriptive label for field chips
+  String _getFieldLabel(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return widget._translationService.translate(TaskTranslationKeys.tagsLabel);
+      case keyPriority:
+        return widget._translationService.translate(TaskTranslationKeys.priorityLabel);
+      case keyEstimatedTime:
+        return widget._translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
+      case keyPlannedDate:
+        return widget._translationService.translate(TaskTranslationKeys.plannedDateLabel);
+      case keyDeadlineDate:
+        return widget._translationService.translate(TaskTranslationKeys.deadlineDateLabel);
+      case keyDescription:
+        return widget._translationService.translate(TaskTranslationKeys.descriptionLabel);
+      default:
+        return '';
+    }
+  }
+
+  // Get icon for field chips
+  IconData _getFieldIcon(String fieldKey) {
+    switch (fieldKey) {
+      case keyTags:
+        return TaskUiConstants.tagsIcon;
+      case keyPriority:
+        return TaskUiConstants.priorityIcon;
+      case keyEstimatedTime:
+        return TaskUiConstants.estimatedTimeIcon;
+      case keyPlannedDate:
+        return TaskUiConstants.plannedDateIcon;
+      case keyDeadlineDate:
+        return TaskUiConstants.deadlineDateIcon;
+      case keyDescription:
+        return TaskUiConstants.descriptionIcon;
+      default:
+        return Icons.add;
+    }
   }
 }

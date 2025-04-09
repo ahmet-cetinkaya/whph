@@ -52,7 +52,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     try {
       final query = GetListAppUsageTagRulesQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh && _rules!.items.length > _pageSize ? _rules?.items.length ?? _pageSize : _pageSize,
+        pageSize: isRefresh && _rules != null && _rules!.items.length > _pageSize ? _rules!.items.length : _pageSize,
         filterByTags: widget.filterByTags,
       );
 
@@ -72,7 +72,9 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
+        // Convert any error to Exception to avoid type cast issues
+        final exception = e is Exception ? e : Exception(e.toString());
+        ErrorHelper.showUnexpectedError(context, exception, stackTrace);
         setState(() => _isLoading = false);
       }
     }
