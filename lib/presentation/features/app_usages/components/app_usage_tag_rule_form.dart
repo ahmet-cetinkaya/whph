@@ -31,6 +31,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
   final _patternController = TextEditingController();
   final _descriptionController = TextEditingController();
   String? _selectedTagId;
+  String? _selectedTagLabel;
   bool _isSubmitting = false;
 
   @override
@@ -178,7 +179,8 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              _selectedTagId ?? widget._translationService.translate(AppUsageTranslationKeys.tagsHint),
+                              _selectedTagLabel ??
+                                  widget._translationService.translate(AppUsageTranslationKeys.tagsHint),
                               style: AppTheme.bodySmall.copyWith(
                                 color: _selectedTagId != null
                                     ? Theme.of(context).textTheme.bodyMedium?.color
@@ -201,7 +203,10 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   ),
                   TagSelectDropdown(
                     key: UniqueKey(),
-                    onTagsSelected: (options) => setState(() => _selectedTagId = options.first.value),
+                    onTagsSelected: (options) => setState(() {
+                      _selectedTagId = options.first.value;
+                      _selectedTagLabel = options.first.label;
+                    }),
                     isMultiSelect: false,
                     limit: 1,
                     icon: _selectedTagId == null ? Icons.add : Icons.edit,
