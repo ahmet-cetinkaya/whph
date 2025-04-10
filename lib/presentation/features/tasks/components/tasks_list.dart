@@ -39,6 +39,8 @@ class TaskList extends StatefulWidget {
   final void Function(TaskListItem task)? onSelectTask;
   final void Function(TaskListItem task, DateTime date)? onScheduleTask;
   final List<Widget> Function(TaskListItem task)? trailingButtons;
+  // Add rebuildKey parameter to force rebuild when needed
+  final Key? rebuildKey;
 
   const TaskList({
     super.key,
@@ -64,6 +66,7 @@ class TaskList extends StatefulWidget {
     this.onSelectTask,
     this.onScheduleTask,
     this.trailingButtons,
+    this.rebuildKey,
   });
 
   @override
@@ -206,7 +209,7 @@ class TaskListState extends State<TaskList> {
       targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
     } on RankGapTooSmallException {
       // If gap is too small, place at end using a larger step to ensure proper ordering
-      targetOrder = items.last.order + OrderRank.INITIAL_STEP * 2;
+      targetOrder = items.last.order + OrderRank.initialStep * 2;
     }
 
     try {
@@ -271,7 +274,7 @@ class TaskListState extends State<TaskList> {
       return const SizedBox.shrink();
     }
 
-    if (_tasks!.items.isEmpty) {
+    if (_tasks!.items.isEmpty || (_tasks!.items.length == 1 && widget.selectedTask != null)) {
       return Center(
         child: Text(widget.translationService.translate(SharedTranslationKeys.noItemsFoundMessage)),
       );

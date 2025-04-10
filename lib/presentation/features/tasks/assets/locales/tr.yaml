@@ -159,6 +159,7 @@ tasks:
     completed_tasks_title: Tamamlanan görevler
   tooltips:
     edit_title: Başlığı düzenle
+    show_completed_tasks: Tamamlanan görevleri filtrele
   title: Görevler
   new_task: Yeni Görev
   task_details: Görev Detayları

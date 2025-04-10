@@ -39,6 +39,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final bool showLogo;
   final bool fullScreen;
   final bool hideSidebar;
+  final bool showBackButton; // New property to control back button visibility
 
   const ResponsiveScaffoldLayout({
     super.key,
@@ -50,6 +51,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     this.showLogo = true,
     this.fullScreen = false,
     this.hideSidebar = false,
+    this.showBackButton = false, // Default to false for backward compatibility
   });
 
   @override
@@ -100,17 +102,23 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: widget.appBarLeading ??
-            (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
-                ? Builder(
-                    builder: (BuildContext context) => IconButton(
-                      icon: const Icon(Icons.menu, size: AppTheme.fontSizeXLarge),
-                      padding: const EdgeInsets.all(12),
-                      onPressed: () {
-                        _scaffoldKey.currentState?.openDrawer();
-                      },
-                    ),
+            (widget.showBackButton
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back, size: AppTheme.fontSizeXLarge),
+                    padding: const EdgeInsets.all(12),
+                    onPressed: () => Navigator.of(context).pop(),
                   )
-                : null),
+                : (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
+                    ? Builder(
+                        builder: (BuildContext context) => IconButton(
+                          icon: const Icon(Icons.menu, size: AppTheme.fontSizeXLarge),
+                          padding: const EdgeInsets.all(12),
+                          onPressed: () {
+                            _scaffoldKey.currentState?.openDrawer();
+                          },
+                        ),
+                      )
+                    : null)),
         title: widget.appBarTitle ??
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -131,12 +139,16 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         titleSpacing: 0,
         actions: widget.appBarActions,
       ),
-      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) || widget.hideSidebar
+      drawer: AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) ||
+              widget.hideSidebar ||
+              widget.showBackButton
           ? null
           : _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
       body: Row(
         children: [
-          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) && !widget.hideSidebar)
+          if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) &&
+              !widget.hideSidebar &&
+              !widget.showBackButton)
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
             child: Padding(

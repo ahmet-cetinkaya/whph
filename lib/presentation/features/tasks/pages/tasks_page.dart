@@ -25,22 +25,23 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _activeTasksListKey = GlobalKey<TaskListState>();
-  final _completedTasksListKey = GlobalKey<TaskListState>();
+
+  // Using ValueKey instead of GlobalKey to force rebuild on filter changes
+  Key _tasksListKey = const ValueKey('active');
 
   List<String>? _selectedTagIds;
   bool _isTasksListEmpty = false;
-  bool _isCompletedTasksExpanded = false;
+  bool _showCompletedTasks = false;
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   String? _searchQuery;
 
-  void _refreshAllTasks() {
-    _activeTasksListKey.currentState?.refresh();
-    _completedTasksListKey.currentState?.refresh();
-    setState(() {
-      _isTasksListEmpty = false;
-    });
+  void _refreshTasks() {
+    if (mounted) {
+      setState(() {
+        _isTasksListEmpty = false;
+      });
+    }
   }
 
   Future<void> _openTaskDetails(String taskId) async {
@@ -48,7 +49,7 @@ class _TasksPageState extends State<TasksPage> {
       TaskDetailsPage.route,
       arguments: {'id': taskId},
     );
-    _refreshAllTasks();
+    _refreshTasks();
   }
 
   void _onTasksList(count) {
@@ -66,7 +67,7 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _selectedTagIds = tagOptions.map((option) => option.value).toList();
       });
-      _refreshAllTasks();
+      _refreshTasks();
     }
   }
 
@@ -76,7 +77,7 @@ class _TasksPageState extends State<TasksPage> {
         _filterStartDate = start;
         _filterEndDate = end;
       });
-      _refreshAllTasks();
+      _refreshTasks();
     }
   }
 
@@ -85,7 +86,17 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _searchQuery = query;
       });
-      _refreshAllTasks();
+      _refreshTasks();
+    }
+  }
+
+  void _onCompletedTasksToggle(bool showCompleted) {
+    if (mounted) {
+      setState(() {
+        _showCompletedTasks = showCompleted;
+        // Update the key to force rebuild of TaskList when toggling view
+        _tasksListKey = ValueKey(showCompleted ? 'completed' : 'active');
+      });
     }
   }
 
@@ -98,7 +109,7 @@ class _TasksPageState extends State<TasksPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TaskAddButton(
-              onTaskCreated: (_) => _refreshAllTasks(),
+              onTaskCreated: (_) => _refreshTasks(),
               buttonColor: AppTheme.primaryColor,
               initialTagIds: _selectedTagIds,
             ),
@@ -112,74 +123,51 @@ class _TasksPageState extends State<TasksPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Filters
-          TaskFilters(
-            selectedTagIds: _selectedTagIds,
-            selectedStartDate: _filterStartDate,
-            selectedEndDate: _filterEndDate,
-            onTagFilterChange: _onFilterTags,
-            onDateFilterChange: _onDateFilterChange,
-            onSearchChange: _onSearchChange,
-          ),
-          const SizedBox(height: 8),
-
-          // Empty List Overlay
-          if (_isTasksListEmpty)
-            const Center(child: DoneOverlay())
-          // Tasks List
-          else
-            TaskList(
-              key: _activeTasksListKey,
-              mediator: _mediator,
-              translationService: _translationService,
-              filterByCompleted: false,
-              filterByTags: _selectedTagIds,
-              filterByPlannedStartDate: _filterStartDate,
-              filterByPlannedEndDate: _filterEndDate,
-              search: _searchQuery,
-              onClickTask: (task) => _openTaskDetails(task.id),
-              onTaskCompleted: _refreshAllTasks,
-              onList: _onTasksList,
-              onScheduleTask: (_, __) => _refreshAllTasks(),
-              enableReordering: true,
+          // Filters with Completed Tasks Toggle
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.sizeSmall,
+              vertical: AppTheme.sizeXSmall,
             ),
-          const SizedBox(height: 8),
-
-          // Completed Tasks
-          ExpansionPanelList(
-            expansionCallback: (int index, bool isExpanded) {
-              if (!mounted) return;
-              setState(() {
-                _isCompletedTasksExpanded = !_isCompletedTasksExpanded;
-              });
-            },
-            children: [
-              ExpansionPanel(
-                  isExpanded: _isCompletedTasksExpanded,
-                  headerBuilder: (context, isExpanded) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.only(left: 8),
-                      leading: const Icon(Icons.done_all),
-                      title: Text(_translationService.translate(TaskTranslationKeys.completedTasksTitle)),
-                    );
-                  },
-                  body: TaskList(
-                    key: _completedTasksListKey,
-                    mediator: _mediator,
-                    translationService: _translationService,
-                    filterByCompleted: true,
-                    filterByTags: _selectedTagIds,
-                    search: _searchQuery,
-                    onClickTask: (task) => _openTaskDetails(task.id),
-                    onTaskCompleted: _refreshAllTasks,
-                    onScheduleTask: (_, __) => _refreshAllTasks(),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  canTapOnHeader: true),
-            ],
-            elevation: 0,
-            expandedHeaderPadding: EdgeInsets.zero,
+            child: TaskFilters(
+              selectedTagIds: _selectedTagIds,
+              selectedStartDate: _filterStartDate,
+              selectedEndDate: _filterEndDate,
+              onTagFilterChange: _onFilterTags,
+              onDateFilterChange: _onDateFilterChange,
+              onSearchChange: _onSearchChange,
+              showCompletedTasks: _showCompletedTasks,
+              onCompletedTasksToggle: _onCompletedTasksToggle,
+              hasItems: !_isTasksListEmpty,
+              showTagFilter: true,
+              showDateFilter: true,
+              showSearchFilter: true,
+              showCompletedTasksToggle: !_isTasksListEmpty,
+            ),
           ),
+
+          // Empty List Overlay or TaskList with conditional properties
+          _isTasksListEmpty
+              ? const Center(child: DoneOverlay())
+              : TaskList(
+                  // Use ValueKey that changes when filter changes to force widget rebuild
+                  key: _tasksListKey,
+                  mediator: _mediator,
+                  translationService: _translationService,
+                  filterByCompleted: _showCompletedTasks,
+                  filterByTags: _selectedTagIds,
+                  // Only apply date filters for active tasks
+                  filterByPlannedStartDate: _showCompletedTasks ? null : _filterStartDate,
+                  filterByPlannedEndDate: _showCompletedTasks ? null : _filterEndDate,
+                  search: _searchQuery,
+                  onClickTask: (task) => _openTaskDetails(task.id),
+                  onTaskCompleted: _refreshTasks,
+                  // Only use onList callback for active tasks to check if empty
+                  onList: _showCompletedTasks ? null : _onTasksList,
+                  onScheduleTask: (_, __) => _refreshTasks(),
+                  // Only enable reordering for active tasks
+                  enableReordering: !_showCompletedTasks,
+                ),
         ],
       ),
     );
