@@ -3,7 +3,7 @@ import 'package:whph/domain/shared/constants/app_assets.dart';
 class AppInfo {
   static const String name = "Work Hard Play Hard";
   static const String shortName = "WHPH";
-  static const String version = "0.4.6";
+  static const String version = "0.5.0";
   static const String websiteUrl = "https://whph.ahmetcetinkaya.me/";
   static const String sourceCodeUrl = "https://github.com/ahmet-cetinkaya/whph";
   static const String logoPath = AppAssets.logo;
