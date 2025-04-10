@@ -58,13 +58,13 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
         if (newOrder <= 0) {
           // If trying to move to first position but order is invalid
           newOrder = otherTasks.first.order / 2;
-        } else if (newOrder >= (otherTasks.isNotEmpty ? otherTasks.last.order : 0) + OrderRank.MAX_ORDER) {
+        } else if (newOrder >= (otherTasks.isNotEmpty ? otherTasks.last.order : 0) + OrderRank.maxOrder) {
           // If order is too large, place it properly after the last item
-          newOrder = (otherTasks.last.order) + OrderRank.INITIAL_STEP;
+          newOrder = (otherTasks.last.order) + OrderRank.initialStep;
         }
       } else {
         // If there are no other tasks, use initial step
-        newOrder = OrderRank.INITIAL_STEP;
+        newOrder = OrderRank.initialStep;
       }
 
       task.order = newOrder;
@@ -74,7 +74,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
       return UpdateTaskOrderResponse(task.id, newOrder);
     } on RankGapTooSmallException {
       // Normalize all orders if gaps are too small
-      double orderStep = OrderRank.INITIAL_STEP;
+      double orderStep = OrderRank.initialStep;
 
       // Include current task in normalization
       final allTasks = [...otherTasks, task]..sort((a, b) => a.order.compareTo(b.order));
@@ -83,7 +83,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
         t.order = orderStep;
         t.modifiedDate = DateTime.now();
         await _taskRepository.update(t);
-        orderStep += OrderRank.INITIAL_STEP;
+        orderStep += OrderRank.initialStep;
       }
 
       return UpdateTaskOrderResponse(task.id, task.order);

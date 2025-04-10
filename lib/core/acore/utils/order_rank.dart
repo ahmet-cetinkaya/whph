@@ -1,39 +1,39 @@
 class OrderRank {
-  static const double MIN_ORDER = 0;
-  static const double MAX_ORDER = 1000000; // Upper limit for normalization
-  static const double INITIAL_STEP = 1000;
-  static const double MINIMUM_GAP = 1;
+  static const double minOrder = 0;
+  static const double maxOrder = 1000000; // Upper limit for normalization
+  static const double initialStep = 1000;
+  static const double minimumOrderGap = 1;
 
   // Calculate midpoint between two orders
   static double between(double beforeOrder, double afterOrder) {
-    if (beforeOrder >= afterOrder || (afterOrder - beforeOrder) < MINIMUM_GAP) {
+    if (beforeOrder >= afterOrder || (afterOrder - beforeOrder) < minimumOrderGap) {
       throw RankGapTooSmallException();
     }
     return beforeOrder + ((afterOrder - beforeOrder) / 2);
   }
 
   // Get order value for first position
-  static double first() => INITIAL_STEP;
+  static double first() => initialStep;
 
   // Get next available order after the given one
   static double after(double currentOrder) {
-    if (currentOrder >= MAX_ORDER - INITIAL_STEP) {
+    if (currentOrder >= maxOrder - initialStep) {
       throw RankGapTooSmallException();
     }
-    return currentOrder + INITIAL_STEP;
+    return currentOrder + initialStep;
   }
 
   // Get next available order before the given one
   static double before(double currentOrder) {
-    if (currentOrder <= INITIAL_STEP) {
+    if (currentOrder <= initialStep) {
       return currentOrder / 2;
     }
-    return currentOrder - INITIAL_STEP;
+    return currentOrder - initialStep;
   }
 
   // Find target order for moving an item to a specific position
   static double getTargetOrder(List<double> existingOrders, int targetPosition) {
-    if (existingOrders.isEmpty) return INITIAL_STEP;
+    if (existingOrders.isEmpty) return initialStep;
 
     // Sort to ensure we're working with ordered data
     existingOrders.sort();
@@ -41,12 +41,12 @@ class OrderRank {
     // Handle special cases
     if (targetPosition <= 0) {
       // Place at beginning - use half of first item's order to ensure it comes first
-      return existingOrders.first > INITIAL_STEP ? existingOrders.first / 2 : INITIAL_STEP / 2;
+      return existingOrders.first > initialStep ? existingOrders.first / 2 : initialStep / 2;
     }
 
     if (targetPosition >= existingOrders.length) {
       // Place at end - add a significant step to the last order to ensure it comes last
-      return existingOrders.last + INITIAL_STEP * 2;
+      return existingOrders.last + initialStep * 2;
     }
 
     // Get orders before and after target position
@@ -60,10 +60,10 @@ class OrderRank {
       // If the gap is too small, create a larger gap
       if (targetPosition < existingOrders.length - 1) {
         // Not at the end, place closer to the next item
-        return afterOrder - (MINIMUM_GAP / 2);
+        return afterOrder - (minimumOrderGap / 2);
       } else {
         // At the end, place after the last item
-        return beforeOrder + INITIAL_STEP;
+        return beforeOrder + initialStep;
       }
     }
   }
@@ -73,11 +73,11 @@ class OrderRank {
     if (currentOrders.isEmpty) return [];
 
     List<double> newOrders = [];
-    double step = INITIAL_STEP;
+    double step = initialStep;
 
     for (int i = 0; i < currentOrders.length; i++) {
       newOrders.add(step);
-      step += INITIAL_STEP;
+      step += initialStep;
     }
 
     return newOrders;
