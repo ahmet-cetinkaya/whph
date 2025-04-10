@@ -402,7 +402,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
               if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
               if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
-            ].where((item) => item != null).toList()),
+            ].toList()),
           ],
 
           // Description section if enabled (handled separately due to its different layout)
@@ -585,8 +585,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       ),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
-      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );

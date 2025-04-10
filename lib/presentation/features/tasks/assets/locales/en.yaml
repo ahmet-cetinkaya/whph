@@ -209,6 +209,7 @@ tasks:
     unpin_task_tooltip: Unpin current task
   tooltips:
     edit_title: Edit title
+    show_completed_tasks: Filter completed tasks
   title: Tasks
   new_task: New Task
   task_details: Task Details

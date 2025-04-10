@@ -88,6 +88,7 @@ class TaskTranslationKeys {
 
   // Tooltips
   static const String editTitleTooltip = 'tasks.tooltips.edit_title';
+  static const String showCompletedTasksTooltip = 'tasks.tooltips.show_completed_tasks';
 
   // Marathon Mode
   static const String marathon = 'tasks.marathon.label';
