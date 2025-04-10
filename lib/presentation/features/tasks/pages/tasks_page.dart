@@ -124,26 +124,20 @@ class _TasksPageState extends State<TasksPage> {
       builder: (context) => ListView(
         children: [
           // Filters with Completed Tasks Toggle
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.sizeSmall,
-              vertical: AppTheme.sizeXSmall,
-            ),
-            child: TaskFilters(
-              selectedTagIds: _selectedTagIds,
-              selectedStartDate: _filterStartDate,
-              selectedEndDate: _filterEndDate,
-              onTagFilterChange: _onFilterTags,
-              onDateFilterChange: _onDateFilterChange,
-              onSearchChange: _onSearchChange,
-              showCompletedTasks: _showCompletedTasks,
-              onCompletedTasksToggle: _onCompletedTasksToggle,
-              hasItems: !_isTasksListEmpty,
-              showTagFilter: true,
-              showDateFilter: true,
-              showSearchFilter: true,
-              showCompletedTasksToggle: !_isTasksListEmpty,
-            ),
+          TaskFilters(
+            selectedTagIds: _selectedTagIds,
+            selectedStartDate: _filterStartDate,
+            selectedEndDate: _filterEndDate,
+            onTagFilterChange: _onFilterTags,
+            onDateFilterChange: _onDateFilterChange,
+            onSearchChange: _onSearchChange,
+            showCompletedTasks: _showCompletedTasks,
+            onCompletedTasksToggle: _onCompletedTasksToggle,
+            hasItems: !_isTasksListEmpty,
+            showTagFilter: true,
+            showDateFilter: true,
+            showSearchFilter: true,
+            showCompletedTasksToggle: !_isTasksListEmpty,
           ),
 
           // Empty List Overlay or TaskList with conditional properties
