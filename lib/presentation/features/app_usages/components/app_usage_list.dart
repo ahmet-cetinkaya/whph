@@ -94,7 +94,10 @@ class AppUsageListState extends State<AppUsageList> {
       final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
       return result.items;
     } on BusinessException catch (e) {
-      ErrorHelper.showError(context, e);
+      if (context.mounted) {
+        // ignore: use_build_context_synchronously
+        ErrorHelper.showError(context, e);
+      }
       return [];
     } catch (e, stackTrace) {
       if (context.mounted) {
