@@ -21,7 +21,7 @@ class SettingsPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.all(16),
           child: Center(child: SingleChildScrollView(child: AppAbout())),
         );
       },
