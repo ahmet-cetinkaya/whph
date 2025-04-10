@@ -47,28 +47,28 @@ class AppAbout extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: Text(
-            _translationService.translate('about.app_about.description'),
-            style: AppTheme.bodyMedium,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Center(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _buildExternalLink(
+                  title: _translationService.translate('about.app_about.links.website'),
+                  icon: Icons.web,
+                  url: AppInfo.websiteUrl,
+                ),
+                _buildExternalLink(
+                  title: _translationService.translate('about.app_about.links.source_code'),
+                  icon: Icons.code,
+                  url: AppInfo.sourceCodeUrl,
+                ),
+              ],
+            ),
           ),
         ),
-        Center(
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              _buildExternalLink(
-                title: _translationService.translate('about.app_about.links.website'),
-                icon: Icons.web,
-                url: AppInfo.websiteUrl,
-              ),
-              _buildExternalLink(
-                title: _translationService.translate('about.app_about.links.source_code'),
-                icon: Icons.code,
-                url: AppInfo.sourceCodeUrl,
-              ),
-            ],
-          ),
+        Text(
+          _translationService.translate('about.app_about.description'),
+          style: AppTheme.bodyMedium,
         ),
       ],
     );
