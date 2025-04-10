@@ -339,7 +339,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       case keyEstimatedTime:
         return _habit!.estimatedTime != null && _habit!.estimatedTime! > 0;
       case keyDescription:
-        return _habit!.description != null && _habit!.description!.isNotEmpty;
+        return _habit!.description.isNotEmpty;
       default:
         return false;
     }
@@ -390,8 +390,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       ),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
-      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );
