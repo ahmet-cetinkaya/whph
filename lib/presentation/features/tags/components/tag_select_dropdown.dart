@@ -288,16 +288,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             ),
           ),
 
-        // Add button
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: FilterIconButton(
-            icon: widget.icon,
-            iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
-            onPressed: () => _showTagSelectionModal(context),
-            tooltip: widget.tooltip,
-            color: widget.color,
-          ),
+        FilterIconButton(
+          icon: widget.icon,
+          iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+          onPressed: () => _showTagSelectionModal(context),
+          tooltip: widget.tooltip,
+          color: widget.color,
         ),
       ],
     );
