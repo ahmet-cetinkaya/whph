@@ -98,11 +98,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     return _visibleOptionalFields.contains(fieldKey);
   }
 
-  // Check if the field should be displayed in the chips section
-  bool _shouldShowAsChip(String fieldKey) {
-    return !_visibleOptionalFields.contains(fieldKey);
-  }
-
   // Method to determine if a field has content
   bool _hasFieldContent(String fieldKey) {
     if (_tag == null) return false;
@@ -158,8 +153,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       ),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
-      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );
