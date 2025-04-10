@@ -24,7 +24,6 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       controller.stopCamera();
-      controller.dispose();
 
       if (context.mounted) Navigator.of(context).pop(scanData.code);
     });
