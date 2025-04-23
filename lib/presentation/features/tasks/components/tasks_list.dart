@@ -274,23 +274,10 @@ class TaskListState extends State<TaskList> {
       return const SizedBox.shrink();
     }
 
+    // Check if the list is empty and show a message
     if (_tasks!.items.isEmpty || (_tasks!.items.length == 1 && widget.selectedTask != null)) {
       return Center(
         child: Text(widget.translationService.translate(SharedTranslationKeys.noItemsFoundMessage)),
-      );
-    }
-
-    if (widget.enableReordering) {
-      return Material(
-        type: MaterialType.transparency,
-        child: ReorderableListView(
-          buildDefaultDragHandles: false,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          proxyDecorator: _buildProxyDecorator,
-          onReorder: _onReorder,
-          children: _buildTaskCards(),
-        ),
       );
     }
 
@@ -299,7 +286,23 @@ class TaskListState extends State<TaskList> {
       physics: const ClampingScrollPhysics(),
       controller: _scrollController,
       children: [
-        ..._buildTaskCards(),
+        // Task Cards
+        if (widget.enableReordering)
+          Material(
+            type: MaterialType.transparency,
+            child: ReorderableListView(
+              buildDefaultDragHandles: false,
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              proxyDecorator: _buildProxyDecorator,
+              onReorder: _onReorder,
+              children: _buildTaskCards(),
+            ),
+          )
+        else
+          ..._buildTaskCards(),
+
+        // Load More Button
         if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
       ],
     );
