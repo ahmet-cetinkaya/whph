@@ -35,8 +35,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   bool _isCompletedTasksExpanded = false;
 
   void _refreshTasks() {
-    _activeTasksListKey.currentState?.refresh();
-    _completedTasksListKey.currentState?.refresh();
+    if (mounted) {
+      // Directly access the TaskList states and refresh them without showing loading indicators
+      _activeTasksListKey.currentState?.refresh(showLoading: false);
+      _completedTasksListKey.currentState?.refresh(showLoading: false);
+    }
   }
 
   void _refreshTitle(String title) {
@@ -102,7 +105,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
                 // Add Task
                 TaskAddButton(
-                  onTaskCreated: (taskId) => _refreshTasks(),
+                  onTaskCreated: (_, __) => _refreshTasks(),
                   initialTagIds: [widget.tagId],
                 ),
               ],

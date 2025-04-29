@@ -259,7 +259,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     children: [
                       if (!_showCompletedTasks)
                         TaskAddButton(
-                          onTaskCreated: (taskId) {
+                          onTaskCreated: (_, __) {
                             // Use the comprehensive refresh mechanism
                             _refreshEverything();
                           },

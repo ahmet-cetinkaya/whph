@@ -14,11 +14,12 @@ import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tasks/models/task_data.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
-  final Function(String taskId)? onTaskCreated;
+  final Function(String taskId, TaskData taskData)? onTaskCreated;
   final String? initialParentTaskId;
 
   const QuickTaskBottomSheet({
@@ -96,7 +97,26 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       final response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (widget.onTaskCreated != null) {
-        widget.onTaskCreated!(response.id);
+        // Create a TaskData object with all the task information
+        final taskData = TaskData(
+          title: _titleController.text,
+          priority: _selectedPriority,
+          estimatedTime: _estimatedTime,
+          plannedDate: _plannedDate,
+          deadlineDate: _deadlineDate,
+          tags: _selectedTags
+              .map((t) => TaskDataTag(
+                    id: t.value,
+                    name: t.label,
+                  ))
+              .toList(),
+          isCompleted: false,
+          parentTaskId: widget.initialParentTaskId,
+          order: 0.0, // Default order
+          createdDate: DateTime.now(),
+        );
+
+        widget.onTaskCreated!(response.id, taskData);
       }
 
       if (mounted) {
