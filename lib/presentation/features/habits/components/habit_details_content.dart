@@ -90,13 +90,31 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       final result = await widget._mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
 
       if (mounted) {
+        // Store current selections before updating
+        final nameSelection = _nameController.selection;
+        final descriptionSelection = _descriptionController.selection;
+
         setState(() {
           _habit = result;
+
+          // Only update name if it's different
           if (_nameController.text != result.name) {
             _nameController.text = result.name;
             widget.onNameUpdated?.call(result.name);
+            // Don't restore selection for name if it changed
+          } else if (nameSelection.isValid) {
+            // Restore selection if name didn't change
+            _nameController.selection = nameSelection;
           }
-          _descriptionController.text = _habit!.description;
+
+          // Only update description if it's different
+          if (_descriptionController.text != _habit!.description) {
+            _descriptionController.text = _habit!.description;
+            // Don't restore selection if text changed
+          } else if (descriptionSelection.isValid) {
+            // Restore selection if text didn't change
+            _descriptionController.selection = descriptionSelection;
+          }
         });
         _processFieldVisibility();
       }
@@ -246,9 +264,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   Future<void> _saveHabit() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    final currentSelection = _nameController.selection;
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    // Increase debounce time to give user more time to type
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      // Only proceed if the widget is still mounted
+      if (!mounted) return;
+
       final command = SaveHabitCommand(
         id: widget.habitId,
         name: _nameController.text,
@@ -256,14 +277,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         estimatedTime: _habit!.estimatedTime,
       );
       try {
+        // Send the command but don't update UI with the result
         final result = await widget._mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
+        // Just notify listeners that habit was saved, but don't update the UI
         widget._habitsService.onHabitSaved.value = result;
         widget.onHabitUpdated?.call();
 
-        if (mounted) {
-          _nameController.selection = currentSelection;
-        }
+        // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {
         if (mounted) {
           ErrorHelper.showError(context, e);
@@ -417,8 +438,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           TextFormField(
             controller: _nameController,
             maxLines: null,
-            onChanged: (value) async {
-              await _saveHabit();
+            onChanged: (value) {
+              // Simply trigger the update and notify listeners
+              _saveHabit();
               widget.onNameUpdated?.call(value);
             },
             decoration: InputDecoration(
@@ -577,9 +599,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   void _onDescriptionChanged(String value) {
+    // Handle empty whitespace
     if (value.trim().isEmpty) {
       _descriptionController.clear();
+
+      // Set cursor at beginning after clearing
+      if (mounted) {
+        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
+      }
     }
+
+    // Simply trigger the update
     _saveHabit();
   }
 }

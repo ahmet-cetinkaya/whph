@@ -81,12 +81,21 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     try {
       final response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       if (mounted) {
+        // Store current selection before updating
+        final nameSelection = _nameController.selection;
+
         setState(() {
           _appUsage = response;
-          if (_nameController.text != response.displayName) {
+
+          // Only update name if it's different
+          if (_nameController.text != (response.displayName ?? response.name)) {
             // Check displayName instead of name
             _nameController.text = response.displayName ?? response.name;
             widget.onNameUpdated?.call(response.displayName ?? response.name);
+            // Don't restore selection for name if it changed
+          } else if (nameSelection.isValid) {
+            // Restore selection if name didn't change
+            _nameController.selection = nameSelection;
           }
         });
       }
@@ -106,9 +115,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   Future<void> _saveAppUsage() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    final currentSelection = _nameController.selection;
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    // Increase debounce time to give user more time to type
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      // Only proceed if the widget is still mounted
+      if (!mounted) return;
+
       final command = SaveAppUsageCommand(
         id: widget.id,
         name: _appUsage!.name,
@@ -117,14 +129,14 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         deviceName: _appUsage!.deviceName,
       );
       try {
+        // Send the command but don't update UI with the result
         final result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
+        // Just notify listeners that app usage was saved, but don't update the UI
         widget._appUsagesService.onAppUsageSaved.value = result;
         widget.onAppUsageUpdated?.call();
 
-        if (mounted) {
-          _nameController.selection = currentSelection;
-        }
+        // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {
         if (mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
@@ -366,8 +378,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           TextFormField(
             controller: _nameController,
             maxLines: null,
-            onChanged: (value) async {
-              await _saveAppUsage();
+            onChanged: (value) {
+              // Simply trigger the update and notify listeners
+              _saveAppUsage();
               widget.onNameUpdated?.call(value);
             },
             decoration: InputDecoration(

@@ -165,12 +165,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       final response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
 
       if (mounted) {
+        // Store current selections before updating
+        final titleSelection = _titleController.selection;
+        final descriptionSelection = _descriptionController.selection;
+        final plannedDateSelection = _plannedDateController.selection;
+        final deadlineDateSelection = _deadlineDateController.selection;
+
         setState(() {
           _task = response;
+
+          // Only update title if it's different
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
             widget.onTitleUpdated?.call(response.title);
+            // Don't restore selection for title if it changed
+          } else if (titleSelection.isValid) {
+            // Restore selection if title didn't change
+            _titleController.selection = titleSelection;
           }
+
           widget.onCompletedChanged?.call(response.isCompleted);
           _priorityOptions = [
             DropdownOption(label: widget._translationService.translate(TaskTranslationKeys.priorityNone), value: null),
@@ -187,11 +200,38 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 label: widget._translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
                 value: EisenhowerPriority.notUrgentNotImportant),
           ];
-          _plannedDateController.text =
+
+          // Only update planned date if it's different
+          final plannedDateText =
               _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
-          _deadlineDateController.text =
+          if (_plannedDateController.text != plannedDateText) {
+            _plannedDateController.text = plannedDateText;
+            // Don't restore selection if text changed
+          } else if (plannedDateSelection.isValid) {
+            // Restore selection if text didn't change
+            _plannedDateController.selection = plannedDateSelection;
+          }
+
+          // Only update deadline date if it's different
+          final deadlineDateText =
               _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
-          _descriptionController.text = _task!.description ?? '';
+          if (_deadlineDateController.text != deadlineDateText) {
+            _deadlineDateController.text = deadlineDateText;
+            // Don't restore selection if text changed
+          } else if (deadlineDateSelection.isValid) {
+            // Restore selection if text didn't change
+            _deadlineDateController.selection = deadlineDateSelection;
+          }
+
+          // Only update description if it's different
+          final descriptionText = _task!.description ?? '';
+          if (_descriptionController.text != descriptionText) {
+            _descriptionController.text = descriptionText;
+            // Don't restore selection if text changed
+          } else if (descriptionSelection.isValid) {
+            // Restore selection if text didn't change
+            _descriptionController.selection = descriptionSelection;
+          }
         });
         _processFieldVisibility();
       }
@@ -254,9 +294,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   Future<void> _updateTask() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    final currentSelection = _titleController.selection;
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    // Increase debounce time to give user more time to type
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      // Only proceed if the widget is still mounted
+      if (!mounted) return;
+
+      // Get current values directly from controllers
       final saveCommand = SaveTaskCommand(
         id: _task!.id,
         title: _titleController.text,
@@ -267,14 +311,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         estimatedTime: _task!.estimatedTime,
         isCompleted: _task!.isCompleted,
       );
+
       try {
+        // Send the command but don't update UI with the result
         final result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+
+        // Just notify listeners that task was saved, but don't update the UI
         widget._tasksService.onTaskSaved.value = result;
         widget.onTaskUpdated?.call();
 
-        if (mounted) {
-          _titleController.selection = currentSelection;
-        }
+        // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {
         if (mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
@@ -369,8 +415,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           TextFormField(
             controller: _titleController,
             maxLines: null,
-            onChanged: (value) async {
-              await _updateTask();
+            onChanged: (value) {
+              // Simply trigger the update and notify listeners
+              _updateTask();
               widget.onTitleUpdated?.call(value);
             },
             decoration: InputDecoration(
@@ -537,10 +584,18 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               child: MarkdownAutoPreview(
                 controller: _descriptionController,
                 onChanged: (value) {
+                  // Handle empty whitespace
                   final isEmptyWhitespace = value.trim().isEmpty;
                   if (isEmptyWhitespace) {
                     _descriptionController.clear();
+
+                    // Set cursor at beginning after clearing
+                    if (mounted) {
+                      _descriptionController.selection = const TextSelection.collapsed(offset: 0);
+                    }
                   }
+
+                  // Simply trigger the update
                   _updateTask();
                 },
                 hintText: widget._translationService.translate(TaskTranslationKeys.addDescriptionHint),

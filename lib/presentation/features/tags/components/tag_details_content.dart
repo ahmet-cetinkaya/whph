@@ -165,11 +165,20 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       final query = GetTagQuery(id: widget.tagId);
       final response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       if (mounted) {
+        // Store current selection before updating
+        final nameSelection = _nameController.selection;
+
         setState(() {
           _tag = response;
+
+          // Only update name if it's different
           if (_nameController.text != response.name) {
             _nameController.text = response.name;
             widget.onNameUpdated?.call(response.name);
+            // Don't restore selection for name if it changed
+          } else if (nameSelection.isValid) {
+            // Restore selection if name didn't change
+            _nameController.selection = nameSelection;
           }
         });
       }
@@ -245,9 +254,12 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   Future<void> _saveTag() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    final currentSelection = _nameController.selection;
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    // Increase debounce time to give user more time to type
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      // Only proceed if the widget is still mounted
+      if (!mounted) return;
+
       final command = SaveTagCommand(
         id: widget.tagId,
         name: _nameController.text,
@@ -255,13 +267,11 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         isArchived: _tag!.isArchived,
       );
       try {
+        // Send the command but don't update UI with the result
         await widget._mediator.send(command);
         widget.onTagUpdated?.call();
 
-        // Restore cursor position after save
-        if (mounted) {
-          _nameController.selection = currentSelection;
-        }
+        // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {
         if (mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
@@ -303,8 +313,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           TextFormField(
             controller: _nameController,
             maxLines: null,
-            onChanged: (value) async {
-              await _saveTag();
+            onChanged: (value) {
+              // Simply trigger the update and notify listeners
+              _saveTag();
               widget.onNameUpdated?.call(value);
             },
             decoration: InputDecoration(
