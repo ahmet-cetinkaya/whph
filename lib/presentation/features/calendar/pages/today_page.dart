@@ -58,7 +58,12 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   void _refreshTasks() {
-    _tasksListKey.currentState?.refresh();
+    if (mounted) {
+      setState(() {
+        _isTaskListEmpty = false;
+      });
+      _tasksListKey.currentState?.refresh();
+    }
   }
 
   void _refreshAllElements() {
@@ -202,11 +207,7 @@ class _TodayPageState extends State<TodayPage> {
                       child: TaskAddButton(
                         initialTagIds: _selectedTagFilter,
                         initialPlannedDate: DateTime.now(),
-                        onTaskCreated: (_) {
-                          setState(() {
-                            _isTaskListEmpty = false;
-                          });
-                        },
+                        onTaskCreated: (_, __) => _refreshTasks(),
                       ),
                     ),
                   ],

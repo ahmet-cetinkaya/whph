@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
@@ -26,8 +28,8 @@ class _TasksPageState extends State<TasksPage> {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
-  // Using ValueKey instead of GlobalKey to force rebuild on filter changes
-  Key _tasksListKey = const ValueKey('active');
+  // Using GlobalKey to access TaskList state directly
+  final GlobalKey<TaskListState> _tasksListKey = GlobalKey<TaskListState>();
 
   List<String>? _selectedTagIds;
   bool _isTasksListEmpty = false;
@@ -41,6 +43,9 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _isTasksListEmpty = false;
       });
+
+      // Access the TaskList state directly using the GlobalKey
+      _tasksListKey.currentState?.refresh(showLoading: false);
     }
   }
 
@@ -94,9 +99,10 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _showCompletedTasks = showCompleted;
-        // Update the key to force rebuild of TaskList when toggling view
-        _tasksListKey = ValueKey(showCompleted ? 'completed' : 'active');
       });
+
+      // Refresh the task list with the new filter
+      _tasksListKey.currentState?.refresh(showLoading: true);
     }
   }
 
@@ -109,7 +115,31 @@ class _TasksPageState extends State<TasksPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TaskAddButton(
-              onTaskCreated: (_) => _refreshTasks(),
+              onTaskCreated: (taskId, taskData) {
+                // Add the task directly to the list without full refresh
+                final taskListState = _tasksListKey.currentState;
+                if (taskListState != null) {
+                  // Create a TaskListItem from the task data
+                  final newTask = TaskListItem(
+                    id: taskId,
+                    title: taskData.title,
+                    isCompleted: taskData.isCompleted,
+                    priority: taskData.priority,
+                    estimatedTime: taskData.estimatedTime,
+                    plannedDate: taskData.plannedDate,
+                    deadlineDate: taskData.deadlineDate,
+                    order: taskData.order,
+                    tags:
+                        taskData.tags.map((tag) => TagListItem(id: tag.id, name: tag.name, color: tag.color)).toList(),
+                  );
+
+                  // Add the task to the list
+                  taskListState.addTask(newTask);
+                } else {
+                  // Fallback to regular refresh if state is not available
+                  _refreshTasks();
+                }
+              },
               buttonColor: AppTheme.primaryColor,
               initialTagIds: _selectedTagIds,
             ),

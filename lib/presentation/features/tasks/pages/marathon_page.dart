@@ -62,7 +62,10 @@ class _MarathonPageState extends State<MarathonPage> {
   }
 
   void _refreshTasks() {
-    _tasksListKey.currentState?.refresh();
+    if (mounted) {
+      // Directly access the TaskList state and refresh it without showing loading indicator
+      _tasksListKey.currentState?.refresh(showLoading: false);
+    }
   }
 
   void _onSelectTask(TaskListItem task) async {
@@ -333,7 +336,7 @@ class _MarathonPageState extends State<MarathonPage> {
                       child: TaskAddButton(
                         initialTagIds: _selectedTagIds,
                         initialPlannedDate: today,
-                        onTaskCreated: (_) => _refreshTasks(),
+                        onTaskCreated: (_, __) => _refreshTasks(),
                         buttonColor: AppTheme.primaryColor,
                       ),
                     ),

@@ -79,8 +79,26 @@ class TaskListState extends State<TaskList> {
   final ScrollController _scrollController = ScrollController();
   double? _savedScrollPosition;
 
-  Future<void> refresh() async {
-    await _getTasks(isRefresh: true);
+  // Smooth refresh method that preserves UI state
+  Future<void> refresh({bool showLoading = false}) async {
+    await _getTasks(isRefresh: true, showLoading: showLoading);
+  }
+
+  // Add a task to the list without full refresh
+  void addTask(TaskListItem task) {
+    if (_tasks != null && mounted) {
+      setState(() {
+        // Add the task to the beginning of the list
+        _tasks!.items.insert(0, task);
+      });
+
+      if (widget.onList != null) {
+        widget.onList!(_tasks!.items.length);
+      }
+    } else {
+      // If tasks is null, do a full refresh
+      refresh(showLoading: false);
+    }
   }
 
   @override
@@ -108,17 +126,24 @@ class TaskListState extends State<TaskList> {
     _getTasks();
   }
 
-  Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false, bool showLoading = true}) async {
     if (_isLoading) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    // Only show loading indicator if explicitly requested
+    if (showLoading) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
+      // Calculate page size - preserve existing items if refreshing
+      final pageSize =
+          isRefresh && _tasks != null && _tasks!.items.length > widget.size ? _tasks!.items.length : widget.size;
+
       final query = GetListTasksQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh && _tasks!.items.length > widget.size ? _tasks!.items.length : widget.size,
+          pageSize: pageSize,
           filterByPlannedStartDate: widget.filterByPlannedStartDate,
           filterByPlannedEndDate: widget.filterByPlannedEndDate,
           filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
@@ -128,6 +153,9 @@ class TaskListState extends State<TaskList> {
           filterByCompleted: widget.filterByCompleted,
           searchQuery: widget.search,
           parentTaskId: widget.parentTaskId);
+
+      // We'll use the current tasks for smooth transition if needed
+
       final result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
       if (mounted) {
@@ -147,14 +175,19 @@ class TaskListState extends State<TaskList> {
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: widget.translationService.translate(TaskTranslationKeys.getTaskError),
-        );
-      }
-      if (mounted) {
+        // Only show error if loading indicator was shown
+        if (showLoading) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e as Exception,
+            stackTrace,
+            message: widget.translationService.translate(TaskTranslationKeys.getTaskError),
+          );
+        } else {
+          // Just log the error if we're doing a silent refresh
+          debugPrint('Error refreshing tasks: $e');
+        }
+
         setState(() {
           _isLoading = false;
         });
@@ -270,8 +303,15 @@ class TaskListState extends State<TaskList> {
 
   @override
   Widget build(BuildContext context) {
+    // Initial loading state
     if (_tasks == null) {
-      return const SizedBox.shrink();
+      return const Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
     }
 
     // Check if the list is empty and show a message
@@ -281,29 +321,53 @@ class TaskListState extends State<TaskList> {
       );
     }
 
-    return ListView(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      controller: _scrollController,
+    return Stack(
       children: [
-        // Task Cards
-        if (widget.enableReordering)
-          Material(
-            type: MaterialType.transparency,
-            child: ReorderableListView(
-              buildDefaultDragHandles: false,
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              proxyDecorator: _buildProxyDecorator,
-              onReorder: _onReorder,
-              children: _buildTaskCards(),
-            ),
-          )
-        else
-          ..._buildTaskCards(),
+        // Main content
+        ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          controller: _scrollController,
+          children: [
+            // Task Cards
+            if (widget.enableReordering)
+              Material(
+                type: MaterialType.transparency,
+                child: ReorderableListView(
+                  buildDefaultDragHandles: false,
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  proxyDecorator: _buildProxyDecorator,
+                  onReorder: _onReorder,
+                  children: _buildTaskCards(),
+                ),
+              )
+            else
+              ..._buildTaskCards(),
 
-        // Load More Button
-        if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
+            // Load More Button
+            if (_tasks!.hasNext) LoadMoreButton(onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1)),
+          ],
+        ),
+
+        // Overlay loading indicator (only shown when _isLoading is true)
+        if (_isLoading)
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
       ],
     );
   }
