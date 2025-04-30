@@ -47,7 +47,13 @@ class _SearchFilterState extends State<SearchFilter> {
   void _toggleSearch() {
     setState(() {
       _isExpanded = !_isExpanded;
-      if (!_isExpanded) {
+      if (_isExpanded) {
+        // When expanding, if there's an initial value, trigger search
+        if (_controller.text.isNotEmpty) {
+          widget.onSearch(_controller.text);
+        }
+      } else {
+        // When collapsing, clear the search
         _controller.clear();
         widget.onSearch(null);
       }
@@ -83,7 +89,10 @@ class _SearchFilterState extends State<SearchFilter> {
                 ),
                 fillColor: AppTheme.surface1,
               ),
-              onChanged: widget.onSearch,
+              onChanged: (value) {
+                // Always call onSearch with the current value, even if it's empty
+                widget.onSearch(value.isEmpty ? null : value);
+              },
             )
           : FilterIconButton(
               icon: Icons.search,

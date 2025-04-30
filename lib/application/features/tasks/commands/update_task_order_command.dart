@@ -42,7 +42,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
         'parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND id != ? AND deleted_date IS NULL',
         request.parentTaskId != null ? [request.parentTaskId!, task.id] : [task.id],
       ),
-      customOrder: [CustomOrder(field: "order", ascending: true)],
+      customOrder: [CustomOrder(field: "order")],
     );
 
     otherTasks.sort((a, b) => a.order.compareTo(b.order));

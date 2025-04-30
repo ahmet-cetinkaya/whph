@@ -1,6 +1,8 @@
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
+
 class CustomOrder {
   final String field;
-  final bool ascending;
+  final SortDirection direction;
 
-  CustomOrder({required this.field, this.ascending = true});
+  CustomOrder({required this.field, this.direction = SortDirection.asc});
 }

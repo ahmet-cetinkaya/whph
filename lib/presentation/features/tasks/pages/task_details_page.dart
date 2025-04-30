@@ -13,6 +13,7 @@ import 'package:whph/presentation/shared/components/responsive_scaffold_layout.d
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -45,6 +46,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   Timer? _completedTasksHideTimer;
   // Add refresh key to force list rebuilding when needed
   Key _listRebuildKey = UniqueKey();
+  String? _searchQuery;
 
   // Flag to track if a refresh is in progress to prevent refresh loops
   bool _isRefreshInProgress = false;
@@ -98,10 +100,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
 
   void _refreshTasksList() {
     if (_tasksListKey.currentState != null) {
-      _tasksListKey.currentState?.refresh();
+      _tasksListKey.currentState?.refresh(showLoading: true);
     } else {
       // If the list state isn't available, force a UI rebuild
-      setState(() {});
+      setState(() {
+        _listRebuildKey = UniqueKey(); // Force rebuild with new key
+      });
     }
   }
 
@@ -119,23 +123,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     }
   }
 
-  void _onCompletedTasksToggle() {
-    if (!mounted) return;
-
-    setState(() {
-      _showCompletedTasks = !_showCompletedTasks;
-      _listRebuildKey = UniqueKey(); // Force rebuild with new key
-    });
-
-    // Force immediate refresh of the task list with the new filter
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_tasksListKey.currentState != null) {
-        _tasksListKey.currentState!.refresh();
-      } else {
-        _refreshEverything(); // Fall back to full refresh if list state isn't available
-      }
-    });
-  }
+  // This method is now replaced by the TaskFilters component's callback
 
   // Called when a task is completed to hide completed tasks immediately
   void _hideCompletedTasks() {
@@ -240,53 +228,70 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.list),
-                      const SizedBox(width: 8),
-                      Text(_translationService.translate(TaskTranslationKeys.subTasksLabel)),
-                      const SizedBox(width: 8),
-                      if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
-                        Text(
-                          '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (!_showCompletedTasks)
-                        TaskAddButton(
-                          onTaskCreated: (_, __) {
-                            // Use the comprehensive refresh mechanism
-                            _refreshEverything();
-                          },
-                          initialParentTaskId: widget.taskId,
-                        ),
-                      if (widget.showCompletedTasksToggle)
-                        Tooltip(
-                          message: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: _onCompletedTasksToggle, // Use the proper toggle handler
-                              borderRadius: BorderRadius.circular(16),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(
-                                  _showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
-                                  color: _showCompletedTasks
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                  size: 20,
-                                ),
-                              ),
-                            ),
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.list),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            _translationService.translate(TaskTranslationKeys.subTasksLabel),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                    ],
+                        const SizedBox(width: 8),
+                        if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                          Text(
+                            '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: TaskFilters(
+                            showCompletedTasks: _showCompletedTasks,
+                            onCompletedTasksToggle: (showCompleted) {
+                              debugPrint('TaskDetailsPage: Completed tasks toggle called with $showCompleted');
+                              setState(() {
+                                _showCompletedTasks = showCompleted;
+                                _listRebuildKey = UniqueKey();
+                              });
+                              Future.delayed(const Duration(milliseconds: 50), () {
+                                if (mounted) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    debugPrint(
+                                        'TaskDetailsPage: Post-frame refresh with showCompleted: $_showCompletedTasks');
+                                    _refreshTasksList();
+                                  });
+                                }
+                              });
+                            },
+                            onSearchChange: (query) {
+                              setState(() {
+                                _searchQuery = query;
+                              });
+                              _refreshTasksList();
+                            },
+                            hasItems: true,
+                            showDateFilter: false,
+                            showTagFilter: false,
+                          ),
+                        ),
+                        if (!_showCompletedTasks)
+                          TaskAddButton(
+                            onTaskCreated: (_, __) {
+                              _refreshEverything();
+                            },
+                            initialParentTaskId: widget.taskId,
+                          ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -328,6 +333,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 parentTaskId: widget.taskId,
                 // Use correct filter value based on toggle state
                 filterByCompleted: _showCompletedTasks,
+                search: _searchQuery,
                 onTaskCompleted: () {
                   _hideCompletedTasks();
                   _refreshEverything();

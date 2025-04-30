@@ -11,6 +11,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
+import 'dart:async';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -55,6 +56,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _searchFocusNode = FocusNode();
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -67,6 +69,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   @override
   void dispose() {
     _searchFocusNode.dispose();
+    _searchDebounce?.cancel();
     super.dispose();
   }
 
@@ -111,9 +114,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   }
 
   Future<void> _showTagSelectionModal(BuildContext context) async {
-    List<String> tempSelectedTags = _selectedTags;
-
-    // Schedule focus request for the next frame after modal is built
+    List<String> tempSelectedTags = List<String>.from(_selectedTags);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _searchFocusNode.requestFocus();
     });
@@ -131,12 +132,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Search bar and clear button row
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        // Search bar
                         Expanded(
                           child: TextField(
                             controller: _searchController,
@@ -148,15 +147,26 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             ),
                             onChanged: (value) {
                               if (!mounted) return;
+
                               setState(() {
                                 _tags = null;
+                              });
+
+                              if (value.isEmpty) {
+                                _getTags(pageIndex: 0);
+                                return;
+                              }
+
+                              _searchDebounce?.cancel();
+                              _searchDebounce = Timer(
+                                  value.length == 1
+                                      ? const Duration(milliseconds: 100)
+                                      : const Duration(milliseconds: 300), () {
                                 _getTags(pageIndex: 0, search: value);
                               });
                             },
                           ),
                         ),
-
-                        // Clear all button
                         if (tempSelectedTags.isNotEmpty)
                           IconButton(
                             onPressed: () => setState(() => tempSelectedTags.clear()),
@@ -166,8 +176,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       ],
                     ),
                   ),
-
-                  // Tags list
                   SizedBox(
                     height: 300,
                     child: ListView.builder(
@@ -202,8 +210,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       },
                     ),
                   ),
-
-                  // Buttons
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -215,6 +221,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         ),
                         TextButton(
                           onPressed: () {
+                            if (mounted) {
+                              setState(() {
+                                _selectedTags = List<String>.from(tempSelectedTags);
+                              });
+                            }
                             final selectedOptions = tempSelectedTags.map((id) {
                               final tag = _tags!.items.firstWhere((tag) => tag.id == id);
                               return DropdownOption(
@@ -222,9 +233,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                                 value: tag.id,
                               );
                             }).toList();
-
                             widget.onTagsSelected(selectedOptions);
-                            Navigator.pop(context);
+                            Future.delayed(const Duration(milliseconds: 1), () {
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              }
+                            });
                           },
                           child: Text(_translationService.translate(TagTranslationKeys.doneButton)),
                         ),
@@ -238,12 +252,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         );
       },
     );
-
-    if (mounted) {
-      setState(() {
-        _selectedTags = tempSelectedTags;
-      });
-    }
   }
 
   void reset() {
@@ -258,7 +266,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Tags wrap - on the left
         if (widget.showSelectedInDropdown && _tags != null)
           Expanded(
             child: Wrap(
@@ -287,7 +294,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               }).toList(),
             ),
           ),
-
         FilterIconButton(
           icon: widget.icon,
           iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,

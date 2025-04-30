@@ -6,6 +6,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 
@@ -19,8 +20,9 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final bool filterDateOr;
   final List<String>? filterByTags;
   final bool? filterByCompleted;
-  final String? searchQuery;
+  final String? search;
   final String? parentTaskId;
+  final SortDirection? sortByPlannedDate;
   final bool fetchParentAndSubTasks;
 
   GetListTasksQuery({
@@ -33,8 +35,9 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.filterDateOr = false,
     this.filterByTags,
     this.filterByCompleted,
-    this.searchQuery,
+    this.search,
     this.parentTaskId,
+    this.sortByPlannedDate,
     this.fetchParentAndSubTasks = false,
   });
 }
@@ -126,15 +129,23 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    final tasks = await _taskRepository.getList(
+    var query = _taskRepository.getList(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getFilters(request),
       customOrder: [
-        CustomOrder(field: "order", ascending: true),
-        CustomOrder(field: "created_date", ascending: true),
+        if (request.sortByPlannedDate != null)
+          CustomOrder(field: "planned_date", direction: request.sortByPlannedDate ?? SortDirection.asc),
+        if (request.filterByCompleted != true) ...[
+          CustomOrder(field: "order"),
+          CustomOrder(field: "created_date"),
+        ],
       ],
     );
+
+    // Remove in-memory where filters
+
+    final tasks = await query;
 
     // Fixing task orders with order value 0
     var needsReorder = tasks.items.any((task) => task.order == 0);
@@ -198,84 +209,65 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       items: taskListItems,
       totalItemCount: tasks.totalItemCount,
       totalPageCount: tasks.totalPageCount,
-      pageIndex: tasks.pageIndex,
-      pageSize: tasks.pageSize,
+      pageIndex: request.pageIndex,
+      pageSize: request.pageSize,
     );
   }
 
   CustomWhereFilter? _getFilters(GetListTasksQuery request) {
-    CustomWhereFilter? customWhereFilter;
+    final conditions = <String>[];
+    final variables = <Object>[];
 
-    // Search filter
-    if (request.searchQuery?.isNotEmpty ?? false) {
-      customWhereFilter = CustomWhereFilter("title LIKE ?", ["%${request.searchQuery}%"]);
+    // Search
+    if (request.search?.isNotEmpty ?? false) {
+      conditions.add('title LIKE ?');
+      variables.add('%${request.search}%');
     }
 
     // Date filters
-    if (request.filterDateOr) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-      customWhereFilter.query += " (";
-    }
+    final plannedFilters = <String>[];
     if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-
-      final plannedDateStart = request.filterByPlannedStartDate ?? DateTime(0);
-      final plannedDateEnd = request.filterByPlannedEndDate ?? DateTime(9999);
-
-      customWhereFilter.query += "(planned_date >= ? AND planned_date < ?)";
-
-      customWhereFilter.variables.add(plannedDateStart);
-      customWhereFilter.variables.add(plannedDateEnd);
+      plannedFilters.add('planned_date >= ? AND planned_date <= ?');
+      variables.add(request.filterByPlannedStartDate ?? DateTime(0));
+      variables.add(request.filterByPlannedEndDate ?? DateTime(9999));
     }
-
+    final deadlineFilters = <String>[];
     if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-
-      final dueDateStart = request.filterByDeadlineStartDate ?? DateTime(0);
-      final dueDateEnd = request.filterByDeadlineEndDate ?? DateTime(9999);
-
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += request.filterDateOr ? " OR " : " AND ";
-      customWhereFilter.query += "(deadline_date >= ? AND deadline_date < ?)";
-
-      customWhereFilter.variables.add(dueDateStart);
-      customWhereFilter.variables.add(dueDateEnd);
+      deadlineFilters.add('deadline_date >= ? AND deadline_date <= ?');
+      variables.add(request.filterByDeadlineStartDate ?? DateTime(0));
+      variables.add(request.filterByDeadlineEndDate ?? DateTime(9999));
     }
-    if (request.filterDateOr) {
-      customWhereFilter!.query += " )";
+    if (plannedFilters.isNotEmpty || deadlineFilters.isNotEmpty) {
+      final joiner = request.filterDateOr ? ' OR ' : ' AND ';
+      final dateBlock = <String>[...plannedFilters, ...deadlineFilters];
+      conditions.add('(${dateBlock.join(joiner)})');
     }
 
     // Tag filter
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
-      customWhereFilter.query +=
-          "(SELECT COUNT(*) FROM task_tag_table WHERE task_tag_table.task_id = task_table.id AND task_tag_table.tag_id IN (${request.filterByTags!.map((tag) => '?').join(',')}) AND task_tag_table.deleted_date IS NULL) > 0";
-      customWhereFilter.variables.addAll(request.filterByTags!);
+      final placeholders = List.filled(request.filterByTags!.length, '?').join(',');
+      conditions.add(
+          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
+      variables.addAll(request.filterByTags!);
     }
 
     // Completed filter
     if (request.filterByCompleted != null) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
-      customWhereFilter.query += "(is_completed = ?)";
-      customWhereFilter.variables.add(request.filterByCompleted! ? 1 : 0);
+      conditions.add('is_completed = ?');
+      variables.add(request.filterByCompleted! ? 1 : 0);
     }
 
     // Parent task filter
     if (!request.fetchParentAndSubTasks) {
-      customWhereFilter ??= CustomWhereFilter.empty();
-
-      if (customWhereFilter.query.isNotEmpty) customWhereFilter.query += " AND ";
       if (request.parentTaskId != null) {
-        customWhereFilter.query += "(parent_task_id = ?)";
-        customWhereFilter.variables.add(request.parentTaskId!);
+        conditions.add('parent_task_id = ?');
+        variables.add(request.parentTaskId!);
       } else {
-        customWhereFilter.query += "(parent_task_id IS NULL)";
+        conditions.add('parent_task_id IS NULL');
       }
     }
 
-    return customWhereFilter;
+    if (conditions.isEmpty) return null;
+    return CustomWhereFilter(conditions.join(' AND '), variables);
   }
 }

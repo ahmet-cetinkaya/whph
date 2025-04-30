@@ -8,6 +8,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'dart:async';
 
 class TaskFilters extends StatefulWidget {
   /// Selected tag IDs for filtering
@@ -72,6 +73,30 @@ class TaskFilters extends StatefulWidget {
 
 class _TaskFiltersState extends State<TaskFilters> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
+  Timer? _searchDebounce;
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String? query) {
+    _searchDebounce?.cancel();
+
+    // If query is null or empty, immediately call the callback
+    if (query == null || query.isEmpty) {
+      widget.onSearchChange?.call(query);
+      return;
+    }
+
+    // For single character searches, use a shorter debounce time
+    final debounceTime = query.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500);
+
+    _searchDebounce = Timer(debounceTime, () {
+      widget.onSearchChange?.call(query);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,77 +112,88 @@ class _TaskFiltersState extends State<TaskFilters> {
     // If no filters to show, don't render anything
     if (!showAnyFilters) return const SizedBox.shrink();
 
-    return Row(
-      children: [
-        // Left side filters (scrollable)
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // Tag filter
-                if (widget.showTagFilter && widget.onTagFilterChange != null)
-                  TagSelectDropdown(
-                    isMultiSelect: true,
-                    onTagsSelected: widget.onTagFilterChange!,
-                    icon: TaskUiConstants.tagsIcon,
-                    iconSize: iconSize,
-                    color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
-                    tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
-                    showLength: true,
-                  ),
-
-                // Date filter
-                if (widget.showDateFilter && widget.onDateFilterChange != null)
-                  DateRangeFilter(
-                    selectedStartDate: widget.selectedStartDate,
-                    selectedEndDate: widget.selectedEndDate,
-                    onDateFilterChange: widget.onDateFilterChange!,
-                    iconSize: iconSize,
-                    iconColor: Colors.grey,
-                  ),
-
-                // Search filter
-                if (widget.showSearchFilter && widget.onSearchChange != null)
-                  SearchFilter(
-                    onSearch: widget.onSearchChange!,
-                    placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
-                    iconSize: iconSize,
-                    iconColor: Colors.grey,
-                    expandedWidth: 200,
-                  ),
-              ],
-            ),
-          ),
-        ),
-
-        // Right side - Completed tasks toggle button
-        if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
-          Container(
-            margin: const EdgeInsets.only(left: AppTheme.sizeSmall),
-            child: Material(
-              color: Colors.transparent,
-              child: Tooltip(
-                message: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
-                child: InkWell(
-                  onTap: () => widget.onCompletedTasksToggle!(!widget.showCompletedTasks),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
-                      color: widget.showCompletedTasks
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                      size: 20,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 300),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Tag filter
+                  if (widget.showTagFilter && widget.onTagFilterChange != null)
+                    TagSelectDropdown(
+                      isMultiSelect: true,
+                      onTagsSelected: widget.onTagFilterChange!,
+                      icon: TaskUiConstants.tagsIcon,
+                      iconSize: iconSize,
+                      color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
+                      tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
+                      showLength: true,
+                      initialSelectedTags: widget.selectedTagIds != null
+                          ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                          : [],
                     ),
-                  ),
-                ),
+
+                  // Date filter
+                  if (widget.showDateFilter && widget.onDateFilterChange != null)
+                    DateRangeFilter(
+                      selectedStartDate: widget.selectedStartDate,
+                      selectedEndDate: widget.selectedEndDate,
+                      onDateFilterChange: widget.onDateFilterChange!,
+                      iconSize: iconSize,
+                      iconColor: Colors.grey,
+                    ),
+
+                  // Search filter
+                  if (widget.showSearchFilter && widget.onSearchChange != null)
+                    SearchFilter(
+                      onSearch: _onSearchChanged,
+                      placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
+                      iconSize: iconSize,
+                      iconColor: Colors.grey,
+                      expandedWidth: 200,
+                    ),
+
+                  // Completed tasks toggle button
+                  if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Tooltip(
+                          message: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
+                          child: InkWell(
+                            onTap: () {
+                              final newState = !widget.showCompletedTasks;
+                              debugPrint('TaskFilters: Toggling completed tasks to $newState');
+                              // Call the callback directly without using addPostFrameCallback
+                              widget.onCompletedTasksToggle!(newState);
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
+                                color: widget.showCompletedTasks
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                size: iconSize,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
-      ],
+        ],
+      ),
     );
   }
 }

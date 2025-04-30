@@ -8,17 +8,16 @@ import 'package:whph/presentation/features/tasks/components/task_add_button.dart
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
-import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/calendar/constants/calendar_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -41,6 +40,8 @@ class _TodayPageState extends State<TodayPage> {
   bool _isTaskListEmpty = false;
   List<String>? _selectedTagFilter;
   bool _isCheckedUpdate = false;
+  bool _showCompletedTasks = false;
+  String? _searchQuery;
 
   @override
   void initState() {
@@ -62,13 +63,13 @@ class _TodayPageState extends State<TodayPage> {
       setState(() {
         _isTaskListEmpty = false;
       });
-      _tasksListKey.currentState?.refresh();
+      _tasksListKey.currentState?.refresh(showLoading: false);
     }
   }
 
   void _refreshAllElements() {
     _habitsListKey.currentState?.refresh();
-    _tasksListKey.currentState?.refresh();
+    _tasksListKey.currentState?.refresh(showLoading: true);
     _timeChartKey.currentState?.refresh();
   }
 
@@ -89,34 +90,23 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   void _onHabitList(int count) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {
-          _isHabitListEmpty = count == 0;
-        });
-      }
-    });
+    final isEmpty = count == 0;
+    // Only update state if it's actually changing to avoid infinite loops
+    if (_isHabitListEmpty != isEmpty && mounted) {
+      setState(() {
+        _isHabitListEmpty = isEmpty;
+      });
+    }
   }
 
   void _onTaskList(int count) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {
-          _isTaskListEmpty = count == 0;
-        });
-      }
-    });
-  }
-
-  void _onTagFilterSelect(List<DropdownOption<String>> tagOptions) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {
-          _selectedTagFilter = tagOptions.map((option) => option.value).toList();
-          _refreshAllElements();
-        });
-      }
-    });
+    final isEmpty = count == 0;
+    // Only update state if it's actually changing to avoid infinite loops
+    if (_isTaskListEmpty != isEmpty && mounted) {
+      setState(() {
+        _isTaskListEmpty = isEmpty;
+      });
+    }
   }
 
   Future<void> _openMarathonPage(BuildContext context) async {
@@ -147,15 +137,6 @@ class _TodayPageState extends State<TodayPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Filters
-          TagSelectDropdown(
-            isMultiSelect: true,
-            icon: Icons.label,
-            color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : null,
-            tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
-            onTagsSelected: _onTagFilterSelect,
-          ),
-
           // Habits
           const SizedBox(height: 16),
           Column(
@@ -198,16 +179,57 @@ class _TodayPageState extends State<TodayPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Task title
                     Text(
                       _translationService.translate(CalendarTranslationKeys.tasksTitle),
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: TaskAddButton(
-                        initialTagIds: _selectedTagFilter,
-                        initialPlannedDate: DateTime.now(),
-                        onTaskCreated: (_, __) => _refreshTasks(),
+                    const SizedBox(width: 24), // Add more space between title and filters
+
+                    // Task filters and add button
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // Task filters
+                          Expanded(
+                            child: TaskFilters(
+                              selectedTagIds: _selectedTagFilter,
+                              onTagFilterChange: (tags) {
+                                setState(() {
+                                  _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                                  _isTaskListEmpty = false;
+                                });
+                                _refreshAllElements();
+                              },
+                              onSearchChange: (query) {
+                                setState(() {
+                                  _searchQuery = query;
+                                });
+                                _refreshTasks();
+                              },
+                              showCompletedTasks: _showCompletedTasks,
+                              onCompletedTasksToggle: (showCompleted) {
+                                setState(() {
+                                  _showCompletedTasks = showCompleted;
+                                });
+                                _refreshTasks();
+                              },
+                              hasItems: true,
+                              showDateFilter: false,
+                            ),
+                          ),
+
+                          // Add button
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: TaskAddButton(
+                              initialTagIds: _selectedTagFilter,
+                              initialPlannedDate: DateTime.now(),
+                              onTaskCreated: (_, __) => _refreshTasks(),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -219,11 +241,13 @@ class _TodayPageState extends State<TodayPage> {
                       key: _tasksListKey,
                       mediator: _mediator,
                       translationService: _translationService,
-                      filterByCompleted: false,
+                      filterByCompleted: _showCompletedTasks,
                       filterByTags: _selectedTagFilter,
                       filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
                       filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
                       filterDateOr: true,
+                      sortByPlannedDate: SortDirection.desc,
+                      search: _searchQuery,
                       onClickTask: (task) => _openTaskDetails(context, task.id),
                       onList: _onTaskList,
                       onScheduleTask: (_, __) => _refreshTasks(),

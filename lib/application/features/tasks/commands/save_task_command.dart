@@ -5,6 +5,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
@@ -84,7 +85,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           "parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND deleted_date IS NULL",
           request.parentTaskId != null ? [request.parentTaskId!] : [],
         ),
-        customOrder: [CustomOrder(field: "order", ascending: false)],
+        customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
       );
 
       const int orderStep = 1000;
