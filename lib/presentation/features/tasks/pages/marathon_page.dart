@@ -40,6 +40,7 @@ class _MarathonPageState extends State<MarathonPage> {
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
   String? _searchQuery;
+  bool _showCompletedTasks = false;
 
   @override
   void initState() {
@@ -329,6 +330,13 @@ class _MarathonPageState extends State<MarathonPage> {
                           _refreshTasks();
                         },
                         showDateFilter: false,
+                        showCompletedTasks: _showCompletedTasks,
+                        onCompletedTasksToggle: (showCompleted) {
+                          setState(() {
+                            _showCompletedTasks = showCompleted;
+                          });
+                          _refreshTasks();
+                        },
                       ),
                     ),
                     Padding(
@@ -365,7 +373,7 @@ class _MarathonPageState extends State<MarathonPage> {
                   key: _tasksListKey,
                   mediator: _mediator,
                   translationService: _translationService,
-                  filterByCompleted: false,
+                  filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTagIds,
                   filterByPlannedStartDate: today,
                   filterByPlannedEndDate: tomorrow,

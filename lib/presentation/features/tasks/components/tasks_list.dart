@@ -9,8 +9,9 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/acore/utils/order_rank.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:flutter/scheduler.dart'; // Import SchedulerBinding
 
 class TaskList extends StatefulWidget {
   final Mediator mediator;
@@ -41,6 +42,7 @@ class TaskList extends StatefulWidget {
   final List<Widget> Function(TaskListItem task)? trailingButtons;
   // Add rebuildKey parameter to force rebuild when needed
   final Key? rebuildKey;
+  final SortDirection? sortByPlannedDate; // new
 
   const TaskList({
     super.key,
@@ -67,6 +69,7 @@ class TaskList extends StatefulWidget {
     this.onScheduleTask,
     this.trailingButtons,
     this.rebuildKey,
+    this.sortByPlannedDate,
   });
 
   @override
@@ -77,11 +80,29 @@ class TaskListState extends State<TaskList> {
   GetListTasksQueryResponse? _tasks;
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
-  double? _savedScrollPosition;
+  bool _initialLoadCompleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("---- TaskListState initState called ----");
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    if (!mounted) return;
+    await _getTasks(isRefresh: true, showLoading: !_initialLoadCompleted);
+    if (mounted) {
+      setState(() {
+        _initialLoadCompleted = true;
+      });
+    }
+  }
 
   // Smooth refresh method that preserves UI state
   Future<void> refresh({bool showLoading = false}) async {
-    await _getTasks(isRefresh: true, showLoading: showLoading);
+    if (!mounted) return;
+    await _getTasks(isRefresh: true, showLoading: false);
   }
 
   // Add a task to the list without full refresh
@@ -110,84 +131,138 @@ class TaskListState extends State<TaskList> {
   @override
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.key != widget.key) {
-      _savedScrollPosition = _scrollController.position.pixels;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_savedScrollPosition != null && _scrollController.hasClients) {
-          _scrollController.jumpTo(_savedScrollPosition!);
-        }
-      });
+
+    if (_isFilterChanged(oldWidget)) {
+      debugPrint('[TaskList] Filters changed detected in didUpdateWidget, initiating immediate refresh.');
+      if (mounted) {
+        // Call _getTasks directly, removing SchedulerBinding.
+        // The loading guard inside _getTasks should prevent concurrent calls.
+        _getTasks(isRefresh: true, showLoading: true, forceRefresh: true);
+      }
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getTasks();
+  bool _isFilterChanged(TaskList oldWidget) {
+    // Removed rebuildKey check
+    return oldWidget.filterByCompleted != widget.filterByCompleted ||
+        !_areListsEqual(oldWidget.filterByTags, widget.filterByTags) ||
+        oldWidget.search != widget.search ||
+        oldWidget.filterByPlannedStartDate != widget.filterByPlannedStartDate ||
+        oldWidget.filterByPlannedEndDate != widget.filterByPlannedEndDate ||
+        oldWidget.filterByDeadlineStartDate != widget.filterByDeadlineStartDate ||
+        oldWidget.filterByDeadlineEndDate != widget.filterByDeadlineEndDate ||
+        oldWidget.sortByPlannedDate != widget.sortByPlannedDate; // Add check for sortByPlannedDate
   }
 
-  Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false, bool showLoading = true}) async {
-    if (_isLoading) return;
+  // Helper method to compare lists
+  bool _areListsEqual(List<String>? list1, List<String>? list2) {
+    if (list1 == null && list2 == null) return true;
+    if (list1 == null || list2 == null) return false;
+    if (list1.length != list2.length) return false;
 
-    // Only show loading indicator if explicitly requested
-    if (showLoading) {
-      setState(() {
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) return false;
+    }
+
+    return true;
+  }
+
+  Future<void> _getTasks({
+    int pageIndex = 0,
+    bool isRefresh = false,
+    bool showLoading = false,
+    bool forceRefresh = false,
+  }) async {
+    // Prevent concurrent calls unless forced
+    if (_isLoading && !forceRefresh) return;
+
+    // Set loading state and clear tasks immediately if refreshing
+    // Use a local variable to avoid calling setState if not needed yet
+    bool needsSetState = false;
+    if (showLoading || forceRefresh || isRefresh) {
+      if (!_isLoading) {
         _isLoading = true;
-      });
+        needsSetState = true;
+      }
+      // Clear tasks immediately on refresh for better visual feedback
+      if ((isRefresh || pageIndex == 0) && _tasks != null) {
+        _tasks = null;
+        needsSetState = true;
+      }
+    }
+
+    // Call setState only once if changes were made
+    if (mounted && needsSetState) {
+      setState(() {});
     }
 
     try {
-      // Calculate page size - preserve existing items if refreshing
-      final pageSize =
-          isRefresh && _tasks != null && _tasks!.items.length > widget.size ? _tasks!.items.length : widget.size;
-
       final query = GetListTasksQuery(
-          pageIndex: pageIndex,
-          pageSize: pageSize,
-          filterByPlannedStartDate: widget.filterByPlannedStartDate,
-          filterByPlannedEndDate: widget.filterByPlannedEndDate,
-          filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
-          filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
-          filterDateOr: widget.filterDateOr,
-          filterByTags: widget.filterByTags,
-          filterByCompleted: widget.filterByCompleted,
-          searchQuery: widget.search,
-          parentTaskId: widget.parentTaskId);
+        pageIndex: pageIndex,
+        pageSize: widget.size,
+        filterByPlannedStartDate: widget.filterByPlannedStartDate,
+        filterByPlannedEndDate: widget.filterByPlannedEndDate,
+        filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
+        filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
+        filterDateOr: widget.filterDateOr,
+        filterByTags: widget.filterByTags,
+        filterByCompleted: widget.filterByCompleted,
+        search: widget.search,
+        parentTaskId: widget.parentTaskId,
+        sortByPlannedDate: widget.sortByPlannedDate,
+      );
 
-      // We'll use the current tasks for smooth transition if needed
+      debugPrint('[TaskList] Sending Query: ${query.toString()}');
 
       final result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
+      // *** REMOVE CLIENT-SIDE FILTERING LOGIC ***
+      // Directly use the items returned from the backend
+      final displayItems = result.items;
+
+      debugPrint('[TaskList] Received Backend Result Count: ${result.items.length}');
+      debugPrint('[TaskList] Displaying Count (using backend results): ${displayItems.length}');
+
+      // Log details of items received from backend
+      for (final item in displayItems) {
+        debugPrint(
+            '[TaskList] Display Item: id=${item.id}, title=${item.title}, completed=${item.isCompleted}, plannedDate=${item.plannedDate}, deadlineDate=${item.deadlineDate}, tags=${item.tags.map((t) => t.name).join(",")}, order=${item.order}');
+      }
+
       if (mounted) {
         setState(() {
-          if (_tasks == null || pageIndex == 0) {
-            _tasks = result;
+          if (isRefresh || pageIndex == 0) {
+            // Replace data on refresh or first page
+            _tasks = GetListTasksQueryResponse(
+              items: displayItems, // Use backend results directly
+              totalItemCount: result.totalItemCount, // Use backend total count
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+            debugPrint('[TaskList] State updated: Tasks replaced. New count: ${displayItems.length}');
           } else {
-            _tasks!.items.addAll(result.items);
-            _tasks!.pageIndex = result.pageIndex;
+            // Append data for subsequent pages
+            final updatedItems = List<TaskListItem>.from(_tasks?.items ?? [])
+              ..addAll(displayItems); // Use backend results
+            _tasks = GetListTasksQueryResponse(
+              items: updatedItems,
+              totalItemCount: result.totalItemCount, // Use backend total count
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+            debugPrint('[TaskList] State updated: Tasks appended. New total count: ${updatedItems.length}');
           }
-          _isLoading = false;
+          _isLoading = false; // Turn off loading state *after* updating data
         });
 
-        if (widget.onList != null) {
+        if (widget.onList != null && _tasks != null) {
           widget.onList!(_tasks!.items.length);
         }
       }
     } catch (e, stackTrace) {
       if (mounted) {
-        // Only show error if loading indicator was shown
-        if (showLoading) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: widget.translationService.translate(TaskTranslationKeys.getTaskError),
-          );
-        } else {
-          // Just log the error if we're doing a silent refresh
-          debugPrint('Error refreshing tasks: $e');
-        }
-
         setState(() {
           _isLoading = false;
         });
@@ -269,8 +344,7 @@ class TaskListState extends State<TaskList> {
   }
 
   List<Widget> _buildTaskCards() {
-    final items = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList()
-      ..sort((a, b) => a.order.compareTo(b.order));
+    final items = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
 
     return items.map((task) {
       final index = items.indexOf(task);
@@ -287,7 +361,7 @@ class TaskListState extends State<TaskList> {
                 icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
                 onPressed: () => widget.onSelectTask?.call(task),
               ),
-            if (widget.enableReordering)
+            if (widget.enableReordering && widget.filterByCompleted != true)
               ReorderableDragStartListener(
                 index: index,
                 child: const Icon(Icons.drag_handle, color: Colors.grey),
@@ -317,7 +391,10 @@ class TaskListState extends State<TaskList> {
     // Check if the list is empty and show a message
     if (_tasks!.items.isEmpty || (_tasks!.items.length == 1 && widget.selectedTask != null)) {
       return Center(
-        child: Text(widget.translationService.translate(SharedTranslationKeys.noItemsFoundMessage)),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Text(widget.translationService.translate(SharedTranslationKeys.noItemsFoundMessage)),
+        ),
       );
     }
 
@@ -330,7 +407,7 @@ class TaskListState extends State<TaskList> {
           controller: _scrollController,
           children: [
             // Task Cards
-            if (widget.enableReordering)
+            if (widget.enableReordering && widget.filterByCompleted != true)
               Material(
                 type: MaterialType.transparency,
                 child: ReorderableListView(
@@ -351,20 +428,17 @@ class TaskListState extends State<TaskList> {
         ),
 
         // Overlay loading indicator (only shown when _isLoading is true)
-        if (_isLoading)
-          Positioned(
-            top: 8,
-            right: 8,
+        if (_isLoading && _initialLoadCompleted) // Show loading overlay only after initial load
+          Positioned.fill(
+            // Use Positioned.fill to cover the list area
             child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
+              color: Theme.of(context).colorScheme.surface.withOpacity(0.5), // Semi-transparent background
+              child: const Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
               ),
             ),
           ),

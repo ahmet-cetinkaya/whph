@@ -67,11 +67,14 @@ class DateRangeFilter extends StatelessWidget {
                     config: CalendarDatePicker2Config(
                       calendarType: CalendarDatePicker2Type.range,
                       selectedDayHighlightColor: Theme.of(context).primaryColor,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2050),
                     ),
                     value: selectedStartDate != null && selectedEndDate != null
                         ? [selectedStartDate, selectedEndDate]
                         : [],
                     onValueChanged: (dates) {
+                      // Only pop when we have a valid range (both dates selected)
                       if (dates.length == 2) {
                         Navigator.pop(context, dates);
                       }
@@ -85,10 +88,20 @@ class DateRangeFilter extends StatelessWidget {
       ),
     );
 
-    if (result != null && result.length == 2) {
+    if (result != null && result.length == 2 && result[0] != null && result[1] != null) {
+      // Set start date to start of day (00:00:00)
+      final startDate = result[0]!.copyWith(hour: 0, minute: 0, second: 0);
+
       // Set end date to end of day (23:59:59)
-      final endDate = result[1]?.copyWith(hour: 23, minute: 59, second: 59);
-      onDateFilterChange(result[0], endDate);
+      final endDate = result[1]!.copyWith(hour: 23, minute: 59, second: 59);
+
+      // Call the callback with the formatted dates
+      onDateFilterChange(startDate, endDate);
+
+      // Add a small delay to ensure the UI updates
+      Future.delayed(const Duration(milliseconds: 50), () {
+        // This will trigger a rebuild if needed
+      });
     }
   }
 

@@ -14,6 +14,7 @@ import 'package:whph/presentation/shared/components/responsive_scaffold_layout.d
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -33,12 +34,13 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
   String? _title;
   bool _isCompletedTasksExpanded = false;
+  String? _searchQuery;
 
   void _refreshTasks() {
     if (mounted) {
-      // Directly access the TaskList states and refresh them without showing loading indicators
-      _activeTasksListKey.currentState?.refresh(showLoading: false);
-      _completedTasksListKey.currentState?.refresh(showLoading: false);
+      // Directly access the TaskList states and refresh them with loading indicators
+      _activeTasksListKey.currentState?.refresh(showLoading: true);
+      _completedTasksListKey.currentState?.refresh(showLoading: true);
     }
   }
 
@@ -103,6 +105,26 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
               children: [
                 Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
 
+                // Task filters
+                Expanded(
+                  child: TaskFilters(
+                    onSearchChange: (query) {
+                      setState(() {
+                        _searchQuery = query;
+                      });
+
+                      // Schedule a refresh after the widget has been rebuilt
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _refreshTasks();
+                      });
+                    },
+                    showCompletedTasksToggle: false,
+                    showDateFilter: false,
+                    showTagFilter: false,
+                    hasItems: true,
+                  ),
+                ),
+
                 // Add Task
                 TaskAddButton(
                   onTaskCreated: (_, __) => _refreshTasks(),
@@ -120,6 +142,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             onClickTask: _openTaskDetails,
             filterByTags: [widget.tagId],
             filterByCompleted: false,
+            search: _searchQuery,
             onTaskCompleted: _refreshTasks,
             onScheduleTask: (_, __) => _refreshTasks(),
             enableReordering: true,
@@ -151,6 +174,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
                   onClickTask: _openTaskDetails,
                   filterByTags: [widget.tagId],
                   filterByCompleted: true,
+                  search: _searchQuery,
                   onTaskCompleted: _refreshTasks,
                   onScheduleTask: (_, __) => _refreshTasks(),
                 ),

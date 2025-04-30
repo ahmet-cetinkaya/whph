@@ -14,6 +14,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -43,8 +44,6 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _isTasksListEmpty = false;
       });
-
-      // Access the TaskList state directly using the GlobalKey
       _tasksListKey.currentState?.refresh(showLoading: false);
     }
   }
@@ -70,9 +69,9 @@ class _TasksPageState extends State<TasksPage> {
   void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     if (mounted) {
       setState(() {
-        _selectedTagIds = tagOptions.map((option) => option.value).toList();
+        _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
+        debugPrint('[TasksPage] Tag filter changed via setState. New tags: $_selectedTagIds');
       });
-      _refreshTasks();
     }
   }
 
@@ -81,8 +80,8 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _filterStartDate = start;
         _filterEndDate = end;
+        debugPrint('[TasksPage] Date filter changed via setState.');
       });
-      _refreshTasks();
     }
   }
 
@@ -90,8 +89,8 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _searchQuery = query;
+        debugPrint('[TasksPage] Search query changed via setState.');
       });
-      _refreshTasks();
     }
   }
 
@@ -99,10 +98,8 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _showCompletedTasks = showCompleted;
+        debugPrint('[TasksPage] Completed toggle changed via setState.');
       });
-
-      // Refresh the task list with the new filter
-      _tasksListKey.currentState?.refresh(showLoading: true);
     }
   }
 
@@ -163,33 +160,33 @@ class _TasksPageState extends State<TasksPage> {
             onSearchChange: _onSearchChange,
             showCompletedTasks: _showCompletedTasks,
             onCompletedTasksToggle: _onCompletedTasksToggle,
-            hasItems: !_isTasksListEmpty,
             showTagFilter: true,
             showDateFilter: true,
             showSearchFilter: true,
-            showCompletedTasksToggle: !_isTasksListEmpty,
+            showCompletedTasksToggle: true,
+            hasItems: true, // keep filters visible even if list is empty
           ),
 
           // Empty List Overlay or TaskList with conditional properties
           _isTasksListEmpty
               ? const Center(child: DoneOverlay())
               : TaskList(
-                  // Use ValueKey that changes when filter changes to force widget rebuild
                   key: _tasksListKey,
                   mediator: _mediator,
                   translationService: _translationService,
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTagIds,
-                  // Only apply date filters for active tasks
-                  filterByPlannedStartDate: _showCompletedTasks ? null : _filterStartDate,
-                  filterByPlannedEndDate: _showCompletedTasks ? null : _filterEndDate,
+                  filterByPlannedStartDate: _filterStartDate,
+                  filterByPlannedEndDate: _filterEndDate,
+                  filterByDeadlineStartDate: _filterStartDate,
+                  filterByDeadlineEndDate: _filterEndDate,
+                  filterDateOr: true,
+                  sortByPlannedDate: SortDirection.asc,
                   search: _searchQuery,
                   onClickTask: (task) => _openTaskDetails(task.id),
                   onTaskCompleted: _refreshTasks,
-                  // Only use onList callback for active tasks to check if empty
                   onList: _showCompletedTasks ? null : _onTasksList,
                   onScheduleTask: (_, __) => _refreshTasks(),
-                  // Only enable reordering for active tasks
                   enableReordering: !_showCompletedTasks,
                 ),
         ],
