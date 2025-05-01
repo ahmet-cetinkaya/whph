@@ -9,6 +9,7 @@ import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:flutter/foundation.dart';
 
 class HabitsList extends StatefulWidget {
   final Mediator mediator;
@@ -40,38 +41,75 @@ class HabitsList extends StatefulWidget {
 class HabitsListState extends State<HabitsList> {
   GetListHabitsQueryResponse? _habits;
   final _translationService = container.resolve<ITranslationService>();
+  bool _isRefreshing = false;
 
   @override
   void initState() {
     super.initState();
-    _getHabits();
+    _loadInitialData();
   }
 
-  Future<void> _getHabits({int pageIndex = 0, bool isRefresh = false}) async {
+  @override
+  void didUpdateWidget(covariant HabitsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (_isFilterChanged(oldWidget)) {
+      _getHabits(isRefresh: true, forceRefresh: true);
+    }
+  }
+
+  bool _isFilterChanged(HabitsList oldWidget) {
+    if (oldWidget.filterByTags == null && widget.filterByTags == null) return false;
+    if (oldWidget.filterByTags == null || widget.filterByTags == null) return true;
+    if (oldWidget.filterByTags!.length != widget.filterByTags!.length) return true;
+    return !listEquals(oldWidget.filterByTags, widget.filterByTags);
+  }
+
+  Future<void> _loadInitialData() async {
+    if (!mounted) return;
+    await _getHabits(isRefresh: true);
+  }
+
+  Future<void> _getHabits({
+    int pageIndex = 0,
+    bool isRefresh = false,
+    bool forceRefresh = false,
+  }) async {
+    if (_isRefreshing && !forceRefresh) return;
+    _isRefreshing = true;
+
+    if (isRefresh && mounted) {
+      setState(() {
+        _habits = null;
+      });
+    }
+
     try {
       final query = GetListHabitsQuery(
         pageIndex: pageIndex,
-        pageSize: isRefresh && _habits!.items.length > widget.size ? _habits?.items.length ?? widget.size : widget.size,
+        pageSize:
+            isRefresh && _habits != null && _habits!.items.length > widget.size ? _habits!.items.length : widget.size,
         excludeCompleted: widget.mini,
         filterByTags: widget.filterByTags,
       );
+
       final result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
 
       if (!mounted) return;
 
       setState(() {
-        if (_habits == null) {
+        if (_habits == null || isRefresh) {
           _habits = result;
-          return;
+        } else {
+          _habits!.items.addAll(result.items);
+          _habits!.pageIndex = result.pageIndex;
+          _habits!.totalItemCount = result.totalItemCount;
+          _habits!.totalPageCount = result.totalPageCount;
+          _habits!.pageSize = result.pageSize;
         }
-
-        _habits!.items.addAll(result.items);
-        _habits!.pageIndex = result.pageIndex;
       });
 
-      if (widget.onList != null) {
-        widget.onList!(_habits!.items.length);
-      }
+      widget.onList?.call(_habits!.items.length);
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(
@@ -81,16 +119,25 @@ class HabitsListState extends State<HabitsList> {
           message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
     }
   }
 
   Future<void> refresh() async {
-    await _getHabits(isRefresh: true);
+    await _getHabits(isRefresh: true, forceRefresh: true);
   }
 
+  /// Clear and fetch fresh habits list (used internally, e.g., after record operations).
   void _refreshHabits() {
-    _habits = null;
-    _getHabits();
+    setState(() {
+      _habits = null;
+    });
+    _getHabits(pageIndex: 0);
   }
 
   @override
@@ -111,25 +158,25 @@ class HabitsListState extends State<HabitsList> {
   Widget _buildMiniCardList() {
     return Wrap(
       children: [
-        // List
         ..._habits!.items.map((habit) {
           return SizedBox(
             width: 200,
             child: HabitCard(
-                habit: habit,
-                isMiniLayout: widget.mini,
-                dateRange: widget.dateRange,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                onRecordCreated: (_) async {
-                  await Future.delayed(Duration(seconds: 3));
-                  _refreshHabits();
-                  widget.onHabitCompleted?.call();
-                },
-                onRecordDeleted: (_) async {
-                  await Future.delayed(Duration(seconds: 3));
-                  _refreshHabits();
-                  widget.onHabitCompleted?.call();
-                }),
+              habit: habit,
+              isMiniLayout: widget.mini,
+              dateRange: widget.dateRange,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              onRecordCreated: (_) async {
+                await Future.delayed(Duration(seconds: 3));
+                _refreshHabits();
+                widget.onHabitCompleted?.call();
+              },
+              onRecordDeleted: (_) async {
+                await Future.delayed(Duration(seconds: 3));
+                _refreshHabits();
+                widget.onHabitCompleted?.call();
+              },
+            ),
           );
         }),
         if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),

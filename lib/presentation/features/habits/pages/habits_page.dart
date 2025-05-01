@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
+import 'package:whph/presentation/features/habits/components/habit_filters.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -9,7 +10,6 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
-import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
@@ -43,12 +43,11 @@ class _HabitsPageState extends State<HabitsPage> {
   }
 
   void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions) {
-    if (mounted) {
-      setState(() {
-        _selectedFilterTags = tagOptions.map((option) => option.value).toList();
-        _refreshHabitsList();
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _selectedFilterTags = tagOptions.map((option) => option.value).toList();
+    });
+    // Child will auto-refresh via didUpdateWidget in HabitsList
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -113,13 +112,9 @@ class _HabitsPageState extends State<HabitsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Filter by tags
-              TagSelectDropdown(
-                isMultiSelect: true,
-                onTagsSelected: _onFilterTagsSelect,
-                icon: Icons.label,
-                color: _selectedFilterTags.isNotEmpty ? AppTheme.primaryColor : Colors.grey,
-                tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
-                showLength: true,
+              HabitFilters(
+                selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
+                onTagFilterChange: _onFilterTagsSelect,
               ),
 
               // Calendar
