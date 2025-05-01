@@ -217,6 +217,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             },
           ),
           const SizedBox(height: AppTheme.sizeSmall),
+
+          // SUB TASKS
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.sizeSmall,
@@ -232,6 +234,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // TITLE
                         const Icon(Icons.list),
                         const SizedBox(width: 8),
                         Flexible(
@@ -246,57 +249,55 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                             '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
+
+                        // FILTERS
+                        const SizedBox(width: AppTheme.sizeMedium),
+                        TaskFilters(
+                          showCompletedTasks: _showCompletedTasks,
+                          onCompletedTasksToggle: (showCompleted) {
+                            debugPrint('TaskDetailsPage: Completed tasks toggle called with $showCompleted');
+                            setState(() {
+                              _showCompletedTasks = showCompleted;
+                              _listRebuildKey = UniqueKey();
+                            });
+                            Future.delayed(const Duration(milliseconds: 50), () {
+                              if (mounted) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  debugPrint(
+                                      'TaskDetailsPage: Post-frame refresh with showCompleted: $_showCompletedTasks');
+                                  _refreshTasksList();
+                                });
+                              }
+                            });
+                          },
+                          onSearchChange: (query) {
+                            setState(() {
+                              _searchQuery = query;
+                            });
+                            _refreshTasksList();
+                          },
+                          hasItems: true,
+                          showDateFilter: false,
+                          showTagFilter: false,
+                        )
                       ],
                     ),
                   ),
-                  Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: TaskFilters(
-                            showCompletedTasks: _showCompletedTasks,
-                            onCompletedTasksToggle: (showCompleted) {
-                              debugPrint('TaskDetailsPage: Completed tasks toggle called with $showCompleted');
-                              setState(() {
-                                _showCompletedTasks = showCompleted;
-                                _listRebuildKey = UniqueKey();
-                              });
-                              Future.delayed(const Duration(milliseconds: 50), () {
-                                if (mounted) {
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    debugPrint(
-                                        'TaskDetailsPage: Post-frame refresh with showCompleted: $_showCompletedTasks');
-                                    _refreshTasksList();
-                                  });
-                                }
-                              });
-                            },
-                            onSearchChange: (query) {
-                              setState(() {
-                                _searchQuery = query;
-                              });
-                              _refreshTasksList();
-                            },
-                            hasItems: true,
-                            showDateFilter: false,
-                            showTagFilter: false,
-                          ),
-                        ),
-                        if (!_showCompletedTasks)
-                          TaskAddButton(
-                            onTaskCreated: (_, __) {
-                              _refreshEverything();
-                            },
-                            initialParentTaskId: widget.taskId,
-                          ),
-                      ],
+
+                  // ADD BUTTON
+                  if (!_showCompletedTasks)
+                    TaskAddButton(
+                      onTaskCreated: (_, __) {
+                        _refreshEverything();
+                      },
+                      initialParentTaskId: widget.taskId,
                     ),
-                  ),
                 ],
               ),
             ),
           ),
+
+          // LIST
           Container(
             height: MediaQuery.of(context).size.height * 0.5,
             margin: const EdgeInsets.fromLTRB(

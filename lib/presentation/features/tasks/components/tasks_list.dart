@@ -11,7 +11,6 @@ import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/acore/utils/order_rank.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
-import 'package:flutter/scheduler.dart'; // Import SchedulerBinding
 
 class TaskList extends StatefulWidget {
   final Mediator mediator;
@@ -261,7 +260,7 @@ class TaskListState extends State<TaskList> {
           widget.onList!(_tasks!.items.length);
         }
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -369,7 +368,9 @@ class TaskListState extends State<TaskList> {
           ],
           onCompleted: _onTaskCompleted,
           onOpenDetails: () => widget.onClickTask(task),
-          onScheduled: widget.onScheduleTask != null ? () => widget.onScheduleTask!(task, DateTime.now()) : null,
+          onScheduled: !task.isCompleted && widget.onScheduleTask != null
+              ? () => widget.onScheduleTask!(task, DateTime.now())
+              : null,
         ),
       );
     }).toList();
@@ -432,7 +433,7 @@ class TaskListState extends State<TaskList> {
           Positioned.fill(
             // Use Positioned.fill to cover the list area
             child: Container(
-              color: Theme.of(context).colorScheme.surface.withOpacity(0.5), // Semi-transparent background
+              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5), // Semi-transparent background
               child: const Center(
                 child: SizedBox(
                   width: 24,
