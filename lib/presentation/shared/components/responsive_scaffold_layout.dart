@@ -40,6 +40,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final bool fullScreen;
   final bool hideSidebar;
   final bool showBackButton; // New property to control back button visibility
+  final bool respectBottomInset; // Control whether to respect bottom system insets
 
   const ResponsiveScaffoldLayout({
     super.key,
@@ -52,6 +53,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     this.fullScreen = false,
     this.hideSidebar = false,
     this.showBackButton = false, // Default to false for backward compatibility
+    this.respectBottomInset = true, // Default to true to respect bottom insets
   });
 
   @override
@@ -97,6 +99,9 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     if (widget.fullScreen) {
       return widget.builder(context);
     }
+
+    // Get the bottom inset (navigation bar height)
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).viewPadding.bottom;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -152,7 +157,15 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+              padding: EdgeInsets.only(
+                left: AppTheme.sizeSmall,
+                top: AppTheme.sizeSmall,
+                right: AppTheme.sizeSmall,
+                // Add bottom padding to account for system navigation bar
+                bottom: widget.respectBottomInset
+                    ? AppTheme.sizeSmall + (bottomInset > 0 ? bottomInset : 0)
+                    : AppTheme.sizeSmall,
+              ),
               child: widget.builder(context),
             ),
           ),
