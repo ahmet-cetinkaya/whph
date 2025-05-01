@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/components/habit_filters.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/done_overlay.dart';
@@ -18,6 +20,8 @@ import 'package:whph/presentation/features/calendar/constants/calendar_translati
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -42,6 +46,7 @@ class _TodayPageState extends State<TodayPage> {
   bool _isCheckedUpdate = false;
   bool _showCompletedTasks = false;
   String? _searchQuery;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
@@ -68,9 +73,20 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   void _refreshAllElements() {
-    _habitsListKey.currentState?.refresh();
-    _tasksListKey.currentState?.refresh(showLoading: true);
-    _timeChartKey.currentState?.refresh();
+    if (_isRefreshing) return;
+    _isRefreshing = true;
+
+    Future.wait([
+      _habitsListKey.currentState?.refresh() ?? Future.value(),
+      _tasksListKey.currentState?.refresh(showLoading: true) ?? Future.value(),
+      _timeChartKey.currentState?.refresh() ?? Future.value(),
+    ]).then((_) {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    });
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
@@ -137,16 +153,69 @@ class _TodayPageState extends State<TodayPage> {
       ],
       builder: (context) => ListView(
         children: [
+          // Shared Tag Filter
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TagSelectDropdown(
+                    isMultiSelect: true,
+                    onTagsSelected: (tags) {
+                      if (_isRefreshing) return;
+                      setState(() {
+                        _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                        _isHabitListEmpty = false;
+                        _isTaskListEmpty = false;
+                      });
+                      _refreshAllElements();
+                    },
+                    icon: Icons.label,
+                    color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                    tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
+                    showLength: true,
+                    initialSelectedTags: _selectedTagFilter != null
+                        ? _selectedTagFilter!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                        : [],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(),
+
           // Habits
           const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 4),
-                child: Text(
-                  _translationService.translate(CalendarTranslationKeys.habitsTitle),
-                  style: Theme.of(context).textTheme.titleSmall,
+                padding: const EdgeInsets.only(left: 8.0, bottom: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Habits title
+                    Text(
+                      _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(width: 24),
+
+                    // Habit filters
+                    Expanded(
+                      child: HabitFilters(
+                        selectedTagIds: _selectedTagFilter,
+                        onTagFilterChange: (tags) {
+                          setState(() {
+                            _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                            _isHabitListEmpty = false;
+                          });
+                          _refreshAllElements();
+                        },
+                        showTagFilter: false,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               _isHabitListEmpty
@@ -217,6 +286,7 @@ class _TodayPageState extends State<TodayPage> {
                               },
                               hasItems: true,
                               showDateFilter: false,
+                              showTagFilter: false,
                             ),
                           ),
 
