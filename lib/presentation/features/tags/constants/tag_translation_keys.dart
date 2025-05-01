@@ -76,6 +76,9 @@ class TagTranslationKeys {
   static const String detailsHelpManagementTitle = 'tags.details.help.management_title';
   static const String detailsHelpManagementList = 'tags.details.help.management_list';
   static const String detailsTasksLabel = 'tags.details.tasks_label';
+  // Details fields
+  static const String detailsRelatedTags = 'tags.details.related_tags';
+  static const String detailsArchived = 'tags.details.archived';
 
   // Page Sections
   static const String title = 'tags.title';

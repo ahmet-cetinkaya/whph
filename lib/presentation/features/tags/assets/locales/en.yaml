@@ -134,6 +134,5 @@ tags:
     name: Name
     color: Color
     archived: Archived
-    parent_tags: Parent Tags
-    child_tags: Child Tags
+    related_tags: Related Tags
     select_tag: Select tag

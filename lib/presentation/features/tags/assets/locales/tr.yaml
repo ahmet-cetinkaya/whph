@@ -107,8 +107,7 @@ tags:
     name: İsim
     color: Renk
     archived: Arşivlenmiş
-    parent_tags: Üst Etiketler
-    child_tags: Alt Etiketler
+    related_tags: İlgili Etiketler
     select_tag: Etiket seç
     help:
       title: Etiket Detayları Yardım
