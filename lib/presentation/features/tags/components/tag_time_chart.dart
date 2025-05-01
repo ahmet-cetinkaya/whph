@@ -5,7 +5,6 @@ import 'package:whph/application/features/tags/queries/get_top_tags_by_time_quer
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 
 class TagTimeChart extends StatefulWidget {
@@ -16,6 +15,7 @@ class TagTimeChart extends StatefulWidget {
   final DateTime endDate;
   final double? height;
   final double? width;
+  final bool filterByIsArchived;
 
   TagTimeChart({
     super.key,
@@ -24,6 +24,7 @@ class TagTimeChart extends StatefulWidget {
     required this.endDate,
     this.height = 300,
     this.width = 300,
+    this.filterByIsArchived = false,
   });
 
   @override
@@ -46,44 +47,40 @@ class TagTimeChartState extends State<TagTimeChart> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.startDate != widget.startDate ||
         oldWidget.endDate != widget.endDate ||
-        oldWidget.filterByTags != widget.filterByTags) {
+        oldWidget.filterByTags != widget.filterByTags ||
+        oldWidget.filterByIsArchived != widget.filterByIsArchived) {
       refresh();
     }
   }
 
   Future<void> refresh() async {
     if (_isLoading) return;
-    await _loadData();
-  }
-
-  Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
     try {
-      final query = GetTopTagsByTimeQuery(
-        startDate: widget.startDate,
-        endDate: widget.endDate,
-        limit: 10,
-        filterByTags: widget.filterByTags,
-      );
-
-      final result = await widget._mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);
-
+      await _loadData();
+    } finally {
       if (mounted) {
-        setState(() {
-          _tagTimes = result;
-          _isLoading = false;
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-        );
         setState(() => _isLoading = false);
       }
+    }
+  }
+
+  Future<void> _loadData() async {
+    final query = GetTopTagsByTimeQuery(
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+      limit: 10,
+      filterByTags: widget.filterByTags,
+      filterByIsArchived: widget.filterByIsArchived,
+    );
+
+    final result = await widget._mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);
+
+    if (mounted) {
+      setState(() {
+        _tagTimes = result;
+      });
     }
   }
 

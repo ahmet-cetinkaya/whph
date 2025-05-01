@@ -12,6 +12,7 @@ abstract class IAppUsageTagRepository extends IRepository<AppUsageTag, String> {
     DateTime endDate, {
     int? limit,
     List<String>? filterByTags,
+    bool filterByIsArchived = false,
   });
 }
 

@@ -74,6 +74,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
     DateTime endDate, {
     int? limit,
     List<String>? filterByTags,
+    bool filterByIsArchived = false,
   }) async {
     final query = database.customSelect(
       '''
@@ -125,6 +126,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
         FROM tag_table t
         WHERE t.deleted_date IS NULL
         ${filterByTags != null && filterByTags.isNotEmpty ? 'AND t.id IN (${filterByTags.map((_) => '?').join(',')})' : ''}
+        ${filterByIsArchived ? 'AND t.is_archived = 1' : 'AND (t.is_archived = 0 OR t.is_archived IS NULL)'}
       )
       SELECT *
       FROM duration_calc
