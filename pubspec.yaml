@@ -7,7 +7,9 @@ publish_to: "none"
 # - Android: versionName = version, versionCode = build
 # - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
 # - Windows: product/file version components = version, build suffix = build
-version: 0.5.0+13
+#
+# Update /lib/domain/shared/constants/app_info.dart file too.
+version: 0.5.1+14
 
 environment:
   sdk: ^3.5.3
