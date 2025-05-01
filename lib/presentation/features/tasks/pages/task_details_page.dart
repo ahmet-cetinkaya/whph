@@ -255,7 +255,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                         TaskFilters(
                           showCompletedTasks: _showCompletedTasks,
                           onCompletedTasksToggle: (showCompleted) {
-                            debugPrint('TaskDetailsPage: Completed tasks toggle called with $showCompleted');
                             setState(() {
                               _showCompletedTasks = showCompleted;
                               _listRebuildKey = UniqueKey();
@@ -263,8 +262,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                             Future.delayed(const Duration(milliseconds: 50), () {
                               if (mounted) {
                                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  debugPrint(
-                                      'TaskDetailsPage: Post-frame refresh with showCompleted: $_showCompletedTasks');
                                   _refreshTasksList();
                                 });
                               }

@@ -70,7 +70,6 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
-        debugPrint('[TasksPage] Tag filter changed via setState. New tags: $_selectedTagIds');
       });
     }
   }
@@ -80,7 +79,6 @@ class _TasksPageState extends State<TasksPage> {
       setState(() {
         _filterStartDate = start;
         _filterEndDate = end;
-        debugPrint('[TasksPage] Date filter changed via setState.');
       });
     }
   }
@@ -89,7 +87,6 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _searchQuery = query;
-        debugPrint('[TasksPage] Search query changed via setState.');
       });
     }
   }
@@ -98,7 +95,6 @@ class _TasksPageState extends State<TasksPage> {
     if (mounted) {
       setState(() {
         _showCompletedTasks = showCompleted;
-        debugPrint('[TasksPage] Completed toggle changed via setState.');
       });
     }
   }

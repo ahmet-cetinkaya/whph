@@ -84,7 +84,6 @@ class TaskListState extends State<TaskList> {
   @override
   void initState() {
     super.initState();
-    debugPrint("---- TaskListState initState called ----");
     _loadInitialData();
   }
 
@@ -132,7 +131,6 @@ class TaskListState extends State<TaskList> {
     super.didUpdateWidget(oldWidget);
 
     if (_isFilterChanged(oldWidget)) {
-      debugPrint('[TaskList] Filters changed detected in didUpdateWidget, initiating immediate refresh.');
       if (mounted) {
         // Call _getTasks directly, removing SchedulerBinding.
         // The loading guard inside _getTasks should prevent concurrent calls.
@@ -211,22 +209,11 @@ class TaskListState extends State<TaskList> {
         sortByPlannedDate: widget.sortByPlannedDate,
       );
 
-      debugPrint('[TaskList] Sending Query: ${query.toString()}');
-
       final result = await widget.mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
 
       // *** REMOVE CLIENT-SIDE FILTERING LOGIC ***
       // Directly use the items returned from the backend
       final displayItems = result.items;
-
-      debugPrint('[TaskList] Received Backend Result Count: ${result.items.length}');
-      debugPrint('[TaskList] Displaying Count (using backend results): ${displayItems.length}');
-
-      // Log details of items received from backend
-      for (final item in displayItems) {
-        debugPrint(
-            '[TaskList] Display Item: id=${item.id}, title=${item.title}, completed=${item.isCompleted}, plannedDate=${item.plannedDate}, deadlineDate=${item.deadlineDate}, tags=${item.tags.map((t) => t.name).join(",")}, order=${item.order}');
-      }
 
       if (mounted) {
         setState(() {
@@ -239,7 +226,6 @@ class TaskListState extends State<TaskList> {
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
-            debugPrint('[TaskList] State updated: Tasks replaced. New count: ${displayItems.length}');
           } else {
             // Append data for subsequent pages
             final updatedItems = List<TaskListItem>.from(_tasks?.items ?? [])
@@ -251,7 +237,6 @@ class TaskListState extends State<TaskList> {
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
-            debugPrint('[TaskList] State updated: Tasks appended. New total count: ${updatedItems.length}');
           }
           _isLoading = false; // Turn off loading state *after* updating data
         });

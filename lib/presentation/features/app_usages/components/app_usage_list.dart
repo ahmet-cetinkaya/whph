@@ -11,10 +11,9 @@ import 'package:whph/main.dart';
 
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
-
   final int size;
   final List<String>? filterByTags;
-  final Function(String int)? onOpenDetails;
+  final Function(String id)? onOpenDetails;
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
 
@@ -45,18 +44,31 @@ class AppUsageListState extends State<AppUsageList> {
     _loadAppUsages();
   }
 
+  @override
+  void didUpdateWidget(AppUsageList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.filterByTags != widget.filterByTags ||
+        oldWidget.filterStartDate != widget.filterStartDate ||
+        oldWidget.filterEndDate != widget.filterEndDate) {
+      refresh();
+    }
+  }
+
   Future<void> refresh() async {
     if (_isRefreshing) return;
 
     setState(() {
       _isRefreshing = true;
+      _appUsages = []; // Clear current data while refreshing
     });
 
     await _loadAppUsages();
 
-    setState(() {
-      _isRefreshing = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isRefreshing = false;
+      });
+    }
   }
 
   Future<void> _loadAppUsages() async {
@@ -69,15 +81,18 @@ class AppUsageListState extends State<AppUsageList> {
     try {
       final appUsages = await _fetchAppUsages();
 
-      setState(() {
-        _appUsages = appUsages;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _appUsages = appUsages;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      // Handle error appropriately
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -94,15 +109,13 @@ class AppUsageListState extends State<AppUsageList> {
       final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
       return result.items;
     } on BusinessException catch (e) {
-      if (context.mounted) {
-        // ignore: use_build_context_synchronously
+      if (mounted) {
         ErrorHelper.showError(context, e);
       }
       return [];
     } catch (e, stackTrace) {
-      if (context.mounted) {
+      if (mounted) {
         ErrorHelper.showUnexpectedError(
-          // ignore: use_build_context_synchronously
           context,
           e,
           stackTrace,
@@ -115,6 +128,10 @@ class AppUsageListState extends State<AppUsageList> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isRefreshing || (_isLoading && _appUsages.isEmpty)) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     if (_appUsages.isEmpty) {
       return Center(
         child: Text(_translationService.translate(AppUsageTranslationKeys.noUsage)),
