@@ -184,7 +184,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         ),
                         if (tempSelectedTags.isNotEmpty)
                           IconButton(
-                            onPressed: () => setState(() => tempSelectedTags.clear()),
+                            onPressed: () {
+                              setState(() => tempSelectedTags.clear());
+                            },
                             icon: Icon(SharedUiConstants.clearIcon),
                             tooltip: _translationService.translate(TagTranslationKeys.clearAllButton),
                           ),
