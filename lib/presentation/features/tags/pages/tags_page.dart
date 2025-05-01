@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
-import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
+import 'package:whph/presentation/features/tags/components/tag_filters.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
-import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
@@ -35,10 +34,10 @@ class _TagsPageState extends State<TagsPage> {
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
 
-  void _refreshAllElements() {
-    _selectedFilters = null;
-    _tagsListKey.currentState?.refresh();
-    _timeChartKey.currentState?.refresh();
+  Future<void> _refreshAllElements() async {
+    // Ensure sequential refresh to avoid race conditions
+    await _tagsListKey.currentState?.refresh();
+    await _timeChartKey.currentState?.refresh();
   }
 
   Future<void> _openTagDetails(String tagId) async {
@@ -51,9 +50,9 @@ class _TagsPageState extends State<TagsPage> {
 
   void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     setState(() {
-      _selectedFilters = tagOptions.map((option) => option.value).toList();
-      _refreshAllElements();
+      _selectedFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
     });
+    _refreshAllElements();
   }
 
   void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
@@ -84,20 +83,20 @@ class _TagsPageState extends State<TagsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Tag filter with translation
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: TagSelectDropdown(
-              isMultiSelect: true,
-              onTagsSelected: _onFilterTags,
-              icon: Icons.label,
-              color: _selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
-              tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
-              showLength: true,
-            ),
+          // Tag Filters
+          TagFilters(
+            selectedFilters: _selectedFilters,
+            showArchived: _showArchived,
+            onTagFiltersChange: _onFilterTags,
+            onArchivedToggle: (show) {
+              setState(() {
+                _showArchived = show;
+                _refreshAllElements();
+              });
+            },
           ),
 
-          // Tag Times Section with translation
+          // Tag Times Section
           Row(
             children: [
               Text(
@@ -126,32 +125,14 @@ class _TagsPageState extends State<TagsPage> {
               filterByTags: _selectedFilters,
               startDate: _startDate,
               endDate: _endDate,
+              filterByIsArchived: _showArchived,
             ),
           ),
 
           // Tags Section with translation
-          Row(
-            children: [
-              Text(
-                _translationService.translate(TagTranslationKeys.listSectionTitle),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: FilterIconButton(
-                  icon: _showArchived ? Icons.archive : Icons.archive_outlined,
-                  color: _showArchived ? AppTheme.primaryColor : null,
-                  tooltip: _translationService
-                      .translate(_showArchived ? TagTranslationKeys.hideArchived : TagTranslationKeys.showArchived),
-                  onPressed: () {
-                    setState(() {
-                      _showArchived = !_showArchived;
-                      _tagsListKey.currentState?.refresh();
-                    });
-                  },
-                ),
-              ),
-            ],
+          Text(
+            _translationService.translate(TagTranslationKeys.listSectionTitle),
+            style: Theme.of(context).textTheme.titleSmall,
           ),
 
           // List

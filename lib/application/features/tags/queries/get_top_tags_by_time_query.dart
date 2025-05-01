@@ -6,12 +6,14 @@ class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final DateTime endDate;
   final int? limit;
   final List<String>? filterByTags;
+  final bool filterByIsArchived;
 
   GetTopTagsByTimeQuery({
     required this.startDate,
     required this.endDate,
     this.limit,
     this.filterByTags,
+    this.filterByIsArchived = false,
   });
 }
 
@@ -39,6 +41,7 @@ class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQu
       request.endDate,
       limit: request.limit,
       filterByTags: request.filterByTags,
+      filterByIsArchived: request.filterByIsArchived,
     );
 
     final totalDuration = tagTimes.fold<int>(0, (sum, item) => sum + item.duration);

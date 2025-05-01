@@ -17,7 +17,6 @@ class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
   final List<String> excludeTagIds;
   final bool isMultiSelect;
-  final Function(List<DropdownOption<String>>) onTagsSelected;
   final IconData icon;
   final String? buttonLabel;
   final double? iconSize;
@@ -26,6 +25,8 @@ class TagSelectDropdown extends StatefulWidget {
   final bool showLength;
   final int? limit;
   final bool showSelectedInDropdown;
+  final bool showArchived;
+  final Function(List<DropdownOption<String>>) onTagsSelected;
 
   const TagSelectDropdown({
     super.key,
@@ -41,6 +42,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.showLength = false,
     this.limit,
     this.showSelectedInDropdown = false,
+    this.showArchived = false,
   });
 
   @override
@@ -67,6 +69,16 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   }
 
   @override
+  void didUpdateWidget(TagSelectDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.showArchived != widget.showArchived) {
+      // Clear non-matching tags when switching archived mode by refreshing the list
+      _tags = null;
+      _getTags(pageIndex: 0);
+    }
+  }
+
+  @override
   void dispose() {
     _searchFocusNode.dispose();
     _searchDebounce?.cancel();
@@ -75,24 +87,27 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
     try {
-      final query = GetListTagsQuery(pageIndex: pageIndex, pageSize: 10, search: search);
+      final query = GetListTagsQuery(
+        pageIndex: pageIndex,
+        pageSize: 10,
+        search: search,
+        showArchived: widget.showArchived,
+      );
       final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
       if (mounted) {
         setState(() {
-          if (widget.initialSelectedTags.isNotEmpty) {
-            result.items
-                .removeWhere((tag) => widget.initialSelectedTags.any((existingTag) => existingTag.value == tag.id));
-          }
-
           if (widget.excludeTagIds.isNotEmpty) {
             result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
           }
 
           if (_tags == null) {
             _tags = result;
-            _tags!.items
-                .insertAll(0, widget.initialSelectedTags.map((tag) => TagListItem(id: tag.value, name: tag.label)));
+            // Only include valid initial tags that match the current archive state
+            _selectedTags = widget.initialSelectedTags
+                .where((tag) => result.items.any((t) => t.id == tag.value))
+                .map((e) => e.value)
+                .toList();
           } else {
             _tags!.items.addAll(result.items);
             _tags!.pageIndex = result.pageIndex;
