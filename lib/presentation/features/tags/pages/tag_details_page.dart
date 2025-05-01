@@ -152,27 +152,28 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
           ),
 
           // Task List Container
-          Container(
-            height: MediaQuery.of(context).size.height * 0.7,
-            margin: const EdgeInsets.fromLTRB(
-              AppTheme.sizeSmall,
-              0,
-              AppTheme.sizeSmall,
-              AppTheme.sizeSmall,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-              child: TaskList(
-                key: _tasksListKey,
-                mediator: _mediator,
-                translationService: _translationService,
-                onClickTask: _openTaskDetails,
-                filterByTags: [widget.tagId],
-                filterByCompleted: _showCompletedTasks,
-                search: _searchQuery,
-                onTaskCompleted: _refreshTasks,
-                onScheduleTask: (_, __) => _refreshTasks(),
-                enableReordering: !_showCompletedTasks,
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(
+                AppTheme.sizeSmall,
+                0,
+                AppTheme.sizeSmall,
+                AppTheme.sizeSmall,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+                child: TaskList(
+                  key: _tasksListKey,
+                  mediator: _mediator,
+                  translationService: _translationService,
+                  onClickTask: _openTaskDetails,
+                  filterByTags: [widget.tagId],
+                  filterByCompleted: _showCompletedTasks,
+                  search: _searchQuery,
+                  onTaskCompleted: _refreshTasks,
+                  onScheduleTask: (_, __) => _refreshTasks(),
+                  enableReordering: !_showCompletedTasks,
+                ),
               ),
             ),
           ),

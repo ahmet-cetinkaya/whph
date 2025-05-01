@@ -298,49 +298,48 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           ),
 
           // LIST
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            margin: const EdgeInsets.fromLTRB(
-              AppTheme.sizeSmall,
-              0,
-              AppTheme.sizeSmall,
-              AppTheme.sizeSmall,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-              child: TaskList(
-                key: _tasksListKey,
-                rebuildKey: _listRebuildKey,
-                mediator: container.resolve<Mediator>(),
-                translationService: _translationService,
-                onClickTask: (task) async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TaskDetailsPage(
-                        taskId: task.id,
-                        hideSidebar: true,
-                        showCompletedTasksToggle: widget.showCompletedTasksToggle,
-                        // Add back button for subtask detail pages
-                        onTaskDeleted: () {
-                          _refreshEverything();
-                          Navigator.of(context).pop();
-                        },
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(
+                AppTheme.sizeSmall,
+                0,
+                AppTheme.sizeSmall,
+                AppTheme.sizeSmall,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+                child: TaskList(
+                  key: _tasksListKey,
+                  rebuildKey: _listRebuildKey,
+                  mediator: container.resolve<Mediator>(),
+                  translationService: _translationService,
+                  onClickTask: (task) async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TaskDetailsPage(
+                          taskId: task.id,
+                          hideSidebar: true,
+                          showCompletedTasksToggle: widget.showCompletedTasksToggle,
+                          onTaskDeleted: () {
+                            _refreshEverything();
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                  _refreshEverything();
-                },
-                parentTaskId: widget.taskId,
-                // Use correct filter value based on toggle state
-                filterByCompleted: _showCompletedTasks,
-                search: _searchQuery,
-                onTaskCompleted: () {
-                  _hideCompletedTasks();
-                  _refreshEverything();
-                },
-                onScheduleTask: (_, __) => _refreshEverything(),
-                enableReordering: !_showCompletedTasks,
+                    );
+                    _refreshEverything();
+                  },
+                  parentTaskId: widget.taskId,
+                  filterByCompleted: _showCompletedTasks,
+                  search: _searchQuery,
+                  onTaskCompleted: () {
+                    _hideCompletedTasks();
+                    _refreshEverything();
+                  },
+                  onScheduleTask: (_, __) => _refreshEverything(),
+                  enableReordering: !_showCompletedTasks,
+                ),
               ),
             ),
           ),
