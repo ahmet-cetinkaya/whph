@@ -95,27 +95,27 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   }
 
   CustomWhereFilter? _getCustomWhereFilter(GetListHabitsQuery request) {
-    CustomWhereFilter? customWhereFilter;
+    final conditions = <String>[];
+    final variables = <Object>[];
 
     if (request.excludeCompleted) {
-      customWhereFilter = CustomWhereFilter.empty();
-
       final startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
       final endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
-      customWhereFilter.query =
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0";
-      customWhereFilter.variables.add(startDate);
-      customWhereFilter.variables.add(endDate);
+      conditions.add(
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0");
+      variables.add(startDate);
+      variables.add(endDate);
     }
 
     if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      customWhereFilter = CustomWhereFilter.empty();
-
-      customWhereFilter.query =
-          "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN (${request.filterByTags!.map((e) => '?').join(',')})) > 0";
-      customWhereFilter.variables.addAll(request.filterByTags!);
+      final placeholders = request.filterByTags!.map((e) => '?').join(',');
+      conditions.add(
+          "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN ($placeholders) AND habit_tag_table.deleted_date IS NULL) > 0");
+      variables.addAll(request.filterByTags!);
     }
 
-    return customWhereFilter;
+    if (conditions.isEmpty) return null;
+
+    return CustomWhereFilter(conditions.join(' AND '), variables);
   }
 }
