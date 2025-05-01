@@ -235,7 +235,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             }).toList();
                             widget.onTagsSelected(selectedOptions);
                             Future.delayed(const Duration(milliseconds: 1), () {
-                              if (Navigator.canPop(context)) {
+                              if (context.mounted && Navigator.canPop(context)) {
                                 Navigator.pop(context);
                               }
                             });
