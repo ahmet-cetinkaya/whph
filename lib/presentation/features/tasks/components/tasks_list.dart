@@ -19,6 +19,7 @@ class TaskList extends StatefulWidget {
 
   // Update filter props to match query parameters
   final List<String>? filterByTags;
+  final bool filterNoTags;
   final DateTime? filterByPlannedStartDate;
   final DateTime? filterByPlannedEndDate;
   final DateTime? filterByDeadlineStartDate;
@@ -49,6 +50,7 @@ class TaskList extends StatefulWidget {
     required this.translationService,
     this.size = 10,
     this.filterByTags,
+    this.filterNoTags = false,
     this.filterByPlannedStartDate,
     this.filterByPlannedEndDate,
     this.filterByDeadlineStartDate,
@@ -203,6 +205,7 @@ class TaskListState extends State<TaskList> {
         filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
         filterDateOr: widget.filterDateOr,
         filterByTags: widget.filterByTags,
+        filterNoTags: widget.filterNoTags,
         filterByCompleted: widget.filterByCompleted,
         search: widget.search,
         parentTaskId: widget.parentTaskId,

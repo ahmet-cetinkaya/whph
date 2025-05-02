@@ -42,7 +42,7 @@ class HabitTagSection extends StatelessWidget {
     return TagSelectDropdown(
       key: ValueKey(habitTags.items.length),
       isMultiSelect: true,
-      onTagsSelected: onTagsSelected,
+      onTagsSelected: (selected, _) => onTagsSelected(selected),
       initialSelectedTags:
           habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
       icon: SharedUiConstants.addIcon,

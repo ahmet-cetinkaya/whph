@@ -71,7 +71,7 @@ class _TagFiltersState extends State<TagFilters> {
             showArchived: widget.showArchived,
             initialSelectedTags:
                 widget.selectedFilters?.map((id) => DropdownOption(value: id, label: '')).toList() ?? [],
-            onTagsSelected: widget.onTagFiltersChange,
+            onTagsSelected: (selectedTags, _) => widget.onTagFiltersChange(selectedTags),
             icon: Icons.label,
             color: widget.selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
             tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),

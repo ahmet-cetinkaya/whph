@@ -230,9 +230,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       TagSelectDropdown(
         initialSelectedTags: _selectedTags,
         isMultiSelect: true,
-        onTagsSelected: (tags) {
-          setState(() => _selectedTags = tags);
-        },
+        onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
         iconSize: AppTheme.iconSizeMedium,
         color: _selectedTags.isEmpty ? AppTheme.secondaryTextColor : TaskUiConstants.tagColor,
       ),

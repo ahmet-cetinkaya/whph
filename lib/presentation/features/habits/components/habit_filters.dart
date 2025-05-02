@@ -10,8 +10,11 @@ class HabitFilters extends StatefulWidget {
   /// Selected tag IDs for filtering
   final List<String>? selectedTagIds;
 
+  /// Flag to indicate if "None" (no tags) filter is selected
+  final bool showNoTagsFilter;
+
   /// Callback when tag filter changes
-  final Function(List<DropdownOption<String>>) onTagFilterChange;
+  final Function(List<DropdownOption<String>>, bool) onTagFilterChange;
 
   /// Whether to show the tag filter
   final bool showTagFilter;
@@ -19,6 +22,7 @@ class HabitFilters extends StatefulWidget {
   const HabitFilters({
     super.key,
     this.selectedTagIds,
+    this.showNoTagsFilter = false,
     required this.onTagFilterChange,
     this.showTagFilter = true,
   });
@@ -42,11 +46,14 @@ class _HabitFiltersState extends State<HabitFilters> {
         // Filter by tags
         TagSelectDropdown(
           isMultiSelect: true,
-          onTagsSelected: widget.onTagFilterChange,
+          onTagsSelected: (tags, isNoneSelected) => widget.onTagFilterChange(tags, isNoneSelected),
           icon: Icons.label,
-          color: widget.selectedTagIds?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+          color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
+              ? AppTheme.primaryColor
+              : Colors.grey,
           tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
           showLength: true,
+          showNoneOption: true,
           initialSelectedTags: widget.selectedTagIds != null
               ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
               : [],

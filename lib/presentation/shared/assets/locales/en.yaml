@@ -28,6 +28,9 @@ shared:
     habits: Habits
     tasks: Tasks
     time: Time
+    special_filters: Special Filters
+    tags: Tags
+  none_option: "No tags"
   calendar:
     week_days:
       mon: Mon

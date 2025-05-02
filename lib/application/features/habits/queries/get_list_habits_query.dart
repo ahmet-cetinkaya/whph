@@ -12,9 +12,15 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageSize;
   bool excludeCompleted;
   List<String>? filterByTags;
+  bool filterNoTags;
 
-  GetListHabitsQuery(
-      {required this.pageIndex, required this.pageSize, this.excludeCompleted = false, this.filterByTags});
+  GetListHabitsQuery({
+    required this.pageIndex,
+    required this.pageSize,
+    this.excludeCompleted = false,
+    this.filterByTags,
+    this.filterNoTags = false,
+  });
 }
 
 class HabitListItem {
@@ -107,7 +113,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       variables.add(endDate);
     }
 
-    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
+    if (request.filterNoTags) {
+      // Filter habits with no tags
+      conditions.add(
+          "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.deleted_date IS NULL) = 0");
+    } else if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
+      // Filter habits with specific tags
       final placeholders = request.filterByTags!.map((e) => '?').join(',');
       conditions.add(
           "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN ($placeholders) AND habit_tag_table.deleted_date IS NULL) > 0");

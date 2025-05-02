@@ -4,6 +4,7 @@ tags:
   tag_details: Etiket Detayları
   no_tags: Etiket bulunamadı
   filter_tooltip: Etiketlere göre filtrele
+  none_option: Hiçbiri
   sections:
     times: Etiket Süreleri
     list: Etiketler

@@ -203,7 +203,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   ),
                   TagSelectDropdown(
                     key: UniqueKey(),
-                    onTagsSelected: (options) => setState(() {
+                    onTagsSelected: (options, _) => setState(() {
                       _selectedTagId = options.first.value;
                       _selectedTagLabel = options.first.label;
                     }),

@@ -38,6 +38,7 @@ class _TasksPageState extends State<TasksPage> {
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   String? _searchQuery;
+  bool _showNoTagsFilter = false; // Added to track when "None" option is selected
 
   void _refreshTasks() {
     if (mounted) {
@@ -66,11 +67,14 @@ class _TasksPageState extends State<TasksPage> {
     });
   }
 
-  void _onFilterTags(List<DropdownOption<String>> tagOptions) {
+  void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     if (mounted) {
       setState(() {
         _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
+        _showNoTagsFilter = isNoneSelected;
+        _isTasksListEmpty = false;
       });
+      _refreshTasks(); // Refresh the task list when filter changes
     }
   }
 
@@ -149,9 +153,10 @@ class _TasksPageState extends State<TasksPage> {
           // Filters with Completed Tasks Toggle
           TaskFilters(
             selectedTagIds: _selectedTagIds,
+            showNoTagsFilter: _showNoTagsFilter, // Pass the None filter state
             selectedStartDate: _filterStartDate,
             selectedEndDate: _filterEndDate,
-            onTagFilterChange: _onFilterTags,
+            onTagFilterChange: _onFilterTags, // Fix parameter mismatch by using the properly defined function
             onDateFilterChange: _onDateFilterChange,
             onSearchChange: _onSearchChange,
             showCompletedTasks: _showCompletedTasks,
@@ -171,7 +176,8 @@ class _TasksPageState extends State<TasksPage> {
                   mediator: _mediator,
                   translationService: _translationService,
                   filterByCompleted: _showCompletedTasks,
-                  filterByTags: _selectedTagIds,
+                  filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+                  filterNoTags: _showNoTagsFilter,
                   filterByPlannedStartDate: _filterStartDate,
                   filterByPlannedEndDate: _filterEndDate,
                   filterByDeadlineStartDate: _filterStartDate,

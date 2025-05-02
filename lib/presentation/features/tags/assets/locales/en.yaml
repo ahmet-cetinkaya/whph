@@ -4,6 +4,7 @@ tags:
   tag_details: Tag Details
   no_tags: No tags found
   filter_tooltip: Filter by tags
+  none_option: None
   sections:
     times: Tag Times
     list: Tags

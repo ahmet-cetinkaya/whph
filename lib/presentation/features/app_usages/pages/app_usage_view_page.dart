@@ -58,6 +58,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _filterState = newState;
     });
+
     _refreshList();
   }
 
@@ -98,6 +99,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             mediator: _mediator,
             onOpenDetails: _openDetails,
             filterByTags: _filterState.tags,
+            showNoTagsFilter: _filterState.showNoTagsFilter,
             filterStartDate: _filterState.startDate,
             filterEndDate: _filterState.endDate,
           ),

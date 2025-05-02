@@ -6,6 +6,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   late int pageIndex;
   late int pageSize;
   List<String>? filterByTags;
+  bool showNoTagsFilter;
   DateTime? startDate;
   DateTime? endDate;
 
@@ -13,6 +14,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     required this.pageIndex,
     required this.pageSize,
     this.filterByTags,
+    this.showNoTagsFilter = false,
     this.startDate,
     this.endDate,
   });
@@ -59,6 +61,7 @@ class GetListByTopAppUsagesQueryHandler
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
       filterByTags: request.filterByTags,
+      showNoTagsFilter: request.showNoTagsFilter,
       startDate: request.startDate,
       endDate: request.endDate,
     );

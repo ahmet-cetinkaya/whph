@@ -19,12 +19,17 @@ class FilterIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget buttonIcon = Icon(
+      icon,
+      size: iconSize,
+      color: color ?? Colors.grey,
+    );
+
     return Material(
       type: MaterialType.transparency,
       child: IconButton(
-        icon: Icon(icon),
+        icon: buttonIcon,
         iconSize: iconSize,
-        color: color ?? Colors.grey,
         tooltip: tooltip,
         padding: EdgeInsets.zero,
         onPressed: onPressed,

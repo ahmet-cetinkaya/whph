@@ -19,6 +19,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
   final List<String>? filterByTags;
+  final bool filterNoTags;
   final bool? filterByCompleted;
   final String? search;
   final String? parentTaskId;
@@ -34,6 +35,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.filterByDeadlineEndDate,
     this.filterDateOr = false,
     this.filterByTags,
+    this.filterNoTags = false,
     this.filterByCompleted,
     this.search,
     this.parentTaskId,
@@ -249,6 +251,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       conditions.add(
           '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
       variables.addAll(request.filterByTags!);
+    }
+
+    // No tags filter
+    if (request.filterNoTags) {
+      conditions
+          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
     }
 
     // Completed filter

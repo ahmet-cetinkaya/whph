@@ -328,7 +328,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                       child: TagSelectDropdown(
                         key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
                         isMultiSelect: true,
-                        onTagsSelected: _onTagsSelected,
+                        onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                         showSelectedInDropdown: true,
                         initialSelectedTags: _tagTags!.items
                             .map((tag) => DropdownOption<String>(

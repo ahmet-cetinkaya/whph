@@ -476,7 +476,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         widget: TagSelectDropdown(
           key: ValueKey(_taskTags!.items.length),
           isMultiSelect: true,
-          onTagsSelected: _onTagsSelected,
+          onTagsSelected: (options, _) => _onTagsSelected(options),
           showSelectedInDropdown: true,
           initialSelectedTags:
               _taskTags!.items.map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId)).toList(),

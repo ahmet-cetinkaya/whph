@@ -14,6 +14,7 @@ abstract class IAppUsageTimeRecordRepository extends IRepository<AppUsageTimeRec
     int pageIndex = 0,
     int pageSize = 10,
     List<String>? filterByTags,
+    bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
   });

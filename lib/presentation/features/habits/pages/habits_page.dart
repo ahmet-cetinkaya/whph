@@ -29,6 +29,7 @@ class _HabitsPageState extends State<HabitsPage> {
   final _translationService = container.resolve<ITranslationService>();
   final _habitsListKey = GlobalKey<HabitsListState>();
   List<String> _selectedFilterTags = [];
+  bool _showNoTagsFilter = false;
 
   void _refreshHabitsList() {
     _habitsListKey.currentState?.refresh();
@@ -42,12 +43,19 @@ class _HabitsPageState extends State<HabitsPage> {
     _refreshHabitsList();
   }
 
-  void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions) {
+  void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     if (!mounted) return;
+
+    // Update state with new filter values
     setState(() {
-      _selectedFilterTags = tagOptions.map((option) => option.value).toList();
+      _selectedFilterTags = tagOptions.isEmpty ? [] : tagOptions.map((option) => option.value).toList();
+      _showNoTagsFilter = isNoneSelected;
     });
-    // Child will auto-refresh via didUpdateWidget in HabitsList
+
+    // Ensure the HabitsList component gets refreshed immediately
+    if (_habitsListKey.currentState != null) {
+      _habitsListKey.currentState!.refresh();
+    }
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -138,6 +146,7 @@ class _HabitsPageState extends State<HabitsPage> {
             mediator: _mediator,
             dateRange: daysToShow,
             filterByTags: _selectedFilterTags,
+            filterNoTags: _showNoTagsFilter,
             onClickHabit: (item) {
               _openDetails(item.id, context);
             },

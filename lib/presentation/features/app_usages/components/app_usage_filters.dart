@@ -9,22 +9,26 @@ import 'package:whph/main.dart';
 
 class AppUsageFilterState {
   final List<String>? tags;
+  final bool showNoTagsFilter;
   final DateTime startDate;
   final DateTime endDate;
 
   const AppUsageFilterState({
     this.tags,
+    this.showNoTagsFilter = false,
     required this.startDate,
     required this.endDate,
   });
 
   AppUsageFilterState copyWith({
     List<String>? tags,
+    bool? showNoTagsFilter,
     DateTime? startDate,
     DateTime? endDate,
   }) {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
+      showNoTagsFilter: showNoTagsFilter ?? this.showNoTagsFilter,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
     );
@@ -55,10 +59,11 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
     _currentState = widget.initialState;
   }
 
-  void _handleTagSelect(List<DropdownOption<String>> tagOptions) {
+  void _handleTagSelect(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     final selectedValues = tagOptions.map((option) => option.value).toList();
     final newState = AppUsageFilterState(
       tags: selectedValues.isEmpty ? null : selectedValues,
+      showNoTagsFilter: isNoneSelected,
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
     );
@@ -86,6 +91,7 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
 
     final newState = AppUsageFilterState(
       tags: _currentState.tags,
+      showNoTagsFilter: _currentState.showNoTagsFilter,
       startDate: effectiveStart,
       endDate: effectiveEnd,
     );
@@ -115,8 +121,12 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
                   [],
               onTagsSelected: _handleTagSelect,
               showLength: true,
+              showNoneOption: true,
+              initialNoneSelected: _currentState.showNoTagsFilter,
               icon: Icons.label,
-              color: _currentState.tags?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+              color: (_currentState.tags?.isNotEmpty ?? false) || _currentState.showNoTagsFilter
+                  ? AppTheme.primaryColor
+                  : Colors.grey,
               tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
             ),
             const SizedBox(width: AppTheme.sizeXSmall),
