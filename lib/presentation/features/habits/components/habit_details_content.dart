@@ -201,7 +201,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               _habitTags!.items.addAll(response.items);
             }
           });
+
+          // Process field visibility again after tags are loaded
+          _processFieldVisibility();
         }
+
+        // Break out of the loop if we've fetched all tags or received an empty page
+        if (response.items.isEmpty || response.items.length < pageSize) {
+          break;
+        }
+
         pageIndex++;
       } catch (e, stackTrace) {
         if (mounted) {
@@ -347,7 +356,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Check if the field should be displayed in the chips section
   bool _shouldShowAsChip(String fieldKey) {
-    return !_visibleOptionalFields.contains(fieldKey);
+    // Don't show chip if field is already visible OR if it has content
+    return !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
   }
 
   // Method to determine if a field has content
