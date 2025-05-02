@@ -169,7 +169,16 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
               _appUsageTags!.items.addAll(result.items);
             }
           });
+
+          // Process field visibility after tags are loaded to ensure tag fields show correctly
+          _processFieldVisibility();
         }
+
+        // Break out of the loop if we've fetched all tags or received an empty page
+        if (result.items.isEmpty || result.items.length < pageSize) {
+          break;
+        }
+
         pageIndex++;
       } on BusinessException catch (e) {
         if (mounted) {
@@ -292,7 +301,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Check if the field should be displayed in the chips section
   bool _shouldShowAsChip(String fieldKey) {
-    return !_visibleOptionalFields.contains(fieldKey);
+    // Don't show chip if field is already visible OR if it has content
+    return !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
   }
 
   // Method to determine if a field has content
