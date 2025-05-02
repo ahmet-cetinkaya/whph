@@ -14,6 +14,9 @@ class TaskFilters extends StatefulWidget {
   /// Selected tag IDs for filtering
   final List<String>? selectedTagIds;
 
+  /// Flag to indicate if "None" (no tags) filter is selected
+  final bool showNoTagsFilter;
+
   /// Selected start date for filtering
   final DateTime? selectedStartDate;
 
@@ -21,7 +24,7 @@ class TaskFilters extends StatefulWidget {
   final DateTime? selectedEndDate;
 
   /// Callback when tag filter changes
-  final Function(List<DropdownOption<String>>)? onTagFilterChange;
+  final Function(List<DropdownOption<String>>, bool)? onTagFilterChange;
 
   /// Callback when date filter changes
   final Function(DateTime?, DateTime?)? onDateFilterChange;
@@ -53,6 +56,7 @@ class TaskFilters extends StatefulWidget {
   const TaskFilters({
     super.key,
     this.selectedTagIds,
+    this.showNoTagsFilter = false,
     this.selectedStartDate,
     this.selectedEndDate,
     this.onTagFilterChange,
@@ -126,13 +130,18 @@ class _TaskFiltersState extends State<TaskFilters> {
                   // Tag filter
                   if (widget.showTagFilter && widget.onTagFilterChange != null)
                     TagSelectDropdown(
-                      isMultiSelect: true,
-                      onTagsSelected: widget.onTagFilterChange!,
+                      isMultiSelect: true, // Back to multi-select mode
+                      onTagsSelected: (tags, isNoneSelected) {
+                        widget.onTagFilterChange!(tags, isNoneSelected);
+                      },
                       icon: TaskUiConstants.tagsIcon,
                       iconSize: iconSize,
-                      color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
+                      color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
+                          ? primaryColor
+                          : Colors.grey,
                       tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
                       showLength: true,
+                      showNoneOption: true,
                       initialSelectedTags: widget.selectedTagIds != null
                           ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
                           : [],

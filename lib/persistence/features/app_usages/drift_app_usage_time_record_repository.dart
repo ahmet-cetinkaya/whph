@@ -78,6 +78,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     int pageIndex = 0,
     int pageSize = 10,
     List<String>? filterByTags,
+    bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
@@ -107,6 +108,13 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           AND aut.deleted_date IS NULL
         GROUP BY aut.app_usage_id
         HAVING COUNT(DISTINCT aut.tag_id) = ?
+      )
+      ''' : showNoTagsFilter ? '''
+      AND NOT EXISTS (
+        SELECT 1 
+        FROM app_usage_tag_table aut 
+        WHERE aut.app_usage_id = au.id
+          AND aut.deleted_date IS NULL
       )
       ''' : ''}
       ''',
@@ -156,6 +164,13 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           AND aut.deleted_date IS NULL
         GROUP BY aut.app_usage_id
         HAVING COUNT(DISTINCT aut.tag_id) = ?
+      )
+      ''' : showNoTagsFilter ? '''
+      AND NOT EXISTS (
+        SELECT 1 
+        FROM app_usage_tag_table aut 
+        WHERE aut.app_usage_id = au.id
+          AND aut.deleted_date IS NULL
       )
       ''' : ''}
       ORDER BY ad.total_duration DESC

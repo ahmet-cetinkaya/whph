@@ -414,7 +414,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 widget: TagSelectDropdown(
                   key: ValueKey(_appUsageTags!.items.length),
                   isMultiSelect: true,
-                  onTagsSelected: _onTagsSelected,
+                  onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                   showSelectedInDropdown: true,
                   initialSelectedTags: _appUsageTags!.items
                       .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))

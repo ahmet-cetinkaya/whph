@@ -90,6 +90,11 @@ class SharedTranslationKeys {
   // Help
   static const String helpTooltip = 'shared.help.tooltip';
 
+  // Sections and Options
+  static const String specialFiltersLabel = 'shared.sections.special_filters';
+  static const String tagsLabel = 'shared.sections.tags';
+  static const String noneOption = 'shared.none_option';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     final day = switch (weekday) {

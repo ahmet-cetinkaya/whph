@@ -310,7 +310,7 @@ class _MarathonPageState extends State<MarathonPage> {
                         selectedTagIds: _selectedTagIds,
                         selectedStartDate: _selectedStartDate,
                         selectedEndDate: _selectedEndDate,
-                        onTagFilterChange: (tags) {
+                        onTagFilterChange: (tags, isNoneSelected) {
                           setState(() {
                             _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                           });

@@ -28,6 +28,9 @@ shared:
     habits: Alışkanlıklar
     tasks: Görevler
     time: Zaman
+    special_filters: Özel Filtreler
+    tags: Etiketler
+  none_option: "Hiçbir etiket yok"
   calendar:
     week_days:
       mon: Pzt

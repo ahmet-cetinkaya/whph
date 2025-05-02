@@ -43,6 +43,7 @@ class _TodayPageState extends State<TodayPage> {
   bool _isHabitListEmpty = false;
   bool _isTaskListEmpty = false;
   List<String>? _selectedTagFilter;
+  bool _showNoTagsFilter = false; // Added to track "None" filter selection
   bool _isCheckedUpdate = false;
   bool _showCompletedTasks = false;
   String? _searchQuery;
@@ -76,16 +77,42 @@ class _TodayPageState extends State<TodayPage> {
     if (_isRefreshing) return;
     _isRefreshing = true;
 
+    // Reset empty state flags to ensure components are shown while loading
+    if (mounted) {
+      setState(() {
+        _isHabitListEmpty = false;
+        _isTaskListEmpty = false;
+      });
+    }
+
+    // Get references to component states
+    final habitsListState = _habitsListKey.currentState;
+    final tasksListState = _tasksListKey.currentState;
+    final timeChartState = _timeChartKey.currentState;
+
+    // Run all refreshes in parallel for better performance
     Future.wait([
-      _habitsListKey.currentState?.refresh() ?? Future.value(),
-      _tasksListKey.currentState?.refresh(showLoading: true) ?? Future.value(),
-      _timeChartKey.currentState?.refresh() ?? Future.value(),
+      // Force refresh for habits list
+      habitsListState != null ? habitsListState.refresh() : Future.value(),
+
+      // Force refresh for tasks list
+      tasksListState != null ? tasksListState.refresh(showLoading: true) : Future.value(),
+
+      // Force refresh for time chart
+      timeChartState != null ? timeChartState.refresh() : Future.value(),
     ]).then((_) {
       if (mounted) {
         setState(() {
           _isRefreshing = false;
         });
       }
+    }).catchError((error) {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+      // Don't show error - component-specific error handling is preferred
     });
   }
 
@@ -161,19 +188,23 @@ class _TodayPageState extends State<TodayPage> {
                 Expanded(
                   child: TagSelectDropdown(
                     isMultiSelect: true,
-                    onTagsSelected: (tags) {
+                    onTagsSelected: (tags, isNoneSelected) {
                       if (_isRefreshing) return;
                       setState(() {
                         _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                        _showNoTagsFilter = isNoneSelected; // Update "None" filter state
                         _isHabitListEmpty = false;
                         _isTaskListEmpty = false;
                       });
                       _refreshAllElements();
                     },
                     icon: Icons.label,
-                    color: _selectedTagFilter?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
+                    color: (_selectedTagFilter?.isNotEmpty ?? false) || _showNoTagsFilter
+                        ? AppTheme.primaryColor
+                        : Colors.grey,
                     tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
                     showLength: true,
+                    showNoneOption: true, // Enable "None" option
                     initialSelectedTags: _selectedTagFilter != null
                         ? _selectedTagFilter!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
                         : [],
@@ -205,9 +236,11 @@ class _TodayPageState extends State<TodayPage> {
                     Expanded(
                       child: HabitFilters(
                         selectedTagIds: _selectedTagFilter,
-                        onTagFilterChange: (tags) {
+                        showNoTagsFilter: _showNoTagsFilter, // Add this to pass the None filter option state
+                        onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
                           setState(() {
                             _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                            _showNoTagsFilter = isNoneSelected; // Update None filter state
                             _isHabitListEmpty = false;
                           });
                           _refreshAllElements();
@@ -230,7 +263,8 @@ class _TodayPageState extends State<TodayPage> {
                           mediator: _mediator,
                           size: 5,
                           mini: true,
-                          filterByTags: _selectedTagFilter,
+                          filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                          filterNoTags: _showNoTagsFilter,
                           onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                           onList: _onHabitList,
                         ),
@@ -264,9 +298,11 @@ class _TodayPageState extends State<TodayPage> {
                           Expanded(
                             child: TaskFilters(
                               selectedTagIds: _selectedTagFilter,
-                              onTagFilterChange: (tags) {
+                              showNoTagsFilter: _showNoTagsFilter, // Add this to pass the None filter state
+                              onTagFilterChange: (tags, isNoneSelected) {
                                 setState(() {
                                   _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                                  _showNoTagsFilter = isNoneSelected; // Update None filter state
                                   _isTaskListEmpty = false;
                                 });
                                 _refreshAllElements();
@@ -312,7 +348,8 @@ class _TodayPageState extends State<TodayPage> {
                       mediator: _mediator,
                       translationService: _translationService,
                       filterByCompleted: _showCompletedTasks,
-                      filterByTags: _selectedTagFilter,
+                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                      filterNoTags: _showNoTagsFilter,
                       filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
                       filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
                       filterDateOr: true,

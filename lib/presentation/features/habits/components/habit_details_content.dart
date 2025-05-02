@@ -528,7 +528,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             ? TagSelectDropdown(
                 key: ValueKey(_habitTags!.items.length),
                 isMultiSelect: true,
-                onTagsSelected: _onTagsSelected,
+                onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
                 showSelectedInDropdown: true,
                 initialSelectedTags: _habitTags!.items
                     .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))

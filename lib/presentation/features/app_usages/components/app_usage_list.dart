@@ -9,10 +9,30 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_transl
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 
+/// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
+class FilterContext {
+  final List<String>? filterByTags;
+  final bool showNoTagsFilter;
+  final DateTime? filterStartDate;
+  final DateTime? filterEndDate;
+
+  const FilterContext({
+    this.filterByTags,
+    this.showNoTagsFilter = false,
+    this.filterStartDate,
+    this.filterEndDate,
+  });
+
+  @override
+  String toString() =>
+      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate)';
+}
+
 class AppUsageList extends StatefulWidget {
   final Mediator mediator;
   final int size;
   final List<String>? filterByTags;
+  final bool showNoTagsFilter;
   final Function(String id)? onOpenDetails;
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
@@ -22,6 +42,7 @@ class AppUsageList extends StatefulWidget {
     required this.mediator,
     this.size = 10,
     this.filterByTags,
+    this.showNoTagsFilter = false,
     this.onOpenDetails,
     this.filterStartDate,
     this.filterEndDate,
@@ -32,51 +53,57 @@ class AppUsageList extends StatefulWidget {
 }
 
 class AppUsageListState extends State<AppUsageList> {
-  List<AppUsageListItem> _appUsages = [];
+  late List<AppUsageListItem> _appUsages = [];
   bool _isLoading = false;
-  bool _isRefreshing = false;
+  late FilterContext _currentFilters;
 
   final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
     super.initState();
+    _currentFilters = _captureCurrentFilters();
     _loadAppUsages();
   }
 
   @override
   void didUpdateWidget(AppUsageList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.filterByTags != widget.filterByTags ||
-        oldWidget.filterStartDate != widget.filterStartDate ||
-        oldWidget.filterEndDate != widget.filterEndDate) {
+
+    final newFilters = _captureCurrentFilters();
+    if (_filtersChanged(oldFilters: _currentFilters, newFilters: newFilters)) {
+      _currentFilters = newFilters;
       refresh();
     }
   }
 
-  Future<void> refresh() async {
-    if (_isRefreshing) return;
+  /// Creates an immutable snapshot of current filter state
+  FilterContext _captureCurrentFilters() => FilterContext(
+        filterByTags: widget.filterByTags,
+        showNoTagsFilter: widget.showNoTagsFilter,
+        filterStartDate: widget.filterStartDate,
+        filterEndDate: widget.filterEndDate,
+      );
 
+  /// Determines if filters have functionally changed
+  bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
+    return oldFilters.filterByTags != newFilters.filterByTags ||
+        oldFilters.showNoTagsFilter != newFilters.showNoTagsFilter ||
+        oldFilters.filterStartDate != newFilters.filterStartDate ||
+        oldFilters.filterEndDate != newFilters.filterEndDate;
+  }
+
+  Future<void> refresh() async {
     setState(() {
-      _isRefreshing = true;
+      _isLoading = true;
       _appUsages = []; // Clear current data while refreshing
     });
 
     await _loadAppUsages();
-
-    if (mounted) {
-      setState(() {
-        _isRefreshing = false;
-      });
-    }
   }
 
   Future<void> _loadAppUsages() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-    });
+    if (!mounted) return;
 
     try {
       final appUsages = await _fetchAppUsages();
@@ -100,9 +127,10 @@ class AppUsageListState extends State<AppUsageList> {
     final query = GetListByTopAppUsagesQuery(
       pageIndex: 0,
       pageSize: widget.size,
-      filterByTags: widget.filterByTags,
-      startDate: widget.filterStartDate,
-      endDate: widget.filterEndDate,
+      filterByTags: _currentFilters.filterByTags,
+      showNoTagsFilter: _currentFilters.showNoTagsFilter,
+      startDate: _currentFilters.filterStartDate,
+      endDate: _currentFilters.filterEndDate,
     );
 
     try {
@@ -128,7 +156,7 @@ class AppUsageListState extends State<AppUsageList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isRefreshing || (_isLoading && _appUsages.isEmpty)) {
+    if (_isLoading && _appUsages.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
