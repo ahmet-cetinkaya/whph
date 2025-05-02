@@ -33,6 +33,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _translationService = container.resolve<ITranslationService>();
   bool _isCompleted = false;
+  bool _isProcessing = false; // Flag to prevent multiple rapid taps
 
   @override
   void initState() {
@@ -49,6 +50,13 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   }
 
   Future<void> _toggleCompleteTask(BuildContext context) async {
+    // Prevent multiple rapid taps
+    if (_isProcessing) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
     try {
       final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
         GetTaskQuery(id: widget.taskId),
@@ -65,23 +73,43 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         isCompleted: !_isCompleted,
       );
 
+      // We'll update the UI first to make the user experience smoother
+      setState(() {
+        _isCompleted = !_isCompleted;
+      });
+
+      // Now perform the actual API call
       await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
       if (command.isCompleted) {
         _soundPlayer.play(SharedSounds.done);
       }
 
+      // Use a microtask to ensure we don't interrupt the current build cycle
+      Future.microtask(() {
+        widget.onToggleCompleted();
+      });
+    } on BusinessException catch (e) {
+      // Revert UI state if there was an error
       setState(() {
         _isCompleted = !_isCompleted;
       });
-
-      widget.onToggleCompleted();
-    } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
+      // Revert UI state if there was an error
+      setState(() {
+        _isCompleted = !_isCompleted;
+      });
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
             message: _translationService.translate(TaskTranslationKeys.taskCompleteError));
+      }
+    } finally {
+      // Always reset processing state
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
       }
     }
   }

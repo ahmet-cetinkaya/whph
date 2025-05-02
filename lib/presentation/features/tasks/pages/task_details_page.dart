@@ -34,7 +34,7 @@ class TaskDetailsPage extends StatefulWidget {
   State<TaskDetailsPage> createState() => _TaskDetailsPageState();
 }
 
-class _TaskDetailsPageState extends State<TaskDetailsPage> {
+class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAliveClientMixin {
   String? _title;
   final _contentKey = GlobalKey<TaskDetailsContentState>();
   final _tasksListKey = GlobalKey<TaskListState>();
@@ -52,6 +52,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   bool _isRefreshInProgress = false;
   // Timer to debounce multiple refresh calls
   Timer? _debounceTimer;
+
+  @override
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   /// Refreshes the content with debounce to avoid excessive refreshes
   void _refreshEverything() {
@@ -162,6 +165,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Call super.build to ensure AutomaticKeepAliveClientMixin works
     return ResponsiveScaffoldLayout(
       // Enable back button when this is a subtask (when hideSidebar is true)
       showBackButton: widget.hideSidebar,

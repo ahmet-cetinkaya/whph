@@ -25,7 +25,7 @@ class TasksPage extends StatefulWidget {
   State<TasksPage> createState() => _TasksPageState();
 }
 
-class _TasksPageState extends State<TasksPage> {
+class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
@@ -39,6 +39,9 @@ class _TasksPageState extends State<TasksPage> {
   DateTime? _filterEndDate;
   String? _searchQuery;
   bool _showNoTagsFilter = false; // Added to track when "None" option is selected
+
+  @override
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   void _refreshTasks() {
     if (mounted) {

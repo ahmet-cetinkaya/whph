@@ -82,11 +82,32 @@ class TaskListState extends State<TaskList> {
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
   bool _initialLoadCompleted = false;
+  double? _savedScrollPosition;
+  // Add key to preserve scroll position across rebuilds
+  final PageStorageKey _pageStorageKey = const PageStorageKey<String>('task_list_scroll');
+  // Flag to indicate if we're completing a task
+  bool _isCompletingTask = false;
 
   @override
   void initState() {
     super.initState();
     _loadInitialData();
+
+    // Add listener to scroll controller to continuously save position
+    _scrollController.addListener(_saveScrollPosition);
+  }
+
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_saveScrollPosition);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadInitialData() async {
@@ -102,7 +123,30 @@ class TaskListState extends State<TaskList> {
   // Smooth refresh method that preserves UI state
   Future<void> refresh({bool showLoading = false}) async {
     if (!mounted) return;
-    await _getTasks(isRefresh: true, showLoading: false);
+
+    // Save current scroll position before refresh if not already saved
+    if (_savedScrollPosition == null &&
+        _scrollController.hasClients &&
+        _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+
+    await _getTasks(isRefresh: true, showLoading: showLoading);
+
+    // Restore scroll position after refresh with a slight delay to ensure rendering is complete
+    if (_savedScrollPosition != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Additional delay to ensure the list is fully rendered
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted &&
+              _scrollController.hasClients &&
+              _scrollController.position.hasViewportDimension &&
+              _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+            _scrollController.jumpTo(_savedScrollPosition!);
+          }
+        });
+      });
+    }
   }
 
   // Add a task to the list without full refresh
@@ -120,12 +164,6 @@ class TaskListState extends State<TaskList> {
       // If tasks is null, do a full refresh
       refresh(showLoading: false);
     }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   @override
@@ -258,8 +296,14 @@ class TaskListState extends State<TaskList> {
   }
 
   void _onTaskCompleted() {
+    _isCompletingTask = true;
+    // Make sure we capture the scroll position
+    _saveScrollPosition();
+
     Future.delayed(const Duration(seconds: 2), () {
       widget.onTaskCompleted?.call();
+      // Mark completion as finished after the callback
+      _isCompletingTask = false;
     });
   }
 
@@ -391,6 +435,7 @@ class TaskListState extends State<TaskList> {
       children: [
         // Main content
         ListView(
+          key: _pageStorageKey, // Add key to help preserve scroll position
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
           controller: _scrollController,
@@ -421,7 +466,7 @@ class TaskListState extends State<TaskList> {
           Positioned.fill(
             // Use Positioned.fill to cover the list area
             child: Container(
-              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5), // Semi-transparent background
+              color: Theme.of(context).colorScheme.surface.withOpacity(0.5), // Semi-transparent background
               child: const Center(
                 child: SizedBox(
                   width: 24,

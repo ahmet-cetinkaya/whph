@@ -25,7 +25,7 @@ class TagDetailsPage extends StatefulWidget {
   State<TagDetailsPage> createState() => _TagDetailsPageState();
 }
 
-class _TagDetailsPageState extends State<TagDetailsPage> {
+class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksListKey = GlobalKey<TaskListState>();
@@ -33,6 +33,9 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
   String? _title;
   String? _searchQuery;
   bool _showCompletedTasks = false;
+
+  @override
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   void _refreshTasks() {
     if (mounted) {
@@ -58,6 +61,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ResponsiveScaffoldLayout(
       appBarTitle: _title != null ? Text(_title!) : null,
       appBarActions: [
