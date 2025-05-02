@@ -32,7 +32,7 @@ class TodayPage extends StatefulWidget {
   State<TodayPage> createState() => _TodayPageState();
 }
 
-class _TodayPageState extends State<TodayPage> {
+class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
@@ -163,6 +163,7 @@ class _TodayPageState extends State<TodayPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
@@ -392,4 +393,7 @@ class _TodayPageState extends State<TodayPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 }

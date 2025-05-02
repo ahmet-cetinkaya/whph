@@ -29,7 +29,7 @@ class MarathonPage extends StatefulWidget {
   State<MarathonPage> createState() => _MarathonPageState();
 }
 
-class _MarathonPageState extends State<MarathonPage> {
+class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksListKey = GlobalKey<TaskListState>();
@@ -41,6 +41,9 @@ class _MarathonPageState extends State<MarathonPage> {
   DateTime? _selectedEndDate;
   String? _searchQuery;
   bool _showCompletedTasks = false;
+
+  @override
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   @override
   void initState() {
