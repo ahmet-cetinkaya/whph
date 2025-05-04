@@ -5,6 +5,8 @@ import 'package:whph/presentation/features/calendar/pages/today_page.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/habits/pages/habits_page.dart';
+import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
+import 'package:whph/presentation/features/notes/pages/notes_page.dart';
 import 'package:whph/presentation/features/settings/pages/settings_page.dart';
 import 'package:whph/presentation/features/sync/pages/sync_devices_page.dart';
 import 'package:whph/presentation/features/tags/pages/tags_page.dart';
@@ -36,6 +38,9 @@ class AppRoutes {
       case HabitsPage.route:
         page = HabitsPage();
         break;
+      case NotesPage.route:
+        page = const NotesPage();
+        break;
       case AppUsageViewPage.route:
         page = AppUsageViewPage();
         break;
@@ -64,6 +69,13 @@ class AppRoutes {
           page = TodayPage();
         } else {
           page = HabitDetailsPage(habitId: arguments!['id'] as String);
+        }
+        break;
+      case NoteDetailsPage.route:
+        if (arguments?['id'] == null) {
+          page = TodayPage();
+        } else {
+          page = NoteDetailsPage(noteId: arguments!['id'] as String);
         }
         break;
       case QRCodeScannerPage.route:

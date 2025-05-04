@@ -7,6 +7,8 @@ import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 import 'package:whph/domain/features/habits/habit_tag.dart';
+import 'package:whph/domain/features/notes/note.dart';
+import 'package:whph/domain/features/notes/note_tag.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/domain/features/tags/tag.dart';
@@ -34,6 +36,8 @@ class SyncDataDto {
   SyncData<TaskTimeRecord>? taskTimeRecordsSyncData;
   SyncData<Setting>? settingsSyncData;
   SyncData<SyncDevice>? syncDevicesSyncData;
+  SyncData<Note>? notesSyncData;
+  SyncData<NoteTag>? noteTagsSyncData;
   SyncDevice syncDevice;
 
   SyncDataDto({
@@ -53,6 +57,8 @@ class SyncDataDto {
     this.taskTimeRecordsSyncData,
     this.settingsSyncData,
     this.syncDevicesSyncData,
+    this.notesSyncData,
+    this.noteTagsSyncData,
     required this.syncDevice,
   });
 
@@ -74,6 +80,8 @@ class SyncDataDto {
         'settingsSyncData': settingsSyncData,
         'syncDevicesSyncData': syncDevicesSyncData,
         'syncDevice': syncDevice,
+        'notesSyncData': notesSyncData,
+        'noteTagsSyncData': noteTagsSyncData,
       };
 
   factory SyncDataDto.fromJson(Map<String, dynamic> json) {
@@ -132,6 +140,12 @@ class SyncDataDto {
       syncDevicesSyncData: json['syncDevicesSyncData'] != null
           ? SyncData<SyncDevice>.fromJson(json['syncDevicesSyncData'] as Map<String, dynamic>, SyncDevice)
           : SyncData<SyncDevice>(createSync: [], updateSync: [], deleteSync: []),
+      notesSyncData: json['notesSyncData'] != null
+          ? SyncData<Note>.fromJson(json['notesSyncData'] as Map<String, dynamic>, Note)
+          : SyncData<Note>(createSync: [], updateSync: [], deleteSync: []),
+      noteTagsSyncData: json['noteTagsSyncData'] != null
+          ? SyncData<NoteTag>.fromJson(json['noteTagsSyncData'] as Map<String, dynamic>, NoteTag)
+          : SyncData<NoteTag>(createSync: [], updateSync: [], deleteSync: []),
     );
   }
 }

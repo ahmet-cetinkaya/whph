@@ -42,6 +42,7 @@ class TranslationService implements ITranslationService {
         YamlAssetLoader(directory: 'lib/presentation/features/app_usages/assets/locales'),
         YamlAssetLoader(directory: 'lib/presentation/features/calendar/assets/locales'),
         YamlAssetLoader(directory: 'lib/presentation/features/habits/assets/locales'),
+        YamlAssetLoader(directory: 'lib/presentation/features/notes/assets/locales'),
         YamlAssetLoader(directory: 'lib/presentation/features/settings/assets/locales'),
         YamlAssetLoader(directory: 'lib/presentation/features/tags/assets/locales'),
         YamlAssetLoader(directory: 'lib/presentation/features/sync/assets/locales'),

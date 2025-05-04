@@ -146,6 +146,7 @@ flutter:
     - lib/presentation/features/tags/assets/locales/
     - lib/presentation/features/sync/assets/locales/
     - lib/presentation/features/tasks/assets/locales/
+    - lib/presentation/features/notes/assets/locales/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

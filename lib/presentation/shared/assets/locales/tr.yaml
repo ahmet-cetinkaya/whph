@@ -101,6 +101,7 @@ shared:
       today: Bugün
       tasks: Görevler
       habits: Alışkanlıklar
+      notes: Notlar
       app_usages: Uygulama Kullanımları
       tags: Etiketler
       settings: Ayarlar

@@ -1,0 +1,98 @@
+notes:
+  title: Notlar
+  new_note: Yeni Not
+  note_details: Not Detayları
+  no_notes: Not bulunamadı
+  notes: Notlar
+  details:
+    title: Başlık
+    content: İçerik
+    tags:
+      label: Etiketler
+      hint: Not için etiket seçin
+  actions:
+    add: Not Ekle
+    edit: Notu Düzenle
+    delete: Notu Sil
+    save: Notu Kaydet
+  tooltips:
+    edit_name: Başlığı düzenle
+    add_note: Not ekle
+    delete_note: Notu sil
+  delete:
+    confirm_title: Notu Sil
+    confirm_message: Bu notu silmek istediğinizden emin misiniz?
+  components:
+    note_details_content:
+      title_placeholder: Not başlığı
+      content_placeholder: Not içeriğini buraya yazın...
+      add_tag_button: Etiket ekle
+      update_button: Güncelle
+      save_button: Kaydet
+      saved_message: Not başarıyla kaydedildi
+    notes_list:
+      empty_message: Not bulunamadı
+      loading: Notlar yükleniyor...
+  errors:
+    loading_details: Not detayları yüklenemedi
+    saving_note: Not kaydedilemedi
+    deleting: Not silinirken beklenmeyen bir hata oluştu
+    loading_tags: Not etiketleri yüklenemedi
+    adding_tag: Etiket eklenemedi
+    removing_tag: Etiket kaldırılamadı
+    note_not_found: Not bulunamadı
+    note_tag_not_found: Not etiketi bulunamadı
+    tag_already_exists: Bu etiket zaten eklenmiş
+  filters:
+    tooltips:
+      filter_by_tags: Etiketlere göre filtrele
+    search:
+      placeholder: Not ara...
+  help:
+    title: Notlar Yardımı
+    description: 📝 Etiketlerle notlar oluşturun ve düzenleyin.
+    content: |
+      📝 Notlar özelliği, düşüncelerinizi etkili bir şekilde oluşturmanıza ve düzenlemenize yardımcı olur.
+
+      ## ⚡ Özellikler
+
+      - **Not Yönetimi:**
+        - Not oluşturma ve düzenleme
+        - Gereksiz notları silme
+        - Zengin metin düzenleme desteği
+      
+      - **Organizasyon:**
+        - Notları etiketleme
+        - Filtreleme ve arama
+        - Hızlı eylemler
+      
+      - **İçerik Biçimlendirme:**
+        - Markdown desteği
+        - Zengin metin düzenleme
+        - Düzenli görünümler
+
+      ## 🎯 Faydaları
+      - Düşüncelerinizi düzenli tutun
+      - Notları etiketlerle hızlıca bulun
+      - İçeriği istediğiniz gibi biçimlendirin
+      - Notlarınıza her yerden erişin
+
+      ## 💡 İpuçları
+      - Açık, açıklayıcı başlıklar kullanın
+      - Kolay bulmak için ilgili etiketler ekleyin
+      - Notları odaklı ve özlü tutun
+      - Daha iyi biçimlendirme için markdown kullanın
+      - Düzenli olarak gözden geçirin ve güncelleyin
+      - İlgili notları etiketlerle gruplayın
+    features_title: ⚡ Özellikler
+    features_list:
+      - • Not oluşturma ve düzenleme
+      - • Etiketlerle organize etme
+      - • Zengin metin biçimlendirme
+      - • Hızlı arama ve filtreler
+    tips_title: 💡 İpuçları
+    tips_list:
+      - • Açıklayıcı başlıklar kullanın
+      - • İlgili etiketler ekleyin
+      - • Notları düzenli tutun
+      - • Markdown biçimlendirme kullanın

@@ -10,6 +10,9 @@ import 'package:whph/application/features/habits/habits_registration.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/application/features/notes/notes_registration.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/features/settings/settings_registration.dart';
 import 'package:whph/application/features/sync/sync_registration.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -39,6 +42,8 @@ void registerApplication(IContainer container) {
   final habitRecordRepository = container.resolve<IHabitRecordRepository>();
   final habitRepository = container.resolve<IHabitRepository>();
   final habitTagRepository = container.resolve<IHabitTagsRepository>();
+  final noteRepository = container.resolve<INoteRepository>();
+  final noteTagRepository = container.resolve<INoteTagRepository>();
   final settingRepository = container.resolve<ISettingRepository>();
   final syncDeviceRepository = container.resolve<ISyncDeviceRepository>();
   final tagRepository = container.resolve<ITagRepository>();
@@ -53,6 +58,13 @@ void registerApplication(IContainer container) {
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,
       appUsageTagRepository, appUsageTagRuleRepository, appUsageTimeRecordRepository, appUsageIgnoreRuleRepository);
   registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, tagRepository);
+  registerNotesFeature(
+    container,
+    mediator,
+    noteRepository,
+    noteTagRepository,
+    tagRepository,
+  );
   registerTasksFeature(
     container,
     mediator,

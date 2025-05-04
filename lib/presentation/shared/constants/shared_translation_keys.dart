@@ -73,6 +73,7 @@ class SharedTranslationKeys {
   static const String navToday = 'shared.nav.items.today';
   static const String navTasks = 'shared.nav.items.tasks';
   static const String navHabits = 'shared.nav.items.habits';
+  static const String navNotes = 'shared.nav.items.notes';
   static const String navAppUsages = 'shared.nav.items.app_usages';
   static const String navTags = 'shared.nav.items.tags';
   static const String navSettings = 'shared.nav.items.settings';
