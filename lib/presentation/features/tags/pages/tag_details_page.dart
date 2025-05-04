@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/notes/components/note_add_button.dart';
+import 'package:whph/presentation/features/notes/components/note_filters.dart';
+import 'package:whph/presentation/features/notes/components/notes_list.dart';
+import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
+import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
+import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
-import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
-import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
-import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
-import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -29,17 +34,25 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksListKey = GlobalKey<TaskListState>();
+  final _notesListKey = GlobalKey<NotesListState>();
 
   String? _title;
-  String? _searchQuery;
+  String? _taskSearchQuery;
+  String? _noteSearchQuery;
   bool _showCompletedTasks = false;
 
   @override
-  bool get wantKeepAlive => true; // Keep the state alive when navigating away
+  bool get wantKeepAlive => true;
 
   void _refreshTasks() {
     if (mounted) {
       _tasksListKey.currentState?.refresh(showLoading: true);
+    }
+  }
+
+  void _refreshNotes() {
+    if (mounted) {
+      _notesListKey.currentState?.refresh(showLoading: true);
     }
   }
 
@@ -51,12 +64,12 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
     }
   }
 
-  Future<void> _openTaskDetails(TaskListItem task) async {
+  Future<void> _openNoteDetails(String noteId) async {
     await Navigator.of(context).pushNamed(
-      TaskDetailsPage.route,
-      arguments: {'id': task.id},
+      NoteDetailsPage.route,
+      arguments: {'id': noteId},
     );
-    _refreshTasks();
+    _refreshNotes();
   }
 
   @override
@@ -88,7 +101,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
         ),
         const SizedBox(width: 2),
       ],
-      builder: (context) => ListView(
+      builder: (context) => Column(
         children: [
           // Details
           TagDetailsContent(
@@ -97,87 +110,172 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
           ),
           const SizedBox(height: AppTheme.sizeSmall),
 
-          // Tasks Section
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.sizeSmall,
-              vertical: AppTheme.sizeXSmall,
-            ),
-            child: SizedBox(
-              height: 40,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+          // Tasks and Notes sections
+          Expanded(
+            child: DefaultTabController(
+              length: 2,
+              child: Column(
                 children: [
-                  Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Title
-                        const Icon(Icons.task),
-                        const SizedBox(width: 8),
-                        Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
-
-                        // Filters
-                        const SizedBox(width: AppTheme.sizeMedium),
-                        Expanded(
-                          child: TaskFilters(
-                            onSearchChange: (query) {
-                              setState(() {
-                                _searchQuery = query;
-                              });
-                              _refreshTasks();
-                            },
-                            showCompletedTasks: _showCompletedTasks,
-                            onCompletedTasksToggle: (showCompleted) {
-                              setState(() {
-                                _showCompletedTasks = showCompleted;
-                              });
-                              _refreshTasks();
-                            },
-                            showDateFilter: false,
-                            showTagFilter: false,
-                            hasItems: true,
+                  // Tab Bar with custom decoration
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: TabBar(
+                      dividerColor: Colors.transparent,
+                      tabs: [
+                        Tab(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.task),
+                              const SizedBox(width: 8),
+                              Text(_translationService.translate(TagTranslationKeys.detailsTasksLabel)),
+                            ],
                           ),
                         ),
-
-                        // Add Task
-                        if (!_showCompletedTasks)
-                          TaskAddButton(
-                            onTaskCreated: (_, __) => _refreshTasks(),
-                            initialTagIds: [widget.tagId],
+                        Tab(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.note_alt_outlined),
+                              const SizedBox(width: 8),
+                              Text(_translationService.translate(NoteTranslationKeys.notes)),
+                            ],
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Tab Bar Views
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Tasks Tab
+                        Column(
+                          children: [
+                            // Tasks header with filters
+                            Padding(
+                              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TaskFilters(
+                                      onSearchChange: (query) {
+                                        setState(() {
+                                          _taskSearchQuery = query;
+                                        });
+                                        _refreshTasks();
+                                      },
+                                      showCompletedTasks: _showCompletedTasks,
+                                      onCompletedTasksToggle: (showCompleted) {
+                                        setState(() {
+                                          _showCompletedTasks = showCompleted;
+                                        });
+                                        _refreshTasks();
+                                      },
+                                      showDateFilter: false,
+                                      showTagFilter: false,
+                                      hasItems: true,
+                                    ),
+                                  ),
+                                  if (!_showCompletedTasks)
+                                    TaskAddButton(
+                                      onTaskCreated: (_, __) => _refreshTasks(),
+                                      initialTagIds: [widget.tagId],
+                                    ),
+                                ],
+                              ),
+                            ),
+
+                            // Tasks List
+                            Expanded(
+                              child: TaskList(
+                                key: _tasksListKey,
+                                filterByTags: [widget.tagId],
+                                filterByCompleted: _showCompletedTasks,
+                                search: _taskSearchQuery,
+                                onClickTask: (task) => Navigator.of(context).pushNamed(
+                                  '/tasks/details',
+                                  arguments: {'id': task.id},
+                                ).then((_) => _refreshTasks()),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Notes Tab
+                        Column(
+                          children: [
+                            // Notes header with filters and add button
+                            Padding(
+                              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: NoteFilters(
+                                      search: _noteSearchQuery,
+                                      onSearchChange: (query) {
+                                        setState(() {
+                                          _noteSearchQuery = query;
+                                        });
+                                        _refreshNotes();
+                                      },
+                                      showTagFilter: false,
+                                    ),
+                                  ),
+                                  NoteAddButton(
+                                    mini: true,
+                                    onNoteCreated: (noteId) async {
+                                      try {
+                                        final command = AddNoteTagCommand(
+                                          noteId: noteId,
+                                          tagId: widget.tagId,
+                                        );
+                                        await _mediator.send(command);
+                                        if (context.mounted) {
+                                          await Navigator.of(context).pushNamed(
+                                            NoteDetailsPage.route,
+                                            arguments: {'id': noteId},
+                                          );
+                                        }
+                                        _refreshNotes();
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          ErrorHelper.showUnexpectedError(
+                                            context,
+                                            e as Exception,
+                                            StackTrace.current,
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Notes List
+                            Expanded(
+                              child: NotesList(
+                                key: _notesListKey,
+                                filterByTags: [widget.tagId],
+                                search: _noteSearchQuery,
+                                onClickNote: _openNoteDetails,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-
-          // Task List Container
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(
-                AppTheme.sizeSmall,
-                0,
-                AppTheme.sizeSmall,
-                AppTheme.sizeSmall,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-                child: TaskList(
-                  key: _tasksListKey,
-                  mediator: _mediator,
-                  translationService: _translationService,
-                  onClickTask: _openTaskDetails,
-                  filterByTags: [widget.tagId],
-                  filterByCompleted: _showCompletedTasks,
-                  search: _searchQuery,
-                  onTaskCompleted: _refreshTasks,
-                  onScheduleTask: (_, __) => _refreshTasks(),
-                  enableReordering: !_showCompletedTasks,
-                ),
               ),
             ),
           ),

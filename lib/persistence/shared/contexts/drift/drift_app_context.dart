@@ -14,6 +14,8 @@ import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 import 'package:whph/domain/features/habits/habit_tag.dart';
+import 'package:whph/domain/features/notes/note.dart';
+import 'package:whph/domain/features/notes/note_tag.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/domain/features/tags/tag.dart';
@@ -30,6 +32,8 @@ import 'package:whph/persistence/features/app_usages/drift_app_usage_time_record
 import 'package:whph/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/persistence/features/habits/drift_habits_repository.dart';
+import 'package:whph/persistence/features/notes/drift_note_repository.dart';
+import 'package:whph/persistence/features/notes/drift_note_tag_repository.dart';
 import 'package:whph/persistence/features/settings/drift_settings_repository.dart';
 import 'package:whph/persistence/features/sync/drift_sync_device_repository.dart';
 import 'package:whph/persistence/features/tags/drift_tag_repository.dart';
@@ -54,6 +58,8 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     HabitRecordTable,
     HabitTable,
     HabitTagTable,
+    NoteTable,
+    NoteTagTable,
     SettingTable,
     SyncDeviceTable,
     TagTable,
@@ -86,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration {
@@ -305,9 +311,14 @@ class AppDatabase extends _$AppDatabase {
           // Drop temporary column
           await customStatement('ALTER TABLE task_table DROP COLUMN temp_priority');
         },
-        from13To14: (m, schema) {
+        from13To14: (m, schema) async {
           // Add order column to Task table
-          return m.addColumn(taskTable, taskTable.order);
+          await m.addColumn(taskTable, taskTable.order);
+        },
+        from14To15: (m, schema) async {
+          // Create Note and NoteTag tables
+          await m.createTable(noteTable);
+          await m.createTable(noteTagTable);
         },
       ),
     );

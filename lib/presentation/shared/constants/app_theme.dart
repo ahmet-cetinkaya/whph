@@ -60,6 +60,7 @@ class AppTheme {
   static const double fontSizeXXLarge = 24.0;
 
   // Icon Sizes
+  static const double iconSizeXSmall = 12.0;
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 20.0;
   static const double iconSizeLarge = 32.0;

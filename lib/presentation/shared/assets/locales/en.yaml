@@ -101,6 +101,7 @@ shared:
       today: Today
       tasks: Tasks
       habits: Habits
+      notes: Notes
       app_usages: App Usages
       tags: Tags
       settings: Settings

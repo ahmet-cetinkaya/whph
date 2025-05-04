@@ -20,6 +20,8 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
@@ -45,6 +47,8 @@ void registerSyncFeature(
   ITaskRepository taskRepository,
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
+  INoteRepository noteRepository,
+  INoteTagRepository noteTagRepository,
 ) {
   container.registerSingleton<ISyncService>((_) => SyncService(mediator));
   final syncService = container.resolve<ISyncService>();
@@ -82,6 +86,8 @@ void registerSyncFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        noteRepository: noteRepository,
+        noteTagRepository: noteTagRepository,
         deviceIdService: deviceIdService,
       ),
     )

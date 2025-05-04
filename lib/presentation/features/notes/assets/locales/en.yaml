@@ -1,0 +1,98 @@
+notes:
+  title: Notes
+  new_note: New Note
+  note_details: Note Details
+  no_notes: No notes found
+  notes: Notes
+  details:
+    title: Title
+    content: Content
+    tags:
+      label: Tags
+      hint: Select tags for note
+  actions:
+    add: Add Note
+    edit: Edit Note
+    delete: Delete Note
+    save: Save Note
+  tooltips:
+    edit_name: Edit title
+    add_note: Add note
+    delete_note: Delete note
+  delete:
+    confirm_title: Delete Note
+    confirm_message: Are you sure you want to delete this note?
+  components:
+    note_details_content:
+      title_placeholder: Note title
+      content_placeholder: Write note content here...
+      add_tag_button: Add tag
+      update_button: Update
+      save_button: Save
+      saved_message: Note saved successfully
+    notes_list:
+      empty_message: No notes found
+      loading: Loading notes...
+  errors:
+    loading_details: Failed to load note details
+    saving_note: Failed to save note
+    deleting: Unexpected error occurred while deleting note
+    loading_tags: Failed to load note tags
+    adding_tag: Failed to add tag
+    removing_tag: Failed to remove tag
+    note_not_found: Note not found
+    note_tag_not_found: Note tag not found
+    tag_already_exists: This tag is already added
+  filters:
+    tooltips:
+      filter_by_tags: Filter by tags
+    search:
+      placeholder: Search notes...
+  help:
+    title: Notes Help
+    description: 📝 Create and organize your notes with tags.
+    content: |
+      📝 Notes feature helps you create and organize your thoughts effectively.
+
+      ## ⚡ Features
+
+      - **Note Management:**
+        - Create and edit notes
+        - Delete unnecessary notes
+        - Rich text editing support
+      
+      - **Organization:**
+        - Tag your notes
+        - Filter and search
+        - Quick actions
+      
+      - **Content Formatting:**
+        - Markdown support
+        - Rich text editing
+        - Organized layouts
+
+      ## 🎯 Benefits
+      - Keep your thoughts organized
+      - Find notes quickly with tags
+      - Format content your way
+      - Access notes anywhere
+
+      ## 💡 Tips
+      - Use clear, descriptive titles
+      - Add relevant tags for easy finding
+      - Keep notes focused and concise
+      - Use markdown for better formatting
+      - Review and update regularly
+      - Group related notes with tags
+    features_title: ⚡ Features
+    features_list:
+      - • Create and edit notes
+      - • Organize with tags
+      - • Rich text formatting
+      - • Quick search and filters
+    tips_title: 💡 Tips
+    tips_list:
+      - • Use descriptive titles
+      - • Add relevant tags
+      - • Keep notes organized
+      - • Use markdown formatting
