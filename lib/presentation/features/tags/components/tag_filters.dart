@@ -73,6 +73,7 @@ class _TagFiltersState extends State<TagFilters> {
                 widget.selectedFilters?.map((id) => DropdownOption(value: id, label: '')).toList() ?? [],
             onTagsSelected: (selectedTags, _) => widget.onTagFiltersChange(selectedTags),
             icon: Icons.label,
+            iconSize: AppTheme.iconSizeMedium,
             color: widget.selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
             tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
             showLength: true,
@@ -80,6 +81,7 @@ class _TagFiltersState extends State<TagFilters> {
           const SizedBox(width: 8),
           FilterIconButton(
             icon: widget.showArchived ? Icons.archive : Icons.archive_outlined,
+            iconSize: AppTheme.iconSizeMedium,
             color: widget.showArchived ? AppTheme.primaryColor : null,
             tooltip: _translationService.translate(
               widget.showArchived ? TagTranslationKeys.hideArchived : TagTranslationKeys.showArchived,

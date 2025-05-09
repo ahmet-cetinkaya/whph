@@ -77,25 +77,22 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Filters section with new minimal design
-              Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                child: NoteFilters(
-                  selectedTagIds: _selectedTagIds,
-                  showNoTagsFilter: _showNoTagsFilter,
-                  search: _searchQuery,
-                  onTagFilterChange: (tags, isNoneSelected) {
-                    setState(() {
-                      _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                      _showNoTagsFilter = isNoneSelected;
-                    });
-                  },
-                  onSearchChange: (query) {
-                    setState(() {
-                      _searchQuery = query;
-                    });
-                  },
-                ),
+              // Filters section with consistent padding
+              NoteFilters(
+                selectedTagIds: _selectedTagIds,
+                showNoTagsFilter: _showNoTagsFilter,
+                search: _searchQuery,
+                onTagFilterChange: (tags, isNoneSelected) {
+                  setState(() {
+                    _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                    _showNoTagsFilter = isNoneSelected;
+                  });
+                },
+                onSearchChange: (query) {
+                  setState(() {
+                    _searchQuery = query;
+                  });
+                },
               ),
 
               // Notes list

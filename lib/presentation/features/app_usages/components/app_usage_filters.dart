@@ -105,38 +105,37 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            TagSelectDropdown(
-              isMultiSelect: true,
-              initialSelectedTags: _currentState.tags
-                      ?.map(
-                        (tag) => DropdownOption(value: tag, label: ''),
-                      )
-                      .toList() ??
-                  [],
-              onTagsSelected: _handleTagSelect,
-              showLength: true,
-              showNoneOption: true,
-              initialNoneSelected: _currentState.showNoTagsFilter,
-              icon: Icons.label,
-              color: (_currentState.tags?.isNotEmpty ?? false) || _currentState.showNoTagsFilter
-                  ? AppTheme.primaryColor
-                  : Colors.grey,
-              tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
-            ),
-            const SizedBox(width: AppTheme.sizeXSmall),
-            DateRangeFilter(
-              selectedStartDate: _currentState.startDate,
-              selectedEndDate: _currentState.endDate,
-              onDateFilterChange: _handleDateChange,
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          TagSelectDropdown(
+            isMultiSelect: true,
+            initialSelectedTags: _currentState.tags
+                    ?.map(
+                      (tag) => DropdownOption(value: tag, label: ''),
+                    )
+                    .toList() ??
+                [],
+            onTagsSelected: _handleTagSelect,
+            showLength: true,
+            showNoneOption: true,
+            initialNoneSelected: _currentState.showNoTagsFilter,
+            icon: Icons.label,
+            iconSize: AppTheme.iconSizeMedium,
+            color: (_currentState.tags?.isNotEmpty ?? false) || _currentState.showNoTagsFilter
+                ? AppTheme.primaryColor
+                : Colors.grey,
+            tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
+          ),
+          const SizedBox(width: AppTheme.sizeXSmall),
+          DateRangeFilter(
+            selectedStartDate: _currentState.startDate,
+            selectedEndDate: _currentState.endDate,
+            onDateFilterChange: _handleDateChange,
+            iconSize: AppTheme.iconSizeMedium,
+          ),
+        ],
       ),
     );
   }

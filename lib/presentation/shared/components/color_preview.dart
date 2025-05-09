@@ -11,7 +11,7 @@ class ColorPreview extends StatelessWidget {
     return Container(
       width: 24,
       height: 24,
-      margin: const EdgeInsets.only(right: 8.0),
+      margin: const EdgeInsets.only(right: AppTheme.sizeSmall),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(12),

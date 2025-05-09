@@ -218,76 +218,73 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               // SUB TASKS
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.sizeXSmall,
+                  horizontal: AppTheme.sizeSmall,
                   vertical: AppTheme.sizeXSmall,
                 ),
-                child: SizedBox(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // TITLE
-                            const Icon(Icons.list),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                _translationService.translate(TaskTranslationKeys.subTasksLabel),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // TITLE
+                          const Icon(Icons.list),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              _translationService.translate(TaskTranslationKeys.subTasksLabel),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(width: 8),
-                            if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
-                              Text(
-                                '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
+                          ),
+                          const SizedBox(width: 8),
+                          if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                            Text(
+                              '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
 
-                            // FILTERS
-                            const SizedBox(width: AppTheme.sizeMedium),
-                            TaskFilters(
-                              showCompletedTasks: _showCompletedTasks,
-                              onCompletedTasksToggle: (showCompleted) {
-                                setState(() {
-                                  _showCompletedTasks = showCompleted;
-                                  _listRebuildKey = UniqueKey();
-                                });
-                                Future.delayed(const Duration(milliseconds: 50), () {
-                                  if (mounted) {
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      _refreshTasksList();
-                                    });
-                                  }
-                                });
-                              },
-                              onSearchChange: (query) {
-                                setState(() {
-                                  _searchQuery = query;
-                                });
-                                _refreshTasksList();
-                              },
-                              hasItems: true,
-                              showDateFilter: false,
-                              showTagFilter: false,
-                            )
-                          ],
-                        ),
+                          // FILTERS
+                          const SizedBox(width: AppTheme.sizeMedium),
+                          TaskFilters(
+                            showCompletedTasks: _showCompletedTasks,
+                            onCompletedTasksToggle: (showCompleted) {
+                              setState(() {
+                                _showCompletedTasks = showCompleted;
+                                _listRebuildKey = UniqueKey();
+                              });
+                              Future.delayed(const Duration(milliseconds: 50), () {
+                                if (mounted) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    _refreshTasksList();
+                                  });
+                                }
+                              });
+                            },
+                            onSearchChange: (query) {
+                              setState(() {
+                                _searchQuery = query;
+                              });
+                              _refreshTasksList();
+                            },
+                            hasItems: true,
+                            showDateFilter: false,
+                            showTagFilter: false,
+                          )
+                        ],
                       ),
+                    ),
 
-                      // ADD BUTTON
-                      if (!_showCompletedTasks)
-                        TaskAddButton(
-                          onTaskCreated: (_, __) {
-                            _refreshEverything();
-                          },
-                          initialParentTaskId: widget.taskId,
-                        ),
-                    ],
-                  ),
+                    // ADD BUTTON
+                    if (!_showCompletedTasks)
+                      TaskAddButton(
+                        onTaskCreated: (_, __) {
+                          _refreshEverything();
+                        },
+                        initialParentTaskId: widget.taskId,
+                      ),
+                  ],
                 ),
               ),
 

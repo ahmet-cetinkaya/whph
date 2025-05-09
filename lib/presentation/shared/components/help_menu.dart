@@ -23,7 +23,7 @@ class HelpMenu extends StatelessWidget {
       builder: (context) => Dialog(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.8,
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppTheme.sizeXLarge),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +46,7 @@ class HelpMenu extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.sizeLarge),
               Expanded(
                 child: MarkdownParse(
                   data: _translationService.translate(markdownContentKey),

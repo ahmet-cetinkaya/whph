@@ -19,21 +19,27 @@ class FilterIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget buttonIcon = Icon(
-      icon,
-      size: iconSize,
-      color: color ?? Colors.grey,
-    );
+    final effectiveColor = color ?? Colors.grey;
 
     return Material(
       type: MaterialType.transparency,
-      child: IconButton(
-        icon: buttonIcon,
-        iconSize: iconSize,
-        tooltip: tooltip,
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        hoverColor: AppTheme.surface1,
+      child: Tooltip(
+        message: tooltip ?? '',
+        child: InkWell(
+          onTap: onPressed,
+          hoverColor: AppTheme.surface1,
+          customBorder: const CircleBorder(),
+          child: Container(
+            width: iconSize * 2,
+            height: iconSize * 2,
+            alignment: Alignment.center,
+            child: Icon(
+              icon,
+              size: iconSize,
+              color: effectiveColor,
+            ),
+          ),
+        ),
       ),
     );
   }

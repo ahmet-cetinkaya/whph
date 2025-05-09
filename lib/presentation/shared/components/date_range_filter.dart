@@ -48,7 +48,7 @@ class DateRangeFilter extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(AppTheme.sizeSmall),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -128,14 +128,14 @@ class DateRangeFilter extends StatelessWidget {
           onPressed: () => _showDatePicker(context),
         ),
         if (hasDateFilter) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: AppTheme.sizeXSmall),
           Text(
             _getDateRangeText(),
             style: AppTheme.bodySmall.copyWith(
               color: primaryColor,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppTheme.sizeXSmall),
           FilterIconButton(
             icon: Icons.close,
             iconSize: AppTheme.iconSizeSmall,

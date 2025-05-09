@@ -74,8 +74,8 @@ class _SearchFilterState extends State<SearchFilter> {
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 8,
+                  horizontal: AppTheme.sizeSmall,
+                  vertical: AppTheme.sizeSmall,
                 ),
                 hintText: widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
                 hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),

@@ -40,25 +40,29 @@ class _HabitFiltersState extends State<HabitFilters> {
       return const SizedBox.shrink();
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Filter by tags
-        TagSelectDropdown(
-          isMultiSelect: true,
-          onTagsSelected: (tags, isNoneSelected) => widget.onTagFilterChange(tags, isNoneSelected),
-          icon: Icons.label,
-          color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
-              ? AppTheme.primaryColor
-              : Colors.grey,
-          tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
-          showLength: true,
-          showNoneOption: true,
-          initialSelectedTags: widget.selectedTagIds != null
-              ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
-              : [],
-        ),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Filter by tags
+          TagSelectDropdown(
+            isMultiSelect: true,
+            onTagsSelected: (tags, isNoneSelected) => widget.onTagFilterChange(tags, isNoneSelected),
+            icon: Icons.label,
+            iconSize: AppTheme.iconSizeMedium,
+            color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
+                ? AppTheme.primaryColor
+                : Colors.grey,
+            tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
+            showLength: true,
+            showNoneOption: true,
+            initialSelectedTags: widget.selectedTagIds != null
+                ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                : [],
+          ),
+        ],
+      ),
     );
   }
 }
