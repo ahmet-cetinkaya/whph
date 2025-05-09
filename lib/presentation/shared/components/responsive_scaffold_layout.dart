@@ -110,14 +110,14 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             (widget.showBackButton
                 ? IconButton(
                     icon: const Icon(Icons.arrow_back, size: AppTheme.fontSizeXLarge),
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppTheme.sizeMedium),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 : (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
                     ? Builder(
                         builder: (BuildContext context) => IconButton(
                           icon: const Icon(Icons.menu, size: AppTheme.fontSizeXLarge),
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(AppTheme.sizeMedium),
                           onPressed: () {
                             _scaffoldKey.currentState?.openDrawer();
                           },
@@ -129,9 +129,9 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: 16),
+                  if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeLarge),
                   const AppLogo(width: 32, height: 32),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppTheme.sizeXSmall),
                 ],
                 Flexible(
                   child: Text(
@@ -193,36 +193,36 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 height: 80,
                 child: DrawerHeader(
                     margin: EdgeInsets.zero,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: AppTheme.sizeMedium),
                     child: Row(
                       children: [
                         const AppLogo(width: 32, height: 32),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppTheme.sizeSmall),
                         Text(AppInfo.shortName),
                       ],
                     )),
               ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.sizeSmall),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
                 children: [
                   ...topNavItems.map((navItem) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
                         child: _buildNavItem(navItem),
                       )),
                 ],
               ),
             ),
             if (bottomNavItems != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.sizeSmall),
               const Divider(height: 1),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.sizeSmall),
               ...bottomNavItems.map((navItem) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
                     child: _buildNavItem(navItem),
                   )),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.sizeLarge),
             ],
           ],
         ),
@@ -236,7 +236,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     return ListTile(
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge),
       leading: navItem.icon != null ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge) : null,
       title: navItem.widget ??
           Text(

@@ -118,45 +118,44 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       builder: (context) => ListView(
         children: [
           // Shared Tag Filter
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TagSelectDropdown(
-                    isMultiSelect: true,
-                    onTagsSelected: (tags, isNoneSelected) {
-                      if (_isRefreshing) return;
-                      setState(() {
-                        _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                        _showNoTagsFilter = isNoneSelected; // Update "None" filter state
-                      });
-                      _refreshAllElements();
-                    },
-                    icon: Icons.label,
-                    color: (_selectedTagFilter?.isNotEmpty ?? false) || _showNoTagsFilter
-                        ? AppTheme.primaryColor
-                        : Colors.grey,
-                    tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
-                    showLength: true,
-                    showNoneOption: true, // Enable "None" option
-                    initialSelectedTags: _selectedTagFilter != null
-                        ? _selectedTagFilter!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
-                        : [],
-                  ),
+          Row(
+            children: [
+              Expanded(
+                child: TagSelectDropdown(
+                  isMultiSelect: true,
+                  onTagsSelected: (tags, isNoneSelected) {
+                    if (_isRefreshing) return;
+                    setState(() {
+                      _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                      _showNoTagsFilter = isNoneSelected; // Update "None" filter state
+                    });
+                    _refreshAllElements();
+                  },
+                  icon: Icons.label,
+                  color: (_selectedTagFilter?.isNotEmpty ?? false) || _showNoTagsFilter
+                      ? AppTheme.primaryColor
+                      : Colors.grey,
+                  tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
+                  showLength: true,
+                  showNoneOption: true, // Enable "None" option
+                  initialSelectedTags: _selectedTagFilter != null
+                      ? _selectedTagFilter!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                      : [],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const Divider(),
 
           // Habits
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8.0, bottom: 4),
+                padding: const EdgeInsets.only(
+                  left: AppTheme.sizeSmall,
+                  bottom: AppTheme.sizeXSmall,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -226,12 +225,15 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           ),
 
           // Tasks
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8.0, bottom: 4),
+                padding: const EdgeInsets.only(
+                  left: AppTheme.sizeSmall,
+                  bottom: AppTheme.sizeXSmall,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -240,7 +242,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       _translationService.translate(CalendarTranslationKeys.tasksTitle),
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    const SizedBox(width: 24), // Add more space between title and filters
+                    const SizedBox(width: AppTheme.sizeLarge),
 
                     // Task filters and add button
                     Expanded(
@@ -278,7 +280,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
                           // Add button
                           Padding(
-                            padding: const EdgeInsets.only(right: 16),
+                            padding: const EdgeInsets.only(right: AppTheme.sizeLarge),
                             child: TaskAddButton(
                               initialTagIds: _selectedTagFilter,
                               initialPlannedDate: DateTime.now(),
@@ -310,19 +312,22 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           ),
 
           // Times
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 4),
+                padding: const EdgeInsets.only(
+                  left: AppTheme.sizeSmall,
+                  bottom: AppTheme.sizeXSmall,
+                ),
                 child: Text(
                   _translationService.translate(CalendarTranslationKeys.timeTitle),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(AppTheme.sizeSmall),
                 child: Center(
                   child: TagTimeChart(
                     filterByTags: _selectedTagFilter,

@@ -112,7 +112,7 @@ class _TagsPageState extends State<TagsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Tag Filters
+          // Tag Filters section
           TagFilters(
             selectedFilters: _selectedFilters,
             showArchived: _showArchived,
@@ -125,49 +125,66 @@ class _TagsPageState extends State<TagsPage> {
           ),
 
           // Tag Times Section
-          Row(
-            children: [
-              Text(
-                _translationService.translate(TagTranslationKeys.timesSectionTitle),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: DateRangeFilter(
-                  selectedStartDate: _startDate,
-                  selectedEndDate: _endDate,
-                  onDateFilterChange: (start, end) {
-                    _onDateFilterChange(start, end);
-                  },
-                  iconSize: AppTheme.iconSizeSmall,
-                  iconColor: Colors.grey,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall),
+            child: Row(
+              children: [
+                Text(
+                  _translationService.translate(TagTranslationKeys.timesSectionTitle),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-              ),
-            ],
-          ),
-
-          // Chart
-          Center(
-            child: TagTimeChart(
-              filterByTags: _selectedFilters,
-              startDate: _startDate,
-              endDate: _endDate,
-              filterByIsArchived: _showArchived,
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
+                  child: DateRangeFilter(
+                    selectedStartDate: _startDate,
+                    selectedEndDate: _endDate,
+                    onDateFilterChange: (start, end) {
+                      _onDateFilterChange(start, end);
+                    },
+                    iconSize: AppTheme.iconSizeSmall,
+                    iconColor: Colors.grey,
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Tags Section with translation
-          Text(
-            _translationService.translate(TagTranslationKeys.listSectionTitle),
-            style: Theme.of(context).textTheme.titleSmall,
+          // Chart
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+            child: Center(
+              child: TagTimeChart(
+                filterByTags: _selectedFilters,
+                startDate: _startDate,
+                endDate: _endDate,
+                filterByIsArchived: _showArchived,
+              ),
+            ),
+          ),
+
+          // Tags Section Title
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppTheme.sizeSmall,
+              right: AppTheme.sizeSmall,
+              top: AppTheme.sizeMedium,
+              bottom: AppTheme.sizeXSmall,
+            ),
+            child: Text(
+              _translationService.translate(TagTranslationKeys.listSectionTitle),
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
 
           // List
-          TagsList(
-            key: _tagsListKey,
-            onClickTag: (tag) => _openDetails(tag.id),
-            filterByTags: _selectedFilters,
-            showArchived: _showArchived,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+            child: TagsList(
+              key: _tagsListKey,
+              onClickTag: (tag) => _openDetails(tag.id),
+              filterByTags: _selectedFilters,
+              showArchived: _showArchived,
+            ),
           ),
         ],
       ),

@@ -129,6 +129,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             hasItems: true, // keep filters visible even if list is empty
           ),
 
+          const SizedBox(height: AppTheme.sizeMedium),
+
           // Task List
           TaskList(
             filterByCompleted: _showCompletedTasks,

@@ -16,7 +16,7 @@ class RegexHelpDialog extends StatelessWidget {
 
   Widget _buildPatternExample(BuildContext context, String pattern, String description) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,7 +74,7 @@ class RegexHelpDialog extends StatelessWidget {
               '.*\\.pdf',
               translationService.translate(SharedTranslationKeys.regexHelpExamplesPdf),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.sizeLarge),
             Text(
               translationService.translate(SharedTranslationKeys.regexHelpTips),
               style: AppTheme.bodyMedium,

@@ -111,7 +111,7 @@ class _HabitsPageState extends State<HabitsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Filters
+          // Filters and Calendar row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class _HabitsPageState extends State<HabitsPage> {
               // Calendar
               if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
                 Padding(
-                  padding: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.only(right: AppTheme.sizeMedium),
                   child: SizedBox(
                     width: daysToShow * 46.0,
                     child: Row(
@@ -136,6 +136,8 @@ class _HabitsPageState extends State<HabitsPage> {
                 ),
             ],
           ),
+
+          const SizedBox(height: AppTheme.sizeMedium),
 
           // List
           HabitsList(

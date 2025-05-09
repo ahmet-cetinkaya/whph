@@ -78,10 +78,13 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       ],
       builder: (context) => ListView(
         children: [
+          // Filters
           AppUsageFilters(
             initialState: _filterState,
             onFiltersChanged: _handleFiltersChanged,
           ),
+
+          // List
           AppUsageList(
             onOpenDetails: _openDetails,
             filterByTags: _filterState.tags,

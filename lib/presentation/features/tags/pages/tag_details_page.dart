@@ -157,7 +157,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                             children: [
                               // Tasks header with filters
                               Padding(
-                                padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.sizeSmall,
+                                  vertical: AppTheme.sizeXSmall,
+                                ),
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -206,7 +209,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                             children: [
                               // Notes header with filters and add button
                               Padding(
-                                padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.sizeSmall,
+                                  vertical: AppTheme.sizeXSmall,
+                                ),
                                 child: Row(
                                   children: [
                                     Expanded(
