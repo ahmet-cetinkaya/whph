@@ -50,7 +50,7 @@ class _ImportExportBottomSheet extends StatelessWidget {
   final IFileService _fileService;
 
   void _showImportStrategyDialog(BuildContext context, String filePath) {
-    if (kDebugMode) print('DEBUG: Building import strategy dialog for file: $filePath');
+    if (kDebugMode) debugPrint('[ImportExportSettings]: Building import strategy dialog for file: $filePath');
 
     showDialog(
       context: context,
@@ -91,7 +91,7 @@ class _ImportExportBottomSheet extends StatelessWidget {
       leading: Icon(icon),
       title: Text(_translationService.translate(translationKey)),
       onTap: () {
-        if (kDebugMode) print('DEBUG: Selected ${strategy.name} strategy');
+        if (kDebugMode) debugPrint('[ImportExportSettings]: Selected ${strategy.name} strategy');
         Navigator.of(context).pop();
         _importData(context, filePath, strategy);
       },
@@ -100,7 +100,7 @@ class _ImportExportBottomSheet extends StatelessWidget {
 
   Future<void> _importData(BuildContext dialogContext, String filePath, ImportStrategy strategy) async {
     try {
-      if (kDebugMode) print('DEBUG: Starting import with strategy: $strategy');
+      if (kDebugMode) debugPrint('[ImportExportSettings]: Starting import with strategy: $strategy');
 
       // Read file and execute import command
       final content = await _fileService.readFile(filePath);
@@ -117,8 +117,8 @@ class _ImportExportBottomSheet extends StatelessWidget {
       _showSuccessMessage(scaffoldContext);
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print('DEBUG: Import error: $e');
-        print('DEBUG: Stack trace: $stackTrace');
+        debugPrint('[ImportExportSettings]: Import error: $e');
+        debugPrint('[ImportExportSettings]: Stack trace: $stackTrace');
       }
 
       final scaffoldContext = navigatorKey.currentContext;
@@ -162,7 +162,7 @@ class _ImportExportBottomSheet extends StatelessWidget {
         _showImportStrategyDialog(navigatorKey.currentContext!, filePath);
       }
     } catch (e) {
-      if (kDebugMode) print('DEBUG: Import process error: $e');
+      if (kDebugMode) debugPrint('[ImportExportSettings]: Import process error: $e');
     }
   }
 
@@ -257,7 +257,7 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
 
   Future<void> _exportData(BuildContext context, ExportDataFileOptions fileOption) async {
     try {
-      if (kDebugMode) print('DEBUG: Starting export process...');
+      if (kDebugMode) debugPrint('[ImportExportSettings]: Starting export process...');
 
       // Get export data
       final mediator = container.resolve<Mediator>();
@@ -286,8 +286,8 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
       _showSuccessMessage(context, displayPath);
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print('DEBUG: Export error: $e');
-        print('DEBUG: Stack trace: $stackTrace');
+        debugPrint('[ImportExportSettings]: Export error: $e');
+        debugPrint('[ImportExportSettings]: Stack trace: $stackTrace');
       }
 
       if (context.mounted) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
@@ -9,10 +8,12 @@ import 'package:whph/presentation/features/tags/components/tag_filters.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -24,43 +25,71 @@ class TagsPage extends StatefulWidget {
 }
 
 class _TagsPageState extends State<TagsPage> {
-  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _tagsListKey = GlobalKey<TagsListState>();
-  final _timeChartKey = GlobalKey<TagTimeChartState>();
+  final _tagsService = container.resolve<TagsService>();
 
   List<String>? _selectedFilters;
   bool _showArchived = false;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
+  final GlobalKey<TagsListState> _tagsListKey = GlobalKey<TagsListState>();
 
-  Future<void> _refreshAllElements() async {
-    // Ensure sequential refresh to avoid race conditions
-    await _tagsListKey.currentState?.refresh();
-    await _timeChartKey.currentState?.refresh();
+  @override
+  void initState() {
+    super.initState();
+    _setupEventListeners();
   }
 
-  Future<void> _openTagDetails(String tagId) async {
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _tagsService.onTagCreated.addListener(_handleTagChange);
+    _tagsService.onTagUpdated.addListener(_handleTagChange);
+    _tagsService.onTagDeleted.addListener(_handleTagChange);
+  }
+
+  void _removeEventListeners() {
+    _tagsService.onTagCreated.removeListener(_handleTagChange);
+    _tagsService.onTagUpdated.removeListener(_handleTagChange);
+    _tagsService.onTagDeleted.removeListener(_handleTagChange);
+  }
+
+  void _handleTagChange() {
+    _tagsListKey.currentState?.refresh();
+  }
+
+  Future<void> _openDetails(String id) async {
     await Navigator.of(context).pushNamed(
       TagDetailsPage.route,
-      arguments: {'id': tagId},
+      arguments: {'id': id},
     );
-    _refreshAllElements();
   }
 
   void _onFilterTags(List<DropdownOption<String>> tagOptions) {
-    setState(() {
-      _selectedFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
-    });
-    _refreshAllElements();
+    final List<String>? newFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
+
+    if (!FilterChangeAnalyzer.areListsEqual(_selectedFilters, newFilters)) {
+      setState(() {
+        _selectedFilters = newFilters;
+      });
+    }
   }
 
   void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
-    setState(() {
-      _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-      _endDate = endDate ?? DateTime.now();
-      _timeChartKey.currentState?.refresh();
-    });
+    final newStartDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
+    final newEndDate = endDate ?? DateTime.now();
+
+    if (FilterChangeAnalyzer.hasValueChanged(_startDate, newStartDate) ||
+        FilterChangeAnalyzer.hasValueChanged(_endDate, newEndDate)) {
+      setState(() {
+        _startDate = newStartDate;
+        _endDate = newEndDate;
+      });
+    }
   }
 
   @override
@@ -70,7 +99,7 @@ class _TagsPageState extends State<TagsPage> {
       appBarActions: [
         TagAddButton(
           onTagCreated: (tagId) {
-            _openTagDetails(tagId);
+            _openDetails(tagId);
           },
           buttonColor: AppTheme.primaryColor,
           tooltip: _translationService.translate(TagTranslationKeys.addTagTooltip),
@@ -91,7 +120,6 @@ class _TagsPageState extends State<TagsPage> {
             onArchivedToggle: (show) {
               setState(() {
                 _showArchived = show;
-                _refreshAllElements();
               });
             },
           ),
@@ -121,7 +149,6 @@ class _TagsPageState extends State<TagsPage> {
           // Chart
           Center(
             child: TagTimeChart(
-              key: _timeChartKey,
               filterByTags: _selectedFilters,
               startDate: _startDate,
               endDate: _endDate,
@@ -138,9 +165,7 @@ class _TagsPageState extends State<TagsPage> {
           // List
           TagsList(
             key: _tagsListKey,
-            mediator: _mediator,
-            onTagAdded: _refreshAllElements,
-            onClickTag: (tag) => _openTagDetails(tag.id),
+            onClickTag: (tag) => _openDetails(tag.id),
             filterByTags: _selectedFilters,
             showArchived: _showArchived,
           ),

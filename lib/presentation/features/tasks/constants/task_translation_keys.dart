@@ -78,6 +78,8 @@ class TaskTranslationKeys {
   static const String completedTasksTitle = 'tasks.page.completed_tasks_title';
   static const String tasksHelpTitle = 'tasks.help.overview.title';
   static const String tasksHelpContent = 'tasks.help.overview.content';
+  static const String noTasks = 'tasks.no_tasks';
+  static const String allTasksDone = 'tasks.all_tasks_done';
 
   // Errors
   static const String getTaskError = 'tasks.errors.get_task';

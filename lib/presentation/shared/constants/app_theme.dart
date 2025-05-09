@@ -65,6 +65,8 @@ class AppTheme {
   static const double iconSizeMedium = 20.0;
   static const double iconSizeLarge = 32.0;
   static const double iconSizeXLarge = 48.0;
+  static const double iconSize2XLarge = 64.0;
+  static const double iconSize3XLarge = 96.0;
 
   // Screen Sizes
   static const double screenSmall = 320.0;

@@ -5,6 +5,7 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -13,14 +14,14 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 class TaskCompleteButton extends StatefulWidget {
   final String taskId;
   final bool isCompleted;
-  final VoidCallback onToggleCompleted;
+  final VoidCallback? onToggleCompleted;
   final Color? color;
 
   const TaskCompleteButton({
     super.key,
     required this.taskId,
     required this.isCompleted,
-    required this.onToggleCompleted,
+    this.onToggleCompleted,
     this.color,
   });
 
@@ -32,6 +33,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _mediator = container.resolve<Mediator>();
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tasksService = container.resolve<TasksService>();
   bool _isCompleted = false;
   bool _isProcessing = false; // Flag to prevent multiple rapid taps
 
@@ -85,10 +87,17 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         _soundPlayer.play(SharedSounds.done);
       }
 
-      // Use a microtask to ensure we don't interrupt the current build cycle
-      Future.microtask(() {
-        widget.onToggleCompleted();
-      });
+      // Notify the service about the completed task
+      if (_isCompleted) {
+        Future.delayed(const Duration(seconds: 3), () {
+          _tasksService.notifyTaskCompleted(widget.taskId);
+        });
+      } else {
+        _tasksService.notifyTaskUpdated(widget.taskId);
+      }
+
+      // Still call the callback if provided for backward compatibility
+      widget.onToggleCompleted?.call();
     } on BusinessException catch (e) {
       // Revert UI state if there was an error
       setState(() {

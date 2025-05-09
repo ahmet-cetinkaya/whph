@@ -35,6 +35,7 @@ class TagTranslationKeys {
   static const String colorLabel = 'tags.labels.color';
   static const String descriptionLabel = 'tags.labels.description';
   static const String tagsLabel = 'tags.labels.tags';
+  static const String newTag = 'tags.new_tag';
 
   // Help
   static const String helpTitle = 'tags.help.title';

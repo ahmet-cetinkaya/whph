@@ -40,8 +40,8 @@ class ErrorHelper {
     _isShowingError = true;
 
     if (kDebugMode) {
-      if (kDebugMode) print('ERROR: $error');
-      if (kDebugMode) print('ERROR: Stack trace: $stackTrace');
+      if (kDebugMode) debugPrint('ERROR: $error');
+      if (kDebugMode) debugPrint('ERROR: Stack trace: $stackTrace');
     }
 
     ScaffoldMessenger.of(context).showSnackBar(

@@ -12,6 +12,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/tags/components/tag_label.dart';
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -147,60 +148,41 @@ class TaskCard extends StatelessWidget {
       );
 
   Widget _buildMetadataRow() {
-    final List<Widget> metadata = [];
-
-    // Add tags if exist
-    if (taskItem.tags.isNotEmpty) {
-      metadata.add(Icon(TaskUiConstants.tagsIcon, size: AppTheme.fontSizeSmall, color: TaskUiConstants.tagsColor));
-      metadata.add(const SizedBox(width: 2));
-
-      for (var i = 0; i < taskItem.tags.length; i++) {
-        if (i > 0) {
-          metadata.add(Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)));
-        }
-
-        metadata.add(ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 80),
-          child: Text(
-            taskItem.tags[i].name,
-            style: AppTheme.bodySmall.copyWith(
-                color: taskItem.tags[i].color != null
-                    ? Color(int.parse('FF${taskItem.tags[i].color}', radix: 16))
-                    : Colors.grey),
-            overflow: TextOverflow.ellipsis,
+    return Row(
+      children: [
+        // Tags section
+        if (taskItem.tags.isNotEmpty)
+          TagLabel(
+            tagColor: taskItem.tags.firstOrNull?.color,
+            tagName: taskItem.tags.map((tag) => tag.name).join(', '),
+            mini: true,
           ),
-        ));
-      }
-    }
 
-    // Add separator if needed
-    if (metadata.isNotEmpty && _hasDateOrTime) {
-      metadata.add(const SizedBox(width: 8));
-    }
+        // Add a small spacer between tags and date/time elements
+        if (taskItem.tags.isNotEmpty && _hasDateOrTime) const SizedBox(width: 8),
 
-    // Add date/time info
-    if (_hasDateOrTime) {
-      final dateTimeWidgets = _buildDateTimeElements();
-      metadata.addAll(dateTimeWidgets);
-    }
+        // Date/time section (now in-line with tags)
+        if (_hasDateOrTime)
+          Expanded(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 0,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: _buildDateTimeElements(),
+            ),
+          ),
 
-    // Add separator and completion percentage if available
-    if (taskItem.subTasks.isNotEmpty) {
-      if (metadata.isNotEmpty) {
-        metadata.add(const SizedBox(width: 8));
-      }
-      metadata.add(_buildInfoRow(
-        Icons.check_circle_outline,
-        '${taskItem.subTasksCompletionPercentage.toStringAsFixed(0)}%',
-        Colors.green,
-      ));
-    }
-
-    return Wrap(
-      spacing: 0,
-      runSpacing: 0,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: metadata,
+        // Completion percentage for subtasks
+        if (taskItem.subTasks.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: _buildInfoRow(
+              Icons.check_circle_outline,
+              '${taskItem.subTasksCompletionPercentage.toStringAsFixed(0)}%',
+              Colors.green,
+            ),
+          ),
+      ],
     );
   }
 

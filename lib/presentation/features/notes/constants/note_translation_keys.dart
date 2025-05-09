@@ -3,6 +3,7 @@ class NoteTranslationKeys {
   static const String newNote = 'notes.new_note';
   static const String noteDetails = 'notes.note_details';
   static const String noNotes = 'notes.no_notes';
+  static const String noNotesWithFilters = 'notes.no_notes_with_filters';
   static const String notes = 'notes.notes';
 
   // Fields

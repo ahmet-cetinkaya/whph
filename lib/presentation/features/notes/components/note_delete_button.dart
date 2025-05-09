@@ -11,13 +11,13 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class NoteDeleteButton extends StatefulWidget {
   final String noteId;
-  final VoidCallback? onDeleteSuccess;
+  final VoidCallback? onDeleted;
   final Color? buttonColor;
 
   const NoteDeleteButton({
     super.key,
     required this.noteId,
-    this.onDeleteSuccess,
+    this.onDeleted,
     this.buttonColor,
   });
 
@@ -26,8 +26,8 @@ class NoteDeleteButton extends StatefulWidget {
 }
 
 class _NoteDeleteButtonState extends State<NoteDeleteButton> {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final NotesService _notesService = container.resolve<NotesService>();
+  final _mediator = container.resolve<Mediator>();
+  final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   bool _isDeleting = false;
 
@@ -67,10 +67,10 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
       await _mediator.send(command);
 
       // Notify note deleted
-      _notesService.notifyNoteDeleted();
+      _notesService.notifyNoteDeleted(widget.noteId);
 
-      if (widget.onDeleteSuccess != null) {
-        widget.onDeleteSuccess!();
+      if (widget.onDeleted != null) {
+        widget.onDeleted!();
       }
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
@@ -9,11 +10,55 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
-class HabitStatisticsView extends StatelessWidget {
+class HabitStatisticsView extends StatefulWidget {
   final HabitStatistics statistics;
-  final _translationService = container.resolve<ITranslationService>();
+  final String habitId;
 
-  HabitStatisticsView({super.key, required this.statistics});
+  const HabitStatisticsView({super.key, required this.statistics, required this.habitId});
+
+  @override
+  State<HabitStatisticsView> createState() => _HabitStatisticsViewState();
+}
+
+class _HabitStatisticsViewState extends State<HabitStatisticsView> {
+  final _translationService = container.resolve<ITranslationService>();
+  final _habitsService = container.resolve<HabitsService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _habitsService.onHabitUpdated.addListener(_handleHabitChanged);
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChanged);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChanged);
+  }
+
+  void _removeEventListeners() {
+    _habitsService.onHabitUpdated.removeListener(_handleHabitChanged);
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChanged);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChanged);
+  }
+
+  void _handleHabitChanged() {
+    if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
+    setState(() {});
+  }
+
+  void _handleHabitRecordChanged() {
+    if (!mounted) return;
+    String? habitId = _habitsService.onHabitRecordAdded.value ?? _habitsService.onHabitRecordRemoved.value;
+    if (habitId != widget.habitId) return;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +70,7 @@ class HabitStatisticsView extends StatelessWidget {
         _buildStatisticsRow(),
         const SizedBox(height: 24),
         _buildScoreChart(),
-        if (statistics.topStreaks.isNotEmpty) ...[
+        if (widget.statistics.topStreaks.isNotEmpty) ...[
           const SizedBox(height: 24),
           _buildStreaksSection(),
         ],
@@ -49,19 +94,20 @@ class HabitStatisticsView extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            child:
-                _buildStatCard(_translationService.translate(HabitTranslationKeys.overall), statistics.overallScore)),
-        const SizedBox(width: 8),
-        Expanded(
-            child:
-                _buildStatCard(_translationService.translate(HabitTranslationKeys.monthly), statistics.monthlyScore)),
-        const SizedBox(width: 8),
-        Expanded(
-            child: _buildStatCard(_translationService.translate(HabitTranslationKeys.yearly), statistics.yearlyScore)),
+            child: _buildStatCard(
+                _translationService.translate(HabitTranslationKeys.overall), widget.statistics.overallScore)),
         const SizedBox(width: 8),
         Expanded(
             child: _buildStatCard(
-                _translationService.translate(HabitTranslationKeys.records), statistics.totalRecords.toDouble(),
+                _translationService.translate(HabitTranslationKeys.monthly), widget.statistics.monthlyScore)),
+        const SizedBox(width: 8),
+        Expanded(
+            child: _buildStatCard(
+                _translationService.translate(HabitTranslationKeys.yearly), widget.statistics.yearlyScore)),
+        const SizedBox(width: 8),
+        Expanded(
+            child: _buildStatCard(
+                _translationService.translate(HabitTranslationKeys.records), widget.statistics.totalRecords.toDouble(),
                 isCount: true)),
       ],
     );
@@ -125,8 +171,8 @@ class HabitStatisticsView extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < statistics.monthlyScores.length) {
-                          final date = statistics.monthlyScores[value.toInt()].key;
+                        if (value.toInt() >= 0 && value.toInt() < widget.statistics.monthlyScores.length) {
+                          final date = widget.statistics.monthlyScores[value.toInt()].key;
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
@@ -143,7 +189,7 @@ class HabitStatisticsView extends StatelessWidget {
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
-                    spots: statistics.monthlyScores
+                    spots: widget.statistics.monthlyScores
                         .asMap()
                         .entries
                         .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
@@ -170,7 +216,7 @@ class HabitStatisticsView extends StatelessWidget {
   }
 
   Widget _buildStreaksSection() {
-    int maxDays = statistics.topStreaks.first.days;
+    int maxDays = widget.statistics.topStreaks.first.days;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +228,7 @@ class HabitStatisticsView extends StatelessWidget {
             style: AppTheme.bodyLarge,
           ),
         ),
-        ...statistics.topStreaks.take(5).map(
+        ...widget.statistics.topStreaks.take(5).map(
               (streak) => Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: _buildStreakBar(streak, maxDays),

@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -29,12 +30,16 @@ class TaskDeleteButton extends StatefulWidget {
 
 class _TaskDeleteButtonState extends State<TaskDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
+  final TasksService _tasksService = container.resolve<TasksService>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteTask(BuildContext context) async {
     try {
       final command = DeleteTaskCommand(id: widget.taskId);
       await _mediator.send(command);
+
+      // Notify task deleted with task ID as non-nullable parameter
+      _tasksService.notifyTaskDeleted(widget.taskId);
 
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();

@@ -7,6 +7,7 @@ import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dar
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
@@ -32,10 +33,8 @@ class MarathonPage extends StatefulWidget {
 class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _tasksListKey = GlobalKey<TaskListState>();
   TaskListItem? _selectedTask;
 
-  // Add new state variables for filters
   List<String>? _selectedTagIds;
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
@@ -48,16 +47,22 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-    // Enable fullscreen mode
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.immersiveSticky,
       overlays: [], // Hide all system bars
     );
+    _setupEventListeners();
+  }
+
+  void _setupEventListeners() {
+    final tasksService = container.resolve<TasksService>();
+    tasksService.addListener(_onTasksChanged);
   }
 
   @override
   void dispose() {
-    // Return to normal mode
+    final tasksService = container.resolve<TasksService>();
+    tasksService.removeListener(_onTasksChanged);
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: SystemUiOverlay.values,
@@ -65,10 +70,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     super.dispose();
   }
 
-  void _refreshTasks() {
+  void _onTasksChanged() {
     if (mounted) {
-      // Directly access the TaskList state and refresh it without showing loading indicator
-      _tasksListKey.currentState?.refresh(showLoading: false);
+      setState(() {});
+      _refreshSelectedTaskIfNeeded();
+    }
+  }
+
+  void _refreshSelectedTaskIfNeeded() {
+    if (_selectedTask != null) {
+      _refreshSelectedTask();
     }
   }
 
@@ -116,7 +127,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       setState(() {
         _selectedTask = null;
       });
-      _refreshTasks();
+      _onTasksChanged();
       return;
     }
 
@@ -164,7 +175,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       }
     }
 
-    _refreshTasks();
+    _onTasksChanged();
   }
 
   void _handleTimerUpdate(Duration _) async {
@@ -232,6 +243,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     // Add today's date for filtering
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -290,7 +302,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       taskItem: _selectedTask!,
                       onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
                       onCompleted: () {
-                        Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _refreshTasks()});
+                        Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
                       },
                       trailingButtons: [
                         IconButton(
@@ -317,20 +329,20 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           setState(() {
                             _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                           });
-                          _refreshTasks();
+                          _onTasksChanged();
                         },
                         onDateFilterChange: (start, end) {
                           setState(() {
                             _selectedStartDate = start;
                             _selectedEndDate = end;
                           });
-                          _refreshTasks();
+                          _onTasksChanged();
                         },
                         onSearchChange: (query) {
                           setState(() {
                             _searchQuery = query;
                           });
-                          _refreshTasks();
+                          _onTasksChanged();
                         },
                         showDateFilter: false,
                         showCompletedTasks: _showCompletedTasks,
@@ -338,7 +350,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           setState(() {
                             _showCompletedTasks = showCompleted;
                           });
-                          _refreshTasks();
+                          _onTasksChanged();
                         },
                       ),
                     ),
@@ -347,7 +359,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       child: TaskAddButton(
                         initialTagIds: _selectedTagIds,
                         initialPlannedDate: today,
-                        onTaskCreated: (_, __) => _refreshTasks(),
+                        onTaskCreated: (_, __) => _onTasksChanged(),
                         buttonColor: Colors.white,
                       ),
                     ),
@@ -373,19 +385,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
               // Update TaskList with today's date filter
               Expanded(
                 child: TaskList(
-                  key: _tasksListKey,
-                  mediator: _mediator,
-                  translationService: _translationService,
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTagIds,
                   filterByPlannedEndDate: tomorrow,
                   filterByDeadlineEndDate: tomorrow,
                   filterDateOr: true,
                   search: _searchQuery,
-                  onTaskCompleted: _refreshTasks,
+                  onTaskCompleted: _onTasksChanged,
                   onClickTask: (task) => _showTaskDetails(task.id),
                   onSelectTask: _onSelectTask,
-                  onScheduleTask: (_, __) => _refreshTasks(),
+                  onScheduleTask: (_, __) => _onTasksChanged(),
                   selectedTask: _selectedTask,
                   showSelectButton: true,
                   transparentCards: true,

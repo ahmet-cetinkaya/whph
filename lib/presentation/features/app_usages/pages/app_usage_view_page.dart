@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_filters.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
@@ -22,9 +21,7 @@ class AppUsageViewPage extends StatefulWidget {
 }
 
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
-  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _appUsageListKey = GlobalKey<AppUsageListState>();
 
   late AppUsageFilterState _filterState;
 
@@ -37,29 +34,20 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     );
   }
 
-  void _refreshList() {
-    if (_appUsageListKey.currentState != null) {
-      _appUsageListKey.currentState!.refresh();
-    }
-  }
-
   Future<void> _openDetails(String id) async {
-    final result = await Navigator.of(context).pushNamed(
+    await Navigator.of(context).pushNamed(
       AppUsageDetailsPage.route,
       arguments: {'id': id},
     );
 
-    if (result == true) {
-      _refreshList();
-    }
+    // setState çağrısına artık gerek yok, liste AppUsagesService event listenerlari
+    // sayesinde otomatik olarak güncellenecek
   }
 
   void _handleFiltersChanged(AppUsageFilterState newState) {
     setState(() {
       _filterState = newState;
     });
-
-    _refreshList();
   }
 
   @override
@@ -71,14 +59,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           icon: const Icon(Icons.settings),
           onPressed: () async {
             await Navigator.pushNamed(context, AppUsageRulesPage.route);
-            _refreshList();
+            setState(() {}); // Trigger rebuild to refresh list
           },
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
-          onPressed: _refreshList,
+          onPressed: () => setState(() {}), // Trigger rebuild to refresh list
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
@@ -95,8 +83,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             onFiltersChanged: _handleFiltersChanged,
           ),
           AppUsageList(
-            key: _appUsageListKey,
-            mediator: _mediator,
             onOpenDetails: _openDetails,
             filterByTags: _filterState.tags,
             showNoTagsFilter: _filterState.showNoTagsFilter,

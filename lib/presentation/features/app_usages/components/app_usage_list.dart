@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -29,7 +34,6 @@ class FilterContext {
 }
 
 class AppUsageList extends StatefulWidget {
-  final Mediator mediator;
   final int size;
   final List<String>? filterByTags;
   final bool showNoTagsFilter;
@@ -39,7 +43,6 @@ class AppUsageList extends StatefulWidget {
 
   const AppUsageList({
     super.key,
-    required this.mediator,
     this.size = 10,
     this.filterByTags,
     this.showNoTagsFilter = false,
@@ -53,17 +56,26 @@ class AppUsageList extends StatefulWidget {
 }
 
 class AppUsageListState extends State<AppUsageList> {
-  late List<AppUsageListItem> _appUsages = [];
-  bool _isLoading = false;
-  late FilterContext _currentFilters;
-
+  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _appUsagesService = container.resolve<AppUsagesService>();
+  late List<AppUsageListItem> _appUsages = [];
+  late FilterContext _currentFilters;
+  Timer? _refreshDebounce;
 
   @override
   void initState() {
     super.initState();
     _currentFilters = _captureCurrentFilters();
+    _setupEventListeners();
     _loadAppUsages();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    _refreshDebounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -77,7 +89,6 @@ class AppUsageListState extends State<AppUsageList> {
     }
   }
 
-  /// Creates an immutable snapshot of current filter state
   FilterContext _captureCurrentFilters() => FilterContext(
         filterByTags: widget.filterByTags,
         showNoTagsFilter: widget.showNoTagsFilter,
@@ -85,21 +96,35 @@ class AppUsageListState extends State<AppUsageList> {
         filterEndDate: widget.filterEndDate,
       );
 
-  /// Determines if filters have functionally changed
   bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
-    return oldFilters.filterByTags != newFilters.filterByTags ||
-        oldFilters.showNoTagsFilter != newFilters.showNoTagsFilter ||
-        oldFilters.filterStartDate != newFilters.filterStartDate ||
-        oldFilters.filterEndDate != newFilters.filterEndDate;
+    final oldMap = {
+      'filterByTags': oldFilters.filterByTags,
+      'showNoTagsFilter': oldFilters.showNoTagsFilter,
+      'startDate': oldFilters.filterStartDate,
+      'endDate': oldFilters.filterEndDate,
+    };
+
+    final newMap = {
+      'filterByTags': newFilters.filterByTags,
+      'showNoTagsFilter': newFilters.showNoTagsFilter,
+      'startDate': newFilters.filterStartDate,
+      'endDate': newFilters.filterEndDate,
+    };
+
+    return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
   }
 
   Future<void> refresh() async {
-    setState(() {
-      _isLoading = true;
-      _appUsages = []; // Clear current data while refreshing
-    });
+    if (!mounted) return;
 
-    await _loadAppUsages();
+    _refreshDebounce?.cancel();
+    _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
+      setState(() {
+        _appUsages = [];
+      });
+
+      await _loadAppUsages();
+    });
   }
 
   Future<void> _loadAppUsages() async {
@@ -111,15 +136,10 @@ class AppUsageListState extends State<AppUsageList> {
       if (mounted) {
         setState(() {
           _appUsages = appUsages;
-          _isLoading = false;
         });
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      // Capture error but don't show loading state
     }
   }
 
@@ -134,7 +154,7 @@ class AppUsageListState extends State<AppUsageList> {
     );
 
     try {
-      final result = await widget.mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
+      final result = await _mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
       return result.items;
     } on BusinessException catch (e) {
       if (mounted) {
@@ -154,34 +174,54 @@ class AppUsageListState extends State<AppUsageList> {
     }
   }
 
+  void _setupEventListeners() {
+    _appUsagesService.onAppUsageUpdated.addListener(_handleAppUsageChange);
+    _appUsagesService.onAppUsageCreated.addListener(_handleAppUsageChange);
+    _appUsagesService.onAppUsageDeleted.addListener(_handleAppUsageChange);
+  }
+
+  void _removeEventListeners() {
+    _appUsagesService.onAppUsageUpdated.removeListener(_handleAppUsageChange);
+    _appUsagesService.onAppUsageCreated.removeListener(_handleAppUsageChange);
+    _appUsagesService.onAppUsageDeleted.removeListener(_handleAppUsageChange);
+  }
+
+  void _handleAppUsageChange() {
+    if (!mounted) return;
+    refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_isLoading && _appUsages.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     if (_appUsages.isEmpty) {
-      return Center(
-        child: Text(_translationService.translate(AppUsageTranslationKeys.noUsage)),
+      return IconOverlay(
+        icon: Icons.bar_chart,
+        message: _translationService.translate(AppUsageTranslationKeys.noUsage),
       );
     }
 
-    double maxDuration = _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
+    final maxDuration = _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        for (final appUsage in _appUsages)
-          AppUsageCard(
-            mediator: widget.mediator,
-            appUsage: appUsage,
-            maxDurationInListing: maxDuration,
-            onTap: () => widget.onOpenDetails?.call(appUsage.id),
-          ),
+        ..._appUsages.map((appUsage) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: AppUsageCard(
+                appUsage: appUsage,
+                maxDurationInListing: maxDuration,
+                onTap: () => widget.onOpenDetails?.call(appUsage.id),
+              ),
+            )),
         if (_appUsages.length >= widget.size)
-          Center(
-            child: LoadMoreButton(
-              onPressed: () => _loadAppUsages(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Center(
+              child: LoadMoreButton(
+                onPressed: _loadAppUsages,
+              ),
             ),
           ),
       ],

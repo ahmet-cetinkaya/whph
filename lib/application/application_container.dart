@@ -121,5 +121,7 @@ void registerApplication(IContainer container) {
     taskRepository,
     taskTagRepository,
     taskTimeRecordRepository,
+    noteRepository,
+    noteTagRepository,
   );
 }

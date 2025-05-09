@@ -106,7 +106,7 @@ class SyncQrScanButton extends StatelessWidget {
         existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
             GetSyncDeviceQuery(fromDeviceId: syncQrCodeMessageFromIP.deviceId, toDeviceId: localDeviceId));
       } catch (e) {
-        if (kDebugMode) print('DEBUG: Get device error: $e');
+        if (kDebugMode) debugPrint('[SyncQrScanButton]: Get device error: $e');
         existingDevice = null;
       }
 
@@ -156,7 +156,7 @@ class SyncQrScanButton extends StatelessWidget {
           ..clearSnackBars()
           ..showSnackBar(syncSnackBar);
 
-        if (kDebugMode) print('DEBUG: Starting sync process...');
+        if (kDebugMode) debugPrint('[SyncQrScanButton]: Starting sync process...');
 
         if (onSyncComplete != null) {
           onSyncComplete!();
@@ -164,7 +164,7 @@ class SyncQrScanButton extends StatelessWidget {
 
         try {
           await _sync(context);
-          if (kDebugMode) print('DEBUG: Sync completed successfully');
+          if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync completed successfully');
 
           if (context.mounted) {
             ScaffoldMessenger.of(context).clearSnackBars();
@@ -185,12 +185,12 @@ class SyncQrScanButton extends StatelessWidget {
             }
           }
         } catch (e) {
-          if (kDebugMode) print('DEBUG: Sync error: $e');
+          if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync error: $e');
           rethrow;
         }
       }
     } catch (e, stackTrace) {
-      if (kDebugMode) print('DEBUG: Save device error: $e');
+      if (kDebugMode) debugPrint('[SyncQrScanButton]: Save device error: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
         if (e is Exception) {
@@ -206,7 +206,7 @@ class SyncQrScanButton extends StatelessWidget {
 
   _sync(BuildContext context) async {
     try {
-      if (kDebugMode) print('DEBUG: Starting sync process...');
+      if (kDebugMode) debugPrint('[SyncQrScanButton]: Starting sync process...');
 
       final syncService = container.resolve<ISyncService>();
       final completer = Completer<void>();
@@ -228,9 +228,9 @@ class SyncQrScanButton extends StatelessWidget {
       );
 
       subscription.cancel();
-      if (kDebugMode) print('DEBUG: Sync process completed');
+      if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync process completed');
     } catch (e) {
-      if (kDebugMode) print('DEBUG: Sync error: $e');
+      if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync error: $e');
       if (context.mounted) {
         ErrorHelper.showError(context, BusinessException(_translationService.translate(SyncTranslationKeys.syncError)));
       }

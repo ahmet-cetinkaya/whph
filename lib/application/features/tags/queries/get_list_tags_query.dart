@@ -3,7 +3,6 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_reposi
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
-import 'package:whph/domain/features/tags/tag.dart';
 
 class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   late int pageIndex;
@@ -20,8 +19,16 @@ class TagListItem {
   String id;
   String name;
   String? color;
+  bool isArchived;
+  List<TagListItem> relatedTags;
 
-  TagListItem({required this.id, required this.name, this.color});
+  TagListItem({
+    required this.id,
+    required this.name,
+    this.color,
+    this.isArchived = false,
+    this.relatedTags = const [],
+  });
 }
 
 class GetListTagsQueryResponse extends PaginatedList<TagListItem> {
@@ -34,31 +41,43 @@ class GetListTagsQueryResponse extends PaginatedList<TagListItem> {
 }
 
 class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetListTagsQueryResponse> {
-  late final ITagRepository _tagRepository;
+  final ITagRepository _tagRepository;
 
   GetListTagsQueryHandler({required ITagRepository tagRepository}) : _tagRepository = tagRepository;
 
   @override
   Future<GetListTagsQueryResponse> call(GetListTagsQuery request) async {
-    PaginatedList<Tag> tags = await _tagRepository.getList(
-      request.pageIndex,
-      request.pageSize,
+    final tagsWithRelated = await _tagRepository.getListWithRelatedTags(
+      pageIndex: request.pageIndex,
+      pageSize: request.pageSize,
       customWhereFilter: _getFilters(request),
       customOrder: [CustomOrder(field: "name")],
     );
 
+    final items = tagsWithRelated.items.map((tagPair) {
+      final (tag, relatedTags) = tagPair;
+      return TagListItem(
+        id: tag.id,
+        name: tag.name,
+        color: tag.color,
+        isArchived: tag.isArchived,
+        relatedTags: relatedTags
+            .map((relatedTag) => TagListItem(
+                  id: relatedTag.id,
+                  name: relatedTag.name,
+                  color: relatedTag.color,
+                  isArchived: relatedTag.isArchived,
+                ))
+            .toList(),
+      );
+    }).toList();
+
     return GetListTagsQueryResponse(
-      items: tags.items
-          .map((e) => TagListItem(
-                id: e.id,
-                name: e.name,
-                color: e.color,
-              ))
-          .toList(),
-      totalItemCount: tags.totalItemCount,
-      totalPageCount: tags.totalPageCount,
-      pageIndex: tags.pageIndex,
-      pageSize: tags.pageSize,
+      items: items,
+      totalItemCount: tagsWithRelated.totalItemCount,
+      totalPageCount: tagsWithRelated.totalPageCount,
+      pageIndex: tagsWithRelated.pageIndex,
+      pageSize: tagsWithRelated.pageSize,
     );
   }
 

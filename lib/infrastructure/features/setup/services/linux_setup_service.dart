@@ -50,7 +50,7 @@ exit 0
 
       await _installSystemIcon(sourceIcon);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error setting up Linux environment: $e');
+      if (kDebugMode) debugPrint('ERROR: Error setting up Linux environment: $e');
     }
   }
 
@@ -67,7 +67,7 @@ exit 0
       await runDetachedProcess('bash', [updateScript]);
       exit(0);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Failed to download and install update: $e');
+      if (kDebugMode) debugPrint('ERROR: Failed to download and install update: $e');
       rethrow;
     }
   }
@@ -88,7 +88,7 @@ exit 0
       await Process.run('gtk-update-icon-cache', ['-f', '-t', path.join(sharePath, 'icons', 'hicolor')]);
       await Process.run('update-desktop-database', [path.join(sharePath, 'applications')]);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error updating icon cache: $e');
+      if (kDebugMode) debugPrint('ERROR: Error updating icon cache: $e');
     }
   }
 
@@ -109,7 +109,7 @@ exit 0
         await Process.run('gtk-update-icon-cache', ['-f', '-t', path.join(userIconDir, '..')]);
       }
     } catch (e) {
-      if (kDebugMode) print('ERROR: Could not install icon: $e');
+      if (kDebugMode) debugPrint('ERROR: Could not install icon: $e');
     }
   }
 }

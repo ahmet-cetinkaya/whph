@@ -1,111 +1,152 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 
 class HabitsList extends StatefulWidget {
-  final Mediator mediator;
-
   final int size;
   final bool mini;
   final int dateRange;
   final List<String>? filterByTags;
   final bool filterNoTags;
+  final bool showDoneOverlayWhenEmpty;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
   final void Function()? onHabitCompleted;
+  final void Function(int count)? onListing;
 
-  const HabitsList(
-      {super.key,
-      required this.mediator,
-      this.size = 10,
-      this.mini = false,
-      this.dateRange = 7,
-      this.filterByTags,
-      this.filterNoTags = false,
-      required this.onClickHabit,
-      this.onList,
-      this.onHabitCompleted});
+  const HabitsList({
+    super.key,
+    this.size = 10,
+    this.mini = false,
+    this.dateRange = 7,
+    this.filterByTags,
+    this.filterNoTags = false,
+    this.showDoneOverlayWhenEmpty = false,
+    required this.onClickHabit,
+    this.onList,
+    this.onHabitCompleted,
+    this.onListing,
+  });
 
   @override
   State<HabitsList> createState() => HabitsListState();
 }
 
 class HabitsListState extends State<HabitsList> {
-  GetListHabitsQueryResponse? _habits;
+  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  bool _isRefreshing = false;
-  // Add a query ID to track the most recent query
-  int _currentQueryId = 0;
+  final _habitsService = container.resolve<HabitsService>();
+  GetListHabitsQueryResponse? _habits;
+  Timer? _refreshDebounce;
+  bool _pendingRefresh = false;
+  late FilterContext _currentFilters;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+    _currentFilters = _captureCurrentFilters(); // Initialize first to avoid LateError
+    _getHabits();
+    _setupEventListeners();
   }
 
   @override
-  void didUpdateWidget(covariant HabitsList oldWidget) {
+  void dispose() {
+    _removeEventListeners();
+    _refreshDebounce?.cancel();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _habitsService.onHabitCreated.addListener(_handleHabitChange);
+    _habitsService.onHabitUpdated.addListener(_handleHabitChange);
+    _habitsService.onHabitDeleted.addListener(_handleHabitChange);
+  }
+
+  void _removeEventListeners() {
+    _habitsService.onHabitCreated.removeListener(_handleHabitChange);
+    _habitsService.onHabitUpdated.removeListener(_handleHabitChange);
+    _habitsService.onHabitDeleted.removeListener(_handleHabitChange);
+  }
+
+  void _handleHabitChange() {
+    if (!mounted) return;
+    refresh();
+  }
+
+  @override
+  void didUpdateWidget(HabitsList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Check for any changes in filter properties
-    final bool filterNoTagsChanged = oldWidget.filterNoTags != widget.filterNoTags;
-    final bool filterByTagsChanged = !_areTagListsEqual(oldWidget.filterByTags, widget.filterByTags);
-    final bool otherFiltersChanged = oldWidget.mini != widget.mini || oldWidget.dateRange != widget.dateRange;
-
-    final bool filtersChanged = filterNoTagsChanged || filterByTagsChanged || otherFiltersChanged;
-
-    // If filters have changed, force an immediate refresh
-    if (filtersChanged) {
-      // Don't use microtask - call refresh directly and synchronously
+    final newFilters = _captureCurrentFilters();
+    if (_isFilterChanged(oldFilters: _currentFilters, newFilters: newFilters)) {
+      _currentFilters = newFilters;
       refresh();
     }
   }
 
-  /// Compares two tag lists for equality using a Set approach for order independence
-  bool _areTagListsEqual(List<String>? list1, List<String>? list2) {
-    if (identical(list1, list2)) return true;
-    if (list1 == null && list2 == null) return true;
-    if (list1 == null || list2 == null) return false;
-    if (list1.length != list2.length) return false;
+  FilterContext _captureCurrentFilters() => FilterContext(
+        mini: widget.mini,
+        dateRange: widget.dateRange,
+        filterByTags: widget.filterByTags,
+        filterNoTags: widget.filterNoTags,
+      );
 
-    // Convert to sets for order-independent comparison
-    final set1 = Set<String>.from(list1);
-    final set2 = Set<String>.from(list2);
-    return set1.length == set2.length && set1.containsAll(set2);
+  bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
+    final oldMap = {
+      'mini': oldFilters.mini,
+      'dateRange': oldFilters.dateRange,
+      'filterNoTags': oldFilters.filterNoTags,
+      'tags': oldFilters.filterByTags,
+    };
+
+    final newMap = {
+      'mini': newFilters.mini,
+      'dateRange': newFilters.dateRange,
+      'filterNoTags': newFilters.filterNoTags,
+      'tags': newFilters.filterByTags,
+    };
+
+    return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
   }
 
-  Future<void> _loadInitialData() async {
+  Future<void> refresh() async {
     if (!mounted) return;
-    await _getHabits(isRefresh: true);
+
+    _refreshDebounce?.cancel();
+
+    if (_pendingRefresh) {
+      return;
+    }
+
+    _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
+      await _getHabits(isRefresh: true);
+
+      if (_pendingRefresh) {
+        _pendingRefresh = false;
+        refresh();
+      }
+    });
   }
 
   Future<void> _getHabits({
     int pageIndex = 0,
     bool isRefresh = false,
-    bool forceRefresh = false,
   }) async {
-    if (_isRefreshing && !forceRefresh) {
-      return;
-    }
-
-    // Increment query ID to track this specific request
-    final int queryId = ++_currentQueryId;
-
-    _isRefreshing = true;
-
-    if (isRefresh && mounted) {
-      setState(() {
-        _habits = null;
-      });
+    List<HabitListItem>? existingItems;
+    if (isRefresh && _habits != null) {
+      existingItems = List.from(_habits!.items);
     }
 
     try {
@@ -113,77 +154,57 @@ class HabitsListState extends State<HabitsList> {
         pageIndex: pageIndex,
         pageSize:
             isRefresh && _habits != null && _habits!.items.length > widget.size ? _habits!.items.length : widget.size,
-        excludeCompleted: widget.mini,
-        filterByTags: widget.filterNoTags ? [] : widget.filterByTags,
-        filterNoTags: widget.filterNoTags,
+        excludeCompleted: _currentFilters.mini,
+        filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
+        filterNoTags: _currentFilters.filterNoTags,
       );
 
-      final result = await widget.mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
+      final result = await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
 
-      // Check if this query is still the most recent one
-      if (queryId != _currentQueryId) {
-        return;
-      }
-
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       setState(() {
-        if (_habits == null || isRefresh) {
+        if (_habits == null || !isRefresh) {
           _habits = result;
         } else {
-          _habits!.items.addAll(result.items);
-          _habits!.pageIndex = result.pageIndex;
-          _habits!.totalItemCount = result.totalItemCount;
-          _habits!.totalPageCount = result.totalPageCount;
-          _habits!.pageSize = result.pageSize;
+          _habits = GetListHabitsQueryResponse(
+            items: [...result.items],
+            totalItemCount: result.totalItemCount,
+            totalPageCount: result.totalPageCount,
+            pageIndex: result.pageIndex,
+            pageSize: result.pageSize,
+          );
         }
-      });
 
-      widget.onList?.call(_habits!.items.length);
+        // Notify about listing count
+        widget.onListing?.call(_habits?.items.length ?? 0);
+      });
     } catch (e, stackTrace) {
       if (mounted) {
+        if (existingItems != null && _habits != null) {
+          // Restore previous items on error
+          setState(() {
+            _habits = GetListHabitsQueryResponse(
+              items: existingItems!,
+              totalItemCount: _habits!.totalItemCount,
+              totalPageCount: _habits!.totalPageCount,
+              pageIndex: _habits!.pageIndex,
+              pageSize: _habits!.pageSize,
+            );
+          });
+        }
+
+        // Convert the error to Exception if needed to avoid casting errors
+        final exception = e is Exception ? e : Exception(e.toString());
+
         ErrorHelper.showUnexpectedError(
           context,
-          e as Exception,
+          exception,
           stackTrace,
           message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
         );
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isRefreshing = false;
-        });
-      }
     }
-  }
-
-  /// Refreshes the habits list by clearing data and forcing a reload
-  Future<void> refresh() async {
-    // Cancel any existing refresh operation
-    if (_isRefreshing) {
-      setState(() {
-        _isRefreshing = false;
-      });
-    }
-
-    // Clear the habits data to show loading state immediately
-    setState(() {
-      _habits = null;
-    });
-
-    // Force immediate refresh with higher priority
-    await _getHabits(isRefresh: true, forceRefresh: true);
-  }
-
-  /// Clear and fetch fresh habits list (used internally, e.g., after record operations).
-  void _refreshHabits() {
-    setState(() {
-      _habits = null;
-    });
-    _getHabits(pageIndex: 0);
   }
 
   @override
@@ -193,8 +214,18 @@ class HabitsListState extends State<HabitsList> {
     }
 
     if (_habits!.items.isEmpty) {
-      return Center(
-        child: Text(_translationService.translate(HabitTranslationKeys.noHabitsFound)),
+      return SizedBox(
+        width: double.infinity,
+        child: widget.showDoneOverlayWhenEmpty
+            ? IconOverlay(
+                icon: Icons.done_all_rounded,
+                iconSize: AppTheme.iconSize2XLarge,
+                message: _translationService.translate(HabitTranslationKeys.allHabitsDone),
+              )
+            : IconOverlay(
+                icon: Icons.check_circle_outline,
+                message: _translationService.translate(HabitTranslationKeys.noHabitsFound),
+              ),
       );
     }
 
@@ -204,27 +235,25 @@ class HabitsListState extends State<HabitsList> {
   Widget _buildMiniCardList() {
     return Wrap(
       children: [
-        ..._habits!.items.map((habit) {
-          return SizedBox(
-            width: 200,
-            child: HabitCard(
-              habit: habit,
-              isMiniLayout: widget.mini,
-              dateRange: widget.dateRange,
-              onOpenDetails: () => widget.onClickHabit(habit),
-              onRecordCreated: (_) async {
-                await Future.delayed(Duration(seconds: 3));
-                _refreshHabits();
-                widget.onHabitCompleted?.call();
-              },
-              onRecordDeleted: (_) async {
-                await Future.delayed(Duration(seconds: 3));
-                _refreshHabits();
-                widget.onHabitCompleted?.call();
-              },
-            ),
-          );
-        }),
+        ..._habits!.items.map((habit) => SizedBox(
+              key: ValueKey(habit.id), // Add this key
+              width: 200,
+              child: IgnorePointer(
+                ignoring: false,
+                child: AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: HabitCard(
+                    habit: habit,
+                    isMiniLayout: true,
+                    dateRange: widget.dateRange,
+                    onOpenDetails: () => widget.onClickHabit(habit),
+                    onRecordCreated: (_) => _onHabitRecordChanged(),
+                    onRecordDeleted: (_) => _onHabitRecordChanged(),
+                  ),
+                ),
+              ),
+            )),
         if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
       ],
     );
@@ -235,27 +264,43 @@ class HabitsListState extends State<HabitsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._habits!.items.map((habit) {
-            return SizedBox(
-              height: 64,
-              child: HabitCard(
-                habit: habit,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                isMiniLayout: widget.mini,
-                dateRange: widget.dateRange,
-                isDateLabelShowing: false,
-                onRecordCreated: (_) {
-                  widget.onHabitCompleted?.call();
-                },
-                onRecordDeleted: (_) {
-                  widget.onHabitCompleted?.call();
-                },
-              ),
-            );
-          }),
+          ..._habits!.items.map((habit) => SizedBox(
+                key: ValueKey(habit.id), // Add this key
+                height: 64,
+                child: HabitCard(
+                  habit: habit,
+                  onOpenDetails: () => widget.onClickHabit(habit),
+                  isMiniLayout: false,
+                  dateRange: widget.dateRange,
+                  isDateLabelShowing: false,
+                  onRecordCreated: (_) => widget.onHabitCompleted?.call(),
+                  onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
+                ),
+              )),
           if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
         ],
       ),
     );
   }
+
+  void _onHabitRecordChanged() {
+    Future.delayed(const Duration(seconds: 3), () {
+      refresh();
+      widget.onHabitCompleted?.call();
+    });
+  }
+}
+
+class FilterContext {
+  final bool mini;
+  final int dateRange;
+  final List<String>? filterByTags;
+  final bool filterNoTags;
+
+  const FilterContext({
+    required this.mini,
+    required this.dateRange,
+    this.filterByTags,
+    this.filterNoTags = false,
+  });
 }

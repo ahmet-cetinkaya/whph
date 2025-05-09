@@ -34,14 +34,14 @@ class SyncService implements ISyncService {
 
     // In case of force close, do not attempt to reconnect
     if (_lastSyncTime != null && DateTime.now().difference(_lastSyncTime!) < const Duration(seconds: 5)) {
-      if (kDebugMode) print('DEBUG: Recent sync completed, skipping reconnection');
+      if (kDebugMode) debugPrint('[SyncService]: Recent sync completed, skipping reconnection');
       return;
     }
 
     // If maximum attempts reached or initialization is in progress
     if (_reconnectAttempts >= _maxReconnectAttempts) {
       if (kDebugMode) {
-        print('DEBUG: Max reconnection attempts reached or initialization in progress, resetting counter');
+        debugPrint('[SyncService]: Max reconnection attempts reached or initialization in progress, resetting counter');
       }
       _reconnectAttempts = 0;
       return;
@@ -53,7 +53,7 @@ class SyncService implements ISyncService {
   }
 
   void _forceCloseConnection() {
-    if (kDebugMode) print('DEBUG: Force closing WebSocket connection');
+    if (kDebugMode) debugPrint('[SyncService]: Force closing WebSocket connection');
     if (_isConnected) {
       // Mark last sync time before closing
       _lastSyncTime = DateTime.now();
@@ -83,20 +83,22 @@ class SyncService implements ISyncService {
     // Start periodic sync
     _periodicTimer = Timer.periodic(_syncInterval, (timer) async {
       try {
-        if (kDebugMode) print('DEBUG: Running periodic sync at ${DateTime.now()}');
+        if (kDebugMode) debugPrint('[SyncService]: Running periodic sync at ${DateTime.now()}');
         await runSync();
       } catch (e) {
-        if (kDebugMode) print('ERROR: Periodic sync failed: $e');
+        if (kDebugMode) debugPrint('ERROR: Periodic sync failed: $e');
       }
     });
 
-    if (kDebugMode) print('DEBUG: Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
+    if (kDebugMode) {
+      debugPrint('[SyncService]: Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
+    }
   }
 
   @override
   Future<void> runSync() async {
     try {
-      if (kDebugMode) print('DEBUG: Starting sync process at ${DateTime.now()}...');
+      if (kDebugMode) debugPrint('[SyncService]: Starting sync process at ${DateTime.now()}...');
       await _mediator.send(SyncCommand());
 
       // Reset the attempt count on successful sync
@@ -105,12 +107,12 @@ class SyncService implements ISyncService {
       // After a successful sync, wait for a sufficient time and close the connection
       Timer(const Duration(seconds: 1), () {
         if (_isConnected) {
-          if (kDebugMode) print('DEBUG: Sync completed, closing connection');
+          if (kDebugMode) debugPrint('[SyncService]: Sync completed, closing connection');
           _forceCloseConnection();
         }
       });
     } catch (e) {
-      if (kDebugMode) print('ERROR: Sync failed: $e');
+      if (kDebugMode) debugPrint('ERROR: Sync failed: $e');
       _handleDisconnection();
     }
   }
@@ -118,14 +120,14 @@ class SyncService implements ISyncService {
   @override
   void stopSync() {
     if (_periodicTimer != null) {
-      if (kDebugMode) print('DEBUG: Stopping periodic sync');
+      if (kDebugMode) debugPrint('[SyncService]: Stopping periodic sync');
       _periodicTimer!.cancel();
       _periodicTimer = null;
     }
   }
 
   void notifySyncComplete() {
-    if (kDebugMode) print('DEBUG: Notifying sync completion at ${DateTime.now()}');
+    if (kDebugMode) debugPrint('[SyncService]: Notifying sync completion at ${DateTime.now()}');
     _syncCompleteController.add(true);
   }
 

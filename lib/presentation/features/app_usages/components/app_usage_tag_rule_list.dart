@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -33,11 +34,37 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   bool _isLoading = false;
   final int _pageSize = 10;
   final _translationService = container.resolve<ITranslationService>();
+  final _appUsagesService = container.resolve<AppUsagesService>();
 
   @override
   void initState() {
     super.initState();
-    refresh();
+    _setupEventListeners();
+    _loadRules(isRefresh: true);
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _appUsagesService.onAppUsageRuleCreated.addListener(_handleRuleChanged);
+    _appUsagesService.onAppUsageRuleUpdated.addListener(_handleRuleChanged);
+    _appUsagesService.onAppUsageRuleDeleted.addListener(_handleRuleChanged);
+  }
+
+  void _removeEventListeners() {
+    _appUsagesService.onAppUsageRuleCreated.removeListener(_handleRuleChanged);
+    _appUsagesService.onAppUsageRuleUpdated.removeListener(_handleRuleChanged);
+    _appUsagesService.onAppUsageRuleDeleted.removeListener(_handleRuleChanged);
+  }
+
+  void _handleRuleChanged() {
+    if (mounted) {
+      _loadRules(isRefresh: true);
+    }
   }
 
   Future<void> refresh() async {
@@ -82,8 +109,9 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+    if (_isLoading && _rules == null) {
+      // No loading indicator since local DB is fast
+      return const SizedBox.shrink();
     }
 
     if (_rules == null || _rules!.items.isEmpty) {
@@ -207,7 +235,11 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       try {
         final command = DeleteAppUsageTagRuleCommand(id: rule.id);
         await widget.mediator.send<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse>(command);
-        if (context.mounted) await refresh();
+
+        // Notify listeners about the rule deletion
+        _appUsagesService.notifyAppUsageRuleDeleted(rule.id);
+
+        // The component will refresh automatically through event listener
       } catch (e, stackTrace) {
         if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
       }

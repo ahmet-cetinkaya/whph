@@ -3,6 +3,7 @@ notes:
   new_note: New Note
   note_details: Note Details
   no_notes: No notes found
+  no_notes_with_filters: No notes found with current filters
   notes: Notes
   details:
     title: Title
@@ -43,6 +44,7 @@ notes:
     note_not_found: Note not found
     note_tag_not_found: Note tag not found
     tag_already_exists: This tag is already added
+    getting_notes: Error occurred while getting notes
   filters:
     tooltips:
       filter_by_tags: Filter by tags

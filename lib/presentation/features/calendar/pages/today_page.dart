@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_filters.dart';
@@ -8,7 +7,6 @@ import 'package:whph/presentation/features/habits/pages/habit_details_page.dart'
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/shared/components/done_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -22,6 +20,7 @@ import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -33,21 +32,16 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tasksService = container.resolve<TasksService>();
 
-  final _habitsListKey = GlobalKey<HabitsListState>();
-  final _tasksListKey = GlobalKey<TaskListState>();
-  final _timeChartKey = GlobalKey<TagTimeChartState>();
-
-  bool _isHabitListEmpty = false;
-  bool _isTaskListEmpty = false;
   List<String>? _selectedTagFilter;
-  bool _showNoTagsFilter = false; // Added to track "None" filter selection
+  bool _showNoTagsFilter = false;
   bool _isCheckedUpdate = false;
   bool _showCompletedTasks = false;
   String? _searchQuery;
   bool _isRefreshing = false;
+  bool _hasHabits = false;
 
   @override
   void initState() {
@@ -58,62 +52,26 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setupService.checkForUpdates(context);
       _isCheckedUpdate = true;
     }
+
+    // Listen to task creation events
+    _tasksService.onTaskCreated.addListener(_onTaskCreated);
   }
 
-  void _refreshHabits() {
-    _habitsListKey.currentState?.refresh();
-  }
-
-  void _refreshTasks() {
+  void _onTaskCreated() {
     if (mounted) {
-      setState(() {
-        _isTaskListEmpty = false;
-      });
-      _tasksListKey.currentState?.refresh(showLoading: false);
+      _refreshAllElements();
     }
+  }
+
+  @override
+  void dispose() {
+    _tasksService.onTaskCreated.removeListener(_onTaskCreated);
+    super.dispose();
   }
 
   void _refreshAllElements() {
     if (_isRefreshing) return;
     _isRefreshing = true;
-
-    // Reset empty state flags to ensure components are shown while loading
-    if (mounted) {
-      setState(() {
-        _isHabitListEmpty = false;
-        _isTaskListEmpty = false;
-      });
-    }
-
-    // Get references to component states
-    final habitsListState = _habitsListKey.currentState;
-    final tasksListState = _tasksListKey.currentState;
-    final timeChartState = _timeChartKey.currentState;
-
-    // Run all refreshes in parallel for better performance
-    Future.wait([
-      // Force refresh for habits list
-      habitsListState != null ? habitsListState.refresh() : Future.value(),
-
-      // Force refresh for tasks list
-      tasksListState != null ? tasksListState.refresh(showLoading: true) : Future.value(),
-
-      // Force refresh for time chart
-      timeChartState != null ? timeChartState.refresh() : Future.value(),
-    ]).then((_) {
-      if (mounted) {
-        setState(() {
-          _isRefreshing = false;
-        });
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          _isRefreshing = false;
-        });
-      }
-      // Don't show error - component-specific error handling is preferred
-    });
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
@@ -121,7 +79,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       TaskDetailsPage.route,
       arguments: {'id': taskId},
     );
-    _refreshTasks();
   }
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
@@ -129,27 +86,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       HabitDetailsPage.route,
       arguments: {'id': id},
     );
-    _refreshHabits();
-  }
-
-  void _onHabitList(int count) {
-    final isEmpty = count == 0;
-    // Only update state if it's actually changing to avoid infinite loops
-    if (_isHabitListEmpty != isEmpty && mounted) {
-      setState(() {
-        _isHabitListEmpty = isEmpty;
-      });
-    }
-  }
-
-  void _onTaskList(int count) {
-    final isEmpty = count == 0;
-    // Only update state if it's actually changing to avoid infinite loops
-    if (_isTaskListEmpty != isEmpty && mounted) {
-      setState(() {
-        _isTaskListEmpty = isEmpty;
-      });
-    }
   }
 
   Future<void> _openMarathonPage(BuildContext context) async {
@@ -194,8 +130,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       setState(() {
                         _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                         _showNoTagsFilter = isNoneSelected; // Update "None" filter state
-                        _isHabitListEmpty = false;
-                        _isTaskListEmpty = false;
                       });
                       _refreshAllElements();
                     },
@@ -242,7 +176,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           setState(() {
                             _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                             _showNoTagsFilter = isNoneSelected; // Update None filter state
-                            _isHabitListEmpty = false;
                           });
                           _refreshAllElements();
                         },
@@ -252,24 +185,43 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   ],
                 ),
               ),
-              _isHabitListEmpty
-                  ? DoneOverlay()
-                  : SizedBox(
-                      height: 60,
+              _hasHabits
+                  ? SizedBox(
+                      height: 90,
                       width: MediaQuery.of(context).size.width,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: HabitsList(
-                          key: _habitsListKey,
-                          mediator: _mediator,
                           size: 5,
                           mini: true,
                           filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                           filterNoTags: _showNoTagsFilter,
                           onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                          onList: _onHabitList,
+                          showDoneOverlayWhenEmpty: true,
+                          onListing: (count) {
+                            if (mounted) {
+                              setState(() {
+                                _hasHabits = count > 0;
+                              });
+                            }
+                          },
                         ),
-                      )),
+                      ))
+                  : HabitsList(
+                      size: 5,
+                      mini: true,
+                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                      filterNoTags: _showNoTagsFilter,
+                      onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                      showDoneOverlayWhenEmpty: true,
+                      onListing: (count) {
+                        if (mounted) {
+                          setState(() {
+                            _hasHabits = count > 0;
+                          });
+                        }
+                      },
+                    ),
             ],
           ),
 
@@ -304,7 +256,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                 setState(() {
                                   _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                                   _showNoTagsFilter = isNoneSelected; // Update None filter state
-                                  _isTaskListEmpty = false;
                                 });
                                 _refreshAllElements();
                               },
@@ -312,14 +263,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                 setState(() {
                                   _searchQuery = query;
                                 });
-                                _refreshTasks();
                               },
                               showCompletedTasks: _showCompletedTasks,
                               onCompletedTasksToggle: (showCompleted) {
                                 setState(() {
                                   _showCompletedTasks = showCompleted;
                                 });
-                                _refreshTasks();
                               },
                               hasItems: true,
                               showDateFilter: false,
@@ -333,7 +282,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             child: TaskAddButton(
                               initialTagIds: _selectedTagFilter,
                               initialPlannedDate: DateTime.now(),
-                              onTaskCreated: (_, __) => _refreshTasks(),
+                              onTaskCreated: (taskId, taskData) {
+                                _refreshAllElements();
+                              },
                             ),
                           ),
                         ],
@@ -342,25 +293,19 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   ],
                 ),
               ),
-              _isTaskListEmpty
-                  ? DoneOverlay()
-                  : TaskList(
-                      key: _tasksListKey,
-                      mediator: _mediator,
-                      translationService: _translationService,
-                      filterByCompleted: _showCompletedTasks,
-                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                      filterNoTags: _showNoTagsFilter,
-                      filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
-                      filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
-                      filterDateOr: true,
-                      sortByPlannedDate: SortDirection.desc,
-                      search: _searchQuery,
-                      onClickTask: (task) => _openTaskDetails(context, task.id),
-                      onList: _onTaskList,
-                      onScheduleTask: (_, __) => _refreshTasks(),
-                      enableReordering: true,
-                    ),
+              TaskList(
+                filterByCompleted: _showCompletedTasks,
+                filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                filterNoTags: _showNoTagsFilter,
+                filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
+                filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
+                filterDateOr: true,
+                sortByPlannedDate: SortDirection.desc,
+                search: _searchQuery,
+                onClickTask: (task) => _openTaskDetails(context, task.id),
+                enableReordering: true,
+                showDoneOverlayWhenEmpty: true,
+              ),
             ],
           ),
 
@@ -380,7 +325,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: TagTimeChart(
-                    key: _timeChartKey,
                     filterByTags: _selectedTagFilter,
                     startDate: DateTime.now(),
                     endDate: DateTime.now().add(const Duration(days: 1)),

@@ -138,3 +138,4 @@ habits:
       sun: Sun
   list:
     no_habits_found: No habits found
+    all_habits_done: All habits completed!

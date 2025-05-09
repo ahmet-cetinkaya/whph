@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
@@ -9,30 +10,57 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 
-class HabitCalendarView extends StatelessWidget {
-  final _soundPlayer = container.resolve<ISoundPlayer>();
-  final _translationService = container.resolve<ITranslationService>();
-
+class HabitCalendarView extends StatefulWidget {
   final String habitId;
-
   final DateTime currentMonth;
   final List<HabitRecordListItem> records;
-
   final Function(String) onDeleteRecord;
   final Function(String, DateTime) onCreateRecord;
   final Function() onPreviousMonth;
   final Function() onNextMonth;
+  final VoidCallback? onRecordChanged;
 
-  HabitCalendarView({
+  const HabitCalendarView({
     super.key,
+    required this.habitId,
     required this.currentMonth,
     required this.records,
     required this.onDeleteRecord,
     required this.onCreateRecord,
     required this.onPreviousMonth,
     required this.onNextMonth,
-    required this.habitId,
+    this.onRecordChanged,
   });
+
+  @override
+  State<HabitCalendarView> createState() => _HabitCalendarViewState();
+}
+
+class _HabitCalendarViewState extends State<HabitCalendarView> {
+  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _translationService = container.resolve<ITranslationService>();
+  final _habitsService = container.resolve<HabitsService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _habitsService.onHabitRecordAdded.addListener(_handleRecordChange);
+    _habitsService.onHabitRecordRemoved.addListener(_handleRecordChange);
+  }
+
+  @override
+  void dispose() {
+    _habitsService.onHabitRecordAdded.removeListener(_handleRecordChange);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleRecordChange);
+    super.dispose();
+  }
+
+  void _handleRecordChange() {
+    if (_habitsService.onHabitRecordAdded.value == widget.habitId ||
+        _habitsService.onHabitRecordRemoved.value == widget.habitId) {
+      widget.onRecordChanged?.call();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +91,15 @@ class HabitCalendarView extends StatelessWidget {
       children: [
         IconButton(
           icon: Icon(HabitUiConstants.previousIcon),
-          onPressed: onPreviousMonth,
+          onPressed: widget.onPreviousMonth,
         ),
         Text(
-          _formatYearMonth(currentMonth),
+          _formatYearMonth(widget.currentMonth),
           style: AppTheme.bodyLarge,
         ),
         IconButton(
           icon: Icon(HabitUiConstants.nextIcon),
-          onPressed: onNextMonth,
+          onPressed: widget.onNextMonth,
         ),
       ],
     );
@@ -105,16 +133,16 @@ class HabitCalendarView extends StatelessWidget {
 
   Widget _buildMonthlyCalendar() {
     // Calculate the days of the month
-    int daysInMonth = DateTime(currentMonth.year, currentMonth.month + 1, 0).day;
-    int firstWeekdayOfMonth = DateTime(currentMonth.year, currentMonth.month, 1).weekday;
+    int daysInMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month + 1, 0).day;
+    int firstWeekdayOfMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month, 1).weekday;
     int previousMonthDays = firstWeekdayOfMonth - 1;
 
     // Calculate the days of the previous month
-    DateTime firstDayOfPreviousMonth = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+    DateTime firstDayOfPreviousMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month - 1, 1);
     int daysInPreviousMonth = DateTime(firstDayOfPreviousMonth.year, firstDayOfPreviousMonth.month + 1, 0).day;
 
     // Calculate the days of the next month
-    int lastWeekdayOfMonth = DateTime(currentMonth.year, currentMonth.month, daysInMonth).weekday;
+    int lastWeekdayOfMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month, daysInMonth).weekday;
     int nextMonthDays = 7 - lastWeekdayOfMonth;
 
     List<DateTime> days = List.generate(daysInMonth + previousMonthDays + nextMonthDays, (index) {
@@ -122,9 +150,10 @@ class HabitCalendarView extends StatelessWidget {
         return DateTime(firstDayOfPreviousMonth.year, firstDayOfPreviousMonth.month,
             daysInPreviousMonth - previousMonthDays + index + 1);
       } else if (index >= previousMonthDays + daysInMonth) {
-        return DateTime(currentMonth.year, currentMonth.month + 1, index - (previousMonthDays + daysInMonth) + 1);
+        return DateTime(
+            widget.currentMonth.year, widget.currentMonth.month + 1, index - (previousMonthDays + daysInMonth) + 1);
       } else {
-        return DateTime(currentMonth.year, currentMonth.month, index - previousMonthDays + 1);
+        return DateTime(widget.currentMonth.year, widget.currentMonth.month, index - previousMonthDays + 1);
       }
     });
 
@@ -140,12 +169,12 @@ class HabitCalendarView extends StatelessWidget {
   }
 
   Widget _buildCalendarDay(DateTime date) {
-    bool hasRecord = records.any((record) => _isSameDay(record.date, date));
+    bool hasRecord = widget.records.any((record) => _isSameDay(record.date, date));
     bool isFutureDate = date.isAfter(DateTime.now());
 
     HabitRecordListItem? recordForDay;
     if (hasRecord) {
-      recordForDay = records.firstWhere((record) => _isSameDay(record.date, date));
+      recordForDay = widget.records.firstWhere((record) => _isSameDay(record.date, date));
     }
 
     return ElevatedButton(
@@ -153,11 +182,13 @@ class HabitCalendarView extends StatelessWidget {
           ? null
           : () async {
               if (hasRecord) {
-                await onDeleteRecord(recordForDay!.id);
+                await widget.onDeleteRecord(recordForDay!.id);
+                _soundPlayer.play(SharedSounds.done);
               } else {
-                await onCreateRecord(habitId, date);
+                await widget.onCreateRecord(widget.habitId, date);
                 _soundPlayer.play(SharedSounds.done);
               }
+              widget.onRecordChanged?.call();
             },
       style: ElevatedButton.styleFrom(
         foregroundColor: AppTheme.textColor,

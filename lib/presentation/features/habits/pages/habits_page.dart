@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/features/habits/components/habit_filters.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -25,22 +25,18 @@ class HabitsPage extends StatefulWidget {
 }
 
 class _HabitsPageState extends State<HabitsPage> {
-  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _habitsListKey = GlobalKey<HabitsListState>();
+  final _habitsService = container.resolve<HabitsService>();
+
   List<String> _selectedFilterTags = [];
   bool _showNoTagsFilter = false;
-
-  void _refreshHabitsList() {
-    _habitsListKey.currentState?.refresh();
-  }
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await Navigator.of(context).pushNamed(
       HabitDetailsPage.route,
       arguments: {'id': habitId},
     );
-    _refreshHabitsList();
+    // No need to manually refresh - HabitsList will automatically refresh via event listeners
   }
 
   void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
@@ -52,10 +48,7 @@ class _HabitsPageState extends State<HabitsPage> {
       _showNoTagsFilter = isNoneSelected;
     });
 
-    // Ensure the HabitsList component gets refreshed immediately
-    if (_habitsListKey.currentState != null) {
-      _habitsListKey.currentState!.refresh();
-    }
+    // HabitsList will detect filter changes via didUpdateWidget
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -102,6 +95,10 @@ class _HabitsPageState extends State<HabitsPage> {
         HabitAddButton(
           onHabitCreated: (String habitId) {
             if (!mounted) return;
+
+            // Notify the service that a habit was created
+            _habitsService.notifyHabitCreated(habitId);
+
             _openDetails(habitId, context);
           },
           buttonColor: AppTheme.primaryColor,
@@ -142,8 +139,6 @@ class _HabitsPageState extends State<HabitsPage> {
 
           // List
           HabitsList(
-            key: _habitsListKey,
-            mediator: _mediator,
             dateRange: daysToShow,
             filterByTags: _selectedFilterTags,
             filterNoTags: _showNoTagsFilter,

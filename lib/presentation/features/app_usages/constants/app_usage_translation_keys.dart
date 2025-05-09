@@ -53,6 +53,11 @@ class AppUsageTranslationKeys {
   static const String ignoreRules = 'app_usages.rules.ignore_rules';
   static const String addNewRule = 'app_usages.rules.add_new_rule';
   static const String existingRules = 'app_usages.rules.existing_rules';
+  static const String noRules = 'app_usages.rules.no_rules';
+  static const String deleteRuleConfirmTitle = 'app_usages.rules.delete_confirm_title';
+  static const String deleteRuleConfirmMessage = 'app_usages.rules.delete_confirm_message';
+  static const String getRulesError = 'app_usages.rules.errors.get_rules';
+  static const String deleteRuleError = 'app_usages.rules.errors.delete_rule';
   static const String rulesHelpTitle = 'app_usages.rules.help.title';
   static const String rulesHelpContent = 'app_usages.rules.help.content';
 

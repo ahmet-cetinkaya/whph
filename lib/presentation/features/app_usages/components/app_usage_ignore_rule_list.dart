@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
-import 'package:whph/presentation/shared/components/load_more_button.dart';
-import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
-  final Mediator mediator;
+  final VoidCallback? onRuleDeleted;
 
   const AppUsageIgnoreRuleList({
     super.key,
-    required this.mediator,
+    this.onRuleDeleted,
   });
 
   @override
@@ -23,163 +28,213 @@ class AppUsageIgnoreRuleList extends StatefulWidget {
 }
 
 class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
-  GetListAppUsageIgnoreRulesQueryResponse? _rules;
+  final Mediator _mediator = container.resolve<Mediator>();
+  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
+
+  List<AppUsageIgnoreRule> _rules = [];
   bool _isLoading = false;
-  final int _pageSize = 10;
-  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
     super.initState();
-    _loadRules();
+    _setupEventListeners();
+    loadItems();
   }
 
-  Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false}) async {
-    if (_isLoading) return;
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
 
-    setState(() => _isLoading = true);
+  void _setupEventListeners() {
+    _appUsagesService.onAppUsageIgnoreRuleUpdated.addListener(_handleRuleChanged);
+  }
+
+  void _removeEventListeners() {
+    _appUsagesService.onAppUsageIgnoreRuleUpdated.removeListener(_handleRuleChanged);
+  }
+
+  void _handleRuleChanged() {
+    refresh();
+  }
+
+  Future<void> loadItems() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       final query = GetListAppUsageIgnoreRulesQuery(
-        pageIndex: pageIndex,
-        pageSize: isRefresh && _rules!.items.length > _pageSize ? _rules?.items.length ?? _pageSize : _pageSize,
+        pageIndex: 0,
+        pageSize: 50,
       );
 
-      final result =
-          await widget.mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
+      final response =
+          await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
 
       if (mounted) {
         setState(() {
-          if (_rules == null || pageIndex == 0) {
-            _rules = result;
-          } else {
-            _rules!.items.addAll(result.items);
-            _rules!.pageIndex = result.pageIndex;
-          }
+          _rules = response.items
+              .map((item) => AppUsageIgnoreRule(
+                    id: item.id,
+                    pattern: item.pattern,
+                    description: item.description,
+                    createdDate: DateTime.now(), // Since these aren't available in the list item
+                  ))
+              .toList();
+          _isLoading = false;
         });
+      }
+    } on BusinessException catch (e) {
+      if (mounted) {
+        ErrorHelper.showError(context, e);
+      }
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.getRulesError),
+        );
       }
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
   Future<void> refresh() async {
-    await _loadRules(isRefresh: true);
+    await loadItems();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  Future<void> deleteItem(String id) async {
+    try {
+      final command = DeleteAppUsageIgnoreRuleCommand(id: id);
+      await _mediator.send(command);
 
-    if (_rules == null || _rules!.items.isEmpty) {
-      return Center(
-        child: Text(
-          _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
-          style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
-        ),
-      );
-    }
+      _appUsagesService.notifyAppUsageIgnoreRuleUpdated(id);
+      widget.onRuleDeleted?.call();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _rules!.items.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 4),
-          itemBuilder: (context, index) {
-            final rule = _rules!.items[index];
-            return Card(
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
-                                style: AppTheme.bodySmall.copyWith(color: Colors.grey),
-                              ),
-                              const SizedBox(width: AppTheme.sizeXSmall),
-                              Expanded(
-                                child: Text(
-                                  rule.pattern,
-                                  style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (rule.description != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                rule.description!,
-                                style: AppTheme.bodySmall,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      child: IconButton(
-                        icon: Icon(Icons.delete, size: AppTheme.iconSizeSmall),
-                        onPressed: () => _delete(context, rule),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-        if (_rules!.hasNext) LoadMoreButton(onPressed: () => _loadRules(pageIndex: _rules!.pageIndex + 1)),
-      ],
-    );
+      await refresh();
+    } on BusinessException catch (e) {
+      if (mounted) ErrorHelper.showError(context, e);
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.deleteRuleError),
+        );
+      }
+    }
   }
 
-  Future<void> _delete(BuildContext context, AppUsageIgnoreRuleListItem rule) async {
-    if (!mounted) return;
-
-    final confirmed = await showDialog<bool>(
+  Future<void> _confirmDelete(String id) async {
+    final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleTitle)),
-        content: Text(_translationService
-            .translate(AppUsageTranslationKeys.deleteRuleConfirm, namedArgs: {'pattern': rule.pattern})),
+        title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleConfirmTitle)),
+        content: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleConfirmMessage)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.of(context).pop(false),
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
+            onPressed: () => Navigator.of(context).pop(true),
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),
     );
 
-    if (confirmed == true && context.mounted) {
-      try {
-        final command = DeleteAppUsageIgnoreRuleCommand(id: rule.id);
-        await widget.mediator.send<DeleteAppUsageIgnoreRuleCommand, DeleteAppUsageIgnoreRuleCommandResponse>(command);
-        if (context.mounted) await _loadRules();
-      } catch (e, stackTrace) {
-        if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
-      }
+    if (confirmed == true && mounted) {
+      await deleteItem(id);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      // No loading indicator since local DB is fast
+      return const SizedBox.shrink();
+    }
+
+    if (_rules.isEmpty) {
+      return IconOverlay(
+        icon: Icons.rule_folder,
+        iconSize: 48,
+        message: _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _rules.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 4),
+      itemBuilder: (context, index) {
+        final rule = _rules[index];
+        return Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: AppUsageUiConstants.cardPadding,
+            child: Row(
+              children: [
+                // Pattern and Description
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
+                            style: AppTheme.bodySmall.copyWith(color: Colors.grey),
+                          ),
+                          const SizedBox(width: AppTheme.sizeXSmall),
+                          Expanded(
+                            child: Text(
+                              rule.pattern,
+                              style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (rule.description != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            rule.description!,
+                            style: AppTheme.bodySmall,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                // Delete Button
+                IconButton(
+                  icon: Icon(SharedUiConstants.deleteIcon, size: AppTheme.iconSizeSmall),
+                  onPressed: () => _confirmDelete(rule.id),
+                  visualDensity: VisualDensity.compact,
+                  tooltip: _translationService.translate(AppUsageTranslationKeys.deleteRuleTooltip),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

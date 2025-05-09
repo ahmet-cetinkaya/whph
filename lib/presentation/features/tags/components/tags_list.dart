@@ -3,25 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 
 class TagsList extends StatefulWidget {
-  final Mediator mediator;
   final List<String>? filterByTags;
-  final VoidCallback onTagAdded;
-  final void Function(TagListItem tag) onClickTag;
+  final VoidCallback? onTagAdded;
+  final void Function(TagListItem tag)? onClickTag;
   final void Function(int count)? onList;
   final bool showArchived;
 
   const TagsList({
     super.key,
-    required this.mediator,
     this.filterByTags,
-    required this.onTagAdded,
-    required this.onClickTag,
+    this.onTagAdded,
+    this.onClickTag,
     this.onList,
     this.showArchived = false,
   });
@@ -31,56 +32,81 @@ class TagsList extends StatefulWidget {
 }
 
 class TagsListState extends State<TagsList> {
+  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tagsService = container.resolve<TagsService>();
+
   GetListTagsQueryResponse? _tags;
-  final int _pageSize = 20;
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    refresh();
+
+    _getTags();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _removeEventListeners();
   }
 
   @override
   void didUpdateWidget(TagsList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.showArchived != widget.showArchived || oldWidget.filterByTags != widget.filterByTags) {
+    if (oldWidget.showArchived != widget.showArchived ||
+        !FilterChangeAnalyzer.areListsEqual(oldWidget.filterByTags, widget.filterByTags)) {
       refresh();
     }
   }
 
-  Future<void> refresh() async {
-    if (_isLoading) return;
-    setState(() {
-      _isLoading = true;
-      _tags = null; // Clear existing items before refresh
-    });
-
-    try {
-      await _getTags(pageIndex: 0);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+  void _setupEventListeners() {
+    _tagsService.onTagCreated.addListener(_onTagUpdated);
+    _tagsService.onTagUpdated.addListener(_onTagUpdated);
+    _tagsService.onTagDeleted.addListener(_onTagUpdated);
   }
 
-  Future<void> _getTags({int pageIndex = 0}) async {
-    final query = GetListTagsQuery(
-      pageIndex: pageIndex,
-      pageSize: _pageSize,
-      filterByTags: widget.filterByTags,
-      showArchived: widget.showArchived,
-    );
+  void _removeEventListeners() {
+    _tagsService.onTagCreated.removeListener(_onTagUpdated);
+    _tagsService.onTagUpdated.removeListener(_onTagUpdated);
+    _tagsService.onTagDeleted.removeListener(_onTagUpdated);
+  }
 
-    final result = await widget.mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+  void _onTagUpdated() {
+    if (!mounted) return;
 
-    if (mounted) {
+    _getTags(isRefresh: true);
+  }
+
+  Future<void> refresh() async {
+    if (!mounted) return;
+
+    await _getTags(isRefresh: true);
+  }
+
+  Future<void> _getTags({
+    int pageIndex = 0,
+    bool isRefresh = false,
+  }) async {
+    if (isRefresh) {
+      _tags = null;
+    }
+
+    try {
+      final query = GetListTagsQuery(
+        pageIndex: pageIndex,
+        pageSize: 10,
+        filterByTags: widget.filterByTags,
+        showArchived: widget.showArchived,
+      );
+
+      final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+
+      if (!mounted) return;
       setState(() {
-        if (_tags == null) {
+        if (_tags == null || isRefresh) {
           _tags = result;
         } else {
           _tags = GetListTagsQueryResponse(
@@ -93,33 +119,33 @@ class TagsListState extends State<TagsList> {
         }
       });
 
-      if (widget.onList != null) {
-        widget.onList!(_tags!.items.length);
-      }
+      widget.onList?.call(_tags!.items.length);
+    } catch (e) {
+      // Error handling without showing loading indicators
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_tags == null) {
+      // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
-    if (_tags!.items.isEmpty) {
-      return Center(
-        child: Text(_translationService.translate(TagTranslationKeys.noTagsFound)),
+    if (_tags == null || _tags!.items.isEmpty) {
+      return IconOverlay(
+        icon: Icons.label_off,
+        message: _translationService.translate(TagTranslationKeys.noTagsFound),
       );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ..._tags!.items.map((tag) {
-          return TagCard(
-            tag: tag,
-            onOpenDetails: () => widget.onClickTag(tag),
-          );
-        }),
+        ..._tags!.items.map((tag) => TagCard(
+              tag: tag,
+              onOpenDetails: () => widget.onClickTag?.call(tag),
+            )),
         if (_tags!.hasNext) LoadMoreButton(onPressed: () => _getTags(pageIndex: _tags!.pageIndex + 1)),
       ],
     );

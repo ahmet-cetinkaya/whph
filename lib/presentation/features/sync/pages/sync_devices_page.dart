@@ -15,6 +15,7 @@ import 'package:whph/presentation/shared/components/responsive_scaffold_layout.d
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -93,7 +94,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     setState(() => _isSyncing = true);
 
     try {
-      if (kDebugMode) print('DEBUG: Starting sync process...');
+      if (kDebugMode) debugPrint('[SyncDevicesPage]: Starting sync process...');
       final command = SyncCommand();
       await _mediator.send<SyncCommand, void>(command);
 
@@ -118,7 +119,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
           );
       }
     } catch (e, stackTrace) {
-      if (kDebugMode) print('ERROR: Sync failed: $e');
+      if (kDebugMode) debugPrint('ERROR: Sync failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ErrorHelper.showUnexpectedError(
@@ -177,7 +178,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         const SizedBox(width: 8),
       ],
       builder: (context) => list == null || list!.items.isEmpty
-          ? Center(child: Text(_translationService.translate(SyncTranslationKeys.noDevicesFound)))
+          ? IconOverlay(
+              icon: Icons.devices_other,
+              message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+            )
           : ListView.builder(
               itemCount: list!.items.length,
               itemBuilder: (context, index) {

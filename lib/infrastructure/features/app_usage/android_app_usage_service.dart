@@ -29,7 +29,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     try {
       await platform.invokeMethod('startBackgroundService');
     } catch (e) {
-      if (kDebugMode) print('ERROR: Failed to start background service: $e');
+      if (kDebugMode) debugPrint('ERROR: Failed to start background service: $e');
     }
   }
 

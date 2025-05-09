@@ -24,14 +24,11 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_transl
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class AppUsageDetailsContent extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
-
   final String id;
   final VoidCallback? onAppUsageUpdated;
   final Function(String)? onNameUpdated;
 
-  AppUsageDetailsContent({
+  const AppUsageDetailsContent({
     super.key,
     required this.id,
     this.onAppUsageUpdated,
@@ -45,7 +42,11 @@ class AppUsageDetailsContent extends StatefulWidget {
 class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   GetAppUsageQueryResponse? _appUsage;
   GetListAppUsageTagsQueryResponse? _appUsageTags;
+
+  final _mediator = container.resolve<Mediator>();
+  final _appUsagesService = container.resolve<AppUsagesService>();
   final _translationService = container.resolve<ITranslationService>();
+
   final _nameController = TextEditingController();
   Timer? _debounce;
 
@@ -58,28 +59,30 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   @override
   void initState() {
-    _getInitialData();
-    widget._appUsagesService.onAppUsageSaved.addListener(_getAppUsage);
+    _getAppUsage();
+    _getAppUsageTags();
+    _appUsagesService.onAppUsageUpdated.addListener(_handleAppUsageUpdate);
     super.initState();
   }
 
   @override
   void dispose() {
+    _appUsagesService.onAppUsageUpdated.removeListener(_handleAppUsageUpdate);
     _nameController.dispose();
     _debounce?.cancel();
-    widget._appUsagesService.onAppUsageSaved.removeListener(_getAppUsage);
     super.dispose();
   }
 
-  Future<void> _getInitialData() async {
-    await Future.wait([_getAppUsage(), _getAppUsageTags()]);
-    _processFieldVisibility();
+  void _handleAppUsageUpdate() {
+    if (!mounted || _appUsagesService.onAppUsageUpdated.value != widget.id) return;
+    _getAppUsage();
+    _getAppUsageTags(); // Also refresh tags when app usage is updated
   }
 
   Future<void> _getAppUsage() async {
     final query = GetAppUsageQuery(id: widget.id);
     try {
-      final response = await widget._mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+      final response = await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       if (mounted) {
         // Store current selection before updating
         final nameSelection = _nameController.selection;
@@ -129,14 +132,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         deviceName: _appUsage!.deviceName,
       );
       try {
-        // Send the command but don't update UI with the result
-        final result = await widget._mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+        // Send the command and get the result
+        await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
-        // Just notify listeners that app usage was saved, but don't update the UI
-        widget._appUsagesService.onAppUsageSaved.value = result;
+        // Notify that app usage was updated
+        _appUsagesService.notifyAppUsageUpdated(widget.id);
         widget.onAppUsageUpdated?.call();
-
-        // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {
         if (mounted) ErrorHelper.showError(context, e);
       } catch (e, stackTrace) {
@@ -159,7 +160,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     while (true) {
       final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        final result = await widget._mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+        final result = await _mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -199,46 +200,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     }
   }
 
-  Future<void> _addTag(String appUsageId) async {
-    final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: appUsageId);
-    try {
-      await widget._mediator.send(command);
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.addTagError),
-        );
-      }
-    }
-
-    await _getAppUsageTags();
-  }
-
-  Future<void> _removeTag(String id) async {
-    final command = RemoveAppUsageTagCommand(id: id);
-    try {
-      await widget._mediator.send(command);
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.removeTagError),
-        );
-      }
-    }
-
-    await _getAppUsageTags();
-  }
-
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     final tagOptionsToAdd = tagOptions
         .where(
@@ -248,12 +209,26 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
         .toList();
 
-    for (final tagOption in tagOptionsToAdd) {
-      _addTag(tagOption.value);
+    // Batch process all tag operations
+    Future<void> processTags() async {
+      // Add all tags
+      for (final tagOption in tagOptionsToAdd) {
+        await _addTagToAppUsage(tagOption.value);
+      }
+
+      // Remove all tags
+      for (final appUsageTag in appUsageTagsToRemove) {
+        await _removeTagFromAppUsage(appUsageTag.id);
+      }
+
+      // Notify only once after all tag operations are complete
+      if (tagOptionsToAdd.isNotEmpty || appUsageTagsToRemove.isNotEmpty) {
+        _appUsagesService.notifyAppUsageUpdated(widget.id);
+      }
     }
-    for (final appUsageAppUsage in appUsageTagsToRemove) {
-      _removeTag(appUsageAppUsage.id);
-    }
+
+    // Execute the tag operations
+    processTags();
   }
 
   void _onChangeColor(Color color) {
@@ -262,7 +237,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         _appUsage!.color = color.toHexString();
       });
     }
+
+    // Save the app usage with the new color
     _saveAppUsage();
+
+    // Notify that app usage has been updated with the color change
+    _appUsagesService.notifyAppUsageUpdated(widget.id);
   }
 
   void _onChangeColorOpen() {
@@ -365,6 +345,46 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );
+  }
+
+  // Add the method to handle adding a tag to an app usage
+  Future<bool> _addTagToAppUsage(String tagId) async {
+    try {
+      final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
+      await _mediator.send(command);
+      await _getAppUsageTags();
+      return true;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.addTagError),
+        );
+      }
+      return false;
+    }
+  }
+
+  // Add the method to handle removing a tag from an app usage
+  Future<bool> _removeTagFromAppUsage(String id) async {
+    try {
+      final command = RemoveAppUsageTagCommand(id: id);
+      await _mediator.send(command);
+      await _getAppUsageTags();
+      return true;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.removeTagError),
+        );
+      }
+      return false;
+    }
   }
 
   @override

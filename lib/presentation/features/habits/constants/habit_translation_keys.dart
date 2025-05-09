@@ -22,6 +22,9 @@ class HabitTranslationKeys {
   static const String loadingTagsError = 'habits.errors.loading_tags';
   static const String addingTagError = 'habits.errors.adding_tag';
   static const String removingTagError = 'habits.errors.removing_tag';
+  static const String loadingHabitError = 'habits.errors.loading_habit';
+  static const String savingHabitError = 'habits.errors.saving_habit';
+  static const String loadingHabitsError = 'habits.errors.loading_habits';
 
   static const String weekDays = 'habits.calendar.week_days';
 
@@ -46,13 +49,9 @@ class HabitTranslationKeys {
   static const String selectTagsTooltip = 'habits.tags.select_tooltip';
   static const String addTagTooltip = 'habits.tags.add_tooltip';
 
-  // Name Input
-  static const String loadingHabitError = 'habits.errors.loading_habit';
-  static const String savingHabitError = 'habits.errors.saving_habit';
-
   // List
   static const String noHabitsFound = 'habits.list.no_habits_found';
-  static const String loadingHabitsError = 'habits.errors.loading_habits';
+  static const String allHabitsDone = 'habits.list.all_habits_done';
 
   // Help Dialog
   static const String helpTitle = 'habits.details.help.title';

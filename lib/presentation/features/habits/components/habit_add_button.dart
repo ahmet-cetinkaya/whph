@@ -7,6 +7,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 
 class HabitAddButton extends StatefulWidget {
   final Color? buttonColor;
@@ -22,6 +23,7 @@ class HabitAddButton extends StatefulWidget {
 class _HabitAddButtonState extends State<HabitAddButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _habitsService = container.resolve<HabitsService>();
 
   Future<void> _createHabit(BuildContext context) async {
     try {
@@ -31,7 +33,13 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       );
       final response = await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-      if (widget.onHabitCreated != null) widget.onHabitCreated!(response.id);
+      // Notify service about habit creation
+      _habitsService.notifyHabitCreated(response.id);
+
+      // Call callback if provided (for backward compatibility)
+      if (widget.onHabitCreated != null) {
+        widget.onHabitCreated!(response.id);
+      }
     } catch (e, stackTrace) {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,

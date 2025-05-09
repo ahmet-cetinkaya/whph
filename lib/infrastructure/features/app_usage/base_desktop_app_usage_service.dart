@@ -27,7 +27,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
           if (kDebugMode) {
-            print('DEBUG: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
+            debugPrint('[BaseDesktopAppUsageService]: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
           }
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
