@@ -390,7 +390,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       );
       displayTooltip = _translationService.translate(SharedTranslationKeys.noneOption);
     } else if (_selectedTags.isNotEmpty && _tags != null) {
-      // Tekrarlı tagId'leri önlemek için benzersizleştir
+      // Make tagIds unique to prevent duplicates
       final uniqueSelectedTagIds = _selectedTags.toSet().toList();
       final selectedTagNames = uniqueSelectedTagIds
           .map((id) {

@@ -24,16 +24,17 @@ import 'package:whph/presentation/shared/services/abstraction/i_notification_ser
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/shared/constants/app_args.dart';
 
-// Global navigator key for accessing context anywhere
+/// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+/// Global DI container instance
 late final IContainer container;
 
 void main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Global error handling for Flutter errors
+    /// Configure custom error widget for Flutter rendering errors
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return Material(
         child: Container(
@@ -49,6 +50,7 @@ void main() async {
       );
     };
 
+    // Initialize dependency injection container and register modules
     container = acore.Container();
     initializeJsonMapper();
     registerPersistence(container);
@@ -56,26 +58,26 @@ void main() async {
     registerApplication(container);
     registerPresentation(container);
 
-    // Initialize services
+    // Initialize core services
     final translationService = container.resolve<ITranslationService>();
     await translationService.init();
-
-    // Initialize ErrorHelper
     ErrorHelper.initialize(translationService);
 
     final notificationService = container.resolve<INotificationService>();
     await notificationService.init();
 
+    // Start platform-specific background processes
     await runDesktopWorkers();
-
     await runBackgroundWorkers();
 
+    // Launch the application with translation support
     runApp(
       translationService.wrapWithTranslations(
         App(navigatorKey: navigatorKey),
       ),
     );
   }, (error, stack) {
+    // Global error handling for uncaught exceptions
     if (navigatorKey.currentContext != null) {
       if (error is BusinessException) {
         ErrorHelper.showError(navigatorKey.currentContext!, error);
@@ -94,27 +96,28 @@ void main() async {
   });
 }
 
+/// Set up desktop-specific features and services
 Future<void> runDesktopWorkers() async {
   if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS)) return;
 
-  // Initialize setup service for desktop platforms
+  // Configure desktop environment
   final setupService = container.resolve<ISetupService>();
   await setupService.setupEnvironment();
 
-  // Update window manager settings
+  // Initialize window manager and configure basic window properties
   await windowManager.ensureInitialized();
   await windowManager.setPreventClose(true);
   if (!kDebugMode) await windowManager.setMinimumSize(const Size(800, 600));
 
-  // Initialize system tray service
+  // Set up system tray integration
   final systemTrayService = container.resolve<ISystemTrayService>();
   await systemTrayService.init();
 
-  // Ensure startup settings are synced
+  // Configure auto-start behavior
   final startupService = container.resolve<IStartupSettingsService>();
   await startupService.ensureStartupSettingSync();
 
-  // Check if app should start minimized
+  // Handle startup visibility based on launch arguments
   if (Platform.environment.containsKey('FLUTTER_TEST') == false) {
     final args = Platform.executableArguments;
     if (args.contains(AppArgs.systemTray)) {
@@ -124,18 +127,19 @@ Future<void> runDesktopWorkers() async {
     }
   }
 
-  // Start WebSocket server
+  // Initialize WebSocket server for inter-process communication
   startWebSocketServer();
 }
 
+/// Initialize background processes that run on all platforms
 Future<void> runBackgroundWorkers() async {
   final mediator = container.resolve<Mediator>();
 
   if (Platform.isAndroid || Platform.isIOS) {
-    // Start sync and app usage tracking for mobile platforms
+    // Start mobile-specific background services
     mediator.send(StartSyncCommand());
   }
 
-  // Start app usage tracking for all platforms
+  // Start app usage tracking for activity monitoring
   await mediator.send(StartTrackAppUsagesCommand());
 }

@@ -39,9 +39,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       AppUsageDetailsPage.route,
       arguments: {'id': id},
     );
-
-    // setState çağrısına artık gerek yok, liste AppUsagesService event listenerlari
-    // sayesinde otomatik olarak güncellenecek
   }
 
   void _handleFiltersChanged(AppUsageFilterState newState) {
