@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -169,33 +170,18 @@ class _TaskFiltersState extends State<TaskFilters> {
 
                   // Completed tasks toggle button
                   if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Tooltip(
-                          message: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
-                          child: InkWell(
-                            onTap: () {
-                              final newState = !widget.showCompletedTasks;
-                              debugPrint('TaskFilters: Toggling completed tasks to $newState');
-                              // Call the callback directly without using addPostFrameCallback
-                              widget.onCompletedTasksToggle!(newState);
-                            },
-                            borderRadius: BorderRadius.circular(16),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
-                                color: widget.showCompletedTasks
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                size: iconSize,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    FilterIconButton(
+                      icon: widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
+                      iconSize: iconSize,
+                      color: widget.showCompletedTasks
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      tooltip: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
+                      onPressed: () {
+                        final newState = !widget.showCompletedTasks;
+                        debugPrint('TaskFilters: Toggling completed tasks to $newState');
+                        widget.onCompletedTasksToggle!(newState);
+                      },
                     ),
                 ],
               ),
