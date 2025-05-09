@@ -106,6 +106,7 @@ shared:
       tags: Etiketler
       settings: Ayarlar
       buy_me_coffee: Bana bir kahve ısmarla
+      more: Daha Fazla
   update_dialog:
     title: Güncelleme Mevcut!
     message: Yeni bir sürüm ({version}) mevcut.

@@ -111,7 +111,10 @@ class AppRoutes {
 
     final bool useFadeTransition = arguments?['useFadeTransition'] == true;
     if (useFadeTransition) {
-      return FadePageRoute(child: page);
+      return FadePageRoute(
+        child: page,
+        settings: settings,
+      );
     }
 
     return PageRouteBuilder(
