@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
-import 'package:whph/presentation/features/tags/components/tag_label.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class NoteCard extends StatelessWidget {
@@ -34,7 +35,7 @@ class NoteCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Note icon
                   Icon(
@@ -78,26 +79,37 @@ class NoteCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (note.tags.isNotEmpty)
-                        TagLabel(
-                          tagColor: note.tags.firstOrNull?.tagColor,
-                          tagName: note.tags.map((tag) => tag.tagName).join(', '),
-                          mini: true,
+                        Flexible(
+                          child: Label.multipleColored(
+                            icon: TagUiConstants.tagIcon,
+                            color: Colors.grey, // Default color for icon and commas
+                            values: note.tags.map((tag) => tag.tagName).toList(),
+                            colors: note.tags
+                                .map((tag) => tag.tagColor != null
+                                    ? Color(int.parse('FF${tag.tagColor}', radix: 16))
+                                    : Colors.grey)
+                                .toList(),
+                            mini: true,
+                          ),
                         ),
                       if (note.tags.isNotEmpty && note.updatedAt != null) const SizedBox(width: 8),
                       if (note.updatedAt != null)
                         Row(
                           mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.update,
-                              size: AppTheme.iconSizeXSmall,
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: Icon(
+                                Icons.update,
+                                size: AppTheme.iconSizeXSmall,
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                              ),
                             ),
                             const SizedBox(width: 2),
                             Text(
                               _formatDateTime(note.updatedAt!),
                               style: TextStyle(
-                                fontSize: 10,
                                 color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                               ),
                             ),

@@ -7,6 +7,8 @@ import 'package:whph/application/features/habits/queries/get_list_habits_query.d
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
@@ -15,7 +17,6 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/features/tags/components/tag_label.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
@@ -186,17 +187,15 @@ class _HabitCardState extends State<HabitCard> {
                           Expanded(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  for (var i = 0; i < widget.habit.tags.length; i++) ...[
-                                    if (i > 0) Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)),
-                                    TagLabel(
-                                      tagColor: widget.habit.tags[i].color,
-                                      tagName: widget.habit.tags[i].name,
-                                      mini: true,
-                                    ),
-                                  ],
-                                ],
+                              child: Label.multipleColored(
+                                icon: TagUiConstants.tagIcon,
+                                color: Colors.grey, // Default color for icon and commas
+                                values: widget.habit.tags.map((tag) => tag.name).toList(),
+                                colors: widget.habit.tags
+                                    .map((tag) =>
+                                        tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                                    .toList(),
+                                mini: true,
                               ),
                             ),
                           ),

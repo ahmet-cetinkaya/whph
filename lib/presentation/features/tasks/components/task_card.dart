@@ -5,6 +5,7 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
@@ -12,7 +13,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/tags/components/tag_label.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -152,10 +153,16 @@ class TaskCard extends StatelessWidget {
       children: [
         // Tags section
         if (taskItem.tags.isNotEmpty)
-          TagLabel(
-            tagColor: taskItem.tags.firstOrNull?.color,
-            tagName: taskItem.tags.map((tag) => tag.name).join(', '),
-            mini: true,
+          Flexible(
+            child: Label.multipleColored(
+              icon: TagUiConstants.tagIcon,
+              color: Colors.grey, // Default color for icon and commas
+              values: taskItem.tags.map((tag) => tag.name).toList(),
+              colors: taskItem.tags
+                  .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                  .toList(),
+              mini: true,
+            ),
           ),
 
         // Add a small spacer between tags and date/time elements

@@ -6,7 +6,9 @@ import 'package:whph/application/features/app_usages/queries/get_list_app_usage_
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/bar_chart.dart';
+import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -73,31 +75,31 @@ class AppUsageCard extends StatelessWidget {
   Widget? _buildAdditionalWidget(GetListAppUsageTagsQueryResponse? appUsageTags) {
     if (appUsageTags?.items.isEmpty ?? true) return null;
 
-    return Row(
-      children: [
-        Text(
-          "•",
-          style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
-        ),
-        const SizedBox(width: 4),
-        Row(
-          children: [
-            for (var i = 0; i < appUsageTags!.items.length; i++) ...[
-              if (i > 0)
-                Text(
-                  ", ",
-                  style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
-                ),
-              Text(
-                appUsageTags.items[i].tagName,
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppUsageUiConstants.getTagColor(appUsageTags.items[i].tagColor),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ],
+    final List<Color> tagColors = appUsageTags!.items
+        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+        .toList();
+
+    return Container(
+      constraints: const BoxConstraints(minHeight: 32),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "•",
+            style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Label.multipleColored(
+              icon: TagUiConstants.tagIcon,
+              color: Colors.grey, // Default color for icon and commas
+              values: appUsageTags.items.map((tag) => tag.tagName).toList(),
+              colors: tagColors,
+              mini: true,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
