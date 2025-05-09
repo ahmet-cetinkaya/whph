@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
@@ -433,16 +434,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                 },
               );
             }),
-            IconButton(
-              icon: Icon(
-                widget.icon,
-                size: widget.iconSize ?? AppTheme.iconSizeSmall,
-                color: widget.color ?? Theme.of(context).iconTheme.color,
-              ),
+            FilterIconButton(
+              icon: widget.icon,
+              iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+              color: widget.color ?? Theme.of(context).iconTheme.color,
               onPressed: () => _showTagSelectionModal(context),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
               tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
             ),
           ],
@@ -490,16 +486,24 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           displayWidget
         else
           Flexible(
-            child: InkWell(
-              onTap: () => _showTagSelectionModal(context),
-              child: Tooltip(
-                message: displayTooltip ?? '',
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: displayWidget,
-                ),
-              ),
-            ),
+            child: widget.buttonLabel != null
+                ? InkWell(
+                    onTap: () => _showTagSelectionModal(context),
+                    child: Tooltip(
+                      message: displayTooltip ?? '',
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: displayWidget,
+                      ),
+                    ),
+                  )
+                : FilterIconButton(
+                    icon: widget.icon,
+                    iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+                    color: widget.color ?? Theme.of(context).iconTheme.color,
+                    onPressed: () => _showTagSelectionModal(context),
+                    tooltip: displayTooltip ?? '',
+                  ),
           ),
       ],
     );
