@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/domain/features/notes/note.dart';
+import 'package:whph/domain/features/notes/note_tag.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
@@ -86,42 +87,46 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       );
     }
 
-    // Get all tags for these notes in a single query
-    final tagsQuery = '''
-      SELECT t.*, nt.note_id
-      FROM note_tag_table nt
-      JOIN tag_table t ON t.id = nt.tag_id
-      WHERE nt.note_id IN (${paginatedNotes.items.map((_) => '?').join(',')})
-        AND nt.deleted_date IS NULL
-        AND t.deleted_date IS NULL
+    // Get all note_tags and their associated tags for these notes in a single query
+    final query = '''
+      WITH ValidNoteTags AS (
+        SELECT nt.*
+        FROM note_tag_table nt
+        WHERE nt.deleted_date IS NULL
+          AND nt.note_id IN (${paginatedNotes.items.map((_) => '?').join(',')})
+      )
+      SELECT vnt.*, t.name as tag_name, t.color as tag_color
+      FROM ValidNoteTags vnt
+      LEFT JOIN tag_table t ON t.id = vnt.tag_id AND t.deleted_date IS NULL
     ''';
 
     final variables = paginatedNotes.items.map((note) => Variable<String>(note.id)).toList();
-    final tagRows = await database
-        .customSelect(
-          tagsQuery,
-          variables: variables,
-        )
-        .get();
+    final rows = await database.customSelect(query, variables: variables).get();
 
-    // Group tags by note ID
-    final noteTagsMap = <String, List<Tag>>{};
-    for (final row in tagRows) {
-      final tag = Tag(
+    // Group note_tags by note ID
+    final noteTagsMap = <String, List<NoteTag>>{};
+    for (final row in rows) {
+      final noteTag = NoteTag(
         id: row.read<String>('id'),
-        name: row.read<String>('name'),
-        color: row.readNullable<String>('color'),
-        isArchived: row.read<bool>('is_archived'),
+        noteId: row.read<String>('note_id'),
+        tagId: row.read<String>('tag_id'),
         createdDate: row.read<DateTime>('created_date'),
         modifiedDate: row.readNullable<DateTime>('modified_date'),
         deletedDate: row.readNullable<DateTime>('deleted_date'),
       );
 
-      final noteId = row.read<String>('note_id');
-      noteTagsMap.putIfAbsent(noteId, () => []).add(tag);
+      // Add tag information
+      noteTag.tag = Tag(
+        id: row.read<String>('tag_id'),
+        name: row.read<String>('tag_name'),
+        color: row.readNullable<String>('tag_color'),
+        createdDate: row.read<DateTime>('created_date'),
+      );
+
+      noteTagsMap.putIfAbsent(noteTag.noteId, () => []).add(noteTag);
     }
 
-    // Assign tags to notes
+    // Assign note_tags to notes
     final notesWithTags = paginatedNotes.items.map((note) {
       note.tags = noteTagsMap[note.id] ?? [];
       return note;
@@ -141,32 +146,36 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     final note = await super.getById(id);
     if (note == null) return null;
 
-    // Get tags for this note
-    final tagsQuery = '''
-      SELECT t.*
-      FROM tag_table t
-      JOIN note_tag_table nt ON t.id = nt.tag_id
-      WHERE nt.note_id = ?
-        AND nt.deleted_date IS NULL
-        AND t.deleted_date IS NULL
+    // Get note_tags and their associated tags for this note
+    final query = '''
+      SELECT nt.*, t.name as tag_name, t.color as tag_color
+      FROM note_tag_table nt
+      LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
+      WHERE nt.deleted_date IS NULL AND nt.note_id = ?
     ''';
 
-    final tagRows = await database.customSelect(
-      tagsQuery,
-      variables: [Variable<String>(id)],
-    ).get();
+    final rows = await database.customSelect(query, variables: [Variable<String>(id)]).get();
 
-    note.tags = tagRows
-        .map((row) => Tag(
-              id: row.read<String>('id'),
-              name: row.read<String>('name'),
-              color: row.readNullable<String>('color'),
-              isArchived: row.read<bool>('is_archived'),
-              createdDate: row.read<DateTime>('created_date'),
-              modifiedDate: row.readNullable<DateTime>('modified_date'),
-              deletedDate: row.readNullable<DateTime>('deleted_date'),
-            ))
-        .toList();
+    note.tags = rows.map((row) {
+      final noteTag = NoteTag(
+        id: row.read<String>('id'),
+        noteId: row.read<String>('note_id'),
+        tagId: row.read<String>('tag_id'),
+        createdDate: row.read<DateTime>('created_date'),
+        modifiedDate: row.readNullable<DateTime>('modified_date'),
+        deletedDate: row.readNullable<DateTime>('deleted_date'),
+      );
+
+      // Add tag information
+      noteTag.tag = Tag(
+        id: row.read<String>('tag_id'),
+        name: row.read<String>('tag_name'),
+        color: row.readNullable<String>('tag_color'),
+        createdDate: row.read<DateTime>('created_date'),
+      );
+
+      return noteTag;
+    }).toList();
 
     return note;
   }

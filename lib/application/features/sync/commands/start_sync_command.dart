@@ -11,7 +11,7 @@ class StartSyncCommandHandler implements IRequestHandler<StartSyncCommand, void>
 
   @override
   Future<void> call(StartSyncCommand request) async {
-    if (kDebugMode) print('DEBUG: Starting sync service via command');
+    if (kDebugMode) debugPrint('[StartSyncCommandHandler]: Starting sync service via command');
     _syncService.startSync();
     return;
   }

@@ -6,6 +6,7 @@ import 'package:whph/application/features/habits/queries/get_list_habit_records_
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
@@ -14,11 +15,9 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/features/tags/components/tag_label.dart';
 
 class HabitCard extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
-
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
   final void Function(AddHabitRecordCommandResponse)? onRecordCreated;
@@ -27,29 +26,32 @@ class HabitCard extends StatefulWidget {
   final bool isDateLabelShowing;
   final int dateRange;
 
-  HabitCard(
-      {super.key,
-      required this.habit,
-      required this.onOpenDetails,
-      this.onRecordCreated,
-      this.onRecordDeleted,
-      this.isMiniLayout = false,
-      this.isDateLabelShowing = true,
-      this.dateRange = 7});
+  const HabitCard({
+    super.key,
+    required this.habit,
+    required this.onOpenDetails,
+    this.onRecordCreated,
+    this.onRecordDeleted,
+    this.isMiniLayout = false,
+    this.isDateLabelShowing = true,
+    this.dateRange = 7,
+  });
 
   @override
   State<HabitCard> createState() => _HabitCardState();
 }
 
 class _HabitCardState extends State<HabitCard> {
+  final _mediator = container.resolve<Mediator>();
+  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
   void initState() {
-    _getHabitRecords();
-
     super.initState();
+    _getHabitRecords();
   }
 
   Future<void> _getHabitRecords() async {
@@ -61,7 +63,7 @@ class _HabitCardState extends State<HabitCard> {
         startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
         endDate: DateTime.now(),
       );
-      final response = await widget._mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      final response = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
 
       if (mounted) {
         setState(() {
@@ -79,7 +81,7 @@ class _HabitCardState extends State<HabitCard> {
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     try {
       final command = AddHabitRecordCommand(habitId: habitId, date: date);
-      final response = await widget._mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+      final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
       if (mounted) {
         setState(() {
@@ -87,8 +89,11 @@ class _HabitCardState extends State<HabitCard> {
           _getHabitRecords();
         });
       }
+
+      // Notify service that a record was added
+      _habitsService.notifyHabitRecordAdded(habitId);
       widget.onRecordCreated?.call(response);
-      widget._soundPlayer.play(SharedSounds.done);
+      _soundPlayer.play(SharedSounds.done);
     } catch (e, stackTrace) {
       if (mounted) {
         ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
@@ -100,7 +105,7 @@ class _HabitCardState extends State<HabitCard> {
   Future<void> _deleteHabitRecord(String id) async {
     try {
       final command = DeleteHabitRecordCommand(id: id);
-      final response = await widget._mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+      final response = await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
       if (mounted) {
         setState(() {
@@ -108,6 +113,9 @@ class _HabitCardState extends State<HabitCard> {
           _getHabitRecords();
         });
       }
+
+      // Notify service that a record was removed
+      _habitsService.notifyHabitRecordRemoved(widget.habit.id);
       widget.onRecordDeleted?.call(response);
     } catch (e, stackTrace) {
       if (mounted) {
@@ -175,8 +183,6 @@ class _HabitCardState extends State<HabitCard> {
                       padding: const EdgeInsets.only(top: 2),
                       child: Row(
                         children: [
-                          Icon(HabitUiConstants.tagsIcon, color: AppTheme.disabledColor, size: AppTheme.iconSizeSmall),
-                          const SizedBox(width: 2),
                           Expanded(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
@@ -184,13 +190,10 @@ class _HabitCardState extends State<HabitCard> {
                                 children: [
                                   for (var i = 0; i < widget.habit.tags.length; i++) ...[
                                     if (i > 0) Text(", ", style: AppTheme.bodySmall.copyWith(color: Colors.grey)),
-                                    Text(
-                                      widget.habit.tags[i].name,
-                                      style: AppTheme.bodySmall.copyWith(
-                                        color: widget.habit.tags[i].color != null
-                                            ? Color(int.parse('FF${widget.habit.tags[i].color}', radix: 16))
-                                            : Colors.grey,
-                                      ),
+                                    TagLabel(
+                                      tagColor: widget.habit.tags[i].color,
+                                      tagName: widget.habit.tags[i].name,
+                                      mini: true,
                                     ),
                                   ],
                                 ],
@@ -209,10 +212,11 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCalendar() {
     if (_habitRecords == null) {
+      // No loading indicator since local DB is fast
       return const SizedBox(
         width: 32,
         height: 32,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child: SizedBox.shrink(),
       );
     }
 
@@ -274,8 +278,10 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCheckbox(BuildContext context) {
     if (_habitRecords == null) {
-      return Center(
-        child: CircularProgressIndicator(),
+      // No loading indicator since local DB is fast
+      return const SizedBox(
+        width: 28,
+        height: 28,
       );
     }
 
@@ -290,7 +296,7 @@ class _HabitCardState extends State<HabitCard> {
           await _deleteHabitRecord(recordToday.id);
         } else {
           await _createHabitRecord(widget.habit.id, DateTime.now());
-          widget._soundPlayer.play(SharedSounds.done);
+          _soundPlayer.play(SharedSounds.done);
         }
       },
       icon: Icon(

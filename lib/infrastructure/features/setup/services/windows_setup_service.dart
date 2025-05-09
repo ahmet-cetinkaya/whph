@@ -63,7 +63,7 @@ exit
         description: 'Work Hard Play Hard - Time Tracking App',
       );
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error setting up Windows environment: $e');
+      if (kDebugMode) debugPrint('ERROR: Error setting up Windows environment: $e');
     }
   }
 
@@ -76,17 +76,17 @@ exit
       final downloadPath = path.join(appDir, 'whph_update.zip');
 
       await downloadFile(downloadUrl, downloadPath);
-      if (kDebugMode) print('DEBUG: Downloaded update file.');
+      if (kDebugMode) debugPrint('[WindowsSetupService]: Downloaded update file.');
 
       final scriptContent = _updateScriptTemplate.replaceAll('{appDir}', appDir).replaceAll('{exePath}', exePath);
       await writeFile(updateScript, scriptContent);
-      if (kDebugMode) print('DEBUG: Written update script.');
+      if (kDebugMode) debugPrint('[WindowsSetupService]: Written update script.');
 
       await runDetachedProcess('cmd', ['/c', updateScript]);
-      if (kDebugMode) print('DEBUG: Executed update script.');
+      if (kDebugMode) debugPrint('[WindowsSetupService]: Executed update script.');
       exit(0);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Failed to download and install update: $e');
+      if (kDebugMode) debugPrint('ERROR: Failed to download and install update: $e');
       rethrow;
     }
   }
@@ -113,7 +113,7 @@ exit
         throw Exception('Failed to create shortcut: ${result.stderr}');
       }
     } catch (e) {
-      if (kDebugMode) print('ERROR: Failed to create shortcut: $e');
+      if (kDebugMode) debugPrint('ERROR: Failed to create shortcut: $e');
       rethrow;
     }
   }

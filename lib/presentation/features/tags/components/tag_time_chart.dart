@@ -6,10 +6,9 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 
 class TagTimeChart extends StatefulWidget {
-  final _translationService = container.resolve<ITranslationService>();
-  final Mediator _mediator = container.resolve<Mediator>();
   final List<String>? filterByTags;
   final DateTime startDate;
   final DateTime endDate;
@@ -17,7 +16,7 @@ class TagTimeChart extends StatefulWidget {
   final double? width;
   final bool filterByIsArchived;
 
-  TagTimeChart({
+  const TagTimeChart({
     super.key,
     this.filterByTags,
     required this.startDate,
@@ -32,8 +31,10 @@ class TagTimeChart extends StatefulWidget {
 }
 
 class TagTimeChartState extends State<TagTimeChart> {
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
   GetTopTagsByTimeQueryResponse? _tagTimes;
-  bool _isLoading = false;
+  final bool _isLoading = false;
   int? _touchedIndex;
 
   @override
@@ -54,16 +55,7 @@ class TagTimeChartState extends State<TagTimeChart> {
   }
 
   Future<void> refresh() async {
-    if (_isLoading) return;
-    setState(() => _isLoading = true);
-
-    try {
-      await _loadData();
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
+    await _loadData();
   }
 
   Future<void> _loadData() async {
@@ -75,7 +67,7 @@ class TagTimeChartState extends State<TagTimeChart> {
       filterByIsArchived: widget.filterByIsArchived,
     );
 
-    final result = await widget._mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);
+    final result = await _mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);
 
     if (mounted) {
       setState(() {
@@ -87,8 +79,13 @@ class TagTimeChartState extends State<TagTimeChart> {
   @override
   Widget build(BuildContext context) {
     if (_tagTimes == null || _tagTimes!.items.isEmpty) {
-      return Center(
-        child: Text(widget._translationService.translate(TagTranslationKeys.timeChartNoData)),
+      return SizedBox(
+        height: 100,
+        child: IconOverlay(
+          icon: Icons.pie_chart,
+          message: _translationService.translate(TagTranslationKeys.timeChartNoData),
+          iconSize: 48,
+        ),
       );
     }
 
@@ -101,7 +98,8 @@ class TagTimeChartState extends State<TagTimeChart> {
 
   Widget _buildChart() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      // No loading indicator since local DB is fast
+      return const SizedBox.shrink();
     }
 
     return PieChart(

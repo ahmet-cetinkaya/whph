@@ -25,18 +25,15 @@ import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dar
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 
 class TaskDetailsContent extends StatefulWidget {
-  final _mediator = container.resolve<Mediator>();
-  final _tasksService = container.resolve<TasksService>();
-  final _translationService = container.resolve<ITranslationService>();
-
   final String taskId;
   final VoidCallback? onTaskUpdated;
   final Function(String)? onTitleUpdated;
   final Function(bool)? onCompletedChanged;
 
-  TaskDetailsContent({
+  const TaskDetailsContent({
     super.key,
     required this.taskId,
     this.onTaskUpdated,
@@ -49,6 +46,10 @@ class TaskDetailsContent extends StatefulWidget {
 }
 
 class TaskDetailsContentState extends State<TaskDetailsContent> {
+  final _mediator = container.resolve<Mediator>();
+  final _tasksService = container.resolve<TasksService>();
+  final _translationService = container.resolve<ITranslationService>();
+
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
   final TextEditingController _plannedDateController = TextEditingController();
@@ -74,7 +75,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void initState() {
     super.initState();
     refresh();
-    widget._tasksService.onTaskSaved.addListener(_getTask);
+    _tasksService.onTaskUpdated.addListener(_getTask);
   }
 
   @override
@@ -151,7 +152,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void dispose() {
     _titleController.dispose();
     _debounce?.cancel();
-    widget._tasksService.onTaskSaved.removeListener(_getTask);
+    _tasksService.onTaskUpdated.removeListener(_getTask);
     super.dispose();
   }
 
@@ -162,7 +163,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _getTask() async {
     try {
       final query = GetTaskQuery(id: widget.taskId);
-      final response = await widget._mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      final response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
 
       if (mounted) {
         // Store current selections before updating
@@ -186,18 +187,18 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
           widget.onCompletedChanged?.call(response.isCompleted);
           _priorityOptions = [
-            DropdownOption(label: widget._translationService.translate(TaskTranslationKeys.priorityNone), value: null),
+            DropdownOption(label: _translationService.translate(TaskTranslationKeys.priorityNone), value: null),
             DropdownOption(
-                label: widget._translationService.translate(TaskTranslationKeys.priorityUrgentImportant),
+                label: _translationService.translate(TaskTranslationKeys.priorityUrgentImportant),
                 value: EisenhowerPriority.urgentImportant),
             DropdownOption(
-                label: widget._translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant),
+                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant),
                 value: EisenhowerPriority.notUrgentImportant),
             DropdownOption(
-                label: widget._translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant),
+                label: _translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant),
                 value: EisenhowerPriority.urgentNotImportant),
             DropdownOption(
-                label: widget._translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
+                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
                 value: EisenhowerPriority.notUrgentNotImportant),
           ];
 
@@ -245,7 +246,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           context,
           Exception(e.toString()), // Wrap the error in an Exception
           stackTrace,
-          message: widget._translationService.translate(TaskTranslationKeys.getTaskError),
+          message: _translationService.translate(TaskTranslationKeys.getTaskError),
         );
       }
     }
@@ -264,7 +265,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     while (true) {
       final query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        final response = await widget._mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
+        final response = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -274,6 +275,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               _taskTags!.items.addAll(response.items);
             }
           });
+
+          // Process field visibility after tags are loaded to ensure tag fields show correctly
+          _processFieldVisibility();
         }
 
         if (response.items.length < pageSize) break; // Exit if we've fetched all items
@@ -284,7 +288,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             context,
             e as Exception,
             stackTrace,
-            message: widget._translationService.translate(TaskTranslationKeys.getTagsError),
+            message: _translationService.translate(TaskTranslationKeys.getTagsError),
           );
           break;
         }
@@ -314,10 +318,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
       try {
         // Send the command but don't update UI with the result
-        final result = await widget._mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+        final result = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
 
-        // Just notify listeners that task was saved, but don't update the UI
-        widget._tasksService.onTaskSaved.value = result;
+        // Notify listeners that task was updated with the task ID
+        _tasksService.notifyTaskUpdated(result.id);
         widget.onTaskUpdated?.call();
 
         // Don't update any text fields or selections - let them remain as they are
@@ -329,7 +333,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             context,
             e as Exception,
             stackTrace,
-            message: widget._translationService.translate(TaskTranslationKeys.saveTaskError),
+            message: _translationService.translate(TaskTranslationKeys.saveTaskError),
           );
         }
       }
@@ -339,7 +343,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _addTag(String tagId) async {
     try {
       final command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
-      await widget._mediator.send(command);
+      await _mediator.send(command);
+      // If the tag was added successfully
+      _tasksService.notifyTaskUpdated(_task!.id);
       await _getTaskTags();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
@@ -349,7 +355,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           context,
           e as Exception,
           stackTrace,
-          message: widget._translationService.translate(TaskTranslationKeys.addTagError),
+          message: _translationService.translate(TaskTranslationKeys.addTagError),
         );
       }
     }
@@ -358,7 +364,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _removeTag(String id) async {
     try {
       final command = RemoveTaskTagCommand(id: id);
-      await widget._mediator.send(command);
+      await _mediator.send(command);
+      // If the tag was removed successfully
+      _tasksService.notifyTaskUpdated(_task!.id);
       await _getTaskTags();
     } on BusinessException catch (e) {
       if (mounted) ErrorHelper.showError(context, e);
@@ -368,7 +376,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           context,
           e as Exception,
           stackTrace,
-          message: widget._translationService.translate(TaskTranslationKeys.removeTagError),
+          message: _translationService.translate(TaskTranslationKeys.removeTagError),
         );
       }
     }
@@ -380,12 +388,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final tagsToRemove =
         _taskTags!.items.where((taskTag) => !tagOptions.map((tag) => tag.value).contains(taskTag.tagId)).toList();
 
-    for (final tagOption in tagOptionsToAdd) {
-      _addTag(tagOption.value);
+    // Batch process all tag operations
+    Future<void> processTags() async {
+      // Add all tags
+      for (final tagOption in tagOptionsToAdd) {
+        await _addTag(tagOption.value);
+      }
+
+      // Remove all tags
+      for (final taskTag in tagsToRemove) {
+        await _removeTag(taskTag.id);
+      }
+
+      // Notify only once after all tag operations are complete
+      if (tagOptionsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
+        _tasksService.notifyTaskUpdated(_task!.id);
+      }
     }
-    for (final taskTag in tagsToRemove) {
-      _removeTag(taskTag.id);
-    }
+
+    // Execute the tag operations
+    processTags();
   }
 
   @override
@@ -424,7 +446,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               suffixIcon: Tooltip(
-                message: widget._translationService.translate(TaskTranslationKeys.editTitleTooltip),
+                message: _translationService.translate(TaskTranslationKeys.editTitleTooltip),
                 child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
               ),
             ),
@@ -470,9 +492,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.tagsLabel),
+        label: _translationService.translate(TaskTranslationKeys.tagsLabel),
         icon: TaskUiConstants.tagsIcon,
-        hintText: widget._translationService.translate(TaskTranslationKeys.tagsHint),
+        hintText: _translationService.translate(TaskTranslationKeys.tagsHint),
         widget: TagSelectDropdown(
           key: ValueKey(_taskTags!.items.length),
           isMultiSelect: true,
@@ -485,7 +507,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildPrioritySection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.priorityLabel),
+        label: _translationService.translate(TaskTranslationKeys.priorityLabel),
         icon: TaskUiConstants.priorityIcon,
         widget: PrioritySelectField(
           value: _task!.priority,
@@ -501,7 +523,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
+        label: _translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
         icon: TaskUiConstants.estimatedTimeIcon,
         widget: Row(
           mainAxisSize: MainAxisSize.min,
@@ -513,7 +535,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               padding: EdgeInsets.zero,
             ),
             Text(
-              SharedUiConstants.formatDurationHuman(_task!.estimatedTime, widget._translationService),
+              SharedUiConstants.formatDurationHuman(_task!.estimatedTime, _translationService),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
@@ -527,19 +549,19 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
+        label: _translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
-            SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, widget._translationService),
+            SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, _translationService),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       );
 
   DetailTableRowData _buildPlannedDateSection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.plannedDateLabel),
+        label: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
         icon: TaskUiConstants.plannedDateIcon,
         widget: SizedBox(
           height: 36,
@@ -556,7 +578,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildDeadlineDateSection() => DetailTableRowData(
-        label: widget._translationService.translate(TaskTranslationKeys.deadlineDateLabel),
+        label: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         icon: TaskUiConstants.deadlineDateIcon,
         widget: SizedBox(
           height: 36,
@@ -576,9 +598,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         forceVertical: true,
         rowData: [
           DetailTableRowData(
-            label: widget._translationService.translate(TaskTranslationKeys.descriptionLabel),
+            label: _translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            hintText: widget._translationService.translate(SharedTranslationKeys.markdownEditorHint),
+            hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
             widget: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: MarkdownAutoPreview(
@@ -598,7 +620,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   // Simply trigger the update
                   _updateTask();
                 },
-                hintText: widget._translationService.translate(TaskTranslationKeys.addDescriptionHint),
+                hintText: _translationService.translate(TaskTranslationKeys.addDescriptionHint),
                 toolbarBackground: AppTheme.surface1,
               ),
             ),
@@ -625,25 +647,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
-    return FilterChip(
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(_getFieldLabel(fieldKey)),
-          const SizedBox(width: 4),
-          Icon(Icons.add, size: AppTheme.iconSizeSmall),
-        ],
-      ),
-      avatar: Icon(
-        _getFieldIcon(fieldKey),
-        size: AppTheme.iconSizeSmall,
-      ),
+    return OptionalFieldChip(
+      label: _getFieldLabel(fieldKey),
+      icon: _getFieldIcon(fieldKey),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
       backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
-      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-      showCheckmark: false,
-      visualDensity: VisualDensity.compact,
     );
   }
 
@@ -651,17 +660,17 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   String _getFieldLabel(String fieldKey) {
     switch (fieldKey) {
       case keyTags:
-        return widget._translationService.translate(TaskTranslationKeys.tagsLabel);
+        return _translationService.translate(TaskTranslationKeys.tagsLabel);
       case keyPriority:
-        return widget._translationService.translate(TaskTranslationKeys.priorityLabel);
+        return _translationService.translate(TaskTranslationKeys.priorityLabel);
       case keyEstimatedTime:
-        return widget._translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
+        return _translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
       case keyPlannedDate:
-        return widget._translationService.translate(TaskTranslationKeys.plannedDateLabel);
+        return _translationService.translate(TaskTranslationKeys.plannedDateLabel);
       case keyDeadlineDate:
-        return widget._translationService.translate(TaskTranslationKeys.deadlineDateLabel);
+        return _translationService.translate(TaskTranslationKeys.deadlineDateLabel);
       case keyDescription:
-        return widget._translationService.translate(TaskTranslationKeys.descriptionLabel);
+        return _translationService.translate(TaskTranslationKeys.descriptionLabel);
       default:
         return '';
     }

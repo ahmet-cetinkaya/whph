@@ -67,11 +67,11 @@ class GetNoteQueryHandler implements IRequestHandler<GetNoteQuery, GetNoteQueryR
       createdDate: note.createdDate,
       modifiedDate: note.modifiedDate,
       tags: note.tags
-          .map((tag) => NoteTagDto(
-                id: tag.id,
-                tagId: tag.id,
-                tagName: tag.name,
-                tagColor: tag.color,
+          .map((noteTag) => NoteTagDto(
+                id: noteTag.id,
+                tagId: noteTag.tagId,
+                tagName: noteTag.tag?.name ?? '',
+                tagColor: noteTag.tag?.color,
               ))
           .toList(),
     );

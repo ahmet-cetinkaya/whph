@@ -3,12 +3,14 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
-import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
+/// A button component that handles app usage deletion
 class AppUsageDeleteButton extends StatefulWidget {
   final String appUsageId;
   final VoidCallback? onDeleteSuccess;
@@ -29,32 +31,12 @@ class AppUsageDeleteButton extends StatefulWidget {
 
 class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
-  final _translationService = container.resolve<ITranslationService>();
+  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
+  bool _isDeleting = false;
 
-  Future<void> _deleteAppUsage(BuildContext context) async {
-    final command = DeleteAppUsageCommand(id: widget.appUsageId);
-    try {
-      await _mediator.send(command);
-
-      if (widget.onDeleteSuccess != null) {
-        widget.onDeleteSuccess!();
-      }
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.deleteError),
-        );
-      }
-    }
-  }
-
-  Future<void> _confirmDelete(BuildContext context) async {
-    bool? confirmed = await showDialog(
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(_translationService.translate(AppUsageTranslationKeys.deleteConfirmTitle)),
@@ -72,14 +54,58 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
       ),
     );
 
-    if (confirmed == true && context.mounted) _deleteAppUsage(context);
+    if (confirmed == true && context.mounted) {
+      await performDelete(context);
+    }
+  }
+
+  Future<void> performDelete(BuildContext context) async {
+    if (_isDeleting) return;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      final command = DeleteAppUsageCommand(id: widget.appUsageId);
+      final response = await _mediator.send<DeleteAppUsageCommand, DeleteAppUsageCommandResponse>(command);
+
+      notifyDeletion(response.id);
+
+      if (widget.onDeleteSuccess != null) {
+        widget.onDeleteSuccess!();
+      }
+    } on BusinessException catch (e) {
+      if (context.mounted) ErrorHelper.showError(context, e);
+    } catch (e, stackTrace) {
+      if (context.mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(AppUsageTranslationKeys.deleteError),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
+  }
+
+  void notifyDeletion(String id) {
+    _appUsagesService.notifyAppUsageDeleted(id);
   }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => _confirmDelete(context),
-      icon: Icon(SharedUiConstants.deleteIcon),
+      onPressed: _isDeleting ? null : () => confirmDelete(context),
+      icon: Icon(
+        _isDeleting ? Icons.hourglass_empty : SharedUiConstants.deleteIcon,
+      ),
       color: widget.buttonColor,
       style: ButtonStyle(
         backgroundColor:

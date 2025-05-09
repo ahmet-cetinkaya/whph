@@ -11,13 +11,12 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_con
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 
 class AppUsageTagRuleForm extends StatefulWidget {
-  final _mediator = container.resolve<Mediator>();
-  final _translationService = container.resolve<ITranslationService>();
   final Function()? onSave;
 
-  AppUsageTagRuleForm({
+  const AppUsageTagRuleForm({
     super.key,
     this.onSave,
   });
@@ -27,6 +26,10 @@ class AppUsageTagRuleForm extends StatefulWidget {
 }
 
 class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
+  final _mediator = container.resolve<Mediator>();
+  final _translationService = container.resolve<ITranslationService>();
+  final _appUsagesService = container.resolve<AppUsagesService>();
+
   final _formKey = GlobalKey<FormState>();
   final _patternController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -41,21 +44,31 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
     super.dispose();
   }
 
-  Future<void> refresh() async {
+  bool validate() {
+    return _formKey.currentState?.validate() == true && _selectedTagId != null;
+  }
+
+  Future<void> reset() async {
     if (_formKey.currentState == null) return;
     _formKey.currentState!.reset();
     _patternController.clear();
     _descriptionController.clear();
-    _selectedTagId = null;
-    setState(() {});
+    setState(() {
+      _selectedTagId = null;
+      _selectedTagLabel = null;
+    });
   }
 
-  Future<void> _handleSubmit() async {
+  Future<void> refresh() async {
+    await reset();
+  }
+
+  Future<void> submit() async {
     setState(() {
       _isSubmitting = true;
     });
 
-    if (_formKey.currentState!.validate() && _selectedTagId != null) {
+    if (validate()) {
       try {
         final command = AddAppUsageTagRuleCommand(
           pattern: _patternController.text,
@@ -63,9 +76,11 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
         );
 
-        await widget._mediator.send<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse>(command);
+        final response = await _mediator.send<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse>(command);
 
         if (mounted) {
+          // Notify that a new rule was created
+          _appUsagesService.notifyAppUsageRuleCreated(response.id);
           widget.onSave?.call();
           await refresh();
         }
@@ -75,7 +90,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           context,
           e as Exception,
           stackTrace,
-          message: widget._translationService.translate(AppUsageTranslationKeys.saveRuleError),
+          message: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
         );
       } finally {
         if (mounted) {
@@ -111,9 +126,9 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     child: TextFormField(
                       controller: _patternController,
                       decoration: InputDecoration(
-                        labelText: widget._translationService.translate(AppUsageTranslationKeys.patternFieldLabel),
+                        labelText: _translationService.translate(AppUsageTranslationKeys.patternFieldLabel),
                         labelStyle: AppTheme.bodySmall,
-                        hintText: widget._translationService.translate(AppUsageTranslationKeys.patternFieldHint),
+                        hintText: _translationService.translate(AppUsageTranslationKeys.patternFieldHint),
                         hintStyle: AppTheme.bodySmall.copyWith(fontFamily: 'monospace'),
                         prefixIcon: Icon(AppUsageUiConstants.patternIcon, size: AppTheme.iconSizeSmall),
                         isDense: true,
@@ -128,7 +143,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       ),
                       style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
                       validator: (value) => (value?.isEmpty ?? true)
-                          ? widget._translationService.translate(AppUsageTranslationKeys.patternFieldRequired)
+                          ? _translationService.translate(AppUsageTranslationKeys.patternFieldRequired)
                           : null,
                     ),
                   ),
@@ -141,7 +156,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 32),
                       icon: Icon(AppUsageUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
-                      tooltip: widget._translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
+                      tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
                   ),
@@ -179,8 +194,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              _selectedTagLabel ??
-                                  widget._translationService.translate(AppUsageTranslationKeys.tagsHint),
+                              _selectedTagLabel ?? _translationService.translate(AppUsageTranslationKeys.tagsHint),
                               style: AppTheme.bodySmall.copyWith(
                                 color: _selectedTagId != null
                                     ? Theme.of(context).textTheme.bodyMedium?.color
@@ -219,8 +233,8 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 4, left: 12),
                   child: Text(
-                    widget._translationService.translate(SharedTranslationKeys.requiredValidation,
-                        namedArgs: {'field': widget._translationService.translate(AppUsageTranslationKeys.tagsLabel)}),
+                    _translationService.translate(SharedTranslationKeys.requiredValidation,
+                        namedArgs: {'field': _translationService.translate(AppUsageTranslationKeys.tagsLabel)}),
                     style: AppTheme.bodySmall.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -235,9 +249,9 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
           TextFormField(
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: widget._translationService.translate(AppUsageTranslationKeys.descriptionFieldLabel),
+              labelText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldLabel),
               labelStyle: AppTheme.bodySmall,
-              hintText: widget._translationService.translate(AppUsageTranslationKeys.descriptionFieldHint),
+              hintText: _translationService.translate(AppUsageTranslationKeys.descriptionFieldHint),
               hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: AppTheme.fontSizeMedium),
               isDense: true,
@@ -257,12 +271,12 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 TextButton.icon(
                   onPressed: widget.onSave,
                   icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: AppTheme.darkTextColor),
-                  label: Text(widget._translationService.translate(SharedTranslationKeys.cancelButton),
+                  label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
                       style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
-                onPressed: _handleSubmit,
+                onPressed: submit,
                 icon: Icon(
                   _isSubmitting ? SharedUiConstants.checkIcon : SharedUiConstants.saveIcon,
                   size: AppTheme.iconSizeSmall,
@@ -270,8 +284,8 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 ),
                 label: Text(
                   _isSubmitting
-                      ? widget._translationService.translate(SharedTranslationKeys.savedButton)
-                      : widget._translationService.translate(SharedTranslationKeys.saveButton),
+                      ? _translationService.translate(SharedTranslationKeys.savedButton)
+                      : _translationService.translate(SharedTranslationKeys.saveButton),
                   style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor),
                 ),
               ),

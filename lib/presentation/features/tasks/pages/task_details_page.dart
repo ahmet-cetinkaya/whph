@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async'; // Added for Timer
+import 'dart:async';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
@@ -9,7 +9,6 @@ import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_details_content.dart';
-import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -36,16 +35,14 @@ class TaskDetailsPage extends StatefulWidget {
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAliveClientMixin {
   String? _title;
-  final _contentKey = GlobalKey<TaskDetailsContentState>();
-  final _tasksListKey = GlobalKey<TaskListState>();
-  final _translationService = container.resolve<ITranslationService>();
-
   bool _isCompleted = false;
   bool _showCompletedTasks = false;
   double? _subTasksCompletionPercentage;
   Timer? _completedTasksHideTimer;
-  // Add refresh key to force list rebuilding when needed
   Key _listRebuildKey = UniqueKey();
+  final _translationService = container.resolve<ITranslationService>();
+
+  // Add refresh key to force list rebuilding when needed
   String? _searchQuery;
 
   // Flag to track if a refresh is in progress to prevent refresh loops
@@ -75,9 +72,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         _listRebuildKey = UniqueKey();
       });
 
-      // Refresh task content
-      _refreshContent();
-
       // Refresh task list
       _refreshTasksList();
 
@@ -89,35 +83,21 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     });
   }
 
-  void _refreshContent() {
-    _contentKey.currentState?.refresh();
-  }
-
-  void _refreshTitle(String title) {
-    if (mounted) {
-      setState(() {
-        _title = title.replaceAll('\n', ' ');
-      });
-    }
-  }
-
   void _refreshTasksList() {
-    if (_tasksListKey.currentState != null) {
-      _tasksListKey.currentState?.refresh(showLoading: true);
-    } else {
-      // If the list state isn't available, force a UI rebuild
-      setState(() {
-        _listRebuildKey = UniqueKey(); // Force rebuild with new key
-      });
-    }
+    setState(() {
+      _listRebuildKey = UniqueKey(); // Force rebuild with new key
+    });
   }
 
   Future<void> _loadTaskDetails() async {
     try {
-      final response =
-          await container.resolve<Mediator>().send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: widget.taskId));
+      final response = await container.resolve<Mediator>().send<GetTaskQuery, GetTaskQueryResponse>(
+            GetTaskQuery(id: widget.taskId),
+          );
       if (mounted) {
         setState(() {
+          _title = response.title;
+          _isCompleted = response.isCompleted;
           _subTasksCompletionPercentage = response.subTasksCompletionPercentage;
         });
       }
@@ -125,8 +105,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
       debugPrint('Error loading task details: $e');
     }
   }
-
-  // This method is now replaced by the TaskFilters component's callback
 
   // Called when a task is completed to hide completed tasks immediately
   void _hideCompletedTasks() {
@@ -166,188 +144,195 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context); // Call super.build to ensure AutomaticKeepAliveClientMixin works
-    return ResponsiveScaffoldLayout(
-      // Enable back button when this is a subtask (when hideSidebar is true)
-      showBackButton: widget.hideSidebar,
-      appBarTitle: Row(
-        children: [
-          TaskCompleteButton(
-            taskId: widget.taskId,
-            isCompleted: _isCompleted,
-            onToggleCompleted: () {
-              _refreshContent();
-              _refreshEverything();
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            TaskCompleteButton(
+              taskId: widget.taskId,
+              isCompleted: _isCompleted,
+              onToggleCompleted: () {
+                _refreshEverything();
+              },
+            ),
+            const SizedBox(width: 8),
+            if (_title != null) Expanded(child: Text(_title!)),
+          ],
+        ),
+        // Enable back button for subtasks
+        leading: widget.hideSidebar
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TaskDeleteButton(
+              taskId: widget.taskId,
+              onDeleteSuccess: () {
+                if (widget.onTaskDeleted != null) {
+                  widget.onTaskDeleted!();
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+              buttonColor: AppTheme.primaryColor,
+            ),
           ),
-          const SizedBox(width: 8),
-          if (_title != null) Expanded(child: Text(_title!)),
+          HelpMenu(
+            titleKey: TaskTranslationKeys.detailsHelpTitle,
+            markdownContentKey: TaskTranslationKeys.detailsHelpContent,
+          ),
+          const SizedBox(width: 2),
         ],
       ),
-      appBarActions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TaskDeleteButton(
-            taskId: widget.taskId,
-            onDeleteSuccess: () {
-              if (widget.onTaskDeleted != null) {
-                widget.onTaskDeleted!();
-              } else {
-                Navigator.of(context).pop();
-              }
-            },
-            buttonColor: AppTheme.primaryColor,
-          ),
-        ),
-        HelpMenu(
-          titleKey: TaskTranslationKeys.detailsHelpTitle,
-          markdownContentKey: TaskTranslationKeys.detailsHelpContent,
-        ),
-        const SizedBox(width: 2),
-      ],
-      builder: (context) => ListView(
-        padding: EdgeInsets.zero,
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          TaskDetailsContent(
-            key: _contentKey,
-            taskId: widget.taskId,
-            onTitleUpdated: _refreshTitle,
-            onCompletedChanged: (isCompleted) {
-              setState(() {
-                _isCompleted = isCompleted;
-              });
-              // Refresh the task list when completion status changes
-              _refreshEverything();
-            },
-          ),
-          const SizedBox(height: AppTheme.sizeSmall),
-
-          // SUB TASKS
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.sizeSmall,
-              vertical: AppTheme.sizeXSmall,
-            ),
-            child: SizedBox(
-              height: 40,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // TITLE
-                        const Icon(Icons.list),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            _translationService.translate(TaskTranslationKeys.subTasksLabel),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
-                          Text(
-                            '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-
-                        // FILTERS
-                        const SizedBox(width: AppTheme.sizeMedium),
-                        TaskFilters(
-                          showCompletedTasks: _showCompletedTasks,
-                          onCompletedTasksToggle: (showCompleted) {
-                            setState(() {
-                              _showCompletedTasks = showCompleted;
-                              _listRebuildKey = UniqueKey();
-                            });
-                            Future.delayed(const Duration(milliseconds: 50), () {
-                              if (mounted) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  _refreshTasksList();
-                                });
-                              }
-                            });
-                          },
-                          onSearchChange: (query) {
-                            setState(() {
-                              _searchQuery = query;
-                            });
-                            _refreshTasksList();
-                          },
-                          hasItems: true,
-                          showDateFilter: false,
-                          showTagFilter: false,
-                        )
-                      ],
-                    ),
-                  ),
-
-                  // ADD BUTTON
-                  if (!_showCompletedTasks)
-                    TaskAddButton(
-                      onTaskCreated: (_, __) {
-                        _refreshEverything();
-                      },
-                      initialParentTaskId: widget.taskId,
-                    ),
-                ],
-              ),
-            ),
-          ),
-
-          // LIST
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(
-                AppTheme.sizeSmall,
-                0,
-                AppTheme.sizeSmall,
-                AppTheme.sizeSmall,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-                child: TaskList(
-                  key: _tasksListKey,
-                  rebuildKey: _listRebuildKey,
-                  mediator: container.resolve<Mediator>(),
-                  translationService: _translationService,
-                  onClickTask: (task) async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TaskDetailsPage(
-                          taskId: task.id,
-                          hideSidebar: true,
-                          showCompletedTasksToggle: widget.showCompletedTasksToggle,
-                          onTaskDeleted: () {
-                            _refreshEverything();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    );
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.zero,
+                child: TaskDetailsContent(
+                  taskId: widget.taskId,
+                  onTaskUpdated: () {
                     _refreshEverything();
                   },
-                  parentTaskId: widget.taskId,
-                  filterByCompleted: _showCompletedTasks,
-                  search: _searchQuery,
-                  onTaskCompleted: () {
-                    _hideCompletedTasks();
+                  onCompletedChanged: (isCompleted) {
+                    setState(() {
+                      _isCompleted = isCompleted;
+                    });
                     _refreshEverything();
                   },
-                  onScheduleTask: (_, __) => _refreshEverything(),
-                  enableReordering: !_showCompletedTasks,
+                  onTitleUpdated: (title) {
+                    setState(() {
+                      _title = title;
+                    });
+                  },
                 ),
               ),
-            ),
+              const SizedBox(height: AppTheme.sizeSmall),
+
+              // SUB TASKS
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.sizeXSmall,
+                  vertical: AppTheme.sizeXSmall,
+                ),
+                child: SizedBox(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // TITLE
+                            const Icon(Icons.list),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                _translationService.translate(TaskTranslationKeys.subTasksLabel),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                              Text(
+                                '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+
+                            // FILTERS
+                            const SizedBox(width: AppTheme.sizeMedium),
+                            TaskFilters(
+                              showCompletedTasks: _showCompletedTasks,
+                              onCompletedTasksToggle: (showCompleted) {
+                                setState(() {
+                                  _showCompletedTasks = showCompleted;
+                                  _listRebuildKey = UniqueKey();
+                                });
+                                Future.delayed(const Duration(milliseconds: 50), () {
+                                  if (mounted) {
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      _refreshTasksList();
+                                    });
+                                  }
+                                });
+                              },
+                              onSearchChange: (query) {
+                                setState(() {
+                                  _searchQuery = query;
+                                });
+                                _refreshTasksList();
+                              },
+                              hasItems: true,
+                              showDateFilter: false,
+                              showTagFilter: false,
+                            )
+                          ],
+                        ),
+                      ),
+
+                      // ADD BUTTON
+                      if (!_showCompletedTasks)
+                        TaskAddButton(
+                          onTaskCreated: (_, __) {
+                            _refreshEverything();
+                          },
+                          initialParentTaskId: widget.taskId,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // LIST
+              Flexible(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+                    child: TaskList(
+                      key: _listRebuildKey,
+                      onClickTask: (task) async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TaskDetailsPage(
+                              taskId: task.id,
+                              hideSidebar: true,
+                              showCompletedTasksToggle: widget.showCompletedTasksToggle,
+                              onTaskDeleted: () {
+                                _refreshEverything();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                        );
+                        _refreshEverything();
+                      },
+                      parentTaskId: widget.taskId,
+                      filterByCompleted: _showCompletedTasks,
+                      search: _searchQuery,
+                      onTaskCompleted: () {
+                        _hideCompletedTasks();
+                        _refreshEverything();
+                      },
+                      onScheduleTask: (_, __) => _refreshEverything(),
+                      enableReordering: !_showCompletedTasks,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppTheme.sizeSmall),
-        ],
+        ),
       ),
-      hideSidebar: widget.hideSidebar,
     );
   }
 }

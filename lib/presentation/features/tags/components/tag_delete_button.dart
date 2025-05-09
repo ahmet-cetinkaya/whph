@@ -7,6 +7,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagDeleteButton extends StatefulWidget {
   final String tagId;
@@ -31,12 +32,14 @@ class TagDeleteButton extends StatefulWidget {
 class _TagDeleteButtonState extends State<TagDeleteButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tagsService = container.resolve<TagsService>();
 
   Future<void> _deleteTag(BuildContext context) async {
     try {
       final command = DeleteTagCommand(id: widget.tagId);
       await _mediator.send(command);
 
+      _tagsService.notifyTagDeleted(widget.tagId);
       if (widget.onDeleteSuccess != null) {
         widget.onDeleteSuccess!();
       }

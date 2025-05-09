@@ -88,8 +88,8 @@ void main() async {
       }
     }
     if (kDebugMode) {
-      print('Caught error: $error');
-      print('Stack trace: $stack');
+      debugPrint('Caught error: $error');
+      debugPrint('Stack trace: $stack');
     }
   });
 }

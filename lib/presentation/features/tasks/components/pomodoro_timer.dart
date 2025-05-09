@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
@@ -18,15 +19,9 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class PomodoroTimer extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final ISoundPlayer _soundPlayer = container.resolve<ISoundPlayer>();
-  final INotificationService _notificationService = container.resolve<INotificationService>();
-  final ISystemTrayService _systemTrayService = container.resolve<ISystemTrayService>();
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
-
   final Function(Duration) onTimeUpdate;
 
-  PomodoroTimer({
+  const PomodoroTimer({
     super.key,
     required this.onTimeUpdate,
   });
@@ -36,6 +31,12 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> {
+  final _mediator = container.resolve<Mediator>();
+  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _notificationService = container.resolve<INotificationService>();
+  final _systemTrayService = container.resolve<ISystemTrayService>();
+  final _translationService = container.resolve<ITranslationService>();
+
   static const int _minTimerValue = 5;
   static const int _maxTimerValue = 120;
 
@@ -70,7 +71,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       _timer.cancel();
       _removeTimerMenuItems();
     }
-    widget._soundPlayer.stop();
+    _soundPlayer.stop();
     super.dispose();
   }
 
@@ -88,7 +89,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      final response = await widget._mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: key),
       );
       return response.getValue<int>();
@@ -103,7 +104,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       value: value.toString(),
       valueType: SettingValueType.int,
     );
-    await widget._mediator.send(command);
+    await _mediator.send(command);
   }
 
   void _startAlarm() {
@@ -111,24 +112,24 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       _isAlarmPlaying = true;
     });
 
-    widget._soundPlayer.setLoop(true);
-    widget._soundPlayer.play(SharedSounds.alarmDone);
+    _soundPlayer.setLoop(true);
+    _soundPlayer.play(SharedSounds.alarmDone);
 
     _sendNotification();
   }
 
   void _sendNotification() {
-    widget._notificationService.show(
-      title: widget._translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+    _notificationService.show(
+      title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
       body: _isWorking
-          ? widget._translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
-          : widget._translationService.translate(TaskTranslationKeys.pomodoroBreakSessionCompleted),
+          ? _translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
+          : _translationService.translate(TaskTranslationKeys.pomodoroBreakSessionCompleted),
     );
   }
 
   void _stopAlarm() {
-    widget._soundPlayer.stop();
-    widget._soundPlayer.setLoop(false);
+    _soundPlayer.stop();
+    _soundPlayer.setLoop(false);
     setState(() {
       _isAlarmPlaying = false;
     });
@@ -148,7 +149,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           if (_remainingTime.inSeconds > 0) {
             if (!mounted) return;
             setState(() {
-              _remainingTime -= const Duration(seconds: 1);
+              _remainingTime -= kDebugMode
+                  ? const Duration(minutes: 1) // Simulate 1 minute for testing
+                  : const Duration(seconds: 1);
             });
             widget.onTimeUpdate(_remainingTime);
             _updateSystemTrayTimer();
@@ -164,8 +167,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _updateSystemTrayTimer() {
     final status = _isWorking ? 'Work' : 'Break';
-    widget._systemTrayService.setTitle('$status - ${_getDisplayTime()}');
-    widget._systemTrayService.setBody('Timer running');
+    _systemTrayService.setTitle('$status - ${_getDisplayTime()}');
+    _systemTrayService.setBody('Timer running');
   }
 
   void _stopTimer() {
@@ -181,22 +184,22 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           seconds: _getTimeInSeconds(_workDuration), // Always set to work duration
         );
         _timer.cancel();
-        widget._soundPlayer.stop(); // Stop any playing sounds
+        _soundPlayer.stop(); // Stop any playing sounds
       });
 
       _resetSystemTrayIcon();
       _removeTimerMenuItems();
-      widget._systemTrayService.setTitle('App Running');
-      widget._systemTrayService.setBody('Tap to open');
+      _systemTrayService.setTitle('App Running');
+      _systemTrayService.setBody('Tap to open');
     }
   }
 
   void _setSystemTrayIcon() {
-    widget._systemTrayService.setIcon(_isWorking ? TrayIconType.play : TrayIconType.pause);
+    _systemTrayService.setIcon(_isWorking ? TrayIconType.play : TrayIconType.pause);
   }
 
   void _resetSystemTrayIcon() {
-    widget._systemTrayService.setIcon(TrayIconType.default_);
+    _systemTrayService.setIcon(TrayIconType.default_);
   }
 
   void _toggleWorkBreak() {
@@ -324,20 +327,20 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Center(
-              child: Text(widget._translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel),
+              child: Text(_translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel),
                   style: AppTheme.headlineSmall)),
           Text(
-            widget._translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
+            _translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
             style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
           ),
-          _buildSettingRow(widget._translationService.translate(TaskTranslationKeys.pomodoroWorkLabel), _workDuration,
+          _buildSettingRow(_translationService.translate(TaskTranslationKeys.pomodoroWorkLabel), _workDuration,
               (adjustment) {
             if (!mounted) return;
             setState(() {
               _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
             });
           }),
-          _buildSettingRow(widget._translationService.translate(TaskTranslationKeys.pomodoroBreakLabel), _breakDuration,
+          _buildSettingRow(_translationService.translate(TaskTranslationKeys.pomodoroBreakLabel), _breakDuration,
               (adjustment) {
             if (!mounted) return;
             setState(() {
@@ -383,19 +386,19 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       ),
       TrayMenuItem(
         key: _stopTimerMenuKey,
-        label: widget._translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
+        label: _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
         onClicked: _stopTimer,
       ),
     ];
     for (final item in menuItems) {
-      widget._systemTrayService.insertMenuItem(item, index: 0);
+      _systemTrayService.insertMenuItem(item, index: 0);
     }
     _isTimerMenuAdded = true;
   }
 
   void _removeTimerMenuItems() {
-    widget._systemTrayService.removeMenuItem(_stopTimerMenuKey);
-    widget._systemTrayService.removeMenuItem(_pomodoroTimerSeparatorKey);
+    _systemTrayService.removeMenuItem(_stopTimerMenuKey);
+    _systemTrayService.removeMenuItem(_pomodoroTimerSeparatorKey);
     _isTimerMenuAdded = false;
   }
 }

@@ -20,15 +20,14 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
 import 'package:whph/presentation/shared/components/color_preview.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagDetailsContent extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-
   final String tagId;
   final VoidCallback? onTagUpdated;
   final Function(String)? onNameUpdated;
 
-  TagDetailsContent({
+  const TagDetailsContent({
     super.key,
     required this.tagId,
     this.onTagUpdated,
@@ -40,6 +39,8 @@ class TagDetailsContent extends StatefulWidget {
 }
 
 class _TagDetailsContentState extends State<TagDetailsContent> {
+  final Mediator _mediator = container.resolve<Mediator>();
+  final TagsService _tagsService = container.resolve<TagsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _nameController = TextEditingController();
   Timer? _debounce;
@@ -81,7 +82,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   // Check if the field should be displayed in the chips section
   bool _shouldShowAsChip(String fieldKey) {
-    return !_visibleOptionalFields.contains(fieldKey);
+    // Don't show chip if field is already visible OR if it has content
+    return !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
   }
 
   // Method to determine if a field has content
@@ -118,7 +120,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   Future<void> _getTag() async {
     try {
       final query = GetTagQuery(id: widget.tagId);
-      final response = await widget._mediator.send<GetTagQuery, GetTagQueryResponse>(query);
+      final response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
       if (mounted) {
         final nameSelection = _nameController.selection;
 
@@ -149,10 +151,19 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     int pageIndex = 0;
     const int pageSize = 50;
 
+    // Mevcut verileri temizle - yinelenen etiketleri önlemek için
+    if (mounted) {
+      setState(() {
+        if (_tagTags != null) {
+          _tagTags!.items.clear();
+        }
+      });
+    }
+
     while (true) {
       final query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: pageIndex, pageSize: pageSize);
       try {
-        final response = await widget._mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
+        final response = await _mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
 
         if (mounted) {
           setState(() {
@@ -163,12 +174,19 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
             }
           });
         }
+
+        // Daha fazla veri yoksa veya sayfa boşsa döngüden çık
+        if (response.items.isEmpty || response.items.length < pageSize) {
+          break;
+        }
+
         pageIndex++;
       } catch (e, stackTrace) {
         if (mounted) {
+          final exception = e is Exception ? e : Exception(e.toString());
           ErrorHelper.showUnexpectedError(
             context,
-            e as Exception,
+            exception,
             stackTrace,
             message: _translationService.translate(TagTranslationKeys.errorLoading),
           );
@@ -176,33 +194,58 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         }
       }
     }
-  }
 
-  Future<void> _addTag(String tagId) async {
-    final command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
-    await widget._mediator.send(command);
-    await _getTagTags();
-  }
-
-  Future<void> _removeTag(String id) async {
-    final command = RemoveTagTagCommand(id: id);
-    await widget._mediator.send(command);
-    await _getTagTags();
+    // Etiket verilerini yükledikten sonra görünürlük durumunu güncelle
+    _processFieldVisibility();
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
-    final tagOptionsToAdd = tagOptions
+    if (_tagTags == null) return;
+
+    // Etiket değişikliklerini belirle
+    final tagIdsToAdd = tagOptions
         .where((tagOption) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagOption.value))
+        .map((option) => option.value)
         .toList();
+
     final tagTagsToRemove =
         _tagTags!.items.where((tagTag) => !tagOptions.map((tag) => tag.value).contains(tagTag.secondaryTagId)).toList();
 
-    for (final tagOption in tagOptionsToAdd) {
-      _addTag(tagOption.value);
+    // Tüm etiket değişikliklerini toplu olarak işle
+    Future<void> processTags() async {
+      try {
+        // Etiketleri ekle
+        for (final tagId in tagIdsToAdd) {
+          final command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
+          await _mediator.send(command);
+        }
+
+        // Etiketleri kaldır
+        for (final tagTag in tagTagsToRemove) {
+          final command = RemoveTagTagCommand(id: tagTag.id);
+          await _mediator.send(command);
+        }
+
+        // Tüm etiket işlemleri tamamlandıktan sonra bir kere bildirim yap
+        if (tagIdsToAdd.isNotEmpty || tagTagsToRemove.isNotEmpty) {
+          await _getTagTags(); // Etiket listesini yenile
+          _tagsService.notifyTagUpdated(widget.tagId);
+          widget.onTagUpdated?.call();
+        }
+      } catch (e, stackTrace) {
+        if (mounted) {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e is Exception ? e : Exception(e.toString()),
+            stackTrace,
+            message: _translationService.translate(TagTranslationKeys.errorSaving),
+          );
+        }
+      }
     }
-    for (final tagTag in tagTagsToRemove) {
-      _removeTag(tagTag.id);
-    }
+
+    // Etiket işlemlerini uygula
+    processTags();
   }
 
   Future<void> _saveTag() async {
@@ -221,8 +264,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       );
       try {
         // Send the command but don't update UI with the result
-        await widget._mediator.send(command);
+        await _mediator.send(command);
         widget.onTagUpdated?.call();
+        _tagsService.notifyTagUpdated(widget.tagId);
 
         // Don't update any text fields or selections - let them remain as they are
       } on BusinessException catch (e) {

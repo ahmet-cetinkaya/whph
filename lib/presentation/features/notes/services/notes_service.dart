@@ -1,23 +1,31 @@
 import 'package:flutter/foundation.dart';
 
-class NotesService {
+class NotesService extends ChangeNotifier {
   // Event listeners for note-related events
-  final ValueNotifier<void> onNoteSaved = ValueNotifier<void>(null);
-  final ValueNotifier<void> onNoteDeleted = ValueNotifier<void>(null);
-  final ValueNotifier<void> onNoteTagUpdated = ValueNotifier<void>(null);
+  final ValueNotifier<String?> onNoteCreated = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> onNoteUpdated = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> onNoteDeleted = ValueNotifier<String?>(null);
 
-  void notifyNoteSaved() {
-    onNoteSaved.value = null;
-    onNoteSaved.notifyListeners();
+  void notifyNoteCreated(String noteId) {
+    onNoteCreated.value = noteId;
+    onNoteCreated.notifyListeners();
   }
 
-  void notifyNoteDeleted() {
-    onNoteDeleted.value = null;
+  void notifyNoteUpdated(String noteId) {
+    onNoteUpdated.value = noteId;
+    onNoteUpdated.notifyListeners();
+  }
+
+  void notifyNoteDeleted(String noteId) {
+    onNoteDeleted.value = noteId;
     onNoteDeleted.notifyListeners();
   }
 
-  void notifyNoteTagUpdated() {
-    onNoteTagUpdated.value = null;
-    onNoteTagUpdated.notifyListeners();
+  @override
+  void dispose() {
+    onNoteCreated.dispose();
+    onNoteUpdated.dispose();
+    onNoteDeleted.dispose();
+    super.dispose();
   }
 }

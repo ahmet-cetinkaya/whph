@@ -22,14 +22,11 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 
 class NoteDetailsContent extends StatefulWidget {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final NotesService _notesService = container.resolve<NotesService>();
-
   final String noteId;
   final VoidCallback? onNoteUpdated;
   final Function(String)? onTitleUpdated;
 
-  NoteDetailsContent({
+  const NoteDetailsContent({
     super.key,
     required this.noteId,
     this.onNoteUpdated,
@@ -41,6 +38,9 @@ class NoteDetailsContent extends StatefulWidget {
 }
 
 class _NoteDetailsContentState extends State<NoteDetailsContent> {
+  final _mediator = container.resolve<Mediator>();
+  final _notesService = container.resolve<NotesService>();
+
   GetNoteQueryResponse? _note;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
@@ -57,25 +57,28 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   @override
   void initState() {
     super.initState();
-    _getNote();
-
-    // Listen for changes from other components
-    widget._notesService.onNoteTagUpdated.addListener(_getNote);
+    _notesService.onNoteUpdated.addListener(_handleNoteUpdated);
+    _getInitialData();
   }
 
   @override
   void dispose() {
+    _notesService.onNoteUpdated.removeListener(_handleNoteUpdated);
     _titleController.dispose();
     _contentController.dispose();
     _debounce?.cancel();
-    widget._notesService.onNoteTagUpdated.removeListener(_getNote);
     super.dispose();
+  }
+
+  void _handleNoteUpdated() {
+    if (!mounted || _notesService.onNoteUpdated.value != widget.noteId) return;
+    _getNote();
   }
 
   Future<void> _getNote() async {
     try {
       final query = GetNoteQuery(id: widget.noteId);
-      final response = await widget._mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
+      final response = await _mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
 
       if (mounted) {
         // Store current selections before updating
@@ -88,7 +91,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Update title if it's different
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
-            widget.onTitleUpdated?.call(response.title);
           } else if (titleSelection.isValid) {
             // Restore selection if title didn't change
             _titleController.selection = titleSelection;
@@ -149,41 +151,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     }
   }
 
-  Future<void> _addTag(String tagId) async {
-    try {
-      final command = AddNoteTagCommand(noteId: widget.noteId, tagId: tagId);
-      await widget._mediator.send(command);
-      await _getNote();
-      widget._notesService.notifyNoteTagUpdated();
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.addTagError),
-        );
-      }
-    }
-  }
-
-  Future<void> _removeTag(String id) async {
-    try {
-      final command = RemoveNoteTagCommand(id: id);
-      await widget._mediator.send(command);
-      await _getNote();
-      widget._notesService.notifyNoteTagUpdated();
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.removeTagError),
-        );
-      }
-    }
-  }
+  // Remove unused _addTag and _removeTag methods since we have _addTagToNote and _removeTagFromNote
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     if (_note == null) return;
@@ -196,12 +164,26 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     final tagsToRemove =
         _note!.tags.where((noteTag) => !tagOptions.map((tag) => tag.value).contains(noteTag.tagId)).toList();
 
-    for (final tagId in tagsToAdd) {
-      _addTag(tagId);
+    // Batch process all tag operations
+    Future<void> processTags() async {
+      // Add all tags
+      for (final tagId in tagsToAdd) {
+        await _addTagToNote(tagId);
+      }
+
+      // Remove all tags
+      for (final noteTag in tagsToRemove) {
+        await _removeTagFromNote(noteTag.id);
+      }
+
+      // Notify only once after all tag operations are complete
+      if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
+        _notesService.notifyNoteUpdated(widget.noteId);
+      }
     }
-    for (final noteTag in tagsToRemove) {
-      _removeTag(noteTag.id);
-    }
+
+    // Execute the tag operations
+    processTags();
   }
 
   Future<void> _saveNote() async {
@@ -215,10 +197,10 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           content: _contentController.text,
         );
 
-        await widget._mediator.send(command);
+        await _mediator.send(command);
 
-        // Notify the app that a note was saved
-        widget._notesService.notifyNoteSaved();
+        // Notify the app that a note was updated
+        _notesService.notifyNoteUpdated(widget.noteId);
 
         if (widget.onNoteUpdated != null) {
           widget.onNoteUpdated!();
@@ -236,6 +218,45 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         }
       }
     });
+  }
+
+  // Add tag operations helper methods
+  Future<bool> _addTagToNote(String tagId) async {
+    try {
+      final command = AddNoteTagCommand(noteId: widget.noteId, tagId: tagId);
+      await _mediator.send(command);
+      await _getNote();
+      return true;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(NoteTranslationKeys.addTagError),
+        );
+      }
+      return false;
+    }
+  }
+
+  Future<bool> _removeTagFromNote(String id) async {
+    try {
+      final command = RemoveNoteTagCommand(id: id);
+      await _mediator.send(command);
+      await _getNote();
+      return true;
+    } catch (e, stackTrace) {
+      if (mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e as Exception,
+          stackTrace,
+          message: _translationService.translate(NoteTranslationKeys.removeTagError),
+        );
+      }
+      return false;
+    }
   }
 
   // Helper method to check if a field should be displayed as a chip
@@ -256,7 +277,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           _visibleOptionalFields.add(fieldKey);
         }
       }),
-      backgroundColor: selected ? Theme.of(context).colorScheme.secondary.withOpacity(0.1) : null,
+      backgroundColor: selected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
     );
   }
 
@@ -280,14 +301,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   @override
   Widget build(BuildContext context) {
-    if (_note == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    if (_note == null) return const SizedBox.shrink();
 
-    // Get list of fields that can be shown as chips
-    final availableChipFields = [
-      keyTags,
-    ].where((field) => _shouldShowAsChip(field)).toList();
+    final availableChipFields = [keyTags].where(_shouldShowAsChip).toList();
 
     return SingleChildScrollView(
       padding: EdgeInsets.zero,
@@ -344,6 +360,10 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         ],
       ),
     );
+  }
+
+  Future<void> _getInitialData() async {
+    await _getNote();
   }
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(

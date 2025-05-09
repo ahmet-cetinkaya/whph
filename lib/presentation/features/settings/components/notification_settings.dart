@@ -55,7 +55,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         });
       }
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error loading notification setting: $e');
+      if (kDebugMode) debugPrint('ERROR: Error loading notification setting: $e');
       if (mounted) {
         setState(() => _isLoading = false);
       }

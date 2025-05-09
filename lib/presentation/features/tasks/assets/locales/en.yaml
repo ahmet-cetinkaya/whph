@@ -214,6 +214,7 @@ tasks:
   new_task: New Task
   task_details: Task Details
   no_tasks: No tasks found
+  all_tasks_done: All tasks completed!
   priorities:
     urgent_important: Urgent and Important
     not_urgent_important: Not Urgent but Important

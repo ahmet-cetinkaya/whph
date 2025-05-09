@@ -138,3 +138,4 @@ habits:
       sun: Paz
   list:
     no_habits_found: Alışkanlık bulunamadı
+    all_habits_done: Tüm alışkanlıklar tamamlandı!

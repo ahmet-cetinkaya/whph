@@ -389,7 +389,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       );
       displayTooltip = _translationService.translate(SharedTranslationKeys.noneOption);
     } else if (_selectedTags.isNotEmpty && _tags != null) {
-      final selectedTagNames = _selectedTags
+      // Tekrarlı tagId'leri önlemek için benzersizleştir
+      final uniqueSelectedTagIds = _selectedTags.toSet().toList();
+      final selectedTagNames = uniqueSelectedTagIds
           .map((id) {
             try {
               final tag = _tags!.items.firstWhere((t) => t.id == id);
@@ -402,35 +404,48 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        displayWidget = Expanded(
-          child: Wrap(
-            spacing: 4.0,
-            runSpacing: 4.0,
-            children: selectedTagNames.map((name) {
+        displayWidget = Wrap(
+          spacing: 4.0,
+          runSpacing: 4.0,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ...uniqueSelectedTagIds.map((id) {
+              final tag = _tags!.items.firstWhere((t) => t.id == id);
               return Chip(
                 visualDensity: VisualDensity.compact,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 padding: EdgeInsets.zero,
                 labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                 label: Text(
-                  name,
+                  tag.name,
                   style: AppTheme.bodySmall,
                 ),
                 onDeleted: () {
-                  final tagIdToRemove = _tags!.items.firstWhere((t) => t.name == name).id;
                   final List<DropdownOption<String>> updatedTags =
-                      _selectedTags.where((id) => id != tagIdToRemove).map((id) {
-                    final tag = _tags!.items.firstWhere((t) => t.id == id);
-                    return DropdownOption(label: tag.name, value: tag.id);
+                      uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                    final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
+                    return DropdownOption(label: tagItem.name, value: tagItem.id);
                   }).toList();
                   widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
                   setState(() {
-                    _selectedTags.remove(tagIdToRemove);
+                    _selectedTags.removeWhere((tagId) => tagId == id);
                   });
                 },
               );
-            }).toList(),
-          ),
+            }),
+            IconButton(
+              icon: Icon(
+                widget.icon,
+                size: widget.iconSize ?? AppTheme.iconSizeSmall,
+                color: widget.color ?? Theme.of(context).iconTheme.color,
+              ),
+              onPressed: () => _showTagSelectionModal(context),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+              tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
+            ),
+          ],
         );
       } else if (widget.buttonLabel != null) {
         displayWidget = Text(

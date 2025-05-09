@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_command.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -30,15 +31,18 @@ class HabitDeleteButton extends StatefulWidget {
 class _HabitDeleteButtonState extends State<HabitDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final HabitsService _habitsService = container.resolve<HabitsService>();
 
   Future<void> _deleteHabit(BuildContext context) async {
     try {
       final command = DeleteHabitCommand(id: widget.habitId);
       await _mediator.send(command);
 
-      if (widget.onDeleteSuccess != null) {
-        widget.onDeleteSuccess!();
-      }
+      // Notify service about habit deletion
+      _habitsService.notifyHabitDeleted(widget.habitId);
+
+      // Call callback if provided (for backward compatibility)
+      widget.onDeleteSuccess?.call();
     } on BusinessException catch (e) {
       if (context.mounted) ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {

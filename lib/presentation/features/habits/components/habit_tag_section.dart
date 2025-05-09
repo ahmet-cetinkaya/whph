@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -8,18 +9,50 @@ import 'package:whph/presentation/features/habits/constants/habit_translation_ke
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
-class HabitTagSection extends StatelessWidget {
+class HabitTagSection extends StatefulWidget {
   final GetListHabitTagsQueryResponse habitTags;
   final Function(List<DropdownOption<String>>) onTagsSelected;
   final Function(String) onRemoveTag;
-  final _translationService = container.resolve<ITranslationService>();
 
-  HabitTagSection({
+  const HabitTagSection({
     super.key,
     required this.habitTags,
     required this.onTagsSelected,
     required this.onRemoveTag,
   });
+
+  @override
+  State<HabitTagSection> createState() => _HabitTagSectionState();
+}
+
+class _HabitTagSectionState extends State<HabitTagSection> {
+  final _translationService = container.resolve<ITranslationService>();
+  final _habitsService = container.resolve<HabitsService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _habitsService.onHabitUpdated.addListener(_handleHabitUpdated);
+  }
+
+  void _removeEventListeners() {
+    _habitsService.onHabitUpdated.removeListener(_handleHabitUpdated);
+  }
+
+  void _handleHabitUpdated() {
+    if (!mounted) return;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +64,7 @@ class HabitTagSection extends StatelessWidget {
           runSpacing: 4.0,
           children: [
             _buildTagDropdown(),
-            ...habitTags.items.map(_buildTagChip),
+            ...widget.habitTags.items.map(_buildTagChip),
           ],
         ),
       ],
@@ -40,11 +73,14 @@ class HabitTagSection extends StatelessWidget {
 
   Widget _buildTagDropdown() {
     return TagSelectDropdown(
-      key: ValueKey(habitTags.items.length),
+      key: ValueKey(widget.habitTags.items.length),
       isMultiSelect: true,
-      onTagsSelected: (selected, _) => onTagsSelected(selected),
+      onTagsSelected: (selected, _) {
+        widget.onTagsSelected(selected);
+        _habitsService.notifyHabitUpdated(widget.habitTags.items.first.habitId);
+      },
       initialSelectedTags:
-          habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
+          widget.habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
       icon: SharedUiConstants.addIcon,
       tooltip: _translationService.translate(HabitTranslationKeys.selectTagsTooltip),
     );
@@ -59,7 +95,10 @@ class HabitTagSection extends StatelessWidget {
         habitTag.tagName,
         style: AppTheme.bodySmall.copyWith(color: tagColor),
       ),
-      onDeleted: () => onRemoveTag(habitTag.id),
+      onDeleted: () {
+        widget.onRemoveTag(habitTag.id);
+        _habitsService.notifyHabitUpdated(habitTag.habitId);
+      },
       deleteIcon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall),
     );
   }

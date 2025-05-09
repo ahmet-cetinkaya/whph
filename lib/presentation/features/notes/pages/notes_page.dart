@@ -22,9 +22,6 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
 
-  // Using GlobalKey to access NotesList state directly
-  final GlobalKey<NotesListState> _notesListKey = GlobalKey<NotesListState>();
-
   List<String>? _selectedTagIds;
   bool _showNoTagsFilter = false;
   String? _searchQuery;
@@ -37,27 +34,18 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
       NoteDetailsPage.route,
       arguments: {'id': noteId},
     );
-    _refreshNotesList();
-  }
-
-  void _refreshNotesList() {
-    _notesListKey.currentState?.refresh(showLoading: true);
+    // Note list will refresh automatically through event listeners
   }
 
   /// Handles navigation to note details page after creating a new note
   Future<void> _handleNoteCreated(String noteId) async {
-    // First refresh the notes list to include the new note
-    _refreshNotesList();
-
-    // Then navigate to the note details page
+    // Navigate to the note details page
     if (mounted) {
       await Navigator.of(context).pushNamed(
         NoteDetailsPage.route,
         arguments: {'id': noteId},
       );
-
-      // Refresh list again when returning from details page
-      _refreshNotesList();
+      // Note list will refresh automatically through event listeners
     }
   }
 
@@ -101,13 +89,11 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                       _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                       _showNoTagsFilter = isNoneSelected;
                     });
-                    _refreshNotesList();
                   },
                   onSearchChange: (query) {
                     setState(() {
                       _searchQuery = query;
                     });
-                    _refreshNotesList();
                   },
                 ),
               ),
@@ -115,7 +101,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
               // Notes list
               Expanded(
                 child: NotesList(
-                  key: _notesListKey,
                   filterByTags: _selectedTagIds,
                   filterNoTags: _showNoTagsFilter,
                   search: _searchQuery,

@@ -28,8 +28,8 @@ class NoteAddButton extends StatefulWidget {
 }
 
 class _NoteAddButtonState extends State<NoteAddButton> {
-  final Mediator _mediator = container.resolve<Mediator>();
-  final NotesService _notesService = container.resolve<NotesService>();
+  final _mediator = container.resolve<Mediator>();
+  final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   bool _isCreating = false;
 
@@ -49,7 +49,7 @@ class _NoteAddButtonState extends State<NoteAddButton> {
       final response = await _mediator.send<SaveNoteCommand, SaveNoteCommandResponse>(command);
 
       // Notify the app that a note was created
-      _notesService.notifyNoteSaved();
+      _notesService.notifyNoteCreated(response.id);
 
       if (widget.onNoteCreated != null) {
         widget.onNoteCreated!(response.id);

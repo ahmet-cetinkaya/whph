@@ -31,7 +31,7 @@ class DeviceInfoHelper {
 
       return Platform.localHostname;
     } catch (e) {
-      if (kDebugMode) print('Failed to get device name: $e');
+      if (kDebugMode) debugPrint('Failed to get device name: $e');
       return 'Unknown Device';
     }
   }

@@ -8,6 +8,7 @@ import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
@@ -32,6 +33,7 @@ class TagArchiveButton extends StatefulWidget {
 class _TagArchiveButtonState extends State<TagArchiveButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tagsService = container.resolve<TagsService>();
   bool? _isArchived;
 
   @override
@@ -106,6 +108,9 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
             _isArchived = newStatus;
           });
         }
+
+        // Notify that the tag has been updated
+        _tagsService.notifyTagUpdated(widget.tagId);
 
         widget.onArchiveSuccess?.call();
       } catch (e, stackTrace) {

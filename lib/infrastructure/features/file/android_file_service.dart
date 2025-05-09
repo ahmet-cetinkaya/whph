@@ -14,7 +14,7 @@ class AndroidFileService implements IFileService {
   }) async {
     try {
       if (kDebugMode) {
-        print('DEBUG: Starting file pick with extensions: $allowedExtensions');
+        debugPrint('[AndroidFileService]: Starting file pick with extensions: $allowedExtensions');
       }
 
       final result = await FilePicker.platform.pickFiles(
@@ -27,7 +27,7 @@ class AndroidFileService implements IFileService {
       // ...existing code for pickFile...
       return result?.files.firstOrNull?.path;
     } catch (e) {
-      if (kDebugMode) print('File pick error: $e');
+      if (kDebugMode) debugPrint('File pick error: $e');
       throw BusinessException('Failed to pick file: $e');
     }
   }
@@ -42,7 +42,7 @@ class AndroidFileService implements IFileService {
       final tempDir = await getTemporaryDirectory();
       return path.join(tempDir.path, fileName);
     } catch (e) {
-      if (kDebugMode) print('Save path error: $e');
+      if (kDebugMode) debugPrint('Save path error: $e');
       throw BusinessException('Failed to get save path: $e');
     }
   }
@@ -81,7 +81,7 @@ class AndroidFileService implements IFileService {
         await file.setLastModified(DateTime.now());
       } catch (e) {
         if (kDebugMode) {
-          print('DEBUG: Failed to update file timestamp: $e');
+          debugPrint('[AndroidFileService]: Failed to update file timestamp: $e');
         }
       }
     } catch (e) {

@@ -1,6 +1,6 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
-import 'package:whph/domain/features/tags/tag.dart';
+import 'package:whph/domain/features/notes/note_tag.dart';
 
 @jsonSerializable
 class Note extends BaseEntity<String> {
@@ -8,7 +8,7 @@ class Note extends BaseEntity<String> {
   String? content;
   double order = 0;
 
-  List<Tag> tags = [];
+  List<NoteTag> tags = [];
 
   Note({
     required super.id,

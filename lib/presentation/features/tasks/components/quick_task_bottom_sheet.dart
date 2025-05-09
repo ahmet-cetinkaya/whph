@@ -4,6 +4,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -37,6 +38,7 @@ class QuickTaskBottomSheet extends StatefulWidget {
 class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   final _titleController = TextEditingController();
   final _mediator = container.resolve<Mediator>();
+  final _tasksService = container.resolve<TasksService>();
   final _translationService = container.resolve<ITranslationService>();
   final _focusNode = FocusNode();
   bool _isLoading = false;
@@ -95,6 +97,9 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
       );
       final response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+
+      // Notify that a task was created with the task ID (using non-nullable parameter)
+      _tasksService.notifyTaskCreated(response.id);
 
       if (widget.onTaskCreated != null) {
         // Create a TaskData object with all the task information

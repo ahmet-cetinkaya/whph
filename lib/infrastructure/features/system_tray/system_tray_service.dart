@@ -28,7 +28,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
       trayManager.addListener(this);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error initializing tray: $e');
+      if (kDebugMode) debugPrint('ERROR: Error initializing tray: $e');
     }
   }
 
@@ -45,7 +45,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
       final iconPath = AppAssets.getTrayIcon(type, isWindows: Platform.isWindows);
       await trayManager.setIcon(iconPath);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error setting tray icon: $e');
+      if (kDebugMode) debugPrint('ERROR: Error setting tray icon: $e');
     }
   }
 
@@ -54,7 +54,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
     try {
       await trayManager.setTitle(title);
     } catch (e) {
-      if (kDebugMode) print('ERROR: Error setting tray title: $e');
+      if (kDebugMode) debugPrint('ERROR: Error setting tray title: $e');
     }
   }
 
