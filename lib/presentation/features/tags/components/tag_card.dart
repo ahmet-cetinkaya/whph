@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/features/tags/components/tag_label.dart';
 
 class TagCard extends StatelessWidget {
   final TagListItem tag;
@@ -55,16 +55,16 @@ class TagCard extends StatelessWidget {
               // Related tags
               if (tag.relatedTags.isNotEmpty) ...[
                 const SizedBox(height: AppTheme.sizeXSmall),
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: tag.relatedTags
-                      .map((relatedTag) => TagLabel(
-                            tagColor: relatedTag.color,
-                            tagName: relatedTag.name,
-                            mini: true,
-                          ))
+                Label.multipleColored(
+                  icon: TagUiConstants.tagIcon,
+                  color: Colors.grey, // Default color for icon and commas
+                  values: tag.relatedTags.map((relatedTag) => relatedTag.name).toList(),
+                  colors: tag.relatedTags
+                      .map((relatedTag) =>
+                          relatedTag.color != null ? Color(int.parse('FF${relatedTag.color}', radix: 16)) : Colors.grey)
                       .toList(),
+                  mini: true,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ],
