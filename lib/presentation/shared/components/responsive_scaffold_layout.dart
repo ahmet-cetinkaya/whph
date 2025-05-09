@@ -8,6 +8,7 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
+/// Configuration options for route rendering
 class RouteOptions {
   final WidgetBuilder builder;
   final bool fullScreen;
@@ -15,11 +16,22 @@ class RouteOptions {
   RouteOptions({required this.builder, this.fullScreen = false});
 }
 
+/// Represents a navigation item with its properties
+/// Used for both sidebar and bottom navigation
 class NavItem {
+  /// Translation key for the item's display title
   final String titleKey;
+
+  /// Icon to display next to the item (optional)
   final IconData? icon;
+
+  /// Custom widget to replace the default text (optional)
   final Widget? widget;
+
+  /// Route name to navigate to when clicked
   final String? route;
+
+  /// Custom action to perform instead of navigation (optional)
   final Function(BuildContext context)? onTap;
 
   NavItem({
@@ -31,6 +43,11 @@ class NavItem {
   });
 }
 
+/// A responsive scaffold layout that adapts to different screen sizes
+/// providing appropriate navigation patterns (drawer, bottom nav) for each.
+///
+/// On large screens (tablets, desktops), it shows a side drawer.
+/// On small screens (phones), it shows a bottom navigation bar.
 class ResponsiveScaffoldLayout extends StatefulWidget {
   final String? title;
   final Widget? appBarLeading;
@@ -40,8 +57,12 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   final bool showLogo;
   final bool fullScreen;
   final bool hideSidebar;
-  final bool showBackButton; // New property to control back button visibility
-  final bool respectBottomInset; // Control whether to respect bottom system insets
+
+  /// Controls visibility of the back button in the app bar
+  final bool showBackButton;
+
+  /// Controls whether to respect bottom system insets for proper padding
+  final bool respectBottomInset;
 
   const ResponsiveScaffoldLayout({
     super.key,
@@ -53,8 +74,8 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     this.showLogo = true,
     this.fullScreen = false,
     this.hideSidebar = false,
-    this.showBackButton = false, // Default to false for backward compatibility
-    this.respectBottomInset = true, // Default to true to respect bottom insets
+    this.showBackButton = false,
+    this.respectBottomInset = true,
   });
 
   @override
@@ -70,7 +91,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     _initializeCurrentPageIndex();
   }
 
-  // Initialize the current page index based on the current route
+  /// Initialize the current page index based on the current route
   void _initializeCurrentPageIndex() {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != null) {
@@ -81,11 +102,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
   }
 
+  /// Closes all open dialogs before navigation
   void _closeAllDialogs() {
-    // Close any open dialogs/modals before navigation
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  /// Navigates to the given route with proper transition
   void _navigateTo(String routeName) {
     if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(context).pop();
@@ -104,6 +126,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     });
   }
 
+  /// Handles navigation item clicks with proper state updates
   void _onClickNavItem(NavItem navItem) {
     // Check if this is a navigation item from the "More" menu that should be tracked
     final screenWidth = MediaQuery.of(context).size.width;
@@ -142,7 +165,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                     padding: const EdgeInsets.all(AppTheme.sizeMedium),
                     onPressed: () => Navigator.of(context).pop(),
                   )
-                : null), // Remove the hamburger menu in app bar since we have it in bottom nav
+                : null),
         title: widget.appBarTitle ??
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -181,7 +204,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 top: AppTheme.sizeSmall,
                 right: AppTheme.sizeSmall,
                 // Add bottom padding to account for system navigation bar
-                // If we're showing the bottom nav bar, we need less extra padding
                 bottom: widget.respectBottomInset
                     ? AppTheme.sizeSmall + (bottomInset > 0 && !_shouldShowBottomNavBar() ? bottomInset : 0)
                     : AppTheme.sizeSmall,
@@ -194,6 +216,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
+  /// Builds the side drawer for navigation on larger screens
   Widget _buildDrawer(List<NavItem> topNavItems, List<NavItem>? bottomNavItems) {
     final isMobile = MediaQuery.of(context).size.width <= 600;
     final drawerWidth = isMobile ? MediaQuery.of(context).size.width * 0.65 : 180.0;
@@ -250,6 +273,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
+  /// Builds a navigation item for the side drawer
   ListTile _buildNavItem(NavItem navItem) {
     final translationService = container.resolve<ITranslationService>();
     String? currentRoute = ModalRoute.of(context)?.settings.name;
@@ -288,29 +312,23 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
+  /// Determines whether to show the bottom navigation bar based on screen size and layout options
   bool _shouldShowBottomNavBar() {
-    // Show bottom nav bar on mobile devices (width <= 600px)
-    // Don't show if we're on a details page with back button or if sidebar is hidden
     return AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) &&
         !widget.showBackButton &&
         !widget.hideSidebar;
   }
 
+  /// Builds the bottom navigation bar for smaller screens
   Widget _buildBottomNavigationBar() {
     final translationService = container.resolve<ITranslationService>();
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Calculate the maximum number of visible items using the helper method
     final int maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
-
-    // Get the main navigation items to display
     final List<NavItem> mainNavItems = NavigationItems.topNavItems.take(maxVisibleItems).toList();
-
-    // We always need a "More" button if there are items that don't fit
     final bool needsMoreButton =
         NavigationItems.topNavItems.length > maxVisibleItems || NavigationItems.bottomNavItems.isNotEmpty;
 
-    // Create the "More" menu item
     final NavItem moreNavItem = NavItem(
       titleKey: SharedTranslationKeys.navMore,
       icon: Icons.more_horiz,
@@ -350,6 +368,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
+  /// Shows a bottom sheet with additional navigation options that don't fit in the bottom nav
   void _showMoreBottomSheet(BuildContext context) {
     container.resolve<ITranslationService>();
 
@@ -427,11 +446,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   }
 
   /// Builds a menu item for the More bottom sheet
-  ///
-  /// @param context The build context
-  /// @param item The navigation item to build
-  /// @param currentRoute The current route to check if this item is active
-  /// @returns A ListTile representing the menu item
   Widget _buildMoreMenuItem(BuildContext context, NavItem item, String? currentRoute) {
     final translationService = container.resolve<ITranslationService>();
     // Handle both direct route comparison and ensuring bottom nav items can be active
@@ -462,9 +476,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   /// Calculates the maximum number of navigation items that can fit in the bottom bar
   /// based on the available screen width.
-  ///
-  /// @param screenWidth The width of the screen in logical pixels
-  /// @returns The number of items that can fit in the navigation bar
   int _calculateMaxVisibleItems(double screenWidth) {
     const double minItemWidth = 80.0;
 
@@ -482,9 +493,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   }
 
   /// Gets the correct index for the bottom navigation bar based on the current page
-  ///
-  /// @param visibleItems The list of navigation items visible in the bottom bar
-  /// @returns The index to highlight in the bottom navigation bar
   int _getCurrentBottomNavIndex(List<NavItem> visibleItems) {
     // Get the current route
     final currentRoute = ModalRoute.of(context)?.settings.name;

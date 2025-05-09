@@ -151,7 +151,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     int pageIndex = 0;
     const int pageSize = 50;
 
-    // Mevcut verileri temizle - yinelenen etiketleri önlemek için
+    // Clear existing data - to prevent duplicate tags
     if (mounted) {
       setState(() {
         if (_tagTags != null) {
@@ -175,7 +175,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           });
         }
 
-        // Daha fazla veri yoksa veya sayfa boşsa döngüden çık
+        // Exit the loop if there's no more data or the page is empty
         if (response.items.isEmpty || response.items.length < pageSize) {
           break;
         }
@@ -195,14 +195,15 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       }
     }
 
-    // Etiket verilerini yükledikten sonra görünürlük durumunu güncelle
+    // Update visibility status after loading tag data
     _processFieldVisibility();
   }
 
+  // Process all tag changes in bulk
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     if (_tagTags == null) return;
 
-    // Etiket değişikliklerini belirle
+    // Identify tag changes
     final tagIdsToAdd = tagOptions
         .where((tagOption) => !_tagTags!.items.any((tagTag) => tagTag.secondaryTagId == tagOption.value))
         .map((option) => option.value)
@@ -211,24 +212,24 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     final tagTagsToRemove =
         _tagTags!.items.where((tagTag) => !tagOptions.map((tag) => tag.value).contains(tagTag.secondaryTagId)).toList();
 
-    // Tüm etiket değişikliklerini toplu olarak işle
+    // Process all tag changes in bulk
     Future<void> processTags() async {
       try {
-        // Etiketleri ekle
+        // Add tags
         for (final tagId in tagIdsToAdd) {
           final command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
           await _mediator.send(command);
         }
 
-        // Etiketleri kaldır
+        // Remove tags
         for (final tagTag in tagTagsToRemove) {
           final command = RemoveTagTagCommand(id: tagTag.id);
           await _mediator.send(command);
         }
 
-        // Tüm etiket işlemleri tamamlandıktan sonra bir kere bildirim yap
+        // Notify once after all tag operations are completed
         if (tagIdsToAdd.isNotEmpty || tagTagsToRemove.isNotEmpty) {
-          await _getTagTags(); // Etiket listesini yenile
+          await _getTagTags(); // Refresh tag list
           _tagsService.notifyTagUpdated(widget.tagId);
           widget.onTagUpdated?.call();
         }
@@ -244,7 +245,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       }
     }
 
-    // Etiket işlemlerini uygula
+    // Apply tag operations
     processTags();
   }
 
