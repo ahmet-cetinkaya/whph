@@ -5,6 +5,7 @@ class SharedTranslationKeys {
   static const String cancelButton = 'shared.buttons.cancel';
   static const String deleteButton = 'shared.buttons.delete';
   static const String closeButton = 'shared.buttons.close';
+  static const String doneButton = 'shared.buttons.done';
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
   static const String requiredValidation = 'shared.validation.required';
@@ -18,12 +19,15 @@ class SharedTranslationKeys {
 
   static const String minutes = 'shared.units.minutes';
   static const String days = 'shared.units.days';
-
-  // New constants
-  static const String notSetTime = 'shared.time.not_set';
   static const String hours = 'shared.units.hours';
+  static const String seconds = 'shared.units.seconds';
 
+  // Time not set
+  static const String notSetTime = 'shared.time.not_set';
+
+  // Tooltips
   static const String filterByTagsTooltip = 'shared.tooltips.filter_by_tags';
+  static const String compareWithPreviousLabel = 'shared.tooltips.compare_with_previous';
 
   // Calendar
   static const String weekDayMon = 'shared.calendar.week_days.mon';
@@ -33,6 +37,19 @@ class SharedTranslationKeys {
   static const String weekDayFri = 'shared.calendar.week_days.fri';
   static const String weekDaySat = 'shared.calendar.week_days.sat';
   static const String weekDaySun = 'shared.calendar.week_days.sun';
+
+  // Time periods
+  static const String today = 'shared.time_periods.today';
+  static const String lastWeek = 'shared.time_periods.last_week';
+  static const String lastMonth = 'shared.time_periods.last_month';
+  static const String last3Months = 'shared.time_periods.last_three_months';
+  static const String custom = 'shared.time_periods.custom';
+
+  // Statistics
+  static const String dailyUsage = 'shared.statistics.daily_usage.title';
+  static const String dailyUsageDescription = 'shared.statistics.daily_usage.description';
+  static const String hourlyUsage = 'shared.statistics.hourly_usage.title';
+  static const String hourlyUsageDescription = 'shared.statistics.hourly_usage.description';
 
   // Editor
   static const String markdownEditorHint = 'shared.editor.markdown.hint';
@@ -95,6 +112,7 @@ class SharedTranslationKeys {
   // Sections and Options
   static const String specialFiltersLabel = 'shared.sections.special_filters';
   static const String tagsLabel = 'shared.sections.tags';
+  static const String statisticsLabel = 'shared.sections.statistics';
   static const String noneOption = 'shared.none_option';
 
   // Helper Methods
