@@ -18,7 +18,6 @@ class HabitDetailsPage extends StatefulWidget {
 class _HabitDetailsPageState extends State<HabitDetailsPage> {
   final _habitsService = container.resolve<HabitsService>();
   bool _isDeleted = false;
-  String? _title; // Added for immediate title updates
 
   @override
   void initState() {
@@ -53,35 +52,26 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
   }
 
   void _handleHabitUpdated() {
-    // We no longer need to load the habit since the HabitDetailsContent
-    // will notify us about title changes via onNameUpdated
     if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
   }
 
   void _handleHabitRecordChanged() {
-    // Records don't affect the title, so no need to reload the habit
     if (!mounted) return;
-  }
-
-  void _refreshTitle(String name) {
-    if (mounted) {
-      setState(() {
-        _title = name;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_title ?? ""),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           HabitDeleteButton(
             habitId: widget.habitId,
             buttonColor: AppTheme.primaryColor,
             onDeleteSuccess: () {
-              // Only notify the service, navigation will be handled by _handleHabitDeleted
               _habitsService.notifyHabitDeleted(widget.habitId);
             },
           ),
@@ -94,9 +84,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
           onHabitUpdated: () {
             _habitsService.notifyHabitUpdated(widget.habitId);
           },
-          onNameUpdated: (name) {
-            _refreshTitle(name);
-          },
+          onNameUpdated: (_) {},
         ),
       ),
     );

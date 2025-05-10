@@ -460,23 +460,40 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            controller: _nameController,
-            maxLines: null,
-            onChanged: (value) {
-              // Simply trigger the update and notify listeners
-              _saveHabit();
-              widget.onNameUpdated?.call(value);
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              suffixIcon: Tooltip(
-                message: _translationService.translate(HabitTranslationKeys.editNameTooltip),
-                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _nameController,
+                  maxLines: null,
+                  onChanged: (value) {
+                    _saveHabit();
+                    widget.onNameUpdated?.call(value);
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    suffixIcon: Tooltip(
+                      message: _translationService.translate(HabitTranslationKeys.editNameTooltip),
+                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+                    ),
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-            ),
-            style: Theme.of(context).textTheme.bodyLarge,
+              const SizedBox(width: 8),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.check),
+                  onPressed: () => _createHabitRecord(widget.habitId, DateTime.now()),
+                  tooltip: _translationService.translate(HabitTranslationKeys.createRecordTooltip),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: AppTheme.sizeSmall),
 

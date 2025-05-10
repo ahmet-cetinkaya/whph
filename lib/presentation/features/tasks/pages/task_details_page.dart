@@ -4,7 +4,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
-import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
@@ -13,6 +12,7 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -34,20 +34,14 @@ class TaskDetailsPage extends StatefulWidget {
 }
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAliveClientMixin {
-  String? _title;
-  bool _isCompleted = false;
   bool _showCompletedTasks = false;
   double? _subTasksCompletionPercentage;
   Timer? _completedTasksHideTimer;
   Key _listRebuildKey = UniqueKey();
   final _translationService = container.resolve<ITranslationService>();
 
-  // Add refresh key to force list rebuilding when needed
   String? _searchQuery;
-
-  // Flag to track if a refresh is in progress to prevent refresh loops
   bool _isRefreshInProgress = false;
-  // Timer to debounce multiple refresh calls
   Timer? _debounceTimer;
 
   @override
@@ -96,8 +90,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
           );
       if (mounted) {
         setState(() {
-          _title = response.title;
-          _isCompleted = response.isCompleted;
           _subTasksCompletionPercentage = response.subTasksCompletionPercentage;
         });
       }
@@ -143,23 +135,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Call super.build to ensure AutomaticKeepAliveClientMixin works
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            TaskCompleteButton(
-              taskId: widget.taskId,
-              isCompleted: _isCompleted,
-              onToggleCompleted: () {
-                _refreshEverything();
-              },
-            ),
-            const SizedBox(width: 8),
-            if (_title != null) Expanded(child: Text(_title!)),
-          ],
-        ),
-        // Enable back button for subtasks
         leading: widget.hideSidebar
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -201,15 +179,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                     _refreshEverything();
                   },
                   onCompletedChanged: (isCompleted) {
-                    setState(() {
-                      _isCompleted = isCompleted;
-                    });
                     _refreshEverything();
-                  },
-                  onTitleUpdated: (title) {
-                    setState(() {
-                      _title = title;
-                    });
                   },
                 ),
               ),
@@ -288,7 +258,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                 ),
               ),
 
-              // LIST
+              // SUB TASK LIST
               Flexible(
                 child: Container(
                   margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
@@ -297,18 +267,17 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                     child: TaskList(
                       key: _listRebuildKey,
                       onClickTask: (task) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TaskDetailsPage(
-                              taskId: task.id,
-                              hideSidebar: true,
-                              showCompletedTasksToggle: widget.showCompletedTasksToggle,
-                              onTaskDeleted: () {
-                                _refreshEverything();
-                                Navigator.of(context).pop();
-                              },
-                            ),
+                        await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                          context: context,
+                          title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
+                          child: TaskDetailsPage(
+                            taskId: task.id,
+                            hideSidebar: true,
+                            showCompletedTasksToggle: widget.showCompletedTasksToggle,
+                            onTaskDeleted: () {
+                              _refreshEverything();
+                              Navigator.of(context).pop();
+                            },
                           ),
                         );
                         _refreshEverything();

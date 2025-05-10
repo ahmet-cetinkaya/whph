@@ -11,6 +11,7 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -35,9 +36,13 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   Future<void> _openTaskDetails(String taskId) async {
-    await Navigator.of(context).pushNamed(
-      TaskDetailsPage.route,
-      arguments: {'id': taskId},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
+      child: TaskDetailsPage(
+        taskId: taskId,
+        hideSidebar: true,
+      ),
     );
     // The task list will refresh automatically through event listeners
   }

@@ -15,6 +15,7 @@ class HabitTranslationKeys {
   static const String estimatedTimeNotSet = 'habits.details.estimated_time_not_set';
   static const String recordsLabel = 'habits.details.records';
   static const String statisticsLabel = 'habits.details.statistics_label';
+  static const String createRecordTooltip = 'habits.details.create_record_tooltip';
 
   // Errors
   static const String loadingDetailsError = 'habits.errors.loading_details';

@@ -116,12 +116,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     Future.microtask(() {
       if (mounted) {
         _closeAllDialogs();
-        Navigator.of(context).pushReplacementNamed(
-          routeName,
-          arguments: {
-            'useFadeTransition': true,
-          },
-        );
+        Navigator.of(context).pushReplacementNamed(routeName);
       }
     });
   }
@@ -152,7 +147,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       return widget.builder(context);
     }
 
-    // Get the bottom inset (navigation bar height)
     final bottomInset = MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).viewPadding.bottom;
 
     return Scaffold(

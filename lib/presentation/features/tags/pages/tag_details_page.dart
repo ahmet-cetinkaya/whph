@@ -11,6 +11,7 @@ import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
+import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
@@ -19,6 +20,7 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -34,7 +36,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
-  String? _title;
   String? _taskSearchQuery;
   String? _noteSearchQuery;
   bool _showCompletedTasks = false;
@@ -44,10 +45,12 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
 
   Future<void> _openNoteDetails(String noteId) async {
     if (!mounted) return;
-    await Navigator.of(context).pushNamed(
-      NoteDetailsPage.route,
-      arguments: {'id': noteId},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(NoteTranslationKeys.noteDetails),
+      child: NoteDetailsPage(noteId: noteId),
     );
+    setState(() {}); // Refresh the list after dialog closes
   }
 
   @override
@@ -55,7 +58,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: _title != null ? Text(_title!) : null,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -96,11 +98,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                 // Force refresh of all tag-related components when tag properties change
                 final tagsService = container.resolve<TagsService>();
                 tagsService.notifyTagUpdated(widget.tagId);
-              },
-              onNameUpdated: (name) {
-                setState(() {
-                  _title = name.replaceAll('\n', ' ');
-                });
               },
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -195,10 +192,17 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   filterByTags: [widget.tagId],
                                   filterByCompleted: _showCompletedTasks,
                                   search: _taskSearchQuery,
-                                  onClickTask: (task) => Navigator.of(context).pushNamed(
-                                    '/tasks/details',
-                                    arguments: {'id': task.id},
-                                  ),
+                                  onClickTask: (task) async {
+                                    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                                      context: context,
+                                      title: _translationService.translate(TagTranslationKeys.detailsTasksLabel),
+                                      child: TaskDetailsPage(
+                                        taskId: task.id,
+                                        hideSidebar: true,
+                                      ),
+                                    );
+                                    setState(() {}); // Refresh the list after dialog closes
+                                  },
                                 ),
                               ),
                             ],
@@ -236,10 +240,12 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                           );
                                           await _mediator.send(command);
                                           if (context.mounted) {
-                                            await Navigator.of(context).pushNamed(
-                                              NoteDetailsPage.route,
-                                              arguments: {'id': noteId},
+                                            await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                                              context: context,
+                                              title: _translationService.translate(NoteTranslationKeys.noteDetails),
+                                              child: NoteDetailsPage(noteId: noteId),
                                             );
+                                            setState(() {}); // Refresh the list after dialog closes
                                           }
                                         } catch (e) {
                                           if (context.mounted) {

@@ -14,6 +14,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -63,9 +64,12 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   Future<void> _openDetails(String id) async {
-    await Navigator.of(context).pushNamed(
-      TagDetailsPage.route,
-      arguments: {'id': id},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(TagTranslationKeys.title),
+      child: TagDetailsPage(
+        tagId: id,
+      ),
     );
   }
 

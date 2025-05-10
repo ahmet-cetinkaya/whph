@@ -15,7 +15,6 @@ import 'package:whph/presentation/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
-import 'package:whph/presentation/shared/routes/fade_page_route.dart';
 
 class AppRoutes {
   static final defaultRouteName = TodayPage.route;
@@ -98,87 +97,11 @@ class AppRoutes {
         page = TodayPage();
     }
 
-    final isNoAnimation = arguments?['noAnimation'] == true;
-
-    if (isNoAnimation) {
-      return PageRouteBuilder(
-        settings: settings,
-        pageBuilder: (_, __, ___) => page,
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      );
-    }
-
-    final bool useFadeTransition = arguments?['useFadeTransition'] == true;
-    if (useFadeTransition) {
-      return FadePageRoute(
-        child: page,
-        settings: settings,
-      );
-    }
-
     return PageRouteBuilder(
       settings: settings,
       pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        // Animation for exiting page
-        final secondaryFade = Tween(
-          begin: 1.0,
-          end: 0.0,
-        ).animate(CurvedAnimation(
-          parent: secondaryAnimation,
-          curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-        ));
-
-        const begin = Offset(0.02, 0.0);
-        const end = Offset.zero;
-        const curve = Curves.easeOutCubic;
-
-        var offsetAnimation = Tween(
-          begin: begin,
-          end: end,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: const Interval(0.3, 1.0, curve: curve),
-        ));
-
-        var fadeAnimation = Tween(
-          begin: 0.0,
-          end: 1.0,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: const Interval(0.3, 0.8, curve: Curves.easeOut),
-        ));
-
-        var scaleAnimation = Tween(
-          begin: 0.97,
-          end: 1.0,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: const Interval(0.3, 0.9, curve: Curves.easeOutCirc),
-        ));
-
-        return Stack(
-          children: [
-            FadeTransition(
-              opacity: secondaryFade,
-              child: Container(color: Theme.of(context).scaffoldBackgroundColor),
-            ),
-            SlideTransition(
-              position: offsetAnimation,
-              child: FadeTransition(
-                opacity: fadeAnimation,
-                child: ScaleTransition(
-                  scale: scaleAnimation,
-                  child: child,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 600),
-      reverseTransitionDuration: const Duration(milliseconds: 500),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
     );
   }
 }

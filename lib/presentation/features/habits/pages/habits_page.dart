@@ -14,6 +14,7 @@ import 'package:whph/presentation/shared/components/responsive_scaffold_layout.d
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -32,9 +33,12 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _showNoTagsFilter = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
-    await Navigator.of(context).pushNamed(
-      HabitDetailsPage.route,
-      arguments: {'id': habitId},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(HabitTranslationKeys.helpTitle),
+      child: HabitDetailsPage(
+        habitId: habitId,
+      ),
     );
     // No need to manually refresh - HabitsList will automatically refresh via event listeners
   }

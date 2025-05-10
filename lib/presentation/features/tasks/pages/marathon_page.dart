@@ -20,6 +20,7 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -97,28 +98,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   }
 
   Future<void> _showTaskDetails(String taskId) async {
-    final wasDeleted = await showDialog<bool>(
+    final wasDeleted = await ResponsiveDialogHelper.showResponsiveDetailsPage<bool>(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: TaskDetailsPage(
-              taskId: taskId,
-              hideSidebar: true,
-              onTaskDeleted: () {
-                // Only close the dialog here, don't pop twice
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ),
-        ),
+      title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
+      child: TaskDetailsPage(
+        taskId: taskId,
+        hideSidebar: true,
+        onTaskDeleted: () {
+          // Only close the dialog here, don't pop twice
+          Navigator.of(context).pop(true);
+        },
       ),
     );
 

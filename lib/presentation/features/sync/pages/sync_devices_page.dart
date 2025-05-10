@@ -11,7 +11,6 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
-import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
@@ -158,26 +157,31 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ResponsiveScaffoldLayout(
-      title: _translationService.translate(SyncTranslationKeys.pageTitle),
-      appBarActions: [
-        IconButton(
-          onPressed: _sync,
-          icon: const Icon(Icons.sync),
-          color: AppTheme.primaryColor,
-        ),
-        if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
-        if (Platform.isAndroid || Platform.isIOS)
-          SyncQrScanButton(
-            onSyncComplete: refresh,
+
+    // Use a standard Scaffold instead of ResponsiveScaffoldLayout
+    // This makes the page more compatible when displayed in dialogs/bottom sheets
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
+        actions: [
+          IconButton(
+            onPressed: _sync,
+            icon: const Icon(Icons.sync),
+            color: AppTheme.primaryColor,
           ),
-        HelpMenu(
-          titleKey: SyncTranslationKeys.helpTitle,
-          markdownContentKey: SyncTranslationKeys.helpContent,
-        ),
-        const SizedBox(width: 8),
-      ],
-      builder: (context) => list == null || list!.items.isEmpty
+          if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
+          if (Platform.isAndroid || Platform.isIOS)
+            SyncQrScanButton(
+              onSyncComplete: refresh,
+            ),
+          HelpMenu(
+            titleKey: SyncTranslationKeys.helpTitle,
+            markdownContentKey: SyncTranslationKeys.helpContent,
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: list == null || list!.items.isEmpty
           ? IconOverlay(
               icon: Icons.devices_other,
               message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
