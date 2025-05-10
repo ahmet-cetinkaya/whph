@@ -6,16 +6,14 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import '../constants/shared_translation_keys.dart';
 
-class DateRangeFilter extends StatelessWidget {
+class DateRangeFilter extends StatefulWidget {
   final DateTime? selectedStartDate;
   final DateTime? selectedEndDate;
   final Function(DateTime?, DateTime?) onDateFilterChange;
   final double iconSize;
   final Color? iconColor;
 
-  final _translationService = container.resolve<ITranslationService>();
-
-  DateRangeFilter({
+  const DateRangeFilter({
     super.key,
     this.selectedStartDate,
     this.selectedEndDate,
@@ -24,106 +22,423 @@ class DateRangeFilter extends StatelessWidget {
     this.iconColor,
   });
 
+  @override
+  State<DateRangeFilter> createState() => _DateRangeFilterState();
+}
+
+class _DateRangeFilterState extends State<DateRangeFilter> {
+  DateTime? _selectedStartDate;
+  DateTime? _selectedEndDate;
+  late TextEditingController _startDateController;
+  late TextEditingController _endDateController;
+  final _translationService = container.resolve<ITranslationService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedStartDate = widget.selectedStartDate;
+    _selectedEndDate = widget.selectedEndDate;
+    _startDateController = TextEditingController(
+      text: _formatDateForDisplay(_selectedStartDate),
+    );
+    _endDateController = TextEditingController(
+      text: _formatDateForDisplay(_selectedEndDate),
+    );
+  }
+
+  @override
+  void dispose() {
+    _startDateController.dispose();
+    _endDateController.dispose();
+    super.dispose();
+  }
+
+  String _formatDateForDisplay(DateTime? date) {
+    if (date == null) return '';
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  void _updateDateInput(String value, bool isStartDate) {
+    final controller = isStartDate ? _startDateController : _endDateController;
+    final oldValue = controller.text;
+
+    String newText = value.replaceAll(RegExp(r'[^0-9/]'), '');
+    if (newText.length > 10) newText = newText.substring(0, 10);
+
+    // Add slashes automatically
+    if (newText.length >= 2 && !newText.contains('/')) {
+      newText = '${newText.substring(0, 2)}/${newText.substring(2)}';
+    }
+    if (newText.length >= 5 && newText.split('/').length == 2) {
+      final parts = newText.split('/');
+      newText = '${parts[0]}/${parts[1].substring(0, 2)}/${parts[1].substring(2)}';
+    }
+
+    // Only update if the text has changed
+    if (oldValue != newText) {
+      final newSelection = TextSelection.collapsed(
+        offset: newText.length,
+      );
+
+      controller.value = TextEditingValue(
+        text: newText,
+        selection: newSelection,
+      );
+    }
+  }
+
   String _getDateRangeText() {
-    if (selectedStartDate == null || selectedEndDate == null) return '';
-    return '${selectedStartDate!.day}/${selectedStartDate!.month} - ${selectedEndDate!.day}/${selectedEndDate!.month}';
+    if (_selectedStartDate == null || _selectedEndDate == null) return '';
+    return '${_selectedStartDate!.day}/${_selectedStartDate!.month} - ${_selectedEndDate!.day}/${_selectedEndDate!.month}';
+  }
+
+  void _selectQuickRange(String range, BuildContext context) {
+    final now = DateTime.now();
+    DateTime startDate;
+    DateTime endDate;
+
+    switch (range) {
+      case 'today':
+        startDate = DateTime(now.year, now.month, now.day);
+        endDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        break;
+      case 'last_week':
+        endDate = now;
+        startDate = now.subtract(const Duration(days: 7));
+        break;
+      case 'last_month':
+        endDate = now;
+        startDate = now.subtract(const Duration(days: 30));
+        break;
+      case 'last_3_months':
+        endDate = now;
+        startDate = now.subtract(const Duration(days: 90));
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      _selectedStartDate = startDate;
+      _selectedEndDate = endDate;
+      _startDateController.text = _formatDateForDisplay(startDate);
+      _endDateController.text = _formatDateForDisplay(endDate);
+    });
+    widget.onDateFilterChange(startDate, endDate);
   }
 
   Future<void> _showDatePicker(BuildContext context) async {
-    final translationService = container.resolve<ITranslationService>();
-
-    final result = await showModalBottomSheet<List<DateTime?>>(
+    await showModalBottomSheet<List<DateTime?>>(
       context: context,
       backgroundColor: AppTheme.surface1,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _translationService.translate(SharedTranslationKeys.dateRangeTitle),
+                      style: AppTheme.headlineSmall,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Date Range Label
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          translationService.translate(SharedTranslationKeys.dateRangeTitle),
-                          style: AppTheme.headlineSmall,
+                        // Start Date Input
+                        SizedBox(
+                          width: 105,
+                          child: TextField(
+                            controller: _startDateController,
+                            decoration: InputDecoration(
+                              hintText: 'DD/MM/YYYY',
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              isDense: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            onTap: () {
+                              if (_selectedStartDate != null) {
+                                _scrollToDate(_selectedStartDate!);
+                              }
+                            },
+                            onChanged: (value) => _updateDateInput(value, true),
+                            onSubmitted: (value) {
+                              final date = _parseDate(value);
+                              if (date != null) {
+                                setState(() {
+                                  _selectedStartDate = date;
+                                  _startDateController.text = _formatDateForDisplay(date);
+                                });
+                                if (_selectedEndDate != null) {
+                                  widget.onDateFilterChange(_selectedStartDate, _selectedEndDate);
+                                }
+                              }
+                            },
+                          ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.pop(context),
+
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Text('-'),
+                        ),
+
+                        // End Date Input
+                        SizedBox(
+                          width: 105,
+                          child: TextField(
+                            controller: _endDateController,
+                            decoration: InputDecoration(
+                              hintText: 'DD/MM/YYYY',
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              isDense: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            onTap: () {
+                              if (_selectedEndDate != null) {
+                                _scrollToDate(_selectedEndDate!);
+                              }
+                            },
+                            onChanged: (value) => _updateDateInput(value, false),
+                            onSubmitted: (value) {
+                              final date = _parseDate(value);
+                              if (date != null) {
+                                setState(() {
+                                  _selectedEndDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
+                                  _endDateController.text = _formatDateForDisplay(date);
+                                });
+                                if (_selectedStartDate != null) {
+                                  widget.onDateFilterChange(_selectedStartDate, _selectedEndDate);
+                                }
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  CalendarDatePicker2(
-                    config: CalendarDatePicker2Config(
-                      calendarType: CalendarDatePicker2Type.range,
-                      selectedDayHighlightColor: Theme.of(context).primaryColor,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2050),
+
+                    // Quick Options
+                    Wrap(
+                      spacing: AppTheme.sizeXSmall,
+                      runSpacing: AppTheme.sizeXSmall,
+                      children: [
+                        _buildSimpleQuickOption(
+                          context,
+                          'today',
+                          _translationService.translate(SharedTranslationKeys.today),
+                          setState,
+                        ),
+                        _buildSimpleQuickOption(
+                          context,
+                          'last_week',
+                          _translationService.translate(SharedTranslationKeys.lastWeek),
+                          setState,
+                        ),
+                        _buildSimpleQuickOption(
+                          context,
+                          'last_month',
+                          _translationService.translate(SharedTranslationKeys.lastMonth),
+                          setState,
+                        ),
+                        _buildSimpleQuickOption(
+                          context,
+                          'last_3_months',
+                          _translationService.translate(SharedTranslationKeys.last3Months),
+                          setState,
+                        ),
+                      ],
                     ),
-                    value: selectedStartDate != null && selectedEndDate != null
-                        ? [selectedStartDate, selectedEndDate]
-                        : [],
-                    onValueChanged: (dates) {
-                      // Only pop when we have a valid range (both dates selected)
-                      if (dates.length == 2) {
-                        Navigator.pop(context, dates);
-                      }
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: AppTheme.sizeMedium),
+              CalendarDatePicker2(
+                key: ValueKey(_selectedStartDate ?? _selectedEndDate),
+                config: CalendarDatePicker2Config(
+                  calendarType: CalendarDatePicker2Type.range,
+                  selectedDayHighlightColor: Theme.of(context).primaryColor,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2050),
+                  centerAlignModePicker: true,
+                  selectedYearTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                value: _selectedStartDate != null && _selectedEndDate != null
+                    ? [_selectedStartDate, _selectedEndDate]
+                    : [],
+                onValueChanged: (dates) {
+                  if (dates.length == 2) {
+                    final startDate = DateTime(
+                      dates[0].year,
+                      dates[0].month,
+                      dates[0].day,
+                    );
+
+                    final endDate = DateTime(
+                      dates[1].year,
+                      dates[1].month,
+                      dates[1].day,
+                      23,
+                      59,
+                      59,
+                    );
+
+                    setState(() {
+                      _selectedStartDate = startDate;
+                      _selectedEndDate = endDate;
+                      _startDateController.text = _formatDateForDisplay(startDate);
+                      _endDateController.text = _formatDateForDisplay(endDate);
+                    });
+                    widget.onDateFilterChange(startDate, endDate);
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
 
-    if (result != null && result.length == 2 && result[0] != null && result[1] != null) {
-      // Ensure dates are properly set to start and end of day
-      final startDate = DateTime(
-        result[0]!.year,
-        result[0]!.month,
-        result[0]!.day,
-      );
+  void _scrollToDate(DateTime date) {
+    setState(() {
+      // Force calendar to rebuild with new current date
+      _selectedStartDate = _selectedStartDate;
+      _selectedEndDate = _selectedEndDate;
+    });
+  }
 
-      final endDate = DateTime(
-        result[1]!.year,
-        result[1]!.month,
-        result[1]!.day,
-        23,
-        59,
-        59,
-      );
+  Widget _buildSimpleQuickOption(BuildContext context, String value, String label, StateSetter setState) {
+    final isSelected = _isQuickOptionSelected(value);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          _selectQuickRange(value, context);
+          setState(() {});
+        },
+        borderRadius: BorderRadius.circular(8),
+        splashFactory: InkRipple.splashFactory,
+        highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+        splashColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.sizeSmall,
+            vertical: AppTheme.sizeXSmall,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : AppTheme.surface1,
+            border: Border.all(
+              color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.2) : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Theme.of(context).primaryColor : Colors.white,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-      // Immediately trigger the callback with the formatted dates
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        onDateFilterChange(startDate, endDate);
-      });
+  bool _isQuickOptionSelected(String value) {
+    if (_selectedStartDate == null || _selectedEndDate == null) return false;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selectedStart = DateTime(_selectedStartDate!.year, _selectedStartDate!.month, _selectedStartDate!.day);
+    final selectedEnd = DateTime(_selectedEndDate!.year, _selectedEndDate!.month, _selectedEndDate!.day, 23, 59, 59);
+
+    switch (value) {
+      case 'today':
+        final endOfToday = DateTime(today.year, today.month, today.day, 23, 59, 59);
+        return selectedStart.isAtSameMomentAs(today) && selectedEnd.isAtSameMomentAs(endOfToday);
+      case 'last_week':
+        final weekAgo = DateTime(now.year, now.month, now.day - 7);
+        return _isSameDay(selectedStart, weekAgo) && _isSameDay(selectedEnd, today);
+      case 'last_month':
+        final monthAgo = DateTime(now.year, now.month, now.day - 30);
+        return _isSameDay(selectedStart, monthAgo) && _isSameDay(selectedEnd, today);
+      case 'last_3_months':
+        final threeMonthsAgo = DateTime(now.year, now.month, now.day - 90);
+        return _isSameDay(selectedStart, threeMonthsAgo) && _isSameDay(selectedEnd, today);
+      default:
+        return false;
     }
+  }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+  DateTime? _parseDate(String value) {
+    try {
+      final parts = value.split('/');
+      if (parts.length == 3) {
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+
+        if (day < 1 || day > 31 || month < 1 || month > 12) return null;
+
+        return DateTime(year, month, day);
+      }
+    } catch (e) {
+      // Invalid date format
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final hasDateFilter = selectedStartDate != null && selectedEndDate != null;
+    final hasDateFilter = _selectedStartDate != null && _selectedEndDate != null;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         FilterIconButton(
           icon: Icons.calendar_today,
-          iconSize: iconSize,
-          color: hasDateFilter ? primaryColor : iconColor,
+          iconSize: widget.iconSize,
+          color: hasDateFilter ? primaryColor : widget.iconColor,
           tooltip: _translationService.translate(SharedTranslationKeys.dateFilterTooltip),
           onPressed: () => _showDatePicker(context),
         ),
@@ -139,7 +454,7 @@ class DateRangeFilter extends StatelessWidget {
           FilterIconButton(
             icon: Icons.close,
             iconSize: AppTheme.iconSizeSmall,
-            onPressed: () => onDateFilterChange(null, null),
+            onPressed: () => widget.onDateFilterChange(null, null),
             tooltip: _translationService.translate(SharedTranslationKeys.clearDateFilterTooltip),
           ),
         ],
