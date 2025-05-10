@@ -15,6 +15,7 @@ class AppUsageTranslationKeys {
 
   // Errors
   static const String getUsageError = 'app_usages.errors.get_usage';
+  static const String statisticsError = 'app_usages.errors.statistics';
   static const String saveUsageError = 'app_usages.errors.save_usage';
   static const String getTagsError = 'app_usages.errors.get_tags';
   static const String addTagError = 'app_usages.errors.add_tag';

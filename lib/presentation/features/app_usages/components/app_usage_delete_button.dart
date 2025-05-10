@@ -70,22 +70,24 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
       final command = DeleteAppUsageCommand(id: widget.appUsageId);
       final response = await _mediator.send<DeleteAppUsageCommand, DeleteAppUsageCommandResponse>(command);
 
+      if (!mounted) return;
+
       notifyDeletion(response.id);
 
-      if (widget.onDeleteSuccess != null) {
+      if (widget.onDeleteSuccess != null && mounted) {
         widget.onDeleteSuccess!();
       }
     } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
+      if (!mounted) return;
+      ErrorHelper.showError(context, e);
     } catch (e, stackTrace) {
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.deleteError),
-        );
-      }
+      if (!mounted) return;
+      ErrorHelper.showUnexpectedError(
+        context,
+        e as Exception,
+        stackTrace,
+        message: _translationService.translate(AppUsageTranslationKeys.deleteError),
+      );
     } finally {
       if (mounted) {
         setState(() {

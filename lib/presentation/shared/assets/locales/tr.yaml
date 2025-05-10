@@ -7,6 +7,7 @@ shared:
     delete: Sil
     close: Kapat
     load_more: Daha Fazla
+    done: Tamam
   messages:
     confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
     no_items_found: Öğe bulunamadı
@@ -21,15 +22,18 @@ shared:
     minutes: dk
     days: gün
     hours: sa
+    seconds: sn
   tooltips:
     filter_by_tags: Etiketlere göre filtrele
     refresh: Yenile
+    compare_with_previous: Önceki dönemle karşılaştır
   sections:
     habits: Alışkanlıklar
     tasks: Görevler
     time: Zaman
     special_filters: Özel Filtreler
     tags: Etiketler
+    statistics: İstatistikler
   none_option: "Hiçbir etiket yok"
   calendar:
     week_days:
@@ -65,6 +69,19 @@ shared:
       oct_short: Eki
       nov_short: Kas
       dec_short: Ara
+  time_periods:
+    today: Bugün
+    last_week: Son Hafta
+    last_month: Son Ay
+    last_three_months: Son 3 Ay
+    custom: Özel
+  statistics:
+    daily_usage:
+      title: Günlük Kullanım
+      description: Haftanın günlerine göre toplam kullanım süresini gösterir
+    hourly_usage:
+      title: Saatlik Kullanım
+      description: Günün saatlerine göre toplam kullanım süresini gösterir
   editor:
     markdown:
       hint: Markdown formatını kullanarak yazabilirsiniz

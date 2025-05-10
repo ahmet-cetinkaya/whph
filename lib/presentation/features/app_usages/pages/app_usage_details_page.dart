@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_delete_button.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_details_content.dart';
+import 'package:whph/presentation/features/app_usages/components/app_usage_statistics_view.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -17,10 +22,43 @@ class AppUsageDetailsPage extends StatefulWidget {
 }
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
+  final _appUsagesService = container.resolve<AppUsagesService>();
+  final _translationService = container.resolve<ITranslationService>();
+
   bool _hasChanges = false;
 
-  void _refreshTitle(String title) {
-    // No-op since we don't use title anymore
+  @override
+  void initState() {
+    super.initState();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _appUsagesService.onAppUsageUpdated.addListener(_handleAppUsageUpdated);
+    _appUsagesService.onAppUsageDeleted.addListener(_handleAppUsageDeleted);
+  }
+
+  void _removeEventListeners() {
+    _appUsagesService.onAppUsageUpdated.removeListener(_handleAppUsageUpdated);
+    _appUsagesService.onAppUsageDeleted.removeListener(_handleAppUsageDeleted);
+  }
+
+  void _handleAppUsageUpdated() {
+    if (!mounted || _appUsagesService.onAppUsageUpdated.value != widget.appUsageId) return;
+    _hasChanges = true;
+  }
+
+  void _handleAppUsageDeleted() {
+    if (!mounted || _appUsagesService.onAppUsageDeleted.value != widget.appUsageId) return;
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(true);
+    }
   }
 
   @override
@@ -34,12 +72,21 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(_hasChanges);
+              }
+            },
+          ),
           actions: [
             AppUsageDeleteButton(
               appUsageId: widget.appUsageId,
               onDeleteSuccess: () {
-                _hasChanges = true;
-                Navigator.of(context).pop(_hasChanges);
+                if (mounted && Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop(true);
+                }
               },
               buttonColor: AppTheme.primaryColor,
             ),
@@ -50,14 +97,37 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
             const SizedBox(width: 2),
           ],
         ),
-        body: Align(
-          alignment: Alignment.topLeft,
-          child: AppUsageDetailsContent(
-            id: widget.appUsageId,
-            onNameUpdated: (name) {
-              _refreshTitle(name);
-              _hasChanges = true;
-            },
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // App Usage Details Section
+                AppUsageDetailsContent(
+                  id: widget.appUsageId,
+                  onAppUsageUpdated: () {
+                    _hasChanges = true;
+                  },
+                ),
+
+                const SizedBox(height: 24),
+
+                // App Usage Statistics Section
+                Text(
+                  _translationService.translate(SharedTranslationKeys.statisticsLabel),
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+
+                AppUsageStatisticsView(
+                  appUsageId: widget.appUsageId,
+                  onError: (error) {
+                    // Handle statistics error if needed
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

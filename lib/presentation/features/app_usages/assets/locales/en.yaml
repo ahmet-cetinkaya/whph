@@ -51,6 +51,7 @@ app_usages:
     remove_tag: An unexpected error occurred while removing tag
     save_rule: An unexpected error occurred while saving ignore rules
     save_usage: An unexpected error occurred while saving app usage
+    statistics: An unexpected error occurred while fetching statistics
     tag_already_exists: This tag is already added
   form:
     description:

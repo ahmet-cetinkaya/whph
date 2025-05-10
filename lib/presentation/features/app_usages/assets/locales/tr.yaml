@@ -51,6 +51,7 @@ app_usages:
     remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu.
     save_rule: Yok sayma kuralları kaydedilirken beklenmedik bir hata oluştu.
     save_usage: Uygulama kullanımı kaydedilirken beklenmedik bir hata oluştu.
+    statistics: İstatistikler alınırken beklenmedik bir hata oluştu.
     tag_already_exists: Bu etiket zaten eklenmiş
   form:
     description:

@@ -4,6 +4,7 @@ import 'package:whph/application/features/app_usages/commands/delete_app_usage_c
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
+import 'package:whph/application/features/app_usages/queries/get_app_usage_statistics_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
@@ -91,5 +92,8 @@ void registerAppUsagesFeature(
     ..registerHandler<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse,
         GetListAppUsageIgnoreRulesQueryHandler>(
       () => GetListAppUsageIgnoreRulesQueryHandler(repository: appUsageIgnoreRuleRepository),
+    )
+    ..registerHandler<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse, GetAppUsageStatisticsQueryHandler>(
+      () => GetAppUsageStatisticsQueryHandler(appUsageTimeRecordRepository: appUsageTimeRecordRepository),
     );
 }

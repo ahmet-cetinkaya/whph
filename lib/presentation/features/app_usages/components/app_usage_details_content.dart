@@ -400,7 +400,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
-      padding: AppUsageUiConstants.cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
