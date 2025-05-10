@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
@@ -32,26 +31,20 @@ class _TagAddButtonState extends State<TagAddButton> {
   final _tagsService = container.resolve<TagsService>();
 
   Future<void> _addTag() async {
-    try {
-      final command = SaveTagCommand(
-        name: _translationService.translate(TagTranslationKeys.newTag),
-      );
-      final SaveTagCommandResponse savedTag = await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
-
-      _tagsService.notifyTagCreated(savedTag.id);
-      if (widget.onTagCreated != null) widget.onTagCreated!(savedTag.id);
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TagTranslationKeys.errorSaving),
+    await AsyncErrorHandler.execute<SaveTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
+      operation: () async {
+        final command = SaveTagCommand(
+          name: _translationService.translate(TagTranslationKeys.newTag),
         );
-      }
-    }
+        return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
+      },
+      onSuccess: (savedTag) {
+        _tagsService.notifyTagCreated(savedTag.id);
+        if (widget.onTagCreated != null) widget.onTagCreated!(savedTag.id);
+      },
+    );
   }
 
   @override

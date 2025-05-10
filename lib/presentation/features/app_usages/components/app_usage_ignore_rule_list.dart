@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -13,7 +12,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final VoidCallback? onRuleDeleted;
@@ -67,48 +66,38 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
       _isLoading = true;
     });
 
-    try {
-      final query = GetListAppUsageIgnoreRulesQuery(
-        pageIndex: 0,
-        pageSize: 50,
-      );
-
-      final response =
-          await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
-
-      if (mounted) {
-        setState(() {
-          _rules = response.items
-              .map((item) => AppUsageIgnoreRule(
-                    id: item.id,
-                    pattern: item.pattern,
-                    description: item.description,
-                    createdDate: DateTime.now(), // Since these aren't available in the list item
-                  ))
-              .toList();
-          _isLoading = false;
-        });
-      }
-    } on BusinessException catch (e) {
-      if (mounted) {
-        ErrorHelper.showError(context, e);
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.getRulesError),
+    await AsyncErrorHandler.execute<GetListAppUsageIgnoreRulesQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getRulesError),
+      operation: () async {
+        final query = GetListAppUsageIgnoreRulesQuery(
+          pageIndex: 0,
+          pageSize: 50,
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+        return await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
+      },
+      onSuccess: (response) {
+        if (mounted) {
+          setState(() {
+            _rules = response.items
+                .map((item) => AppUsageIgnoreRule(
+                      id: item.id,
+                      pattern: item.pattern,
+                      description: item.description,
+                      createdDate: DateTime.now(),
+                    ))
+                .toList();
+          });
+        }
+      },
+      finallyAction: () {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      },
+    );
   }
 
   Future<void> refresh() async {
@@ -116,26 +105,19 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   }
 
   Future<void> deleteItem(String id) async {
-    try {
-      final command = DeleteAppUsageIgnoreRuleCommand(id: id);
-      await _mediator.send(command);
-
-      _appUsagesService.notifyAppUsageIgnoreRuleUpdated(id);
-      widget.onRuleDeleted?.call();
-
-      await refresh();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.deleteRuleError),
-        );
-      }
-    }
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.deleteRuleError),
+      operation: () async {
+        final command = DeleteAppUsageIgnoreRuleCommand(id: id);
+        await _mediator.send(command);
+      },
+      onSuccess: () async {
+        _appUsagesService.notifyAppUsageIgnoreRuleUpdated(id);
+        widget.onRuleDeleted?.call();
+        await refresh();
+      },
+    );
   }
 
   Future<void> _confirmDelete(String id) async {

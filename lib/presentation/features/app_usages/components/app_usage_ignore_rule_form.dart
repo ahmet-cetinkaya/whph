@@ -10,7 +10,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class AppUsageIgnoreRuleForm extends StatefulWidget {
   final Function()? onSave;
@@ -62,35 +62,26 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
     });
 
     if (validate()) {
-      try {
-        final command = AddAppUsageIgnoreRuleCommand(
-          pattern: _patternController.text,
-          description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
-        );
+      await AsyncErrorHandler.executeWithLoading(
+        context: context,
+        setLoading: (isLoading) => setState(() {
+          _isSubmitting = isLoading;
+        }),
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
+        operation: () async {
+          final command = AddAppUsageIgnoreRuleCommand(
+            pattern: _patternController.text,
+            description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+          );
 
-        final response =
-            await _mediator.send<AddAppUsageIgnoreRuleCommand, AddAppUsageIgnoreRuleCommandResponse>(command);
-
-        if (mounted) {
+          return await _mediator.send<AddAppUsageIgnoreRuleCommand, AddAppUsageIgnoreRuleCommandResponse>(command);
+        },
+        onSuccess: (response) async {
           _appUsagesService.notifyAppUsageIgnoreRuleUpdated(response.id);
           widget.onSave?.call();
           await refresh();
-        }
-      } catch (e, stackTrace) {
-        if (!mounted) return;
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
-        );
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isSubmitting = false;
-          });
-        }
-      }
+        },
+      );
     } else {
       setState(() {
         _isSubmitting = false;

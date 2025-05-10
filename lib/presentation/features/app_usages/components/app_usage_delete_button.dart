@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 /// A button component that handles app usage deletion
 class AppUsageDeleteButton extends StatefulWidget {
@@ -62,39 +61,26 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   Future<void> performDelete(BuildContext context) async {
     if (_isDeleting) return;
 
-    setState(() {
-      _isDeleting = true;
-    });
-
-    try {
-      final command = DeleteAppUsageCommand(id: widget.appUsageId);
-      final response = await _mediator.send<DeleteAppUsageCommand, DeleteAppUsageCommandResponse>(command);
-
-      if (!mounted) return;
-
-      notifyDeletion(response.id);
-
-      if (widget.onDeleteSuccess != null && mounted) {
-        widget.onDeleteSuccess!();
-      }
-    } on BusinessException catch (e) {
-      if (!mounted) return;
-      ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (!mounted) return;
-      ErrorHelper.showUnexpectedError(
-        context,
-        e as Exception,
-        stackTrace,
-        message: _translationService.translate(AppUsageTranslationKeys.deleteError),
-      );
-    } finally {
-      if (mounted) {
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) {
         setState(() {
-          _isDeleting = false;
+          _isDeleting = isLoading;
         });
-      }
-    }
+      },
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.deleteError),
+      operation: () async {
+        final command = DeleteAppUsageCommand(id: widget.appUsageId);
+        final response = await _mediator.send<DeleteAppUsageCommand, DeleteAppUsageCommandResponse>(command);
+        return response;
+      },
+      onSuccess: (response) {
+        notifyDeletion(response.id);
+        if (widget.onDeleteSuccess != null) {
+          widget.onDeleteSuccess!();
+        }
+      },
+    );
   }
 
   void notifyDeletion(String id) {

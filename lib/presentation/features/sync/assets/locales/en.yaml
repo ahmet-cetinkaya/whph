@@ -44,6 +44,7 @@ sync:
     device_not_found: Sync device not found
     ip_address: Unable to fetch local IP address
     parse_message: Unable to parse scanned message
+    scan: Failed to scan QR code
     save_device: Failed to save sync device
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout

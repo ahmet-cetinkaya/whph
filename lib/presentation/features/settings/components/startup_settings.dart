@@ -5,6 +5,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_startup_settings
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class StartupSettings extends StatefulWidget {
   static bool get compatiblePlatform =>
@@ -34,56 +35,66 @@ class _StartupSettingsState extends State<StartupSettings> {
   Future<void> _loadStartupSetting() async {
     if (!StartupSettings.compatiblePlatform) return;
 
-    try {
-      final isEnabled = await _startupService.isEnabledAtStartup();
-      if (mounted) {
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) => setState(() {
+        _isLoading = isLoading;
+      }),
+      errorMessage: "Error loading startup settings",
+      operation: () async {
+        final isEnabled = await _startupService.isEnabledAtStartup();
         setState(() {
           _isEnabled = isEnabled;
-          _isLoading = false;
         });
-      }
-    } catch (e) {
-      debugPrint('Error loading startup setting: $e');
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+        return true;
+      },
+      onError: (e) {
+        debugPrint('Error loading startup setting: $e');
+      },
+    );
   }
 
   Future<void> _toggleStartupSetting(bool value) async {
     if (_isUpdating) return;
 
+    // Only need to manage loading state manually if not using system settings
     if (!_isSystemSettingNeeded) {
-      setState(() {
-        _isUpdating = true;
-      });
-    }
-
-    try {
-      if (value) {
-        await _startupService.enableStartAtStartup();
-      } else {
-        await _startupService.disableStartAtStartup();
-      }
-      await _loadStartupSetting();
-    } catch (e) {
-      debugPrint('Error toggling startup setting: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_translationService.translate(
-                value ? SettingsTranslationKeys.enableStartupError : SettingsTranslationKeys.disableStartupError)),
-          ),
-        );
-      }
-    } finally {
-      if (mounted && !_isSystemSettingNeeded) {
-        setState(() {
-          _isUpdating = false;
-        });
-      }
+      await AsyncErrorHandler.executeWithLoading(
+        context: context,
+        setLoading: (isLoading) => setState(() {
+          _isUpdating = isLoading;
+        }),
+        errorMessage: _translationService.translate(
+            value ? SettingsTranslationKeys.enableStartupError : SettingsTranslationKeys.disableStartupError),
+        operation: () async {
+          if (value) {
+            await _startupService.enableStartAtStartup();
+          } else {
+            await _startupService.disableStartAtStartup();
+          }
+          return true;
+        },
+        onSuccess: (_) async {
+          await _loadStartupSetting();
+        },
+      );
+    } else {
+      // For Android, we don't need to manage loading state because it redirects to system settings
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(
+            value ? SettingsTranslationKeys.enableStartupError : SettingsTranslationKeys.disableStartupError),
+        operation: () async {
+          if (value) {
+            await _startupService.enableStartAtStartup();
+          } else {
+            await _startupService.disableStartAtStartup();
+          }
+        },
+        onSuccess: () async {
+          await _loadStartupSetting();
+        },
+      );
     }
   }
 

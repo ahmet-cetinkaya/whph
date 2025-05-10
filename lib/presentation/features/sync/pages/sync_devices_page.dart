@@ -8,7 +8,7 @@ import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
@@ -46,30 +46,27 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
-    try {
-      final query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
-      final response = await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
-
-      if (mounted) {
-        setState(() {
-          list = response;
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(SyncTranslationKeys.loadDevicesError),
-        );
-      }
-    }
+    await AsyncErrorHandler.execute<GetListSyncDevicesQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(SyncTranslationKeys.loadDevicesError),
+      operation: () async {
+        final query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
+        return await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
+      },
+      onSuccess: (response) {
+        if (mounted) {
+          setState(() {
+            list = response;
+          });
+        }
+      },
+    );
   }
 
   Future<void> _sync() async {
     if (_isSyncing) return;
 
+    // Show initial syncing snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -92,66 +89,66 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
     setState(() => _isSyncing = true);
 
-    try {
-      if (kDebugMode) debugPrint('[SyncDevicesPage]: Starting sync process...');
-      final command = SyncCommand();
-      await _mediator.send<SyncCommand, void>(command);
+    await AsyncErrorHandler.execute<void>(
+      context: context,
+      errorMessage: _translationService.translate(SyncTranslationKeys.syncDevicesError),
+      operation: () async {
+        if (kDebugMode) debugPrint('[SyncDevicesPage]: Starting sync process...');
+        final command = SyncCommand();
+        await _mediator.send<SyncCommand, void>(command);
+        return;
+      },
+      onSuccess: (_) async {
+        await Future.delayed(const Duration(seconds: 2));
+        await refresh();
 
-      await Future.delayed(const Duration(seconds: 2));
-      await refresh();
-
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-          ..clearSnackBars()
-          ..showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
-                  const SizedBox(width: 16),
-                  Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
-                ],
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+            ..clearSnackBars()
+            ..showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.white),
+                    const SizedBox(width: 16),
+                    Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+                duration: const Duration(seconds: 3),
               ),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-      }
-    } catch (e, stackTrace) {
-      if (kDebugMode) debugPrint('ERROR: Sync failed: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isSyncing = false);
-    }
+            );
+        }
+      },
+      onError: (_) {
+        if (kDebugMode) debugPrint('ERROR: Sync failed');
+        if (mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+        }
+      },
+      finallyAction: () {
+        if (mounted) setState(() => _isSyncing = false);
+      },
+    );
   }
 
   Future<void> _removeDevice(String id) async {
-    try {
-      final command = DeleteSyncDeviceCommand(id: id);
-      await _mediator.send<DeleteSyncDeviceCommand, void>(command);
-      if (mounted) {
-        setState(() {
-          list!.items.removeWhere((item) => item.id == id);
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(SyncTranslationKeys.removeDeviceError),
-        );
-      }
-    }
+    await AsyncErrorHandler.execute<void>(
+      context: context,
+      errorMessage: _translationService.translate(SyncTranslationKeys.removeDeviceError),
+      operation: () async {
+        final command = DeleteSyncDeviceCommand(id: id);
+        await _mediator.send<DeleteSyncDeviceCommand, void>(command);
+        return;
+      },
+      onSuccess: (_) {
+        if (mounted) {
+          setState(() {
+            list!.items.removeWhere((item) => item.id == id);
+          });
+        }
+      },
+    );
   }
 
   @override

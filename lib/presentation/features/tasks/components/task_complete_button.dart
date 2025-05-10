@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
@@ -59,67 +58,68 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       _isProcessing = true;
     });
 
-    try {
-      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: widget.taskId),
-      );
+    // Store original completed state to revert in case of error
+    final originalCompletedState = _isCompleted;
 
-      final command = SaveTaskCommand(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate,
-        deadlineDate: task.deadlineDate,
-        estimatedTime: task.estimatedTime,
-        isCompleted: !_isCompleted,
-      );
+    // Update UI first for smoother user experience
+    setState(() {
+      _isCompleted = !_isCompleted;
+    });
 
-      // We'll update the UI first to make the user experience smoother
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.taskCompleteError),
+      operation: () async {
+        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+          GetTaskQuery(id: widget.taskId),
+        );
+
+        final command = SaveTaskCommand(
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          priority: task.priority,
+          plannedDate: task.plannedDate,
+          deadlineDate: task.deadlineDate,
+          estimatedTime: task.estimatedTime,
+          isCompleted: !originalCompletedState,
+        );
+
+        // Perform the actual API call
+        await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+
+        if (command.isCompleted) {
+          _soundPlayer.play(SharedSounds.done);
+        }
+      },
+      onSuccess: () {
+        // Notify the service about the completed task
+        if (_isCompleted) {
+          Future.delayed(const Duration(seconds: 3), () {
+            _tasksService.notifyTaskCompleted(widget.taskId);
+          });
+        } else {
+          _tasksService.notifyTaskUpdated(widget.taskId);
+        }
+
+        // Call the callback if provided for backward compatibility
+        widget.onToggleCompleted?.call();
+      },
+      onError: (_) {
+        // Revert UI state if there was an error
+        if (mounted) {
+          setState(() {
+            _isCompleted = originalCompletedState;
+          });
+        }
+      },
+    );
+
+    // Always reset processing state
+    if (mounted) {
       setState(() {
-        _isCompleted = !_isCompleted;
+        _isProcessing = false;
       });
-
-      // Now perform the actual API call
-      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      if (command.isCompleted) {
-        _soundPlayer.play(SharedSounds.done);
-      }
-
-      // Notify the service about the completed task
-      if (_isCompleted) {
-        Future.delayed(const Duration(seconds: 3), () {
-          _tasksService.notifyTaskCompleted(widget.taskId);
-        });
-      } else {
-        _tasksService.notifyTaskUpdated(widget.taskId);
-      }
-
-      // Still call the callback if provided for backward compatibility
-      widget.onToggleCompleted?.call();
-    } on BusinessException catch (e) {
-      // Revert UI state if there was an error
-      setState(() {
-        _isCompleted = !_isCompleted;
-      });
-      if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      // Revert UI state if there was an error
-      setState(() {
-        _isCompleted = !_isCompleted;
-      });
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TaskTranslationKeys.taskCompleteError));
-      }
-    } finally {
-      // Always reset processing state
-      if (mounted) {
-        setState(() {
-          _isProcessing = false;
-        });
-      }
     }
   }
 

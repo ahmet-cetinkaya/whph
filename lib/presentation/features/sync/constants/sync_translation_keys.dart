@@ -6,6 +6,7 @@ class SyncTranslationKeys {
   static const String deviceAlreadyPaired = 'sync.messages.device_already_paired';
 
   // Errors
+  static const String scanError = 'sync.error.scan';
   static const String parseError = 'sync.errors.parse_message';
   static const String ipAddressError = 'sync.errors.ip_address';
   static const String connectionFailedError = 'sync.errors.connection_failed';

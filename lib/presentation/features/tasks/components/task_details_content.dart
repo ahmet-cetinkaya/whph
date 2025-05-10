@@ -10,7 +10,6 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/components/date_time_picker_field.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
@@ -18,7 +17,7 @@ import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
@@ -162,11 +161,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _getTask() async {
-    try {
-      final query = GetTaskQuery(id: widget.taskId);
-      final response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+    await AsyncErrorHandler.execute<GetTaskQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+      operation: () async {
+        final query = GetTaskQuery(id: widget.taskId);
+        return await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+      },
+      onSuccess: (response) {
+        if (!mounted) return;
 
-      if (mounted) {
         // Store current selections before updating
         final titleSelection = _titleController.selection;
         final descriptionSelection = _descriptionController.selection;
@@ -236,39 +240,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           }
         });
         _processFieldVisibility();
-      }
-    } catch (e, stackTrace) {
-      if (!mounted) return;
-
-      if (e is BusinessException) {
-        ErrorHelper.showError(context, e);
-      } else {
-        ErrorHelper.showUnexpectedError(
-          context,
-          Exception(e.toString()), // Wrap the error in an Exception
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.getTaskError),
-        );
-      }
-    }
+      },
+    );
   }
 
   Future<void> _getTaskTags() async {
-    if (mounted) {
-      setState(() {
-        _taskTags = null; // Clear existing tags before fetching
-      });
-    }
+    if (!mounted) return;
+    setState(() => _taskTags = null);
 
     int pageIndex = 0;
     const int pageSize = 50;
 
     while (true) {
       final query = GetListTaskTagsQuery(taskId: widget.taskId, pageIndex: pageIndex, pageSize: pageSize);
-      try {
-        final response = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query);
 
-        if (mounted) {
+      final result = await AsyncErrorHandler.execute<GetListTaskTagsQueryResponse>(
+        context: context,
+        errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
+        operation: () => _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query),
+        onSuccess: (response) {
+          if (!mounted) return;
           setState(() {
             if (_taskTags == null) {
               _taskTags = response;
@@ -276,36 +267,21 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               _taskTags!.items.addAll(response.items);
             }
           });
-
-          // Process field visibility after tags are loaded to ensure tag fields show correctly
           _processFieldVisibility();
-        }
+        },
+      );
 
-        if (response.items.length < pageSize) break; // Exit if we've fetched all items
-        pageIndex++;
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(TaskTranslationKeys.getTagsError),
-          );
-          break;
-        }
-      }
+      if (result == null || result.items.length < pageSize) break;
+      pageIndex++;
     }
   }
 
   Future<void> _updateTask() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    // Increase debounce time to give user more time to type
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
-      // Only proceed if the widget is still mounted
       if (!mounted) return;
 
-      // Get current values directly from controllers
       final saveCommand = SaveTaskCommand(
         id: _task!.id,
         title: _titleController.text,
@@ -317,70 +293,48 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         isCompleted: _task!.isCompleted,
       );
 
-      try {
-        // Send the command but don't update UI with the result
-        final result = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-
-        // Notify listeners that task was updated with the task ID
-        _tasksService.notifyTaskUpdated(result.id);
-        widget.onTaskUpdated?.call();
-
-        // Don't update any text fields or selections - let them remain as they are
-      } on BusinessException catch (e) {
-        if (mounted) ErrorHelper.showError(context, e);
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(TaskTranslationKeys.saveTaskError),
-          );
-        }
-      }
+      await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
+        context: context,
+        errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+        operation: () => _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand),
+        onSuccess: (result) {
+          _tasksService.notifyTaskUpdated(result.id);
+          widget.onTaskUpdated?.call();
+        },
+      );
     });
   }
 
-  Future<void> _addTag(String tagId) async {
-    try {
-      final command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
-      await _mediator.send(command);
-      // If the tag was added successfully
-      _tasksService.notifyTaskUpdated(_task!.id);
-      await _getTaskTags();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.addTagError),
-        );
-      }
-    }
+  Future<bool> _addTag(String tagId) async {
+    final result = await AsyncErrorHandler.execute<AddTaskTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.addTagError),
+      operation: () async {
+        final command = AddTaskTagCommand(taskId: _task!.id, tagId: tagId);
+        return await _mediator.send(command);
+      },
+      onSuccess: (_) async {
+        _tasksService.notifyTaskUpdated(_task!.id);
+        await _getTaskTags();
+      },
+    );
+    return result != null;
   }
 
-  Future<void> _removeTag(String id) async {
-    try {
-      final command = RemoveTaskTagCommand(id: id);
-      await _mediator.send(command);
-      // If the tag was removed successfully
-      _tasksService.notifyTaskUpdated(_task!.id);
-      await _getTaskTags();
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.removeTagError),
-        );
-      }
-    }
+  Future<bool> _removeTag(String id) async {
+    final result = await AsyncErrorHandler.execute<RemoveTaskTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.removeTagError),
+      operation: () async {
+        final command = RemoveTaskTagCommand(id: id);
+        return await _mediator.send(command);
+      },
+      onSuccess: (_) async {
+        _tasksService.notifyTaskUpdated(_task!.id);
+        await _getTaskTags();
+      },
+    );
+    return result != null;
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {

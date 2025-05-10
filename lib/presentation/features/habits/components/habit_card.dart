@@ -12,8 +12,8 @@ import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/date_time_helper.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
@@ -56,74 +56,72 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Future<void> _getHabitRecords() async {
-    try {
-      final query = GetListHabitRecordsQuery(
-        pageIndex: 0,
-        pageSize: widget.dateRange,
-        habitId: widget.habit.id,
-        startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
-        endDate: DateTime.now(),
-      );
-      final response = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-
-      if (mounted) {
-        setState(() {
-          _habitRecords = response;
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.loadingRecordsError));
-      }
-    }
+    await AsyncErrorHandler.execute<GetListHabitRecordsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
+      operation: () async {
+        final query = GetListHabitRecordsQuery(
+          pageIndex: 0,
+          pageSize: widget.dateRange,
+          habitId: widget.habit.id,
+          startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
+          endDate: DateTime.now(),
+        );
+        return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      },
+      onSuccess: (response) {
+        if (mounted) {
+          setState(() {
+            _habitRecords = response;
+          });
+        }
+      },
+    );
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
-    try {
-      final command = AddHabitRecordCommand(habitId: habitId, date: date);
-      final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
+      operation: () async {
+        final command = AddHabitRecordCommand(habitId: habitId, date: date);
+        final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
-      if (mounted) {
-        setState(() {
-          _habitRecords = null;
-          _getHabitRecords();
-        });
-      }
+        if (mounted) {
+          setState(() {
+            _habitRecords = null;
+            _getHabitRecords();
+          });
+        }
 
-      // Notify service that a record was added
-      _habitsService.notifyHabitRecordAdded(habitId);
-      widget.onRecordCreated?.call(response);
-      _soundPlayer.play(SharedSounds.done);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.creatingRecordError));
-      }
-    }
+        // Notify service that a record was added
+        _habitsService.notifyHabitRecordAdded(habitId);
+        widget.onRecordCreated?.call(response);
+        _soundPlayer.play(SharedSounds.done);
+      },
+    );
   }
 
   Future<void> _deleteHabitRecord(String id) async {
-    try {
-      final command = DeleteHabitRecordCommand(id: id);
-      final response = await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
+      operation: () async {
+        final command = DeleteHabitRecordCommand(id: id);
+        final response = await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
-      if (mounted) {
-        setState(() {
-          _habitRecords = null;
-          _getHabitRecords();
-        });
-      }
+        if (mounted) {
+          setState(() {
+            _habitRecords = null;
+            _getHabitRecords();
+          });
+        }
 
-      // Notify service that a record was removed
-      _habitsService.notifyHabitRecordRemoved(widget.habit.id);
-      widget.onRecordDeleted?.call(response);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.deletingRecordError));
-      }
-    }
+        // Notify service that a record was removed
+        _habitsService.notifyHabitRecordRemoved(widget.habit.id);
+        widget.onRecordDeleted?.call(response);
+      },
+    );
   }
 
   @override

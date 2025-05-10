@@ -7,7 +7,6 @@ import 'package:whph/application/features/notes/commands/add_note_tag_command.da
 import 'package:whph/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/application/features/notes/commands/save_note_command.dart';
 import 'package:whph/application/features/notes/queries/get_note_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
@@ -18,7 +17,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 
 class NoteDetailsContent extends StatefulWidget {
@@ -76,11 +75,14 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   }
 
   Future<void> _getNote() async {
-    try {
-      final query = GetNoteQuery(id: widget.noteId);
-      final response = await _mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
-
-      if (mounted) {
+    await AsyncErrorHandler.execute(
+      context: context,
+      errorMessage: _translationService.translate(NoteTranslationKeys.loadingError),
+      operation: () async {
+        final query = GetNoteQuery(id: widget.noteId);
+        return await _mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
+      },
+      onSuccess: (response) {
         // Store current selections before updating
         final titleSelection = _titleController.selection;
         final contentSelection = _contentController.selection;
@@ -108,19 +110,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
         // Process field visibility after loading note
         _processFieldVisibility();
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.loadingError),
-        );
-      }
-    }
+      },
+    );
   }
 
   // Process field content and update UI after note data is loaded
@@ -190,73 +181,65 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      try {
-        final command = SaveNoteCommand(
-          id: widget.noteId,
-          title: _titleController.text,
-          content: _contentController.text,
-        );
+      if (!mounted) return;
 
-        await _mediator.send(command);
-
-        // Notify the app that a note was updated
-        _notesService.notifyNoteUpdated(widget.noteId);
-
-        if (widget.onNoteUpdated != null) {
-          widget.onNoteUpdated!();
-        }
-      } on BusinessException catch (e) {
-        if (mounted) ErrorHelper.showError(context, e);
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(NoteTranslationKeys.savingError),
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
+        operation: () async {
+          final command = SaveNoteCommand(
+            id: widget.noteId,
+            title: _titleController.text,
+            content: _contentController.text,
           );
-        }
-      }
+
+          await _mediator.send(command);
+        },
+        onSuccess: () {
+          // Notify the app that a note was updated
+          _notesService.notifyNoteUpdated(widget.noteId);
+
+          if (widget.onNoteUpdated != null) {
+            widget.onNoteUpdated!();
+          }
+        },
+      );
     });
   }
 
   // Add tag operations helper methods
   Future<bool> _addTagToNote(String tagId) async {
-    try {
-      final command = AddNoteTagCommand(noteId: widget.noteId, tagId: tagId);
-      await _mediator.send(command);
-      await _getNote();
-      return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.addTagError),
-        );
-      }
-      return false;
-    }
+    final result = await AsyncErrorHandler.execute<AddNoteTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(NoteTranslationKeys.addTagError),
+      operation: () async {
+        final command = AddNoteTagCommand(noteId: widget.noteId, tagId: tagId);
+        return await _mediator.send(command);
+      },
+      onSuccess: (_) async {
+        await _getNote();
+      },
+    );
+
+    // Return true if operation was successful (non-null result), false otherwise
+    return result != null;
   }
 
   Future<bool> _removeTagFromNote(String id) async {
-    try {
-      final command = RemoveNoteTagCommand(id: id);
-      await _mediator.send(command);
-      await _getNote();
-      return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.removeTagError),
-        );
-      }
-      return false;
-    }
+    final result = await AsyncErrorHandler.execute<RemoveNoteTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(NoteTranslationKeys.removeTagError),
+      operation: () async {
+        final command = RemoveNoteTagCommand(id: id);
+        return await _mediator.send(command);
+      },
+      onSuccess: (_) async {
+        await _getNote();
+      },
+    );
+
+    // Return true if operation was successful (non-null result), false otherwise
+    return result != null;
   }
 
   // Helper method to check if a field should be displayed as a chip

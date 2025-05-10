@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
@@ -128,22 +127,6 @@ class AppUsageListState extends State<AppUsageList> {
   }
 
   Future<void> _loadAppUsages() async {
-    if (!mounted) return;
-
-    try {
-      final appUsages = await _fetchAppUsages();
-
-      if (mounted) {
-        setState(() {
-          _appUsages = appUsages;
-        });
-      }
-    } catch (e) {
-      // Capture error but don't show loading state
-    }
-  }
-
-  Future<List<AppUsageListItem>> _fetchAppUsages() async {
     final query = GetListByTopAppUsagesQuery(
       pageIndex: 0,
       pageSize: widget.size,
@@ -153,25 +136,21 @@ class AppUsageListState extends State<AppUsageList> {
       endDate: _currentFilters.filterEndDate,
     );
 
-    try {
-      final result = await _mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
-      return result.items;
-    } on BusinessException catch (e) {
-      if (mounted) {
-        ErrorHelper.showError(context, e);
-      }
-      return [];
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
-        );
-      }
-      return [];
-    }
+    await AsyncErrorHandler.execute<List<AppUsageListItem>>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getUsageError),
+      operation: () async {
+        final result = await _mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
+        return result.items;
+      },
+      onSuccess: (appUsages) {
+        if (mounted) {
+          setState(() {
+            _appUsages = appUsages;
+          });
+        }
+      },
+    );
   }
 
   void _setupEventListeners() {

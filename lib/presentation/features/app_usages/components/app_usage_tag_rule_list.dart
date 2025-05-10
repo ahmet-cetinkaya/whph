@@ -5,7 +5,7 @@ import 'package:whph/application/features/app_usages/commands/delete_app_usage_t
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -76,34 +76,35 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
     setState(() => _isLoading = true);
 
-    try {
-      final query = GetListAppUsageTagRulesQuery(
-        pageIndex: pageIndex,
-        pageSize: isRefresh && _rules != null && _rules!.items.length > _pageSize ? _rules!.items.length : _pageSize,
-        filterByTags: widget.filterByTags,
-      );
+    await AsyncErrorHandler.execute<GetListAppUsageTagRulesQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getRulesError),
+      operation: () async {
+        final query = GetListAppUsageTagRulesQuery(
+          pageIndex: pageIndex,
+          pageSize: isRefresh && _rules != null && _rules!.items.length > _pageSize ? _rules!.items.length : _pageSize,
+          filterByTags: widget.filterByTags,
+        );
 
-      final result =
-          await widget.mediator.send<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse>(query);
+        return await widget.mediator.send<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            if (_rules == null || pageIndex == 0) {
+              _rules = result;
+            } else {
+              _rules!.items.addAll(result.items);
+              _rules!.pageIndex = result.pageIndex;
+            }
+          });
+        }
+      },
+    );
 
-      if (mounted) {
-        setState(() {
-          if (_rules == null || pageIndex == 0) {
-            _rules = result;
-          } else {
-            _rules!.items.addAll(result.items);
-            _rules!.pageIndex = result.pageIndex;
-          }
-          _isLoading = false;
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        // Convert any error to Exception to avoid type cast issues
-        final exception = e is Exception ? e : Exception(e.toString());
-        ErrorHelper.showUnexpectedError(context, exception, stackTrace);
-        setState(() => _isLoading = false);
-      }
+    // Set loading state to false after completion
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -232,17 +233,19 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     );
 
     if (confirmed == true && context.mounted) {
-      try {
-        final command = DeleteAppUsageTagRuleCommand(id: rule.id);
-        await widget.mediator.send<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse>(command);
-
-        // Notify listeners about the rule deletion
-        _appUsagesService.notifyAppUsageRuleDeleted(rule.id);
-
-        // The component will refresh automatically through event listener
-      } catch (e, stackTrace) {
-        if (context.mounted) ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace);
-      }
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.deleteRuleError),
+        operation: () async {
+          final command = DeleteAppUsageTagRuleCommand(id: rule.id);
+          await widget.mediator.send<DeleteAppUsageTagRuleCommand, DeleteAppUsageTagRuleCommandResponse>(command);
+        },
+        onSuccess: () {
+          // Notify listeners about the rule deletion
+          _appUsagesService.notifyAppUsageRuleDeleted(rule.id);
+          // The component will refresh automatically through event listener
+        },
+      );
     }
   }
 }

@@ -9,7 +9,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
@@ -122,45 +122,49 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
     // Update selected task after dialog closes (only if not deleted)
     if (_selectedTask?.id == taskId) {
-      try {
-        final query = GetTaskQuery(id: taskId);
-        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-            GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
+      if (mounted) {
+        await AsyncErrorHandler.execute<void>(
+          context: context,
+          errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+          operation: () async {
+            final query = GetTaskQuery(id: taskId);
+            final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+            final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+                GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
 
-        if (mounted) {
-          setState(() {
-            _selectedTask = TaskListItem(
-                id: task.id,
-                title: task.title,
-                isCompleted: task.isCompleted,
-                deadlineDate: task.deadlineDate,
-                estimatedTime: task.estimatedTime,
-                plannedDate: task.plannedDate,
-                priority: task.priority,
-                tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
-          });
-        }
-      } catch (e, stackTrace) {
-        // Task might have been deleted or other error occurred
-        if (mounted) {
-          setState(() {
-            _selectedTask = null; // Clear selected task on error
-          });
-
-          // Only show error if it's not a "not found" error
-          if (e.toString().toLowerCase().contains('not found')) {
-            // Task was deleted, silently clear selection
+            if (mounted) {
+              setState(() {
+                _selectedTask = TaskListItem(
+                    id: task.id,
+                    title: task.title,
+                    isCompleted: task.isCompleted,
+                    deadlineDate: task.deadlineDate,
+                    estimatedTime: task.estimatedTime,
+                    plannedDate: task.plannedDate,
+                    priority: task.priority,
+                    tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+              });
+            }
             return;
-          }
+          },
+          onError: (error) {
+            // Task might have been deleted or other error occurred
+            if (mounted) {
+              setState(() {
+                _selectedTask = null; // Clear selected task on error
+              });
 
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(TaskTranslationKeys.getTaskError),
-          );
-        }
+              // Only show error if it's not a "not found" error
+              if (error.toString().toLowerCase().contains('not found')) {
+                // Task was deleted, silently clear selection
+                return false; // Don't show error message
+              }
+
+              return true; // Show error message
+            }
+            return false;
+          },
+        );
       }
     }
 
@@ -177,57 +181,48 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       duration: nextDuration,
     );
 
-    try {
-      await _mediator.send(command);
-      _selectedTask!.totalElapsedTime = nextDuration;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.saveTaskError),
-        );
-      }
-    }
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+      operation: () async {
+        await _mediator.send(command);
+        _selectedTask!.totalElapsedTime = nextDuration;
+      },
+    );
   }
 
   Future<void> _refreshSelectedTask() async {
     if (_selectedTask == null) return;
 
-    try {
-      final query = GetTaskQuery(id: _selectedTask!.id);
-      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-      final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-          GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
-      final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-          GetListTasksQuery(pageIndex: 0, pageSize: 10, parentTaskId: _selectedTask!.id));
+    await AsyncErrorHandler.execute<void>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+      operation: () async {
+        final query = GetTaskQuery(id: _selectedTask!.id);
+        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+            GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+        final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+            GetListTasksQuery(pageIndex: 0, pageSize: 10, parentTaskId: _selectedTask!.id));
 
-      if (mounted) {
-        setState(() {
-          _selectedTask = TaskListItem(
-            id: task.id,
-            title: task.title,
-            isCompleted: task.isCompleted,
-            deadlineDate: task.deadlineDate,
-            estimatedTime: task.estimatedTime,
-            plannedDate: task.plannedDate,
-            priority: task.priority,
-            tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList(),
-            subTasks: subTasks.items,
-          );
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.getTaskError),
-        );
-      }
-    }
+        if (mounted) {
+          setState(() {
+            _selectedTask = TaskListItem(
+              id: task.id,
+              title: task.title,
+              isCompleted: task.isCompleted,
+              deadlineDate: task.deadlineDate,
+              estimatedTime: task.estimatedTime,
+              plannedDate: task.plannedDate,
+              priority: task.priority,
+              tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList(),
+              subTasks: subTasks.items,
+            );
+          });
+        }
+        return;
+      },
+    );
   }
 
   @override

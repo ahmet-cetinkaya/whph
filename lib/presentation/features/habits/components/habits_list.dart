@@ -6,7 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
@@ -146,64 +146,56 @@ class HabitsListState extends State<HabitsList> {
   }) async {
     List<HabitListItem>? existingItems;
     if (isRefresh && _habits != null) {
-      existingItems = List.from(_habits!.items);
+      existingItems = List<HabitListItem>.from(_habits!.items);
     }
 
-    try {
-      final query = GetListHabitsQuery(
-        pageIndex: pageIndex,
-        pageSize:
-            isRefresh && _habits != null && _habits!.items.length > widget.size ? _habits!.items.length : widget.size,
-        excludeCompleted: _currentFilters.mini,
-        filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
-        filterNoTags: _currentFilters.filterNoTags,
-      );
-
-      final result = await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
-
-      if (!mounted) return;
-
-      setState(() {
-        if (_habits == null || !isRefresh) {
-          _habits = result;
-        } else {
-          _habits = GetListHabitsQueryResponse(
-            items: [...result.items],
-            totalItemCount: result.totalItemCount,
-            totalPageCount: result.totalPageCount,
-            pageIndex: result.pageIndex,
-            pageSize: result.pageSize,
-          );
-        }
-
-        // Notify about listing count
-        widget.onListing?.call(_habits?.items.length ?? 0);
-      });
-    } catch (e, stackTrace) {
-      if (mounted) {
-        if (existingItems != null && _habits != null) {
-          // Restore previous items on error
-          setState(() {
-            _habits = GetListHabitsQueryResponse(
-              items: existingItems!,
-              totalItemCount: _habits!.totalItemCount,
-              totalPageCount: _habits!.totalPageCount,
-              pageIndex: _habits!.pageIndex,
-              pageSize: _habits!.pageSize,
-            );
-          });
-        }
-
-        // Convert the error to Exception if needed to avoid casting errors
-        final exception = e is Exception ? e : Exception(e.toString());
-
-        ErrorHelper.showUnexpectedError(
-          context,
-          exception,
-          stackTrace,
-          message: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
+    final result = await AsyncErrorHandler.execute<GetListHabitsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
+      operation: () async {
+        final query = GetListHabitsQuery(
+          pageIndex: pageIndex,
+          pageSize:
+              isRefresh && _habits != null && _habits!.items.length > widget.size ? _habits!.items.length : widget.size,
+          excludeCompleted: _currentFilters.mini,
+          filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
+          filterNoTags: _currentFilters.filterNoTags,
         );
-      }
+
+        return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        setState(() {
+          if (_habits == null || !isRefresh) {
+            _habits = result;
+          } else {
+            _habits = GetListHabitsQueryResponse(
+              items: [...result.items],
+              totalItemCount: result.totalItemCount,
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+          }
+
+          // Notify about listing count
+          widget.onListing?.call(_habits?.items.length ?? 0);
+        });
+      },
+    );
+
+    // If error occurred (result is null) and we have existing items, restore them
+    if (result == null && existingItems != null && _habits != null) {
+      setState(() {
+        _habits = GetListHabitsQueryResponse(
+          // Use non-nullable cast since we've already verified existingItems is not null
+          items: existingItems!.toList(),
+          totalItemCount: _habits!.totalItemCount,
+          totalPageCount: _habits!.totalPageCount,
+          pageIndex: _habits!.pageIndex,
+          pageSize: _habits!.pageSize,
+        );
+      });
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class NotificationSettings extends StatefulWidget {
   const NotificationSettings({super.key});
@@ -33,58 +34,55 @@ class _NotificationSettingsState extends State<NotificationSettings> {
   }
 
   Future<void> _loadNotificationSetting() async {
-    try {
-      final setting = await _settingRepository.getByKey(Settings.notifications);
-      if (setting == null) {
-        // Create default setting if not exists
-        await _settingRepository.add(Setting(
-          id: nanoid(),
-          key: Settings.notifications,
-          value: 'true',
-          valueType: SettingValueType.bool,
-          createdDate: DateTime.now(),
-        ));
-        _isEnabled = true;
-      } else {
-        _isEnabled = setting.value == 'true';
-      }
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) => setState(() {
+        _isLoading = isLoading;
+      }),
+      errorMessage: "Error loading notification settings",
+      operation: () async {
+        final setting = await _settingRepository.getByKey(Settings.notifications);
+        if (setting == null) {
+          // Create default setting if not exists
+          await _settingRepository.add(Setting(
+            id: nanoid(),
+            key: Settings.notifications,
+            value: 'true',
+            valueType: SettingValueType.bool,
+            createdDate: DateTime.now(),
+          ));
+          _isEnabled = true;
+        } else {
+          _isEnabled = setting.value == 'true';
+        }
+        return true;
+      },
+    );
 
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Error loading notification setting: $e');
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    // Log errors in debug mode without using the onError parameter
+    if (kDebugMode && _isLoading) {
+      debugPrint('DEBUG: Loading notification settings failed');
     }
   }
 
   Future<void> _toggleNotifications(bool value) async {
     if (_isUpdating) return;
 
-    setState(() => _isUpdating = true);
-
-    try {
-      await _notificationService.setEnabled(value);
-      await _loadNotificationSetting();
-    } catch (e) {
-      debugPrint('Error toggling notifications: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(_translationService.translate(value
-                  ? SettingsTranslationKeys.enableNotificationsError
-                  : SettingsTranslationKeys.disableNotificationsError))),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isUpdating = false);
-      }
-    }
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) => setState(() {
+        _isUpdating = isLoading;
+      }),
+      errorMessage: _translationService.translate(
+          value ? SettingsTranslationKeys.enableNotificationsError : SettingsTranslationKeys.disableNotificationsError),
+      operation: () async {
+        await _notificationService.setEnabled(value);
+        return true;
+      },
+      onSuccess: (_) async {
+        await _loadNotificationSetting();
+      },
+    );
   }
 
   @override

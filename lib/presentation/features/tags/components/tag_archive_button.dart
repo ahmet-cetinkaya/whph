@@ -4,7 +4,7 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -43,25 +43,20 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
   }
 
   Future<void> _loadArchiveStatus() async {
-    try {
-      final tag = await _mediator.send<GetTagQuery, GetTagQueryResponse>(
-        GetTagQuery(id: widget.tagId),
-      );
-      if (mounted) {
+    await AsyncErrorHandler.execute<GetTagQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoadingArchiveStatus),
+      operation: () async {
+        return await _mediator.send<GetTagQuery, GetTagQueryResponse>(
+          GetTagQuery(id: widget.tagId),
+        );
+      },
+      onSuccess: (tag) {
         setState(() {
           _isArchived = tag.isArchived;
         });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TagTranslationKeys.errorLoadingArchiveStatus),
-        );
-      }
-    }
+      },
+    );
   }
 
   Future<void> _toggleArchiveStatus() async {
@@ -92,36 +87,32 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
     );
 
     if (confirmed == true) {
-      try {
-        final tag = await _mediator.send<GetTagQuery, GetTagQueryResponse>(
-          GetTagQuery(id: widget.tagId),
+      if (mounted) {
+        await AsyncErrorHandler.executeVoid(
+          context: context,
+          errorMessage: _translationService.translate(TagTranslationKeys.errorTogglingArchive),
+          operation: () async {
+            final tag = await _mediator.send<GetTagQuery, GetTagQueryResponse>(
+              GetTagQuery(id: widget.tagId),
+            );
+
+            await _mediator.send(SaveTagCommand(
+              id: widget.tagId,
+              name: tag.name,
+              isArchived: newStatus,
+            ));
+          },
+          onSuccess: () {
+            setState(() {
+              _isArchived = newStatus;
+            });
+
+            // Notify that the tag has been updated
+            _tagsService.notifyTagUpdated(widget.tagId);
+
+            widget.onArchiveSuccess?.call();
+          },
         );
-
-        await _mediator.send(SaveTagCommand(
-          id: widget.tagId,
-          name: tag.name,
-          isArchived: newStatus,
-        ));
-
-        if (mounted) {
-          setState(() {
-            _isArchived = newStatus;
-          });
-        }
-
-        // Notify that the tag has been updated
-        _tagsService.notifyTagUpdated(widget.tagId);
-
-        widget.onArchiveSuccess?.call();
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorTogglingArchive),
-          );
-        }
       }
     }
   }

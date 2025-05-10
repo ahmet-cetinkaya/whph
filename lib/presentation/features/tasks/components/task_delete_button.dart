@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/delete_task_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
@@ -34,24 +33,22 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteTask(BuildContext context) async {
-    try {
-      final command = DeleteTaskCommand(id: widget.taskId);
-      await _mediator.send(command);
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.taskDeleteError),
+      operation: () async {
+        final command = DeleteTaskCommand(id: widget.taskId);
+        await _mediator.send(command);
+      },
+      onSuccess: () {
+        // Notify task deleted with task ID as non-nullable parameter
+        _tasksService.notifyTaskDeleted(widget.taskId);
 
-      // Notify task deleted with task ID as non-nullable parameter
-      _tasksService.notifyTaskDeleted(widget.taskId);
-
-      if (widget.onDeleteSuccess != null) {
-        widget.onDeleteSuccess!();
-      }
-    } on BusinessException catch (e) {
-      if (context.mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (context.mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TaskTranslationKeys.taskDeleteError));
-      }
-    }
+        if (widget.onDeleteSuccess != null) {
+          widget.onDeleteSuccess!();
+        }
+      },
+    );
   }
 
   Future<void> _confirmDelete(BuildContext context) async {

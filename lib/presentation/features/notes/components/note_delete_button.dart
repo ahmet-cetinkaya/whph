@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/notes/commands/delete_note_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class NoteDeleteButton extends StatefulWidget {
   final String noteId;
@@ -58,38 +57,26 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
   Future<void> _deleteNote() async {
     if (_isDeleting) return;
 
-    setState(() {
-      _isDeleting = true;
-    });
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) => setState(() {
+        _isDeleting = isLoading;
+      }),
+      errorMessage: _translationService.translate(NoteTranslationKeys.deletingError),
+      operation: () async {
+        final command = DeleteNoteCommand(id: widget.noteId);
+        await _mediator.send(command);
+        return true;
+      },
+      onSuccess: (_) {
+        // Notify note deleted
+        _notesService.notifyNoteDeleted(widget.noteId);
 
-    try {
-      final command = DeleteNoteCommand(id: widget.noteId);
-      await _mediator.send(command);
-
-      // Notify note deleted
-      _notesService.notifyNoteDeleted(widget.noteId);
-
-      if (widget.onDeleted != null) {
-        widget.onDeleted!();
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.deletingError),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isDeleting = false;
-        });
-      }
-    }
+        if (widget.onDeleted != null) {
+          widget.onDeleted!();
+        }
+      },
+    );
   }
 
   @override
