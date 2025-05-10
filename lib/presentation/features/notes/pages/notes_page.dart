@@ -9,6 +9,7 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class NotesPage extends StatefulWidget {
   static const String route = '/notes';
@@ -30,22 +31,26 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   Future<void> _openDetails(String noteId) async {
-    await Navigator.of(context).pushNamed(
-      NoteDetailsPage.route,
-      arguments: {'id': noteId},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(NoteTranslationKeys.noteDetails),
+      child: NoteDetailsPage(
+        noteId: noteId,
+      ),
     );
-    // Note list will refresh automatically through event listeners
   }
 
   /// Handles navigation to note details page after creating a new note
   Future<void> _handleNoteCreated(String noteId) async {
-    // Navigate to the note details page
+    // Navigate to the note details page using responsive dialog
     if (mounted) {
-      await Navigator.of(context).pushNamed(
-        NoteDetailsPage.route,
-        arguments: {'id': noteId},
+      await ResponsiveDialogHelper.showResponsiveDetailsPage(
+        context: context,
+        title: _translationService.translate(NoteTranslationKeys.noteDetails),
+        child: NoteDetailsPage(
+          noteId: noteId,
+        ),
       );
-      // Note list will refresh automatically through event listeners
     }
   }
 

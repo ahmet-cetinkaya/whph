@@ -21,6 +21,7 @@ import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -75,16 +76,23 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
-    await Navigator.of(context).pushNamed(
-      TaskDetailsPage.route,
-      arguments: {'id': taskId},
+    // Use ResponsiveDialogHelper to show task details
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      child: TaskDetailsPage(
+        taskId: taskId,
+        hideSidebar: true,
+      ),
     );
   }
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
-    await Navigator.of(context).pushNamed(
-      HabitDetailsPage.route,
-      arguments: {'id': id},
+    // Use ResponsiveDialogHelper to show habit details
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      child: HabitDetailsPage(
+        habitId: id,
+      ),
     );
   }
 

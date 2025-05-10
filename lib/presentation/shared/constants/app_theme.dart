@@ -6,7 +6,7 @@ class AppTheme {
   static const Color primaryColor = domain.AppTheme.primaryColor;
 
   // Surface Colors
-  static const Color surface0 = Color(0x00000000);
+  static const Color surface0 = Color.fromARGB(255, 0, 0, 0);
   static const Color surface1 = Color(0xFF121212);
   static const Color surface2 = Color(0xFF181818);
   static const Color surface3 = Color(0xFF202020);

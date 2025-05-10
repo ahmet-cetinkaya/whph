@@ -10,6 +10,7 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -35,9 +36,12 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   Future<void> _openDetails(String id) async {
-    await Navigator.of(context).pushNamed(
-      AppUsageDetailsPage.route,
-      arguments: {'id': id},
+    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
+      child: AppUsageDetailsPage(
+        appUsageId: id,
+      ),
     );
   }
 
@@ -55,7 +59,11 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () async {
-            await Navigator.pushNamed(context, AppUsageRulesPage.route);
+            await ResponsiveDialogHelper.showResponsiveDetailsPage(
+              context: context,
+              title: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
+              child: const AppUsageRulesPage(),
+            );
             setState(() {}); // Trigger rebuild to refresh list
           },
           color: AppTheme.primaryColor,

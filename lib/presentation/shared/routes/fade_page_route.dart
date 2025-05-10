@@ -49,25 +49,11 @@ class _FadePageTransition extends StatefulWidget {
 }
 
 class _FadePageTransitionState extends State<_FadePageTransition> {
-  late final Animation<double> _exitAnimation;
   late final Animation<double> _enterAnimation;
 
   @override
   void initState() {
     super.initState();
-
-    // Exit animation for the current page
-    _exitAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: widget.secondaryAnimation,
-      curve: const Interval(
-        0.0,
-        0.7,
-        curve: Curves.easeInOutCubic,
-      ),
-    ));
 
     // Enter animation for the new page
     _enterAnimation = Tween<double>(
@@ -76,7 +62,7 @@ class _FadePageTransitionState extends State<_FadePageTransition> {
     ).animate(CurvedAnimation(
       parent: widget.primaryAnimation,
       curve: const Interval(
-        0.7,
+        0.0,
         1.0,
         curve: Curves.easeOutCubic,
       ),
@@ -87,21 +73,9 @@ class _FadePageTransitionState extends State<_FadePageTransition> {
   Widget build(BuildContext context) {
     return Material(
       color: widget.backgroundColor,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          FadeTransition(
-            opacity: _exitAnimation,
-            child: Container(
-              color: widget.backgroundColor,
-              child: const SizedBox.expand(),
-            ),
-          ),
-          FadeTransition(
-            opacity: _enterAnimation,
-            child: widget.child,
-          ),
-        ],
+      child: FadeTransition(
+        opacity: _enterAnimation,
+        child: widget.child,
       ),
     );
   }

@@ -13,6 +13,7 @@ import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
+import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -433,24 +434,38 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Task Title (always visible - mandatory field)
-          TextFormField(
-            controller: _titleController,
-            maxLines: null,
-            onChanged: (value) {
-              // Simply trigger the update and notify listeners
-              _updateTask();
-              widget.onTitleUpdated?.call(value);
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              suffixIcon: Tooltip(
-                message: _translationService.translate(TaskTranslationKeys.editTitleTooltip),
-                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+          Row(
+            children: [
+              if (_task != null)
+                TaskCompleteButton(
+                  taskId: widget.taskId,
+                  isCompleted: _task!.isCompleted,
+                  onToggleCompleted: () {
+                    _task!.isCompleted = !_task!.isCompleted;
+                    widget.onCompletedChanged?.call(_task!.isCompleted);
+                  },
+                ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextFormField(
+                  controller: _titleController,
+                  maxLines: null,
+                  onChanged: (value) {
+                    _updateTask();
+                    widget.onTitleUpdated?.call(value);
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    suffixIcon: Tooltip(
+                      message: _translationService.translate(TaskTranslationKeys.editTitleTooltip),
+                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+                    ),
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-            ),
-            style: Theme.of(context).textTheme.bodyLarge,
+            ],
           ),
           const SizedBox(height: AppTheme.sizeSmall),
 

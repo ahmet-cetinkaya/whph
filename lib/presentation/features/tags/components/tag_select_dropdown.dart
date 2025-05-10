@@ -405,43 +405,36 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        displayWidget = Wrap(
-          spacing: 4.0,
-          runSpacing: 4.0,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            ...uniqueSelectedTagIds.map((id) {
+        // Only chips scroll horizontally; button will stay fixed in final Row
+        displayWidget = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: uniqueSelectedTagIds.map((id) {
               final tag = _tags!.items.firstWhere((t) => t.id == id);
-              return Chip(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: EdgeInsets.zero,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                label: Text(
-                  tag.name,
-                  style: AppTheme.bodySmall,
+              return Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Chip(
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.zero,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  label: Text(tag.name, style: AppTheme.bodySmall),
+                  onDeleted: () {
+                    final List<DropdownOption<String>> updatedTags =
+                        uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                      final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
+                      return DropdownOption(label: tagItem.name, value: tagItem.id);
+                    }).toList();
+                    widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                    setState(() {
+                      _selectedTags.removeWhere((tagId) => tagId == id);
+                    });
+                  },
                 ),
-                onDeleted: () {
-                  final List<DropdownOption<String>> updatedTags =
-                      uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                    final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
-                    return DropdownOption(label: tagItem.name, value: tagItem.id);
-                  }).toList();
-                  widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                  setState(() {
-                    _selectedTags.removeWhere((tagId) => tagId == id);
-                  });
-                },
               );
-            }),
-            FilterIconButton(
-              icon: widget.icon,
-              iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
-              color: widget.color ?? Theme.of(context).iconTheme.color,
-              onPressed: () => _showTagSelectionModal(context),
-              tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
-            ),
-          ],
+            }).toList(),
+          ),
         );
       } else if (widget.buttonLabel != null) {
         displayWidget = Text(
@@ -483,7 +476,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
-          displayWidget
+          Flexible(
+            child: displayWidget,
+          )
         else
           Flexible(
             child: widget.buttonLabel != null
@@ -504,6 +499,14 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     onPressed: () => _showTagSelectionModal(context),
                     tooltip: displayTooltip ?? '',
                   ),
+          ),
+        if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
+          FilterIconButton(
+            icon: widget.icon,
+            iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+            color: widget.color ?? Theme.of(context).iconTheme.color,
+            onPressed: () => _showTagSelectionModal(context),
+            tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
           ),
       ],
     );

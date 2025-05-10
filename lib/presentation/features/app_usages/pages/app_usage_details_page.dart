@@ -17,15 +17,10 @@ class AppUsageDetailsPage extends StatefulWidget {
 }
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
-  String? _title;
   bool _hasChanges = false;
 
   void _refreshTitle(String title) {
-    if (mounted) {
-      setState(() {
-        _title = title.replaceAll('\n', ' ');
-      });
-    }
+    // No-op since we don't use title anymore
   }
 
   @override
@@ -39,7 +34,6 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: _title != null ? Text(_title!) : null,
           actions: [
             AppUsageDeleteButton(
               appUsageId: widget.appUsageId,

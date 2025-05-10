@@ -10,6 +10,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/features/settings/components/import_export_settings.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String route = '/settings';
@@ -18,6 +19,7 @@ class SettingsPage extends StatelessWidget {
 
   void _showAboutModal(BuildContext context) {
     showModalBottomSheet(
+      constraints: const BoxConstraints(maxHeight: 350, maxWidth: 600),
       context: context,
       builder: (context) {
         return Padding(
@@ -25,6 +27,16 @@ class SettingsPage extends StatelessWidget {
           child: Center(child: SingleChildScrollView(child: AppAbout())),
         );
       },
+    );
+  }
+
+  void _showSyncDevicesModal(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    ResponsiveDialogHelper.showResponsiveDetailsPage(
+      context: context,
+      title: translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
+      fullHeight: true,
+      child: const SyncDevicesPage(),
     );
   }
 
@@ -56,9 +68,7 @@ class SettingsPage extends StatelessWidget {
               title: Text(translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
                   style: AppTheme.bodyMedium),
               trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.pushNamed(context, SyncDevicesPage.route);
-              },
+              onTap: () => _showSyncDevicesModal(context),
             ),
           ),
           const SizedBox(height: 8),
