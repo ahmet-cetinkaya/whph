@@ -1,24 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
-import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import '../constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
-class LoadMoreButton extends StatelessWidget {
-  final VoidCallback onPressed;
+class LoadMoreButton extends StatefulWidget {
+  final Future<void> Function() onPressed;
 
-  final _translationService = container.resolve<ITranslationService>();
+  const LoadMoreButton({
+    super.key,
+    required this.onPressed,
+  });
 
-  LoadMoreButton({super.key, required this.onPressed});
+  @override
+  State<LoadMoreButton> createState() => _LoadMoreButtonState();
+}
+
+class _LoadMoreButtonState extends State<LoadMoreButton> {
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
-      child: Text(
-        _translationService.translate(SharedTranslationKeys.loadMoreButton),
-        style: AppTheme.bodySmall,
-      ),
+      onPressed: _isLoading
+          ? null
+          : () async {
+              await AsyncErrorHandler.executeWithLoading(
+                context: context,
+                setLoading: (loading) => setState(() => _isLoading = loading),
+                operation: widget.onPressed,
+              );
+            },
+      child: _isLoading
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.refresh),
     );
   }
 }

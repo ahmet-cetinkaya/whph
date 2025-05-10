@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:whph/main.dart';
@@ -422,7 +423,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         return DateTime(year, month, day);
       }
     } catch (e) {
-      // Invalid date format
+      if (kDebugMode) debugPrint('Error parsing date: $e');
     }
     return null;
   }

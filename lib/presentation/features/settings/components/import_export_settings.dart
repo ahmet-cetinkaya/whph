@@ -9,8 +9,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:path/path.dart' as path;
 
@@ -99,33 +98,30 @@ class _ImportExportBottomSheet extends StatelessWidget {
   }
 
   Future<void> _importData(BuildContext dialogContext, String filePath, ImportStrategy strategy) async {
-    try {
-      if (kDebugMode) debugPrint('[ImportExportSettings]: Starting import with strategy: $strategy');
+    if (kDebugMode) debugPrint('[ImportExportSettings]: Starting import with strategy: $strategy');
 
-      // Read file and execute import command
-      final content = await _fileService.readFile(filePath);
-      final mediator = container.resolve<Mediator>();
-      await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
-        ImportDataCommand(content, strategy),
-      );
+    // Get global context for showing success message
+    final scaffoldContext = navigatorKey.currentContext;
+    if (scaffoldContext == null || !scaffoldContext.mounted) return;
 
-      // Get global context for showing success message
-      final scaffoldContext = navigatorKey.currentContext;
-      if (scaffoldContext == null || !scaffoldContext.mounted) return;
+    await AsyncErrorHandler.execute<ImportDataCommandResponse>(
+      context: scaffoldContext,
+      errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+      operation: () async {
+        // Read file content
+        final content = await _fileService.readFile(filePath);
+        final mediator = container.resolve<Mediator>();
 
-      // Show success message
-      _showSuccessMessage(scaffoldContext);
-    } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('[ImportExportSettings]: Import error: $e');
-        debugPrint('[ImportExportSettings]: Stack trace: $stackTrace');
-      }
-
-      final scaffoldContext = navigatorKey.currentContext;
-      if (scaffoldContext == null) return;
-
-      _showErrorMessage(scaffoldContext, e, stackTrace);
-    }
+        // Execute import command
+        return await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
+          ImportDataCommand(content, strategy),
+        );
+      },
+      onSuccess: (_) {
+        // Show success message
+        _showSuccessMessage(scaffoldContext);
+      },
+    );
   }
 
   void _showSuccessMessage(BuildContext context) {
@@ -137,32 +133,28 @@ class _ImportExportBottomSheet extends StatelessWidget {
     );
   }
 
-  void _showErrorMessage(BuildContext context, Object error, StackTrace stackTrace) {
-    if (error is BusinessException) {
-      ErrorHelper.showError(context, error);
-    } else {
-      ErrorHelper.showUnexpectedError(context, error, stackTrace);
-    }
-  }
-
   Future<void> _handleImport(BuildContext parentContext) async {
-    try {
-      // Close bottom sheet and wait for animation
-      Navigator.of(parentContext).pop();
-      await Future.delayed(const Duration(milliseconds: 300));
+    // Close bottom sheet and wait for animation
+    Navigator.of(parentContext).pop();
+    await Future.delayed(const Duration(milliseconds: 300));
 
-      // Pick JSON file
-      final filePath = await _fileService.pickFile(
-        allowedExtensions: ['json'],
-        dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
+    if (parentContext.mounted) {
+      await AsyncErrorHandler.executeVoid(
+        context: parentContext,
+        errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+        operation: () async {
+          // Pick JSON file
+          final filePath = await _fileService.pickFile(
+            allowedExtensions: ['json'],
+            dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
+          );
+
+          // Show import strategy dialog if file is selected
+          if (filePath != null && navigatorKey.currentContext != null) {
+            _showImportStrategyDialog(navigatorKey.currentContext!, filePath);
+          }
+        },
       );
-
-      // Show import strategy dialog if file is selected
-      if (filePath != null && navigatorKey.currentContext != null) {
-        _showImportStrategyDialog(navigatorKey.currentContext!, filePath);
-      }
-    } catch (e) {
-      if (kDebugMode) debugPrint('[ImportExportSettings]: Import process error: $e');
     }
   }
 
@@ -246,55 +238,40 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
     );
   }
 
-  void _showErrorMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_translationService.translate(SettingsTranslationKeys.exportError)),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
   Future<void> _exportData(BuildContext context, ExportDataFileOptions fileOption) async {
-    try {
-      if (kDebugMode) debugPrint('[ImportExportSettings]: Starting export process...');
+    if (kDebugMode) debugPrint('[ImportExportSettings]: Starting export process...');
 
-      // Get export data
-      final mediator = container.resolve<Mediator>();
-      final response = await mediator.send<ExportDataCommand, ExportDataCommandResponse>(
-        ExportDataCommand(fileOption),
-      );
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SettingsTranslationKeys.exportError),
+      operation: () async {
+        // Get export data
+        final mediator = container.resolve<Mediator>();
+        final response = await mediator.send<ExportDataCommand, ExportDataCommandResponse>(
+          ExportDataCommand(fileOption),
+        );
 
-      // Get save path
-      String? savePath = await _getSavePath(fileOption);
-      if (savePath == null) {
-        if (context.mounted) Navigator.of(context).pop();
-        return;
-      }
+        // Get save path
+        String? savePath = await _getSavePath(fileOption);
+        if (savePath == null) {
+          if (context.mounted) Navigator.of(context).pop();
+          return;
+        }
 
-      // Write file
-      await _fileService.writeFile(
-        filePath: savePath,
-        content: response.fileContent,
-      );
+        // Write file
+        await _fileService.writeFile(
+          filePath: savePath,
+          content: response.fileContent,
+        );
 
-      if (!context.mounted) return;
+        if (!context.mounted) return;
 
-      // Close bottom sheet and show success message
-      Navigator.of(context).pop();
-      final displayPath = Platform.isAndroid ? '/storage/emulated/0/Download/${path.basename(savePath)}' : savePath;
-      _showSuccessMessage(context, displayPath);
-    } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('[ImportExportSettings]: Export error: $e');
-        debugPrint('[ImportExportSettings]: Stack trace: $stackTrace');
-      }
-
-      if (context.mounted) {
+        // Close bottom sheet and show success message
         Navigator.of(context).pop();
-        _showErrorMessage(context);
-      }
-    }
+        final displayPath = Platform.isAndroid ? '/storage/emulated/0/Download/${path.basename(savePath)}' : savePath;
+        _showSuccessMessage(context, displayPath);
+      },
+    );
   }
 
   ListTile _buildExportOption({

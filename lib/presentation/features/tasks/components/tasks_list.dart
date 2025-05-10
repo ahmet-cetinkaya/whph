@@ -8,7 +8,7 @@ import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/acore/utils/order_rank.dart';
@@ -188,42 +188,44 @@ class TaskListState extends State<TaskList> {
       existingItems = List.from(_tasks!.items);
     }
 
-    try {
-      final query = GetListTasksQuery(
-        pageIndex: pageIndex,
-        pageSize: widget.size,
-        filterByPlannedStartDate: widget.filterByPlannedStartDate,
-        filterByPlannedEndDate: widget.filterByPlannedEndDate,
-        filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
-        filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
-        filterDateOr: widget.filterDateOr,
-        filterByTags: widget.filterByTags,
-        filterNoTags: widget.filterNoTags,
-        filterByCompleted: widget.filterByCompleted,
-        search: widget.search,
-        parentTaskId: widget.parentTaskId,
-        sortByPlannedDate: widget.sortByPlannedDate,
-      );
+    await AsyncErrorHandler.execute<GetListTasksQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
+      operation: () async {
+        final query = GetListTasksQuery(
+          pageIndex: pageIndex,
+          pageSize: widget.size,
+          filterByPlannedStartDate: widget.filterByPlannedStartDate,
+          filterByPlannedEndDate: widget.filterByPlannedEndDate,
+          filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
+          filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
+          filterDateOr: widget.filterDateOr,
+          filterByTags: widget.filterByTags,
+          filterNoTags: widget.filterNoTags,
+          filterByCompleted: widget.filterByCompleted,
+          search: widget.search,
+          parentTaskId: widget.parentTaskId,
+          sortByPlannedDate: widget.sortByPlannedDate,
+        );
 
-      final result = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
-
-      if (!mounted) return;
-
-      setState(() {
-        if (_tasks == null || !isRefresh) {
-          _tasks = result;
-        } else {
-          _tasks = GetListTasksQueryResponse(
-            items: [...result.items],
-            totalItemCount: result.totalItemCount,
-            totalPageCount: result.totalPageCount,
-            pageIndex: result.pageIndex,
-            pageSize: result.pageSize,
-          );
-        }
-      });
-    } catch (e, stackTrace) {
-      if (mounted) {
+        return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        setState(() {
+          if (_tasks == null || !isRefresh) {
+            _tasks = result;
+          } else {
+            _tasks = GetListTasksQueryResponse(
+              items: [...result.items],
+              totalItemCount: result.totalItemCount,
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+          }
+        });
+      },
+      onError: (_) {
         if (existingItems != null && _tasks != null) {
           // Restore previous items on error
           setState(() {
@@ -236,14 +238,8 @@ class TaskListState extends State<TaskList> {
             );
           });
         }
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(TaskTranslationKeys.getTagsError),
-        );
-      }
-    }
+      },
+    );
   }
 
   void _onTaskCompleted() {
@@ -262,19 +258,11 @@ class TaskListState extends State<TaskList> {
 
     try {
       final targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
-      await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-        UpdateTaskOrderCommand(
-          taskId: task.id,
-          parentTaskId: widget.parentTaskId,
-          beforeTaskOrder: task.order,
-          afterTaskOrder: targetOrder,
-        ),
-      );
-      refresh();
-    } catch (e) {
-      if (e is RankGapTooSmallException) {
-        try {
-          final targetOrder = items.last.order + OrderRank.initialStep * 2;
+
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+        operation: () async {
           await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
             UpdateTaskOrderCommand(
               taskId: task.id,
@@ -283,24 +271,33 @@ class TaskListState extends State<TaskList> {
               afterTaskOrder: targetOrder,
             ),
           );
+        },
+        onSuccess: () {
           refresh();
-        } catch (retryError) {
-          if (mounted) {
-            ErrorHelper.showUnexpectedError(
-              context,
-              retryError as Exception,
-              StackTrace.current,
-              message: _translationService.translate(SharedTranslationKeys.unexpectedError),
-            );
-          }
-        }
-      } else {
+        },
+      );
+    } catch (e) {
+      if (e is RankGapTooSmallException) {
+        // Handle the special case of rank gap being too small
+        final targetOrder = items.last.order + OrderRank.initialStep * 2;
+
         if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            StackTrace.current,
-            message: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          await AsyncErrorHandler.executeVoid(
+            context: context,
+            errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+            operation: () async {
+              await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+                UpdateTaskOrderCommand(
+                  taskId: task.id,
+                  parentTaskId: widget.parentTaskId,
+                  beforeTaskOrder: task.order,
+                  afterTaskOrder: targetOrder,
+                ),
+              );
+            },
+            onSuccess: () {
+              refresh();
+            },
           );
         }
       }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
@@ -9,7 +8,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -84,62 +83,62 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
 
     setState(() => _isLoading = true);
 
-    try {
-      final command = SaveTaskCommand(
-        title: _titleController.text,
-        description: "",
-        tagIdsToAdd: _selectedTags.map((t) => t.value).toList(),
-        priority: _selectedPriority,
-        estimatedTime: _estimatedTime,
-        plannedDate: _plannedDate,
-        deadlineDate: _deadlineDate,
-        isCompleted: false,
-        parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
-      );
-      final response = await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      // Notify that a task was created with the task ID (using non-nullable parameter)
-      _tasksService.notifyTaskCreated(response.id);
-
-      if (widget.onTaskCreated != null) {
-        // Create a TaskData object with all the task information
-        final taskData = TaskData(
+    await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+      operation: () async {
+        final command = SaveTaskCommand(
           title: _titleController.text,
+          description: "",
+          tagIdsToAdd: _selectedTags.map((t) => t.value).toList(),
           priority: _selectedPriority,
           estimatedTime: _estimatedTime,
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
-          tags: _selectedTags
-              .map((t) => TaskDataTag(
-                    id: t.value,
-                    name: t.label,
-                  ))
-              .toList(),
           isCompleted: false,
-          parentTaskId: widget.initialParentTaskId,
-          order: 0.0, // Default order
-          createdDate: DateTime.now(),
+          parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
         );
+        return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+      },
+      onSuccess: (response) {
+        // Notify that a task was created with the task ID (using non-nullable parameter)
+        _tasksService.notifyTaskCreated(response.id);
 
-        widget.onTaskCreated!(response.id, taskData);
-      }
+        if (widget.onTaskCreated != null) {
+          // Create a TaskData object with all the task information
+          final taskData = TaskData(
+            title: _titleController.text,
+            priority: _selectedPriority,
+            estimatedTime: _estimatedTime,
+            plannedDate: _plannedDate,
+            deadlineDate: _deadlineDate,
+            tags: _selectedTags
+                .map((t) => TaskDataTag(
+                      id: t.value,
+                      name: t.label,
+                    ))
+                .toList(),
+            isCompleted: false,
+            parentTaskId: widget.initialParentTaskId,
+            order: 0.0, // Default order
+            createdDate: DateTime.now(),
+          );
 
-      if (mounted) {
-        setState(() {
-          _titleController.clear();
-          _resetState();
-        });
-        _focusNode.requestFocus();
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace, message: 'Error creating task');
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+          widget.onTaskCreated!(response.id, taskData);
+        }
+
+        if (mounted) {
+          setState(() {
+            _titleController.clear();
+            _resetState();
+          });
+          _focusNode.requestFocus();
+        }
+      },
+      finallyAction: () {
+        if (mounted) setState(() => _isLoading = false);
+      },
+    );
   }
 
   Future<void> _selectDate(bool isDeadline) async {

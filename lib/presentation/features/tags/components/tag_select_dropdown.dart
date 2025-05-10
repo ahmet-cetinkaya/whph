@@ -5,7 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -109,40 +109,40 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   }
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
-    try {
-      final query = GetListTagsQuery(
-        pageIndex: pageIndex,
-        pageSize: 10,
-        search: search,
-        showArchived: widget.showArchived,
-      );
-      final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+    await AsyncErrorHandler.execute<GetListTagsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+      operation: () async {
+        final query = GetListTagsQuery(
+          pageIndex: pageIndex,
+          pageSize: 10,
+          search: search,
+          showArchived: widget.showArchived,
+        );
+        return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            if (widget.excludeTagIds.isNotEmpty) {
+              result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
+            }
 
-      if (mounted) {
-        setState(() {
-          if (widget.excludeTagIds.isNotEmpty) {
-            result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
-          }
-
-          if (_tags == null) {
-            _tags = result;
-            // Only include valid initial tags that match the current archive state
-            _selectedTags = widget.initialSelectedTags
-                .where((tag) => result.items.any((t) => t.id == tag.value))
-                .map((e) => e.value)
-                .toList();
-          } else {
-            _tags!.items.addAll(result.items);
-            _tags!.pageIndex = result.pageIndex;
-          }
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorLoading));
-      }
-    }
+            if (_tags == null) {
+              _tags = result;
+              // Only include valid initial tags that match the current archive state
+              _selectedTags = widget.initialSelectedTags
+                  .where((tag) => result.items.any((t) => t.id == tag.value))
+                  .map((e) => e.value)
+                  .toList();
+            } else {
+              _tags!.items.addAll(result.items);
+              _tags!.pageIndex = result.pageIndex;
+            }
+          });
+        }
+      },
+    );
   }
 
   void _scrollListener() {

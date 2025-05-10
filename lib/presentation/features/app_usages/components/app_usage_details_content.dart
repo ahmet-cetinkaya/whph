@@ -8,7 +8,6 @@ import 'package:whph/application/features/app_usages/commands/remove_tag_tag_com
 import 'package:whph/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
@@ -17,7 +16,7 @@ import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -81,9 +80,16 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   Future<void> _getAppUsage() async {
     final query = GetAppUsageQuery(id: widget.id);
-    try {
-      final response = await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
-      if (mounted) {
+
+    await AsyncErrorHandler.execute<GetAppUsageQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getUsageError),
+      operation: () async {
+        return await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+      },
+      onSuccess: (response) {
+        if (!mounted) return;
+
         // Store current selection before updating
         final nameSelection = _nameController.selection;
 
@@ -92,7 +98,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
           // Only update name if it's different
           if (_nameController.text != (response.displayName ?? response.name)) {
-            // Check displayName instead of name
             _nameController.text = response.displayName ?? response.name;
             widget.onNameUpdated?.call(response.displayName ?? response.name);
             // Don't restore selection for name if it changed
@@ -101,27 +106,14 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             _nameController.selection = nameSelection;
           }
         });
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
-        );
-      }
-    }
+      },
+    );
   }
 
   Future<void> _saveAppUsage() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    // Increase debounce time to give user more time to type
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
-      // Only proceed if the widget is still mounted
       if (!mounted) return;
 
       final command = SaveAppUsageCommand(
@@ -131,25 +123,18 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         color: _appUsage!.color,
         deviceName: _appUsage!.deviceName,
       );
-      try {
-        // Send the command and get the result
-        await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
 
-        // Notify that app usage was updated
-        _appUsagesService.notifyAppUsageUpdated(widget.id);
-        widget.onAppUsageUpdated?.call();
-      } on BusinessException catch (e) {
-        if (mounted) ErrorHelper.showError(context, e);
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
-          );
-        }
-      }
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
+        operation: () async {
+          await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
+        },
+        onSuccess: () {
+          _appUsagesService.notifyAppUsageUpdated(widget.id);
+          widget.onAppUsageUpdated?.call();
+        },
+      );
     });
   }
 
@@ -159,44 +144,29 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
     while (true) {
       final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
-      try {
-        final result = await _mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
 
-        if (mounted) {
-          setState(() {
-            if (_appUsageTags == null) {
-              _appUsageTags = result;
-            } else {
-              _appUsageTags!.items.addAll(result.items);
-            }
-          });
+      final result = await AsyncErrorHandler.execute<GetListAppUsageTagsQueryResponse>(
+        context: context,
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.getTagsError),
+        operation: () async {
+          return await _mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
+        },
+        onSuccess: (result) {
+          if (mounted) {
+            setState(() {
+              if (_appUsageTags == null) {
+                _appUsageTags = result;
+              } else {
+                _appUsageTags!.items.addAll(result.items);
+              }
+            });
+            _processFieldVisibility();
+          }
+        },
+      );
 
-          // Process field visibility after tags are loaded to ensure tag fields show correctly
-          _processFieldVisibility();
-        }
-
-        // Break out of the loop if we've fetched all tags or received an empty page
-        if (result.items.isEmpty || result.items.length < pageSize) {
-          break;
-        }
-
-        pageIndex++;
-      } on BusinessException catch (e) {
-        if (mounted) {
-          ErrorHelper.showError(context, e);
-          break;
-        }
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e as Exception,
-            stackTrace,
-            message: _translationService.translate(AppUsageTranslationKeys.getTagsError),
-          );
-          break;
-        }
-      }
+      if (result == null || result.items.isEmpty || result.items.length < pageSize) break;
+      pageIndex++;
     }
   }
 
@@ -349,42 +319,38 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Add the method to handle adding a tag to an app usage
   Future<bool> _addTagToAppUsage(String tagId) async {
-    try {
-      final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
-      await _mediator.send(command);
+    final result = await AsyncErrorHandler.execute<AddAppUsageTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.addTagError),
+      operation: () async {
+        final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
+        return await _mediator.send(command);
+      },
+    );
+
+    if (result != null) {
       await _getAppUsageTags();
       return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.addTagError),
-        );
-      }
-      return false;
     }
+    return false;
   }
 
   // Add the method to handle removing a tag from an app usage
   Future<bool> _removeTagFromAppUsage(String id) async {
-    try {
-      final command = RemoveAppUsageTagCommand(id: id);
-      await _mediator.send(command);
+    final result = await AsyncErrorHandler.execute<RemoveAppUsageTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.removeTagError),
+      operation: () async {
+        final command = RemoveAppUsageTagCommand(id: id);
+        return await _mediator.send(command);
+      },
+    );
+
+    if (result != null) {
       await _getAppUsageTags();
       return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.removeTagError),
-        );
-      }
-      return false;
     }
+    return false;
   }
 
   @override

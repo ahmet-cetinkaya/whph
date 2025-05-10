@@ -11,14 +11,13 @@ import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
@@ -104,103 +103,110 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   Future<void> _getHabit() async {
-    try {
-      final query = GetHabitQuery(id: widget.habitId);
-      final result = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          // Store current selections before updating
+          final nameSelection = _nameController.selection;
+          final descriptionSelection = _descriptionController.selection;
 
-      if (mounted) {
-        // Store current selections before updating
-        final nameSelection = _nameController.selection;
-        final descriptionSelection = _descriptionController.selection;
+          setState(() {
+            _habit = result;
 
-        setState(() {
-          _habit = result;
+            // Only update name if it's different
+            if (_nameController.text != result.name) {
+              _nameController.text = result.name;
+              widget.onNameUpdated?.call(result.name);
+              // Don't restore selection for name if it changed
+            } else if (nameSelection.isValid) {
+              // Restore selection if name didn't change
+              _nameController.selection = nameSelection;
+            }
 
-          // Only update name if it's different
-          if (_nameController.text != result.name) {
-            _nameController.text = result.name;
-            widget.onNameUpdated?.call(result.name);
-            // Don't restore selection for name if it changed
-          } else if (nameSelection.isValid) {
-            // Restore selection if name didn't change
-            _nameController.selection = nameSelection;
-          }
-
-          // Only update description if it's different
-          if (_descriptionController.text != _habit!.description) {
-            _descriptionController.text = _habit!.description;
-            // Don't restore selection if text changed
-          } else if (descriptionSelection.isValid) {
-            // Restore selection if text didn't change
-            _descriptionController.selection = descriptionSelection;
-          }
-        });
-        _processFieldVisibility();
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.loadingDetailsError));
-      }
-    }
+            // Only update description if it's different
+            if (_descriptionController.text != _habit!.description) {
+              _descriptionController.text = _habit!.description;
+              // Don't restore selection if text changed
+            } else if (descriptionSelection.isValid) {
+              // Restore selection if text didn't change
+              _descriptionController.selection = descriptionSelection;
+            }
+          });
+          _processFieldVisibility();
+        }
+      },
+    );
   }
 
   Future<void> _getHabitRecordsForMonth(DateTime month) async {
-    try {
-      final firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
-      final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+    await AsyncErrorHandler.execute<GetListHabitRecordsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
+      operation: () async {
+        final firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
+        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
 
-      final query = GetListHabitRecordsQuery(
-        pageIndex: 0,
-        pageSize: 37,
-        habitId: widget.habitId,
-        startDate: firstDayOfMonth,
-        endDate: lastDayOfMonth,
-      );
-      final result = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-      _habitRecords = result;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.loadingRecordsError));
-      }
-    }
+        final query = GetListHabitRecordsQuery(
+          pageIndex: 0,
+          pageSize: 37,
+          habitId: widget.habitId,
+          startDate: firstDayOfMonth,
+          endDate: lastDayOfMonth,
+        );
+        return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            _habitRecords = result;
+          });
+        }
+      },
+    );
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
-    try {
-      final command = AddHabitRecordCommand(habitId: habitId, date: date);
-      await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
-      if (mounted) {
-        setState(() {
-          _getHabitRecordsForMonth(currentMonth);
-          _getHabit();
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.creatingRecordError));
-      }
-    }
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
+      operation: () async {
+        final command = AddHabitRecordCommand(habitId: habitId, date: date);
+        await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+      },
+      onSuccess: () {
+        if (mounted) {
+          setState(() {
+            _getHabitRecordsForMonth(currentMonth);
+            _getHabit();
+          });
+        }
+      },
+    );
   }
 
   Future<void> _deleteHabitRecord(String id) async {
-    try {
-      final command = DeleteHabitRecordCommand(id: id);
-      await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
-      if (mounted) {
-        setState(() {
-          _getHabitRecordsForMonth(currentMonth);
-          _getHabit();
-        });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.deletingRecordError));
-      }
-    }
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
+      operation: () async {
+        final command = DeleteHabitRecordCommand(id: id);
+        await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+      },
+      onSuccess: () {
+        if (mounted) {
+          setState(() {
+            _getHabitRecordsForMonth(currentMonth);
+            _getHabit();
+          });
+        }
+      },
+    );
   }
 
   Future<void> _getHabitTags() async {
@@ -218,42 +224,36 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     while (true) {
       final query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
-      try {
-        final response = await _mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
 
-        if (mounted) {
-          setState(() {
-            if (_habitTags == null) {
-              _habitTags = response;
-            } else {
-              _habitTags!.items.addAll(response.items);
-            }
-          });
+      final result = await AsyncErrorHandler.execute<GetListHabitTagsQueryResponse>(
+        context: context,
+        errorMessage: _translationService.translate(HabitTranslationKeys.loadingTagsError),
+        operation: () async {
+          return await _mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
+        },
+        onSuccess: (response) {
+          if (mounted) {
+            setState(() {
+              if (_habitTags == null) {
+                _habitTags = response;
+              } else {
+                _habitTags!.items.addAll(response.items);
+              }
+            });
 
-          // Process field visibility again after tags are loaded
-          _processFieldVisibility();
-        }
+            // Process field visibility again after tags are loaded
+            _processFieldVisibility();
+          }
+        },
+      );
 
-        // Break out of the loop if we've fetched all tags or received an empty page
-        if (response.items.isEmpty || response.items.length < pageSize) {
-          break;
-        }
-
-        pageIndex++;
-      } catch (e, stackTrace) {
-        if (mounted) {
-          // Create a proper Exception object if the error isn't one already
-          final exception = e is Exception ? e : Exception(e.toString());
-
-          ErrorHelper.showUnexpectedError(
-            context,
-            exception,
-            stackTrace,
-            message: _translationService.translate(HabitTranslationKeys.loadingTagsError),
-          );
-          break;
-        }
+      // If no result or empty items, break the loop
+      if (result == null || result.items.isEmpty || result.items.length < pageSize) {
+        break;
       }
+
+      // Continue to next page
+      pageIndex++;
     }
   }
 
@@ -291,6 +291,62 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     processTags();
   }
 
+  void _onDescriptionChanged(String value) {
+    // Handle empty whitespace
+    if (value.trim().isEmpty) {
+      _descriptionController.clear();
+
+      // Set cursor at beginning after clearing
+      if (mounted) {
+        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
+      }
+    }
+
+    // Simply trigger the update
+    _saveHabit();
+  }
+
+  // Add methods to handle tag operations
+  Future<bool> _addTagToHabit(String tagId) async {
+    final result = await AsyncErrorHandler.execute<AddHabitTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.addingTagError),
+      operation: () async {
+        final command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
+        return await _mediator.send(command);
+      },
+    );
+
+    // If operation succeeded, refresh tags and return true
+    if (result != null) {
+      await _getHabitTags();
+      return true;
+    }
+
+    // Operation failed
+    return false;
+  }
+
+  Future<bool> _removeTagFromHabit(String id) async {
+    final result = await AsyncErrorHandler.execute<RemoveHabitTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.removingTagError),
+      operation: () async {
+        final command = RemoveHabitTagCommand(id: id);
+        return await _mediator.send(command);
+      },
+    );
+
+    // If operation succeeded, refresh tags and return true
+    if (result != null) {
+      await _getHabitTags();
+      return true;
+    }
+
+    // Operation failed
+    return false;
+  }
+
   Future<void> _saveHabit() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -303,22 +359,19 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         description: _descriptionController.text,
         estimatedTime: _habit!.estimatedTime,
       );
-      try {
-        await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
 
-        // Notify that habit was updated
-        _habitsService.notifyHabitUpdated(widget.habitId);
-        widget.onHabitUpdated?.call();
-      } on BusinessException catch (e) {
-        if (mounted) {
-          ErrorHelper.showError(context, e);
-        }
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-              message: _translationService.translate(HabitTranslationKeys.savingDetailsError));
-        }
-      }
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(HabitTranslationKeys.savingDetailsError),
+        operation: () async {
+          await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+        },
+        onSuccess: () {
+          // Notify that habit was updated
+          _habitsService.notifyHabitUpdated(widget.habitId);
+          widget.onHabitUpdated?.call();
+        },
+      );
     });
   }
 
@@ -641,59 +694,5 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         Text(title, style: AppTheme.bodyLarge),
       ],
     );
-  }
-
-  void _onDescriptionChanged(String value) {
-    // Handle empty whitespace
-    if (value.trim().isEmpty) {
-      _descriptionController.clear();
-
-      // Set cursor at beginning after clearing
-      if (mounted) {
-        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
-      }
-    }
-
-    // Simply trigger the update
-    _saveHabit();
-  }
-
-  // Add methods to handle tag operations
-  Future<bool> _addTagToHabit(String tagId) async {
-    try {
-      final command = AddHabitTagCommand(habitId: widget.habitId, tagId: tagId);
-      await _mediator.send(command);
-      await _getHabitTags();
-      return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(HabitTranslationKeys.addingTagError),
-        );
-      }
-      return false;
-    }
-  }
-
-  Future<bool> _removeTagFromHabit(String id) async {
-    try {
-      final command = RemoveHabitTagCommand(id: id);
-      await _mediator.send(command);
-      await _getHabitTags();
-      return true;
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(HabitTranslationKeys.removingTagError),
-        );
-      }
-      return false;
-    }
   }
 }

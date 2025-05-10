@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
@@ -69,36 +69,33 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
     });
 
     if (validate()) {
-      try {
-        final command = AddAppUsageTagRuleCommand(
-          pattern: _patternController.text,
-          tagId: _selectedTagId!,
-          description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
-        );
-
-        final response = await _mediator.send<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse>(command);
-
-        if (mounted) {
-          // Notify that a new rule was created
-          _appUsagesService.notifyAppUsageRuleCreated(response.id);
-          widget.onSave?.call();
-          await refresh();
-        }
-      } catch (e, stackTrace) {
-        if (!mounted) return;
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
-        );
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isSubmitting = false;
-          });
-        }
-      }
+      await AsyncErrorHandler.execute<AddAppUsageTagRuleCommandResponse>(
+        context: context,
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.saveRuleError),
+        operation: () async {
+          final command = AddAppUsageTagRuleCommand(
+            pattern: _patternController.text,
+            tagId: _selectedTagId!,
+            description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+          );
+          return await _mediator.send<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse>(command);
+        },
+        onSuccess: (response) {
+          if (mounted) {
+            // Notify that a new rule was created
+            _appUsagesService.notifyAppUsageRuleCreated(response.id);
+            widget.onSave?.call();
+            refresh();
+          }
+        },
+        finallyAction: () {
+          if (mounted) {
+            setState(() {
+              _isSubmitting = false;
+            });
+          }
+        },
+      );
     } else {
       setState(() {
         _isSubmitting = false;

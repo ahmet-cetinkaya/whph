@@ -11,7 +11,7 @@ import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
@@ -128,57 +128,48 @@ class NotesListState extends State<NotesList> {
       existingItems = List.from(_notes!.items);
     }
 
-    try {
-      final query = GetListNotesQuery(
-        pageIndex: pageIndex,
-        pageSize: _pageSize,
-        search: _currentFilters.search,
-        filterByTags: _currentFilters.filterByTags,
-        filterNoTags: _currentFilters.filterNoTags,
-      );
-
-      final result = await _mediator.send<GetListNotesQuery, GetListNotesQueryResponse>(query);
-
-      if (!mounted) return;
-
-      setState(() {
-        if (_notes == null || !isRefresh) {
-          _notes = result;
-        } else {
-          _notes = GetListNotesQueryResponse(
-            items: [...result.items],
-            totalItemCount: result.totalItemCount,
-            totalPageCount: result.totalPageCount,
-            pageIndex: result.pageIndex,
-            pageSize: result.pageSize,
-          );
-        }
-      });
-    } catch (e, stackTrace) {
-      if (mounted) {
-        if (existingItems != null && _notes != null) {
-          // Restore previous items on error
-          setState(() {
-            _notes = GetListNotesQueryResponse(
-              items: existingItems!,
-              totalItemCount: _notes!.totalItemCount,
-              totalPageCount: _notes!.totalPageCount,
-              pageIndex: _notes!.pageIndex,
-              pageSize: _notes!.pageSize,
-            );
-          });
-        }
-
-        // Convert the error to Exception if needed to avoid casting errors
-        final exception = e is Exception ? e : Exception(e.toString());
-
-        ErrorHelper.showUnexpectedError(
-          context,
-          exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.loadingError),
+    final result = await AsyncErrorHandler.execute<GetListNotesQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(NoteTranslationKeys.loadingError),
+      operation: () async {
+        final query = GetListNotesQuery(
+          pageIndex: pageIndex,
+          pageSize: _pageSize,
+          search: _currentFilters.search,
+          filterByTags: _currentFilters.filterByTags,
+          filterNoTags: _currentFilters.filterNoTags,
         );
-      }
+
+        return await _mediator.send<GetListNotesQuery, GetListNotesQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        setState(() {
+          if (_notes == null || !isRefresh) {
+            _notes = result;
+          } else {
+            _notes = GetListNotesQueryResponse(
+              items: [...result.items],
+              totalItemCount: result.totalItemCount,
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+          }
+        });
+      },
+    );
+
+    // If an error occurred (result is null) and we have existing items, restore them
+    if (result == null && existingItems != null && _notes != null) {
+      setState(() {
+        _notes = GetListNotesQueryResponse(
+          items: existingItems!,
+          totalItemCount: _notes!.totalItemCount,
+          totalPageCount: _notes!.totalPageCount,
+          pageIndex: _notes!.pageIndex,
+          pageSize: _notes!.pageSize,
+        );
+      });
     }
   }
 

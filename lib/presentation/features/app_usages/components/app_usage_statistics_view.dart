@@ -10,8 +10,8 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_con
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class AppUsageStatisticsView extends StatefulWidget {
   final String appUsageId;
@@ -68,25 +68,19 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
   Future<void> _fetchAppUsage() async {
     if (!mounted) return;
 
-    try {
-      final query = GetAppUsageQuery(id: widget.appUsageId);
-      final response = await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
-
-      if (mounted) {
+    await AsyncErrorHandler.execute(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getUsageError),
+      operation: () async {
+        final query = GetAppUsageQuery(id: widget.appUsageId);
+        return await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+      },
+      onSuccess: (response) {
         setState(() {
           _appUsage = response;
         });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.getUsageError),
-        );
-      }
-    }
+      },
+    );
   }
 
   Future<void> _fetchStatistics() async {
@@ -97,40 +91,27 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
       _errorMessage = null;
     });
 
-    try {
-      final query = GetAppUsageStatisticsQuery(
-        appUsageId: widget.appUsageId,
-        startDate: _startDate,
-        endDate: _endDate,
-        compareStartDate: _showComparison ? _compareStartDate : null,
-        compareEndDate: _showComparison ? _compareEndDate : null,
-      );
+    await AsyncErrorHandler.execute(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.statisticsError),
+      operation: () async {
+        final query = GetAppUsageStatisticsQuery(
+          appUsageId: widget.appUsageId,
+          startDate: _startDate,
+          endDate: _endDate,
+          compareStartDate: _showComparison ? _compareStartDate : null,
+          compareEndDate: _showComparison ? _compareEndDate : null,
+        );
 
-      final response = await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(query);
-
-      if (mounted) {
+        return await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(query);
+      },
+      onSuccess: (response) {
         setState(() {
           _statistics = response;
           _isLoading = false;
         });
-      }
-    } catch (e, stackTrace) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = _translationService.translate(AppUsageTranslationKeys.statisticsError);
-        });
-
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(AppUsageTranslationKeys.statisticsError),
-        );
-
-        widget.onError?.call(_errorMessage!);
-      }
-    }
+      },
+    );
   }
 
   @override

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/notes/commands/save_note_command.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class NoteAddButton extends StatefulWidget {
   /// Callback when a note is created, provides the created note ID
@@ -36,42 +35,29 @@ class _NoteAddButtonState extends State<NoteAddButton> {
   Future<void> _createNote() async {
     if (_isCreating) return;
 
-    setState(() {
-      _isCreating = true;
-    });
-
-    try {
-      final command = SaveNoteCommand(
-        title: _translationService.translate(NoteTranslationKeys.newNote),
-        content: '',
-      );
-
-      final response = await _mediator.send<SaveNoteCommand, SaveNoteCommandResponse>(command);
-
-      // Notify the app that a note was created
-      _notesService.notifyNoteCreated(response.id);
-
-      if (widget.onNoteCreated != null) {
-        widget.onNoteCreated!(response.id);
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e as Exception,
-          stackTrace,
-          message: _translationService.translate(NoteTranslationKeys.savingError),
+    await AsyncErrorHandler.executeWithLoading(
+      context: context,
+      setLoading: (isLoading) => setState(() {
+        _isCreating = isLoading;
+      }),
+      errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
+      operation: () async {
+        final command = SaveNoteCommand(
+          title: _translationService.translate(NoteTranslationKeys.newNote),
+          content: '',
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isCreating = false;
-        });
-      }
-    }
+
+        return await _mediator.send<SaveNoteCommand, SaveNoteCommandResponse>(command);
+      },
+      onSuccess: (response) {
+        // Notify the app that a note was created
+        _notesService.notifyNoteCreated(response.id);
+
+        if (widget.onNoteCreated != null) {
+          widget.onNoteCreated!(response.id);
+        }
+      },
+    );
   }
 
   @override

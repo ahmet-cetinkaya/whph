@@ -44,6 +44,7 @@ sync:
     device_not_found: Senkronizasyon cihazı bulunamadı
     ip_address: Yerel IP adresi alınamadı
     parse_message: Taranan mesaj işlenemedi
+    scan: QR kodu taranamadı
     save_device: Senkronizasyon cihazı kaydedilemedi
     sync_failed: Senkronizasyon başarısız oldu. Lütfen tekrar deneyin.
     sync_timeout: Senkronizasyon zaman aşımına uğradı

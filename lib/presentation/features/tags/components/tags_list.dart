@@ -9,6 +9,7 @@ import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 
 class TagsList extends StatefulWidget {
@@ -94,35 +95,37 @@ class TagsListState extends State<TagsList> {
       _tags = null;
     }
 
-    try {
-      final query = GetListTagsQuery(
-        pageIndex: pageIndex,
-        pageSize: 10,
-        filterByTags: widget.filterByTags,
-        showArchived: widget.showArchived,
-      );
+    await AsyncErrorHandler.execute<GetListTagsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+      operation: () async {
+        final query = GetListTagsQuery(
+          pageIndex: pageIndex,
+          pageSize: 10,
+          filterByTags: widget.filterByTags,
+          showArchived: widget.showArchived,
+        );
 
-      final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+        return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        setState(() {
+          if (_tags == null || isRefresh) {
+            _tags = result;
+          } else {
+            _tags = GetListTagsQueryResponse(
+              items: [..._tags!.items, ...result.items],
+              totalItemCount: result.totalItemCount,
+              totalPageCount: result.totalPageCount,
+              pageIndex: result.pageIndex,
+              pageSize: result.pageSize,
+            );
+          }
+        });
 
-      if (!mounted) return;
-      setState(() {
-        if (_tags == null || isRefresh) {
-          _tags = result;
-        } else {
-          _tags = GetListTagsQueryResponse(
-            items: [..._tags!.items, ...result.items],
-            totalItemCount: result.totalItemCount,
-            totalPageCount: result.totalPageCount,
-            pageIndex: result.pageIndex,
-            pageSize: result.pageSize,
-          );
-        }
-      });
-
-      widget.onList?.call(_tags!.items.length);
-    } catch (e) {
-      // Error handling without showing loading indicators
-    }
+        widget.onList?.call(_tags!.items.length);
+      },
+    );
   }
 
   @override

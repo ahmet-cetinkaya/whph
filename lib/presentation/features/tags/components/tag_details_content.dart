@@ -7,14 +7,13 @@ import 'package:whph/application/features/tags/commands/remove_tag_tag_command.d
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_query.dart';
-import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
@@ -118,10 +117,14 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   Future<void> _getTag() async {
-    try {
-      final query = GetTagQuery(id: widget.tagId);
-      final response = await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
-      if (mounted) {
+    await AsyncErrorHandler.execute(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+      operation: () async {
+        final query = GetTagQuery(id: widget.tagId);
+        return await _mediator.send<GetTagQuery, GetTagQueryResponse>(query);
+      },
+      onSuccess: (response) {
         final nameSelection = _nameController.selection;
 
         setState(() {
@@ -136,15 +139,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
         // Process field visibility after loading tag
         _processFieldVisibility();
-      }
-    } on BusinessException catch (e) {
-      if (mounted) ErrorHelper.showError(context, e);
-    } catch (e, stackTrace) {
-      if (mounted) {
-        ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorLoading));
-      }
-    }
+      },
+    );
   }
 
   Future<void> _getTagTags() async {
@@ -162,37 +158,30 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
     while (true) {
       final query = GetListTagTagsQuery(primaryTagId: widget.tagId, pageIndex: pageIndex, pageSize: pageSize);
-      try {
-        final response = await _mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
 
-        if (mounted) {
+      final response = await AsyncErrorHandler.execute<GetListTagTagsQueryResponse>(
+        context: context,
+        errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+        operation: () async {
+          return await _mediator.send<GetListTagTagsQuery, GetListTagTagsQueryResponse>(query);
+        },
+        onSuccess: (result) {
           setState(() {
             if (_tagTags == null) {
-              _tagTags = response;
+              _tagTags = result;
             } else {
-              _tagTags!.items.addAll(response.items);
+              _tagTags!.items.addAll(result.items);
             }
           });
-        }
+        },
+      );
 
-        // Exit the loop if there's no more data or the page is empty
-        if (response.items.isEmpty || response.items.length < pageSize) {
-          break;
-        }
-
-        pageIndex++;
-      } catch (e, stackTrace) {
-        if (mounted) {
-          final exception = e is Exception ? e : Exception(e.toString());
-          ErrorHelper.showUnexpectedError(
-            context,
-            exception,
-            stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorLoading),
-          );
-          break;
-        }
+      // If call failed or no more items, exit the loop
+      if (response == null || response.items.isEmpty || response.items.length < pageSize) {
+        break;
       }
+
+      pageIndex++;
     }
 
     // Update visibility status after loading tag data
@@ -212,9 +201,14 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     final tagTagsToRemove =
         _tagTags!.items.where((tagTag) => !tagOptions.map((tag) => tag.value).contains(tagTag.secondaryTagId)).toList();
 
-    // Process all tag changes in bulk
-    Future<void> processTags() async {
-      try {
+    // Only proceed if there are changes
+    if (tagIdsToAdd.isEmpty && tagTagsToRemove.isEmpty) return;
+
+    // Process all tag changes
+    AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
+      operation: () async {
         // Add tags
         for (final tagId in tagIdsToAdd) {
           final command = AddTagTagCommand(primaryTagId: _tag!.id, secondaryTagId: tagId);
@@ -226,27 +220,13 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           final command = RemoveTagTagCommand(id: tagTag.id);
           await _mediator.send(command);
         }
-
-        // Notify once after all tag operations are completed
-        if (tagIdsToAdd.isNotEmpty || tagTagsToRemove.isNotEmpty) {
-          await _getTagTags(); // Refresh tag list
-          _tagsService.notifyTagUpdated(widget.tagId);
-          widget.onTagUpdated?.call();
-        }
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(
-            context,
-            e is Exception ? e : Exception(e.toString()),
-            stackTrace,
-            message: _translationService.translate(TagTranslationKeys.errorSaving),
-          );
-        }
-      }
-    }
-
-    // Apply tag operations
-    processTags();
+      },
+      onSuccess: () async {
+        await _getTagTags(); // Refresh tag list
+        _tagsService.notifyTagUpdated(widget.tagId);
+        widget.onTagUpdated?.call();
+      },
+    );
   }
 
   Future<void> _saveTag() async {
@@ -254,30 +234,25 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
     // Increase debounce time to give user more time to type
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
-      // Only proceed if the widget is still mounted
       if (!mounted) return;
 
-      final command = SaveTagCommand(
-        id: widget.tagId,
-        name: _nameController.text,
-        color: _tag!.color,
-        isArchived: _tag!.isArchived,
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
+        operation: () async {
+          final command = SaveTagCommand(
+            id: widget.tagId,
+            name: _nameController.text,
+            color: _tag!.color,
+            isArchived: _tag!.isArchived,
+          );
+          await _mediator.send(command);
+        },
+        onSuccess: () {
+          widget.onTagUpdated?.call();
+          _tagsService.notifyTagUpdated(widget.tagId);
+        },
       );
-      try {
-        // Send the command but don't update UI with the result
-        await _mediator.send(command);
-        widget.onTagUpdated?.call();
-        _tagsService.notifyTagUpdated(widget.tagId);
-
-        // Don't update any text fields or selections - let them remain as they are
-      } on BusinessException catch (e) {
-        if (mounted) ErrorHelper.showError(context, e);
-      } catch (e, stackTrace) {
-        if (mounted) {
-          ErrorHelper.showUnexpectedError(context, e as Exception, stackTrace,
-              message: _translationService.translate(TagTranslationKeys.errorSaving));
-        }
-      }
     });
   }
 
