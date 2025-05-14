@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/domain/features/notes/note.dart';
 
 class SaveNoteCommand implements IRequest<SaveNoteCommandResponse> {
@@ -28,7 +28,7 @@ class SaveNoteCommandHandler implements IRequestHandler<SaveNoteCommand, SaveNot
 
   @override
   Future<SaveNoteCommandResponse> call(SaveNoteCommand request) async {
-    final id = request.id ?? nanoid();
+    final id = request.id ?? KeyHelper.generateStringId();
     final now = DateTime.now();
 
     final existingNote = await _noteRepository.getById(id).catchError((_) => null);

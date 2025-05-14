@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:launch_at_startup/launch_at_startup.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/constants/app_args.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
@@ -51,7 +51,7 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
       await _settingRepository.update(existingSetting);
     } else {
       await _settingRepository.add(Setting(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         key: Settings.startAtStartup,
         value: isActive.toString(),
         valueType: SettingValueType.bool,

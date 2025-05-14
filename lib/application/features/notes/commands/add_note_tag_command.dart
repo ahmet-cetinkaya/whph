@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/notes/note_tag.dart';
 
@@ -33,7 +33,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
       throw BusinessException('notes.errors.tag_already_exists');
     }
 
-    final id = nanoid();
+    final id = KeyHelper.generateStringId();
     final now = DateTime.now();
 
     final noteTag = NoteTag(

@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag.dart';
@@ -52,7 +52,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
       await _tagRepository.update(tag);
     } else {
       tag = Tag(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         createdDate: DateTime.now(),
         name: request.name,
         isArchived: request.isArchived,

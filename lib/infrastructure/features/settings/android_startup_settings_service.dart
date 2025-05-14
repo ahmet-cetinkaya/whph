@@ -3,7 +3,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_startup_settings
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/features/settings/setting.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 
 class AndroidStartupSettingsService implements IStartupSettingsService {
   final ISettingRepository _settingRepository;
@@ -50,7 +50,7 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
       await _settingRepository.update(existingSetting);
     } else {
       await _settingRepository.add(Setting(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         key: Settings.startAtStartup,
         value: isActive.toString(),
         valueType: SettingValueType.bool,

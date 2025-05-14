@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 
 class DeviceIdService implements IDeviceIdService {
   static const String deviceIdFileName = 'device_id';
@@ -20,7 +20,7 @@ class DeviceIdService implements IDeviceIdService {
     if (await deviceIdFile.exists()) {
       _cachedDeviceId = await deviceIdFile.readAsString();
     } else {
-      _cachedDeviceId = nanoid();
+      _cachedDeviceId = KeyHelper.generateStringId();
       await deviceIdFile.parent.create(recursive: true);
       await deviceIdFile.writeAsString(_cachedDeviceId!);
     }

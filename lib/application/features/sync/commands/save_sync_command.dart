@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/application/features/sync/constants/sync_translation_keys.dart';
@@ -68,7 +68,7 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
 
   Future<SyncDevice> _add(SyncDevice? syncDevice, SaveSyncDeviceCommand request) async {
     syncDevice = SyncDevice(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       fromIp: request.fromIP,
       toIp: request.toIP,
