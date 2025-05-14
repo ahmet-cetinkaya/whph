@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration {
@@ -138,11 +138,11 @@ class AppDatabase extends _$AppDatabase {
               modified_date,
               deleted_date
             )
-            SELECT 
-              LOWER(HEX(RANDOMBLOB(4))) || '-' || LOWER(HEX(RANDOMBLOB(2))) || '-4' || 
-              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' || 
-              SUBSTR('89ab', ABS(RANDOM()) % 4 + 1, 1) || 
-              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' || 
+            SELECT
+              LOWER(HEX(RANDOMBLOB(4))) || '-' || LOWER(HEX(RANDOMBLOB(2))) || '-4' ||
+              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' ||
+              SUBSTR('89ab', ABS(RANDOM()) % 4 + 1, 1) ||
+              SUBSTR(LOWER(HEX(RANDOMBLOB(2))), 2) || '-' ||
               LOWER(HEX(RANDOMBLOB(6))),
               id,
               duration,
@@ -237,18 +237,18 @@ class AppDatabase extends _$AppDatabase {
           // Fix timestamp conversion to handle NULL and ensure NOT NULL for created_date
           await customStatement('''
             INSERT INTO app_usage_tag_rule_table_temp
-            SELECT 
-              id, 
-              pattern, 
-              tag_id, 
+            SELECT
+              id,
+              pattern,
+              tag_id,
               description,
-              COALESCE(CAST(strftime('%s000', created_date) AS INTEGER), 
+              COALESCE(CAST(strftime('%s000', created_date) AS INTEGER),
                       CAST(strftime('%s000', 'now') AS INTEGER)) as created_date,
-              CASE 
+              CASE
                 WHEN modified_date IS NULL THEN NULL
                 ELSE CAST(strftime('%s000', modified_date) AS INTEGER)
               END as modified_date,
-              CASE 
+              CASE
                 WHEN deleted_date IS NULL THEN NULL
                 ELSE CAST(strftime('%s000', deleted_date) AS INTEGER)
               END as deleted_date
@@ -263,12 +263,12 @@ class AppDatabase extends _$AppDatabase {
           await customStatement('''
             UPDATE app_usage_ignore_rule_table
             SET created_date = CAST(strftime('%s', created_date) * 1000 AS INTEGER),
-                modified_date = CASE 
-                  WHEN modified_date IS NULL THEN NULL 
+                modified_date = CASE
+                  WHEN modified_date IS NULL THEN NULL
                   ELSE CAST(strftime('%s', modified_date) * 1000 AS INTEGER)
                 END,
-                deleted_date = CASE 
-                  WHEN deleted_date IS NULL THEN NULL 
+                deleted_date = CASE
+                  WHEN deleted_date IS NULL THEN NULL
                   ELSE CAST(strftime('%s', deleted_date) * 1000 AS INTEGER)
                 END
             WHERE created_date LIKE '%T%'
@@ -292,7 +292,7 @@ class AppDatabase extends _$AppDatabase {
 
           // Copy and convert values (3->0, 2->1, 1->2, 0->3)
           await customStatement('''
-            UPDATE task_table 
+            UPDATE task_table
             SET temp_priority = CASE priority
               WHEN 0 THEN 3
               WHEN 1 THEN 2
@@ -304,7 +304,7 @@ class AppDatabase extends _$AppDatabase {
 
           // Update the original priority column
           await customStatement('''
-            UPDATE task_table 
+            UPDATE task_table
             SET priority = temp_priority
           ''');
 
@@ -319,6 +319,16 @@ class AppDatabase extends _$AppDatabase {
           // Create Note and NoteTag tables
           await m.createTable(noteTable);
           await m.createTable(noteTagTable);
+        },
+        from15To16: (m, schema) async {
+          // Add reminder fields to Task table
+          await m.addColumn(taskTable, taskTable.plannedDateReminderTime);
+          await m.addColumn(taskTable, taskTable.deadlineDateReminderTime);
+
+          // Add reminder fields to Habit table
+          await m.addColumn(habitTable, habitTable.hasReminder);
+          await m.addColumn(habitTable, habitTable.reminderTime);
+          await m.addColumn(habitTable, habitTable.reminderDays);
         },
       ),
     );

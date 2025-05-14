@@ -9,10 +9,10 @@ import 'package:whph/application/features/tasks/commands/remove_task_tag_command
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/acore/components/date_time_picker_field.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/features/tasks/components/task_date_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -68,6 +68,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyPlannedDate = 'plannedDate';
   static const String keyDeadlineDate = 'deadlineDate';
   static const String keyDescription = 'description';
+  static const String keyPlannedDateReminder = 'plannedDateReminder';
+  static const String keyDeadlineDateReminder = 'deadlineDateReminder';
 
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
@@ -98,6 +100,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       if (_hasFieldContent(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDate);
       if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
+
+      // Make reminder fields visible if their corresponding date fields are visible
+      if (_visibleOptionalFields.contains(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDateReminder);
+      if (_visibleOptionalFields.contains(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDateReminder);
+
+      // Also make reminder fields visible if they have non-default values
+      if (_hasFieldContent(keyPlannedDateReminder)) _visibleOptionalFields.add(keyPlannedDateReminder);
+      if (_hasFieldContent(keyDeadlineDateReminder)) _visibleOptionalFields.add(keyDeadlineDateReminder);
     });
   }
 
@@ -139,6 +149,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _task!.deadlineDate != null;
       case keyDescription:
         return _task!.description != null && _task!.description!.trim().isNotEmpty;
+      case keyPlannedDateReminder:
+        return _task!.plannedDateReminderTime != ReminderTime.none;
+      case keyDeadlineDateReminder:
+        return _task!.deadlineDateReminderTime != ReminderTime.none;
       default:
         return false;
     }
@@ -276,21 +290,64 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
+  // Immediately save the task without debounce
+  Future<void> _saveTaskImmediately() async {
+    if (!mounted) return;
+
+    // Use the task's date values directly instead of parsing from controllers
+    final saveCommand = SaveTaskCommand(
+      id: _task!.id,
+      title: _titleController.text,
+      description: _descriptionController.text,
+      plannedDate: _task!.plannedDate,
+      deadlineDate: _task!.deadlineDate,
+      priority: _task!.priority,
+      estimatedTime: _task!.estimatedTime,
+      isCompleted: _task!.isCompleted,
+      // Always pass the current reminder values
+      plannedDateReminderTime: _task!.plannedDateReminderTime,
+      deadlineDateReminderTime: _task!.deadlineDateReminderTime,
+    );
+
+    await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+      operation: () => _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand),
+      onSuccess: (result) {
+        _tasksService.notifyTaskUpdated(result.id);
+        widget.onTaskUpdated?.call();
+
+        // Reload the task to verify the changes were saved
+        _getTask();
+      },
+    );
+  }
+
   Future<void> _updateTask() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       if (!mounted) return;
 
+      // Parse dates from controllers
+      DateTime? plannedDate =
+          _plannedDateController.text.isNotEmpty ? DateTime.tryParse(_plannedDateController.text) : null;
+
+      DateTime? deadlineDate =
+          _deadlineDateController.text.isNotEmpty ? DateTime.tryParse(_deadlineDateController.text) : null;
+
       final saveCommand = SaveTaskCommand(
         id: _task!.id,
         title: _titleController.text,
         description: _descriptionController.text,
-        plannedDate: DateTime.tryParse(_plannedDateController.text),
-        deadlineDate: DateTime.tryParse(_deadlineDateController.text),
+        plannedDate: plannedDate,
+        deadlineDate: deadlineDate,
         priority: _task!.priority,
         estimatedTime: _task!.estimatedTime,
         isCompleted: _task!.isCompleted,
+        // Always pass the current reminder values
+        plannedDateReminderTime: _task!.plannedDateReminderTime,
+        deadlineDateReminderTime: _task!.deadlineDateReminderTime,
       );
 
       await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
@@ -379,6 +436,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyPlannedDate,
       keyDeadlineDate,
       keyDescription,
+      // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     // Should hide elapsed time if it's 0
@@ -440,6 +498,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
               if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
               if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
+              // Reminder sections are included in the planned and deadline date sections
             ].toList()),
           ],
 
@@ -532,34 +591,74 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   DetailTableRowData _buildPlannedDateSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
         icon: TaskUiConstants.plannedDateIcon,
-        widget: SizedBox(
-          height: 36,
-          child: DateTimePickerField(
-            controller: _plannedDateController,
-            hintText: '',
-            minDateTime: DateTime.now(),
-            onConfirm: (date) {
+        widget: TaskDateField(
+          controller: _plannedDateController,
+          hintText: '',
+          minDateTime: DateTime.now(),
+          onDateChanged: (date) {
+            setState(() {
               _task?.plannedDate = date;
-              _updateTask();
-            },
-          ),
+
+              // If date is set and reminder is not, set default reminder
+              if (date != null && _task!.plannedDateReminderTime == ReminderTime.none) {
+                _task!.plannedDateReminderTime = ReminderTime.atTime;
+              }
+            });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
+          },
+          onReminderChanged: (value) {
+            setState(() {
+              _task!.plannedDateReminderTime = value;
+            });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
+          },
+          reminderValue: _task!.plannedDateReminderTime,
+          translationService: _translationService,
+          reminderLabelPrefix: 'tasks.reminder.planned',
+          dateIcon: TaskUiConstants.plannedDateIcon,
         ),
       );
 
   DetailTableRowData _buildDeadlineDateSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         icon: TaskUiConstants.deadlineDateIcon,
-        widget: SizedBox(
-          height: 36,
-          child: DateTimePickerField(
-            controller: _deadlineDateController,
-            hintText: '',
-            minDateTime: DateTime.now(),
-            onConfirm: (date) {
+        widget: TaskDateField(
+          controller: _deadlineDateController,
+          hintText: '',
+          minDateTime: DateTime.now(),
+          onDateChanged: (date) {
+            setState(() {
               _task?.deadlineDate = date;
-              _updateTask();
-            },
-          ),
+
+              // If date is set and reminder is not, set default reminder
+              if (date != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
+                _task!.deadlineDateReminderTime = ReminderTime.atTime;
+              }
+            });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
+          },
+          onReminderChanged: (value) {
+            setState(() {
+              _task!.deadlineDateReminderTime = value;
+            });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
+          },
+          reminderValue: _task!.deadlineDateReminderTime,
+          translationService: _translationService,
+          reminderLabelPrefix: 'tasks.reminder.deadline',
+          dateIcon: TaskUiConstants.deadlineDateIcon,
         ),
       );
 
@@ -640,6 +739,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _translationService.translate(TaskTranslationKeys.deadlineDateLabel);
       case keyDescription:
         return _translationService.translate(TaskTranslationKeys.descriptionLabel);
+      case keyPlannedDateReminder:
+        return _translationService.translate(TaskTranslationKeys.reminderPlannedLabel);
+      case keyDeadlineDateReminder:
+        return _translationService.translate(TaskTranslationKeys.reminderDeadlineLabel);
       default:
         return '';
     }
@@ -660,6 +763,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return TaskUiConstants.deadlineDateIcon;
       case keyDescription:
         return TaskUiConstants.descriptionIcon;
+      case keyPlannedDateReminder:
+        return Icons.notifications;
+      case keyDeadlineDateReminder:
+        return Icons.notifications;
       default:
         return Icons.add;
     }

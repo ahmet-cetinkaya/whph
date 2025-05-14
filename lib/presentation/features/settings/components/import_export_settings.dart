@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:whph/application/features/settings/commands/export_data_command.dart';
@@ -49,7 +48,7 @@ class _ImportExportBottomSheet extends StatelessWidget {
   final IFileService _fileService;
 
   void _showImportStrategyDialog(BuildContext context, String filePath) {
-    if (kDebugMode) debugPrint('[ImportExportSettings]: Building import strategy dialog for file: $filePath');
+    // Building import strategy dialog
 
     showDialog(
       context: context,
@@ -90,7 +89,6 @@ class _ImportExportBottomSheet extends StatelessWidget {
       leading: Icon(icon),
       title: Text(_translationService.translate(translationKey)),
       onTap: () {
-        if (kDebugMode) debugPrint('[ImportExportSettings]: Selected ${strategy.name} strategy');
         Navigator.of(context).pop();
         _importData(context, filePath, strategy);
       },
@@ -98,8 +96,6 @@ class _ImportExportBottomSheet extends StatelessWidget {
   }
 
   Future<void> _importData(BuildContext dialogContext, String filePath, ImportStrategy strategy) async {
-    if (kDebugMode) debugPrint('[ImportExportSettings]: Starting import with strategy: $strategy');
-
     // Get global context for showing success message
     final scaffoldContext = navigatorKey.currentContext;
     if (scaffoldContext == null || !scaffoldContext.mounted) return;
@@ -239,8 +235,6 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
   }
 
   Future<void> _exportData(BuildContext context, ExportDataFileOptions fileOption) async {
-    if (kDebugMode) debugPrint('[ImportExportSettings]: Starting export process...');
-
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.exportError),

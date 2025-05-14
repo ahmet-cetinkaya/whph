@@ -24,7 +24,7 @@ tasks:
       urgent_important: Acil ve Önemli
       not_urgent_important: Acil Değil ama Önemli
       urgent_not_important: Acil ama Önemli Değil
-      not_urgent_not_important: Acil ve Önemli Değil 
+      not_urgent_not_important: Acil ve Önemli Değil
       none: Öncelik Yok
   quick_task:
     title: Hızlı Görev
@@ -112,7 +112,7 @@ tasks:
         ## 💡 İpuçları
 
         - Etiketleri etkin kullanın
-        - Gerçekçi süreler belirleyin 
+        - Gerçekçi süreler belirleyin
         - Önemli görevlere öncelik verin
         - İlerlemeyi düzenli takip edin
         - Açıklamaları güncel tutun
@@ -136,12 +136,12 @@ tasks:
           - Görev oluşturun ve düzenleyin
           - Öncelikler ve son tarihler belirleyin
           - İlerlemeyi takip edin
-        
+
         - **Organizasyon:**
           - Görevleri etiketlerle gruplayın
           - Filtreleyin ve arayın
           - Hızlı eylemler
-        
+
         - **Zaman Takibi:**
           - Odaklanma için Maraton modu
           - Görev başına zamanı takip edin
@@ -160,6 +160,8 @@ tasks:
   tooltips:
     edit_title: Başlığı düzenle
     show_completed_tasks: Tamamlanan görevleri filtrele
+    set_reminder: Hatırlatıcı ayarla
+    clear_date: Tarihi temizle
   title: Görevler
   new_task: Yeni Görev
   task_details: Görev Detayları
@@ -222,3 +224,17 @@ tasks:
     not_urgent_important: Acil Değil ama Önemli
     urgent_not_important: Acil ama Önemli Değil
     not_urgent_not_important: Acil ve Önemli Değil
+  reminder:
+    none: Hatırlatıcı yok
+    atTime: Zamanında
+    fiveMinutesBefore: 5 dakika önce
+    fifteenMinutesBefore: 15 dakika önce
+    oneHourBefore: 1 saat önce
+    oneDayBefore: 1 gün önce
+    plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
+    deadlineReminderLabel: Son Tarih Hatırlatıcısı
+  notifications:
+    reminder_title: "Görev Hatırlatıcı: {title}"
+    deadline_title: "Görev Son Tarih: {title}"
+    planned_message: "Göreviniz için planlanan zaman: {time}"
+    deadline_message: "Görevinizin son tarihi: {time}"

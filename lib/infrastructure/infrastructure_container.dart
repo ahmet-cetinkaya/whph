@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
@@ -10,15 +12,22 @@ import 'package:whph/application/features/settings/services/abstraction/i_settin
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
+import 'package:whph/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/features/setup/services/linux_setup_service.dart';
 import 'package:whph/infrastructure/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/features/app_usage/windows_app_usage_service.dart';
 import 'package:whph/infrastructure/features/notification/desktop_notification_service.dart';
+import 'package:whph/infrastructure/features/reminder/desktop_reminder_service.dart';
+import 'package:whph/infrastructure/features/reminder/android_reminder_service.dart';
 import 'package:whph/infrastructure/features/settings/android_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/features/system_tray/mobile_system_tray_service.dart';
+import 'package:whph/infrastructure/features/window/abstractions/i_window_manager.dart';
+import 'package:whph/infrastructure/features/window/linux_window_manager.dart';
+import 'package:whph/infrastructure/features/window/window_manager.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/infrastructure/features/system_tray/system_tray_service.dart';
@@ -32,16 +41,28 @@ void registerInfrastructure(IContainer container) {
   final settingRepository = container.resolve<ISettingRepository>();
   final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
 
+  // Register DeviceInfoPlugin for device-specific information
+  container.registerSingleton<DeviceInfoPlugin>((_) => DeviceInfoPlugin());
+
+  // Register WindowManagerInterface
+  container.registerSingleton<IWindowManager>((_) {
+    if (Platform.isLinux) return LinuxWindowManager();
+    return WindowManager();
+  });
+
   container.registerSingleton<ISystemTrayService>(
       (_) => (Platform.isAndroid || Platform.isIOS) ? MobileSystemTrayService() : SystemTrayService());
 
   container.registerSingleton<INotificationService>((_) {
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-      return DesktopNotificationService(settingRepository);
-    }
+    final mediator = container.resolve<Mediator>();
+    final payloadHandler = container.resolve<INotificationPayloadHandler>();
 
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      final windowManager = container.resolve<IWindowManager>();
+      return DesktopNotificationService(mediator, windowManager, payloadHandler);
+    }
     if (Platform.isAndroid || Platform.isIOS) {
-      return MobileNotificationService(settingRepository);
+      return MobileNotificationService(mediator);
     }
 
     throw Exception('Unsupported platform for notification service.');
@@ -100,5 +121,26 @@ void registerInfrastructure(IContainer container) {
     }
 
     throw Exception('Unsupported platform for file service');
+  });
+
+  container.registerSingleton<IReminderService>((_) {
+    final windowManager = container.resolve<IWindowManager>();
+    final notificationService = container.resolve<INotificationService>();
+
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      return DesktopReminderService(windowManager, notificationService);
+    }
+
+    if (Platform.isAndroid) {
+      return AndroidReminderService(notificationService);
+    }
+
+    if (Platform.isIOS) {
+      // For iOS, we could create a dedicated iOS reminder service in the future
+      // For now, we'll throw an exception
+      throw Exception('iOS platform not supported for reminder service yet.');
+    }
+
+    throw Exception('Unsupported platform for reminder service.');
   });
 }

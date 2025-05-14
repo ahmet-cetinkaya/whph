@@ -31,6 +31,8 @@ habits:
     estimated_time_not_set: Not set
     records: Records
     statistics_label: Statistics
+    create_record_tooltip: Mark as completed today
+    remove_record_tooltip: Remove today's completion
     statistics:
       overall: Overall
       monthly: Monthly
@@ -139,3 +141,24 @@ habits:
   list:
     no_habits_found: No habits found
     all_habits_done: All habits completed!
+  reminders:
+    enable: Enable reminders
+    select_days_warning: Please select at least one day for reminders
+  reminder:
+    enableReminders: Enable reminders
+    reminderTime: Reminder time
+    reminderDays: Reminder days
+    reminderSettings: Reminder Settings
+    selectDaysWarning: Please select at least one day for reminders
+    noReminder: No reminder set
+    everyDay: Every day
+    monday: Monday
+    tuesday: Tuesday
+    wednesday: Wednesday
+    thursday: Thursday
+    friday: Friday
+    saturday: Saturday
+    sunday: Sunday
+  notifications:
+    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Remember to complete your habit: {name}"

@@ -32,7 +32,9 @@ class GetTaskQueryResponse extends Task {
       required super.isCompleted,
       required super.parentTaskId,
       required this.subTasksCompletionPercentage,
-      required this.subTasks});
+      required this.subTasks,
+      super.plannedDateReminderTime = ReminderTime.none,
+      super.deadlineDateReminderTime = ReminderTime.none});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
@@ -78,6 +80,8 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
         isCompleted: task.isCompleted,
         parentTaskId: task.parentTaskId,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
-        subTasks: subTasks);
+        subTasks: subTasks,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime);
   }
 }

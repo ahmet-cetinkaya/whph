@@ -46,3 +46,55 @@ settings:
       error: Import operation failed. Please check the file and try again.
     export:
       error: Export operation failed. Please try again.
+  permissions:
+    title: Permissions
+    battery_optimization:
+      title: Battery Optimization
+      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
+      instructions: "Instructions:"
+      steps:
+        step1: Open your device Settings
+        step2: Go to Battery > Battery optimization
+        step3: Select "All apps" from the dropdown
+        step4: Find WHPH in the list
+        step5: Select "Don't optimize"
+      location_note: The location of this setting may vary depending on your device manufacturer.
+      not_disabled: Battery optimization is still enabled. Please try again.
+      button_disable: Disable Battery Optimization
+      status_disabled: Optimization Disabled
+      alert_title: Battery Optimization
+      alert_description: For reliable notifications, this app needs to be excluded from battery optimization.
+      button_cancel: Cancel
+      button_open_settings: Open Settings
+    notification:
+      title: Notification Permission
+      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
+      instructions: "Instructions:"
+      steps:
+        android:
+          step1: In the settings screen that opens, find this app
+          step2: Tap on "Notifications" and enable them
+        ios:
+          step1: In the settings screen that opens, find this app
+          step2: Tap on "Notifications" and enable "Allow Notifications"
+        step3: Return to this app when done
+      not_granted: Permission not granted yet. Please try again.
+      importance: Without notification permission, you won't receive any reminders.
+      button_grant: Grant Permission
+      status_granted: Permission Granted
+      button_manual: I'll do it manually
+      alert_title: Permission Required
+    exact_alarm:
+      title: Exact Alarm Permission
+      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
+      instructions: "Instructions:"
+      steps:
+        step1: In the settings screen that opens, find WHPH
+        android12plus:
+          step2: Tap on "Alarms & reminders"
+          step3: Enable "Allow scheduling exact alarms"
+        step2: Enable "Allow scheduling exact alarms"
+      not_granted: Exact alarm permission is still not granted. Please try again.
+      button_open_settings: Open Settings
+      status_granted: Permission Granted
+      button_verify: Verify

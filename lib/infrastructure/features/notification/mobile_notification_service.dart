@@ -1,17 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/settings/commands/save_setting_command.dart';
+import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'dart:io';
-import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
 
 class MobileNotificationService implements INotificationService {
-  final ISettingRepository _settingRepository;
+  final Mediator _mediator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
 
-  MobileNotificationService(this._settingRepository) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
+  MobileNotificationService(this._mediator) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
 
   @override
   Future<void> init() async {
@@ -28,6 +31,7 @@ class MobileNotificationService implements INotificationService {
     required String title,
     required String body,
     String? payload,
+    int? id,
   }) async {
     if (!await isEnabled()) return;
 
@@ -35,7 +39,7 @@ class MobileNotificationService implements INotificationService {
     if (permissionGranted != true) return;
 
     await _flutterLocalNotifications.show(
-      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      id ?? KeyHelper.generateNumericId(),
       title,
       body,
       NotificationDetails(
@@ -44,6 +48,10 @@ class MobileNotificationService implements INotificationService {
           AppInfo.name,
           importance: Importance.max,
           priority: Priority.high,
+          channelShowBadge: true,
+          enableLights: true,
+          enableVibration: true,
+          playSound: true,
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,
@@ -56,6 +64,13 @@ class MobileNotificationService implements INotificationService {
   }
 
   Future<bool?> _checkPermission() async {
+    if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+      return await androidImplementation?.requestNotificationsPermission();
+    }
+
     if (Platform.isIOS) {
       return await _flutterLocalNotifications
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
@@ -64,13 +79,6 @@ class MobileNotificationService implements INotificationService {
             badge: true,
             sound: true,
           );
-    }
-
-    if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-
-      return await androidImplementation?.requestNotificationsPermission();
     }
 
     return false;
@@ -88,8 +96,13 @@ class MobileNotificationService implements INotificationService {
 
   @override
   Future<bool> isEnabled() async {
-    final setting = await _settingRepository.getByKey(Settings.notifications);
-    return setting?.value == 'false' ? false : true; // Default to true if no setting
+    try {
+      final query = GetSettingQuery(key: Settings.notifications);
+      final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(query);
+      return setting.value == 'false' ? false : true; // Default to true if no setting
+    } catch (e) {
+      return true; // Default to true if setting not found
+    }
   }
 
   @override
@@ -98,18 +111,78 @@ class MobileNotificationService implements INotificationService {
       await _checkPermission();
     }
 
-    final setting = await _settingRepository.getByKey(Settings.notifications);
-    if (setting != null) {
-      setting.value = enabled.toString();
-      await _settingRepository.update(setting);
-    } else {
-      await _settingRepository.add(Setting(
-        id: nanoid(),
-        key: Settings.notifications,
-        value: enabled.toString(),
-        valueType: SettingValueType.bool,
-        createdDate: DateTime.now(),
-      ));
+    final command = SaveSettingCommand(
+      key: Settings.notifications,
+      value: enabled.toString(),
+      valueType: SettingValueType.bool,
+    );
+
+    await _mediator.send(command);
+  }
+
+  @override
+  Future<bool> checkPermissionStatus() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return true; // Always return true for non-mobile platforms
+    }
+
+    if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+      final areNotificationsEnabled = await androidImplementation?.areNotificationsEnabled();
+      return areNotificationsEnabled ?? false;
+    }
+
+    if (Platform.isIOS) {
+      final IOSFlutterLocalNotificationsPlugin? iosImplementation =
+          _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+      final notificationSettings = await iosImplementation?.checkPermissions();
+      // Consider permission granted if alerts, sounds, or badges are allowed
+      return (notificationSettings?.isAlertEnabled ?? false) ||
+          (notificationSettings?.isSoundEnabled ?? false) ||
+          (notificationSettings?.isBadgeEnabled ?? false);
+    }
+
+    return false;
+  }
+
+  @override
+  Future<bool> requestPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return true; // Non-mobile platforms don't need explicit permission
+    }
+
+    bool permissionGranted = false;
+
+    try {
+      if (Platform.isAndroid) {
+        final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+            _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+        permissionGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
+      } else if (Platform.isIOS) {
+        final IOSFlutterLocalNotificationsPlugin? iosImplementation =
+            _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+        permissionGranted = await iosImplementation?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            ) ??
+            false;
+      }
+
+      // If permission is granted, ensure notifications are enabled in app settings
+      if (permissionGranted) {
+        await setEnabled(true);
+      }
+
+      return permissionGranted;
+    } catch (e) {
+      debugPrint('[ERROR] [MobileNotificationService] Error requesting notification permission: $e');
+      return false;
     }
   }
 }

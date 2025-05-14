@@ -31,6 +31,8 @@ habits:
     estimated_time_not_set: Ayarlanmadı
     records: Kayıtlar
     statistics_label: İstatistikler
+    create_record_tooltip: Bugün tamamlandı olarak işaretle
+    remove_record_tooltip: Bugünkü tamamlamayı kaldır
     statistics:
       overall: Genel
       monthly: Aylık
@@ -139,3 +141,26 @@ habits:
   list:
     no_habits_found: Alışkanlık bulunamadı
     all_habits_done: Tüm alışkanlıklar tamamlandı!
+  
+  reminders:
+    enable: Hatırlatıcıları etkinleştir
+    select_days_warning: Lütfen hatırlatıcılar için en az bir gün seçin
+
+  reminder:
+    enableReminders: Hatırlatıcıları etkinleştir
+    reminderTime: Hatırlatıcı zamanı
+    reminderDays: Hatırlatıcı günleri
+    reminderSettings: Hatırlatıcı Ayarları
+    selectDaysWarning: Lütfen hatırlatıcılar için en az bir gün seçin
+    noReminder: Hatırlatıcı ayarlanmadı
+    everyDay: Her gün
+    monday: Pazartesi
+    tuesday: Salı
+    wednesday: Çarşamba
+    thursday: Perşembe
+    friday: Cuma
+    saturday: Cumartesi
+    sunday: Pazar
+  notifications:
+    reminder_title: "Alışkanlık Hatırlatıcı: {name}"
+    reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"

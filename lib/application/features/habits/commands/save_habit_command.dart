@@ -10,12 +10,18 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final String name;
   final String description;
   final int? estimatedTime;
+  final bool? hasReminder;
+  final String? reminderTime;
+  final List<int>? reminderDays;
 
   SaveHabitCommand({
     this.id,
     required this.name,
     required this.description,
     this.estimatedTime,
+    this.hasReminder,
+    this.reminderTime,
+    this.reminderDays,
   });
 }
 
@@ -46,18 +52,43 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         throw BusinessException(HabitTranslationKeys.habitNotFoundError);
       }
 
+      // Get the actual reminderDays from the database to ensure we have the latest value
+      final reminderDaysFromDb = await _habitRepository.getReminderDaysById(request.id!);
+      habit.reminderDays = reminderDaysFromDb;
+
       habit.name = request.name;
       habit.description = request.description;
       habit.estimatedTime = request.estimatedTime;
+
+      // Update reminder settings if provided
+      if (request.hasReminder != null) {
+        habit.hasReminder = request.hasReminder!;
+      }
+      if (request.reminderTime != null) {
+        habit.reminderTime = request.reminderTime;
+      }
+      if (request.reminderDays != null) {
+        habit.setReminderDaysFromList(request.reminderDays!);
+      }
+
       await _habitRepository.update(habit);
     } else {
+      // Create habit with default values
       habit = Habit(
         id: nanoid(),
         createdDate: DateTime.now(),
         name: request.name,
         description: request.description,
         estimatedTime: request.estimatedTime,
+        hasReminder: request.hasReminder ?? false,
+        reminderTime: request.reminderTime,
       );
+
+      // Set reminder days using the helper method
+      if (request.reminderDays != null) {
+        habit.setReminderDaysFromList(request.reminderDays!);
+      }
+
       await _habitRepository.add(habit);
     }
 

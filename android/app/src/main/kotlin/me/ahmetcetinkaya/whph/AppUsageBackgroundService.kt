@@ -21,8 +21,8 @@ class AppUsageBackgroundService : Service() {
     }
 
     private fun startForeground() {
-        val channelId = "whph_background_service"
-        val channelName = "WHPH Background Service"
+        val channelId = Constants.NotificationChannels.SERVICE_CHANNEL_ID
+        val channelName = Constants.NotificationChannels.SERVICE_CHANNEL_NAME
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -38,7 +38,10 @@ class AppUsageBackgroundService : Service() {
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("WHPH")
-            .setContentText("Running in background")
+            .setContentText("Running in background to track app usage.")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setOngoing(true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)

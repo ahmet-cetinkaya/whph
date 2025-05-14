@@ -5,6 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
@@ -39,11 +40,11 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(_translationService.translate('shared.buttons.cancel')),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(_translationService.translate('shared.buttons.delete')),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),

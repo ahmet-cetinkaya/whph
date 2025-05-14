@@ -4,6 +4,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
 
 class AppAbout extends StatelessWidget {
   AppAbout({super.key});
@@ -35,7 +36,7 @@ class AppAbout extends StatelessWidget {
                     ),
                     Text(
                       _translationService.translate(
-                        'about.app_about.version',
+                        AboutTranslationKeys.version,
                         namedArgs: {'version': AppInfo.version},
                       ),
                       style: AppTheme.bodyMedium,
@@ -53,12 +54,12 @@ class AppAbout extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 _buildExternalLink(
-                  title: _translationService.translate('about.app_about.links.website'),
+                  title: _translationService.translate(AboutTranslationKeys.websiteLink),
                   icon: Icons.web,
                   url: AppInfo.websiteUrl,
                 ),
                 _buildExternalLink(
-                  title: _translationService.translate('about.app_about.links.source_code'),
+                  title: _translationService.translate(AboutTranslationKeys.sourceCodeLink),
                   icon: Icons.code,
                   url: AppInfo.sourceCodeUrl,
                 ),
@@ -67,7 +68,7 @@ class AppAbout extends StatelessWidget {
           ),
         ),
         Text(
-          _translationService.translate('about.app_about.description'),
+          _translationService.translate(AboutTranslationKeys.description),
           style: AppTheme.bodyMedium,
         ),
       ],

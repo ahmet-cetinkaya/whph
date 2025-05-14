@@ -179,7 +179,6 @@ class _TaskFiltersState extends State<TaskFilters> {
                       tooltip: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
                       onPressed: () {
                         final newState = !widget.showCompletedTasks;
-                        debugPrint('TaskFilters: Toggling completed tasks to $newState');
                         widget.onCompletedTasksToggle!(newState);
                       },
                     ),

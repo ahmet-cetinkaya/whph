@@ -46,3 +46,55 @@ settings:
       error: İçe aktarma işlemi başarısız oldu. Lütfen dosyayı kontrol edin ve tekrar deneyin.
     export:
       error: Dışa aktarma işlemi başarısız oldu. Lütfen tekrar deneyin.
+  permissions:
+    title: İzinler
+    battery_optimization:
+      title: Pil Optimizasyonu
+      description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç teslim edilmeyebilir.
+      instructions: "Talimatlar:"
+      steps:
+        step1: Cihaz Ayarlarınızı açın
+        step2: Pil > Pil optimizasyonu'na gidin
+        step3: Açılır menüden "Tüm uygulamalar"ı seçin
+        step4: Listede WHPH'yi bulun
+        step5: \"Optimize etme\"yi seçin
+      location_note: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
+      not_disabled: Pil optimizasyonu hala etkin. Lütfen tekrar deneyin.
+      button_disable: Pil Optimizasyonunu Devre Dışı Bırak
+      status_disabled: Optimizasyon Devre Dışı
+      alert_title: Pil Optimizasyonu
+      alert_description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor.
+      button_cancel: İptal
+      button_open_settings: Ayarları Aç
+    notification:
+      title: Bildirim İzni
+      description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
+      instructions: "Talimatlar:"
+      steps:
+        android:
+          step1: Açılan ayarlar ekranında bu uygulamayı bulun
+          step2: \"Bildirimler\"e dokunun ve etkinleştirin
+        ios:
+          step1: Açılan ayarlar ekranında bu uygulamayı bulun
+          step2: \"Bildirimler\"e dokunun ve "Bildirimlere İzin Ver"i etkinleştirin
+        step3: İşlem tamamlandığında bu uygulamaya geri dönün
+      not_granted: İzin henüz verilmedi. Lütfen tekrar deneyin.
+      importance: Bildirim izni olmadan, hiçbir hatırlatıcı alamazsınız.
+      button_grant: İzin Ver
+      status_granted: İzin Verildi
+      button_manual: Manuel olarak yapacağım
+      alert_title: İzin Gerekli
+    exact_alarm:
+      title: Tam Alarm İzni
+      description: Android 12+ hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
+      instructions: "Talimatlar:"
+      steps:
+        step1: Açılan ayarlar ekranında WHPH'yi bulun
+        android12plus:
+          step2: \"Alarmlar ve hatırlatıcılar\"a dokunun
+          step3: \"Tam alarmları planlamaya izin ver\"i etkinleştirin
+        step2: \"Tam alarmları planlamaya izin ver\"i etkinleştirin
+      not_granted: Tam alarm izni hala verilmedi. Lütfen tekrar deneyin.
+      button_open_settings: Ayarları Aç
+      status_granted: İzin Verildi
+      button_verify: Doğrula

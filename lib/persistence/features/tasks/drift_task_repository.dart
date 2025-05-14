@@ -1,5 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
+import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
@@ -19,6 +22,12 @@ class TaskTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
   RealColumn get order => real().withDefault(const Constant(0.0))();
+
+  // Reminder settings
+  IntColumn get plannedDateReminderTime =>
+      intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
+  IntColumn get deadlineDateReminderTime =>
+      intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
@@ -30,21 +39,177 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   @override
+  Future<Task?> getById(String id) async {
+    final result = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE id = ?',
+      variables: [Variable.withString(id.toString())],
+      readsFrom: {table},
+    ).getSingleOrNull();
+
+    if (result == null) return null;
+
+    return _mapTaskFromRow(result.data);
+  }
+
+  @override
+  Future<List<Task>> getAll({
+    List<CustomOrder>? customOrder,
+    CustomWhereFilter? customWhereFilter,
+    bool includeDeleted = false,
+  }) async {
+    final allResults = <Task>[];
+
+    // Build the query
+    String query = 'SELECT * FROM ${table.actualTableName}';
+    final variables = <Variable>[];
+
+    // Add where clause if needed
+    if (!includeDeleted || customWhereFilter != null) {
+      query += ' WHERE ';
+
+      if (!includeDeleted) {
+        query += 'deleted_date IS NULL';
+
+        if (customWhereFilter != null) {
+          query += ' AND ${customWhereFilter.query}';
+          variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
+        }
+      } else if (customWhereFilter != null) {
+        query += customWhereFilter.query;
+        variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
+      }
+    }
+
+    // Add order by clause if needed
+    if (customOrder != null && customOrder.isNotEmpty) {
+      query += ' ORDER BY ';
+      query += customOrder
+          .map((order) => '${order.field} ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
+          .join(', ');
+    }
+
+    // Execute the query
+    final result = await database
+        .customSelect(
+          query,
+          variables: variables,
+          readsFrom: {table},
+        )
+        .map((row) => _mapTaskFromRow(row.data))
+        .get();
+
+    allResults.addAll(result);
+    return allResults;
+  }
+
+  // Helper method to convert values to query variables
+  Variable<Object> _convertToQueryVariable(dynamic object) {
+    if (object is String) {
+      return Variable.withString(object);
+    } else if (object is int) {
+      return Variable.withInt(object);
+    } else if (object is double) {
+      return Variable.withReal(object);
+    } else if (object is DateTime) {
+      return Variable.withDateTime(object);
+    } else if (object is bool) {
+      return Variable.withBool(object);
+    } else {
+      throw Exception('Unsupported variable type: ${object.runtimeType}');
+    }
+  }
+
+  // Custom mapping method to handle enum values correctly
+  Task _mapTaskFromRow(Map<String, dynamic> data) {
+    // Handle DateTime conversions safely
+    DateTime? convertToDateTime(dynamic value) {
+      if (value == null) return null;
+      if (value is DateTime) return value;
+      if (value is int) {
+        // Drift stores dates as seconds since epoch, not milliseconds
+        // Multiply by 1000 to convert seconds to milliseconds
+        // Use local timezone, not UTC
+        return DateTime.fromMillisecondsSinceEpoch(value * 1000, isUtc: false);
+      }
+      if (value is String) {
+        // Try to parse ISO 8601 string
+        return DateTime.tryParse(value);
+      }
+      return null;
+    }
+
+    // Helper function to convert to bool
+    bool convertToBool(dynamic value) {
+      if (value == null) return false;
+      if (value is bool) return value;
+      if (value is int) return value != 0;
+      if (value is String) return value.toLowerCase() == 'true';
+      return false;
+    }
+
+    // Convert dates
+    final plannedDate = convertToDateTime(data['planned_date']);
+    final deadlineDate = convertToDateTime(data['deadline_date']);
+
+    // Create a task with the base data
+    final task = Task(
+      id: data['id'] as String,
+      createdDate: convertToDateTime(data['created_date']) ?? DateTime.now(),
+      modifiedDate: convertToDateTime(data['modified_date']),
+      deletedDate: convertToDateTime(data['deleted_date']),
+      title: data['title'] as String,
+      description: data['description'] as String?,
+      plannedDate: plannedDate,
+      deadlineDate: deadlineDate,
+      priority: data['priority'] != null ? EisenhowerPriority.values[data['priority'] as int] : null,
+      estimatedTime: data['estimated_time'] as int?,
+      isCompleted: convertToBool(data['is_completed']),
+      parentTaskId: data['parent_task_id'] as String?,
+      order: (data['order'] is num) ? (data['order'] as num).toDouble() : 0.0,
+    );
+
+    // Explicitly set reminder values
+    if (data['planned_date_reminder_time'] != null) {
+      final reminderTimeValue = data['planned_date_reminder_time'] as int;
+      if (reminderTimeValue >= 0 && reminderTimeValue < ReminderTime.values.length) {
+        task.plannedDateReminderTime = ReminderTime.values[reminderTimeValue];
+      }
+    }
+
+    if (data['deadline_date_reminder_time'] != null) {
+      final reminderTimeValue = data['deadline_date_reminder_time'] as int;
+      if (reminderTimeValue >= 0 && reminderTimeValue < ReminderTime.values.length) {
+        task.deadlineDateReminderTime = ReminderTime.values[reminderTimeValue];
+      }
+    }
+
+    return task;
+  }
+
+  @override
   Insertable<Task> toCompanion(Task entity) {
+    // Keep dates in local timezone
+    DateTime? plannedDate = entity.plannedDate;
+    DateTime? deadlineDate = entity.deadlineDate;
+
+    // No need to convert to UTC, keep in local timezone
+
     return TaskTableCompanion.insert(
       id: entity.id,
       parentTaskId: Value(entity.parentTaskId),
       title: entity.title,
       description: Value(entity.description),
       priority: Value(entity.priority),
-      plannedDate: Value(entity.plannedDate),
-      deadlineDate: Value(entity.deadlineDate),
+      plannedDate: Value(plannedDate),
+      deadlineDate: Value(deadlineDate),
       estimatedTime: Value(entity.estimatedTime),
       isCompleted: Value(entity.isCompleted),
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       order: Value(entity.order),
+      plannedDateReminderTime: Value(entity.plannedDateReminderTime),
+      deadlineDateReminderTime: Value(entity.deadlineDateReminderTime),
     );
   }
 }

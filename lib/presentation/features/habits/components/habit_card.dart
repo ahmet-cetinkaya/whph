@@ -172,10 +172,32 @@ class _HabitCardState extends State<HabitCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.habit.name,
-                    style: AppTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.habit.name,
+                          style: AppTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      // Show reminder icon if habit has reminders
+                      if (widget.habit.hasReminder && !widget.isMiniLayout)
+                        Tooltip(
+                          message: _getReminderTooltip(),
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 4.0),
+                            height: 24, // Fixed height to match text line height
+                            alignment: Alignment.center, // Center the icon vertically
+                            child: Icon(
+                              Icons.notifications,
+                              size: AppTheme.iconSizeSmall,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
                     Padding(
@@ -206,6 +228,32 @@ class _HabitCardState extends State<HabitCard> {
           ],
         ),
       );
+
+  // Helper method to get reminder tooltip text
+  String _getReminderTooltip() {
+    if (!widget.habit.hasReminder || widget.habit.reminderTime == null) {
+      return _translationService.translate(HabitTranslationKeys.noReminder);
+    }
+
+    final parts = widget.habit.reminderTime!.split(':');
+    if (parts.length != 2) return _translationService.translate(HabitTranslationKeys.noReminder);
+
+    final time = '${parts[0]}:${parts[1]}';
+
+    // Create a more detailed tooltip with formatted information
+    final List<String> reminderInfo = [];
+
+    // Add reminder time
+    reminderInfo.add('${_translationService.translate(HabitTranslationKeys.reminderTime)}: $time');
+
+    // Add reminder days
+    // For habits with reminders, we assume all days are selected by default
+    // This is consistent with the ReminderServiceInitializer behavior
+    reminderInfo.add(
+        '${_translationService.translate(HabitTranslationKeys.reminderDays)}: ${_translationService.translate(HabitTranslationKeys.everyDay)}');
+
+    return reminderInfo.join('\n');
+  }
 
   Widget _buildCalendar() {
     if (_habitRecords == null) {

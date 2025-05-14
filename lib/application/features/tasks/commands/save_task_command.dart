@@ -22,6 +22,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final List<String>? tagIdsToAdd;
   final String? parentTaskId;
   final double? order;
+  final ReminderTime? plannedDateReminderTime;
+  final ReminderTime? deadlineDateReminderTime;
 
   SaveTaskCommand(
       {this.id,
@@ -34,7 +36,9 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
       this.isCompleted = false,
       this.tagIdsToAdd,
       this.parentTaskId,
-      this.order});
+      this.order,
+      this.plannedDateReminderTime,
+      this.deadlineDateReminderTime});
 }
 
 class SaveTaskCommandResponse {
@@ -75,6 +79,16 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.estimatedTime = request.estimatedTime;
       task.isCompleted = request.isCompleted;
       task.order = request.order ?? task.order;
+
+      // Always update reminder settings
+      if (request.plannedDateReminderTime != null) {
+        task.plannedDateReminderTime = request.plannedDateReminderTime!;
+      }
+
+      if (request.deadlineDateReminderTime != null) {
+        task.deadlineDateReminderTime = request.deadlineDateReminderTime!;
+      }
+
       await _taskRepository.update(task);
     } else {
       // Get the last task to determine the order
@@ -103,7 +117,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           estimatedTime: request.estimatedTime,
           isCompleted: false,
           parentTaskId: request.parentTaskId,
-          order: newOrder);
+          order: newOrder,
+          plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
+          deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none);
       await _taskRepository.add(task);
     }
 
