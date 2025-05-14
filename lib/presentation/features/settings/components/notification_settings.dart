@@ -3,7 +3,7 @@ import 'package:whph/application/features/settings/services/abstraction/i_settin
 import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
@@ -44,7 +44,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         if (setting == null) {
           // Create default setting if not exists
           await _settingRepository.add(Setting(
-            id: nanoid(),
+            id: KeyHelper.generateStringId(),
             key: Settings.notifications,
             value: 'true',
             valueType: SettingValueType.bool,

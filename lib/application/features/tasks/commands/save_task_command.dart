@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
@@ -107,7 +107,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       final newOrder = request.order ?? ((lastOrder + orderStep).toDouble());
 
       task = Task(
-          id: nanoid(),
+          id: KeyHelper.generateStringId(),
           createdDate: DateTime.now(),
           title: request.title,
           description: request.description,
@@ -127,7 +127,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.tagIdsToAdd != null) {
       for (final tagId in request.tagIdsToAdd!) {
         final taskTag = TaskTag(
-          id: nanoid(),
+          id: KeyHelper.generateStringId(),
           taskId: task.id,
           tagId: tagId,
           createdDate: DateTime.now(),

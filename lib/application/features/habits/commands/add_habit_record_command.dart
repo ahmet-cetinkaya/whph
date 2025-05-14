@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 
 class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
@@ -24,7 +24,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
     HabitRecord habitRecord = HabitRecord(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       habitId: request.habitId,
       date: request.date,

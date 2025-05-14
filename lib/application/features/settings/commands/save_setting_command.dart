@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 
@@ -65,7 +65,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
 
   Future<Setting> _add(Setting? setting, SaveSettingCommand request) async {
     setting = Setting(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       key: request.key,
       value: request.value,

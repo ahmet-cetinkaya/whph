@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
@@ -98,7 +98,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
       await _appUsageTimeRecordRepository.update(timeRecord);
     } else {
       final newRecord = AppUsageTimeRecord(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         appUsageId: appUsage.id,
         duration: duration,
         createdDate: now,
@@ -127,7 +127,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
           // Add tag if it doesn't exist
           if (existingTag == null) {
             final appUsageTag = AppUsageTag(
-              id: nanoid(),
+              id: KeyHelper.generateStringId(),
               createdDate: DateTime.now(),
               appUsageId: appUsage.id,
               tagId: rule.tagId,
@@ -161,7 +161,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
       final deviceName = await DeviceInfoHelper.getDeviceName();
 
       appUsage = AppUsage(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         name: appName,
         color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
         deviceName: deviceName,

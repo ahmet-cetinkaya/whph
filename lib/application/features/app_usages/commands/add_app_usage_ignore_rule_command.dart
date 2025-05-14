@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 
@@ -28,7 +28,7 @@ class AddAppUsageIgnoreRuleCommandHandler
   @override
   Future<AddAppUsageIgnoreRuleCommandResponse> call(AddAppUsageIgnoreRuleCommand request) async {
     final rule = AppUsageIgnoreRule(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       pattern: request.pattern,
       description: request.description,

@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/tags/tag_tag.dart';
@@ -38,7 +38,7 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
     }
 
     final tagTag = TagTag(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       primaryTagId: request.primaryTagId,
       secondaryTagId: request.secondaryTagId,

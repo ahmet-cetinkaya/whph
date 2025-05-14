@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
-import 'package:nanoid2/nanoid2.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
@@ -201,7 +201,7 @@ class AppDatabase extends _$AppDatabase {
               await customInsert(
                 'INSERT INTO app_usage_ignore_rule_table (id, pattern, created_date) VALUES (?, ?, ?)',
                 variables: [
-                  Variable(nanoid()),
+                  Variable(KeyHelper.generateStringId()),
                   Variable(pattern),
                   Variable(DateTime.now().toIso8601String()),
                 ],

@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 
@@ -36,7 +36,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
     }
 
     final appUsageTag = AppUsageTag(
-      id: nanoid(),
+      id: KeyHelper.generateStringId(),
       createdDate: DateTime.now(),
       appUsageId: request.appUsageId,
       tagId: request.tagId,

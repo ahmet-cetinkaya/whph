@@ -222,7 +222,7 @@ class AndroidReminderService implements IReminderService {
       return int.parse(id);
     } catch (e) {
       // If the ID is not a number, use its hash code
-      return id.hashCode.abs() % 1000000;
+      return application.KeyHelper.generateNumericId();
     }
   }
 

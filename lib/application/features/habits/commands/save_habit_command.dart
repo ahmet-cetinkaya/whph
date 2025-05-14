@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:nanoid2/nanoid2.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
@@ -75,7 +75,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
     } else {
       // Create habit with default values
       habit = Habit(
-        id: nanoid(),
+        id: KeyHelper.generateStringId(),
         createdDate: DateTime.now(),
         name: request.name,
         description: request.description,
