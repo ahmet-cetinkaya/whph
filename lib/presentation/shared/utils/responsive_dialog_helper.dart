@@ -34,10 +34,6 @@ class ResponsiveDialogHelper {
           final dialogWidth = screenSize.width * maxWidthRatio;
 
           return Dialog(
-            backgroundColor: AppTheme.surface0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
               child: SizedBox(
@@ -61,10 +57,6 @@ class ResponsiveDialogHelper {
         isScrollControlled: true,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.containerBorderRadius)),
-        ),
         builder: (BuildContext context) {
           // Calculate available height for the bottom sheet
           final bottomSheetMaxHeight = screenSize.height * 0.9;
@@ -76,21 +68,9 @@ class ResponsiveDialogHelper {
             expand: false,
             builder: (context, scrollController) {
               return Material(
-                color: Theme.of(context).colorScheme.surface,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Handle bar at top
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).dividerColor,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-
                     // Content with constraints to prevent unbounded height
                     Expanded(
                       child: _wrapWithConstrainedContent(

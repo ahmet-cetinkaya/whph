@@ -217,9 +217,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   void _onChangeColorOpen() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) => color_picker.ColorPicker(
-            pickerColor: Color(int.parse("FF${_appUsage!.color!}", radix: 16)), onChangeColor: _onChangeColor));
+      context: context,
+      builder: (context) => color_picker.ColorPicker(
+        pickerColor: Color(int.parse("FF${_appUsage!.color!}", radix: 16)),
+        onChangeColor: _onChangeColor,
+      ),
+    );
   }
 
   // Process field content and update UI after app usage data is loaded

@@ -22,7 +22,6 @@ class SettingsPage extends StatelessWidget {
 
   void _showAboutModal(BuildContext context) {
     showModalBottomSheet(
-      constraints: const BoxConstraints(maxHeight: 350, maxWidth: 600),
       context: context,
       builder: (context) {
         return Padding(

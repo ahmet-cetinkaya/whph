@@ -30,26 +30,22 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   void _showPrioritySelection(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text(
-                    _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
-                    style: AppTheme.headlineSmall,
-                  ),
-                ),
-                ...widget.options.map((option) => _buildPriorityOption(context, option)),
-              ],
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(
+                _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
+                style: AppTheme.headlineSmall,
+              ),
             ),
-          ),
-        ],
+            ...widget.options.map((option) => _buildPriorityOption(context, option)),
+          ],
+        ),
       ),
     );
   }

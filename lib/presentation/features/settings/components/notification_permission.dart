@@ -87,7 +87,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
               const SizedBox(height: 8),
               Text(
                 _translationService.translate(SettingsTranslationKeys.notificationPermissionInstructions),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               if (Platform.isAndroid) ...[
@@ -130,7 +130,6 @@ class _NotificationPermissionState extends State<NotificationPermission> {
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop();
-              // Check permission status again after a delay
               await Future.delayed(const Duration(seconds: 3));
               await _checkPermission();
             },

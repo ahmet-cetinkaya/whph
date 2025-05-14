@@ -126,7 +126,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
     // Show a dialog to explain what the user needs to do
     showDialog(
       context: context,
-      barrierDismissible: false, // User must tap a button to dismiss
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(_translationService.translate(SettingsTranslationKeys.batteryOptimizationAlertTitle)),
         content: SingleChildScrollView(
@@ -140,7 +140,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
               const SizedBox(height: 8),
               Text(
                 _translationService.translate(SettingsTranslationKeys.batteryOptimizationInstructions),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(_translationService.translate(SettingsTranslationKeys.batteryOptimizationStep1)),

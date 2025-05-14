@@ -267,9 +267,12 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   void _onChangeColorOpen() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) => color_picker.ColorPicker(
-            pickerColor: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16)), onChangeColor: _onChangeColor));
+      context: context,
+      builder: (context) => color_picker.ColorPicker(
+        pickerColor: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16)),
+        onChangeColor: _onChangeColor,
+      ),
+    );
   }
 
   @override

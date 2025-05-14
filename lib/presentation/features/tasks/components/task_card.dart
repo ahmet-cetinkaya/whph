@@ -117,26 +117,24 @@ class TaskCard extends StatelessWidget {
 
                   showModalBottomSheet(
                     context: context,
-                    builder: (context) => SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
-                            onTap: () {
-                              _handleSchedule(today);
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
-                            onTap: () {
-                              _handleSchedule(tomorrow);
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
+                    builder: (context) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
+                          onTap: () {
+                            _handleSchedule(today);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
+                          onTap: () {
+                            _handleSchedule(tomorrow);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                     ),
                   );
                 },
