@@ -21,7 +21,8 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   @override
   void startTracking() {
     _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      String? currentWindow = await getActiveWindow();
+      String? currentWindow = await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
+
       if (currentWindow == null) return;
 
       if (currentWindow != _activeDesktopWindowOutput) {
@@ -31,13 +32,19 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
           }
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
-          String appName = activeWindowOutputSections[1].isNotEmpty
-              ? activeWindowOutputSections[1]
-              : activeWindowOutputSections[0].isNotEmpty
-                  ? activeWindowOutputSections[0]
-                  : 'Unknown';
+          String windowTitle = activeWindowOutputSections[0];
+          String windowProcess = activeWindowOutputSections[1];
+
+          const unknownProcessName = 'unknown';
+          String appName = windowProcess.isNotEmpty && windowProcess != unknownProcessName
+              ? windowProcess
+              : _extractAppNameFromTitle(windowTitle);
 
           await saveTimeRecord(appName, _activeDesktopWindowTime);
+          if (kDebugMode) {
+            debugPrint(
+                '[BaseDesktopAppUsageService]: Saving time record for $appName: $_activeDesktopWindowTime seconds');
+          }
         }
 
         _activeDesktopWindowOutput = currentWindow;
@@ -46,6 +53,19 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
 
       _activeDesktopWindowTime += 1;
     });
+  }
+
+  String _extractAppNameFromTitle(String windowTitle) {
+    final commonSeparators = [' - ', ' | ', ' :: ', ' • ', ' › ', ' » ', ' — ', ' – '];
+    for (var separator in commonSeparators) {
+      if (windowTitle.contains(separator)) {
+        var parts = windowTitle.split(separator);
+        var lastPart = parts.last.trim();
+        return lastPart;
+      }
+    }
+
+    return windowTitle;
   }
 
   @override
