@@ -131,11 +131,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   Future<void> _showDatePicker(BuildContext context) async {
     await showModalBottomSheet<List<DateTime?>>(
       context: context,
-      backgroundColor: AppTheme.surface1,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => SingleChildScrollView(
           child: Column(

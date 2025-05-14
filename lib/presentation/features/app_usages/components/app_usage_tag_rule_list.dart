@@ -225,7 +225,6 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.errorColor),
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],

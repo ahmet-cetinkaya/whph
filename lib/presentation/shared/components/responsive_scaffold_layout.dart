@@ -394,16 +394,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Bottom sheet handle
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Theme.of(context).dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
             // Title
             Padding(
               padding: const EdgeInsets.all(16.0),

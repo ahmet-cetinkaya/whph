@@ -38,7 +38,6 @@ class _TaskAddButtonState extends State<TaskAddButton> {
       isScrollControlled: true,
       isDismissible: true,
       enableDrag: true,
-      backgroundColor: Colors.transparent,
       builder: (context) => QuickTaskBottomSheet(
         initialTagIds: widget.initialTagIds,
         initialPlannedDate: widget.initialPlannedDate,

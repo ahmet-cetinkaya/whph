@@ -11,6 +11,9 @@ class AppTheme {
   static const Color surface2 = Color(0xFF181818);
   static const Color surface3 = Color(0xFF202020);
 
+  // Barrier Colors
+  static Color barrierColor = surface3.withValues(alpha: 0.8);
+
   // Text Colors
   static const Color textColor = Color(0xFFFFFFFF);
   static const Color secondaryTextColor = Color(0xFFB0B0B0);
@@ -260,6 +263,27 @@ class AppTheme {
         }
         return textColor;
       }),
+    ),
+    dialogTheme: DialogTheme(
+      barrierColor: barrierColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(containerBorderRadius),
+      ),
+      elevation: 0,
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: surface1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(containerBorderRadius),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      showDragHandle: true,
+      modalBarrierColor: barrierColor,
+      constraints: BoxConstraints(
+        maxWidth: 0.9 * AppTheme.screenMedium,
+      ),
     ),
   );
 }
