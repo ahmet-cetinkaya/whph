@@ -110,6 +110,13 @@ class NotesListState extends State<NotesList> {
 
   void _refresh() {
     if (!mounted) return;
+    
+    // Always refresh on note creation
+    if (_notesService.onNoteCreated.value != null) {
+      refresh();
+      return;
+    }
+
     // Check which note was updated or deleted
     String? noteId = _notesService.onNoteUpdated.value ?? _notesService.onNoteDeleted.value;
 
@@ -221,11 +228,13 @@ class NotesListState extends State<NotesList> {
   void _setupEventListeners() {
     _notesService.onNoteUpdated.addListener(_refresh);
     _notesService.onNoteDeleted.addListener(_refresh);
+    _notesService.onNoteCreated.addListener(_refresh);
   }
 
   void _removeEventListeners() {
     _notesService.onNoteUpdated.removeListener(_refresh);
     _notesService.onNoteDeleted.removeListener(_refresh);
+    _notesService.onNoteCreated.removeListener(_refresh);
   }
 }
 
