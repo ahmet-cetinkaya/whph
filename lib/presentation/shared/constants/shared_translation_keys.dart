@@ -6,6 +6,7 @@ class SharedTranslationKeys {
   static const String deleteButton = 'shared.buttons.delete';
   static const String closeButton = 'shared.buttons.close';
   static const String doneButton = 'shared.buttons.done';
+  static const String confirmButton = 'shared.buttons.confirm';
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
   static const String requiredValidation = 'shared.validation.required';
@@ -44,6 +45,24 @@ class SharedTranslationKeys {
   static const String lastMonth = 'shared.time_periods.last_month';
   static const String last3Months = 'shared.time_periods.last_three_months';
   static const String custom = 'shared.time_periods.custom';
+
+  // Days of week
+  static const String monday = 'shared.days.monday';
+  static const String tuesday = 'shared.days.tuesday';
+  static const String wednesday = 'shared.days.wednesday';
+  static const String thursday = 'shared.days.thursday';
+  static const String friday = 'shared.days.friday';
+  static const String saturday = 'shared.days.saturday';
+  static const String sunday = 'shared.days.sunday';
+
+  // Days of week (short)
+  static const String mondayShort = 'shared.days.monday_short';
+  static const String tuesdayShort = 'shared.days.tuesday_short';
+  static const String wednesdayShort = 'shared.days.wednesday_short';
+  static const String thursdayShort = 'shared.days.thursday_short';
+  static const String fridayShort = 'shared.days.friday_short';
+  static const String saturdayShort = 'shared.days.saturday_short';
+  static const String sundayShort = 'shared.days.sunday_short';
 
   // Statistics
   static const String dailyUsage = 'shared.statistics.daily_usage.title';

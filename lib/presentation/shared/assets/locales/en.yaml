@@ -8,6 +8,7 @@ shared:
     close: Close
     load_more: Load More
     done: Done
+    confirm: Confirm
   messages:
     confirm_delete: Are you sure you want to delete this item?
     no_items_found: No items found
@@ -75,6 +76,21 @@ shared:
     last_month: Last Month
     last_three_months: Last 3 Months
     custom: Custom
+  days:
+    monday: Monday
+    tuesday: Tuesday
+    wednesday: Wednesday
+    thursday: Thursday
+    friday: Friday
+    saturday: Saturday
+    sunday: Sunday
+    monday_short: Mon
+    tuesday_short: Tue
+    wednesday_short: Wed
+    thursday_short: Thu
+    friday_short: Fri
+    saturday_short: Sat
+    sunday_short: Sun
   statistics:
     daily_usage:
       title: Daily Usage

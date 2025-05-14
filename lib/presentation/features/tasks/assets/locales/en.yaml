@@ -13,11 +13,11 @@ tasks:
       stop_timer: Stop Timer
   priority:
     selection:
-      title: Select Priority  
+      title: Select Priority
     types:
       urgent_important: Urgent & Important
       not_urgent_important: Not Urgent but Important
-      urgent_not_important: Urgent but Not Important  
+      urgent_not_important: Urgent but Not Important
       not_urgent_not_important: Not Urgent & Not Important
       none: No Priority
     tooltips:
@@ -76,7 +76,7 @@ tasks:
     estimated_time:
       label: Estimated Time
     elapsed_time:
-      label: Elapsed Time  
+      label: Elapsed Time
     planned_date:
       label: Planned Date
     deadline_date:
@@ -135,12 +135,12 @@ tasks:
           - Create and edit tasks
           - Set priorities and deadlines
           - Track progress
-        
+
         - **Organization:**
           - Group tasks with tags
           - Filter and search
           - Quick actions
-        
+
         - **Time Tracking:**
           - Marathon mode for focus
           - Track time per task
@@ -210,6 +210,8 @@ tasks:
   tooltips:
     edit_title: Edit title
     show_completed_tasks: Filter completed tasks
+    set_reminder: Set reminder
+    clear_date: Clear date
   title: Tasks
   new_task: New Task
   task_details: Task Details
@@ -220,4 +222,18 @@ tasks:
     not_urgent_important: Not Urgent but Important
     urgent_not_important: Urgent but Not Important
     not_urgent_not_important: Not Urgent or Important
+  reminder:
+    none: No reminder
+    atTime: At the scheduled time
+    fiveMinutesBefore: 5 minutes before
+    fifteenMinutesBefore: 15 minutes before
+    oneHourBefore: 1 hour before
+    oneDayBefore: 1 day before
+    plannedReminderLabel: Planned Date Reminder
+    deadlineReminderLabel: Deadline Reminder
+notifications:
+    reminder_title: "Task Reminder: {title}"
+    deadline_title: "Task Deadline: {title}"
+    planned_message: "Your task is planned for {time}"
+    deadline_message: "Your task deadline is at {time}"
 

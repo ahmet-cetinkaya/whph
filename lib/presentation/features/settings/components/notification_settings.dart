@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/settings.dart';
@@ -59,10 +58,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       },
     );
 
-    // Log errors in debug mode without using the onError parameter
-    if (kDebugMode && _isLoading) {
-      debugPrint('DEBUG: Loading notification settings failed');
-    }
+    // Error handling is done by AsyncErrorHandler
   }
 
   Future<void> _toggleNotifications(bool value) async {

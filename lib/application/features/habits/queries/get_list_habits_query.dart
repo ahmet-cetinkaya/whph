@@ -28,12 +28,18 @@ class HabitListItem {
   String name;
   List<TagListItem> tags;
   int? estimatedTime;
+  bool hasReminder;
+  String? reminderTime;
+  List<int> reminderDays;
 
   HabitListItem({
     required this.id,
     required this.name,
     this.tags = const [],
     this.estimatedTime,
+    this.hasReminder = false,
+    this.reminderTime,
+    this.reminderDays = const [],
   });
 }
 
@@ -87,7 +93,10 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         id: habit.id,
         name: habit.name,
         tags: tagItems,
-        estimatedTime: habit.estimatedTime, // Yeni alan eklendi
+        estimatedTime: habit.estimatedTime,
+        hasReminder: habit.hasReminder,
+        reminderTime: habit.reminderTime,
+        reminderDays: habit.getReminderDaysAsList(),
       ));
     }
 

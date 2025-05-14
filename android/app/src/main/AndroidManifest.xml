@@ -3,13 +3,23 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+
+    <!-- For app usage stats -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <!-- For sync device QR code scanning -->
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- For reminders -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-    <!-- Internet permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- For update checking -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -46,6 +56,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Add a specific intent filter for notification clicks -->
+            <intent-filter>
+                <action android:name="me.ahmetcetinkaya.whph.NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Add intent filter for FlutterLocalNotifications SELECT_NOTIFICATION action -->
+            <intent-filter>
+                <action android:name="SELECT_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -60,6 +80,18 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+
+        <!-- Receiver for handling notifications and alarms -->
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="me.ahmetcetinkaya.whph.NOTIFICATION_CLICKED" />
+                <action android:name="me.ahmetcetinkaya.whph.ALARM_TRIGGERED" />
+            </intent-filter>
+        </receiver>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

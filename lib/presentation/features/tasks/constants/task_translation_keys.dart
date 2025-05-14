@@ -1,3 +1,5 @@
+import 'package:whph/domain/features/tasks/task.dart';
+
 class TaskTranslationKeys {
   static const String pomodoroNotificationTitle = 'tasks.pomodoro.notifications.title';
   static const String pomodoroWorkSessionCompleted = 'tasks.pomodoro.notifications.work_completed';
@@ -91,6 +93,8 @@ class TaskTranslationKeys {
   // Tooltips
   static const String editTitleTooltip = 'tasks.tooltips.edit_title';
   static const String showCompletedTasksTooltip = 'tasks.tooltips.show_completed_tasks';
+  static const String setReminderTooltip = 'tasks.tooltips.set_reminder';
+  static const String clearDateTooltip = 'tasks.tooltips.clear_date';
 
   // Marathon Mode
   static const String marathon = 'tasks.marathon.label';
@@ -104,4 +108,44 @@ class TaskTranslationKeys {
 
   // Sub Tasks
   static const String subTasksLabel = 'tasks.details.sub_tasks.label';
+
+  // Notification Messages
+  static const String notificationReminderTitle = 'tasks.notifications.reminder_title';
+  static const String notificationDeadlineTitle = 'tasks.notifications.deadline_title';
+  static const String notificationPlannedMessage = 'tasks.notifications.planned_message';
+  static const String notificationDeadlineMessage = 'tasks.notifications.deadline_message';
+
+  // Reminder Types and Labels
+  static const String reminderNone = 'tasks.reminder.none';
+  static const String reminderAtTime = 'tasks.reminder.atTime';
+  static const String reminderFiveMinutesBefore = 'tasks.reminder.fiveMinutesBefore';
+  static const String reminderFifteenMinutesBefore = 'tasks.reminder.fifteenMinutesBefore';
+  static const String reminderOneHourBefore = 'tasks.reminder.oneHourBefore';
+  static const String reminderOneDayBefore = 'tasks.reminder.oneDayBefore';
+  static const String reminderPlannedLabel = 'tasks.reminder.plannedReminderLabel';
+  static const String reminderDeadlineLabel = 'tasks.reminder.deadlineReminderLabel';
+
+  // Helper Method for Reminder Types
+  static String getReminderTypeKey(ReminderTime reminderTime) {
+    // Get the enum value part after the dot: "ReminderTime.atTime" -> "atTime"
+    final reminderTypeValue = reminderTime.toString().split('.').last;
+
+    // Map the enum value to the corresponding translation key constant
+    switch (reminderTypeValue) {
+      case 'none':
+        return reminderNone;
+      case 'atTime':
+        return reminderAtTime;
+      case 'fiveMinutesBefore':
+        return reminderFiveMinutesBefore;
+      case 'fifteenMinutesBefore':
+        return reminderFifteenMinutesBefore;
+      case 'oneHourBefore':
+        return reminderOneHourBefore;
+      case 'oneDayBefore':
+        return reminderOneDayBefore;
+      default:
+        return reminderNone; // Fallback to none as default
+    }
+  }
 }

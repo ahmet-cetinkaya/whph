@@ -57,6 +57,10 @@ class TaskListItem {
   String? parentTaskId;
   double order = 0;
 
+  // Reminder properties
+  ReminderTime plannedDateReminderTime = ReminderTime.none;
+  ReminderTime deadlineDateReminderTime = ReminderTime.none;
+
   double subTasksCompletionPercentage = 0;
   List<TaskListItem> subTasks;
 
@@ -74,6 +78,8 @@ class TaskListItem {
     this.order = 0,
     this.subTasks = const [],
     this.totalElapsedTime = 0,
+    this.plannedDateReminderTime = ReminderTime.none,
+    this.deadlineDateReminderTime = ReminderTime.none,
   });
 
   TaskListItem copyWith({
@@ -89,6 +95,8 @@ class TaskListItem {
     String? parentTaskId,
     double? subTasksCompletionPercentage,
     List<TaskListItem>? subTasks,
+    ReminderTime? plannedDateReminderTime,
+    ReminderTime? deadlineDateReminderTime,
   }) {
     return TaskListItem(
       id: id ?? this.id,
@@ -103,6 +111,8 @@ class TaskListItem {
       parentTaskId: parentTaskId ?? this.parentTaskId,
       subTasksCompletionPercentage: subTasksCompletionPercentage ?? this.subTasksCompletionPercentage,
       subTasks: subTasks ?? this.subTasks,
+      plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
+      deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
     );
   }
 }
@@ -204,6 +214,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         parentTaskId: task.parentTaskId,
         order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
       ));
     }
 

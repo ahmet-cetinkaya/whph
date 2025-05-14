@@ -8,6 +8,7 @@ shared:
     close: Kapat
     load_more: Daha Fazla
     done: Tamam
+    confirm: Onayla
   messages:
     confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
     no_items_found: Öğe bulunamadı
@@ -75,6 +76,21 @@ shared:
     last_month: Son Ay
     last_three_months: Son 3 Ay
     custom: Özel
+  days:
+    monday: Pazartesi
+    tuesday: Salı
+    wednesday: Çarşamba
+    thursday: Perşembe
+    friday: Cuma
+    saturday: Cumartesi
+    sunday: Pazar
+    monday_short: Pzt
+    tuesday_short: Sal
+    wednesday_short: Çar
+    thursday_short: Per
+    friday_short: Cum
+    saturday_short: Cmt
+    sunday_short: Paz
   statistics:
     daily_usage:
       title: Günlük Kullanım

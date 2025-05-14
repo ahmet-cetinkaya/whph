@@ -3,7 +3,7 @@ import 'package:easy_localization_multi/easy_localization_multi.dart';
 import 'package:easy_localization_yaml/easy_localization_yaml.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/settings/pages/settings_page.dart';
-import '../services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class TranslationService implements ITranslationService {
   static const _supportedLocales = [

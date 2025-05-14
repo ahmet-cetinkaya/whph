@@ -8,6 +8,16 @@ enum EisenhowerPriority {
   urgentImportant,
 }
 
+/// Reminder time options for tasks
+enum ReminderTime {
+  none,
+  atTime,
+  fiveMinutesBefore,
+  fifteenMinutesBefore,
+  oneHourBefore,
+  oneDayBefore,
+}
+
 @jsonSerializable
 class Task extends BaseEntity<String> {
   String title;
@@ -19,6 +29,13 @@ class Task extends BaseEntity<String> {
   bool isCompleted = false;
   String? parentTaskId;
   double order = 0;
+
+  // Reminder settings
+  @JsonProperty(defaultValue: 'ReminderTime.none')
+  ReminderTime plannedDateReminderTime = ReminderTime.none;
+
+  @JsonProperty(defaultValue: 'ReminderTime.none')
+  ReminderTime deadlineDateReminderTime = ReminderTime.none;
 
   Task(
       {required super.id,
@@ -33,5 +50,7 @@ class Task extends BaseEntity<String> {
       this.estimatedTime,
       required this.isCompleted,
       this.parentTaskId,
-      this.order = 0.0});
+      this.order = 0.0,
+      this.plannedDateReminderTime = ReminderTime.none,
+      this.deadlineDateReminderTime = ReminderTime.none});
 }

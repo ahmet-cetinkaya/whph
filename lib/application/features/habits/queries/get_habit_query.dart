@@ -65,8 +65,13 @@ class GetHabitQueryResponse extends Habit {
     required super.name,
     required super.description,
     super.estimatedTime,
+    super.hasReminder = false,
+    super.reminderTime,
+    List<int> reminderDays = const [],
     required this.statistics,
-  });
+  }) {
+    setReminderDaysFromList(reminderDays);
+  }
 }
 
 class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQueryResponse> {
@@ -91,6 +96,12 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     final statistics = await _calculateStatistics(habit, habitRecords);
 
+    // Get the reminderDays directly from the database
+    final reminderDaysResult = await _habitRepository.getReminderDaysById(habit.id);
+    final reminderDaysList = reminderDaysResult.isNotEmpty
+        ? reminderDaysResult.split(',').where((s) => s.isNotEmpty).map((s) => int.parse(s.trim())).toList()
+        : <int>[];
+
     return GetHabitQueryResponse(
       id: habit.id,
       createdDate: habit.createdDate,
@@ -98,6 +109,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       name: habit.name,
       description: habit.description,
       estimatedTime: habit.estimatedTime,
+      hasReminder: habit.hasReminder,
+      reminderTime: habit.reminderTime,
+      reminderDays: reminderDaysList,
       statistics: statistics,
     );
   }

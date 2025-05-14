@@ -1291,8 +1291,34 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
   @override
   late final GeneratedColumn<int> estimatedTime =
       GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _hasReminderMeta = const VerificationMeta('hasReminder');
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, name, description, estimatedTime];
+  late final GeneratedColumn<bool> hasReminder = GeneratedColumn<bool>('has_reminder', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("has_reminder" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _reminderTimeMeta = const VerificationMeta('reminderTime');
+  @override
+  late final GeneratedColumn<String> reminderTime = GeneratedColumn<String>('reminder_time', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _reminderDaysMeta = const VerificationMeta('reminderDays');
+  @override
+  late final GeneratedColumn<String> reminderDays = GeneratedColumn<String>('reminder_days', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const Constant(''));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdDate,
+        modifiedDate,
+        deletedDate,
+        name,
+        description,
+        estimatedTime,
+        hasReminder,
+        reminderTime,
+        reminderDays
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1332,6 +1358,15 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       context.handle(
           _estimatedTimeMeta, estimatedTime.isAcceptableOrUnknown(data['estimated_time']!, _estimatedTimeMeta));
     }
+    if (data.containsKey('has_reminder')) {
+      context.handle(_hasReminderMeta, hasReminder.isAcceptableOrUnknown(data['has_reminder']!, _hasReminderMeta));
+    }
+    if (data.containsKey('reminder_time')) {
+      context.handle(_reminderTimeMeta, reminderTime.isAcceptableOrUnknown(data['reminder_time']!, _reminderTimeMeta));
+    }
+    if (data.containsKey('reminder_days')) {
+      context.handle(_reminderDaysMeta, reminderDays.isAcceptableOrUnknown(data['reminder_days']!, _reminderDaysMeta));
+    }
     return context;
   }
 
@@ -1348,6 +1383,9 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
+      hasReminder: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_reminder'])!,
+      reminderTime: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_time']),
+      reminderDays: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_days'])!,
     );
   }
 
@@ -1365,6 +1403,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   final Value<String> name;
   final Value<String> description;
   final Value<int?> estimatedTime;
+  final Value<bool> hasReminder;
+  final Value<String?> reminderTime;
+  final Value<String> reminderDays;
   final Value<int> rowid;
   const HabitTableCompanion({
     this.id = const Value.absent(),
@@ -1374,6 +1415,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.estimatedTime = const Value.absent(),
+    this.hasReminder = const Value.absent(),
+    this.reminderTime = const Value.absent(),
+    this.reminderDays = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitTableCompanion.insert({
@@ -1384,6 +1428,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     required String name,
     required String description,
     this.estimatedTime = const Value.absent(),
+    this.hasReminder = const Value.absent(),
+    this.reminderTime = const Value.absent(),
+    this.reminderDays = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -1397,6 +1444,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     Expression<String>? name,
     Expression<String>? description,
     Expression<int>? estimatedTime,
+    Expression<bool>? hasReminder,
+    Expression<String>? reminderTime,
+    Expression<String>? reminderDays,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1407,6 +1457,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (estimatedTime != null) 'estimated_time': estimatedTime,
+      if (hasReminder != null) 'has_reminder': hasReminder,
+      if (reminderTime != null) 'reminder_time': reminderTime,
+      if (reminderDays != null) 'reminder_days': reminderDays,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1419,6 +1472,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       Value<String>? name,
       Value<String>? description,
       Value<int?>? estimatedTime,
+      Value<bool>? hasReminder,
+      Value<String?>? reminderTime,
+      Value<String>? reminderDays,
       Value<int>? rowid}) {
     return HabitTableCompanion(
       id: id ?? this.id,
@@ -1428,6 +1484,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       name: name ?? this.name,
       description: description ?? this.description,
       estimatedTime: estimatedTime ?? this.estimatedTime,
+      hasReminder: hasReminder ?? this.hasReminder,
+      reminderTime: reminderTime ?? this.reminderTime,
+      reminderDays: reminderDays ?? this.reminderDays,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1456,6 +1515,15 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     if (estimatedTime.present) {
       map['estimated_time'] = Variable<int>(estimatedTime.value);
     }
+    if (hasReminder.present) {
+      map['has_reminder'] = Variable<bool>(hasReminder.value);
+    }
+    if (reminderTime.present) {
+      map['reminder_time'] = Variable<String>(reminderTime.value);
+    }
+    if (reminderDays.present) {
+      map['reminder_days'] = Variable<String>(reminderDays.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1472,6 +1540,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('estimatedTime: $estimatedTime, ')
+          ..write('hasReminder: $hasReminder, ')
+          ..write('reminderTime: $reminderTime, ')
+          ..write('reminderDays: $reminderDays, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3080,6 +3151,16 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   late final GeneratedColumn<double> order = GeneratedColumn<double>('order', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: false, defaultValue: const Constant(0.0));
   @override
+  late final GeneratedColumnWithTypeConverter<ReminderTime, int> plannedDateReminderTime = GeneratedColumn<int>(
+          'planned_date_reminder_time', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0))
+      .withConverter<ReminderTime>($TaskTableTable.$converterplannedDateReminderTime);
+  @override
+  late final GeneratedColumnWithTypeConverter<ReminderTime, int> deadlineDateReminderTime = GeneratedColumn<int>(
+          'deadline_date_reminder_time', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0))
+      .withConverter<ReminderTime>($TaskTableTable.$converterdeadlineDateReminderTime);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         parentTaskId,
@@ -3093,7 +3174,9 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         createdDate,
         modifiedDate,
         deletedDate,
-        order
+        order,
+        plannedDateReminderTime,
+        deadlineDateReminderTime
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3170,6 +3253,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
       parentTaskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}parent_task_id']),
       order: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}order'])!,
+      plannedDateReminderTime: $TaskTableTable.$converterplannedDateReminderTime.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}planned_date_reminder_time'])!),
+      deadlineDateReminderTime: $TaskTableTable.$converterdeadlineDateReminderTime.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}deadline_date_reminder_time'])!),
     );
   }
 
@@ -3182,6 +3269,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       const EnumIndexConverter<EisenhowerPriority>(EisenhowerPriority.values);
   static JsonTypeConverter2<EisenhowerPriority?, int?, int?> $converterpriorityn =
       JsonTypeConverter2.asNullable($converterpriority);
+  static JsonTypeConverter2<ReminderTime, int, int> $converterplannedDateReminderTime =
+      const EnumIndexConverter<ReminderTime>(ReminderTime.values);
+  static JsonTypeConverter2<ReminderTime, int, int> $converterdeadlineDateReminderTime =
+      const EnumIndexConverter<ReminderTime>(ReminderTime.values);
 }
 
 class TaskTableCompanion extends UpdateCompanion<Task> {
@@ -3198,6 +3289,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<double> order;
+  final Value<ReminderTime> plannedDateReminderTime;
+  final Value<ReminderTime> deadlineDateReminderTime;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
@@ -3213,6 +3306,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.order = const Value.absent(),
+    this.plannedDateReminderTime = const Value.absent(),
+    this.deadlineDateReminderTime = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
@@ -3229,6 +3324,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.order = const Value.absent(),
+    this.plannedDateReminderTime = const Value.absent(),
+    this.deadlineDateReminderTime = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
@@ -3247,6 +3344,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<double>? order,
+    Expression<int>? plannedDateReminderTime,
+    Expression<int>? deadlineDateReminderTime,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3263,6 +3362,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (order != null) 'order': order,
+      if (plannedDateReminderTime != null) 'planned_date_reminder_time': plannedDateReminderTime,
+      if (deadlineDateReminderTime != null) 'deadline_date_reminder_time': deadlineDateReminderTime,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3281,6 +3382,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<double>? order,
+      Value<ReminderTime>? plannedDateReminderTime,
+      Value<ReminderTime>? deadlineDateReminderTime,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
@@ -3296,6 +3399,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       order: order ?? this.order,
+      plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
+      deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3342,6 +3447,14 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     if (order.present) {
       map['order'] = Variable<double>(order.value);
     }
+    if (plannedDateReminderTime.present) {
+      map['planned_date_reminder_time'] =
+          Variable<int>($TaskTableTable.$converterplannedDateReminderTime.toSql(plannedDateReminderTime.value));
+    }
+    if (deadlineDateReminderTime.present) {
+      map['deadline_date_reminder_time'] =
+          Variable<int>($TaskTableTable.$converterdeadlineDateReminderTime.toSql(deadlineDateReminderTime.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3364,6 +3477,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('order: $order, ')
+          ..write('plannedDateReminderTime: $plannedDateReminderTime, ')
+          ..write('deadlineDateReminderTime: $deadlineDateReminderTime, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4868,6 +4983,9 @@ typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   required String name,
   required String description,
   Value<int?> estimatedTime,
+  Value<bool> hasReminder,
+  Value<String?> reminderTime,
+  Value<String> reminderDays,
   Value<int> rowid,
 });
 typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
@@ -4878,6 +4996,9 @@ typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
   Value<String> name,
   Value<String> description,
   Value<int?> estimatedTime,
+  Value<bool> hasReminder,
+  Value<String?> reminderTime,
+  Value<String> reminderDays,
   Value<int> rowid,
 });
 
@@ -4907,6 +5028,15 @@ class $$HabitTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTabl
 
   ColumnFilters<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get hasReminder =>
+      $composableBuilder(column: $table.hasReminder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get reminderTime =>
+      $composableBuilder(column: $table.reminderTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get reminderDays =>
+      $composableBuilder(column: $table.reminderDays, builder: (column) => ColumnFilters(column));
 }
 
 class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -4936,6 +5066,15 @@ class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTa
 
   ColumnOrderings<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get hasReminder =>
+      $composableBuilder(column: $table.hasReminder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get reminderTime =>
+      $composableBuilder(column: $table.reminderTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get reminderDays =>
+      $composableBuilder(column: $table.reminderDays, builder: (column) => ColumnOrderings(column));
 }
 
 class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -4964,6 +5103,14 @@ class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $Habit
 
   GeneratedColumn<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasReminder => $composableBuilder(column: $table.hasReminder, builder: (column) => column);
+
+  GeneratedColumn<String> get reminderTime =>
+      $composableBuilder(column: $table.reminderTime, builder: (column) => column);
+
+  GeneratedColumn<String> get reminderDays =>
+      $composableBuilder(column: $table.reminderDays, builder: (column) => column);
 }
 
 class $$HabitTableTableTableManager extends RootTableManager<
@@ -4993,6 +5140,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
+            Value<bool> hasReminder = const Value.absent(),
+            Value<String?> reminderTime = const Value.absent(),
+            Value<String> reminderDays = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion(
@@ -5003,6 +5153,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             name: name,
             description: description,
             estimatedTime: estimatedTime,
+            hasReminder: hasReminder,
+            reminderTime: reminderTime,
+            reminderDays: reminderDays,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5013,6 +5166,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             required String name,
             required String description,
             Value<int?> estimatedTime = const Value.absent(),
+            Value<bool> hasReminder = const Value.absent(),
+            Value<String?> reminderTime = const Value.absent(),
+            Value<String> reminderDays = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion.insert(
@@ -5023,6 +5179,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             name: name,
             description: description,
             estimatedTime: estimatedTime,
+            hasReminder: hasReminder,
+            reminderTime: reminderTime,
+            reminderDays: reminderDays,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
@@ -6324,6 +6483,8 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   Value<double> order,
+  Value<ReminderTime> plannedDateReminderTime,
+  Value<ReminderTime> deadlineDateReminderTime,
   Value<int> rowid,
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
@@ -6340,6 +6501,8 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   Value<double> order,
+  Value<ReminderTime> plannedDateReminderTime,
+  Value<ReminderTime> deadlineDateReminderTime,
   Value<int> rowid,
 });
 
@@ -6388,6 +6551,12 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
 
   ColumnFilters<double> get order =>
       $composableBuilder(column: $table.order, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<ReminderTime, ReminderTime, int> get plannedDateReminderTime => $composableBuilder(
+      column: $table.plannedDateReminderTime, builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<ReminderTime, ReminderTime, int> get deadlineDateReminderTime => $composableBuilder(
+      column: $table.deadlineDateReminderTime, builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -6435,6 +6604,12 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
 
   ColumnOrderings<double> get order =>
       $composableBuilder(column: $table.order, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get plannedDateReminderTime =>
+      $composableBuilder(column: $table.plannedDateReminderTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deadlineDateReminderTime =>
+      $composableBuilder(column: $table.deadlineDateReminderTime, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -6479,6 +6654,12 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
       $composableBuilder(column: $table.deletedDate, builder: (column) => column);
 
   GeneratedColumn<double> get order => $composableBuilder(column: $table.order, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ReminderTime, int> get plannedDateReminderTime =>
+      $composableBuilder(column: $table.plannedDateReminderTime, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ReminderTime, int> get deadlineDateReminderTime =>
+      $composableBuilder(column: $table.deadlineDateReminderTime, builder: (column) => column);
 }
 
 class $$TaskTableTableTableManager extends RootTableManager<
@@ -6514,6 +6695,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<double> order = const Value.absent(),
+            Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
+            Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion(
@@ -6530,6 +6713,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             order: order,
+            plannedDateReminderTime: plannedDateReminderTime,
+            deadlineDateReminderTime: deadlineDateReminderTime,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6546,6 +6731,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<double> order = const Value.absent(),
+            Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
+            Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion.insert(
@@ -6562,6 +6749,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             order: order,
+            plannedDateReminderTime: plannedDateReminderTime,
+            deadlineDateReminderTime: deadlineDateReminderTime,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

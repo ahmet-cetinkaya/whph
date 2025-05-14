@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:whph/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
@@ -140,7 +140,10 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   @override
   Future<void> update(TEntity item) async {
     item.modifiedDate = DateTime.now().toUtc();
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(toCompanion(item));
+
+    final companion = toCompanion(item);
+
+    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
   }
 
   @override

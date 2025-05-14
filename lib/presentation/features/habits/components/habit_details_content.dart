@@ -12,12 +12,14 @@ import 'package:whph/application/features/habits/commands/add_habit_tag_command.
 import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/components/habit_reminder_selector.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/date_time_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
@@ -63,6 +65,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyDescription = 'description';
+  static const String keyReminder = 'reminder';
 
   @override
   void initState() {
@@ -136,6 +139,23 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             } else if (descriptionSelection.isValid) {
               // Restore selection if text didn't change
               _descriptionController.selection = descriptionSelection;
+            }
+
+            // Ensure habit has valid reminder settings if reminder is enabled
+            if (_habit!.hasReminder) {
+              // Ensure we have a valid time
+              if (_habit!.reminderTime == null) {
+                _habit!.setReminderTimeOfDay(TimeOfDay.now());
+              }
+
+              // Ensure we have valid days
+              if (_habit!.reminderDays.isEmpty) {
+                final allDays = List.generate(7, (index) => index + 1);
+                _habit!.setReminderDaysFromList(allDays);
+
+                // Save the updated habit with the default reminder days
+                _saveHabitImmediately();
+              }
             }
           });
           _processFieldVisibility();
@@ -347,32 +367,76 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     return false;
   }
 
+  // Save habit with debounce for text inputs
   Future<void> _saveHabit() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
-      if (!mounted) return;
-
-      final command = SaveHabitCommand(
-        id: widget.habitId,
-        name: _nameController.text,
-        description: _descriptionController.text,
-        estimatedTime: _habit!.estimatedTime,
-      );
-
-      await AsyncErrorHandler.executeVoid(
-        context: context,
-        errorMessage: _translationService.translate(HabitTranslationKeys.savingDetailsError),
-        operation: () async {
-          await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
-        },
-        onSuccess: () {
-          // Notify that habit was updated
-          _habitsService.notifyHabitUpdated(widget.habitId);
-          widget.onHabitUpdated?.call();
-        },
-      );
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      await _saveHabitImmediately();
     });
+  }
+
+  // Save habit immediately without debounce
+  Future<void> _saveHabitImmediately() async {
+    if (!mounted) return;
+
+    // Force update the reminderDays list from the current string value
+    // This ensures we're using the latest value
+    final reminderDaysList = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
+
+    // If reminder is enabled but no days are selected, select all days by default
+    if (_habit!.hasReminder && reminderDaysList.isEmpty) {
+      final allDays = List.generate(7, (index) => index + 1);
+      _habit!.setReminderDaysFromList(allDays);
+    }
+
+    // Ensure we have valid reminder data before saving
+    if (_habit!.hasReminder) {
+      // Ensure we have a valid time
+      if (_habit!.reminderTime == null) {
+        _habit!.setReminderTimeOfDay(TimeOfDay.now());
+      }
+
+      // Ensure we have valid days
+      if (_habit!.reminderDays.isEmpty) {
+        final allDays = List.generate(7, (index) => index + 1);
+        _habit!.setReminderDaysFromList(allDays);
+      }
+    }
+
+    // Get the final reminder days list to send in the command
+    final List<int> reminderDaysToSend = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
+
+    final command = SaveHabitCommand(
+      id: widget.habitId,
+      name: _nameController.text,
+      description: _descriptionController.text,
+      estimatedTime: _habit!.estimatedTime,
+      hasReminder: _habit!.hasReminder,
+      reminderTime: _habit!.reminderTime,
+      reminderDays: reminderDaysToSend, // Always use the latest list from the habit object
+    );
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.savingDetailsError),
+      operation: () async {
+        await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
+      },
+      onSuccess: () {
+        // Notify that habit was updated
+        _habitsService.notifyHabitUpdated(widget.habitId);
+        widget.onHabitUpdated?.call();
+
+        // Force rebuild of the UI to ensure everything is in sync
+        if (mounted) {
+          setState(() {});
+        }
+
+        // Refresh habit data from repository to ensure we have the latest data
+        _getHabit();
+      },
+    );
   }
 
   void _previousMonth() {
@@ -403,6 +467,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
       if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
+      if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
     });
   }
 
@@ -439,6 +504,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _habit!.estimatedTime != null && _habit!.estimatedTime! > 0;
       case keyDescription:
         return _habit!.description.isNotEmpty;
+      case keyReminder:
+        return _habit!.hasReminder;
       default:
         return false;
     }
@@ -453,6 +520,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _translationService.translate(HabitTranslationKeys.estimatedTimeLabel);
       case keyDescription:
         return _translationService.translate(HabitTranslationKeys.descriptionLabel);
+      case keyReminder:
+        return _translationService.translate(HabitTranslationKeys.enableReminders);
       default:
         return '';
     }
@@ -467,6 +536,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return HabitUiConstants.estimatedTimeIcon;
       case keyDescription:
         return HabitUiConstants.descriptionIcon;
+      case keyReminder:
+        return Icons.notifications;
       default:
         return Icons.add;
     }
@@ -507,6 +578,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       keyTags,
       keyEstimatedTime,
       keyDescription,
+      keyReminder,
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -515,6 +587,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         children: [
           Row(
             children: [
+              // Daily Record Button
+              _buildDailyRecordButton(),
+              const SizedBox(width: 8),
+
+              // Habit Name
               Expanded(
                 child: TextFormField(
                   controller: _nameController,
@@ -534,27 +611,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-              const SizedBox(width: 8),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.check),
-                  onPressed: () => _createHabitRecord(widget.habitId, DateTime.now()),
-                  tooltip: _translationService.translate(HabitTranslationKeys.createRecordTooltip),
-                ),
-              ),
             ],
           ),
+
           const SizedBox(height: AppTheme.sizeSmall),
 
-          // Tags and Estimated Time Table
-          if (_isFieldVisible(keyTags) || _isFieldVisible(keyEstimatedTime))
+          // Tags, Estimated Time, and Reminder Table
+          if (_isFieldVisible(keyTags) || _isFieldVisible(keyEstimatedTime) || _isFieldVisible(keyReminder))
             DetailTable(rowData: [
               if (_isFieldVisible(keyTags)) _buildTagsSection(),
               if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
+              if (_isFieldVisible(keyReminder)) _buildReminderSection(),
             ]),
 
           // Description Table
@@ -659,6 +726,90 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         ),
       );
 
+  DetailTableRowData _buildReminderSection() {
+    // Get the current reminder days list
+    final reminderDaysList = _habit!.getReminderDaysAsList();
+
+    return DetailTableRowData(
+      label: _translationService.translate(HabitTranslationKeys.reminderSettings),
+      icon: Icons.notifications,
+      // Use a Container with padding to make the widget more compact
+      widget: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: HabitReminderSelector(
+          key: ValueKey('reminder_selector_${_habit!.id}'),
+          hasReminder: _habit!.hasReminder,
+          reminderTime: _habit!.getReminderTimeOfDay(),
+          reminderDays: reminderDaysList,
+          onHasReminderChanged: (value) {
+            // Use addPostFrameCallback to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _habit!.hasReminder = value;
+
+                  // If disabling reminders, clear the reminder time
+                  if (!value) {
+                    _habit!.reminderTime = null;
+                    // We don't clear reminderDays when disabling reminders to preserve the selection
+                    // This way, when reminders are re-enabled, the previously selected days will be restored
+                  } else {
+                    // When enabling reminders, select all days by default if no days are currently selected
+                    final currentDays = _habit!.getReminderDaysAsList();
+                    if (currentDays.isEmpty) {
+                      final allDays = List.generate(7, (index) => index + 1);
+                      _habit!.setReminderDaysFromList(allDays);
+                    }
+
+                    // Set default time if none is set
+                    if (_habit!.reminderTime == null) {
+                      _habit!.setReminderTimeOfDay(TimeOfDay.now());
+                    }
+                  }
+                });
+
+                // Save immediately without debounce
+                _saveHabitImmediately();
+              }
+            });
+          },
+          onTimeChanged: (value) {
+            // Use addPostFrameCallback to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _habit!.setReminderTimeOfDay(value);
+                });
+
+                // Save immediately without debounce
+                _saveHabitImmediately();
+              }
+            });
+          },
+          onDaysChanged: (value) {
+            // Ensure we're working with a new list to avoid reference issues
+            final newDays = List<int>.from(value);
+
+            // Use addPostFrameCallback to avoid setState during build
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                // Directly update the habit object
+                _habit!.setReminderDaysFromList(newDays);
+
+                // Force UI update
+                setState(() {});
+
+                // Save the changes immediately without debounce
+                _saveHabitImmediately();
+              }
+            });
+          },
+          translationService: _translationService,
+        ),
+      ),
+    );
+  }
+
   void _adjustEstimatedTime(int adjustment) {
     if (!mounted) return;
     setState(() {
@@ -693,6 +844,53 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         ),
         Text(title, style: AppTheme.bodyLarge),
       ],
+    );
+  }
+
+  /// Checks if there's a habit record for today
+  bool _hasRecordForToday() {
+    if (_habitRecords == null) return false;
+    return _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+  }
+
+  /// Gets the habit record for today if it exists
+  HabitRecordListItem? _getRecordForToday() {
+    if (!_hasRecordForToday()) return null;
+    return _habitRecords!.items.firstWhere(
+      (record) => DateTimeHelper.isSameDay(record.date, DateTime.now()),
+    );
+  }
+
+  /// Builds the daily record button with cross or chain icon based on completion status
+  Widget _buildDailyRecordButton() {
+    final bool hasRecordToday = _hasRecordForToday();
+    final tooltipText = hasRecordToday
+        ? _translationService.translate(HabitTranslationKeys.removeRecordTooltip)
+        : _translationService.translate(HabitTranslationKeys.createRecordTooltip);
+
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+      ),
+      child: IconButton(
+        icon: Icon(
+          hasRecordToday ? Icons.link : Icons.close,
+          size: AppTheme.fontSizeLarge,
+          color: hasRecordToday ? Colors.green : Colors.red,
+        ),
+        onPressed: () async {
+          if (hasRecordToday) {
+            final recordToday = _getRecordForToday();
+            if (recordToday != null) {
+              await _deleteHabitRecord(recordToday.id);
+            }
+          } else {
+            await _createHabitRecord(widget.habitId, DateTime.now());
+          }
+        },
+        tooltip: tooltipText,
+      ),
     );
   }
 }

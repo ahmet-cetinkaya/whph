@@ -93,6 +93,19 @@ class TaskCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(child: _buildTitleAndMetadata(context)),
+          // Show reminder icon if task has reminders
+          if (_hasReminder)
+            Tooltip(
+              message: _getReminderTooltip(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Icon(
+                  Icons.notifications,
+                  size: AppTheme.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
           if (onScheduled != null)
             StatefulBuilder(
               builder: (context, setState) => IconButton(
@@ -255,6 +268,36 @@ class TaskCard extends StatelessWidget {
 
   bool get _hasDateOrTime =>
       taskItem.estimatedTime != null || taskItem.plannedDate != null || taskItem.deadlineDate != null;
+
+  /// Check if the task has any reminders enabled
+  bool get _hasReminder =>
+      (taskItem.plannedDate != null && taskItem.plannedDateReminderTime != ReminderTime.none) ||
+      (taskItem.deadlineDate != null && taskItem.deadlineDateReminderTime != ReminderTime.none);
+
+  /// Get tooltip text for the reminder icon
+  String _getReminderTooltip() {
+    final List<String> reminderTexts = [];
+
+    if (taskItem.plannedDate != null && taskItem.plannedDateReminderTime != ReminderTime.none) {
+      // Use the helper method to get the standardized translation key
+      final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.plannedDateReminderTime);
+      final reminderType = _translationService.translate(reminderTypeKey);
+      final dateText = DateFormat(SharedUiConstants.defaultDateFormat).format(taskItem.plannedDate!);
+      reminderTexts
+          .add('${_translationService.translate(TaskTranslationKeys.reminderPlannedLabel)}: $dateText ($reminderType)');
+    }
+
+    if (taskItem.deadlineDate != null && taskItem.deadlineDateReminderTime != ReminderTime.none) {
+      // Use the helper method to get the standardized translation key
+      final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.deadlineDateReminderTime);
+      final reminderType = _translationService.translate(reminderTypeKey);
+      final dateText = DateFormat(SharedUiConstants.defaultDateFormat).format(taskItem.deadlineDate!);
+      reminderTexts.add(
+          '${_translationService.translate(TaskTranslationKeys.reminderDeadlineLabel)}: $dateText ($reminderType)');
+    }
+
+    return reminderTexts.join('\n');
+  }
 
   Color _getPriorityColor(EisenhowerPriority? priority) {
     return TaskUiConstants.getPriorityColor(priority);

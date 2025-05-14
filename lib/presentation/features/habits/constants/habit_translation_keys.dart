@@ -16,6 +16,7 @@ class HabitTranslationKeys {
   static const String recordsLabel = 'habits.details.records';
   static const String statisticsLabel = 'habits.details.statistics_label';
   static const String createRecordTooltip = 'habits.details.create_record_tooltip';
+  static const String removeRecordTooltip = 'habits.details.remove_record_tooltip';
 
   // Errors
   static const String loadingDetailsError = 'habits.errors.loading_details';
@@ -75,4 +76,17 @@ class HabitTranslationKeys {
   static const String editNameTooltip = 'habits.tooltips.edit_name';
 
   static const String addHabit = 'habits.tooltips.add_habit';
+
+  // Notifications
+  static const String notificationReminderTitle = 'habits.notifications.reminder_title';
+  static const String notificationReminderMessage = 'habits.notifications.reminder_message';
+
+  // Reminders
+  static const String enableReminders = 'habits.reminders.enable';
+  static const String selectDaysWarning = 'habits.reminders.select_days_warning';
+  static const String reminderSettings = 'habits.reminder.reminderSettings';
+  static const String reminderTime = 'habits.reminder.reminderTime';
+  static const String reminderDays = 'habits.reminder.reminderDays';
+  static const String noReminder = 'habits.reminder.noReminder';
+  static const String everyDay = 'habits.reminder.everyDay';
 }
