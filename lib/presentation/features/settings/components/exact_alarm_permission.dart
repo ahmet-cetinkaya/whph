@@ -46,12 +46,14 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
 
   Future<void> _checkAndroidVersion() async {
     if (!Platform.isAndroid) {
-      setState(() {
-        _isAndroid12OrHigher = false;
-        _hasExactAlarmPermission = true;
-        _isLoading = false;
-        _showError = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isAndroid12OrHigher = false;
+          _hasExactAlarmPermission = true;
+          _isLoading = false;
+          _showError = false;
+        });
+      }
       return;
     }
 
@@ -62,22 +64,28 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       // Android 12 is API level 31
       final isAndroid12OrHigher = sdkInt >= 31;
       if (isAndroid12OrHigher) {
-        setState(() {
-          _isAndroid12OrHigher = true;
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isAndroid12OrHigher = true;
+            _isLoading = false;
+          });
+        }
       } else {
-        setState(() {
-          _hasExactAlarmPermission = true;
-          _isLoading = false;
-          _showError = false;
-        });
+        if (mounted) {
+          setState(() {
+            _hasExactAlarmPermission = true;
+            _isLoading = false;
+            _showError = false;
+          });
+        }
       }
     } catch (e) {
       // If we can't determine the version, assume it's needed
-      setState(() {
-        _isAndroid12OrHigher = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isAndroid12OrHigher = true;
+        });
+      }
     }
   }
 
@@ -88,20 +96,24 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
 
   Future<void> _performThoroughPermissionCheck() async {
     if (!Platform.isAndroid) {
-      setState(() {
-        _hasExactAlarmPermission = true;
-        _isLoading = false;
-        _showError = false;
-      });
+      if (mounted) {
+        setState(() {
+          _hasExactAlarmPermission = true;
+          _isLoading = false;
+          _showError = false;
+        });
+      }
       return;
     }
 
     if (!_isAndroid12OrHigher) {
-      setState(() {
-        _hasExactAlarmPermission = true;
-        _isLoading = false;
-        _showError = false;
-      });
+      if (mounted) {
+        setState(() {
+          _hasExactAlarmPermission = true;
+          _isLoading = false;
+          _showError = false;
+        });
+      }
       return;
     }
 
@@ -134,36 +146,44 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
           actualPermissionStatus = canSchedule || hasDirectPermission;
 
           // Update UI based on the actual permission status
-          setState(() {
-            _hasExactAlarmPermission = actualPermissionStatus;
-            _isLoading = false;
-            _showError = !actualPermissionStatus;
-          });
+          if (mounted) {
+            setState(() {
+              _hasExactAlarmPermission = actualPermissionStatus;
+              _isLoading = false;
+              _showError = !actualPermissionStatus;
+            });
+          }
         } catch (e) {
           // If we can't check, assume permission is not granted and show error
-          setState(() {
-            _hasExactAlarmPermission = false;
-            _isLoading = false;
-            _showError = true;
-          });
+          if (mounted) {
+            setState(() {
+              _hasExactAlarmPermission = false;
+              _isLoading = false;
+              _showError = true;
+            });
+          }
         }
       } else {
         // For Android 12-14, use the standard permission check
         final bool hasPermission = await platform.invokeMethod('canScheduleExactAlarms');
 
-        setState(() {
-          _hasExactAlarmPermission = hasPermission;
-          _isLoading = false;
-          _showError = !hasPermission;
-        });
+        if (mounted) {
+          setState(() {
+            _hasExactAlarmPermission = hasPermission;
+            _isLoading = false;
+            _showError = !hasPermission;
+          });
+        }
       }
     } catch (e) {
       // If we can't check, assume we don't have permission
-      setState(() {
-        _hasExactAlarmPermission = false;
-        _isLoading = false;
-        _showError = true;
-      });
+      if (mounted) {
+        setState(() {
+          _hasExactAlarmPermission = false;
+          _isLoading = false;
+          _showError = true;
+        });
+      }
     }
 
     if (_hasExactAlarmPermission) {
@@ -177,10 +197,12 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   Future<void> _requestPermission() async {
     if (!Platform.isAndroid || !_isAndroid12OrHigher) return;
 
-    setState(() {
-      _isLoading = true;
-      _showError = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _showError = false;
+      });
+    }
 
     try {
       await platform.invokeMethod('openExactAlarmsSettings');
@@ -197,10 +219,12 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         await _checkPermission();
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _showError = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _showError = true;
+        });
+      }
     }
   }
 
