@@ -19,7 +19,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   Future<String?> getActiveWindow();
 
   @override
-  void startTracking() {
+  Future<void> startTracking() async {
     _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       String? currentWindow = await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
 
@@ -69,7 +69,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   }
 
   @override
-  void stopTracking() {
+  Future<void> stopTracking() async {
     _intervalTimer?.cancel();
     super.stopTracking();
   }

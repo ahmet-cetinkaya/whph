@@ -76,24 +76,15 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
   }
 
   void _handleDateChange(DateTime? start, DateTime? end) {
-    final effectiveStart = start ?? DateTime.now().subtract(const Duration(days: 7));
-    var effectiveEnd = end ?? DateTime.now();
-
-    // Always set end date to end of day for consistent filtering
-    effectiveEnd = DateTime(
-      effectiveEnd.year,
-      effectiveEnd.month,
-      effectiveEnd.day,
-      23,
-      59,
-      59,
-    );
+    final dateNow = DateTime.now();
+    final dateFilterEnd = end ?? DateTime(dateNow.year, dateNow.month, dateNow.day, 23, 59, 59);
+    final dateFilterStart = start ?? dateFilterEnd.subtract(const Duration(days: 7));
 
     final newState = AppUsageFilterState(
       tags: _currentState.tags,
       showNoTagsFilter: _currentState.showNoTagsFilter,
-      startDate: effectiveStart,
-      endDate: effectiveEnd,
+      startDate: dateFilterStart,
+      endDate: dateFilterEnd,
     );
 
     if (mounted) {

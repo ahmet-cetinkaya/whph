@@ -9,7 +9,9 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 
 /// Component to display and manage app usage permission settings
 class AppUsagePermission extends StatefulWidget {
-  const AppUsagePermission({super.key});
+  final VoidCallback? onPermissionGranted;
+
+  const AppUsagePermission({super.key, this.onPermissionGranted});
 
   @override
   State<AppUsagePermission> createState() => _AppUsagePermissionState();
@@ -73,6 +75,10 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       await _appUsageService.requestUsageStatsPermission();
       await Future.delayed(const Duration(seconds: 3));
       await _checkPermission();
+      if (_hasAppUsagePermission) {
+        await _appUsageService.startTracking();
+        widget.onPermissionGranted?.call();
+      }
     } catch (e) {
       debugPrint('Error requesting app usage permission: $e');
       setState(() {

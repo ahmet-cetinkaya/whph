@@ -51,6 +51,25 @@ class AppUsagesService extends ChangeNotifier {
     onAppUsageRuleCreated.notifyListeners();
   }
 
+  void notifyRefresh() {
+    onAppUsageCreated.value = null;
+    onAppUsageUpdated.value = null;
+    onAppUsageDeleted.value = null;
+    onAppUsageTimeRecordUpdated.value = null;
+    onAppUsageIgnoreRuleUpdated.value = null;
+    onAppUsageRuleDeleted.value = null;
+    onAppUsageRuleUpdated.value = null;
+    onAppUsageRuleCreated.value = null;
+    onAppUsageCreated.notifyListeners();
+    onAppUsageUpdated.notifyListeners();
+    onAppUsageDeleted.notifyListeners();
+    onAppUsageTimeRecordUpdated.notifyListeners();
+    onAppUsageIgnoreRuleUpdated.notifyListeners();
+    onAppUsageRuleDeleted.notifyListeners();
+    onAppUsageRuleUpdated.notifyListeners();
+    onAppUsageRuleCreated.notifyListeners();
+  }
+
   @override
   void dispose() {
     onAppUsageCreated.dispose();

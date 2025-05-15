@@ -49,10 +49,10 @@ abstract class BaseAppUsageService implements IAppUsageService {
   );
 
   @override
-  void startTracking();
+  Future<void> startTracking();
 
   @override
-  void stopTracking() {
+  Future<void> stopTracking() async {
     periodicTimer?.cancel();
   }
 

@@ -12,8 +12,8 @@ class StartTrackAppUsagesCommandHandler
   StartTrackAppUsagesCommandHandler({required IAppUsageService appUsageService}) : _appUsageService = appUsageService;
 
   @override
-  Future<StartTrackAppUsagesCommandResponse> call(StartTrackAppUsagesCommand request) {
-    _appUsageService.startTracking();
+  Future<StartTrackAppUsagesCommandResponse> call(StartTrackAppUsagesCommand request) async {
+    await _appUsageService.startTracking();
     return Future.value(StartTrackAppUsagesCommandResponse());
   }
 }
