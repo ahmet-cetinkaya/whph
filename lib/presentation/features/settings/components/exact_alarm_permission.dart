@@ -165,6 +165,13 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         _showError = true;
       });
     }
+
+    if (_hasExactAlarmPermission) {
+      // Check permission status again
+      Future.delayed(const Duration(seconds: 2), () {
+        _checkPermission();
+      });
+    }
   }
 
   Future<void> _requestPermission() async {

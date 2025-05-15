@@ -105,6 +105,12 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
         _showError = !isIgnoring;
       });
     }
+
+    if (!_isIgnoringBatteryOptimizations) {
+      Future.delayed(const Duration(seconds: 2), () {
+        _checkPermission();
+      });
+    }
   }
 
   Future<void> _requestPermission() async {

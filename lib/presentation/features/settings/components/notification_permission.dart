@@ -39,6 +39,12 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       _isLoading = false;
       _showError = !hasPermission;
     });
+
+    if (!_hasNotificationPermission) {
+      Future.delayed(const Duration(seconds: 2), () {
+        _checkPermission();
+      });
+    }
   }
 
   List<String> _getInstructionSteps() {
