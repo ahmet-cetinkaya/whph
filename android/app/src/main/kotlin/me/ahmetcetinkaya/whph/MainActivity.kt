@@ -655,6 +655,61 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        
+        // Channel for App Usage Stats permission checking
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.APP_USAGE_STATS).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "checkUsageStatsPermission" -> {
+                    try {
+                        val appOpsManager = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+                        val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            appOpsManager.unsafeCheckOpNoThrow(
+                                android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
+                                android.os.Process.myUid(),
+                                packageName
+                            )
+                        } else {
+                            @Suppress("DEPRECATION")
+                            appOpsManager.checkOpNoThrow(
+                                android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
+                                android.os.Process.myUid(),
+                                packageName
+                            )
+                        }
+                        
+                        val hasPermission = mode == android.app.AppOpsManager.MODE_ALLOWED
+                        
+                        // Additional check for permission
+                        val usageStatsPermission = context.checkCallingOrSelfPermission("android.permission.PACKAGE_USAGE_STATS")
+                        val hasDirectPermission = usageStatsPermission == PackageManager.PERMISSION_GRANTED
+                        
+                        // Log permission status
+                        Log.d("AppUsageStats", "Usage stats mode: $mode, Has permission: $hasPermission, Direct permission: $hasDirectPermission")
+                        
+                        // Consider permission granted if either check passes
+                        result.success(hasPermission || hasDirectPermission)
+                    } catch (e: Exception) {
+                        Log.e("AppUsageStats", "Error checking usage stats permission: ${e.message}", e)
+                        result.error("CHECK_ERROR", e.message, null)
+                    }
+                }
+                "openUsageAccessSettings" -> {
+                    try {
+                        // Open Usage Access settings
+                        val intent = Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("AppUsageStats", "Error opening usage access settings: ${e.message}", e)
+                        result.error("OPEN_SETTINGS_ERROR", e.message, null)
+                    }
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
     }
 
     // Inner class to handle app information related operations

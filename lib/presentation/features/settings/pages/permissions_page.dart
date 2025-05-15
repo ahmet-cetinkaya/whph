@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/settings/components/app_usage_permission.dart';
 import 'package:whph/presentation/features/settings/components/battery_optimization.dart';
 import 'package:whph/presentation/features/settings/components/exact_alarm_permission.dart';
 import 'package:whph/presentation/features/settings/components/notification_permission.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 /// A page that displays all permission settings in one place
@@ -26,19 +28,23 @@ class _PermissionsPageState extends State<PermissionsPage> {
         title: Text(_translationService.translate(SettingsTranslationKeys.permissionsTitle)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
         child: ListView(
-          children: [
+          children: const [
+            // App Usage Permission
+            AppUsagePermission(),
+            SizedBox(height: 16),
+
             // Notification Permission
-            const NotificationPermission(),
-            const SizedBox(height: 16),
+            NotificationPermission(),
+            SizedBox(height: 16),
 
             // Exact Alarm Permission (Android 12+)
-            const ExactAlarmPermission(),
-            const SizedBox(height: 16),
+            ExactAlarmPermission(),
+            SizedBox(height: 16),
 
             // Battery Optimization (Android)
-            const BatteryOptimization(),
+            BatteryOptimization(),
           ],
         ),
       ),

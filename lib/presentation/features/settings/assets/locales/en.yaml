@@ -1,3 +1,7 @@
+common:
+  buttons:
+    cancel: Cancel
+
 settings:
   title: Settings
   language:
@@ -30,7 +34,6 @@ settings:
     success: Import successful
     error: Import failed
     select_file: Select file
-    version_mismatch: "Version mismatch: imported data is from version {importedVersion}, but current version is {currentVersion}. Please use the correct application version for better compatibility and security."
   export:
     title: Export
     select_path: Select save location
@@ -39,15 +42,11 @@ settings:
     select_type: Select export format
     json_description: You can use this file to import data back to the app.
     csv_description: You can use this to view in Excel and similar applications.
-  errors:
-    setting_not_found: Setting not found
-    import:
-      version_mismatch: "Version mismatch: imported data is from version {importedVersion}, but current version is {currentVersion}. Please use the correct application version for better compatibility and security."
-      error: Import operation failed. Please check the file and try again.
-    export:
-      error: Export operation failed. Please try again.
   permissions:
     title: Permissions
+    fix_it: Fix It
+    open_settings: Open Settings
+    instructions: Instructions for granting permissions
     battery_optimization:
       title: Battery Optimization
       description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
@@ -56,16 +55,11 @@ settings:
         step1: Open your device Settings
         step2: Go to Battery > Battery optimization
         step3: Select "All apps" from the dropdown
-        step4: Find WHPH in the list
+        step4: Find {appName} in the list
         step5: Select "Don't optimize"
       location_note: The location of this setting may vary depending on your device manufacturer.
-      not_disabled: Battery optimization is still enabled. Please try again.
-      button_disable: Disable Battery Optimization
-      status_disabled: Optimization Disabled
-      alert_title: Battery Optimization
-      alert_description: For reliable notifications, this app needs to be excluded from battery optimization.
-      button_cancel: Cancel
-      button_open_settings: Open Settings
+      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      not_granted: Battery optimization permission is not granted yet. Provide permission for the relevant function to work correctly.
     notification:
       title: Notification Permission
       description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
@@ -78,23 +72,25 @@ settings:
           step1: In the settings screen that opens, find this app
           step2: Tap on "Notifications" and enable "Allow Notifications"
         step3: Return to this app when done
-      not_granted: Permission not granted yet. Please try again.
+      not_granted: Permission not granted yet. Provide permission for the relevant function to work correctly.
       importance: Without notification permission, you won't receive any reminders.
-      button_grant: Grant Permission
-      status_granted: Permission Granted
-      button_manual: I'll do it manually
-      alert_title: Permission Required
     exact_alarm:
       title: Exact Alarm Permission
       description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
       instructions: "Instructions:"
       steps:
-        step1: In the settings screen that opens, find WHPH
+        step1: In the settings screen that opens, find {appName}
         android12plus:
           step2: Tap on "Alarms & reminders"
           step3: Enable "Allow scheduling exact alarms"
         step2: Enable "Allow scheduling exact alarms"
-      not_granted: Exact alarm permission is still not granted. Please try again.
-      button_open_settings: Open Settings
-      status_granted: Permission Granted
-      button_verify: Verify
+      not_granted: Exact alarm permission is still not granted. Provide permission for the relevant function to work correctly.
+    app_usage:
+      title: App Usage Permission
+      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
+      instructions: "Instructions:"
+      steps:
+        step1: Open your device Settings
+        step2: Go to "Privacy" or "Security & Privacy"
+        step3: Find and tap on "Usage Access" and enable it for {appName}
+      not_granted: App usage permission is not granted yet. Provide permission for the relevant function to work correctly.
