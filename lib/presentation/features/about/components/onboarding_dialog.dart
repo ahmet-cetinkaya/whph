@@ -186,7 +186,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPage == index ? AppTheme.primaryColor : AppTheme.primaryColor.withOpacity(0.2),
+                    color: _currentPage == index ? AppTheme.primaryColor : AppTheme.primaryColor.withValues(alpha: 0.2),
                   ),
                 ),
               ),
