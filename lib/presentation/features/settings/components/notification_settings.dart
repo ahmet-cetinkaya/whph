@@ -57,8 +57,6 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         return true;
       },
     );
-
-    // Error handling is done by AsyncErrorHandler
   }
 
   Future<void> _toggleNotifications(bool value) async {

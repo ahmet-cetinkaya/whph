@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kiwi/kiwi.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/settings/components/permission_card.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
@@ -24,7 +23,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
 
   bool _hasExactAlarmPermission = false;
   bool _isLoading = true;
-  bool _showInstructions = false;
+  bool _showError = false;
   bool _isAndroid12OrHigher = false;
 
   @override
@@ -51,12 +50,13 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         _isAndroid12OrHigher = false;
         _hasExactAlarmPermission = true;
         _isLoading = false;
+        _showError = false;
       });
       return;
     }
 
     try {
-      final androidInfo = await KiwiContainer().resolve<DeviceInfoPlugin>().androidInfo;
+      final androidInfo = await container.resolve<DeviceInfoPlugin>().androidInfo;
       final sdkInt = androidInfo.version.sdkInt;
 
       // Android 12 is API level 31
@@ -70,6 +70,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         setState(() {
           _hasExactAlarmPermission = true;
           _isLoading = false;
+          _showError = false;
         });
       }
     } catch (e) {
@@ -90,6 +91,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       setState(() {
         _hasExactAlarmPermission = true;
         _isLoading = false;
+        _showError = false;
       });
       return;
     }
@@ -98,20 +100,19 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       setState(() {
         _hasExactAlarmPermission = true;
         _isLoading = false;
+        _showError = false;
       });
       return;
     }
 
     try {
       // Get Android version
-      final androidInfo = await KiwiContainer().resolve<DeviceInfoPlugin>().androidInfo;
+      final androidInfo = await container.resolve<DeviceInfoPlugin>().androidInfo;
       final sdkInt = androidInfo.version.sdkInt;
       final isAndroid12Plus = sdkInt >= 31; // Android 12 is API level 31
 
       // For Android 12+, we need to perform a thorough check
       if (isAndroid12Plus) {
-        // First, check using the standard method
-
         // Try to check the actual permission status using multiple methods
         bool actualPermissionStatus = false;
         try {
@@ -130,21 +131,20 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
           }
 
           // Consider permission granted if at least the API check or direct permission check passes
-          // This is a more lenient approach to avoid false negatives
           actualPermissionStatus = canSchedule || hasDirectPermission;
 
           // Update UI based on the actual permission status
           setState(() {
             _hasExactAlarmPermission = actualPermissionStatus;
             _isLoading = false;
-            _showInstructions = !actualPermissionStatus; // Show instructions if permission not granted
+            _showError = !actualPermissionStatus;
           });
         } catch (e) {
-          // If we can't check, assume permission is not granted and show instructions
+          // If we can't check, assume permission is not granted and show error
           setState(() {
             _hasExactAlarmPermission = false;
             _isLoading = false;
-            _showInstructions = true;
+            _showError = true;
           });
         }
       } else {
@@ -154,7 +154,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         setState(() {
           _hasExactAlarmPermission = hasPermission;
           _isLoading = false;
-          _showInstructions = !hasPermission; // Show instructions if permission not granted
+          _showError = !hasPermission;
         });
       }
     } catch (e) {
@@ -162,7 +162,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       setState(() {
         _hasExactAlarmPermission = false;
         _isLoading = false;
-        _showInstructions = true;
+        _showError = true;
       });
     }
   }
@@ -172,23 +172,60 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
 
     setState(() {
       _isLoading = true;
-      _showInstructions = true;
+      _showError = false;
     });
 
     try {
       await platform.invokeMethod('openExactAlarmsSettings');
 
       // Give more time for the user to grant permission on Android 12+
-      final waitTime = 5; // Use a consistent wait time for all Android 12+ devices
-      await Future.delayed(Duration(seconds: waitTime));
-
-      // Perform the thorough permission check
+      await Future.delayed(const Duration(seconds: 5));
       await _performThoroughPermissionCheck();
+
+      // Sometimes the first check might not reflect the latest status
+      // Wait a bit more and check again multiple times with increasing delays
+      for (int i = 1; i <= 3; i++) {
+        if (_hasExactAlarmPermission) break;
+        await Future.delayed(Duration(seconds: i));
+        await _checkPermission();
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _showInstructions = true;
+        _showError = true;
       });
+    }
+  }
+
+  Future<List<String>> _getInstructionSteps() async {
+    final steps = <String>[];
+    final appName = AppInfo.name;
+
+    // First step always includes the app name
+    steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStep1, namedArgs: {'appName': appName}));
+
+    // Get device info to check Android version
+    final isAndroid12Plus = await _isDeviceAndroid12Plus();
+
+    // Add specific steps based on Android version
+    if (isAndroid12Plus) {
+      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus2));
+      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus3));
+    } else {
+      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStep2));
+    }
+
+    return steps;
+  }
+
+  Future<bool> _isDeviceAndroid12Plus() async {
+    if (!Platform.isAndroid) return false;
+
+    try {
+      final androidInfo = await container.resolve<DeviceInfoPlugin>().androidInfo;
+      return androidInfo.version.sdkInt >= 31; // Android 12 is API level 31
+    } catch (_) {
+      return false;
     }
   }
 
@@ -197,152 +234,29 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
     // Only show on Android 12+
     if (!Platform.isAndroid || !_isAndroid12OrHigher) return const SizedBox.shrink();
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.alarm, size: 24),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    _translationService.translate(SettingsTranslationKeys.exactAlarmTitle),
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                if (_isLoading)
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            FutureBuilder<AndroidDeviceInfo>(
-              future: KiwiContainer().resolve<DeviceInfoPlugin>().androidInfo,
-              builder: (context, snapshot) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _translationService.translate(SettingsTranslationKeys.exactAlarmDescription),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                );
-              },
-            ),
-            if (_showInstructions) ...[
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _translationService.translate(SettingsTranslationKeys.exactAlarmInstructions),
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                    ),
-                    const SizedBox(height: 4),
-                    FutureBuilder<AndroidDeviceInfo>(
-                      future: KiwiContainer().resolve<DeviceInfoPlugin>().androidInfo,
-                      builder: (context, snapshot) {
-                        final isAndroid12Plus =
-                            snapshot.hasData && snapshot.data!.version.sdkInt >= 31; // Android 12 is API level 31
+    return FutureBuilder<List<String>>(
+        future: _getInstructionSteps(),
+        builder: (context, snapshot) {
+          final instructionSteps = snapshot.data ??
+              [
+                _translationService
+                    .translate(SettingsTranslationKeys.exactAlarmStep1, namedArgs: {'appName': AppInfo.name}),
+                _translationService.translate(SettingsTranslationKeys.exactAlarmStep2),
+              ];
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _translationService
-                                  .translate(SettingsTranslationKeys.exactAlarmStep1)
-                                  .replaceAll('WHPH', AppInfo.name),
-                              style: const TextStyle(fontSize: 13, color: Colors.black87),
-                            ),
-                            if (isAndroid12Plus) ...[
-                              Text(
-                                _translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus2),
-                                style: const TextStyle(fontSize: 13, color: Colors.black87),
-                              ),
-                              Text(
-                                _translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus3),
-                                style:
-                                    const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.bold),
-                              ),
-                            ] else ...[
-                              Text(
-                                _translationService.translate(SettingsTranslationKeys.exactAlarmStep2),
-                                style: const TextStyle(fontSize: 13, color: Colors.black87),
-                              ),
-                            ],
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 4),
-                    if (!_hasExactAlarmPermission && !_isLoading)
-                      Text(
-                        _translationService.translate(SettingsTranslationKeys.exactAlarmNotGranted),
-                        style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            FutureBuilder<AndroidDeviceInfo>(
-              future: KiwiContainer().resolve<DeviceInfoPlugin>().androidInfo,
-              builder: (context, snapshot) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // Show "Open Settings" button when permission is not granted
-                    if (!_hasExactAlarmPermission && !_isLoading)
-                      ElevatedButton.icon(
-                        onPressed: _requestPermission,
-                        icon: const Icon(Icons.settings),
-                        label:
-                            Text(_translationService.translate(SettingsTranslationKeys.exactAlarmButtonOpenSettings)),
-                      ),
-                    // Show "Permission Granted" when permission is granted
-                    if (_hasExactAlarmPermission && !_isLoading)
-                      Row(
-                        children: [
-                          Chip(
-                            label: Text(_translationService.translate(SettingsTranslationKeys.exactAlarmStatusGranted)),
-                            backgroundColor: Colors.green,
-                            labelStyle: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(width: 8),
-                          // Add a "Verify" button to recheck permission
-                          TextButton.icon(
-                            onPressed: () async {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              await _checkPermission();
-                            },
-                            icon: const Icon(Icons.refresh, size: 16),
-                            label: Text(_translationService.translate(SettingsTranslationKeys.exactAlarmButtonVerify)),
-                          ),
-                        ],
-                      ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+          return PermissionCard(
+            icon: Icons.alarm,
+            title: _translationService.translate(SettingsTranslationKeys.exactAlarmTitle),
+            description: _translationService.translate(SettingsTranslationKeys.exactAlarmDescription),
+            isGranted: _hasExactAlarmPermission,
+            isLoading: _isLoading,
+            showError: _showError,
+            onRequestPermission: _requestPermission,
+            learnMoreDialogDescription: _translationService.translate(SettingsTranslationKeys.exactAlarmDescription),
+            learnMoreDialogSteps: instructionSteps,
+            notGrantedText:
+                _showError ? _translationService.translate(SettingsTranslationKeys.exactAlarmNotGranted) : null,
+          );
+        });
   }
 }

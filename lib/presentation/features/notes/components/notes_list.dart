@@ -110,7 +110,7 @@ class NotesListState extends State<NotesList> {
 
   void _refresh() {
     if (!mounted) return;
-    
+
     // Always refresh on note creation
     if (_notesService.onNoteCreated.value != null) {
       refresh();

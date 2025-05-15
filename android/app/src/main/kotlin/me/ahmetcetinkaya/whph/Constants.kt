@@ -15,6 +15,7 @@ object Constants {
         const val BATTERY_OPTIMIZATION = "$PACKAGE_NAME/battery_optimization"
         const val EXACT_ALARM = "$PACKAGE_NAME/exact_alarm"
         const val NOTIFICATION = "$PACKAGE_NAME/notification"
+        const val APP_USAGE_STATS = "$PACKAGE_NAME/app_usage_stats"
     }
 
     // Notification Channels

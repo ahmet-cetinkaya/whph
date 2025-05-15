@@ -56,6 +56,17 @@ abstract class BaseAppUsageService implements IAppUsageService {
     periodicTimer?.cancel();
   }
 
+  @override
+  Future<bool> checkUsageStatsPermission() async {
+    // Permission is assumed to be granted by default, platform-specific implementations can override
+    return true;
+  }
+
+  @override
+  Future<void> requestUsageStatsPermission() async {
+    // Does nothing by default, platform-specific implementations can override
+  }
+
   Future<bool> _shouldIgnoreApp(String appName) async {
     final rules = await _appUsageIgnoreRuleRepository.getAll();
 
