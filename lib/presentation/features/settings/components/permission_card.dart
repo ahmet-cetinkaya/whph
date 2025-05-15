@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -157,10 +156,10 @@ class PermissionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withOpacity(0.1),
+                  color: AppTheme.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: AppTheme.warningColor.withOpacity(0.3),
+                    color: AppTheme.warningColor.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(

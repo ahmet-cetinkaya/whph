@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
+import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_filters.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_rules_page.dart';
+import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -11,6 +13,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/features/settings/components/app_usage_permission.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -23,16 +26,29 @@ class AppUsageViewPage extends StatefulWidget {
 
 class _AppUsageViewPageState extends State<AppUsageViewPage> {
   final _translationService = container.resolve<ITranslationService>();
+  final _deviceAppUsageService = container.resolve<IAppUsageService>();
+  final _appUsagesService = container.resolve<AppUsagesService>();
 
   late AppUsageFilterState _filterState;
+  bool _hasPermission = false;
 
   @override
   void initState() {
     super.initState();
+
+    final now = DateTime.now();
     _filterState = AppUsageFilterState(
-      startDate: DateTime.now().subtract(const Duration(days: 7)),
-      endDate: DateTime.now(),
+      startDate: DateTime(now.year, now.month, now.day, 23, 59, 59).subtract(const Duration(days: 7)),
+      endDate: DateTime(now.year, now.month, now.day, 23, 59, 59),
     );
+    _checkPermission();
+  }
+
+  Future<void> _checkPermission() async {
+    final hasPermission = await _deviceAppUsageService.checkUsageStatsPermission();
+    setState(() {
+      _hasPermission = hasPermission;
+    });
   }
 
   Future<void> _openDetails(String id) async {
@@ -49,6 +65,16 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _filterState = newState;
     });
+  }
+
+  void _onPermissionGranted() {
+    setState(() {
+      _hasPermission = true;
+    });
+  }
+
+  void _onRefresh() {
+    _appUsagesService.notifyRefresh();
   }
 
   @override
@@ -71,7 +97,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
-          onPressed: () => setState(() {}), // Trigger rebuild to refresh list
+          onPressed: _onRefresh, // Trigger rebuild to refresh list
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
@@ -83,20 +109,27 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Filters
-          AppUsageFilters(
-            initialState: _filterState,
-            onFiltersChanged: _handleFiltersChanged,
-          ),
+          if (!_hasPermission)
+            AppUsagePermission(
+              onPermissionGranted: _onPermissionGranted,
+            ),
 
-          // List
-          AppUsageList(
-            onOpenDetails: _openDetails,
-            filterByTags: _filterState.tags,
-            showNoTagsFilter: _filterState.showNoTagsFilter,
-            filterStartDate: _filterState.startDate,
-            filterEndDate: _filterState.endDate,
-          ),
+          // Filters
+          if (_hasPermission) ...[
+            AppUsageFilters(
+              initialState: _filterState,
+              onFiltersChanged: _handleFiltersChanged,
+            ),
+
+            // List
+            AppUsageList(
+              onOpenDetails: _openDetails,
+              filterByTags: _filterState.tags,
+              showNoTagsFilter: _filterState.showNoTagsFilter,
+              filterStartDate: _filterState.startDate,
+              filterEndDate: _filterState.endDate,
+            ),
+          ],
         ],
       ),
     );

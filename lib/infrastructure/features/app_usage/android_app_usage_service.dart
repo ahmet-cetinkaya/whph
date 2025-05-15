@@ -18,7 +18,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
   );
 
   @override
-  void startTracking() async {
+  Future<void> startTracking() async {
     // Check permission before starting tracking
     final hasPermission = await checkUsageStatsPermission();
     if (!hasPermission) {
