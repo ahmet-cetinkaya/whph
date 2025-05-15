@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
@@ -59,6 +60,12 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
         _hasAppUsagePermission = false;
         _isLoading = false;
         _showError = true;
+      });
+    }
+
+    if (!_hasAppUsagePermission) {
+      Future.delayed(const Duration(seconds: 2), () {
+        _checkPermission();
       });
     }
   }
