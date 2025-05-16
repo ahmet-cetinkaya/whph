@@ -37,7 +37,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   Future<void> _openTaskDetails(String taskId) async {
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
       child: TaskDetailsPage(

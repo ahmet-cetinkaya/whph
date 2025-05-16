@@ -45,7 +45,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
 
   Future<void> _openNoteDetails(String noteId) async {
     if (!mounted) return;
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(noteId: noteId),
@@ -193,7 +193,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   filterByCompleted: _showCompletedTasks,
                                   search: _taskSearchQuery,
                                   onClickTask: (task) async {
-                                    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                                    await ResponsiveDialogHelper.showResponsiveDialog(
                                       context: context,
                                       title: _translationService.translate(TagTranslationKeys.detailsTasksLabel),
                                       child: TaskDetailsPage(
@@ -240,7 +240,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                           );
                                           await _mediator.send(command);
                                           if (context.mounted) {
-                                            await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                                            await ResponsiveDialogHelper.showResponsiveDialog(
                                               context: context,
                                               title: _translationService.translate(NoteTranslationKeys.noteDetails),
                                               child: NoteDetailsPage(noteId: noteId),

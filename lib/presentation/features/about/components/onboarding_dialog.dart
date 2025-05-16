@@ -70,7 +70,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             padding: const EdgeInsets.only(top: 16.0),
             child: OutlinedButton.icon(
               onPressed: () {
-                ResponsiveDialogHelper.showResponsiveDetailsPage(
+                ResponsiveDialogHelper.showResponsiveDialog(
                   context: context,
                   child: const PermissionsPage(),
                 );

@@ -10,7 +10,7 @@ class ResponsiveDialogHelper {
   /// On mobile, it appears as a bottom sheet.
   ///
   /// Returns the result from the dialog/bottom sheet when closed.
-  static Future<T?> showResponsiveDetailsPage<T>({
+  static Future<T?> showResponsiveDialog<T>({
     required BuildContext context,
     required Widget child,
     String? title,
@@ -21,74 +21,85 @@ class ResponsiveDialogHelper {
     bool isDismissible = true,
     bool enableDrag = true,
   }) async {
-    final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
-    final screenSize = MediaQuery.of(context).size;
-
-    if (isDesktop) {
-      // Show as modal dialog on desktop
-      return showDialog<T>(
-        context: context,
+    return Navigator.of(context).push<T>(
+      PageRouteBuilder<T>(
+        opaque: false,
         barrierDismissible: isDismissible,
-        builder: (BuildContext context) {
-          final dialogHeight = screenSize.height * maxHeightRatio;
-          final dialogWidth = screenSize.width * maxWidthRatio;
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return OrientationBuilder(
+            builder: (context, orientation) {
+              final screenSize = MediaQuery.of(context).size;
+              final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
 
-          return Dialog(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-              child: SizedBox(
-                width: dialogWidth,
-                height: fullHeight ? dialogHeight : null,
-                child: _wrapWithConstrainedContent(
-                  context,
-                  child,
-                  maxHeight: dialogHeight,
-                  maxWidth: dialogWidth < 1200 ? dialogWidth : 1200,
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    } else {
-      // Show as bottom sheet on mobile
-      return showModalBottomSheet<T>(
-        context: context,
-        isScrollControlled: true,
-        isDismissible: isDismissible,
-        enableDrag: enableDrag,
-        builder: (BuildContext context) {
-          // Calculate available height for the bottom sheet
-          final bottomSheetMaxHeight = screenSize.height * 0.9;
+              if (isDesktop) {
+                final dialogHeight = screenSize.height * maxHeightRatio;
+                final dialogWidth = screenSize.width * maxWidthRatio;
 
-          return DraggableScrollableSheet(
-            initialChildSize: fullHeight ? 0.9 : 0.6,
-            minChildSize: 0.5,
-            maxChildSize: 0.95,
-            expand: false,
-            builder: (context, scrollController) {
-              return Material(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Content with constraints to prevent unbounded height
-                    Expanded(
-                      child: _wrapWithConstrainedContent(
-                        context,
-                        child,
-                        scrollController: isScrollable ? scrollController : null,
-                        isScrollable: isScrollable,
-                        maxHeight: bottomSheetMaxHeight,
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: Center(
+                    child: Dialog(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                        child: SizedBox(
+                          width: dialogWidth,
+                          height: fullHeight ? dialogHeight : null,
+                          child: _wrapWithConstrainedContent(
+                            context,
+                            child,
+                            maxHeight: dialogHeight,
+                            maxWidth: dialogWidth < 1200 ? dialogWidth : 1200,
+                          ),
+                        ),
                       ),
                     ),
-                  ],
+                  ),
+                );
+              }
+
+              // Mobile bottom sheet view
+              final bottomSheetMaxHeight = screenSize.height * 0.9;
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: DraggableScrollableSheet(
+                    initialChildSize: fullHeight ? 0.9 : 0.6,
+                    minChildSize: 0.5,
+                    maxChildSize: 0.95,
+                    expand: false,
+                    builder: (context, scrollController) {
+                      return Material(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: _wrapWithConstrainedContent(
+                                context,
+                                child,
+                                scrollController: isScrollable ? scrollController : null,
+                                isScrollable: isScrollable,
+                                maxHeight: bottomSheetMaxHeight,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
           );
         },
-      );
-    }
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+    );
   }
 
   /// Wraps content with appropriate constraints to prevent unbounded height errors

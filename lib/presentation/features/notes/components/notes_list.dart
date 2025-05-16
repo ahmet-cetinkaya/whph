@@ -215,7 +215,7 @@ class NotesListState extends State<NotesList> {
       return;
     }
 
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(
