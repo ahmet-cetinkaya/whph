@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
@@ -40,12 +40,12 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       }),
       errorMessage: "Error loading notification settings",
       operation: () async {
-        final setting = await _settingRepository.getByKey(Settings.notifications);
+        final setting = await _settingRepository.getByKey(SettingKeys.notifications);
         if (setting == null) {
           // Create default setting if not exists
           await _settingRepository.add(Setting(
             id: KeyHelper.generateStringId(),
-            key: Settings.notifications,
+            key: SettingKeys.notifications,
             value: 'true',
             valueType: SettingValueType.bool,
             createdDate: DateTime.now(),

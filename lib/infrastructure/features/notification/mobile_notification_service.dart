@@ -8,7 +8,7 @@ import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'dart:io';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
@@ -97,7 +97,7 @@ class MobileNotificationService implements INotificationService {
   @override
   Future<bool> isEnabled() async {
     try {
-      final query = GetSettingQuery(key: Settings.notifications);
+      final query = GetSettingQuery(key: SettingKeys.notifications);
       final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(query);
       return setting.value == 'false' ? false : true; // Default to true if no setting
     } catch (e) {
@@ -112,7 +112,7 @@ class MobileNotificationService implements INotificationService {
     }
 
     final command = SaveSettingCommand(
-      key: Settings.notifications,
+      key: SettingKeys.notifications,
       value: enabled.toString(),
       valueType: SettingValueType.bool,
     );

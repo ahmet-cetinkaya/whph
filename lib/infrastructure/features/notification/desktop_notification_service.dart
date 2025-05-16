@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
@@ -128,7 +128,7 @@ class DesktopNotificationService implements INotificationService {
   @override
   Future<bool> isEnabled() async {
     try {
-      final query = GetSettingQuery(key: Settings.notifications);
+      final query = GetSettingQuery(key: SettingKeys.notifications);
       final setting = await _mediatr.send<GetSettingQuery, GetSettingQueryResponse>(query);
       final isEnabled = setting.value == 'false' ? false : true; // Default to true if no setting
       return isEnabled;
@@ -141,7 +141,7 @@ class DesktopNotificationService implements INotificationService {
   @override
   Future<void> setEnabled(bool enabled) async {
     final command = SaveSettingCommand(
-      key: Settings.notifications,
+      key: SettingKeys.notifications,
       value: enabled.toString(),
       valueType: SettingValueType.bool,
     );

@@ -4,7 +4,7 @@ import 'package:whph/application/features/app_usages/queries/get_app_usage_stati
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';
@@ -62,7 +62,7 @@ class SupportDialogService implements ISupportDialogService {
   Future<bool> _hasShownSupportDialog() async {
     try {
       final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
-        GetSettingQuery(key: Settings.supportDialogShown),
+        GetSettingQuery(key: SettingKeys.supportDialogShown),
       );
       return response.getValue<bool>();
     } catch (_) {
@@ -72,7 +72,7 @@ class SupportDialogService implements ISupportDialogService {
 
   Future<void> _markSupportDialogAsShown() async {
     final command = SaveSettingCommand(
-      key: Settings.supportDialogShown,
+      key: SettingKeys.supportDialogShown,
       value: 'true',
       valueType: SettingValueType.bool,
     );
