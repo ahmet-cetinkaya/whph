@@ -77,7 +77,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
     // Use ResponsiveDialogHelper to show task details
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: TaskDetailsPage(
         taskId: taskId,
@@ -88,7 +88,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
     // Use ResponsiveDialogHelper to show habit details
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: HabitDetailsPage(
         habitId: id,

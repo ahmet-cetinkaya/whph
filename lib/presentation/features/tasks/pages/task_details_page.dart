@@ -267,7 +267,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                     child: TaskList(
                       key: _listRebuildKey,
                       onClickTask: (task) async {
-                        await ResponsiveDialogHelper.showResponsiveDetailsPage(
+                        await ResponsiveDialogHelper.showResponsiveDialog(
                           context: context,
                           title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
                           child: TaskDetailsPage(

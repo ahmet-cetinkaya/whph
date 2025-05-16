@@ -34,7 +34,7 @@ class SettingsPage extends StatelessWidget {
 
   void _showSyncDevicesModal(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    ResponsiveDialogHelper.showResponsiveDetailsPage(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
       fullHeight: true,
@@ -44,7 +44,7 @@ class SettingsPage extends StatelessWidget {
 
   void _showPermissionsModal(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    ResponsiveDialogHelper.showResponsiveDetailsPage(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: translationService.translate(SettingsTranslationKeys.permissionsTitle),
       fullHeight: true,

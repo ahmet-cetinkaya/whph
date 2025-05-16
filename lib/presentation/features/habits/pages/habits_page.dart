@@ -34,7 +34,7 @@ class _HabitsPageState extends State<HabitsPage> {
   String? _handledHabitId; // Track the habit ID that we've already handled
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(HabitTranslationKeys.helpTitle),
       child: HabitDetailsPage(

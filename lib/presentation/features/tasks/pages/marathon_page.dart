@@ -98,7 +98,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   }
 
   Future<void> _showTaskDetails(String taskId) async {
-    final wasDeleted = await ResponsiveDialogHelper.showResponsiveDetailsPage<bool>(
+    final wasDeleted = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
       title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
       child: TaskDetailsPage(

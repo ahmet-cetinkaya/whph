@@ -31,7 +31,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   Future<void> _openDetails(String noteId) async {
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(
@@ -44,7 +44,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   Future<void> _handleNoteCreated(String noteId) async {
     // Navigate to the note details page using responsive dialog
     if (mounted) {
-      await ResponsiveDialogHelper.showResponsiveDetailsPage(
+      await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
         title: _translationService.translate(NoteTranslationKeys.noteDetails),
         child: NoteDetailsPage(

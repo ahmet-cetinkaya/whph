@@ -52,7 +52,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   Future<void> _openDetails(String id) async {
-    await ResponsiveDialogHelper.showResponsiveDetailsPage(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       child: AppUsageDetailsPage(
@@ -85,7 +85,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () async {
-            await ResponsiveDialogHelper.showResponsiveDetailsPage(
+            await ResponsiveDialogHelper.showResponsiveDialog(
               context: context,
               title: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
               child: const AppUsageRulesPage(),
