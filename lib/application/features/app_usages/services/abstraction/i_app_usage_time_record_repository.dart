@@ -17,5 +17,6 @@ abstract class IAppUsageTimeRecordRepository extends IRepository<AppUsageTimeRec
     bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
+    String? searchByProcessName,
   });
 }

@@ -9,6 +9,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   bool showNoTagsFilter;
   DateTime? startDate;
   DateTime? endDate;
+  String? searchByProcessName;
 
   GetListByTopAppUsagesQuery({
     required this.pageIndex,
@@ -17,6 +18,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     this.showNoTagsFilter = false,
     this.startDate,
     this.endDate,
+    this.searchByProcessName,
   });
 }
 
@@ -64,6 +66,7 @@ class GetListByTopAppUsagesQueryHandler
       showNoTagsFilter: request.showNoTagsFilter,
       startDate: request.startDate,
       endDate: request.endDate,
+      searchByProcessName: request.searchByProcessName,
     );
 
     final items = results.items
