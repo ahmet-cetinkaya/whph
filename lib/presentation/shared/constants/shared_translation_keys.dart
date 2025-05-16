@@ -113,7 +113,6 @@ class SharedTranslationKeys {
   static const String navAppUsages = 'shared.nav.items.app_usages';
   static const String navTags = 'shared.nav.items.tags';
   static const String navSettings = 'shared.nav.items.settings';
-  static const String navBuyMeCoffee = 'shared.nav.items.buy_me_coffee';
   static const String navMore = 'shared.nav.items.more';
 
   // Update Dialog

@@ -285,5 +285,16 @@ class AppTheme {
         maxWidth: 0.9 * AppTheme.screenMedium,
       ),
     ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(primaryColor),
+        foregroundColor: WidgetStateProperty.all(darkTextColor),
+        padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: sizeMedium, vertical: sizeSmall)),
+        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(containerBorderRadius),
+        )),
+        textStyle: WidgetStateProperty.all(labelLarge),
+      ),
+    ),
   );
 }

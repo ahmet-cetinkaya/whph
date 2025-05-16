@@ -138,7 +138,6 @@ shared:
       app_usages: App Usages
       tags: Tags
       settings: Settings
-      buy_me_coffee: Buy me a coffee
       more: More
   update_dialog:
     title: Update Available!

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/presentation/features/about/components/support_dialog.dart';
+import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
 import '../constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
@@ -24,10 +24,13 @@ class NavigationItems {
   static List<NavItem> bottomNavItems = [
     NavItem(titleKey: SharedTranslationKeys.navSettings, icon: Icons.settings, route: SettingsPage.route),
     NavItem(
-        titleKey: SharedTranslationKeys.navBuyMeCoffee,
+        titleKey: AboutTranslationKeys.supportMeButtonText,
         icon: Icons.coffee,
-        onTap: (context) async {
-          await launchUrl(Uri.parse(AppInfo.supportUrl), mode: LaunchMode.externalApplication);
+        onTap: (context) {
+          showDialog(
+            context: context,
+            builder: (context) => SupportDialog(),
+          );
         }),
   ];
 }

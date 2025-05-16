@@ -6,6 +6,7 @@ import 'package:whph/domain/features/settings/constants/settings.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/about/components/onboarding_dialog.dart';
+import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/app_routes.dart';
 
@@ -20,11 +21,22 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final _mediator = container.resolve<Mediator>();
+  final _supportDialogService = container.resolve<ISupportDialogService>();
 
   @override
   void initState() {
     super.initState();
     _checkAndShowOnboarding();
+    _checkAndShowSupportDialog();
+  }
+
+  Future<void> _checkAndShowSupportDialog() async {
+    // Add a small delay to ensure app is fully loaded
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted && widget.navigatorKey.currentContext != null) {
+        _supportDialogService.checkAndShowSupportDialog(widget.navigatorKey.currentContext!);
+      }
+    });
   }
 
   Future<void> _checkAndShowOnboarding() async {

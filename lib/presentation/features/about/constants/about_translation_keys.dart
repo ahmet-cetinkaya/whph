@@ -8,6 +8,11 @@ class AboutTranslationKeys {
   static const String websiteLink = 'about.links.website';
   static const String sourceCodeLink = 'about.links.source_code';
 
+  // Support dialog
+  static const String supportMeTitle = 'about.support_me.title';
+  static const String supportMeDescription = 'about.support_me.description';
+  static const String supportMeButtonText = 'about.support_me.button_text';
+
   // Support Me
   static const String supportMeButton = 'about.support_me.button_text';
 

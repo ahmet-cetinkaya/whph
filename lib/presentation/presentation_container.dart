@@ -13,6 +13,8 @@ import 'package:whph/presentation/shared/services/json_notification_payload_hand
 import 'package:whph/presentation/shared/services/translation_service.dart';
 import 'package:whph/presentation/shared/utils/audio_player_sound_player.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';
+import 'package:whph/presentation/features/about/services/support_dialog_service.dart';
 import 'package:whph/main.dart' show navigatorKey;
 
 void registerPresentation(IContainer container) {
@@ -24,6 +26,12 @@ void registerPresentation(IContainer container) {
   container.registerSingleton<TagsService>((_) => TagsService());
   container.registerSingleton<ISoundPlayer>((_) => AudioPlayerSoundPlayer());
   container.registerSingleton<ITranslationService>((_) => TranslationService());
+  container.registerSingleton<ISupportDialogService>(
+    (_) {
+      final mediator = container.resolve<Mediator>();
+      return SupportDialogService(mediator);
+    },
+  );
   container.registerSingleton<ReminderService>((_) => ReminderService(
         container.resolve<IReminderService>(),
         container.resolve<Mediator>(),

@@ -81,39 +81,43 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
+    String? searchByProcessName,
   }) async {
     final countQuery = database.customSelect(
       '''
-      WITH app_durations AS (
+      WITH app_usages_data AS (
         SELECT 
-          t.app_usage_id,
-          COALESCE(SUM(t.duration), 0) as total_duration
-        FROM app_usage_time_record_table t
-        WHERE t.deleted_date IS NULL
-        ${startDate != null ? 'AND t.created_date >= ?' : ''}
-        ${endDate != null ? 'AND t.created_date < ?' : ''}
-        GROUP BY t.app_usage_id
-        HAVING total_duration > 0
+          au.id,
+          au.name,
+          au.display_name,
+          au.color,
+          au.device_name,
+          COALESCE(SUM(autr.duration), 0) as total_duration
+        FROM app_usage_table au
+        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
+        ${startDate != null ? 'AND autr.created_date >= ?' : ''}
+        ${endDate != null ? 'AND autr.created_date <= ?' : ''}
+        WHERE au.deleted_date IS NULL
+        ${searchByProcessName != null ? 'AND au.name = ?' : ''}
+        GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
       )
       SELECT COUNT(*) as total_count
-      FROM app_durations ad
-      INNER JOIN app_usage_table au ON ad.app_usage_id = au.id
-      WHERE au.deleted_date IS NULL
+      FROM app_usages_data ad
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      AND EXISTS (
+      WHERE EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = au.id
+        WHERE aut.app_usage_id = ad.id 
           AND aut.tag_id IN (${filterByTags.map((_) => '?').join(', ')})
           AND aut.deleted_date IS NULL
         GROUP BY aut.app_usage_id
         HAVING COUNT(DISTINCT aut.tag_id) = ?
       )
       ''' : showNoTagsFilter ? '''
-      AND NOT EXISTS (
+      WHERE NOT EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = au.id
+        WHERE aut.app_usage_id = ad.id
           AND aut.deleted_date IS NULL
       )
       ''' : ''}
@@ -121,6 +125,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       variables: [
         if (startDate != null) Variable<DateTime>(startDate),
         if (endDate != null) Variable<DateTime>(endDate),
+        if (searchByProcessName != null) Variable<String>(searchByProcessName),
         if (filterByTags != null && filterByTags.isNotEmpty) ...[
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
@@ -129,47 +134,47 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       readsFrom: {table},
     );
 
-    final countResult = await countQuery.getSingle();
-    final totalCount = countResult.read<int>('total_count');
-
     final dataQuery = database.customSelect(
       '''
-      WITH app_durations AS (
+      WITH app_usages_data AS (
         SELECT 
-          t.app_usage_id,
-          COALESCE(SUM(t.duration), 0) as total_duration
-        FROM app_usage_time_record_table t
-        WHERE t.deleted_date IS NULL
-        ${startDate != null ? 'AND t.created_date >= ?' : ''}
-        ${endDate != null ? 'AND t.created_date < ?' : ''}
-        GROUP BY t.app_usage_id
-        HAVING total_duration > 0
+          au.id,
+          au.name,
+          au.display_name,
+          au.color,
+          au.device_name,
+          COALESCE(SUM(autr.duration), 0) as total_duration
+        FROM app_usage_table au
+        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
+        ${startDate != null ? 'AND autr.created_date >= ?' : ''}
+        ${endDate != null ? 'AND autr.created_date <= ?' : ''}
+        WHERE au.deleted_date IS NULL
+        ${searchByProcessName != null ? 'AND au.name = ?' : ''}
+        GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
       )
       SELECT 
-        au.id,
-        au.name,
-        au.display_name,
-        au.color,
-        au.device_name,
+        ad.id,
+        ad.name,
+        ad.display_name,
+        ad.color,
+        ad.device_name,
         ad.total_duration as duration
-      FROM app_durations ad
-      INNER JOIN app_usage_table au ON ad.app_usage_id = au.id
-      WHERE au.deleted_date IS NULL
+      FROM app_usages_data ad
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      AND EXISTS (
+      WHERE EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = au.id
+        WHERE aut.app_usage_id = ad.id
           AND aut.tag_id IN (${filterByTags.map((_) => '?').join(', ')})
           AND aut.deleted_date IS NULL
         GROUP BY aut.app_usage_id
         HAVING COUNT(DISTINCT aut.tag_id) = ?
       )
       ''' : showNoTagsFilter ? '''
-      AND NOT EXISTS (
+      WHERE NOT EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = au.id
+        WHERE aut.app_usage_id = ad.id
           AND aut.deleted_date IS NULL
       )
       ''' : ''}
@@ -179,6 +184,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       variables: [
         if (startDate != null) Variable<DateTime>(startDate),
         if (endDate != null) Variable<DateTime>(endDate),
+        if (searchByProcessName != null) Variable<String>(searchByProcessName),
         if (filterByTags != null && filterByTags.isNotEmpty) ...[
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
@@ -189,24 +195,26 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       readsFrom: {table},
     );
 
-    final results = await dataQuery.get();
-    final items = results
+    final results = await dataQuery
         .map((row) => AppUsageTimeRecordWithDetails(
               id: row.read<String>('id'),
               name: row.read<String>('name'),
-              displayName: row.readNullable<String>('display_name'),
-              color: row.readNullable<String>('color'),
-              deviceName: row.readNullable<String>('device_name'),
+              displayName: row.read<String?>('display_name'),
+              color: row.read<String?>('color'),
+              deviceName: row.read<String?>('device_name'),
               duration: row.read<int>('duration'),
             ))
-        .toList();
+        .get();
+
+    int totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
+    int totalPageCount = (totalCount / pageSize).ceil();
 
     return PaginatedList<AppUsageTimeRecordWithDetails>(
-      items: items,
-      totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
+      items: results,
       pageIndex: pageIndex,
       pageSize: pageSize,
+      totalItemCount: totalCount,
+      totalPageCount: totalPageCount,
     );
   }
 }
