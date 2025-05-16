@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/main.dart';
@@ -115,7 +115,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
 
   Future<void> _completeOnboarding() async {
     await _mediator.send(SaveSettingCommand(
-      key: Settings.onboardingCompleted,
+      key: SettingKeys.onboardingCompleted,
       value: 'true',
       valueType: SettingValueType.bool,
     ));

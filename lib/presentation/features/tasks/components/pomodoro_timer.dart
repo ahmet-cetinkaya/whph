@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
-import 'package:whph/domain/features/settings/constants/settings.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -76,8 +76,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Future<void> _initializeSettings() async {
-    _defaultWorkDuration = await _getSetting(Settings.workTime, 25);
-    _defaultBreakDuration = await _getSetting(Settings.breakTime, 5);
+    _defaultWorkDuration = await _getSetting(SettingKeys.workTime, 25);
+    _defaultBreakDuration = await _getSetting(SettingKeys.breakTime, 5);
     if (mounted) {
       setState(() {
         _workDuration = _defaultWorkDuration;
@@ -240,8 +240,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     );
 
     // Save settings
-    _saveSetting(Settings.workTime, _workDuration);
-    _saveSetting(Settings.breakTime, _breakDuration);
+    _saveSetting(SettingKeys.workTime, _workDuration);
+    _saveSetting(SettingKeys.breakTime, _breakDuration);
     _defaultWorkDuration = _workDuration;
     _defaultBreakDuration = _breakDuration;
 
