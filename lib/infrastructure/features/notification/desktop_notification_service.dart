@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
@@ -111,7 +112,7 @@ class DesktopNotificationService implements INotificationService {
         payload: payload,
       );
     } catch (e) {
-      debugPrint('[ERROR] [DesktopNotificationService] Error showing notification: $e');
+      if (kDebugMode) debugPrint('Error showing notification: $e');
     }
   }
 
@@ -133,7 +134,7 @@ class DesktopNotificationService implements INotificationService {
       final isEnabled = setting.value == 'false' ? false : true; // Default to true if no setting
       return isEnabled;
     } catch (e) {
-      debugPrint('[ERROR] [DesktopNotificationService] Error checking if notifications are enabled: $e');
+      if (kDebugMode) debugPrint('Error checking if notifications are enabled: $e');
       return true; // Default to true if there's an error
     }
   }
@@ -163,7 +164,7 @@ class DesktopNotificationService implements INotificationService {
         final settings = await macOSImplementation?.checkPermissions();
         return settings?.isAlertEnabled == true || settings?.isBadgeEnabled == true || settings?.isSoundEnabled == true;
       } catch (e) {
-        debugPrint('DesktopNotificationService: Error checking macOS permission: $e');
+        if (kDebugMode) debugPrint('Error checking macOS permission: $e');
       }
     }
 
@@ -190,7 +191,7 @@ class DesktopNotificationService implements INotificationService {
 
         permissionGranted = settings ?? false;
       } catch (e) {
-        debugPrint('DesktopNotificationService: Error requesting macOS permission: $e');
+        if (kDebugMode) debugPrint('Error requesting macOS permission: $e');
         permissionGranted = false;
       }
     } else {

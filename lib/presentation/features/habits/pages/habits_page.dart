@@ -87,30 +87,23 @@ class _HabitsPageState extends State<HabitsPage> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic> && (args.containsKey('habitId'))) {
       final habitId = args['habitId'] as String;
-      debugPrint('HabitsPage: Received habit argument with habitId: $habitId');
 
       // Only handle the habit if we haven't already handled it
       if (_handledHabitId != habitId) {
         _handledHabitId = habitId;
-        debugPrint('HabitsPage: Handling habit details for habitId: $habitId');
 
         // Schedule the dialog to open after the build is complete
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            debugPrint('HabitsPage: Opening habit details for habitId: $habitId');
             _openDetails(habitId, context);
           }
         });
-      } else {
-        debugPrint('HabitsPage: Habit already handled: $habitId');
       }
     } else {
-      debugPrint('HabitsPage: No habitId argument found in route settings');
       // Check if we have a route name that includes a habit ID
       final routeName = ModalRoute.of(context)?.settings.name;
       if (routeName != null && routeName.startsWith('/habits/') && routeName != '/habits/details') {
         final habitId = routeName.substring('/habits/'.length);
-        debugPrint('HabitsPage: Extracted habitId from route name: $habitId');
 
         // Only handle the habit if we haven't already handled it
         if (_handledHabitId != habitId) {
@@ -119,7 +112,6 @@ class _HabitsPageState extends State<HabitsPage> {
           // Schedule the dialog to open after the build is complete
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
-              debugPrint('HabitsPage: Opening habit details for habitId from route: $habitId');
               _openDetails(habitId, context);
             }
           });

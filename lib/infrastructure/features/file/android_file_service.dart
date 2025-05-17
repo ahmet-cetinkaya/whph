@@ -13,9 +13,7 @@ class AndroidFileService implements IFileService {
     String? dialogTitle,
   }) async {
     try {
-      if (kDebugMode) {
-        debugPrint('[AndroidFileService]: Starting file pick with extensions: $allowedExtensions');
-      }
+      if (kDebugMode) debugPrint('Starting file pick with extensions: $allowedExtensions');
 
       final result = await FilePicker.platform.pickFiles(
         type: allowedExtensions != null ? FileType.custom : FileType.any,

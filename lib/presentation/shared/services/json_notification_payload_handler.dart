@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 
@@ -13,10 +14,8 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
 
   @override
   Future<void> handlePayload(String? payload) async {
-    debugPrint('JsonNotificationPayloadHandler: Handling payload: $payload');
-
     if (payload == null || payload.isEmpty) {
-      debugPrint('JsonNotificationPayloadHandler: Payload is null or empty');
+      if (kDebugMode) debugPrint('Payload is null or empty');
       return;
     }
 
@@ -25,7 +24,6 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
 
     // Check if we've already handled this exact payload recently
     if (_handledPayloadHashes.contains(payloadHash)) {
-      debugPrint('JsonNotificationPayloadHandler: Payload already handled, skipping');
       return;
     }
 
@@ -33,7 +31,6 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
     final context = _navigatorKey.currentContext;
     if (context == null) {
       // If context is null, try again after a delay
-      debugPrint('JsonNotificationPayloadHandler: Context is null, will retry after delay');
       await Future.delayed(const Duration(milliseconds: 500));
       return handlePayload(payload); // Recursive call with same payload
     }
@@ -54,12 +51,10 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
           _schedulePayloadCleanup(payloadHash);
         });
       } else {
-        debugPrint('JsonNotificationPayloadHandler: Navigation payload missing route parameter');
+        if (kDebugMode) debugPrint('Navigation payload missing route parameter');
       }
     } catch (e) {
-      debugPrint('JsonNotificationPayloadHandler: Error parsing payload: $e');
-      // Try to handle non-JSON payloads as a fallback
-      if (context.mounted) _handleLegacyPayload(payload, context);
+      if (kDebugMode) debugPrint('Error parsing payload: $e');
 
       // Still mark this payload as handled
       _handledPayloadHashes.add(payloadHash);
@@ -71,8 +66,6 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
     final String route = payloadData['route'] as String;
     final Map<String, dynamic>? arguments = payloadData['arguments'] as Map<String, dynamic>?;
 
-    debugPrint('JsonNotificationPayloadHandler: Navigating to route: $route with arguments: $arguments');
-
     // Make sure we pop any dialogs before navigation
     Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
 
@@ -82,21 +75,6 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
       (route) => false, // Remove all previous routes
       arguments: arguments,
     );
-  }
-
-  /// Handle legacy payload formats for backwards compatibility
-  void _handleLegacyPayload(String payload, BuildContext context) {
-    debugPrint('JsonNotificationPayloadHandler: Attempting to handle as legacy payload');
-    // This could handle older payload formats if needed
-    // Example: if payload starts with "/tasks" or contains simple identifiers
-
-    if (payload.startsWith('/')) {
-      // Looks like a route, try to navigate
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        payload,
-        (route) => false,
-      );
-    }
   }
 
   /// Generate a unique hash for a payload to track if we've handled it

@@ -108,7 +108,7 @@ void registerInfrastructure(IContainer container) {
     if (Platform.isLinux) return LinuxSetupService();
     if (Platform.isWindows) return WindowsSetupService();
     if (Platform.isAndroid) return AndroidSetupService();
-    throw Exception('ERROR: Unsupported platform for setup service.');
+    throw Exception('Unsupported platform for setup service.');
   });
 
   container.registerSingleton<IFileService>((_) {

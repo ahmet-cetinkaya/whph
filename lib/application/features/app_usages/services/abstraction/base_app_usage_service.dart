@@ -73,11 +73,10 @@ abstract class BaseAppUsageService implements IAppUsageService {
     for (final rule in rules) {
       try {
         if (RegExp(rule.pattern).hasMatch(appName)) {
-          if (kDebugMode) debugPrint('[BaseAppUsageService]: Ignoring $appName (matched rule: ${rule.pattern})');
           return true;
         }
       } catch (e) {
-        if (kDebugMode) debugPrint('[BaseAppUsageService]: Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
+        if (kDebugMode) debugPrint('Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
       }
     }
 
@@ -87,10 +86,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
   @override
   @protected
   Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false}) async {
-    if (await _shouldIgnoreApp(appName)) {
-      if (kDebugMode) debugPrint('[BaseAppUsageService]: Skipping record for ignored app: $appName');
-      return;
-    }
+    if (await _shouldIgnoreApp(appName)) return;
 
     final appUsage = await _getOrCreateAppUsage(appName);
     await _applyTagRules(appUsage);
@@ -144,17 +140,11 @@ abstract class BaseAppUsageService implements IAppUsageService {
               tagId: rule.tagId,
             );
             await _appUsageTagRepository.add(appUsageTag);
-
-            if (kDebugMode) {
-              debugPrint('[BaseAppUsageService]: Tagged ${appUsage.name} with ${rule.tagId} with rule ${rule.id}');
-            }
           }
         }
       } catch (e) {
         // Log or handle invalid regex patterns
-        if (kDebugMode) {
-          if (kDebugMode) debugPrint('[BaseAppUsageService]: Invalid pattern in rule ${rule.id}: ${e.toString()}');
-        }
+        if (kDebugMode) debugPrint('Invalid pattern in rule ${rule.id}: ${e.toString()}');
       }
     }
   }

@@ -181,7 +181,7 @@ class MobileNotificationService implements INotificationService {
 
       return permissionGranted;
     } catch (e) {
-      debugPrint('[ERROR] [MobileNotificationService] Error requesting notification permission: $e');
+      if (kDebugMode) debugPrint('Error requesting notification permission: $e');
       return false;
     }
   }

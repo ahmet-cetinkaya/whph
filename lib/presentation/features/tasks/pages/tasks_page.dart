@@ -97,31 +97,23 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic> && (args.containsKey('taskId'))) {
       final taskId = args['taskId'] as String;
-      debugPrint('TasksPage: Received taskId argument with taskId: $taskId');
 
       // Only handle the task if we haven't already handled it or if it's a new navigation
       if (_handledTaskId != taskId) {
         _handledTaskId = taskId;
-        debugPrint('TasksPage: Handling task details for taskId: $taskId');
 
         // Schedule the dialog to open after the build is complete
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            debugPrint('TasksPage: Opening task details for taskId: $taskId');
             _openTaskDetails(taskId);
           }
         });
-      } else {
-        // If we're already handling this task, don't do anything
-        debugPrint('TasksPage: Task already handled: $taskId');
       }
     } else {
-      debugPrint('TasksPage: No taskId argument found in route settings');
       // Check if we have a route name that includes a task ID
       final routeName = ModalRoute.of(context)?.settings.name;
       if (routeName != null && routeName.startsWith('/tasks/') && routeName != '/tasks/details') {
         final taskId = routeName.substring('/tasks/'.length);
-        debugPrint('TasksPage: Extracted taskId from route name: $taskId');
 
         // Only handle the task if we haven't already handled it
         if (_handledTaskId != taskId) {
@@ -129,10 +121,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
           // Schedule the dialog to open after the build is complete
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              debugPrint('TasksPage: Opening task details for taskId from route: $taskId');
-              _openTaskDetails(taskId);
-            }
+            if (mounted) _openTaskDetails(taskId);
           });
         }
       }

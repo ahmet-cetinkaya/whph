@@ -23,7 +23,7 @@ class LinuxAppUsageService extends BaseDesktopAppUsageService {
   Future<String?> getActiveWindow() async {
     try {
       if (!File(_scriptPath).existsSync()) {
-        if (kDebugMode) debugPrint('ERROR: Script not found at: $_scriptPath');
+        if (kDebugMode) debugPrint('Script not found at: $_scriptPath');
         return null;
       }
 
@@ -32,13 +32,13 @@ class LinuxAppUsageService extends BaseDesktopAppUsageService {
       final result = await Process.run('bash', [_scriptPath]);
 
       if (result.exitCode != 0) {
-        if (kDebugMode) debugPrint('ERROR: Bash script error: ${result.stderr}');
+        if (kDebugMode) debugPrint('Bash script error: ${result.stderr}');
         return null;
       }
 
       return result.stdout.trim();
     } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Error running Bash script: $e');
+      if (kDebugMode) debugPrint('Error running Bash script: $e');
       return null;
     }
   }
