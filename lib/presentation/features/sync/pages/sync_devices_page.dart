@@ -93,7 +93,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.syncDevicesError),
       operation: () async {
-        if (kDebugMode) debugPrint('[SyncDevicesPage]: Starting sync process...');
         final command = SyncCommand();
         await _mediator.send<SyncCommand, void>(command);
         return;
@@ -121,7 +120,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         }
       },
       onError: (_) {
-        if (kDebugMode) debugPrint('ERROR: Sync failed');
+        if (kDebugMode) debugPrint('Sync failed');
         if (mounted) {
           ScaffoldMessenger.of(context).clearSnackBars();
         }

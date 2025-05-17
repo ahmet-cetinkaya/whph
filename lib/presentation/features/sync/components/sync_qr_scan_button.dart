@@ -165,12 +165,8 @@ class SyncQrScanButton extends StatelessWidget {
                   duration: const Duration(seconds: 30),
                 ));
 
-              if (kDebugMode) debugPrint('[SyncQrScanButton]: Starting sync process...');
-
               onSyncComplete?.call();
               await _sync(context);
-
-              if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync completed successfully');
 
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).clearSnackBars();
@@ -198,8 +194,6 @@ class SyncQrScanButton extends StatelessWidget {
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.syncError),
       operation: () async {
-        if (kDebugMode) debugPrint('[SyncQrScanButton]: Starting sync process...');
-
         final syncService = container.resolve<ISyncService>();
         final completer = Completer<void>();
 
@@ -220,7 +214,6 @@ class SyncQrScanButton extends StatelessWidget {
         );
 
         subscription.cancel();
-        if (kDebugMode) debugPrint('[SyncQrScanButton]: Sync process completed');
       },
     );
   }

@@ -46,7 +46,7 @@ void main() async {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Error: ${details.exception}',
+              ' ${details.exception}',
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -87,7 +87,6 @@ void main() async {
       platform.setMethodCallHandler((call) async {
         if (call.method == 'onNotificationClicked') {
           final payload = call.arguments as String?;
-          debugPrint('Received notification click from platform channel: $payload');
           if (payload != null) {
             try {
               // Delay to ensure the app is fully initialized before handling the payload
@@ -95,9 +94,8 @@ void main() async {
               await payloadHandler.handlePayload(payload);
               // Acknowledge receipt of payload to native side
               await platform.invokeMethod('acknowledgePayload', payload);
-              debugPrint('Successfully handled notification payload: $payload');
             } catch (e) {
-              debugPrint('Error handling notification payload: $e');
+              if (kDebugMode) debugPrint('Error handling notification payload: $e');
             }
           }
         }
@@ -194,7 +192,6 @@ Future<void> _handleInitialNotificationPayload(INotificationPayloadHandler paylo
       if (hasHandledPayload) break;
 
       final notificationPayload = await _getInitialNotificationPayload();
-      debugPrint('Attempt ${i + 1}: Initial notification payload: $notificationPayload');
 
       if (notificationPayload != null && notificationPayload.isNotEmpty) {
         // Wait for app to be fully initialized before handling the payload
@@ -204,14 +201,12 @@ Future<void> _handleInitialNotificationPayload(INotificationPayloadHandler paylo
         // (could happen via the method channel handler)
         if (hasHandledPayload) break;
 
-        debugPrint('Handling initial notification payload: $notificationPayload');
         await payloadHandler.handlePayload(notificationPayload);
 
         // Acknowledge receipt of payload to native side
         final platform = MethodChannel(AndroidAppConstants.channels.notification);
         await platform.invokeMethod('acknowledgePayload', notificationPayload);
 
-        debugPrint('Successfully handled initial notification payload');
         hasHandledPayload = true;
         break; // Exit the retry loop if successful
       }
@@ -219,7 +214,7 @@ Future<void> _handleInitialNotificationPayload(INotificationPayloadHandler paylo
       // If no payload found, wait before trying again
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
-      debugPrint('Error handling initial notification payload: $e');
+      if (kDebugMode) debugPrint('Error handling initial notification payload: $e');
       await Future.delayed(const Duration(milliseconds: 500));
     }
   }
@@ -232,11 +227,10 @@ Future<String?> _getInitialNotificationPayload() async {
       // Get the initial notification payload from the platform channel
       const platform = MethodChannel('me.ahmetcetinkaya.whph/notification');
       final payload = await platform.invokeMethod<String>('getInitialNotificationPayload');
-      debugPrint('Raw initial notification payload from platform: $payload');
       return payload;
     }
   } catch (e) {
-    debugPrint('Error getting initial notification payload: $e');
+    if (kDebugMode) debugPrint('Error getting initial notification payload: $e');
   }
   return null;
 }

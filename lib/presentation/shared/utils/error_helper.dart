@@ -39,11 +39,6 @@ class ErrorHelper {
     if (_isShowingError) return;
     _isShowingError = true;
 
-    if (kDebugMode) {
-      if (kDebugMode) debugPrint('ERROR: $error');
-      if (kDebugMode) debugPrint('ERROR: Stack trace: $stackTrace');
-    }
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(

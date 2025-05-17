@@ -26,7 +26,7 @@ abstract class BaseSetupService implements ISetupService {
         _showUpdateDialog(context, updateInfo);
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Failed to check for updates: $e');
+      if (kDebugMode) debugPrint('Failed to check for updates: $e');
     }
   }
 

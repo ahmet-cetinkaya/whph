@@ -30,7 +30,7 @@ class AndroidSetupService extends BaseSetupService {
       // Android system will handle the installation process
       exit(0);
     } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Failed to download and install update: $e');
+      if (kDebugMode) debugPrint('Failed to download and install update: $e');
       rethrow;
     }
   }

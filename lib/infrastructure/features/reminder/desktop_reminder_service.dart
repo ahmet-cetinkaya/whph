@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/infrastructure/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -21,9 +22,7 @@ class DesktopReminderService implements IReminderService {
         _notificationService = notificationService;
 
   @override
-  Future<void> init() async {
-    debugPrint('DesktopReminderService: Initialized successfully');
-  }
+  Future<void> init() async {}
 
   @override
   Future<void> scheduleReminder({
@@ -34,7 +33,7 @@ class DesktopReminderService implements IReminderService {
     String? payload,
   }) async {
     if (!(await _notificationService.isEnabled())) {
-      debugPrint('DesktopReminderService: Notifications are disabled');
+      if (kDebugMode) debugPrint('Notifications are disabled');
       return;
     }
 
@@ -47,11 +46,9 @@ class DesktopReminderService implements IReminderService {
 
     // Only schedule if the time is in the future
     if (delay.isNegative) {
-      debugPrint('DesktopReminderService: Scheduled date is in the past');
+      if (kDebugMode) debugPrint('Scheduled date is in the past');
       return;
     }
-
-    debugPrint('DesktopReminderService: Scheduling reminder for ${delay.inSeconds} seconds from now');
 
     // Schedule a timer to show the notification at the specified time
     _scheduledTimers[id] = Timer(delay, () {
@@ -89,8 +86,6 @@ class DesktopReminderService implements IReminderService {
         // Calculate the next occurrence
         final nextOccurrence = _getNextOccurrence(day, time);
 
-        debugPrint('DesktopReminderService: Next occurrence for day $day: ${nextOccurrence.toIso8601String()}');
-
         // Calculate delay until the next occurrence
         final now = DateTime.now();
         final delay = nextOccurrence.difference(now);
@@ -110,7 +105,7 @@ class DesktopReminderService implements IReminderService {
           );
         });
       } catch (e) {
-        debugPrint('DesktopReminderService: Error scheduling recurring reminder: $e');
+        if (kDebugMode) debugPrint('Error scheduling recurring reminder: $e');
       }
     }
   }
@@ -146,7 +141,7 @@ class DesktopReminderService implements IReminderService {
   /// Show a notification using the notification service
   Future<void> _showNotification(String id, String title, String body, String? payload) async {
     if (!(await _notificationService.isEnabled())) {
-      debugPrint('DesktopReminderService: Notifications are disabled, not showing notification');
+      if (kDebugMode) debugPrint('Notifications are disabled, not showing notification');
       return;
     }
 
@@ -160,12 +155,10 @@ class DesktopReminderService implements IReminderService {
       // Show the notification using the notification service
       await _notificationService.show(title: title, body: body, payload: payload, id: notificationId);
 
-      debugPrint('DesktopReminderService: Successfully showed notification with ID: $notificationId');
-
       // Ensure the window is visible for desktop platforms
       await _ensureWindowVisible();
     } catch (e) {
-      debugPrint('DesktopReminderService: Error showing notification: $e');
+      if (kDebugMode) debugPrint('Error showing notification: $e');
     }
   }
 
@@ -185,7 +178,6 @@ class DesktopReminderService implements IReminderService {
     if (timer != null && timer.isActive) {
       timer.cancel();
       _scheduledTimers.remove(id);
-      debugPrint('DesktopReminderService: Cancelled timer for ID: $id');
     }
   }
 
@@ -199,7 +191,6 @@ class DesktopReminderService implements IReminderService {
     if (notificationId != null) {
       // Remove from active IDs
       _activeNotificationIds.remove(id);
-      debugPrint('DesktopReminderService: Cancelled notification with ID: $notificationId');
     }
   }
 
@@ -245,8 +236,6 @@ class DesktopReminderService implements IReminderService {
     for (final key in keysToRemove) {
       await cancelReminder(key);
     }
-
-    debugPrint('DesktopReminderService: Cancelled ${keysToRemove.length} reminders');
   }
 
   @override
@@ -259,7 +248,5 @@ class DesktopReminderService implements IReminderService {
     }
     _scheduledTimers.clear();
     _activeNotificationIds.clear();
-
-    debugPrint('DesktopReminderService: Cancelled all reminders');
   }
 }

@@ -23,20 +23,20 @@ class WindowsAppUsageService extends BaseDesktopAppUsageService {
   Future<String?> getActiveWindow() async {
     try {
       if (!File(_scriptPath).existsSync()) {
-        if (kDebugMode) debugPrint('ERROR: Script not found at: $_scriptPath');
+        if (kDebugMode) debugPrint('Script not found at: $_scriptPath');
         return null;
       }
 
       final result = await Process.run('powershell', ["-ExecutionPolicy", "Bypass", "-File", _scriptPath]);
 
       if (result.exitCode != 0) {
-        if (kDebugMode) debugPrint('ERROR: PowerShell error: ${result.stderr}');
+        if (kDebugMode) debugPrint('PowerShell error: ${result.stderr}');
         return null;
       }
 
       return result.stdout.trim();
     } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Error running PowerShell script: $e');
+      if (kDebugMode) debugPrint('Error running PowerShell script: $e');
       return null;
     }
   }

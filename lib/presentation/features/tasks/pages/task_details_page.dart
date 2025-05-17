@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
@@ -94,7 +95,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         });
       }
     } catch (e) {
-      debugPrint('Error loading task details: $e');
+      if (kDebugMode) debugPrint('Error loading task details: $e');
     }
   }
 

@@ -31,9 +31,6 @@ class NetworkUtils {
             for (final addr in interface.addresses) {
               // Check for local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
               if (_isValidLocalNetworkIP(addr.address)) {
-                if (kDebugMode) {
-                  debugPrint('[NetworkUtils]: Found local IP: ${addr.address} on interface: ${interface.name}');
-                }
                 return addr.address;
               }
             }
@@ -44,16 +41,13 @@ class NetworkUtils {
         for (final interface in interfaces) {
           for (final addr in interface.addresses) {
             if (_isValidLocalNetworkIP(addr.address)) {
-              if (kDebugMode) {
-                debugPrint('[NetworkUtils]: Found fallback IP: ${addr.address} on interface: ${interface.name}');
-              }
               return addr.address;
             }
           }
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('ERROR: Failed to get local IP: $e');
+      if (kDebugMode) debugPrint('Failed to get local IP: $e');
     }
     return null;
   }
@@ -97,13 +91,13 @@ class NetworkUtils {
             )
             .first;
       } catch (e) {
-        if (kDebugMode) debugPrint('[NetworkUtils]: Test message failed: $e');
+        if (kDebugMode) debugPrint('Test message failed: $e');
       }
 
       await ws.close();
       return true;
     } catch (e) {
-      if (kDebugMode) debugPrint('[NetworkUtils]: WebSocket connection failed: $e');
+      if (kDebugMode) debugPrint('WebSocket connection failed: $e');
       return false;
     }
   }

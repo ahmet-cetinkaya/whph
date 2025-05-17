@@ -46,7 +46,7 @@ class AsyncErrorHandler {
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        debugPrint('ERROR: $e');
+        debugPrint('$e');
         debugPrint('Stack trace: $stackTrace');
       }
 
@@ -107,7 +107,7 @@ class AsyncErrorHandler {
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        debugPrint('ERROR: $e');
+        debugPrint('$e');
         debugPrint('Stack trace: $stackTrace');
       }
 
@@ -173,7 +173,7 @@ class AsyncErrorHandler {
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        debugPrint('ERROR: $e');
+        debugPrint('$e');
         debugPrint('Stack trace: $stackTrace');
       }
 

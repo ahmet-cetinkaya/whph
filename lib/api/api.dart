@@ -19,28 +19,25 @@ void startWebSocketServer() async {
       webSocketPort,
     );
 
-    if (kDebugMode) {
-      debugPrint('[API]: WebSocket Server starting on port $webSocketPort');
-    }
+    if (kDebugMode) debugPrint('WebSocket Server starting on port $webSocketPort');
 
     // Handle incoming connections
     await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
           final ws = await WebSocketTransformer.upgrade(req);
-          if (kDebugMode) debugPrint('[API]: WebSocket connection established');
 
           ws.listen(
             (data) async {
-              if (kDebugMode) debugPrint('[API]: Received message: $data');
+              if (kDebugMode) debugPrint('Received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              if (kDebugMode) debugPrint('[API]: Connection error: $e');
+              if (kDebugMode) debugPrint('Connection error: $e');
               ws.close();
             },
             onDone: () {
-              if (kDebugMode) debugPrint('[API]: Connection closed normally');
+              if (kDebugMode) debugPrint('Connection closed normally');
             },
             cancelOnError: true,
           );
@@ -53,23 +50,20 @@ void startWebSocketServer() async {
             ..close();
         }
       } catch (e) {
-        if (kDebugMode) debugPrint('[API]: Request handling error: $e');
+        if (kDebugMode) debugPrint('Request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
     }
   } catch (e) {
-    if (kDebugMode) {
-      debugPrint('CRITICAL ERROR: WebSocket server failed to start');
-      debugPrint('Error: $e');
-    }
+    if (kDebugMode) debugPrint('WebSocket server failed to start on port $webSocketPort: $e');
     rethrow;
   }
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   try {
-    if (kDebugMode) debugPrint('[API]: Received message: $message');
+    if (kDebugMode) debugPrint('Received message: $message');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -121,11 +115,8 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         await socket.close();
         break;
     }
-  } catch (e, stack) {
-    if (kDebugMode) {
-      if (kDebugMode) debugPrint('ERROR: Error processing WebSocket message: $e');
-      if (kDebugMode) debugPrint('[API]: Stack trace: $stack');
-    }
+  } catch (e) {
+    if (kDebugMode) debugPrint('Error processing WebSocket message: $e');
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
     rethrow;

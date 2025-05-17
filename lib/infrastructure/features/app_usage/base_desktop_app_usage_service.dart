@@ -27,9 +27,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
 
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
-          if (kDebugMode) {
-            debugPrint('[BaseDesktopAppUsageService]: $_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
-          }
+          if (kDebugMode) debugPrint('$_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
 
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
           String windowTitle = activeWindowOutputSections[0];
@@ -41,10 +39,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
               : _extractAppNameFromTitle(windowTitle);
 
           await saveTimeRecord(appName, _activeDesktopWindowTime);
-          if (kDebugMode) {
-            debugPrint(
-                '[BaseDesktopAppUsageService]: Saving time record for $appName: $_activeDesktopWindowTime seconds');
-          }
+          if (kDebugMode) debugPrint('Saving time record for $appName: $_activeDesktopWindowTime seconds');
         }
 
         _activeDesktopWindowOutput = currentWindow;
