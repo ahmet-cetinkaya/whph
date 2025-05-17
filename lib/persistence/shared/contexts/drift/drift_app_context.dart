@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration {
@@ -329,6 +329,37 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(habitTable, habitTable.hasReminder);
           await m.addColumn(habitTable, habitTable.reminderTime);
           await m.addColumn(habitTable, habitTable.reminderDays);
+        },
+        from16To17: (Migrator m, Schema17 schema) async {
+          // Convert habit_record_table date column to UTC
+          await customStatement('''
+            UPDATE habit_record_table
+            SET date = datetime(date)
+            WHERE date LIKE '%+%' OR date LIKE '%-0%' OR date LIKE '%-1%' OR date LIKE '%-2%'
+          ''');
+
+          // Convert task_table planned_date column to UTC
+          await customStatement('''
+            UPDATE task_table 
+            SET planned_date = datetime(planned_date)
+            WHERE planned_date IS NOT NULL 
+            AND (planned_date LIKE '%+%' OR planned_date LIKE '%-0%' OR planned_date LIKE '%-1%' OR planned_date LIKE '%-2%')
+          ''');
+
+          // Convert task_table deadline_date column to UTC
+          await customStatement('''
+            UPDATE task_table
+            SET deadline_date = datetime(deadline_date)
+            WHERE deadline_date IS NOT NULL
+            AND (deadline_date LIKE '%+%' OR deadline_date LIKE '%-0%' OR deadline_date LIKE '%-1%' OR deadline_date LIKE '%-2%')
+          ''');
+
+          // Convert sync_device_table last_sync_date column to UTC
+          await customStatement('''
+            UPDATE sync_device_table
+            SET last_sync_date = datetime(strftime('%s', last_sync_date), 'unixepoch', 'utc')
+            WHERE last_sync_date IS NOT NULL
+          ''');
         },
       ),
     );

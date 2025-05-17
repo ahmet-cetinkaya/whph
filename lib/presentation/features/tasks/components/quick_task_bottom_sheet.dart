@@ -93,8 +93,8 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           tagIdsToAdd: _selectedTags.map((t) => t.value).toList(),
           priority: _selectedPriority,
           estimatedTime: _estimatedTime,
-          plannedDate: _plannedDate,
-          deadlineDate: _deadlineDate,
+          plannedDate: _plannedDate?.toUtc(),
+          deadlineDate: _deadlineDate?.toUtc(),
           isCompleted: false,
           parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
         );
@@ -110,8 +110,8 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             title: _titleController.text,
             priority: _selectedPriority,
             estimatedTime: _estimatedTime,
-            plannedDate: _plannedDate,
-            deadlineDate: _deadlineDate,
+            plannedDate: _plannedDate?.toUtc(),
+            deadlineDate: _deadlineDate?.toUtc(),
             tags: _selectedTags
                 .map((t) => TaskDataTag(
                       id: t.value,
@@ -121,7 +121,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             isCompleted: false,
             parentTaskId: widget.initialParentTaskId,
             order: 0.0, // Default order
-            createdDate: DateTime.now(),
+            createdDate: DateTime.now().toUtc(),
           );
 
           widget.onTaskCreated!(response.id, taskData);

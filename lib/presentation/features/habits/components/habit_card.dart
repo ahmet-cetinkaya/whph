@@ -13,7 +13,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/shared/utils/date_time_helper.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
@@ -64,8 +64,8 @@ class _HabitCardState extends State<HabitCard> {
           pageIndex: 0,
           pageSize: widget.dateRange,
           habitId: widget.habit.id,
-          startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)),
-          endDate: DateTime.now(),
+          startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)).toUtc(),
+          endDate: DateTime.now().toUtc(),
         );
         return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       },
@@ -84,7 +84,7 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: date);
+        final command = AddHabitRecordCommand(habitId: habitId, date: date.toUtc());
         final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
         if (mounted) {
@@ -277,9 +277,16 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
-    bool hasRecord = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, date));
-    HabitRecordListItem? recordForDay =
-        hasRecord ? _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, date)) : null;
+    // Convert dates to local time zone before comparison if they're in UTC
+    final localDate = DateTimeHelper.toLocalDateTime(date);
+    final localToday = DateTimeHelper.toLocalDateTime(today);
+
+    // Check for habit records by comparing dates in local time zone
+    bool hasRecord = _habitRecords!.items
+        .any((record) => DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), localDate));
+    HabitRecordListItem? recordForDay = hasRecord
+        ? _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, localDate))
+        : null;
 
     return SizedBox(
       width: HabitUiConstants.calendarDaySize,
@@ -288,15 +295,15 @@ class _HabitCardState extends State<HabitCard> {
         children: [
           if (widget.isDateLabelShowing) ...[
             Text(
-              DateTimeHelper.getWeekday(date.weekday),
+              DateTimeHelper.getWeekday(localDate.weekday),
               style: AppTheme.bodySmall.copyWith(
-                color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                color: DateTimeHelper.isSameDay(localDate, localToday) ? AppTheme.primaryColor : AppTheme.textColor,
               ),
             ),
             Text(
-              date.day.toString(),
+              localDate.day.toString(),
               style: AppTheme.bodySmall.copyWith(
-                color: DateTimeHelper.isSameDay(date, today) ? AppTheme.primaryColor : AppTheme.textColor,
+                color: DateTimeHelper.isSameDay(localDate, localToday) ? AppTheme.primaryColor : AppTheme.textColor,
               ),
             ),
           ],

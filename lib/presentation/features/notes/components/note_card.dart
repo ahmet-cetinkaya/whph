@@ -4,6 +4,7 @@ import 'package:whph/presentation/features/notes/constants/note_ui_constants.dar
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class NoteCard extends StatelessWidget {
   final NoteListItem note;
@@ -128,21 +129,22 @@ class NoteCard extends StatelessWidget {
 
   String _formatDateTime(DateTime dateTime) {
     final now = DateTime.now();
-    final difference = now.difference(dateTime);
+    final localDateTime = DateTimeHelper.toLocalDateTime(dateTime);
+    final difference = now.difference(localDateTime);
 
     if (difference.inDays == 0) {
       // Today, show time
-      return 'Today ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      return 'Today ${DateTimeHelper.formatTime(localDateTime)}';
     } else if (difference.inDays == 1) {
       // Yesterday
       return 'Yesterday';
     } else if (difference.inDays < 7) {
       // This week
-      final weekday = _getWeekdayName(dateTime.weekday);
+      final weekday = _getWeekdayName(localDateTime.weekday);
       return weekday;
     } else {
       // Older than a week
-      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      return DateTimeHelper.formatDate(localDateTime, format: 'd/M/yyyy');
     }
   }
 

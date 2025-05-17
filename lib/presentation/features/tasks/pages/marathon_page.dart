@@ -230,8 +230,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     super.build(context);
     // Add today's date for filtering
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
+    final todayForFilter = DateTime(now.year, now.month, now.day).toUtc();
+    final tomorrowForFilter = todayForFilter.add(const Duration(days: 1));
 
     return PopScope(
       canPop: true,
@@ -342,7 +342,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       padding: const EdgeInsets.only(right: 16),
                       child: TaskAddButton(
                         initialTagIds: _selectedTagIds,
-                        initialPlannedDate: today,
+                        initialPlannedDate: todayForFilter,
                         onTaskCreated: (_, __) => _onTasksChanged(),
                         buttonColor: Colors.white,
                       ),
@@ -371,8 +371,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                 child: TaskList(
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTagIds,
-                  filterByPlannedEndDate: tomorrow,
-                  filterByDeadlineEndDate: tomorrow,
+                  filterByPlannedEndDate: tomorrowForFilter.toUtc(),
+                  filterByDeadlineEndDate: tomorrowForFilter.toUtc(),
                   filterDateOr: true,
                   search: _searchQuery,
                   onTaskCompleted: _onTasksChanged,

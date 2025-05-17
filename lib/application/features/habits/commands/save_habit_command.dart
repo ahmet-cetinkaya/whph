@@ -76,7 +76,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       // Create habit with default values
       habit = Habit(
         id: KeyHelper.generateStringId(),
-        createdDate: DateTime.now(),
+        createdDate: DateTime.now().toUtc(),
         name: request.name,
         description: request.description,
         estimatedTime: request.estimatedTime,

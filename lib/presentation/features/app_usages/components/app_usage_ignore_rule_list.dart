@@ -84,7 +84,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                       id: item.id,
                       pattern: item.pattern,
                       description: item.description,
-                      createdDate: DateTime.now(),
+                      createdDate: DateTime.now().toUtc(),
                     ))
                 .toList();
           });

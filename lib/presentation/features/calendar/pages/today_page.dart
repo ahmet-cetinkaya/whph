@@ -34,14 +34,12 @@ class TodayPage extends StatefulWidget {
 
 class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
-  final _tasksService = container.resolve<TasksService>();
 
   List<String>? _selectedTagFilter;
   bool _showNoTagsFilter = false;
   bool _isCheckedUpdate = false;
   bool _showCompletedTasks = false;
   String? _searchQuery;
-  bool _isRefreshing = false;
   bool _hasHabits = false;
 
   @override
@@ -53,26 +51,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setupService.checkForUpdates(context);
       _isCheckedUpdate = true;
     }
-
-    // Listen to task creation events
-    _tasksService.onTaskCreated.addListener(_onTaskCreated);
-  }
-
-  void _onTaskCreated() {
-    if (mounted) {
-      _refreshAllElements();
-    }
-  }
-
-  @override
-  void dispose() {
-    _tasksService.onTaskCreated.removeListener(_onTaskCreated);
-    super.dispose();
-  }
-
-  void _refreshAllElements() {
-    if (_isRefreshing) return;
-    _isRefreshing = true;
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
@@ -102,7 +80,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       MarathonPage.route,
       arguments: {'fullScreen': true},
     );
-    _refreshAllElements();
   }
 
   @override
@@ -132,12 +109,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 child: TagSelectDropdown(
                   isMultiSelect: true,
                   onTagsSelected: (tags, isNoneSelected) {
-                    if (_isRefreshing) return;
                     setState(() {
                       _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                       _showNoTagsFilter = isNoneSelected; // Update "None" filter state
                     });
-                    _refreshAllElements();
                   },
                   icon: Icons.label,
                   color: (_selectedTagFilter?.isNotEmpty ?? false) || _showNoTagsFilter
@@ -184,7 +159,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                             _showNoTagsFilter = isNoneSelected; // Update None filter state
                           });
-                          _refreshAllElements();
                         },
                         showTagFilter: false,
                       ),
@@ -267,7 +241,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                   _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                                   _showNoTagsFilter = isNoneSelected; // Update None filter state
                                 });
-                                _refreshAllElements();
                               },
                               onSearchChange: (query) {
                                 setState(() {
@@ -292,9 +265,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             child: TaskAddButton(
                               initialTagIds: _selectedTagFilter,
                               initialPlannedDate: DateTime.now(),
-                              onTaskCreated: (taskId, taskData) {
-                                _refreshAllElements();
-                              },
                             ),
                           ),
                         ],
@@ -307,14 +277,14 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 filterByCompleted: _showCompletedTasks,
                 filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                 filterNoTags: _showNoTagsFilter,
-                filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
-                filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
+                filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)).toUtc(),
+                filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)).toUtc(),
                 filterDateOr: true,
-                sortByPlannedDate: SortDirection.desc,
                 search: _searchQuery,
                 onClickTask: (task) => _openTaskDetails(context, task.id),
                 enableReordering: true,
                 showDoneOverlayWhenEmpty: true,
+                sortByPlannedDate: SortDirection.desc,
               ),
             ],
           ),

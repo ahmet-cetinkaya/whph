@@ -14,6 +14,7 @@ import 'package:whph/application/features/tasks/commands/save_task_command.dart'
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -47,7 +48,7 @@ class TaskCard extends StatelessWidget {
       id: task.id,
       title: task.title,
       priority: task.priority,
-      plannedDate: date,
+      plannedDate: date.toUtc(),
       deadlineDate: task.deadlineDate,
       estimatedTime: task.estimatedTime,
       isCompleted: task.isCompleted,
@@ -205,7 +206,6 @@ class TaskCard extends StatelessWidget {
   }
 
   List<Widget> _buildDateTimeElements() {
-    final dateFormat = DateFormat(SharedUiConstants.defaultDateFormat);
     final elements = <Widget>[];
     void addElement(Widget element) {
       if (elements.isNotEmpty) {
@@ -221,17 +221,23 @@ class TaskCard extends StatelessWidget {
         TaskUiConstants.estimatedTimeColor,
       ));
     }
+
+    // Handle plannedDate with DateTimeHelper directly in presentation layer
     if (taskItem.plannedDate != null) {
+      final localFormattedDate = DateTimeHelper.formatDate(taskItem.plannedDate);
       addElement(_buildInfoRow(
         TaskUiConstants.plannedDateIcon,
-        dateFormat.format(taskItem.plannedDate!),
+        localFormattedDate,
         TaskUiConstants.plannedDateColor,
       ));
     }
+
+    // Handle deadlineDate with DateTimeHelper directly in presentation layer
     if (taskItem.deadlineDate != null) {
+      final localFormattedDate = DateTimeHelper.formatDate(taskItem.deadlineDate);
       addElement(_buildInfoRow(
         TaskUiConstants.deadlineDateIcon,
-        dateFormat.format(taskItem.deadlineDate!),
+        localFormattedDate,
         TaskUiConstants.deadlineDateColor,
       ));
     }
