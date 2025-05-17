@@ -39,7 +39,7 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
 
     final tagTag = TagTag(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now(),
+      createdDate: DateTime.now().toUtc(),
       primaryTagId: request.primaryTagId,
       secondaryTagId: request.secondaryTagId,
     );

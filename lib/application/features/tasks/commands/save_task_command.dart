@@ -108,7 +108,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       task = Task(
           id: KeyHelper.generateStringId(),
-          createdDate: DateTime.now(),
+          createdDate: DateTime.now().toUtc(),
           title: request.title,
           description: request.description,
           priority: request.priority,
@@ -130,7 +130,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           id: KeyHelper.generateStringId(),
           taskId: task.id,
           tagId: tagId,
-          createdDate: DateTime.now(),
+          createdDate: DateTime.now().toUtc(),
         );
         await _taskTagRepository.add(taskTag);
       }

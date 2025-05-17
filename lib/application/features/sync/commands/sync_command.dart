@@ -316,7 +316,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   }
 
   Future<void> _saveSyncDevice(SyncDevice sync) async {
-    sync.lastSyncDate = DateTime.now();
+    sync.lastSyncDate = DateTime.now().toUtc();
     await syncDeviceRepository.update(sync);
   }
 

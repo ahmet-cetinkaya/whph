@@ -30,11 +30,11 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   String? _searchQuery;
-  bool _showNoTagsFilter = false; // Added to track when "None" option is selected
-  String? _handledTaskId; // Track the task ID that we've already handled
+  bool _showNoTagsFilter = false;
+  String? _handledTaskId;
 
   @override
-  bool get wantKeepAlive => true; // Keep the state alive when navigating away
+  bool get wantKeepAlive => true;
 
   Future<void> _openTaskDetails(String taskId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -45,7 +45,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         hideSidebar: true,
       ),
     );
-    // The task list will refresh automatically through event listeners
   }
 
   void _onTasksList(count) {
@@ -68,8 +67,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   void _onDateFilterChange(DateTime? start, DateTime? end) {
     if (mounted) {
       setState(() {
-        _filterStartDate = start;
-        _filterEndDate = end;
+        _filterStartDate = start?.toUtc();
+        _filterEndDate = end?.toUtc();
       });
     }
   }
@@ -192,10 +191,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             filterByCompleted: _showCompletedTasks,
             filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
             filterNoTags: _showNoTagsFilter,
-            filterByPlannedStartDate: _filterStartDate,
-            filterByPlannedEndDate: _filterEndDate,
-            filterByDeadlineStartDate: _filterStartDate,
-            filterByDeadlineEndDate: _filterEndDate,
+            filterByPlannedStartDate: _filterStartDate?.toUtc(),
+            filterByPlannedEndDate: _filterEndDate?.toUtc(),
+            filterByDeadlineStartDate: _filterStartDate?.toUtc(),
+            filterByDeadlineEndDate: _filterEndDate?.toUtc(),
             filterDateOr: true,
             sortByPlannedDate: SortDirection.asc,
             search: _searchQuery,

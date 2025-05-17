@@ -29,7 +29,7 @@ class AddAppUsageIgnoreRuleCommandHandler
   Future<AddAppUsageIgnoreRuleCommandResponse> call(AddAppUsageIgnoreRuleCommand request) async {
     final rule = AppUsageIgnoreRule(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now(),
+      createdDate: DateTime.now().toUtc(),
       pattern: request.pattern,
       description: request.description,
     );

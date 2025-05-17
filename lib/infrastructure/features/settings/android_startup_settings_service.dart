@@ -54,7 +54,7 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
         key: SettingKeys.startAtStartup,
         value: isActive.toString(),
         valueType: SettingValueType.bool,
-        createdDate: DateTime.now(),
+        createdDate: DateTime.now().toUtc(),
       ));
     }
   }

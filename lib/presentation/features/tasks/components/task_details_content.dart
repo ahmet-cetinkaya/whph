@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:markdown_editor_plus/widgets/markdown_auto_preview.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
@@ -26,6 +25,7 @@ import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class TaskDetailsContent extends StatefulWidget {
   final String taskId;
@@ -221,9 +221,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 value: EisenhowerPriority.notUrgentNotImportant),
           ];
 
-          // Only update planned date if it's different
-          final plannedDateText =
-              _task!.plannedDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.plannedDate!) : '';
+          // Only update planned date if it's different - handle conversion in presentation layer
+          final plannedDateText = _task!.plannedDate != null ? DateTimeHelper.formatDateTime(_task!.plannedDate) : '';
           if (_plannedDateController.text != plannedDateText) {
             _plannedDateController.text = plannedDateText;
             // Don't restore selection if text changed
@@ -232,9 +231,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             _plannedDateController.selection = plannedDateSelection;
           }
 
-          // Only update deadline date if it's different
+          // Only update deadline date if it's different - handle conversion in presentation layer
           final deadlineDateText =
-              _task!.deadlineDate != null ? DateFormat('yyyy-MM-dd HH:mm').format(_task!.deadlineDate!) : '';
+              _task!.deadlineDate != null ? DateTimeHelper.formatDateTime(_task!.deadlineDate) : '';
           if (_deadlineDateController.text != deadlineDateText) {
             _deadlineDateController.text = deadlineDateText;
             // Don't restore selection if text changed
@@ -329,12 +328,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       if (!mounted) return;
 
-      // Parse dates from controllers
+      // Parse dates from controllers and convert to UTC
       DateTime? plannedDate =
-          _plannedDateController.text.isNotEmpty ? DateTime.tryParse(_plannedDateController.text) : null;
+          _plannedDateController.text.isNotEmpty ? DateTime.tryParse(_plannedDateController.text)?.toUtc() : null;
 
       DateTime? deadlineDate =
-          _deadlineDateController.text.isNotEmpty ? DateTime.tryParse(_deadlineDateController.text) : null;
+          _deadlineDateController.text.isNotEmpty ? DateTime.tryParse(_deadlineDateController.text)?.toUtc() : null;
 
       final saveCommand = SaveTaskCommand(
         id: _task!.id,

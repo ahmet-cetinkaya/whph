@@ -79,10 +79,12 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           title: task.title,
           description: task.description,
           priority: task.priority,
-          plannedDate: task.plannedDate,
-          deadlineDate: task.deadlineDate,
+          plannedDate: task.plannedDate?.toUtc(),
+          deadlineDate: task.deadlineDate?.toUtc(),
           estimatedTime: task.estimatedTime,
           isCompleted: !originalCompletedState,
+          plannedDateReminderTime: task.plannedDateReminderTime,
+          deadlineDateReminderTime: task.deadlineDateReminderTime,
         );
 
         // Perform the actual API call

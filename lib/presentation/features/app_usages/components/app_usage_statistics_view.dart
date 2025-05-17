@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_statistics_query.dart';
 import 'package:whph/application/features/app_usages/queries/get_app_usage_query.dart';
@@ -12,6 +11,7 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class AppUsageStatisticsView extends StatefulWidget {
   final String appUsageId;
@@ -479,8 +479,10 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
 
   // Formatting helpers
   String _formatDateRange(DateTime start, DateTime end) {
-    final dateFormat = DateFormat('MMM d');
-    return '${dateFormat.format(start)} - ${dateFormat.format(end)}';
+    // Convert dates to local time zone and format them
+    final localStart = DateTimeHelper.toLocalDateTime(start);
+    final localEnd = DateTimeHelper.toLocalDateTime(end);
+    return '${DateTimeHelper.formatDate(localStart, format: 'MMM d')} - ${DateTimeHelper.formatDate(localEnd, format: 'MMM d')}';
   }
 
   String _getDayNameFromIndex(int index) {

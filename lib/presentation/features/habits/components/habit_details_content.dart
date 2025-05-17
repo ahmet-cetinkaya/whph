@@ -19,7 +19,7 @@ import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/shared/utils/date_time_helper.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
@@ -169,8 +169,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
-        final firstDayOfMonth = DateTime(month.year, month.month - 1, 23);
-        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+        final firstDayOfMonth = DateTime(month.year, month.month - 1, 23).toUtc();
+        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0).toUtc();
 
         final query = GetListHabitRecordsQuery(
           pageIndex: 0,
@@ -196,7 +196,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: date);
+        final command = AddHabitRecordCommand(habitId: habitId, date: date.toUtc());
         await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
       },
       onSuccess: () {

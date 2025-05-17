@@ -48,7 +48,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
             key: SettingKeys.notifications,
             value: 'true',
             valueType: SettingValueType.bool,
-            createdDate: DateTime.now(),
+            createdDate: DateTime.now().toUtc(),
           ));
           _isEnabled = true;
         } else {

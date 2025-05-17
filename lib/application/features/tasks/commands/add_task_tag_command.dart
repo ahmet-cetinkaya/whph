@@ -36,7 +36,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
 
     final taskTag = TaskTag(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now(),
+      createdDate: DateTime.now().toUtc(),
       taskId: request.taskId,
       tagId: request.tagId,
     );
