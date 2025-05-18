@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization_multi/easy_localization_multi.dart';
 import 'package:easy_localization_yaml/easy_localization_yaml.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/settings/pages/settings_page.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -18,7 +19,11 @@ class TranslationService implements ITranslationService {
 
   @override
   String translate(String key, {Map<String, String>? namedArgs}) {
-    return key.tr(namedArgs: namedArgs);
+    String translation = key.tr(namedArgs: namedArgs);
+
+    if (translation == key && kDebugMode) debugPrint('❗Translation not found for key: $key');
+
+    return translation;
   }
 
   @override
