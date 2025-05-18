@@ -4,11 +4,21 @@ tasks:
       title: Pomodoro Zamanlayıcı
       work_completed: Çalışma oturumu tamamlandı!
       break_completed: Mola süresi tamamlandı!
+      long_break_completed: Uzun mola tamamlandı!
     settings:
       title: Zamanlayıcı Ayarları
       timer_label: Oturum süreleri
+      ticking_sound_section: Tik Tak Sesi
+      ticking_sound: Tik tak sesini etkinleştir
+      ticking_volume: Ses Seviyesi
+      ticking_speed: Hız
+      auto_start_section: Otomatik Başlatma Seçenekleri
       work_duration: Çalışma Süresi
       break_duration: Mola Süresi
+      long_break_duration: Uzun Mola Süresi
+      sessions_before_long_break: Uzun Mola Öncesi Oturum Sayısı
+      auto_start_break: Çalışmadan sonra molayı otomatik başlat
+      auto_start_work: Moladan sonra çalışmayı otomatik başlat
     actions:
       stop_timer: Zamanlayıcıyı Durdur
   priority:

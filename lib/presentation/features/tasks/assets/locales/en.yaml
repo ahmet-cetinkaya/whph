@@ -4,11 +4,21 @@ tasks:
       title: Pomodoro Timer
       work_completed: Work session completed!
       break_completed: Break session completed!
+      long_break_completed: Long break completed!
     settings:
       title: Timer Settings
       timer_label: Session durations
+      ticking_sound_section: Ticking Sound
+      ticking_sound: Enable ticking sound
+      ticking_volume: Volume
+      ticking_speed: Speed
+      auto_start_section: Auto-Start Options
       work_duration: Work Duration
       break_duration: Break Duration
+      long_break_duration: Long Break Duration
+      sessions_before_long_break: Sessions before Long Break
+      auto_start_break: Auto-start break after work
+      auto_start_work: Auto-start work after break
     actions:
       stop_timer: Stop Timer
   priority:
