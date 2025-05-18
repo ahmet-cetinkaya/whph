@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration {
@@ -360,6 +360,10 @@ class AppDatabase extends _$AppDatabase {
             SET last_sync_date = datetime(strftime('%s', last_sync_date), 'unixepoch', 'utc')
             WHERE last_sync_date IS NOT NULL
           ''');
+        },
+        from17To18: (Migrator m, Schema18 schema) async {
+          // Add archivedDate column to Habit table
+          await m.addColumn(habitTable, habitTable.archivedDate);
         },
       ),
     );

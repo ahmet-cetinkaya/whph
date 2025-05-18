@@ -13,6 +13,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   bool excludeCompleted;
   List<String>? filterByTags;
   bool filterNoTags;
+  bool? filterByArchived;
 
   GetListHabitsQuery({
     required this.pageIndex,
@@ -20,6 +21,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
     this.excludeCompleted = false,
     this.filterByTags,
     this.filterNoTags = false,
+    this.filterByArchived,
   });
 }
 
@@ -31,6 +33,7 @@ class HabitListItem {
   bool hasReminder;
   String? reminderTime;
   List<int> reminderDays;
+  DateTime? archivedDate;
 
   HabitListItem({
     required this.id,
@@ -40,7 +43,12 @@ class HabitListItem {
     this.hasReminder = false,
     this.reminderTime,
     this.reminderDays = const [],
+    this.archivedDate,
   });
+
+  bool isArchived() {
+    return archivedDate != null;
+  }
 }
 
 class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
@@ -97,6 +105,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         hasReminder: habit.hasReminder,
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
+        archivedDate: habit.archivedDate,
       ));
     }
 
@@ -112,6 +121,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   CustomWhereFilter? _getCustomWhereFilter(GetListHabitsQuery request) {
     final conditions = <String>[];
     final variables = <Object>[];
+
+    // Filter by archive status if specified
+    if (request.filterByArchived != null) {
+      conditions.add(
+          request.filterByArchived! ? "habit_table.archived_date IS NOT NULL" : "habit_table.archived_date IS NULL");
+    }
 
     if (request.excludeCompleted) {
       final startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);

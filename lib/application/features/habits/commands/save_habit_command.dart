@@ -10,6 +10,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final String name;
   final String description;
   final int? estimatedTime;
+  final DateTime? archivedDate;
   final bool? hasReminder;
   final String? reminderTime;
   final List<int>? reminderDays;
@@ -19,6 +20,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
     required this.name,
     required this.description,
     this.estimatedTime,
+    this.archivedDate,
     this.hasReminder,
     this.reminderTime,
     this.reminderDays,
@@ -59,6 +61,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       habit.name = request.name;
       habit.description = request.description;
       habit.estimatedTime = request.estimatedTime;
+      habit.archivedDate = request.archivedDate;
 
       // Update reminder settings if provided
       if (request.hasReminder != null) {

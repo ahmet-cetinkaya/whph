@@ -20,6 +20,7 @@ class HabitsList extends StatefulWidget {
   final List<String>? filterByTags;
   final bool filterNoTags;
   final bool showDoneOverlayWhenEmpty;
+  final bool filterByArchived; // Changed to non-nullable
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -34,6 +35,7 @@ class HabitsList extends StatefulWidget {
     this.filterByTags,
     this.filterNoTags = false,
     this.showDoneOverlayWhenEmpty = false,
+    this.filterByArchived = false, // Default to showing unarchived
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -101,6 +103,7 @@ class HabitsListState extends State<HabitsList> {
         dateRange: widget.dateRange,
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
+        filterByArchived: widget.filterByArchived, // Changed from showArchived
       );
 
   bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -108,14 +111,16 @@ class HabitsListState extends State<HabitsList> {
       'mini': oldFilters.mini,
       'dateRange': oldFilters.dateRange,
       'filterNoTags': oldFilters.filterNoTags,
-      'tags': oldFilters.filterByTags,
+      'filterByTags': oldFilters.filterByTags,
+      'filterByArchived': oldFilters.filterByArchived, // Changed from showArchived
     };
 
     final newMap = {
       'mini': newFilters.mini,
       'dateRange': newFilters.dateRange,
       'filterNoTags': newFilters.filterNoTags,
-      'tags': newFilters.filterByTags,
+      'filterByTags': newFilters.filterByTags,
+      'filterByArchived': newFilters.filterByArchived, // Changed from showArchived
     };
 
     return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
@@ -160,6 +165,7 @@ class HabitsListState extends State<HabitsList> {
           excludeCompleted: _currentFilters.mini,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
+          filterByArchived: _currentFilters.filterByArchived, // Changed from showArchived
         );
 
         return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
@@ -288,11 +294,13 @@ class FilterContext {
   final int dateRange;
   final List<String>? filterByTags;
   final bool filterNoTags;
+  final bool filterByArchived; // Changed to non-nullable
 
   const FilterContext({
     required this.mini,
     required this.dateRange,
     this.filterByTags,
     this.filterNoTags = false,
+    this.filterByArchived = false, // Default to showing unarchived
   });
 }

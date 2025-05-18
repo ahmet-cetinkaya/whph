@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/habits/components/habit_archive_button.dart';
 import 'package:whph/presentation/features/habits/components/habit_delete_button.dart';
 import 'package:whph/presentation/features/habits/components/habit_details_content.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
@@ -68,6 +69,13 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
+          HabitArchiveButton(
+            habitId: widget.habitId,
+            buttonColor: AppTheme.primaryColor,
+            onArchiveSuccess: () {
+              _habitsService.notifyHabitUpdated(widget.habitId);
+            },
+          ),
           HabitDeleteButton(
             habitId: widget.habitId,
             buttonColor: AppTheme.primaryColor,

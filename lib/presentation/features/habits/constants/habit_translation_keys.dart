@@ -46,6 +46,13 @@ class HabitTranslationKeys {
   static const String records = 'habits.details.statistics.records';
   static const String scoreTrends = 'habits.details.statistics.score_trends';
   static const String topStreaks = 'habits.details.statistics.top_streaks';
+  static const String archivedOn = 'habits.details.statistics.archived_on';
+  static const String statisticsFrom = 'habits.details.statistics.from';
+  static const String statisticsTo = 'habits.details.statistics.to';
+  static const String statisticsArchivedNote = 'habits.details.statistics.archived_note';
+  static const String statisticsArchivedWarning = 'habits.details.statistics.archived_warning';
+  static const String statisticsActiveNote = 'habits.details.statistics.active_note';
+  static const String archivedStatus = 'habits.details.archived_status';
 
   // Tag Section
   static const String selectTagsTooltip = 'habits.tags.select_tooltip';
@@ -89,4 +96,16 @@ class HabitTranslationKeys {
   static const String reminderDays = 'habits.reminder.reminderDays';
   static const String noReminder = 'habits.reminder.noReminder';
   static const String everyDay = 'habits.reminder.everyDay';
+
+  // Archive
+  static const String showArchived = 'habits.archive.show_archived';
+  static const String hideArchived = 'habits.archive.hide_archived';
+  static const String archiveHabit = 'habits.archive.archive';
+  static const String unarchiveHabit = 'habits.archive.unarchive';
+  static const String archiveHabitConfirm = 'habits.archive.archive_confirm';
+  static const String unarchiveHabitConfirm = 'habits.archive.unarchive_confirm';
+  static const String archiveHabitTooltip = 'habits.archive.archive_tooltip';
+  static const String unarchiveHabitTooltip = 'habits.archive.unarchive_tooltip';
+  static const String errorLoadingArchiveStatus = 'habits.errors.loading_archive_status';
+  static const String errorTogglingArchive = 'habits.errors.toggling_archive';
 }

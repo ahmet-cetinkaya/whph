@@ -1,12 +1,14 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 @jsonSerializable
 class Habit extends BaseEntity<String> {
   String name;
   String description;
   int? estimatedTime;
+  DateTime? archivedDate;
 
   // Reminder settings
   bool hasReminder = false;
@@ -21,10 +23,13 @@ class Habit extends BaseEntity<String> {
     required this.name,
     required this.description,
     this.estimatedTime,
+    this.archivedDate,
     this.hasReminder = false,
     this.reminderTime,
     String reminderDays = "",
   });
+
+  // REMINDER RELATED METHODS
 
   // Getter to convert reminderDays string to List<int>
   List<int> getReminderDaysAsList() {
@@ -87,5 +92,27 @@ class Habit extends BaseEntity<String> {
   void setReminderTimeOfDay(TimeOfDay time) {
     final formattedTime = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
     reminderTime = formattedTime;
+  }
+
+  // ARCHIVE RELATED METHODS
+
+  /// Checks if the habit is archived
+  bool isArchived() {
+    return archivedDate != null;
+  }
+
+  /// Archives the habit by setting archivedDate to current DateTime
+  void setArchived() {
+    archivedDate = DateTime.now().toUtc();
+  }
+
+  /// Unarchives the habit by setting archivedDate to null
+  void setUnarchived() {
+    archivedDate = null;
+  }
+
+  /// Returns the archivedDate value from entity in local time zone
+  DateTime? getLocalArchivedDate() {
+    return archivedDate != null ? DateTimeHelper.toLocalDateTime(archivedDate!) : null;
   }
 }
