@@ -20,7 +20,6 @@ import 'package:whph/presentation/features/tasks/components/task_filters.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TodayPage extends StatefulWidget {

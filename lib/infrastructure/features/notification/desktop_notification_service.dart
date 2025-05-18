@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';

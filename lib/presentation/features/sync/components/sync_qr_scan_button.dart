@@ -1,5 +1,4 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/commands/save_sync_command.dart';
