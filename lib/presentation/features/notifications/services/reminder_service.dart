@@ -247,6 +247,11 @@ class ReminderService {
     // Cancel any existing reminders for this habit
     await cancelHabitReminders(habit.id);
 
+    // Don't schedule reminders for archived habits
+    if (habit.isArchived()) {
+      return;
+    }
+
     // Schedule habit reminder if enabled
     if (habit.hasReminder && habit.reminderTime != null) {
       final reminderDaysList = habit.getReminderDaysAsList();
@@ -286,13 +291,15 @@ class ReminderService {
     required DateTime scheduledDate,
     String? payload,
   }) async {
+    // Convert to UTC before scheduling and comparing
+    final scheduledUtc = scheduledDate.toUtc();
     // Only schedule if the reminder time is in the future
-    if (scheduledDate.isAfter(DateTime.now())) {
+    if (scheduledUtc.isAfter(DateTime.now().toUtc())) {
       await _reminderService.scheduleReminder(
         id: id,
         title: title,
         body: body,
-        scheduledDate: scheduledDate,
+        scheduledDate: scheduledUtc,
         payload: payload,
       );
     }

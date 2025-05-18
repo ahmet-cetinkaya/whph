@@ -23,6 +23,8 @@ habits:
     habit_tag_not_found: Alışkanlık etiketi bulunamadı
     habit_record_not_found: Alışkanlık kaydı bulunamadı
     tag_already_exists: Bu etiket zaten eklenmiş
+    loading_archive_status: Arşiv durumu yüklenemedi
+    toggling_archive: Arşiv durumu değiştirilemedi
   details:
     description: Açıklama
     tags: Etiketler
@@ -33,6 +35,7 @@ habits:
     statistics_label: İstatistikler
     create_record_tooltip: Bugün tamamlandı olarak işaretle
     remove_record_tooltip: Bugünkü tamamlamayı kaldır
+    archived_status: Arşivlendi
     statistics:
       overall: Genel
       monthly: Aylık
@@ -40,6 +43,8 @@ habits:
       records: Kayıtlar
       score_trends: Puan Trendi
       top_streaks: En İyi Seriler
+      archived_note: "Arşivlenme tarihi:"
+      archived_warning: "İstatistikler arşivlendiği tarihe kadar gösterilmektedir. {startDate} - {archivedDate}"
     help:
       title: Alışkanlık Detayları Yardım
       description: 🔄 Tutarlı rutinler oluşturmak için alışkanlık detaylarınızı yapılandırın ve takip edin.
@@ -164,3 +169,13 @@ habits:
   notifications:
     reminder_title: "Alışkanlık Hatırlatıcı: {name}"
     reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"
+  
+  archive:
+    show_archived: Arşivlenenleri göster
+    hide_archived: Arşivlenenleri gizle
+    archive: Arşivle
+    unarchive: Arşivden çıkar
+    archive_confirm: Bu alışkanlığı arşivlemek istediğinize emin misiniz?
+    unarchive_confirm: Bu alışkanlığı arşivden çıkarmak istediğinize emin misiniz?
+    archive_tooltip: Bu alışkanlığı arşivle
+    unarchive_tooltip: Bu alışkanlığı arşivden çıkar

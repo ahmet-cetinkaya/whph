@@ -13,8 +13,16 @@ import 'package:whph/presentation/features/habits/constants/habit_translation_ke
 class HabitStatisticsView extends StatefulWidget {
   final HabitStatistics statistics;
   final String habitId;
+  final DateTime? archivedDate;
+  final DateTime firstRecordDate;
 
-  const HabitStatisticsView({super.key, required this.statistics, required this.habitId});
+  const HabitStatisticsView({
+    super.key,
+    required this.statistics,
+    required this.habitId,
+    required this.firstRecordDate,
+    this.archivedDate,
+  });
 
   @override
   State<HabitStatisticsView> createState() => _HabitStatisticsViewState();
@@ -60,24 +68,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader(),
-        const SizedBox(height: 8),
-        _buildStatisticsRow(),
-        const SizedBox(height: 24),
-        _buildScoreChart(),
-        if (widget.statistics.topStreaks.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          _buildStreaksSection(),
-        ],
-      ],
-    );
-  }
-
   Widget _buildSectionHeader() {
     return Row(
       children: [
@@ -86,6 +76,67 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           child: Icon(HabitUiConstants.statisticsIcon),
         ),
         Text(_translationService.translate(HabitTranslationKeys.statisticsLabel), style: AppTheme.bodyLarge),
+      ],
+    );
+  }
+
+  Widget _buildStatusBanner() {
+    final dateFormatter = DateFormat('MMM d, yyyy');
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.blue.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.blue.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: 16,
+            color: Colors.blue[700],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              widget.archivedDate != null
+                  ? _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
+                      'startDate': dateFormatter.format(widget.firstRecordDate),
+                      'archivedDate': dateFormatter.format(widget.archivedDate!)
+                    })
+                  : _translationService.translate(HabitTranslationKeys.statisticsActiveNote, namedArgs: {
+                      'startDate': dateFormatter.format(widget.firstRecordDate),
+                      'currentDate': dateFormatter.format(DateTime.now())
+                    }),
+              style: AppTheme.bodyMedium.copyWith(
+                color: Colors.blue[700],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader(),
+        const SizedBox(height: 16),
+        _buildStatusBanner(),
+        _buildStatisticsRow(),
+        const SizedBox(height: 24),
+        _buildScoreChart(),
+        if (widget.statistics.topStreaks.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _buildStreaksSection(),
+        ],
       ],
     );
   }

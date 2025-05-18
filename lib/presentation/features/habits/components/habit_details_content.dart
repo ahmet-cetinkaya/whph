@@ -578,7 +578,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       keyTags,
       keyEstimatedTime,
       keyDescription,
-      keyReminder,
+      if (!_habit!.isArchived()) keyReminder,
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -617,11 +617,15 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           const SizedBox(height: AppTheme.sizeSmall),
 
           // Tags, Estimated Time, and Reminder Table
-          if (_isFieldVisible(keyTags) || _isFieldVisible(keyEstimatedTime) || _isFieldVisible(keyReminder))
+          if (_isFieldVisible(keyTags) ||
+              _isFieldVisible(keyEstimatedTime) ||
+              _isFieldVisible(keyReminder) ||
+              _habit!.archivedDate != null)
             DetailTable(rowData: [
               if (_isFieldVisible(keyTags)) _buildTagsSection(),
               if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
               if (_isFieldVisible(keyReminder)) _buildReminderSection(),
+              if (_habit!.archivedDate != null) _buildArchivedDateSection(),
             ]),
 
           // Description Table
@@ -661,7 +665,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
           // Records and Statistics Section
           _buildRecordsHeader(),
-          if (_habitRecords != null)
+          if (_habitRecords != null) ...[
             HabitCalendarView(
               currentMonth: currentMonth,
               records: _habitRecords!.items,
@@ -670,7 +674,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               onPreviousMonth: _previousMonth,
               onNextMonth: _nextMonth,
               habitId: widget.habitId,
+              archivedDate: _habit!.archivedDate?.toLocal(),
             ),
+          ],
 
           // Statistics
           Padding(
@@ -678,6 +684,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             child: HabitStatisticsView(
               statistics: _habit!.statistics,
               habitId: widget.habitId,
+              archivedDate: _habit!.archivedDate?.toLocal(),
+              firstRecordDate: _habitRecords!.items.isNotEmpty
+                  ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
+                  : _habit!.createdDate,
             ),
           ),
         ],
@@ -730,6 +740,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     // Get the current reminder days list
     final reminderDaysList = _habit!.getReminderDaysAsList();
 
+    // Check if habit is archived and archived date is in the past
+    final now = DateTime.now();
+    final bool isArchived = _habit!.archivedDate != null && _habit!.archivedDate!.toLocal().isBefore(now);
+
     return DetailTableRowData(
       label: _translationService.translate(HabitTranslationKeys.reminderSettings),
       icon: Icons.notifications,
@@ -741,6 +755,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           hasReminder: _habit!.hasReminder,
           reminderTime: _habit!.getReminderTimeOfDay(),
           reminderDays: reminderDaysList,
+          enabled: !isArchived,
           onHasReminderChanged: (value) {
             // Use addPostFrameCallback to avoid setState during build
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -810,6 +825,31 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     );
   }
 
+  DetailTableRowData _buildArchivedDateSection() => DetailTableRowData(
+        label: _translationService.translate(HabitTranslationKeys.archivedStatus),
+        icon: Icons.archive_outlined,
+        widget: Container(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            children: [
+              Icon(
+                Icons.calendar_today,
+                size: AppTheme.iconSizeSmall,
+                color: AppTheme.textColor.withValues(alpha: 0.7),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                DateTimeHelper.formatDate(_habit!.archivedDate!.toLocal(), format: "MMM d, yyyy"),
+                style: AppTheme.bodyMedium.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
   void _adjustEstimatedTime(int adjustment) {
     if (!mounted) return;
     setState(() {
@@ -864,31 +904,42 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   /// Builds the daily record button with cross or chain icon based on completion status
   Widget _buildDailyRecordButton() {
     final bool hasRecordToday = _hasRecordForToday();
-    final tooltipText = hasRecordToday
-        ? _translationService.translate(HabitTranslationKeys.removeRecordTooltip)
-        : _translationService.translate(HabitTranslationKeys.createRecordTooltip);
+    final now = DateTime.now();
+    final bool isArchived = _habit!.archivedDate != null &&
+        _habit!.archivedDate!.toLocal().isBefore(DateTime(now.year, now.month, now.day));
+    final tooltipText = isArchived
+        ? _translationService.translate(HabitTranslationKeys.archivedStatus)
+        : hasRecordToday
+            ? _translationService.translate(HabitTranslationKeys.removeRecordTooltip)
+            : _translationService.translate(HabitTranslationKeys.createRecordTooltip);
 
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+        color: AppTheme.primaryColor.withValues(alpha: isArchived ? 0.05 : 0.1),
       ),
       child: IconButton(
         icon: Icon(
           hasRecordToday ? Icons.link : Icons.close,
           size: AppTheme.fontSizeLarge,
-          color: hasRecordToday ? Colors.green : Colors.red,
+          color: isArchived
+              ? Colors.grey
+              : hasRecordToday
+                  ? Colors.green
+                  : Colors.red,
         ),
-        onPressed: () async {
-          if (hasRecordToday) {
-            final recordToday = _getRecordForToday();
-            if (recordToday != null) {
-              await _deleteHabitRecord(recordToday.id);
-            }
-          } else {
-            await _createHabitRecord(widget.habitId, DateTime.now());
-          }
-        },
+        onPressed: isArchived
+            ? null
+            : () async {
+                if (hasRecordToday) {
+                  final recordToday = _getRecordForToday();
+                  if (recordToday != null) {
+                    await _deleteHabitRecord(recordToday.id);
+                  }
+                } else {
+                  await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
+                }
+              },
         tooltip: tooltipText,
       ),
     );

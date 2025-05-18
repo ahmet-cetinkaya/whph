@@ -60,12 +60,13 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
+        final endDate = widget.habit.archivedDate ?? DateTime.now().toUtc();
         final query = GetListHabitRecordsQuery(
           pageIndex: 0,
           pageSize: widget.dateRange,
           habitId: widget.habit.id,
-          startDate: DateTime.now().subtract(Duration(days: widget.isMiniLayout ? 1 : 7)).toUtc(),
-          endDate: DateTime.now().toUtc(),
+          startDate: endDate.subtract(Duration(days: widget.isMiniLayout ? 1 : 7)).toUtc(),
+          endDate: endDate,
         );
         return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       },
@@ -151,14 +152,16 @@ class _HabitCardState extends State<HabitCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHabitInfo(),
-          const SizedBox(width: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: _buildCalendar(),
+          if (!widget.habit.isArchived()) ...[
+            const SizedBox(width: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: _buildCalendar(),
+              ),
             ),
-          ),
+          ]
         ],
       );
 
@@ -183,7 +186,7 @@ class _HabitCardState extends State<HabitCard> {
                         ),
                       ),
                       // Show reminder icon if habit has reminders
-                      if (widget.habit.hasReminder && !widget.isMiniLayout)
+                      if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
                         Tooltip(
                           message: _getReminderTooltip(),
                           child: Container(
@@ -257,7 +260,6 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCalendar() {
     if (_habitRecords == null) {
-      // No loading indicator since local DB is fast
       return const SizedBox(
         width: 32,
         height: 32,
@@ -265,23 +267,28 @@ class _HabitCardState extends State<HabitCard> {
       );
     }
 
-    DateTime today = DateTime.now();
-    List<DateTime> lastDays =
-        List.generate(widget.dateRange, (index) => today.subtract(Duration(days: index))).toList();
+    final referenceDate = widget.habit.archivedDate?.toLocal() ?? DateTime.now();
+    final days = List.generate(
+      widget.dateRange,
+      (index) => referenceDate.subtract(Duration(days: index)),
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
-      children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
+      children: days.map((date) => _buildCalendarDay(date, referenceDate)).toList(),
     );
   }
 
-  Widget _buildCalendarDay(DateTime date, DateTime today) {
-    // Convert dates to local time zone before comparison if they're in UTC
-    final localDate = DateTimeHelper.toLocalDateTime(date);
-    final localToday = DateTimeHelper.toLocalDateTime(today);
+  Widget _buildCalendarDay(DateTime date, DateTime referenceDate) {
+    // Don't allow interactions with future dates or dates after archive date
+    final isDisabled = date.isAfter(DateTime.now()) ||
+        (widget.habit.archivedDate != null && date.isAfter(widget.habit.archivedDate!.toLocal()));
 
-    // Check for habit records by comparing dates in local time zone
+    final localDate = DateTimeHelper.toLocalDateTime(date);
+    final isToday = DateTimeHelper.isSameDay(localDate, DateTime.now());
+
+    // Check for habit records
     bool hasRecord = _habitRecords!.items
         .any((record) => DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), localDate));
     HabitRecordListItem? recordForDay = hasRecord
@@ -297,30 +304,36 @@ class _HabitCardState extends State<HabitCard> {
             Text(
               DateTimeHelper.getWeekday(localDate.weekday),
               style: AppTheme.bodySmall.copyWith(
-                color: DateTimeHelper.isSameDay(localDate, localToday) ? AppTheme.primaryColor : AppTheme.textColor,
+                color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
               ),
             ),
             Text(
               localDate.day.toString(),
               style: AppTheme.bodySmall.copyWith(
-                color: DateTimeHelper.isSameDay(localDate, localToday) ? AppTheme.primaryColor : AppTheme.textColor,
+                color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
               ),
             ),
           ],
           IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            onPressed: () async {
-              if (hasRecord) {
-                await _deleteHabitRecord(recordForDay!.id);
-              } else {
-                await _createHabitRecord(widget.habit.id, date);
-              }
-            },
+            onPressed: isDisabled
+                ? null
+                : () async {
+                    if (hasRecord) {
+                      await _deleteHabitRecord(recordForDay!.id);
+                    } else {
+                      await _createHabitRecord(widget.habit.id, date);
+                    }
+                  },
             icon: Icon(
               hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
               size: HabitUiConstants.calendarIconSize,
-              color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.inCompletedColor,
+              color: isDisabled
+                  ? AppTheme.textColor.withValues(alpha: 0.3)
+                  : hasRecord
+                      ? HabitUiConstants.completedColor
+                      : HabitUiConstants.inCompletedColor,
             ),
           ),
         ],
@@ -330,31 +343,40 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCheckbox(BuildContext context) {
     if (_habitRecords == null) {
-      // No loading indicator since local DB is fast
       return const SizedBox(
         width: 28,
         height: 28,
       );
     }
 
-    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+    final today = DateTime.now();
+    final isDisabled = widget.habit.archivedDate != null && today.isAfter(widget.habit.archivedDate!.toLocal());
+
+    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, today));
+
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-      onPressed: () async {
-        if (hasRecordToday) {
-          HabitRecordListItem? recordToday =
-              _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
-          await _deleteHabitRecord(recordToday.id);
-        } else {
-          await _createHabitRecord(widget.habit.id, DateTime.now());
-          _soundPlayer.play(SharedSounds.done);
-        }
-      },
+      onPressed: isDisabled
+          ? null
+          : () async {
+              if (hasRecordToday) {
+                HabitRecordListItem? recordToday =
+                    _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, today));
+                await _deleteHabitRecord(recordToday.id);
+              } else {
+                await _createHabitRecord(widget.habit.id, today);
+                _soundPlayer.play(SharedSounds.done);
+              }
+            },
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,
         size: AppTheme.fontSizeLarge,
-        color: hasRecordToday ? Colors.green : Colors.red,
+        color: isDisabled
+            ? AppTheme.textColor.withValues(alpha: 0.3)
+            : hasRecordToday
+                ? Colors.green
+                : Colors.red,
       ),
     );
   }

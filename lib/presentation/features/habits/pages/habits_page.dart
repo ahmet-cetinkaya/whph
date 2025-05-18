@@ -31,6 +31,7 @@ class _HabitsPageState extends State<HabitsPage> {
 
   List<String> _selectedFilterTags = [];
   bool _showNoTagsFilter = false;
+  bool _filterByArchived = false; // Changed to non-nullable with default value
   String? _handledHabitId; // Track the habit ID that we've already handled
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
@@ -51,6 +52,16 @@ class _HabitsPageState extends State<HabitsPage> {
     setState(() {
       _selectedFilterTags = tagOptions.isEmpty ? [] : tagOptions.map((option) => option.value).toList();
       _showNoTagsFilter = isNoneSelected;
+    });
+
+    // HabitsList will detect filter changes via didUpdateWidget
+  }
+
+  void _onToggleArchived(bool showArchived) {
+    if (!mounted) return;
+
+    setState(() {
+      _filterByArchived = showArchived;
     });
 
     // HabitsList will detect filter changes via didUpdateWidget
@@ -165,11 +176,14 @@ class _HabitsPageState extends State<HabitsPage> {
               // Filter by tags
               HabitFilters(
                 selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
+                showNoTagsFilter: _showNoTagsFilter,
+                filterByArchived: _filterByArchived,
                 onTagFilterChange: _onFilterTagsSelect,
+                onArchiveFilterChange: _onToggleArchived,
               ),
 
               // Calendar
-              if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall))
+              if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) && !_filterByArchived)
                 Padding(
                   padding: const EdgeInsets.only(right: AppTheme.sizeMedium),
                   child: SizedBox(
@@ -190,6 +204,7 @@ class _HabitsPageState extends State<HabitsPage> {
             dateRange: daysToShow,
             filterByTags: _selectedFilterTags,
             filterNoTags: _showNoTagsFilter,
+            filterByArchived: _filterByArchived,
             onClickHabit: (item) {
               _openDetails(item.id, context);
             },

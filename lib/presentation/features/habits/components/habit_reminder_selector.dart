@@ -9,10 +9,11 @@ class HabitReminderSelector extends StatefulWidget {
   final bool hasReminder;
   final TimeOfDay? reminderTime;
   final List<int> reminderDays;
-  final Function(bool) onHasReminderChanged;
-  final Function(TimeOfDay) onTimeChanged;
-  final Function(List<int>) onDaysChanged;
+  final Function(bool)? onHasReminderChanged;
+  final Function(TimeOfDay)? onTimeChanged;
+  final Function(List<int>)? onDaysChanged;
   final ITranslationService translationService;
+  final bool enabled;
 
   const HabitReminderSelector({
     super.key,
@@ -23,6 +24,7 @@ class HabitReminderSelector extends StatefulWidget {
     required this.onTimeChanged,
     required this.onDaysChanged,
     required this.translationService,
+    this.enabled = true,
   });
 
   @override
@@ -50,9 +52,11 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
       if (widget.hasReminder) {
         _selectedDays = List.generate(7, (index) => index + 1); // 1-7 (Monday-Sunday)
 
-        // Notify parent about the change
+        // Notify parent about the change if callback exists and widget is enabled
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onDaysChanged(_selectedDays);
+          if (widget.enabled && widget.onDaysChanged != null) {
+            widget.onDaysChanged!(_selectedDays);
+          }
         });
       } else {
         _selectedDays = [];
@@ -63,6 +67,7 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
   @override
   void didUpdateWidget(HabitReminderSelector oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     // Update hasReminder
     if (oldWidget.hasReminder != widget.hasReminder) {
       setState(() {
@@ -70,13 +75,15 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
       });
 
       // When enabling reminders, select all days by default if no days are currently selected
-      if (_selectedDays.isEmpty) {
+      if (_selectedDays.isEmpty && widget.enabled) {
         setState(() {
           _selectedDays = List.generate(7, (index) => index + 1);
         });
 
-        // Notify parent about the change
-        widget.onDaysChanged(_selectedDays);
+        // Notify parent about the change if callback exists
+        if (widget.onDaysChanged != null) {
+          widget.onDaysChanged!(_selectedDays);
+        }
       }
     }
 
@@ -127,6 +134,8 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
   }
 
   Future<void> _selectTime(BuildContext context) async {
+    if (!widget.enabled) return;
+
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _reminderTime,
@@ -135,11 +144,15 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
       setState(() {
         _reminderTime = picked;
       });
-      widget.onTimeChanged(picked);
+      if (widget.onTimeChanged != null) {
+        widget.onTimeChanged!(picked);
+      }
     }
   }
 
   void _toggleDay(int day) {
+    if (!widget.enabled) return;
+
     // Create a new list to avoid modifying the existing one directly
     final newSelectedDays = List<int>.from(_selectedDays);
 
@@ -155,12 +168,11 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
       _selectedDays = newSelectedDays;
     });
 
-    // Notify parent about the change after state is updated
+    // Notify parent about the change after state is updated if callback exists
     // Use Future.microtask to ensure this happens after the current frame
     Future.microtask(() {
-      if (mounted) {
-        final daysToSend = List<int>.from(_selectedDays);
-        widget.onDaysChanged(daysToSend);
+      if (mounted && widget.onDaysChanged != null) {
+        widget.onDaysChanged!(_selectedDays);
       }
     });
   }
@@ -173,27 +185,34 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
     // Build the switch without label but with tooltip
     Widget reminderSwitch = Tooltip(
       message: widget.translationService.translate(HabitTranslationKeys.enableReminders),
-      child: Switch(
-        value: _hasReminder,
-        onChanged: (value) {
-          // Update local state
-          setState(() {
-            _hasReminder = value;
+      child: Opacity(
+        opacity: widget.enabled ? 1.0 : 0.5,
+        child: Switch(
+          value: _hasReminder,
+          onChanged: !widget.enabled
+              ? null
+              : (value) {
+                  // Update local state
+                  setState(() {
+                    _hasReminder = value;
 
-            // When enabling reminders, select all days by default if no days are currently selected
-            if (_hasReminder && _selectedDays.isEmpty) {
-              _selectedDays = List.generate(7, (index) => index + 1);
-            }
-          });
+                    // When enabling reminders, select all days by default if no days are currently selected
+                    if (_hasReminder && _selectedDays.isEmpty) {
+                      _selectedDays = List.generate(7, (index) => index + 1);
+                    }
+                  });
 
-          // Notify parent about both changes
-          widget.onHasReminderChanged(_hasReminder);
+                  // Notify parent about both changes if callbacks exist
+                  if (widget.onHasReminderChanged != null) {
+                    widget.onHasReminderChanged!(_hasReminder);
+                  }
 
-          // If enabling reminders, also notify about selected days
-          if (_hasReminder) {
-            widget.onDaysChanged(_selectedDays);
-          }
-        },
+                  // If enabling reminders, also notify about selected days
+                  if (_hasReminder && widget.onDaysChanged != null) {
+                    widget.onDaysChanged!(_selectedDays);
+                  }
+                },
+        ),
       ),
     );
 
@@ -203,39 +222,42 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
       children: [
         Icon(
           Icons.access_time,
-          color: Theme.of(context).colorScheme.primary,
+          color: widget.enabled ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor,
           size: AppTheme.iconSizeSmall,
         ),
         const SizedBox(width: 8),
         InkWell(
-          onTap: () => _selectTime(context),
+          onTap: widget.enabled ? () => _selectTime(context) : null,
           borderRadius: BorderRadius.circular(8),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(20),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withAlpha(50),
+          child: Opacity(
+            opacity: widget.enabled ? 1.0 : 0.5,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(50),
+                ),
+                borderRadius: BorderRadius.circular(8),
               ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}',
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${_reminderTime.hour.toString().padLeft(2, '0')}:${_reminderTime.minute.toString().padLeft(2, '0')}',
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.arrow_drop_down,
-                  size: AppTheme.iconSizeSmall,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    size: AppTheme.iconSizeSmall,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -243,57 +265,60 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
     );
 
     // Build the day selector - more compact for horizontal layout
-    Widget daySelector = Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      children: List.generate(7, (index) {
-        final day = index + 1; // 1-7 (Monday-Sunday)
-        final isSelected = _selectedDays.contains(day);
+    Widget daySelector = Opacity(
+      opacity: widget.enabled ? 1.0 : 0.5,
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: List.generate(7, (index) {
+          final day = index + 1; // 1-7 (Monday-Sunday)
+          final isSelected = _selectedDays.contains(day);
 
-        // Determine size based on layout
-        final size = isWideScreen ? 28.0 : 32.0;
-        final fontSize = isWideScreen ? 10.0 : 12.0;
+          // Determine size based on layout
+          final size = isWideScreen ? 28.0 : 32.0;
+          final fontSize = isWideScreen ? 10.0 : 12.0;
 
-        return InkWell(
-          onTap: () => _toggleDay(day),
-          borderRadius: BorderRadius.circular(size / 2),
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
-              // Add subtle shadow for better visual hierarchy
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withAlpha((255 * 0.3).toInt()),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      )
-                    ]
-                  : null,
-            ),
-            child: Center(
-              child: Text(
-                _getDayName(day).substring(0, 1),
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: fontSize,
+          return InkWell(
+            onTap: widget.enabled ? () => _toggleDay(day) : null,
+            borderRadius: BorderRadius.circular(size / 2),
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
+                // Add subtle shadow for better visual hierarchy
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withAlpha((255 * 0.3).toInt()),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        )
+                      ]
+                    : null,
+              ),
+              child: Center(
+                child: Text(
+                  _getDayName(day).substring(0, 1),
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: fontSize,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
 
     // Warning message for no days selected
     Widget warningMessage = AnimatedOpacity(
-      opacity: _selectedDays.isEmpty ? 1.0 : 0.0,
+      opacity: _selectedDays.isEmpty && widget.enabled ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 300),
-      child: _selectedDays.isEmpty
+      child: _selectedDays.isEmpty && widget.enabled
           ? Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(

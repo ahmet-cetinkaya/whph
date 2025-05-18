@@ -160,6 +160,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           });
                         },
                         showTagFilter: false,
+                        showArchiveFilter: false,
                       ),
                     ),
                   ],

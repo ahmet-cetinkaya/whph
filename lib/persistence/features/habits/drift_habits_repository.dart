@@ -13,6 +13,7 @@ class HabitTable extends Table {
   TextColumn get name => text()();
   TextColumn get description => text()();
   IntColumn get estimatedTime => integer().nullable()();
+  DateTimeColumn get archivedDate => dateTime().nullable()();
 
   // Reminder settings
   BoolColumn get hasReminder => boolean().withDefault(const Constant(false))();
@@ -39,6 +40,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       name: entity.name,
       description: entity.description,
       estimatedTime: Value(entity.estimatedTime),
+      archivedDate: Value(entity.archivedDate),
       hasReminder: Value(entity.hasReminder),
       reminderTime: Value(entity.reminderTime),
       reminderDays: Value(entity.reminderDays),

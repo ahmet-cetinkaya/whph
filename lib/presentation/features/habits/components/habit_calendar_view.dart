@@ -19,6 +19,7 @@ class HabitCalendarView extends StatefulWidget {
   final Function() onPreviousMonth;
   final Function() onNextMonth;
   final VoidCallback? onRecordChanged;
+  final DateTime? archivedDate;
 
   const HabitCalendarView({
     super.key,
@@ -30,6 +31,7 @@ class HabitCalendarView extends StatefulWidget {
     required this.onPreviousMonth,
     required this.onNextMonth,
     this.onRecordChanged,
+    this.archivedDate,
   });
 
   @override
@@ -86,6 +88,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
   }
 
   Widget _buildMonthNavigation() {
+    final maxDate = widget.archivedDate ?? DateTime.now();
+    final nextMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month + 1, 1);
+    final canGoNext = nextMonth.isBefore(maxDate);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -99,7 +105,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
         ),
         IconButton(
           icon: Icon(HabitUiConstants.nextIcon),
-          onPressed: widget.onNextMonth,
+          onPressed: canGoNext ? widget.onNextMonth : null,
+          color: canGoNext ? null : AppTheme.textColor.withValues(alpha: 0.3),
         ),
       ],
     );
@@ -170,7 +177,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
 
   Widget _buildCalendarDay(DateTime date) {
     bool hasRecord = widget.records.any((record) => _isSameDay(record.date, date));
-    bool isFutureDate = date.isAfter(DateTime.now());
+    final maxDate = widget.archivedDate ?? DateTime.now();
+    bool isFutureDate = date.isAfter(maxDate);
 
     HabitRecordListItem? recordForDay;
     if (hasRecord) {
@@ -192,30 +200,15 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             },
       style: ElevatedButton.styleFrom(
         foregroundColor: AppTheme.textColor,
-        disabledBackgroundColor: AppTheme.surface2,
+        disabledBackgroundColor: AppTheme.surface2.withValues(alpha: 0.3),
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        side: BorderSide(color: AppTheme.surface1),
       ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('${date.day}', style: AppTheme.bodySmall),
-            if (isFutureDate)
-              Icon(HabitUiConstants.lockIcon, size: HabitUiConstants.calendarIconSize, color: AppTheme.disabledColor)
-            else
-              Icon(
-                hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
-                size: HabitUiConstants.calendarIconSize,
-                color: hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.inCompletedColor,
-              ),
-          ],
-        ),
-      ),
+      child: hasRecord
+          ? const Icon(Icons.check, color: Colors.green)
+          : Icon(Icons.close, color: isFutureDate ? Colors.grey.withValues(alpha: 0.3) : Colors.red),
     );
   }
 

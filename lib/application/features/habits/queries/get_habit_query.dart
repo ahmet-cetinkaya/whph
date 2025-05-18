@@ -67,6 +67,7 @@ class GetHabitQueryResponse extends Habit {
     super.estimatedTime,
     super.hasReminder = false,
     super.reminderTime,
+    super.archivedDate,
     List<int> reminderDays = const [],
     required this.statistics,
   }) {
@@ -94,6 +95,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final records = await _getAllHabitRecords(habit.id);
     final habitRecords = records.where((r) => r.deletedDate == null).toList();
 
+    // Update statistics calculation to handle archived habits
     final statistics = await _calculateStatistics(habit, habitRecords);
 
     // Get the reminderDays directly from the database
@@ -112,6 +114,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       hasReminder: habit.hasReminder,
       reminderTime: habit.reminderTime,
       reminderDays: reminderDaysList,
+      archivedDate: habit.archivedDate,
       statistics: statistics,
     );
   }
@@ -140,42 +143,49 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   }
 
   Future<HabitStatistics> _calculateStatistics(Habit habit, List<HabitRecord> records) async {
-    final now = DateTime.now();
-    final startOfMonth = DateTime(now.year, now.month, 1);
-    final startOfYear = DateTime(now.year, 1, 1);
+    // Use archive date as end date for archived habits
+    final endDate = habit.archivedDate?.toLocal() ?? DateTime.now();
+    final startOfMonth = DateTime(endDate.year, endDate.month, 1);
+    final startOfYear = DateTime(endDate.year, 1, 1);
 
     // Calculate overall score based on first record date
     var overallScore = 0.0;
     if (records.isNotEmpty) {
       final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
       final firstRecordDate = sortedRecords.first.date;
-      final daysFromFirstRecord = now.difference(firstRecordDate).inDays + 1;
+      final daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
       overallScore = records.length / daysFromFirstRecord;
     }
 
     // Calculate monthly score
-    final daysInCurrentMonth = now.difference(startOfMonth).inDays + 1;
+    final daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
     final monthlyRecords =
         records.where((r) => r.date.isAfter(startOfMonth) || _isSameDay(r.date, startOfMonth)).length;
     final monthlyScore = monthlyRecords / daysInCurrentMonth;
 
     // Calculate yearly score
-    final daysInCurrentYear = now.difference(startOfYear).inDays + 1;
+    final daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
     final yearlyRecords = records.where((r) => r.date.isAfter(startOfYear) || _isSameDay(r.date, startOfYear)).length;
     final yearlyScore = yearlyRecords / daysInCurrentYear;
 
     // Calculate monthly scores for the last 12 months
     final monthlyScores = <MapEntry<DateTime, double>>[];
     for (var i = 11; i >= 0; i--) {
-      final month = DateTime(now.year, now.month - i, 1);
+      final month = DateTime(endDate.year, endDate.month - i, 1);
       final nextMonth = DateTime(month.year, month.month + 1, 1);
-      final monthRecords = records.where((r) => r.date.isAfter(month) && r.date.isBefore(nextMonth)).length;
-      final daysInMonth = nextMonth.difference(month).inDays;
+      final monthEnd = i == 0 ? endDate : nextMonth.subtract(const Duration(days: 1));
+
+      final monthRecords = records
+          .where((r) =>
+              (r.date.isAfter(month) || _isSameDay(r.date, month)) &&
+              (r.date.isBefore(monthEnd) || _isSameDay(r.date, monthEnd)))
+          .length;
+      final daysInMonth = monthEnd.difference(month).inDays + 1;
       monthlyScores.add(MapEntry(month, monthRecords / daysInMonth));
     }
 
-    // Calculate top streaks
-    final streaks = _calculateStreaks(records);
+    // Calculate top streaks up to archive date if archived
+    final streaks = _calculateStreaks(records, endDate: habit.archivedDate);
     final topStreaks = streaks.take(5).toList();
 
     // Calculate yearly frequency
@@ -200,7 +210,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  List<HabitStreak> _calculateStreaks(List<HabitRecord> records) {
+  List<HabitStreak> _calculateStreaks(List<HabitRecord> records, {DateTime? endDate}) {
     if (records.isEmpty) return [];
 
     final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
@@ -212,20 +222,23 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     for (var i = 1; i < sortedRecords.length; i++) {
       final record = sortedRecords[i];
       if (record.date.difference(lastDate).inDays > 1) {
-        if (lastDate.difference(streakStart).inDays >= 2) {
-          streaks.add(HabitStreak(
-            startDate: streakStart,
-            endDate: lastDate,
-            days: lastDate.difference(streakStart).inDays + 1,
-          ));
+        // Only add streaks that ended before or on the archive date
+        if (endDate == null || !lastDate.isAfter(endDate)) {
+          if (lastDate.difference(streakStart).inDays >= 2) {
+            streaks.add(HabitStreak(
+              startDate: streakStart,
+              endDate: lastDate,
+              days: lastDate.difference(streakStart).inDays + 1,
+            ));
+          }
         }
         streakStart = record.date;
       }
       lastDate = record.date;
     }
 
-    // Add the last streak if it exists
-    if (lastDate.difference(streakStart).inDays >= 2) {
+    // Add the last streak if it exists and respects the end date
+    if (lastDate.difference(streakStart).inDays >= 2 && (endDate == null || !lastDate.isAfter(endDate))) {
       streaks.add(HabitStreak(
         startDate: streakStart,
         endDate: lastDate,

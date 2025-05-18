@@ -1291,6 +1291,10 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
   @override
   late final GeneratedColumn<int> estimatedTime =
       GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _archivedDateMeta = const VerificationMeta('archivedDate');
+  @override
+  late final GeneratedColumn<DateTime> archivedDate = GeneratedColumn<DateTime>('archived_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _hasReminderMeta = const VerificationMeta('hasReminder');
   @override
   late final GeneratedColumn<bool> hasReminder = GeneratedColumn<bool>('has_reminder', aliasedName, false,
@@ -1315,6 +1319,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
         name,
         description,
         estimatedTime,
+        archivedDate,
         hasReminder,
         reminderTime,
         reminderDays
@@ -1358,6 +1363,9 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       context.handle(
           _estimatedTimeMeta, estimatedTime.isAcceptableOrUnknown(data['estimated_time']!, _estimatedTimeMeta));
     }
+    if (data.containsKey('archived_date')) {
+      context.handle(_archivedDateMeta, archivedDate.isAcceptableOrUnknown(data['archived_date']!, _archivedDateMeta));
+    }
     if (data.containsKey('has_reminder')) {
       context.handle(_hasReminderMeta, hasReminder.isAcceptableOrUnknown(data['has_reminder']!, _hasReminderMeta));
     }
@@ -1383,6 +1391,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
+      archivedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}archived_date']),
       hasReminder: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_reminder'])!,
       reminderTime: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_time']),
       reminderDays: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_days'])!,
@@ -1403,6 +1412,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   final Value<String> name;
   final Value<String> description;
   final Value<int?> estimatedTime;
+  final Value<DateTime?> archivedDate;
   final Value<bool> hasReminder;
   final Value<String?> reminderTime;
   final Value<String> reminderDays;
@@ -1415,6 +1425,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.estimatedTime = const Value.absent(),
+    this.archivedDate = const Value.absent(),
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
@@ -1428,6 +1439,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     required String name,
     required String description,
     this.estimatedTime = const Value.absent(),
+    this.archivedDate = const Value.absent(),
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
@@ -1444,6 +1456,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     Expression<String>? name,
     Expression<String>? description,
     Expression<int>? estimatedTime,
+    Expression<DateTime>? archivedDate,
     Expression<bool>? hasReminder,
     Expression<String>? reminderTime,
     Expression<String>? reminderDays,
@@ -1457,6 +1470,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (estimatedTime != null) 'estimated_time': estimatedTime,
+      if (archivedDate != null) 'archived_date': archivedDate,
       if (hasReminder != null) 'has_reminder': hasReminder,
       if (reminderTime != null) 'reminder_time': reminderTime,
       if (reminderDays != null) 'reminder_days': reminderDays,
@@ -1472,6 +1486,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       Value<String>? name,
       Value<String>? description,
       Value<int?>? estimatedTime,
+      Value<DateTime?>? archivedDate,
       Value<bool>? hasReminder,
       Value<String?>? reminderTime,
       Value<String>? reminderDays,
@@ -1484,6 +1499,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       name: name ?? this.name,
       description: description ?? this.description,
       estimatedTime: estimatedTime ?? this.estimatedTime,
+      archivedDate: archivedDate ?? this.archivedDate,
       hasReminder: hasReminder ?? this.hasReminder,
       reminderTime: reminderTime ?? this.reminderTime,
       reminderDays: reminderDays ?? this.reminderDays,
@@ -1515,6 +1531,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     if (estimatedTime.present) {
       map['estimated_time'] = Variable<int>(estimatedTime.value);
     }
+    if (archivedDate.present) {
+      map['archived_date'] = Variable<DateTime>(archivedDate.value);
+    }
     if (hasReminder.present) {
       map['has_reminder'] = Variable<bool>(hasReminder.value);
     }
@@ -1540,6 +1559,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('estimatedTime: $estimatedTime, ')
+          ..write('archivedDate: $archivedDate, ')
           ..write('hasReminder: $hasReminder, ')
           ..write('reminderTime: $reminderTime, ')
           ..write('reminderDays: $reminderDays, ')
@@ -4983,6 +5003,7 @@ typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   required String name,
   required String description,
   Value<int?> estimatedTime,
+  Value<DateTime?> archivedDate,
   Value<bool> hasReminder,
   Value<String?> reminderTime,
   Value<String> reminderDays,
@@ -4996,6 +5017,7 @@ typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
   Value<String> name,
   Value<String> description,
   Value<int?> estimatedTime,
+  Value<DateTime?> archivedDate,
   Value<bool> hasReminder,
   Value<String?> reminderTime,
   Value<String> reminderDays,
@@ -5028,6 +5050,9 @@ class $$HabitTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTabl
 
   ColumnFilters<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get archivedDate =>
+      $composableBuilder(column: $table.archivedDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get hasReminder =>
       $composableBuilder(column: $table.hasReminder, builder: (column) => ColumnFilters(column));
@@ -5067,6 +5092,9 @@ class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTa
   ColumnOrderings<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get archivedDate =>
+      $composableBuilder(column: $table.archivedDate, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get hasReminder =>
       $composableBuilder(column: $table.hasReminder, builder: (column) => ColumnOrderings(column));
 
@@ -5104,6 +5132,9 @@ class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $Habit
   GeneratedColumn<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get archivedDate =>
+      $composableBuilder(column: $table.archivedDate, builder: (column) => column);
+
   GeneratedColumn<bool> get hasReminder => $composableBuilder(column: $table.hasReminder, builder: (column) => column);
 
   GeneratedColumn<String> get reminderTime =>
@@ -5140,6 +5171,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
+            Value<DateTime?> archivedDate = const Value.absent(),
             Value<bool> hasReminder = const Value.absent(),
             Value<String?> reminderTime = const Value.absent(),
             Value<String> reminderDays = const Value.absent(),
@@ -5153,6 +5185,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             name: name,
             description: description,
             estimatedTime: estimatedTime,
+            archivedDate: archivedDate,
             hasReminder: hasReminder,
             reminderTime: reminderTime,
             reminderDays: reminderDays,
@@ -5166,6 +5199,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             required String name,
             required String description,
             Value<int?> estimatedTime = const Value.absent(),
+            Value<DateTime?> archivedDate = const Value.absent(),
             Value<bool> hasReminder = const Value.absent(),
             Value<String?> reminderTime = const Value.absent(),
             Value<String> reminderDays = const Value.absent(),
@@ -5179,6 +5213,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             name: name,
             description: description,
             estimatedTime: estimatedTime,
+            archivedDate: archivedDate,
             hasReminder: hasReminder,
             reminderTime: reminderTime,
             reminderDays: reminderDays,
