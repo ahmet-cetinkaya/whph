@@ -4,11 +4,21 @@ class TaskTranslationKeys {
   static const String pomodoroNotificationTitle = 'tasks.pomodoro.notifications.title';
   static const String pomodoroWorkSessionCompleted = 'tasks.pomodoro.notifications.work_completed';
   static const String pomodoroBreakSessionCompleted = 'tasks.pomodoro.notifications.break_completed';
+  static const String pomodoroLongBreakSessionCompleted = 'tasks.pomodoro.notifications.long_break_completed';
   static const String pomodoroSettingsLabel = 'tasks.pomodoro.settings.title';
   static const String pomodoroTimerSettingsLabel = 'tasks.pomodoro.settings.timer_label';
   static const String pomodoroWorkLabel = 'tasks.pomodoro.settings.work_duration';
   static const String pomodoroBreakLabel = 'tasks.pomodoro.settings.break_duration';
+  static const String pomodoroLongBreakLabel = 'tasks.pomodoro.settings.long_break_duration';
+  static const String pomodoroSessionsCountLabel = 'tasks.pomodoro.settings.sessions_before_long_break';
+  static const String pomodoroAutoStartBreakLabel = 'tasks.pomodoro.settings.auto_start_break';
+  static const String pomodoroAutoStartWorkLabel = 'tasks.pomodoro.settings.auto_start_work';
   static const String pomodoroStopTimer = 'tasks.pomodoro.actions.stop_timer';
+  static const String pomodoroAutoStartSectionLabel = 'tasks.pomodoro.settings.auto_start_section';
+  static const String pomodoroTickingSoundSectionLabel = 'tasks.pomodoro.settings.ticking_sound_section';
+  static const String pomodoroTickingSoundLabel = 'tasks.pomodoro.settings.ticking_sound';
+  static const String pomodoroTickingVolumeLabel = 'tasks.pomodoro.settings.ticking_volume';
+  static const String pomodoroTickingSpeedLabel = 'tasks.pomodoro.settings.ticking_speed';
 
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';

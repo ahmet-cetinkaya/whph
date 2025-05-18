@@ -136,8 +136,7 @@ flutter:
     - lib/domain/shared/assets/images/whph_logo_fg_pause.ico
     - lib/domain/shared/assets/images/whph_logo_fg_play.png
     - lib/domain/shared/assets/images/whph_logo_fg_play.ico
-    - lib/presentation/shared/assets/sounds/level-completed-90734.mp3
-    - lib/presentation/shared/assets/sounds/level-up-191997.mp3
+    - lib/presentation/shared/assets/sounds/
     - lib/presentation/shared/assets/locales/
     - lib/presentation/features/about/assets/locales/
     - lib/presentation/features/app_usages/assets/locales/
@@ -147,6 +146,7 @@ flutter:
     - lib/presentation/features/tags/assets/locales/
     - lib/presentation/features/sync/assets/locales/
     - lib/presentation/features/tasks/assets/locales/
+    - lib/presentation/features/tasks/assets/sounds/
     - lib/presentation/features/notes/assets/locales/
 
   # An image asset can refer to one or more resolution-specific "variants", see
