@@ -61,7 +61,7 @@ class _HabitFiltersState extends State<HabitFilters> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Filter by tags
-          if (widget.showTagFilter) ...[
+          if (widget.showTagFilter)
             TagSelectDropdown(
               isMultiSelect: true,
               onTagsSelected: (tags, isNoneSelected) => widget.onTagFilterChange?.call(tags, isNoneSelected),
@@ -76,8 +76,6 @@ class _HabitFiltersState extends State<HabitFilters> {
                   ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
                   : [],
             ),
-            const SizedBox(width: AppTheme.sizeSmall),
-          ],
 
           // Archive filter
           if (widget.showArchiveFilter)

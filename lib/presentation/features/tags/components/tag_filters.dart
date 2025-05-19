@@ -78,7 +78,6 @@ class _TagFiltersState extends State<TagFilters> {
             tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
             showLength: true,
           ),
-          const SizedBox(width: 8),
           FilterIconButton(
             icon: widget.showArchived ? Icons.archive : Icons.archive_outlined,
             iconSize: AppTheme.iconSizeMedium,
