@@ -106,7 +106,6 @@ class _TaskFiltersState extends State<TaskFilters> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final iconSize = AppTheme.iconSizeMedium;
 
     // Calculate whether we need the filter row at all
     final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
@@ -136,7 +135,7 @@ class _TaskFiltersState extends State<TaskFilters> {
                         widget.onTagFilterChange!(tags, isNoneSelected);
                       },
                       icon: TaskUiConstants.tagsIcon,
-                      iconSize: iconSize,
+                      iconSize: AppTheme.iconSizeMedium,
                       color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
                           ? primaryColor
                           : Colors.grey,
@@ -154,7 +153,6 @@ class _TaskFiltersState extends State<TaskFilters> {
                       selectedStartDate: widget.selectedStartDate,
                       selectedEndDate: widget.selectedEndDate,
                       onDateFilterChange: widget.onDateFilterChange!,
-                      iconSize: iconSize,
                       iconColor: Colors.grey,
                     ),
 
@@ -163,7 +161,7 @@ class _TaskFiltersState extends State<TaskFilters> {
                     SearchFilter(
                       onSearch: _onSearchChanged,
                       placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
-                      iconSize: iconSize,
+                      iconSize: AppTheme.iconSizeMedium,
                       iconColor: Colors.grey,
                       expandedWidth: 200,
                     ),
@@ -172,7 +170,7 @@ class _TaskFiltersState extends State<TaskFilters> {
                   if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
                     FilterIconButton(
                       icon: widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
-                      iconSize: iconSize,
+                      iconSize: AppTheme.iconSizeMedium,
                       color: widget.showCompletedTasks
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),

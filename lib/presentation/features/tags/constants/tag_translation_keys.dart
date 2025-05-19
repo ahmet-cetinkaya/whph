@@ -66,6 +66,14 @@ class TagTranslationKeys {
 
   // Time Chart
   static const String timeChartNoData = 'tags.time_chart.no_data';
+  static const String selectCategory = 'tags.filter.select_category';
+  static const String allCategories = 'tags.filter.all_categories';
+
+  // Time Categories
+  static const String categoryAll = 'tags.categories.all';
+  static const String categoryTasks = 'tags.categories.tasks';
+  static const String categoryAppUsage = 'tags.categories.app_usage';
+  static const String categoryHabits = 'tags.categories.habits';
 
   // Details Page
   static const String detailsHelpTitle = 'tags.details.help.title';
@@ -83,6 +91,6 @@ class TagTranslationKeys {
 
   // Page Sections
   static const String title = 'tags.title';
-  static const String timesSectionTitle = 'tags.sections.times';
+  static const String timeDistribution = 'tags.time_distribution';
   static const String listSectionTitle = 'tags.sections.list';
 }

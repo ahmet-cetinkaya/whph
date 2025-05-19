@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class TagUiConstants {
@@ -17,4 +18,17 @@ class TagUiConstants {
 
   // Dimensions
   static const EdgeInsets tagCardPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+
+  static IconData getTagTimeCategoryIcon(TagTimeCategory category) {
+    switch (category) {
+      case TagTimeCategory.all:
+        return Icons.all_inclusive;
+      case TagTimeCategory.tasks:
+        return Icons.task;
+      case TagTimeCategory.appUsage:
+        return Icons.apps;
+      case TagTimeCategory.habits:
+        return Icons.repeat;
+    }
+  }
 }

@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/application/features/tags/models/tag_time_data.dart';
 
 @UseRowClass(AppUsageTag)
 class AppUsageTagTable extends Table {
@@ -83,46 +85,15 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
           t.id as tag_id,
           t.name as tag_name,
           t.color as tag_color,
-          (
-            -- App Usages
-            COALESCE((
-              SELECT SUM(aur.duration)
-              FROM app_usage_tag_table aut
-              JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
-              WHERE aut.tag_id = t.id
-              AND aut.deleted_date IS NULL
-              AND aur.created_date BETWEEN ? AND ?
-              AND aur.deleted_date IS NULL
-            ), 0) +
-
-            -- Tasks
-            COALESCE((
-              SELECT SUM(tr.duration)
-              FROM task_tag_table tt
-              JOIN task_time_record_table tr ON tr.task_id = tt.task_id
-              WHERE tt.tag_id = t.id
-              AND tt.deleted_date IS NULL
-              AND tr.created_date BETWEEN ? AND ?
-              AND tr.deleted_date IS NULL
-            ), 0) +
-
-            -- Habit Records
-            COALESCE((
-              SELECT SUM(h.estimated_time * 60 * (
-                SELECT COUNT(*)
-                FROM habit_record_table hr
-                WHERE hr.habit_id = h.id
-                AND hr.date BETWEEN ? AND ?
-                AND hr.deleted_date IS NULL
-              ))
-              FROM habit_tag_table ht
-              JOIN habit_table h ON h.id = ht.habit_id
-              WHERE ht.tag_id = t.id
-              AND ht.deleted_date IS NULL
-              AND h.deleted_date IS NULL
-              AND h.estimated_time IS NOT NULL
-            ), 0)
-          ) as total_duration
+          COALESCE((
+            SELECT SUM(aur.duration)
+            FROM app_usage_tag_table aut
+            JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
+            WHERE aut.tag_id = t.id
+            AND aut.deleted_date IS NULL
+            AND aur.created_date BETWEEN ? AND ?
+            AND aur.deleted_date IS NULL
+          ), 0) as total_duration
         FROM tag_table t
         WHERE t.deleted_date IS NULL
         ${filterByTags != null && filterByTags.isNotEmpty ? 'AND t.id IN (${filterByTags.map((_) => '?').join(',')})' : ''}
@@ -137,10 +108,6 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
       variables: [
         Variable<DateTime>(startDate),
         Variable<DateTime>(endDate),
-        Variable<DateTime>(startDate),
-        Variable<DateTime>(endDate),
-        Variable<DateTime>(startDate),
-        Variable<DateTime>(endDate),
         if (filterByTags != null && filterByTags.isNotEmpty) ...filterByTags.map((id) => Variable<String>(id)),
         if (limit != null) Variable<int>(limit),
       ],
@@ -148,11 +115,6 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
         database.tagTable,
         database.appUsageTagTable,
         database.appUsageTimeRecordTable,
-        database.taskTagTable,
-        database.taskTimeRecordTable,
-        database.habitTable,
-        database.habitTagTable,
-        database.habitRecordTable,
       },
     );
 
@@ -161,8 +123,9 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
         .map((row) => TagTimeData(
               tagId: row.read<String>('tag_id'),
               tagName: row.read<String>('tag_name'),
-              tagColor: row.read<String?>('tag_color'),
               duration: row.read<int>('total_duration'),
+              category: TagTimeCategory.appUsage,
+              tagColor: row.read<String?>('tag_color'),
             ))
         .toList();
   }

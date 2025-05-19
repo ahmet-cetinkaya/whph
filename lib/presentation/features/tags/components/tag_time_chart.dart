@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class TagTimeChart extends StatefulWidget {
   final List<String>? filterByTags;
@@ -15,6 +17,7 @@ class TagTimeChart extends StatefulWidget {
   final double? height;
   final double? width;
   final bool filterByIsArchived;
+  final Set<TagTimeCategory> selectedCategories;
 
   const TagTimeChart({
     super.key,
@@ -24,6 +27,7 @@ class TagTimeChart extends StatefulWidget {
     this.height = 300,
     this.width = 300,
     this.filterByIsArchived = false,
+    this.selectedCategories = const {TagTimeCategory.all},
   });
 
   @override
@@ -49,7 +53,8 @@ class TagTimeChartState extends State<TagTimeChart> {
     if (oldWidget.startDate != widget.startDate ||
         oldWidget.endDate != widget.endDate ||
         oldWidget.filterByTags != widget.filterByTags ||
-        oldWidget.filterByIsArchived != widget.filterByIsArchived) {
+        oldWidget.filterByIsArchived != widget.filterByIsArchived ||
+        !CollectionUtils.areSetsEqual(oldWidget.selectedCategories, widget.selectedCategories)) {
       refresh();
     }
   }
@@ -65,6 +70,7 @@ class TagTimeChartState extends State<TagTimeChart> {
       limit: 10,
       filterByTags: widget.filterByTags,
       filterByIsArchived: widget.filterByIsArchived,
+      categories: widget.selectedCategories.contains(TagTimeCategory.all) ? null : widget.selectedCategories.toList(),
     );
 
     final result = await _mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(query);
@@ -78,27 +84,21 @@ class TagTimeChartState extends State<TagTimeChart> {
 
   @override
   Widget build(BuildContext context) {
-    if (_tagTimes == null || _tagTimes!.items.isEmpty) {
-      return SizedBox(
-        height: 100,
-        child: IconOverlay(
-          icon: Icons.pie_chart,
-          message: _translationService.translate(TagTranslationKeys.timeChartNoData),
-          iconSize: 48,
-        ),
-      );
-    }
-
     return SizedBox(
       height: widget.height,
       width: widget.width,
-      child: _buildChart(),
+      child: _tagTimes == null || _tagTimes!.items.isEmpty
+          ? IconOverlay(
+              icon: Icons.pie_chart,
+              message: _translationService.translate(TagTranslationKeys.timeChartNoData),
+              iconSize: 48,
+            )
+          : _buildChart(),
     );
   }
 
   Widget _buildChart() {
     if (_isLoading) {
-      // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 

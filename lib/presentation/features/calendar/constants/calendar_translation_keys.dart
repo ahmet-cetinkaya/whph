@@ -4,5 +4,4 @@ class CalendarTranslationKeys {
   static const String todayHelpContent = 'calendar.pages.today.help.content';
   static const String habitsTitle = 'calendar.sections.habits';
   static const String tasksTitle = 'calendar.sections.tasks';
-  static const String timeTitle = 'calendar.sections.time';
 }

@@ -10,7 +10,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class TagsList extends StatefulWidget {
   final List<String>? filterByTags;
@@ -58,7 +58,7 @@ class TagsListState extends State<TagsList> {
   void didUpdateWidget(TagsList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.showArchived != widget.showArchived ||
-        !FilterChangeAnalyzer.areListsEqual(oldWidget.filterByTags, widget.filterByTags)) {
+        !CollectionUtils.areListsEqual(oldWidget.filterByTags, widget.filterByTags)) {
       refresh();
     }
   }

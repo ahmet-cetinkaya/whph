@@ -9,9 +9,9 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class HabitsList extends StatefulWidget {
   final int size;
@@ -123,7 +123,7 @@ class HabitsListState extends State<HabitsList> {
       'filterByArchived': newFilters.filterByArchived, // Changed from showArchived
     };
 
-    return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
+    return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
   Future<void> refresh() async {
