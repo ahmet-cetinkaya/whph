@@ -1310,6 +1310,21 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
   @override
   late final GeneratedColumn<String> reminderDays = GeneratedColumn<String>('reminder_days', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const Constant(''));
+  static const VerificationMeta _hasGoalMeta = const VerificationMeta('hasGoal');
+  @override
+  late final GeneratedColumn<bool> hasGoal = GeneratedColumn<bool>('has_goal', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("has_goal" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _targetFrequencyMeta = const VerificationMeta('targetFrequency');
+  @override
+  late final GeneratedColumn<int> targetFrequency = GeneratedColumn<int>('target_frequency', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(1));
+  static const VerificationMeta _periodDaysMeta = const VerificationMeta('periodDays');
+  @override
+  late final GeneratedColumn<int> periodDays = GeneratedColumn<int>('period_days', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(7));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1322,7 +1337,10 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
         archivedDate,
         hasReminder,
         reminderTime,
-        reminderDays
+        reminderDays,
+        hasGoal,
+        targetFrequency,
+        periodDays
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1375,6 +1393,16 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
     if (data.containsKey('reminder_days')) {
       context.handle(_reminderDaysMeta, reminderDays.isAcceptableOrUnknown(data['reminder_days']!, _reminderDaysMeta));
     }
+    if (data.containsKey('has_goal')) {
+      context.handle(_hasGoalMeta, hasGoal.isAcceptableOrUnknown(data['has_goal']!, _hasGoalMeta));
+    }
+    if (data.containsKey('target_frequency')) {
+      context.handle(
+          _targetFrequencyMeta, targetFrequency.isAcceptableOrUnknown(data['target_frequency']!, _targetFrequencyMeta));
+    }
+    if (data.containsKey('period_days')) {
+      context.handle(_periodDaysMeta, periodDays.isAcceptableOrUnknown(data['period_days']!, _periodDaysMeta));
+    }
     return context;
   }
 
@@ -1395,6 +1423,9 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       hasReminder: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_reminder'])!,
       reminderTime: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_time']),
       reminderDays: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_days'])!,
+      hasGoal: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_goal'])!,
+      targetFrequency: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}target_frequency'])!,
+      periodDays: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}period_days'])!,
     );
   }
 
@@ -1416,6 +1447,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   final Value<bool> hasReminder;
   final Value<String?> reminderTime;
   final Value<String> reminderDays;
+  final Value<bool> hasGoal;
+  final Value<int> targetFrequency;
+  final Value<int> periodDays;
   final Value<int> rowid;
   const HabitTableCompanion({
     this.id = const Value.absent(),
@@ -1429,6 +1463,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
+    this.hasGoal = const Value.absent(),
+    this.targetFrequency = const Value.absent(),
+    this.periodDays = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitTableCompanion.insert({
@@ -1443,6 +1480,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
+    this.hasGoal = const Value.absent(),
+    this.targetFrequency = const Value.absent(),
+    this.periodDays = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -1460,6 +1500,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     Expression<bool>? hasReminder,
     Expression<String>? reminderTime,
     Expression<String>? reminderDays,
+    Expression<bool>? hasGoal,
+    Expression<int>? targetFrequency,
+    Expression<int>? periodDays,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1474,6 +1517,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       if (hasReminder != null) 'has_reminder': hasReminder,
       if (reminderTime != null) 'reminder_time': reminderTime,
       if (reminderDays != null) 'reminder_days': reminderDays,
+      if (hasGoal != null) 'has_goal': hasGoal,
+      if (targetFrequency != null) 'target_frequency': targetFrequency,
+      if (periodDays != null) 'period_days': periodDays,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1490,6 +1536,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       Value<bool>? hasReminder,
       Value<String?>? reminderTime,
       Value<String>? reminderDays,
+      Value<bool>? hasGoal,
+      Value<int>? targetFrequency,
+      Value<int>? periodDays,
       Value<int>? rowid}) {
     return HabitTableCompanion(
       id: id ?? this.id,
@@ -1503,6 +1552,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       hasReminder: hasReminder ?? this.hasReminder,
       reminderTime: reminderTime ?? this.reminderTime,
       reminderDays: reminderDays ?? this.reminderDays,
+      hasGoal: hasGoal ?? this.hasGoal,
+      targetFrequency: targetFrequency ?? this.targetFrequency,
+      periodDays: periodDays ?? this.periodDays,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1543,6 +1595,15 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     if (reminderDays.present) {
       map['reminder_days'] = Variable<String>(reminderDays.value);
     }
+    if (hasGoal.present) {
+      map['has_goal'] = Variable<bool>(hasGoal.value);
+    }
+    if (targetFrequency.present) {
+      map['target_frequency'] = Variable<int>(targetFrequency.value);
+    }
+    if (periodDays.present) {
+      map['period_days'] = Variable<int>(periodDays.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1563,6 +1624,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
           ..write('hasReminder: $hasReminder, ')
           ..write('reminderTime: $reminderTime, ')
           ..write('reminderDays: $reminderDays, ')
+          ..write('hasGoal: $hasGoal, ')
+          ..write('targetFrequency: $targetFrequency, ')
+          ..write('periodDays: $periodDays, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5163,6 +5227,9 @@ typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   Value<bool> hasReminder,
   Value<String?> reminderTime,
   Value<String> reminderDays,
+  Value<bool> hasGoal,
+  Value<int> targetFrequency,
+  Value<int> periodDays,
   Value<int> rowid,
 });
 typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
@@ -5177,6 +5244,9 @@ typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
   Value<bool> hasReminder,
   Value<String?> reminderTime,
   Value<String> reminderDays,
+  Value<bool> hasGoal,
+  Value<int> targetFrequency,
+  Value<int> periodDays,
   Value<int> rowid,
 });
 
@@ -5218,6 +5288,15 @@ class $$HabitTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTabl
 
   ColumnFilters<String> get reminderDays =>
       $composableBuilder(column: $table.reminderDays, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get hasGoal =>
+      $composableBuilder(column: $table.hasGoal, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get targetFrequency =>
+      $composableBuilder(column: $table.targetFrequency, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get periodDays =>
+      $composableBuilder(column: $table.periodDays, builder: (column) => ColumnFilters(column));
 }
 
 class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -5259,6 +5338,15 @@ class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTa
 
   ColumnOrderings<String> get reminderDays =>
       $composableBuilder(column: $table.reminderDays, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get hasGoal =>
+      $composableBuilder(column: $table.hasGoal, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get targetFrequency =>
+      $composableBuilder(column: $table.targetFrequency, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get periodDays =>
+      $composableBuilder(column: $table.periodDays, builder: (column) => ColumnOrderings(column));
 }
 
 class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitTableTable> {
@@ -5298,6 +5386,13 @@ class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $Habit
 
   GeneratedColumn<String> get reminderDays =>
       $composableBuilder(column: $table.reminderDays, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasGoal => $composableBuilder(column: $table.hasGoal, builder: (column) => column);
+
+  GeneratedColumn<int> get targetFrequency =>
+      $composableBuilder(column: $table.targetFrequency, builder: (column) => column);
+
+  GeneratedColumn<int> get periodDays => $composableBuilder(column: $table.periodDays, builder: (column) => column);
 }
 
 class $$HabitTableTableTableManager extends RootTableManager<
@@ -5331,6 +5426,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<bool> hasReminder = const Value.absent(),
             Value<String?> reminderTime = const Value.absent(),
             Value<String> reminderDays = const Value.absent(),
+            Value<bool> hasGoal = const Value.absent(),
+            Value<int> targetFrequency = const Value.absent(),
+            Value<int> periodDays = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion(
@@ -5345,6 +5443,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             hasReminder: hasReminder,
             reminderTime: reminderTime,
             reminderDays: reminderDays,
+            hasGoal: hasGoal,
+            targetFrequency: targetFrequency,
+            periodDays: periodDays,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5359,6 +5460,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<bool> hasReminder = const Value.absent(),
             Value<String?> reminderTime = const Value.absent(),
             Value<String> reminderDays = const Value.absent(),
+            Value<bool> hasGoal = const Value.absent(),
+            Value<int> targetFrequency = const Value.absent(),
+            Value<int> periodDays = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitTableCompanion.insert(
@@ -5373,6 +5477,9 @@ class $$HabitTableTableTableManager extends RootTableManager<
             hasReminder: hasReminder,
             reminderTime: reminderTime,
             reminderDays: reminderDays,
+            hasGoal: hasGoal,
+            targetFrequency: targetFrequency,
+            periodDays: periodDays,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

@@ -20,6 +20,11 @@ class HabitTable extends Table {
   TextColumn get reminderTime => text().nullable()(); // Stored as "HH:mm" format
   TextColumn get reminderDays =>
       text().withDefault(const Constant(''))(); // Stored as comma-separated values (e.g. "1,2,3,4,5,6,7")
+
+  // Goal settings
+  BoolColumn get hasGoal => boolean().withDefault(const Constant(false))();
+  IntColumn get targetFrequency => integer().withDefault(const Constant(1))();
+  IntColumn get periodDays => integer().withDefault(const Constant(7))();
 }
 
 class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
@@ -44,6 +49,9 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       hasReminder: Value(entity.hasReminder),
       reminderTime: Value(entity.reminderTime),
       reminderDays: Value(entity.reminderDays),
+      hasGoal: Value(entity.hasGoal),
+      targetFrequency: Value(entity.targetFrequency),
+      periodDays: Value(entity.periodDays),
     );
   }
 

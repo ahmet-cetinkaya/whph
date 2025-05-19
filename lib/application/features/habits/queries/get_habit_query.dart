@@ -12,16 +12,6 @@ class GetHabitQuery implements IRequest<GetHabitQueryResponse> {
   GetHabitQuery({this.id});
 }
 
-class HabitHabitListItem {
-  String id;
-  String name;
-
-  HabitHabitListItem({
-    required this.id,
-    required this.name,
-  });
-}
-
 class HabitStreak {
   final DateTime startDate;
   final DateTime endDate;
@@ -42,6 +32,9 @@ class HabitStatistics {
   final List<MapEntry<DateTime, double>> monthlyScores;
   final List<HabitStreak> topStreaks;
   final Map<int, int> yearlyFrequency;
+  final double? goalSuccessRate;
+  final int? daysGoalMet;
+  final int? totalDaysWithGoal;
 
   HabitStatistics({
     required this.overallScore,
@@ -51,6 +44,9 @@ class HabitStatistics {
     required this.monthlyScores,
     required this.topStreaks,
     required this.yearlyFrequency,
+    this.goalSuccessRate,
+    this.daysGoalMet,
+    this.totalDaysWithGoal,
   });
 }
 
@@ -69,6 +65,9 @@ class GetHabitQueryResponse extends Habit {
     super.reminderTime,
     super.archivedDate,
     List<int> reminderDays = const [],
+    super.hasGoal = false,
+    super.targetFrequency = 1,
+    super.periodDays = 7,
     required this.statistics,
   }) {
     setReminderDaysFromList(reminderDays);
@@ -115,6 +114,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       reminderTime: habit.reminderTime,
       reminderDays: reminderDaysList,
       archivedDate: habit.archivedDate,
+      deletedDate: habit.deletedDate,
+      hasGoal: habit.hasGoal,
+      targetFrequency: habit.targetFrequency,
+      periodDays: habit.periodDays,
       statistics: statistics,
     );
   }
@@ -195,6 +198,30 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       yearlyFrequency[dayOfYear] = (yearlyFrequency[dayOfYear] ?? 0) + 1;
     }
 
+    // Calculate goal statistics if goal is enabled
+    double? goalSuccessRate;
+    int? daysGoalMet;
+    int? totalDaysWithGoal;
+
+    if (habit.hasGoal) {
+      // Son periyot için tarihleri hesapla
+      final periodEnd = endDate;
+      final periodStart = periodEnd.subtract(Duration(days: habit.periodDays - 1));
+
+      // Son periyottaki kayıtları say
+      final recordsInCurrentPeriod = records
+          .where((record) =>
+              (record.date.isAfter(periodStart.subtract(const Duration(days: 1))) ||
+                  _isSameDay(record.date, periodStart)) &&
+              (record.date.isBefore(periodEnd.add(const Duration(days: 1))) || _isSameDay(record.date, periodEnd)))
+          .length;
+
+      daysGoalMet = recordsInCurrentPeriod;
+      totalDaysWithGoal = habit.targetFrequency;
+      goalSuccessRate = recordsInCurrentPeriod.toDouble() / habit.targetFrequency;
+      if (goalSuccessRate > 1.0) goalSuccessRate = 1.0; // Hedefi aşsa bile maksimum 1.0 olsun
+    }
+
     return HabitStatistics(
       overallScore: overallScore,
       monthlyScore: monthlyScore,
@@ -203,6 +230,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       monthlyScores: monthlyScores,
       topStreaks: topStreaks,
       yearlyFrequency: yearlyFrequency,
+      goalSuccessRate: goalSuccessRate,
+      daysGoalMet: daysGoalMet,
+      totalDaysWithGoal: totalDaysWithGoal,
     );
   }
 

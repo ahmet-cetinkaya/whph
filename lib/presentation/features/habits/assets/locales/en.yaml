@@ -25,6 +25,14 @@ habits:
     tag_already_exists: This tag is already added
     loading_archive_status: Failed to load archive status
     toggling_archive: Failed to toggle archive status
+  goals:
+    goal: Goal
+    target_frequency: Target Frequency
+    period_days: Period Days
+    enable: Enable Goals
+    goal_format: "{count} times in {dayCount} days"
+    settings: Goal Settings
+    current_goal: Goal
   details:
     description: Description
     tags: Tags

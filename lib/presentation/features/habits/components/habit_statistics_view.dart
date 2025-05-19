@@ -15,6 +15,9 @@ class HabitStatisticsView extends StatefulWidget {
   final String habitId;
   final DateTime? archivedDate;
   final DateTime firstRecordDate;
+  final bool hasGoal;
+  final int targetFrequency;
+  final int periodDays;
 
   const HabitStatisticsView({
     super.key,
@@ -22,6 +25,9 @@ class HabitStatisticsView extends StatefulWidget {
     required this.habitId,
     required this.firstRecordDate,
     this.archivedDate,
+    this.hasGoal = false,
+    this.targetFrequency = 1,
+    this.periodDays = 7,
   });
 
   @override
@@ -103,15 +109,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              widget.archivedDate != null
-                  ? _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
-                      'startDate': dateFormatter.format(widget.firstRecordDate),
-                      'archivedDate': dateFormatter.format(widget.archivedDate!)
-                    })
-                  : _translationService.translate(HabitTranslationKeys.statisticsActiveNote, namedArgs: {
-                      'startDate': dateFormatter.format(widget.firstRecordDate),
-                      'currentDate': dateFormatter.format(DateTime.now())
-                    }),
+              _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
+                'startDate': dateFormatter.format(widget.firstRecordDate),
+                'archivedDate': dateFormatter.format(widget.archivedDate!)
+              }),
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.blue[700],
               ),
@@ -129,7 +130,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
       children: [
         _buildSectionHeader(),
         const SizedBox(height: 16),
-        _buildStatusBanner(),
+        if (widget.archivedDate != null) ...[
+          _buildStatusBanner(),
+          const SizedBox(height: 16),
+        ],
         _buildStatisticsRow(),
         const SizedBox(height: 24),
         _buildScoreChart(),
@@ -145,47 +149,105 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     return Row(
       children: [
         Expanded(
-            child: _buildStatCard(
-                _translationService.translate(HabitTranslationKeys.overall), widget.statistics.overallScore)),
-        const SizedBox(width: 8),
-        Expanded(
-            child: _buildStatCard(
-                _translationService.translate(HabitTranslationKeys.monthly), widget.statistics.monthlyScore)),
-        const SizedBox(width: 8),
-        Expanded(
-            child: _buildStatCard(
-                _translationService.translate(HabitTranslationKeys.yearly), widget.statistics.yearlyScore)),
-        const SizedBox(width: 8),
-        Expanded(
-            child: _buildStatCard(
-                _translationService.translate(HabitTranslationKeys.records), widget.statistics.totalRecords.toDouble(),
-                isCount: true)),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                      child: _buildStatCard(
+                          _translationService.translate(HabitTranslationKeys.overall), widget.statistics.overallScore)),
+                  const SizedBox(width: 8),
+                  if (widget.hasGoal && widget.statistics.goalSuccessRate != null) ...[
+                    Expanded(
+                      child: _buildStatCard(
+                        "${_translationService.translate(HabitTranslationKeys.currentGoal)} (${widget.statistics.daysGoalMet}/${widget.statistics.totalDaysWithGoal})",
+                        widget.statistics.goalSuccessRate!,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Expanded(
+                      child: _buildStatCard(
+                          _translationService.translate(HabitTranslationKeys.monthly), widget.statistics.monthlyScore)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                      child: _buildStatCard(
+                          _translationService.translate(HabitTranslationKeys.yearly), widget.statistics.yearlyScore)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.records),
+                          widget.statistics.totalRecords.toDouble(),
+                          isCount: true)),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildStatCard(String label, double value, {bool isCount = false}) {
+  Widget _buildStatCard(String label, double value, {bool isCount = false, String? subtitle}) {
+    // Calculate percentage for the background bar
+    double percentage = isCount ? 0 : value.clamp(0.0, 1.0);
+
     return Card(
       color: AppTheme.surface1,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: AppTheme.bodySmall,
-              textAlign: TextAlign.center,
+      child: Stack(
+        children: [
+          // Background bar showing progress (only for non-count values)
+          if (!isCount)
+            Positioned.fill(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: (percentage * 100).toInt(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: ((1 - percentage) * 100).toInt(),
+                    child: const SizedBox(),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
-              style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+          // Content
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: AppTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
+                    style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: AppTheme.bodySmall.copyWith(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

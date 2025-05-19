@@ -15,6 +15,11 @@ class Habit extends BaseEntity<String> {
   String? reminderTime; // Stored as "HH:mm" format
   String reminderDays = ''; // Stored as comma-separated values (e.g. "1,2,3,4,5,6,7")
 
+  // Goal settings
+  bool hasGoal = false;
+  int targetFrequency = 1; // How many times the habit should be performed
+  int periodDays = 7; // Over how many days (e.g., 3 times in 7 days)
+
   Habit({
     required super.id,
     required super.createdDate,
@@ -27,6 +32,9 @@ class Habit extends BaseEntity<String> {
     this.hasReminder = false,
     this.reminderTime,
     String reminderDays = "",
+    this.hasGoal = false,
+    this.targetFrequency = 1,
+    this.periodDays = 7,
   });
 
   // REMINDER RELATED METHODS
@@ -92,6 +100,40 @@ class Habit extends BaseEntity<String> {
   void setReminderTimeOfDay(TimeOfDay time) {
     final formattedTime = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
     reminderTime = formattedTime;
+  }
+
+  // GOAL RELATED METHODS
+
+  /// Checks if the habit has an active goal
+  bool hasActiveGoal() {
+    return hasGoal;
+  }
+
+  /// Returns the goal description parameters
+  Map<String, int> getGoalDescriptionParams() {
+    if (!hasGoal) {
+      return {};
+    }
+    return {'targetFrequency': targetFrequency, 'periodDays': periodDays};
+  }
+
+  /// Checks if the goal has been met based on the provided completed count
+  bool isGoalMet(int completedCount) {
+    if (!hasGoal) {
+      return true; // No goal means always met
+    }
+    return completedCount >= targetFrequency;
+  }
+
+  /// Calculates the percentage of goal completion (0.0 to 1.0)
+  double getGoalCompletionPercentage(int completedCount) {
+    if (!hasGoal || targetFrequency <= 0) {
+      return 1.0; // No goal or invalid target means 100% completion
+    }
+
+    final percentage = completedCount / targetFrequency;
+    // Cap at 100% even if overachieved
+    return percentage > 1.0 ? 1.0 : percentage;
   }
 
   // ARCHIVE RELATED METHODS

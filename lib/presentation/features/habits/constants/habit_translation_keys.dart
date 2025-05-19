@@ -7,6 +7,15 @@ class HabitTranslationKeys {
   static const String deleteConfirmMessage = 'habits.delete.confirm_message';
   static const String deletingError = 'habits.errors.deleting';
 
+  // Goals
+  static const String goal = 'habits.goals.goal';
+  static const String targetFrequency = 'habits.goals.target_frequency';
+  static const String periodDays = 'habits.goals.period_days';
+  static const String enableGoals = 'habits.goals.enable';
+  static const String goalFormat = 'habits.goals.goal_format';
+  static const String goalSettings = 'habits.goals.settings';
+  static const String currentGoal = 'habits.goals.current_goal';
+
   // Details
   static const String descriptionLabel = 'habits.details.description';
   static const String tagsLabel = 'habits.details.tags';
@@ -51,7 +60,6 @@ class HabitTranslationKeys {
   static const String statisticsTo = 'habits.details.statistics.to';
   static const String statisticsArchivedNote = 'habits.details.statistics.archived_note';
   static const String statisticsArchivedWarning = 'habits.details.statistics.archived_warning';
-  static const String statisticsActiveNote = 'habits.details.statistics.active_note';
   static const String archivedStatus = 'habits.details.archived_status';
 
   // Tag Section
