@@ -12,8 +12,8 @@ import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class NotesList extends StatefulWidget {
   final String? search;
@@ -86,7 +86,7 @@ class NotesListState extends State<NotesList> {
       'tags': newFilters.filterByTags,
     };
 
-    return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
+    return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
   Future<void> refresh() async {

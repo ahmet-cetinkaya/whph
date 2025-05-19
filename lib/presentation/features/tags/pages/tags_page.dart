@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/features/tags/components/time_chart_filters.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
@@ -12,8 +13,8 @@ import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TagsPage extends StatefulWidget {
@@ -33,6 +34,7 @@ class _TagsPageState extends State<TagsPage> {
   bool _showArchived = false;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
+  Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
   final GlobalKey<TagsListState> _tagsListKey = GlobalKey<TagsListState>();
 
   @override
@@ -76,7 +78,7 @@ class _TagsPageState extends State<TagsPage> {
   void _onFilterTags(List<DropdownOption<String>> tagOptions) {
     final List<String>? newFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
 
-    if (!FilterChangeAnalyzer.areListsEqual(_selectedFilters, newFilters)) {
+    if (!CollectionUtils.areListsEqual(_selectedFilters, newFilters)) {
       setState(() {
         _selectedFilters = newFilters;
       });
@@ -87,8 +89,8 @@ class _TagsPageState extends State<TagsPage> {
     final newStartDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
     final newEndDate = endDate ?? DateTime.now();
 
-    if (FilterChangeAnalyzer.hasValueChanged(_startDate, newStartDate) ||
-        FilterChangeAnalyzer.hasValueChanged(_endDate, newEndDate)) {
+    if (CollectionUtils.hasValueChanged(_startDate, newStartDate) ||
+        CollectionUtils.hasValueChanged(_endDate, newEndDate)) {
       setState(() {
         _startDate = newStartDate;
         _endDate = newEndDate;
@@ -134,20 +136,20 @@ class _TagsPageState extends State<TagsPage> {
             child: Row(
               children: [
                 Text(
-                  _translationService.translate(TagTranslationKeys.timesSectionTitle),
+                  _translationService.translate(TagTranslationKeys.timeDistribution),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
-                  child: DateRangeFilter(
-                    selectedStartDate: _startDate,
-                    selectedEndDate: _endDate,
-                    onDateFilterChange: (start, end) {
-                      _onDateFilterChange(start, end);
-                    },
-                    iconSize: AppTheme.iconSizeSmall,
-                    iconColor: Colors.grey,
-                  ),
+                const SizedBox(width: AppTheme.sizeSmall),
+                TimeChartFilters(
+                  selectedStartDate: _startDate,
+                  selectedEndDate: _endDate,
+                  onDateFilterChange: _onDateFilterChange,
+                  selectedCategories: _selectedCategories,
+                  onCategoriesChanged: (categories) {
+                    setState(() {
+                      _selectedCategories = categories;
+                    });
+                  },
                 ),
               ],
             ),
@@ -162,6 +164,7 @@ class _TagsPageState extends State<TagsPage> {
                 startDate: _startDate,
                 endDate: _endDate,
                 filterByIsArchived: _showArchived,
+                selectedCategories: _selectedCategories,
               ),
             ),
           ),

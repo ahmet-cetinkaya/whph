@@ -14,8 +14,8 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/core/acore/utils/order_rank.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class TaskList extends StatefulWidget {
   final int size;
@@ -179,7 +179,7 @@ class TaskListState extends State<TaskList> {
       'sortByPlannedDate': widget.sortByPlannedDate,
     };
 
-    return FilterChangeAnalyzer.hasAnyFilterChanged(oldFilters, newFilters);
+    return CollectionUtils.hasAnyMapValueChanged(oldFilters, newFilters);
   }
 
   Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false}) async {

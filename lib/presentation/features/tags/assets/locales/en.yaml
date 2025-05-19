@@ -1,13 +1,21 @@
 tags:
   title: Tags
   new_tag: New Tag
+  filter:
+    select_category: Select Category
+    all_categories: All Categories
   tag_details: Tag Details
   no_tags: No tags found
   filter_tooltip: Filter by tags
   none_option: None
+  time_distribution: Time Distribution
   sections:
-    times: Tag Times
     list: Tags
+  categories:
+    all: All
+    tasks: Tasks
+    app_usage: App Usage
+    habits: Habits
   actions:
     show_archived: Show archived tags
     hide_archived: Hide archived tags

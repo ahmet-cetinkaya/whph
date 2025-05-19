@@ -11,7 +11,7 @@ import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/utils/filter_change_analyzer.dart';
+import 'package:whph/core/acore/utils/collection_utils.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -110,7 +110,7 @@ class AppUsageListState extends State<AppUsageList> {
       'endDate': newFilters.filterEndDate,
     };
 
-    return FilterChangeAnalyzer.hasAnyFilterChanged(oldMap, newMap);
+    return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
   Future<void> refresh() async {

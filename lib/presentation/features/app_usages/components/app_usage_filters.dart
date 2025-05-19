@@ -119,12 +119,10 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
                 : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
           ),
-          const SizedBox(width: AppTheme.sizeXSmall),
           DateRangeFilter(
             selectedStartDate: _currentState.startDate,
             selectedEndDate: _currentState.endDate,
             onDateFilterChange: _handleDateChange,
-            iconSize: AppTheme.iconSizeMedium,
           ),
         ],
       ),

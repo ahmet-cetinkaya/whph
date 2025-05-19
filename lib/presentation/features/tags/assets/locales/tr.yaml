@@ -1,13 +1,21 @@
 tags:
   title: Etiketler
   new_tag: Yeni Etiket
+  filter:
+    select_category: Kategori Seç
+    all_categories: Tüm Kategoriler
   tag_details: Etiket Detayları
   no_tags: Etiket bulunamadı
   filter_tooltip: Etiketlere göre filtrele
   none_option: Hiçbiri
+  time_distribution: Zaman Dağılımı
   sections:
-    times: Etiket Süreleri
     list: Etiketler
+  categories:
+    all: Tümü
+    tasks: Görevler
+    app_usage: Uygulama Kullanımı
+    habits: Alışkanlıklar
   actions:
     show_archived: Arşivlenen etiketleri göster
     hide_archived: Arşivlenen etiketleri gizle

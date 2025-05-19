@@ -1,5 +1,9 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/application/features/tags/models/tag_time_data.dart';
 
 class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final DateTime startDate;
@@ -7,6 +11,7 @@ class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final int? limit;
   final List<String>? filterByTags;
   final bool filterByIsArchived;
+  final List<TagTimeCategory>? categories;
 
   GetTopTagsByTimeQuery({
     required this.startDate,
@@ -14,6 +19,7 @@ class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
     this.limit,
     this.filterByTags,
     this.filterByIsArchived = false,
+    this.categories,
   });
 }
 
@@ -29,25 +35,81 @@ class GetTopTagsByTimeQueryResponse {
 
 class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse> {
   final IAppUsageTagRepository _appUsageTagRepository;
+  final ITaskTagRepository _taskTagRepository;
+  final IHabitTagsRepository _habitTagRepository;
 
   GetTopTagsByTimeQueryHandler({
     required IAppUsageTagRepository appUsageTagRepository,
-  }) : _appUsageTagRepository = appUsageTagRepository;
+    required ITaskTagRepository taskTagRepository,
+    required IHabitTagsRepository habitTagRepository,
+  })  : _appUsageTagRepository = appUsageTagRepository,
+        _taskTagRepository = taskTagRepository,
+        _habitTagRepository = habitTagRepository;
 
   @override
   Future<GetTopTagsByTimeQueryResponse> call(GetTopTagsByTimeQuery request) async {
-    final tagTimes = await _appUsageTagRepository.getTopTagsByDuration(
-      request.startDate,
-      request.endDate,
-      limit: request.limit,
-      filterByTags: request.filterByTags,
-      filterByIsArchived: request.filterByIsArchived,
-    );
+    List<TagTimeData> allTagTimes = [];
 
-    final totalDuration = tagTimes.fold<int>(0, (sum, item) => sum + item.duration);
+    final categoriesToQuery = request.categories ?? [TagTimeCategory.all];
+
+    if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.appUsage)) {
+      final appUsageTagTimes = await _appUsageTagRepository.getTopTagsByDuration(
+        request.startDate,
+        request.endDate,
+        limit: request.limit,
+        filterByTags: request.filterByTags,
+        filterByIsArchived: request.filterByIsArchived,
+      );
+      allTagTimes.addAll(appUsageTagTimes.map((tag) => TagTimeData(
+            tagId: tag.tagId,
+            tagName: tag.tagName,
+            duration: tag.duration,
+            category: TagTimeCategory.appUsage,
+          )));
+    }
+
+    if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.tasks)) {
+      final taskTagTimes = await _taskTagRepository.getTopTagsByDuration(
+        request.startDate,
+        request.endDate,
+        limit: request.limit,
+        filterByTags: request.filterByTags,
+        filterByIsArchived: request.filterByIsArchived,
+      );
+      allTagTimes.addAll(taskTagTimes.map((tag) => TagTimeData(
+            tagId: tag.tagId,
+            tagName: tag.tagName,
+            duration: tag.duration,
+            category: TagTimeCategory.tasks,
+          )));
+    }
+
+    if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.habits)) {
+      final habitTagTimes = await _habitTagRepository.getTopTagsByDuration(
+        request.startDate,
+        request.endDate,
+        limit: request.limit,
+        filterByTags: request.filterByTags,
+        filterByIsArchived: request.filterByIsArchived,
+      );
+      allTagTimes.addAll(habitTagTimes.map((tag) => TagTimeData(
+            tagId: tag.tagId,
+            tagName: tag.tagName,
+            duration: tag.duration,
+            category: TagTimeCategory.habits,
+          )));
+    }
+
+    // Sort by duration and take top limit
+    allTagTimes.sort((a, b) => b.duration.compareTo(a.duration));
+    if (request.limit != null && allTagTimes.length > request.limit!) {
+      allTagTimes = allTagTimes.sublist(0, request.limit);
+    }
+
+    final totalDuration = allTagTimes.fold<int>(0, (sum, item) => sum + item.duration);
 
     return GetTopTagsByTimeQueryResponse(
-      items: tagTimes,
+      items: allTagTimes,
       totalDuration: totalDuration,
     );
   }

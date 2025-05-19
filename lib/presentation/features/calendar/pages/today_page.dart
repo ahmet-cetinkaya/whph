@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_filters.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
+import 'package:whph/presentation/features/tags/components/time_chart_filters.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
@@ -40,6 +43,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _showCompletedTasks = false;
   String? _searchQuery;
   bool _hasHabits = false;
+  Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
 
   @override
   void initState() {
@@ -84,6 +88,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final now = DateTime.now();
+
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
@@ -299,18 +306,39 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   left: AppTheme.sizeSmall,
                   bottom: AppTheme.sizeXSmall,
                 ),
-                child: Text(
-                  _translationService.translate(CalendarTranslationKeys.timeTitle),
-                  style: Theme.of(context).textTheme.titleSmall,
+                child: Row(
+                  children: [
+                    // Times title
+                    Text(
+                      _translationService.translate(TagTranslationKeys.timeDistribution),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(width: AppTheme.sizeSmall),
+
+                    // Time chart filters
+                    TimeChartFilters(
+                      selectedCategories: _selectedCategories,
+                      onCategoriesChanged: (categories) {
+                        setState(() {
+                          _selectedCategories = categories;
+                        });
+                      },
+                      showDateFilter: false,
+                      showCategoryFilter: true,
+                    ),
+                  ],
                 ),
               ),
+
+              // Time chart
               Padding(
                 padding: const EdgeInsets.all(AppTheme.sizeSmall),
                 child: Center(
                   child: TagTimeChart(
                     filterByTags: _selectedTagFilter,
-                    startDate: DateTime.now(),
-                    endDate: DateTime.now().add(const Duration(days: 1)),
+                    startDate: DateTime(now.year, now.month, now.day),
+                    endDate: DateTime(now.year, now.month, now.day + 1),
+                    selectedCategories: _selectedCategories,
                   ),
                 ),
               ),

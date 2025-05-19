@@ -19,7 +19,7 @@ class DateRangeFilter extends StatefulWidget {
     this.selectedStartDate,
     this.selectedEndDate,
     required this.onDateFilterChange,
-    this.iconSize = 20,
+    this.iconSize = AppTheme.iconSizeMedium,
     this.iconColor,
   });
 
@@ -486,7 +486,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       mainAxisSize: MainAxisSize.min,
       children: [
         FilterIconButton(
-          icon: Icons.calendar_today,
+          icon: Icons.calendar_month,
           iconSize: widget.iconSize,
           color: hasDateFilter ? primaryColor : widget.iconColor,
           tooltip: _translationService.translate(SharedTranslationKeys.dateFilterTooltip),
