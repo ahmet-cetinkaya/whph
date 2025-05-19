@@ -8,6 +8,17 @@
 - Use `StatelessWidget` unless state is explicitly needed.
 - Prefer `SizedBox` over `Container` for spacing when no decoration is needed.
 - Use `Padding`, `Margin`, `Align`, and `Expanded` appropriately in layout trees.
+- Group widget trees with descriptive comments for better organization:
+  * Use section comments for UI sections:
+    ```dart
+    // Header Section
+    AppBar(...),
+
+    // Main Content Section
+    Expanded(
+      child: ListView(...),
+    ),
+    ```
 
 ## Color and Style
 
