@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration {
@@ -364,6 +364,16 @@ class AppDatabase extends _$AppDatabase {
         from17To18: (Migrator m, Schema18 schema) async {
           // Add archivedDate column to Habit table
           await m.addColumn(habitTable, habitTable.archivedDate);
+        },
+        from18To19: (Migrator m, Schema19 schema) async {
+          // Add recurrence fields to Task table
+          await m.addColumn(taskTable, taskTable.recurrenceType);
+          await m.addColumn(taskTable, taskTable.recurrenceInterval);
+          await m.addColumn(taskTable, taskTable.recurrenceDaysString);
+          await m.addColumn(taskTable, taskTable.recurrenceStartDate);
+          await m.addColumn(taskTable, taskTable.recurrenceEndDate);
+          await m.addColumn(taskTable, taskTable.recurrenceCount);
+          await m.addColumn(taskTable, taskTable.recurrenceParentId);
         },
       ),
     );

@@ -13,6 +13,8 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/application/features/tasks/services/task_recurrence_service.dart';
 
 void registerTasksFeature(
   IContainer container,
@@ -22,6 +24,9 @@ void registerTasksFeature(
   ITaskTimeRecordRepository taskTimeRecordRepository,
   ITagRepository tagRepository,
 ) {
+  // Register the task recurrence service
+  container.registerSingleton<ITaskRecurrenceService>((_) => TaskRecurrenceService());
+
   mediator
     ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
       () => SaveTaskCommandHandler(taskService: taskRepository, taskTagRepository: taskTagRepository),

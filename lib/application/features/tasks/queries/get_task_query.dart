@@ -34,7 +34,14 @@ class GetTaskQueryResponse extends Task {
       required this.subTasksCompletionPercentage,
       required this.subTasks,
       super.plannedDateReminderTime = ReminderTime.none,
-      super.deadlineDateReminderTime = ReminderTime.none});
+      super.deadlineDateReminderTime = ReminderTime.none,
+      super.recurrenceType = RecurrenceType.none,
+      super.recurrenceInterval,
+      super.recurrenceDaysString,
+      super.recurrenceStartDate,
+      super.recurrenceEndDate,
+      super.recurrenceCount,
+      super.recurrenceParentId});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
@@ -82,6 +89,13 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
         subTasksCompletionPercentage: subTasksCompletionPercentage,
         subTasks: subTasks,
         plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime);
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+        recurrenceType: task.recurrenceType,
+        recurrenceInterval: task.recurrenceInterval,
+        recurrenceDaysString: task.recurrenceDaysString,
+        recurrenceStartDate: task.recurrenceStartDate,
+        recurrenceEndDate: task.recurrenceEndDate,
+        recurrenceCount: task.recurrenceCount,
+        recurrenceParentId: task.recurrenceParentId);
   }
 }

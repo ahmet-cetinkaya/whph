@@ -60,8 +60,6 @@ tasks:
     title: Görevi Sil
     message: Bu görevi silmek istediğinize emin misiniz?
     error: Görev silinirken beklenmedik bir hata oluştu.
-    cancel: İptal
-    confirm: Sil
   complete:
     error: Görev tamamlanırken beklenmedik bir hata oluştu.
   filters:
@@ -243,6 +241,39 @@ tasks:
     oneDayBefore: 1 gün önce
     plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
+  recurrence:
+    label: Tekrarlama
+    none: Tekrarlama yok
+    daily: Günlük
+    weekly: Haftalık
+    monthly: Aylık
+    yearly: Yıllık
+    custom: Özel
+    weekDays: Haftanın günleri
+    range: Aralık
+    startDate: Başlangıç tarihi
+    endDate: Bitiş tarihi
+    count: Tekrarlama sayısı
+    selectDateHint: Tarih seçin
+    enterCountHint: Sayı girin
+    interval:
+      label: Her
+      prefix: her
+      suffix:
+        days: gün
+        weeks: hafta
+        months: ay
+        years: yıl
+    summary:
+      on: günlerinde
+      starts: başlangıç
+      endsOnDate: bitiş
+      endsAfter: sonra sona erer
+      occurrences: tekrarlama
+    daySuffix: gün
+    weekSuffix: hafta
+    monthSuffix: ay
+    yearSuffix: yıl
   notifications:
     reminder_title: "Görev Hatırlatıcı: {title}"
     deadline_title: "Görev Son Tarih: {title}"

@@ -72,6 +72,9 @@ shared:
       dec_short: Ara
   time_periods:
     today: Bugün
+    this_week: Bu Hafta
+    this_month: Bu Ay
+    this_three_months: Bu 3 Ay
     last_week: Son Hafta
     last_month: Son Ay
     last_three_months: Son 3 Ay
@@ -152,3 +155,5 @@ shared:
     tooltip: Yardım
   time:
     not_set: Ayarlanmadı
+  date_format:
+    hint: GG/AA/YYYY
