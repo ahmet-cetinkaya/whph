@@ -27,8 +27,6 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
 
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
-          if (kDebugMode) debugPrint('$_activeDesktopWindowOutput: $_activeDesktopWindowTime seconds');
-
           List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
           String windowTitle = activeWindowOutputSections[0];
           String windowProcess = activeWindowOutputSections[1];
