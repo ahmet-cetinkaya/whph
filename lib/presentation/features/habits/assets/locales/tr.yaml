@@ -159,13 +159,6 @@ habits:
     selectDaysWarning: Lütfen hatırlatıcılar için en az bir gün seçin
     noReminder: Hatırlatıcı ayarlanmadı
     everyDay: Her gün
-    monday: Pazartesi
-    tuesday: Salı
-    wednesday: Çarşamba
-    thursday: Perşembe
-    friday: Cuma
-    saturday: Cumartesi
-    sunday: Pazar
   notifications:
     reminder_title: "Alışkanlık Hatırlatıcı: {name}"
     reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"

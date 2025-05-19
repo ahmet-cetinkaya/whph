@@ -3181,6 +3181,39 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
           type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0))
       .withConverter<ReminderTime>($TaskTableTable.$converterdeadlineDateReminderTime);
   @override
+  late final GeneratedColumnWithTypeConverter<RecurrenceType, int> recurrenceType = GeneratedColumn<int>(
+          'recurrence_type', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0))
+      .withConverter<RecurrenceType>($TaskTableTable.$converterrecurrenceType);
+  static const VerificationMeta _recurrenceIntervalMeta = const VerificationMeta('recurrenceInterval');
+  @override
+  late final GeneratedColumn<int> recurrenceInterval = GeneratedColumn<int>('recurrence_interval', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceDaysStringMeta = const VerificationMeta('recurrenceDaysString');
+  @override
+  late final GeneratedColumn<String> recurrenceDaysString = GeneratedColumn<String>(
+      'recurrence_days_string', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceStartDateMeta = const VerificationMeta('recurrenceStartDate');
+  @override
+  late final GeneratedColumn<DateTime> recurrenceStartDate = GeneratedColumn<DateTime>(
+      'recurrence_start_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceEndDateMeta = const VerificationMeta('recurrenceEndDate');
+  @override
+  late final GeneratedColumn<DateTime> recurrenceEndDate = GeneratedColumn<DateTime>(
+      'recurrence_end_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceCountMeta = const VerificationMeta('recurrenceCount');
+  @override
+  late final GeneratedColumn<int> recurrenceCount =
+      GeneratedColumn<int>('recurrence_count', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _recurrenceParentIdMeta = const VerificationMeta('recurrenceParentId');
+  @override
+  late final GeneratedColumn<String> recurrenceParentId = GeneratedColumn<String>(
+      'recurrence_parent_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         parentTaskId,
@@ -3196,7 +3229,14 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         deletedDate,
         order,
         plannedDateReminderTime,
-        deadlineDateReminderTime
+        deadlineDateReminderTime,
+        recurrenceType,
+        recurrenceInterval,
+        recurrenceDaysString,
+        recurrenceStartDate,
+        recurrenceEndDate,
+        recurrenceCount,
+        recurrenceParentId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3250,6 +3290,30 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
     if (data.containsKey('order')) {
       context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     }
+    if (data.containsKey('recurrence_interval')) {
+      context.handle(_recurrenceIntervalMeta,
+          recurrenceInterval.isAcceptableOrUnknown(data['recurrence_interval']!, _recurrenceIntervalMeta));
+    }
+    if (data.containsKey('recurrence_days_string')) {
+      context.handle(_recurrenceDaysStringMeta,
+          recurrenceDaysString.isAcceptableOrUnknown(data['recurrence_days_string']!, _recurrenceDaysStringMeta));
+    }
+    if (data.containsKey('recurrence_start_date')) {
+      context.handle(_recurrenceStartDateMeta,
+          recurrenceStartDate.isAcceptableOrUnknown(data['recurrence_start_date']!, _recurrenceStartDateMeta));
+    }
+    if (data.containsKey('recurrence_end_date')) {
+      context.handle(_recurrenceEndDateMeta,
+          recurrenceEndDate.isAcceptableOrUnknown(data['recurrence_end_date']!, _recurrenceEndDateMeta));
+    }
+    if (data.containsKey('recurrence_count')) {
+      context.handle(
+          _recurrenceCountMeta, recurrenceCount.isAcceptableOrUnknown(data['recurrence_count']!, _recurrenceCountMeta));
+    }
+    if (data.containsKey('recurrence_parent_id')) {
+      context.handle(_recurrenceParentIdMeta,
+          recurrenceParentId.isAcceptableOrUnknown(data['recurrence_parent_id']!, _recurrenceParentIdMeta));
+    }
     return context;
   }
 
@@ -3277,6 +3341,19 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
           attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}planned_date_reminder_time'])!),
       deadlineDateReminderTime: $TaskTableTable.$converterdeadlineDateReminderTime.fromSql(
           attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}deadline_date_reminder_time'])!),
+      recurrenceType: $TaskTableTable.$converterrecurrenceType
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_type'])!),
+      recurrenceInterval:
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_interval']),
+      recurrenceDaysString:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}recurrence_days_string']),
+      recurrenceStartDate:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}recurrence_start_date']),
+      recurrenceEndDate:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}recurrence_end_date']),
+      recurrenceCount: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_count']),
+      recurrenceParentId:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}recurrence_parent_id']),
     );
   }
 
@@ -3293,6 +3370,8 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       const EnumIndexConverter<ReminderTime>(ReminderTime.values);
   static JsonTypeConverter2<ReminderTime, int, int> $converterdeadlineDateReminderTime =
       const EnumIndexConverter<ReminderTime>(ReminderTime.values);
+  static JsonTypeConverter2<RecurrenceType, int, int> $converterrecurrenceType =
+      const EnumIndexConverter<RecurrenceType>(RecurrenceType.values);
 }
 
 class TaskTableCompanion extends UpdateCompanion<Task> {
@@ -3311,6 +3390,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<double> order;
   final Value<ReminderTime> plannedDateReminderTime;
   final Value<ReminderTime> deadlineDateReminderTime;
+  final Value<RecurrenceType> recurrenceType;
+  final Value<int?> recurrenceInterval;
+  final Value<String?> recurrenceDaysString;
+  final Value<DateTime?> recurrenceStartDate;
+  final Value<DateTime?> recurrenceEndDate;
+  final Value<int?> recurrenceCount;
+  final Value<String?> recurrenceParentId;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
@@ -3328,6 +3414,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.recurrenceType = const Value.absent(),
+    this.recurrenceInterval = const Value.absent(),
+    this.recurrenceDaysString = const Value.absent(),
+    this.recurrenceStartDate = const Value.absent(),
+    this.recurrenceEndDate = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.recurrenceParentId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
@@ -3346,6 +3439,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.recurrenceType = const Value.absent(),
+    this.recurrenceInterval = const Value.absent(),
+    this.recurrenceDaysString = const Value.absent(),
+    this.recurrenceStartDate = const Value.absent(),
+    this.recurrenceEndDate = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.recurrenceParentId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
@@ -3366,6 +3466,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<double>? order,
     Expression<int>? plannedDateReminderTime,
     Expression<int>? deadlineDateReminderTime,
+    Expression<int>? recurrenceType,
+    Expression<int>? recurrenceInterval,
+    Expression<String>? recurrenceDaysString,
+    Expression<DateTime>? recurrenceStartDate,
+    Expression<DateTime>? recurrenceEndDate,
+    Expression<int>? recurrenceCount,
+    Expression<String>? recurrenceParentId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3384,6 +3491,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       if (order != null) 'order': order,
       if (plannedDateReminderTime != null) 'planned_date_reminder_time': plannedDateReminderTime,
       if (deadlineDateReminderTime != null) 'deadline_date_reminder_time': deadlineDateReminderTime,
+      if (recurrenceType != null) 'recurrence_type': recurrenceType,
+      if (recurrenceInterval != null) 'recurrence_interval': recurrenceInterval,
+      if (recurrenceDaysString != null) 'recurrence_days_string': recurrenceDaysString,
+      if (recurrenceStartDate != null) 'recurrence_start_date': recurrenceStartDate,
+      if (recurrenceEndDate != null) 'recurrence_end_date': recurrenceEndDate,
+      if (recurrenceCount != null) 'recurrence_count': recurrenceCount,
+      if (recurrenceParentId != null) 'recurrence_parent_id': recurrenceParentId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3404,6 +3518,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<double>? order,
       Value<ReminderTime>? plannedDateReminderTime,
       Value<ReminderTime>? deadlineDateReminderTime,
+      Value<RecurrenceType>? recurrenceType,
+      Value<int?>? recurrenceInterval,
+      Value<String?>? recurrenceDaysString,
+      Value<DateTime?>? recurrenceStartDate,
+      Value<DateTime?>? recurrenceEndDate,
+      Value<int?>? recurrenceCount,
+      Value<String?>? recurrenceParentId,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
@@ -3421,6 +3542,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
+      recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
+      recurrenceStartDate: recurrenceStartDate ?? this.recurrenceStartDate,
+      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
+      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
+      recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3475,6 +3603,27 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       map['deadline_date_reminder_time'] =
           Variable<int>($TaskTableTable.$converterdeadlineDateReminderTime.toSql(deadlineDateReminderTime.value));
     }
+    if (recurrenceType.present) {
+      map['recurrence_type'] = Variable<int>($TaskTableTable.$converterrecurrenceType.toSql(recurrenceType.value));
+    }
+    if (recurrenceInterval.present) {
+      map['recurrence_interval'] = Variable<int>(recurrenceInterval.value);
+    }
+    if (recurrenceDaysString.present) {
+      map['recurrence_days_string'] = Variable<String>(recurrenceDaysString.value);
+    }
+    if (recurrenceStartDate.present) {
+      map['recurrence_start_date'] = Variable<DateTime>(recurrenceStartDate.value);
+    }
+    if (recurrenceEndDate.present) {
+      map['recurrence_end_date'] = Variable<DateTime>(recurrenceEndDate.value);
+    }
+    if (recurrenceCount.present) {
+      map['recurrence_count'] = Variable<int>(recurrenceCount.value);
+    }
+    if (recurrenceParentId.present) {
+      map['recurrence_parent_id'] = Variable<String>(recurrenceParentId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3499,6 +3648,13 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('order: $order, ')
           ..write('plannedDateReminderTime: $plannedDateReminderTime, ')
           ..write('deadlineDateReminderTime: $deadlineDateReminderTime, ')
+          ..write('recurrenceType: $recurrenceType, ')
+          ..write('recurrenceInterval: $recurrenceInterval, ')
+          ..write('recurrenceDaysString: $recurrenceDaysString, ')
+          ..write('recurrenceStartDate: $recurrenceStartDate, ')
+          ..write('recurrenceEndDate: $recurrenceEndDate, ')
+          ..write('recurrenceCount: $recurrenceCount, ')
+          ..write('recurrenceParentId: $recurrenceParentId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6520,6 +6676,13 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<double> order,
   Value<ReminderTime> plannedDateReminderTime,
   Value<ReminderTime> deadlineDateReminderTime,
+  Value<RecurrenceType> recurrenceType,
+  Value<int?> recurrenceInterval,
+  Value<String?> recurrenceDaysString,
+  Value<DateTime?> recurrenceStartDate,
+  Value<DateTime?> recurrenceEndDate,
+  Value<int?> recurrenceCount,
+  Value<String?> recurrenceParentId,
   Value<int> rowid,
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
@@ -6538,6 +6701,13 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<double> order,
   Value<ReminderTime> plannedDateReminderTime,
   Value<ReminderTime> deadlineDateReminderTime,
+  Value<RecurrenceType> recurrenceType,
+  Value<int?> recurrenceInterval,
+  Value<String?> recurrenceDaysString,
+  Value<DateTime?> recurrenceStartDate,
+  Value<DateTime?> recurrenceEndDate,
+  Value<int?> recurrenceCount,
+  Value<String?> recurrenceParentId,
   Value<int> rowid,
 });
 
@@ -6592,6 +6762,27 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
 
   ColumnWithTypeConverterFilters<ReminderTime, ReminderTime, int> get deadlineDateReminderTime => $composableBuilder(
       column: $table.deadlineDateReminderTime, builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<RecurrenceType, RecurrenceType, int> get recurrenceType =>
+      $composableBuilder(column: $table.recurrenceType, builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get recurrenceInterval =>
+      $composableBuilder(column: $table.recurrenceInterval, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get recurrenceDaysString =>
+      $composableBuilder(column: $table.recurrenceDaysString, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get recurrenceStartDate =>
+      $composableBuilder(column: $table.recurrenceStartDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get recurrenceEndDate =>
+      $composableBuilder(column: $table.recurrenceEndDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get recurrenceCount =>
+      $composableBuilder(column: $table.recurrenceCount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get recurrenceParentId =>
+      $composableBuilder(column: $table.recurrenceParentId, builder: (column) => ColumnFilters(column));
 }
 
 class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -6645,6 +6836,27 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
 
   ColumnOrderings<int> get deadlineDateReminderTime =>
       $composableBuilder(column: $table.deadlineDateReminderTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get recurrenceType =>
+      $composableBuilder(column: $table.recurrenceType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get recurrenceInterval =>
+      $composableBuilder(column: $table.recurrenceInterval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recurrenceDaysString =>
+      $composableBuilder(column: $table.recurrenceDaysString, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get recurrenceStartDate =>
+      $composableBuilder(column: $table.recurrenceStartDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get recurrenceEndDate =>
+      $composableBuilder(column: $table.recurrenceEndDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get recurrenceCount =>
+      $composableBuilder(column: $table.recurrenceCount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recurrenceParentId =>
+      $composableBuilder(column: $table.recurrenceParentId, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTableTable> {
@@ -6695,6 +6907,27 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
 
   GeneratedColumnWithTypeConverter<ReminderTime, int> get deadlineDateReminderTime =>
       $composableBuilder(column: $table.deadlineDateReminderTime, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<RecurrenceType, int> get recurrenceType =>
+      $composableBuilder(column: $table.recurrenceType, builder: (column) => column);
+
+  GeneratedColumn<int> get recurrenceInterval =>
+      $composableBuilder(column: $table.recurrenceInterval, builder: (column) => column);
+
+  GeneratedColumn<String> get recurrenceDaysString =>
+      $composableBuilder(column: $table.recurrenceDaysString, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get recurrenceStartDate =>
+      $composableBuilder(column: $table.recurrenceStartDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get recurrenceEndDate =>
+      $composableBuilder(column: $table.recurrenceEndDate, builder: (column) => column);
+
+  GeneratedColumn<int> get recurrenceCount =>
+      $composableBuilder(column: $table.recurrenceCount, builder: (column) => column);
+
+  GeneratedColumn<String> get recurrenceParentId =>
+      $composableBuilder(column: $table.recurrenceParentId, builder: (column) => column);
 }
 
 class $$TaskTableTableTableManager extends RootTableManager<
@@ -6732,6 +6965,13 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<double> order = const Value.absent(),
             Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
             Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
+            Value<RecurrenceType> recurrenceType = const Value.absent(),
+            Value<int?> recurrenceInterval = const Value.absent(),
+            Value<String?> recurrenceDaysString = const Value.absent(),
+            Value<DateTime?> recurrenceStartDate = const Value.absent(),
+            Value<DateTime?> recurrenceEndDate = const Value.absent(),
+            Value<int?> recurrenceCount = const Value.absent(),
+            Value<String?> recurrenceParentId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion(
@@ -6750,6 +6990,13 @@ class $$TaskTableTableTableManager extends RootTableManager<
             order: order,
             plannedDateReminderTime: plannedDateReminderTime,
             deadlineDateReminderTime: deadlineDateReminderTime,
+            recurrenceType: recurrenceType,
+            recurrenceInterval: recurrenceInterval,
+            recurrenceDaysString: recurrenceDaysString,
+            recurrenceStartDate: recurrenceStartDate,
+            recurrenceEndDate: recurrenceEndDate,
+            recurrenceCount: recurrenceCount,
+            recurrenceParentId: recurrenceParentId,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6768,6 +7015,13 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<double> order = const Value.absent(),
             Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
             Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
+            Value<RecurrenceType> recurrenceType = const Value.absent(),
+            Value<int?> recurrenceInterval = const Value.absent(),
+            Value<String?> recurrenceDaysString = const Value.absent(),
+            Value<DateTime?> recurrenceStartDate = const Value.absent(),
+            Value<DateTime?> recurrenceEndDate = const Value.absent(),
+            Value<int?> recurrenceCount = const Value.absent(),
+            Value<String?> recurrenceParentId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion.insert(
@@ -6786,6 +7040,13 @@ class $$TaskTableTableTableManager extends RootTableManager<
             order: order,
             plannedDateReminderTime: plannedDateReminderTime,
             deadlineDateReminderTime: deadlineDateReminderTime,
+            recurrenceType: recurrenceType,
+            recurrenceInterval: recurrenceInterval,
+            recurrenceDaysString: recurrenceDaysString,
+            recurrenceStartDate: recurrenceStartDate,
+            recurrenceEndDate: recurrenceEndDate,
+            recurrenceCount: recurrenceCount,
+            recurrenceParentId: recurrenceParentId,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),

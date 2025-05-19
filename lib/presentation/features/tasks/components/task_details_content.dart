@@ -8,8 +8,10 @@ import 'package:whph/application/features/tasks/commands/remove_task_tag_command
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/acore/time/week_days.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
+import 'package:whph/presentation/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_date_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
@@ -26,6 +28,7 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 
 class TaskDetailsContent extends StatefulWidget {
   final String taskId;
@@ -49,6 +52,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final _mediator = container.resolve<Mediator>();
   final _tasksService = container.resolve<TasksService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _taskRecurrenceService = container.resolve<ITaskRecurrenceService>();
 
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
@@ -70,6 +74,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyDescription = 'description';
   static const String keyPlannedDateReminder = 'plannedDateReminder';
   static const String keyDeadlineDateReminder = 'deadlineDateReminder';
+  static const String keyRecurrence = 'recurrence';
 
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
@@ -100,6 +105,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       if (_hasFieldContent(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDate);
       if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
+      if (_hasFieldContent(keyRecurrence)) _visibleOptionalFields.add(keyRecurrence);
 
       // Make reminder fields visible if their corresponding date fields are visible
       if (_visibleOptionalFields.contains(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDateReminder);
@@ -153,6 +159,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _task!.plannedDateReminderTime != ReminderTime.none;
       case keyDeadlineDateReminder:
         return _task!.deadlineDateReminderTime != ReminderTime.none;
+      case keyRecurrence:
+        return _task!.recurrenceType != RecurrenceType.none;
       default:
         return false;
     }
@@ -291,21 +299,33 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Immediately save the task without debounce
   Future<void> _saveTaskImmediately() async {
-    if (!mounted) return;
+    if (!mounted || _task == null) return;
 
-    // Use the task's date values directly instead of parsing from controllers
+    // Make sure dates are in UTC
+    DateTime? plannedDate = _task!.plannedDate?.toUtc();
+    DateTime? deadlineDate = _task!.deadlineDate?.toUtc();
+    DateTime? recurrenceStartDate = _task!.recurrenceStartDate?.toUtc();
+    DateTime? recurrenceEndDate = _task!.recurrenceEndDate?.toUtc();
+
     final saveCommand = SaveTaskCommand(
       id: _task!.id,
       title: _titleController.text,
       description: _descriptionController.text,
-      plannedDate: _task!.plannedDate,
-      deadlineDate: _task!.deadlineDate,
+      plannedDate: plannedDate,
+      deadlineDate: deadlineDate,
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
       isCompleted: _task!.isCompleted,
-      // Always pass the current reminder values
+      // Pass reminder settings
       plannedDateReminderTime: _task!.plannedDateReminderTime,
       deadlineDateReminderTime: _task!.deadlineDateReminderTime,
+      // Pass all recurrence settings
+      recurrenceType: _task!.recurrenceType,
+      recurrenceInterval: _task!.recurrenceInterval,
+      recurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
+      recurrenceStartDate: recurrenceStartDate,
+      recurrenceEndDate: recurrenceEndDate,
+      recurrenceCount: _task!.recurrenceCount,
     );
 
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
@@ -315,11 +335,70 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       onSuccess: (result) {
         _tasksService.notifyTaskUpdated(result.id);
         widget.onTaskUpdated?.call();
-
-        // Reload the task to verify the changes were saved
-        _getTask();
+        _getTask(); // Reload the task to verify the changes were saved
       },
     );
+  }
+
+  String _getRecurrenceSummaryText() {
+    if (_task == null || _task!.recurrenceType == RecurrenceType.none) {
+      return _translationService.translate(TaskTranslationKeys.recurrenceNone);
+    }
+
+    String summary = '';
+    switch (_task!.recurrenceType) {
+      case RecurrenceType.daily:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceDaily);
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixDays)})';
+        }
+        break;
+      case RecurrenceType.weekly:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceWeekly);
+        final days = _taskRecurrenceService.getRecurrenceDays(_task!);
+        if (days != null && days.isNotEmpty) {
+          final dayNames = days
+              .map((day) => _translationService.translate('datetime.weekday.${day.name.toLowerCase()}.short'))
+              .join(', ');
+          summary += ' ${_translationService.translate(TaskTranslationKeys.on)} $dayNames';
+        }
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixWeeks)})';
+        }
+        break;
+      case RecurrenceType.monthly:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceMonthly);
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixMonths)})';
+        }
+        break;
+      case RecurrenceType.yearly:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceYearly);
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixYears)})';
+        }
+        break;
+      default:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceNone);
+    }
+
+    if (_task!.recurrenceStartDate != null) {
+      summary +=
+          '; ${_translationService.translate(TaskTranslationKeys.starts)} ${DateTimeHelper.formatDate(_task!.recurrenceStartDate!)}';
+    }
+
+    if (_task!.recurrenceEndDate != null) {
+      summary +=
+          '; ${_translationService.translate(TaskTranslationKeys.endsOnDate)} ${DateTimeHelper.formatDate(_task!.recurrenceEndDate!)}';
+    } else if (_task!.recurrenceCount != null) {
+      summary +=
+          '; ${_translationService.translate(TaskTranslationKeys.endsAfter)} ${_task!.recurrenceCount} ${_translationService.translate(TaskTranslationKeys.occurrences)}';
+    }
+    return summary;
   }
 
   Future<void> _updateTask() async {
@@ -334,6 +413,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
       DateTime? deadlineDate =
           _deadlineDateController.text.isNotEmpty ? DateTime.tryParse(_deadlineDateController.text)?.toUtc() : null;
+      DateTime? recurrenceStartDate = _task!.recurrenceStartDate?.toUtc();
+      DateTime? recurrenceEndDate = _task!.recurrenceEndDate?.toUtc();
 
       final saveCommand = SaveTaskCommand(
         id: _task!.id,
@@ -347,6 +428,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         // Always pass the current reminder values
         plannedDateReminderTime: _task!.plannedDateReminderTime,
         deadlineDateReminderTime: _task!.deadlineDateReminderTime,
+        // Pass all recurrence settings
+        recurrenceType: _task!.recurrenceType,
+        recurrenceInterval: _task!.recurrenceInterval,
+        recurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
+        recurrenceStartDate: recurrenceStartDate,
+        recurrenceEndDate: recurrenceEndDate,
+        recurrenceCount: _task!.recurrenceCount,
       );
 
       await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
@@ -435,6 +523,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyPlannedDate,
       keyDeadlineDate,
       keyDescription,
+      keyRecurrence,
       // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
 
@@ -497,6 +586,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
               if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
               if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
+              if (_visibleOptionalFields.contains(keyRecurrence)) _buildRecurrenceSection(),
               // Reminder sections are included in the planned and deadline date sections
             ].toList()),
           ],
@@ -661,6 +751,79 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         ),
       );
 
+  Future<void> _openRecurrenceDialog() async {
+    if (_task == null) return;
+
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (BuildContext context) => RecurrenceSettingsDialog(
+        initialRecurrenceType: _task!.recurrenceType,
+        initialRecurrenceInterval: _task!.recurrenceInterval,
+        initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
+        initialRecurrenceStartDate: _task!.recurrenceStartDate,
+        initialRecurrenceEndDate: _task!.recurrenceEndDate,
+        initialRecurrenceCount: _task!.recurrenceCount,
+      ),
+    );
+
+    if (result != null) {
+      if (!mounted) return;
+
+      setState(() {
+        // Update recurrence type first since it affects other fields
+        final recurrenceType = result['recurrenceType'] as RecurrenceType;
+        debugPrint('Recurrence type from dialog: $recurrenceType');
+
+        _task!.recurrenceType = recurrenceType;
+        debugPrint('Set task recurrence type to: ${_task!.recurrenceType}');
+
+        if (_task!.recurrenceType == RecurrenceType.none) {
+          // Clear all recurrence settings if type is none
+          _task!.recurrenceInterval = null;
+          _task!.setRecurrenceDays(null);
+          _task!.recurrenceStartDate = null;
+          _task!.recurrenceEndDate = null;
+          _task!.recurrenceCount = null;
+          // Remove visibility if needed
+          if (_visibleOptionalFields.contains(keyRecurrence)) {
+            _visibleOptionalFields.remove(keyRecurrence);
+          }
+        } else {
+          // Update all recurrence settings
+          _task!.recurrenceInterval = result['recurrenceInterval'] as int?;
+
+          final List<dynamic>? daysList = result['recurrenceDays'] as List<dynamic>?;
+          _task!.setRecurrenceDays(daysList?.cast<WeekDays>());
+
+          _task!.recurrenceStartDate = result['recurrenceStartDate'] as DateTime?;
+          _task!.recurrenceEndDate = result['recurrenceEndDate'] as DateTime?;
+          _task!.recurrenceCount = result['recurrenceCount'] as int?;
+
+          // Show recurrence section
+          _visibleOptionalFields.add(keyRecurrence);
+        }
+      });
+
+      // Save changes immediately
+      await _saveTaskImmediately();
+    }
+  }
+
+  DetailTableRowData _buildRecurrenceSection() => DetailTableRowData(
+        label: _translationService.translate(TaskTranslationKeys.recurrenceLabel),
+        icon: Icons.repeat,
+        widget: ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          title: Text(
+            _getRecurrenceSummaryText(),
+            style: AppTheme.bodyMedium,
+          ),
+          trailing: const Icon(Icons.edit_outlined, size: AppTheme.iconSizeSmall),
+          onTap: _openRecurrenceDialog,
+        ),
+      );
+
   Widget _buildDescriptionSection() => DetailTable(
         forceVertical: true,
         rowData: [
@@ -742,6 +905,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _translationService.translate(TaskTranslationKeys.reminderPlannedLabel);
       case keyDeadlineDateReminder:
         return _translationService.translate(TaskTranslationKeys.reminderDeadlineLabel);
+      case keyRecurrence:
+        return _translationService.translate(TaskTranslationKeys.recurrenceLabel);
       default:
         return '';
     }
@@ -766,6 +931,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return Icons.notifications;
       case keyDeadlineDateReminder:
         return Icons.notifications;
+      case keyRecurrence:
+        return Icons.repeat;
       default:
         return Icons.add;
     }

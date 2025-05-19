@@ -157,13 +157,6 @@ habits:
     selectDaysWarning: Please select at least one day for reminders
     noReminder: No reminder set
     everyDay: Every day
-    monday: Monday
-    tuesday: Tuesday
-    wednesday: Wednesday
-    thursday: Thursday
-    friday: Friday
-    saturday: Saturday
-    sunday: Sunday
   notifications:
     reminder_title: "Habit Reminder: {name}"
     reminder_message: "Remember to complete your habit: {name}"

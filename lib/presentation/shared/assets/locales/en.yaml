@@ -72,6 +72,9 @@ shared:
       dec_short: Dec
   time_periods:
     today: Today
+    this_week: This Week
+    this_month: This Month
+    this_three_months: This 3 Months
     last_week: Last Week
     last_month: Last Month
     last_three_months: Last 3 Months
@@ -152,3 +155,5 @@ shared:
     tooltip: Help
   time:
     not_set: "Not set"
+  date_format:
+    hint: DD/MM/YYYY

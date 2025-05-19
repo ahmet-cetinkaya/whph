@@ -172,25 +172,25 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
           padding: const EdgeInsets.all(AppTheme.sizeSmall),
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.zero,
-                child: TaskDetailsContent(
-                  taskId: widget.taskId,
-                  onTaskUpdated: () {
-                    _refreshEverything();
-                  },
-                  onCompletedChanged: (isCompleted) {
-                    _refreshEverything();
-                  },
-                ),
+              TaskDetailsContent(
+                taskId: widget.taskId,
+                onTaskUpdated: () {
+                  _refreshEverything();
+                },
+                onCompletedChanged: (isCompleted) {
+                  _refreshEverything();
+                },
               ),
               const SizedBox(height: AppTheme.sizeSmall),
 
               // SUB TASKS
-              Padding(
+              Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.sizeSmall,
                   vertical: AppTheme.sizeXSmall,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

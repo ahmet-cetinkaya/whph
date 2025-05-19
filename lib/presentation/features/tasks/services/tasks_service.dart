@@ -1,6 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:whph/main.dart';
+import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:mediatr/mediatr.dart';
 
 class TasksService extends ChangeNotifier {
+  final ITaskRecurrenceService _taskRecurrenceService = container.resolve<ITaskRecurrenceService>();
+  final Mediator _mediator = container.resolve<Mediator>();
+
   // Event listeners for task-related events - keeping nullable for the value
   final ValueNotifier<String?> onTaskCreated = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onTaskUpdated = ValueNotifier<String?>(null);
@@ -28,9 +34,16 @@ class TasksService extends ChangeNotifier {
     onTaskTimeRecordUpdated.notifyListeners();
   }
 
-  void notifyTaskCompleted(String taskId) {
+  void notifyTaskCompleted(String taskId) async {
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();
+
+    // When a task is completed, check if it's a recurring task and create the next instance if needed
+    final nextTaskId = await _taskRecurrenceService.handleCompletedRecurringTask(taskId, _mediator);
+    if (nextTaskId != null) {
+      // Notify about the newly created recurring task
+      notifyTaskCreated(nextTaskId);
+    }
   }
 
   @override

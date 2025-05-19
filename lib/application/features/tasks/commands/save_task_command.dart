@@ -6,6 +6,7 @@ import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/core/acore/time/week_days.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
@@ -24,21 +25,34 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final double? order;
   final ReminderTime? plannedDateReminderTime;
   final ReminderTime? deadlineDateReminderTime;
+  final RecurrenceType? recurrenceType;
+  final int? recurrenceInterval;
+  final List<WeekDays>? recurrenceDays;
+  final DateTime? recurrenceStartDate;
+  final DateTime? recurrenceEndDate;
+  final int? recurrenceCount;
 
-  SaveTaskCommand(
-      {this.id,
-      required this.title,
-      this.description,
-      this.priority,
-      this.plannedDate,
-      this.deadlineDate,
-      this.estimatedTime,
-      this.isCompleted = false,
-      this.tagIdsToAdd,
-      this.parentTaskId,
-      this.order,
-      this.plannedDateReminderTime,
-      this.deadlineDateReminderTime});
+  SaveTaskCommand({
+    this.id,
+    required this.title,
+    this.description,
+    this.priority,
+    this.plannedDate,
+    this.deadlineDate,
+    this.estimatedTime,
+    this.isCompleted = false,
+    this.tagIdsToAdd,
+    this.parentTaskId,
+    this.order,
+    this.plannedDateReminderTime,
+    this.deadlineDateReminderTime,
+    this.recurrenceType,
+    this.recurrenceInterval,
+    this.recurrenceDays,
+    this.recurrenceStartDate,
+    this.recurrenceEndDate,
+    this.recurrenceCount,
+  });
 }
 
 class SaveTaskCommandResponse {
@@ -89,6 +103,32 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.deadlineDateReminderTime = request.deadlineDateReminderTime!;
       }
 
+      // Update recurrence settings if provided
+      if (request.recurrenceType != null) {
+        task.recurrenceType = request.recurrenceType!;
+      }
+
+      // Only update these if recurrence type is not none
+      if (task.recurrenceType != RecurrenceType.none) {
+        task.recurrenceInterval = request.recurrenceInterval;
+
+        // Update recurrence days if provided
+        if (request.recurrenceDays != null) {
+          task.setRecurrenceDays(request.recurrenceDays);
+        }
+
+        task.recurrenceStartDate = request.recurrenceStartDate;
+        task.recurrenceEndDate = request.recurrenceEndDate;
+        task.recurrenceCount = request.recurrenceCount;
+      } else {
+        // Clear recurrence settings if type is none
+        task.recurrenceInterval = null;
+        task.setRecurrenceDays(null);
+        task.recurrenceStartDate = null;
+        task.recurrenceEndDate = null;
+        task.recurrenceCount = null;
+      }
+
       await _taskRepository.update(task);
     } else {
       // Get the last task to determine the order
@@ -119,7 +159,12 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
-          deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none);
+          deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none,
+          recurrenceType: request.recurrenceType ?? RecurrenceType.none,
+          recurrenceInterval: request.recurrenceInterval,
+          recurrenceStartDate: request.recurrenceStartDate,
+          recurrenceEndDate: request.recurrenceEndDate,
+          recurrenceCount: request.recurrenceCount);
       await _taskRepository.add(task);
     }
 

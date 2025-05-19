@@ -60,11 +60,11 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(_translationService.translate(TaskTranslationKeys.taskDeleteCancel)),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(_translationService.translate(TaskTranslationKeys.taskDeleteConfirm)),
+            child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
       ),

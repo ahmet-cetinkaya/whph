@@ -60,8 +60,6 @@ class TaskTranslationKeys {
   static const String taskDeleteTitle = 'tasks.delete.title';
   static const String taskDeleteMessage = 'tasks.delete.message';
   static const String taskDeleteError = 'tasks.delete.error';
-  static const String taskDeleteCancel = 'tasks.delete.cancel';
-  static const String taskDeleteConfirm = 'tasks.delete.confirm';
 
   // Task Complete
   static const String taskCompleteError = 'tasks.complete.error';
@@ -134,6 +132,40 @@ class TaskTranslationKeys {
   static const String reminderOneDayBefore = 'tasks.reminder.oneDayBefore';
   static const String reminderPlannedLabel = 'tasks.reminder.plannedReminderLabel';
   static const String reminderDeadlineLabel = 'tasks.reminder.deadlineReminderLabel';
+
+  // Recurrence Types and Labels
+  static const String recurrenceLabel = 'tasks.recurrence.label';
+  static const String recurrenceNone = 'tasks.recurrence.none';
+  static const String recurrenceDaily = 'tasks.recurrence.daily';
+  static const String recurrenceWeekly = 'tasks.recurrence.weekly';
+  static const String recurrenceMonthly = 'tasks.recurrence.monthly';
+  static const String recurrenceYearly = 'tasks.recurrence.yearly';
+  static const String recurrenceCustom = 'tasks.recurrence.custom';
+  static const String recurrenceIntervalLabel = 'tasks.recurrence.interval.label';
+  static const String recurrenceIntervalPrefix = 'tasks.recurrence.interval.prefix';
+  static const String recurrenceIntervalSuffixDays = 'tasks.recurrence.interval.suffix.days';
+  static const String recurrenceIntervalSuffixWeeks = 'tasks.recurrence.interval.suffix.weeks';
+  static const String recurrenceIntervalSuffixMonths = 'tasks.recurrence.interval.suffix.months';
+  static const String recurrenceIntervalSuffixYears = 'tasks.recurrence.interval.suffix.years';
+  static const String recurrenceWeekDaysLabel = 'tasks.recurrence.weekDays';
+  static const String recurrenceRangeLabel = 'tasks.recurrence.range';
+  static const String recurrenceStartLabel = 'tasks.recurrence.startDate';
+  static const String recurrenceEndDateLabel = 'tasks.recurrence.endDate';
+  static const String recurrenceCountLabel = 'tasks.recurrence.count';
+  static const String selectDateHint = 'tasks.recurrence.selectDateHint';
+  static const String enterCountHint = 'tasks.recurrence.enterCountHint';
+
+  // Recurrence Day Suffixes
+  static const String recurrenceDaySuffix = 'tasks.recurrence.daySuffix';
+  static const String recurrenceWeekSuffix = 'tasks.recurrence.weekSuffix';
+  static const String recurrenceMonthSuffix = 'tasks.recurrence.monthSuffix';
+  static const String recurrenceYearSuffix = 'tasks.recurrence.yearSuffix';
+  // Recurrence Summary
+  static const String on = 'tasks.recurrence.summary.on';
+  static const String starts = 'tasks.recurrence.summary.starts';
+  static const String endsOnDate = 'tasks.recurrence.summary.endsOnDate';
+  static const String endsAfter = 'tasks.recurrence.summary.endsAfter';
+  static const String occurrences = 'tasks.recurrence.summary.occurrences';
 
   // Helper Method for Reminder Types
   static String getReminderTypeKey(ReminderTime reminderTime) {

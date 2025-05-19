@@ -17,6 +17,7 @@ class SharedUiConstants {
   static const IconData checkIcon = Icons.check;
   static const IconData saveIcon = Icons.save;
   static const IconData editIcon = Icons.edit;
+  static const IconData calendarIcon = Icons.calendar_today;
 
   // Date Formats
   static const String defaultDateFormat = 'dd.MM.yy';

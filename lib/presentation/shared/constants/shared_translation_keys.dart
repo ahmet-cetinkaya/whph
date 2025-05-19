@@ -41,6 +41,9 @@ class SharedTranslationKeys {
 
   // Time periods
   static const String today = 'shared.time_periods.today';
+  static const String thisWeek = 'shared.time_periods.this_week';
+  static const String thisMonth = 'shared.time_periods.this_month';
+  static const String this3Months = 'shared.time_periods.this_three_months';
   static const String lastWeek = 'shared.time_periods.last_week';
   static const String lastMonth = 'shared.time_periods.last_month';
   static const String last3Months = 'shared.time_periods.last_three_months';
@@ -132,6 +135,8 @@ class SharedTranslationKeys {
   static const String tagsLabel = 'shared.sections.tags';
   static const String statisticsLabel = 'shared.sections.statistics';
   static const String noneOption = 'shared.none_option';
+
+  static const String dateFormatHint = 'shared.date_format.hint';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

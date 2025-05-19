@@ -28,6 +28,16 @@ class TaskTable extends Table {
       intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
   IntColumn get deadlineDateReminderTime =>
       intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
+
+  // Recurrence settings
+  IntColumn get recurrenceType =>
+      intEnum<RecurrenceType>().withDefault(const Constant(0))(); // Default to RecurrenceType.none (0)
+  IntColumn get recurrenceInterval => integer().nullable()();
+  TextColumn get recurrenceDaysString => text().nullable()();
+  DateTimeColumn get recurrenceStartDate => dateTime().nullable()();
+  DateTimeColumn get recurrenceEndDate => dateTime().nullable()();
+  IntColumn get recurrenceCount => integer().nullable()();
+  TextColumn get recurrenceParentId => text().nullable()();
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
@@ -183,6 +193,21 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       }
     }
 
+    // Set recurrence values
+    if (data['recurrence_type'] != null) {
+      final recurrenceTypeValue = data['recurrence_type'] as int;
+      if (recurrenceTypeValue >= 0 && recurrenceTypeValue < RecurrenceType.values.length) {
+        task.recurrenceType = RecurrenceType.values[recurrenceTypeValue];
+      }
+    }
+
+    task.recurrenceInterval = data['recurrence_interval'] as int?;
+    task.recurrenceDaysString = data['recurrence_days_string'] as String?;
+    task.recurrenceStartDate = convertToDateTime(data['recurrence_start_date']);
+    task.recurrenceEndDate = convertToDateTime(data['recurrence_end_date']);
+    task.recurrenceCount = data['recurrence_count'] as int?;
+    task.recurrenceParentId = data['recurrence_parent_id'] as String?;
+
     return task;
   }
 
@@ -191,6 +216,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Keep dates in local timezone
     DateTime? plannedDate = entity.plannedDate;
     DateTime? deadlineDate = entity.deadlineDate;
+    DateTime? recurrenceStartDate = entity.recurrenceStartDate;
+    DateTime? recurrenceEndDate = entity.recurrenceEndDate;
 
     // No need to convert to UTC, keep in local timezone
 
@@ -210,6 +237,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       order: Value(entity.order),
       plannedDateReminderTime: Value(entity.plannedDateReminderTime),
       deadlineDateReminderTime: Value(entity.deadlineDateReminderTime),
+      recurrenceType: Value(entity.recurrenceType),
+      recurrenceInterval: Value(entity.recurrenceInterval),
+      recurrenceDaysString: Value(entity.recurrenceDaysString),
+      recurrenceStartDate: Value(recurrenceStartDate),
+      recurrenceEndDate: Value(recurrenceEndDate),
+      recurrenceCount: Value(entity.recurrenceCount),
+      recurrenceParentId: Value(entity.recurrenceParentId),
     );
   }
 }

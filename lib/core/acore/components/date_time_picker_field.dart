@@ -129,7 +129,7 @@ class DateTimePickerField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       readOnly: true,
-      style: AppTheme.bodySmall,
+      style: AppTheme.bodySmall.copyWith(color: AppTheme.textColor),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTheme.bodySmall,
@@ -147,7 +147,7 @@ class DateTimePickerField extends StatelessWidget {
                     onConfirm(null);
                   },
                   child: Tooltip(
-                    message: clearButtonTooltip ?? 'Clear date',
+                    message: clearButtonTooltip,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Icon(
@@ -171,7 +171,6 @@ class DateTimePickerField extends StatelessWidget {
                   child: Icon(
                     Icons.edit,
                     size: AppTheme.iconSizeSmall,
-                    color: Colors.grey,
                   ),
                 ),
               ),
