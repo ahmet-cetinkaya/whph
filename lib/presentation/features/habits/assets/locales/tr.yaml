@@ -25,6 +25,14 @@ habits:
     tag_already_exists: Bu etiket zaten eklenmiş
     loading_archive_status: Arşiv durumu yüklenemedi
     toggling_archive: Arşiv durumu değiştirilemedi
+  goals:
+    goal: Hedef
+    target_frequency: Hedef Sıklığı
+    period_days: Periyot Günleri
+    enable: Hedefleri Etkinleştir
+    goal_format: "{count} kez {dayCount} gün içinde"
+    settings: Hedef Ayarları
+    current_goal: Hedef
   details:
     description: Açıklama
     tags: Etiketler

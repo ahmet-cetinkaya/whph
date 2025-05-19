@@ -14,6 +14,9 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final bool? hasReminder;
   final String? reminderTime;
   final List<int>? reminderDays;
+  final bool? hasGoal;
+  final int? targetFrequency;
+  final int? periodDays;
 
   SaveHabitCommand({
     this.id,
@@ -24,6 +27,9 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
     this.hasReminder,
     this.reminderTime,
     this.reminderDays,
+    this.hasGoal,
+    this.targetFrequency,
+    this.periodDays,
   });
 }
 
@@ -74,6 +80,17 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         habit.setReminderDaysFromList(request.reminderDays!);
       }
 
+      // Update goal settings if provided
+      if (request.hasGoal != null) {
+        habit.hasGoal = request.hasGoal!;
+      }
+      if (request.targetFrequency != null) {
+        habit.targetFrequency = request.targetFrequency!;
+      }
+      if (request.periodDays != null) {
+        habit.periodDays = request.periodDays!;
+      }
+
       await _habitRepository.update(habit);
     } else {
       // Create habit with default values
@@ -85,6 +102,9 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         estimatedTime: request.estimatedTime,
         hasReminder: request.hasReminder ?? false,
         reminderTime: request.reminderTime,
+        hasGoal: request.hasGoal ?? false,
+        targetFrequency: request.targetFrequency ?? 1,
+        periodDays: request.periodDays ?? 7,
       );
 
       // Set reminder days using the helper method

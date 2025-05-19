@@ -13,6 +13,7 @@ import 'package:whph/application/features/habits/commands/remove_habit_tag_comma
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_reminder_selector.dart';
+import 'package:whph/presentation/features/habits/components/habit_goal_dialog.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
@@ -66,6 +67,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyDescription = 'description';
   static const String keyReminder = 'reminder';
+  static const String keyGoal = 'goal';
 
   @override
   void initState() {
@@ -415,6 +417,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       hasReminder: _habit!.hasReminder,
       reminderTime: _habit!.reminderTime,
       reminderDays: reminderDaysToSend, // Always use the latest list from the habit object
+      hasGoal: _habit!.hasGoal,
+      targetFrequency: _habit!.targetFrequency,
+      periodDays: _habit!.periodDays,
     );
 
     await AsyncErrorHandler.executeVoid(
@@ -468,6 +473,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
       if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
+      if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
     });
   }
 
@@ -506,6 +512,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _habit!.description.isNotEmpty;
       case keyReminder:
         return _habit!.hasReminder;
+      case keyGoal:
+        return _habit!.hasGoal;
       default:
         return false;
     }
@@ -522,6 +530,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _translationService.translate(HabitTranslationKeys.descriptionLabel);
       case keyReminder:
         return _translationService.translate(HabitTranslationKeys.enableReminders);
+      case keyGoal:
+        return _translationService.translate(HabitTranslationKeys.goalSettings);
       default:
         return '';
     }
@@ -538,6 +548,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return HabitUiConstants.descriptionIcon;
       case keyReminder:
         return Icons.notifications;
+      case keyGoal:
+        return Icons.track_changes;
       default:
         return Icons.add;
     }
@@ -579,6 +591,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       keyEstimatedTime,
       keyDescription,
       if (!_habit!.isArchived()) keyReminder,
+      if (!_habit!.isArchived()) keyGoal,
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -620,11 +633,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           if (_isFieldVisible(keyTags) ||
               _isFieldVisible(keyEstimatedTime) ||
               _isFieldVisible(keyReminder) ||
+              _isFieldVisible(keyGoal) ||
               _habit!.archivedDate != null)
             DetailTable(rowData: [
               if (_isFieldVisible(keyTags)) _buildTagsSection(),
               if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
               if (_isFieldVisible(keyReminder)) _buildReminderSection(),
+              if (_isFieldVisible(keyGoal)) _buildGoalSection(),
               if (_habit!.archivedDate != null) _buildArchivedDateSection(),
             ]),
 
@@ -675,6 +690,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               onNextMonth: _nextMonth,
               habitId: widget.habitId,
               archivedDate: _habit!.archivedDate?.toLocal(),
+              hasGoal: _habit!.hasGoal,
+              targetFrequency: _habit!.targetFrequency,
+              periodDays: _habit!.periodDays,
             ),
           ],
 
@@ -688,6 +706,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               firstRecordDate: _habitRecords!.items.isNotEmpty
                   ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
                   : _habit!.createdDate,
+              hasGoal: _habit!.hasGoal,
+              targetFrequency: _habit!.targetFrequency,
+              periodDays: _habit!.periodDays,
             ),
           ),
         ],
@@ -849,6 +870,58 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           ),
         ),
       );
+
+  DetailTableRowData _buildGoalSection() {
+    final now = DateTime.now();
+    final bool isArchived = _habit!.archivedDate != null && _habit!.archivedDate!.toLocal().isBefore(now);
+
+    return DetailTableRowData(
+      label: _translationService.translate(HabitTranslationKeys.goalSettings),
+      icon: Icons.track_changes,
+      widget: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          enabled: !isArchived,
+          title: Text(
+            _habit!.hasGoal
+                ? _translationService.translate(HabitTranslationKeys.goalFormat,
+                    namedArgs: {'count': _habit!.targetFrequency.toString(), 'dayCount': _habit!.periodDays.toString()})
+                : _translationService.translate(HabitTranslationKeys.enableGoals),
+            style: AppTheme.bodyMedium,
+          ),
+          trailing: Icon(
+            Icons.chevron_right,
+            color: isArchived ? Theme.of(context).disabledColor : null,
+          ),
+          onTap: isArchived
+              ? null
+              : () async {
+                  final result = await showDialog<HabitGoalResult>(
+                    context: context,
+                    builder: (context) => HabitGoalDialog(
+                      hasGoal: _habit!.hasGoal,
+                      targetFrequency: _habit!.targetFrequency,
+                      periodDays: _habit!.periodDays,
+                      translationService: _translationService,
+                    ),
+                  );
+
+                  if (result != null && mounted) {
+                    setState(() {
+                      _habit!.hasGoal = result.hasGoal;
+                      if (result.hasGoal) {
+                        _habit!.targetFrequency = result.targetFrequency;
+                        _habit!.periodDays = result.periodDays;
+                      }
+                    });
+                    await _saveHabitImmediately();
+                  }
+                },
+        ),
+      ),
+    );
+  }
 
   void _adjustEstimatedTime(int adjustment) {
     if (!mounted) return;

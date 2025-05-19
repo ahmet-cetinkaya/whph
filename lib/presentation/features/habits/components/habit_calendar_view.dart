@@ -20,6 +20,9 @@ class HabitCalendarView extends StatefulWidget {
   final Function() onNextMonth;
   final VoidCallback? onRecordChanged;
   final DateTime? archivedDate;
+  final bool hasGoal;
+  final int targetFrequency;
+  final int periodDays;
 
   const HabitCalendarView({
     super.key,
@@ -32,6 +35,9 @@ class HabitCalendarView extends StatefulWidget {
     required this.onNextMonth,
     this.onRecordChanged,
     this.archivedDate,
+    this.hasGoal = false,
+    this.targetFrequency = 1,
+    this.periodDays = 7,
   });
 
   @override
@@ -179,6 +185,31 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     bool hasRecord = widget.records.any((record) => _isSameDay(record.date, date));
     final maxDate = widget.archivedDate ?? DateTime.now();
     bool isFutureDate = date.isAfter(maxDate);
+    bool isCurrentMonth = date.month == widget.currentMonth.month;
+
+    // Get goal-related information
+    final bool isGoalMet = _isGoalMet(date);
+    final double goalCompletion = _getGoalCompletionPercentage(date);
+
+    // Determine background color based on goal achievement (only for current month dates)
+    Color backgroundColor = AppTheme.surface1;
+    if (widget.hasGoal && isCurrentMonth && !isFutureDate) {
+      if (isGoalMet) {
+        backgroundColor = Colors.green.withValues(alpha: 0.2);
+      } else if (goalCompletion > 0) {
+        // Show a gradient from red to green based on completion percentage
+        backgroundColor =
+            Color.lerp(Colors.red.withValues(alpha: 0.2), Colors.green.withValues(alpha: 0.2), goalCompletion) ??
+                Colors.red.withValues(alpha: 0.2);
+      } else {
+        backgroundColor = Colors.red.withValues(alpha: 0.1);
+      }
+    }
+
+    // If it's not the current month, use a faded background
+    if (!isCurrentMonth) {
+      backgroundColor = AppTheme.surface1.withValues(alpha: 0.5);
+    }
 
     HabitRecordListItem? recordForDay;
     if (hasRecord) {
@@ -200,19 +231,78 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             },
       style: ElevatedButton.styleFrom(
         foregroundColor: AppTheme.textColor,
-        disabledBackgroundColor: AppTheme.surface2.withValues(alpha: 0.3),
+        backgroundColor: backgroundColor,
+        disabledBackgroundColor:
+            isCurrentMonth ? AppTheme.surface2.withValues(alpha: 0.3) : AppTheme.surface2.withValues(alpha: 0.1),
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      child: hasRecord
-          ? const Icon(Icons.check, color: Colors.green)
-          : Icon(Icons.close, color: isFutureDate ? Colors.grey.withValues(alpha: 0.3) : Colors.red),
+      child: Stack(
+        children: [
+          Center(
+            child: hasRecord
+                ? const Icon(Icons.check, color: Colors.green)
+                : Icon(
+                    widget.hasGoal && isGoalMet ? Icons.check : Icons.close,
+                    color: isFutureDate
+                        ? Colors.grey.withValues(alpha: 0.3)
+                        : widget.hasGoal && isGoalMet
+                            ? Colors.grey.withValues(alpha: 0.5)
+                            : Colors.red,
+                  ),
+          ),
+          Positioned(
+            bottom: 2,
+            right: 4,
+            child: Text(
+              date.day.toString(),
+              style: TextStyle(
+                color: AppTheme.textColor.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+  // Calculate goal achievement for a specific date window
+  int _getCompletedCountForPeriod(DateTime date) {
+    if (!widget.hasGoal) return 0;
+
+    // Calculate start and end dates for the period
+    final DateTime periodEnd = date;
+    final DateTime periodStart = date.subtract(Duration(days: widget.periodDays - 1));
+
+    // Count records within the period
+    return widget.records
+        .where((record) =>
+            record.date.isAfter(periodStart.subtract(const Duration(days: 1))) &&
+            record.date.isBefore(periodEnd.add(const Duration(days: 1))))
+        .length;
+  }
+
+  // Check if goal is met for a given date
+  bool _isGoalMet(DateTime date) {
+    if (!widget.hasGoal) return true;
+    final completedCount = _getCompletedCountForPeriod(date);
+    return completedCount >= widget.targetFrequency;
+  }
+
+  // Get goal completion percentage for a given date
+  double _getGoalCompletionPercentage(DateTime date) {
+    if (!widget.hasGoal || widget.targetFrequency <= 0) return 1.0;
+
+    final completedCount = _getCompletedCountForPeriod(date);
+    final percentage = completedCount / widget.targetFrequency;
+
+    // Cap at 100% even if overachieved
+    return percentage > 1.0 ? 1.0 : percentage;
   }
 }
