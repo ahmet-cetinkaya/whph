@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -447,10 +446,14 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           displayTooltip = selectedTagNames.join(', ');
         }
       } else {
-        displayWidget = Icon(
-          widget.icon,
-          size: widget.iconSize ?? AppTheme.iconSizeSmall,
-          color: widget.color,
+        displayWidget = IconButton(
+          icon: Icon(
+            widget.icon,
+            color: widget.color,
+          ),
+          iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+          onPressed: () => _showTagSelectionModal(context),
+          tooltip: displayTooltip,
         );
         if (selectedTagNames.isNotEmpty) {
           displayTooltip = selectedTagNames.join(', ');
@@ -464,10 +467,14 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         ),
       );
     } else {
-      displayWidget = Icon(
-        widget.icon,
-        size: widget.iconSize ?? AppTheme.iconSizeSmall,
-        color: widget.color,
+      displayWidget = IconButton(
+        icon: Icon(
+          widget.icon,
+          color: widget.color,
+        ),
+        iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+        onPressed: () => _showTagSelectionModal(context),
+        tooltip: displayTooltip,
       );
     }
 
@@ -492,19 +499,23 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       ),
                     ),
                   )
-                : FilterIconButton(
-                    icon: widget.icon,
+                : IconButton(
+                    icon: Icon(
+                      widget.icon,
+                      color: widget.color ?? Theme.of(context).iconTheme.color,
+                    ),
                     iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
-                    color: widget.color ?? Theme.of(context).iconTheme.color,
                     onPressed: () => _showTagSelectionModal(context),
                     tooltip: displayTooltip ?? '',
                   ),
           ),
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
-          FilterIconButton(
-            icon: widget.icon,
+          IconButton(
+            icon: Icon(
+              widget.icon,
+              color: widget.color ?? Colors.white,
+            ),
             iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
-            color: widget.color ?? Theme.of(context).iconTheme.color,
             onPressed: () => _showTagSelectionModal(context),
             tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
           ),

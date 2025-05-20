@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -185,7 +186,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.label,
+                            TagUiConstants.tagIcon,
                             size: AppTheme.fontSizeLarge,
                           ),
                           const SizedBox(width: 8),

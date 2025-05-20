@@ -6,6 +6,5 @@ class NoteUiConstants {
   static const IconData deleteIcon = Icons.delete;
   static const IconData editIcon = Icons.edit;
   static const IconData saveIcon = Icons.save;
-  static const IconData tagsIcon = Icons.label;
   static const IconData colorIcon = Icons.color_lens;
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'dart:async';
@@ -134,7 +134,7 @@ class _TaskFiltersState extends State<TaskFilters> {
                       onTagsSelected: (tags, isNoneSelected) {
                         widget.onTagFilterChange!(tags, isNoneSelected);
                       },
-                      icon: TaskUiConstants.tagsIcon,
+                      icon: TagUiConstants.tagIcon,
                       iconSize: AppTheme.iconSizeMedium,
                       color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
                           ? primaryColor

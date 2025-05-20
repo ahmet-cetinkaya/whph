@@ -14,7 +14,6 @@ class TaskUiConstants {
   static const IconData plannedDateOutlinedIcon = Icons.event_outlined;
   static const IconData deadlineDateIcon = Icons.alarm;
   static const IconData deadlineDateOutlinedIcon = Icons.alarm_outlined;
-  static const IconData tagsIcon = Icons.label;
   static const IconData descriptionIcon = Icons.description;
   static const IconData timerIcon = Icons.timelapse_outlined;
 

@@ -7,6 +7,7 @@ import 'package:whph/presentation/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -120,7 +121,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       _showNoTagsFilter = isNoneSelected; // Update "None" filter state
                     });
                   },
-                  icon: Icons.label,
+                  icon: TagUiConstants.tagIcon,
                   color: (_selectedTagFilter?.isNotEmpty ?? false) || _showNoTagsFilter
                       ? AppTheme.primaryColor
                       : Colors.grey,

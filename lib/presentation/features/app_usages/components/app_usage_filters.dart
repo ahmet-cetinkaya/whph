@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -112,7 +113,7 @@ class _AppUsageFiltersState extends State<AppUsageFilters> {
             showLength: true,
             showNoneOption: true,
             initialNoneSelected: _currentState.showNoTagsFilter,
-            icon: Icons.label,
+            icon: TagUiConstants.tagIcon,
             iconSize: AppTheme.iconSizeMedium,
             color: (_currentState.tags?.isNotEmpty ?? false) || _currentState.showNoTagsFilter
                 ? AppTheme.primaryColor

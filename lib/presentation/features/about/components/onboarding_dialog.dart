@@ -8,6 +8,7 @@ import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/features/settings/pages/permissions_page.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
@@ -53,7 +54,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
         descriptionKey: AboutTranslationKeys.onboardingDescription5,
       ),
       _OnboardingStep(
-        icon: Icons.label,
+        icon: TagUiConstants.tagIcon,
         titleKey: AboutTranslationKeys.onboardingTitle6,
         descriptionKey: AboutTranslationKeys.onboardingDescription6,
       ),

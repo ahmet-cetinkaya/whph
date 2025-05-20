@@ -10,6 +10,7 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/time/week_days.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
@@ -621,7 +622,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.tagsLabel),
-        icon: TaskUiConstants.tagsIcon,
+        icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(TaskTranslationKeys.tagsHint),
         widget: TagSelectDropdown(
           key: ValueKey(_taskTags!.items.length),
@@ -927,7 +928,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   IconData _getFieldIcon(String fieldKey) {
     switch (fieldKey) {
       case keyTags:
-        return TaskUiConstants.tagsIcon;
+        return TagUiConstants.tagIcon;
       case keyPriority:
         return TaskUiConstants.priorityIcon;
       case keyEstimatedTime:
