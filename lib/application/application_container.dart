@@ -83,6 +83,8 @@ void registerApplication(IContainer container) {
     taskRepository,
     taskTagRepository,
     taskTimeRecordRepository,
+    habitRepository,
+    habitRecordRepository,
     habitTagRepository,
   );
   registerSettingsFeature(

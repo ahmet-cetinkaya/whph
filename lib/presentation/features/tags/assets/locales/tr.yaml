@@ -113,6 +113,9 @@ tags:
   time_chart:
     no_data: Veri bulunamadı
     other_category: Diğer
+  time_bar_chart:
+    title: Zaman Dağılımı
+    no_data: Veri bulunamadı
   details:
     name: İsim
     color: Renk

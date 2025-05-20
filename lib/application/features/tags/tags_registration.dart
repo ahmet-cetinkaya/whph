@@ -1,10 +1,15 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/application/features/tags/queries/get_elements_by_time_query.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/application/features/tags/queries/get_tag_times_data_query.dart';
 import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -12,7 +17,6 @@ import 'package:whph/application/features/tags/services/abstraction/i_tag_tag_re
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 
 void registerTagsFeature(
@@ -25,6 +29,8 @@ void registerTagsFeature(
   ITaskRepository taskRepository,
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
+  IHabitRepository habitRepository,
+  IHabitRecordRepository habitRecordRepository,
   IHabitTagsRepository habitTagRepository,
 ) {
   mediator
@@ -53,6 +59,24 @@ void registerTagsFeature(
         appUsageTagRepository: appUsageTagRepository,
         taskTagRepository: taskTagRepository,
         habitTagRepository: habitTagRepository,
+      ),
+    )
+    ..registerHandler<GetTagQuery, GetTagQueryResponse, GetTagQueryHandler>(
+      () => GetTagQueryHandler(
+        tagRepository: tagRepository,
+      ),
+    )
+    ..registerHandler<GetElementsByTimeQuery, GetElementsByTimeQueryResponse, GetElementsByTimeQueryHandler>(
+      () => GetElementsByTimeQueryHandler(
+        appUsageTimeRecordRepository: appUsageTimeRecordRepository,
+        appUsageTagRepository: appUsageTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+        taskRepository: taskRepository,
+        taskTagRepository: taskTagRepository,
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
+        habitTagRepository: habitTagRepository,
+        tagRepository: tagRepository,
       ),
     )
     ..registerHandler<SaveTagCommand, SaveTagCommandResponse, SaveTagCommandHandler>(
