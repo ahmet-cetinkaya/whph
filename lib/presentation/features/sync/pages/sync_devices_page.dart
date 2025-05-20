@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/commands/delete_sync_command.dart';
 import 'package:whph/application/features/sync/commands/sync_command.dart';
 import 'package:whph/application/features/sync/queries/get_list_syncs_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -287,9 +287,7 @@ class SyncDeviceListItemWidget extends StatelessWidget {
                         label: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Text(
-                            item.lastSyncDate != null
-                                ? DateFormat('yyyy/MM/dd kk:mm:ss').format(item.lastSyncDate!.toLocal())
-                                : 'Never',
+                            item.lastSyncDate != null ? DateTimeHelper.formatDate(item.lastSyncDate) : '-',
                             style: AppTheme.labelXSmall,
                           ),
                         ),

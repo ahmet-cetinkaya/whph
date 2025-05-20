@@ -10,6 +10,7 @@ import 'package:whph/core/acore/time/week_days.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -37,8 +38,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     required this.title,
     this.description,
     this.priority,
-    this.plannedDate,
-    this.deadlineDate,
+    DateTime? plannedDate,
+    DateTime? deadlineDate,
     this.estimatedTime,
     this.isCompleted = false,
     this.tagIdsToAdd,
@@ -49,10 +50,13 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceType,
     this.recurrenceInterval,
     this.recurrenceDays,
-    this.recurrenceStartDate,
-    this.recurrenceEndDate,
+    DateTime? recurrenceStartDate,
+    DateTime? recurrenceEndDate,
     this.recurrenceCount,
-  });
+  })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
+        deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
+        recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
+        recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
 }
 
 class SaveTaskCommandResponse {
@@ -148,7 +152,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       task = Task(
           id: KeyHelper.generateStringId(),
-          createdDate: DateTime.now().toUtc(),
+          createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
           title: request.title,
           description: request.description,
           priority: request.priority,
@@ -175,7 +179,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           id: KeyHelper.generateStringId(),
           taskId: task.id,
           tagId: tagId,
-          createdDate: DateTime.now().toUtc(),
+          createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
         );
         await _taskTagRepository.add(taskTag);
       }

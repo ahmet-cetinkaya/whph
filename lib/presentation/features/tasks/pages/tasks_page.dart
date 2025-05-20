@@ -67,8 +67,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   void _onDateFilterChange(DateTime? start, DateTime? end) {
     if (mounted) {
       setState(() {
-        _filterStartDate = start?.toUtc();
-        _filterEndDate = end?.toUtc();
+        _filterStartDate = start;
+        _filterEndDate = end;
       });
     }
   }
@@ -180,10 +180,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             filterByCompleted: _showCompletedTasks,
             filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
             filterNoTags: _showNoTagsFilter,
-            filterByPlannedStartDate: _filterStartDate?.toUtc(),
-            filterByPlannedEndDate: _filterEndDate?.toUtc(),
-            filterByDeadlineStartDate: _filterStartDate?.toUtc(),
-            filterByDeadlineEndDate: _filterEndDate?.toUtc(),
+            filterByPlannedStartDate: _filterStartDate,
+            filterByPlannedEndDate: _filterEndDate,
+            filterByDeadlineStartDate: _filterStartDate,
+            filterByDeadlineEndDate: _filterEndDate,
             filterDateOr: true,
             sortByPlannedDate: SortDirection.asc,
             search: _searchQuery,

@@ -9,6 +9,7 @@ import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class TaskCompleteButton extends StatefulWidget {
   final String taskId;
@@ -79,8 +80,8 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           title: task.title,
           description: task.description,
           priority: task.priority,
-          plannedDate: task.plannedDate?.toUtc(),
-          deadlineDate: task.deadlineDate?.toUtc(),
+          plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
+          deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
           estimatedTime: task.estimatedTime,
           isCompleted: !originalCompletedState,
           plannedDateReminderTime: task.plannedDateReminderTime,

@@ -4,6 +4,7 @@ import 'package:whph/application/features/app_usages/queries/get_app_usage_stati
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/features/about/components/support_dialog.dart';
@@ -34,12 +35,11 @@ class SupportDialogService implements ISupportDialogService {
 
     // Get app usage statistics
     final appUsage = appUsageResponse.items.first;
-    final now = DateTime.now();
     final statistics = await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(
       GetAppUsageStatisticsQuery(
         appUsageId: appUsage.id,
-        startDate: DateTime(2023), // From beginning
-        endDate: now,
+        startDate: DateTime(0).toUtc(),
+        endDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       ),
     );
 
@@ -71,11 +71,10 @@ class SupportDialogService implements ISupportDialogService {
   }
 
   Future<void> _markSupportDialogAsShown() async {
-    final command = SaveSettingCommand(
+    await _mediator.send(SaveSettingCommand(
       key: SettingKeys.supportDialogShown,
       value: 'true',
       valueType: SettingValueType.bool,
-    );
-    await _mediator.send(command);
+    ));
   }
 }

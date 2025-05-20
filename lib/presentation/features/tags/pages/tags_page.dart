@@ -86,8 +86,8 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
-    final newStartDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-    final newEndDate = endDate ?? DateTime.now();
+    final DateTime newStartDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
+    final DateTime newEndDate = endDate ?? DateTime.now();
 
     if (CollectionUtils.hasValueChanged(_startDate, newStartDate) ||
         CollectionUtils.hasValueChanged(_endDate, newEndDate)) {

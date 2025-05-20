@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
@@ -132,8 +133,11 @@ class AppUsageListState extends State<AppUsageList> {
       pageSize: widget.size,
       filterByTags: _currentFilters.filterByTags,
       showNoTagsFilter: _currentFilters.showNoTagsFilter,
-      startDate: _currentFilters.filterStartDate,
-      endDate: _currentFilters.filterEndDate,
+      startDate: _currentFilters.filterStartDate != null
+          ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
+          : null,
+      endDate:
+          _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
     );
 
     await AsyncErrorHandler.execute<List<AppUsageListItem>>(

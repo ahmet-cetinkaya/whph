@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
 
 class AddAppUsageTagRuleCommand implements IRequest<AddAppUsageTagRuleCommandResponse> {
@@ -31,7 +32,7 @@ class AddAppUsageTagRuleCommandHandler
   Future<AddAppUsageTagRuleCommandResponse> call(AddAppUsageTagRuleCommand request) async {
     final rule = AppUsageTagRule(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       pattern: request.pattern,
       tagId: request.tagId,
       description: request.description,

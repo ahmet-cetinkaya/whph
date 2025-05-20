@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/notes/note_tag.dart';
 
 class AddNoteTagCommand implements IRequest<AddNoteTagCommandResponse> {
@@ -34,7 +35,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
     }
 
     final id = KeyHelper.generateStringId();
-    final now = DateTime.now();
+    final now = DateTimeHelper.toUtcDateTime(DateTime.now());
 
     final noteTag = NoteTag(
       id: id,

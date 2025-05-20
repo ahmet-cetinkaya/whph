@@ -3,6 +3,7 @@ import 'package:whph/core/acore/time/week_days.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 
@@ -26,11 +27,11 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
     return Task(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       title: task.title,
       description: task.description,
-      plannedDate: nextPlannedDate,
-      deadlineDate: nextDeadlineDate,
+      plannedDate: nextPlannedDate != null ? DateTimeHelper.toUtcDateTime(nextPlannedDate) : null,
+      deadlineDate: nextDeadlineDate != null ? DateTimeHelper.toUtcDateTime(nextDeadlineDate) : null,
       priority: task.priority,
       estimatedTime: task.estimatedTime,
       isCompleted: false,
@@ -41,8 +42,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       recurrenceType: task.recurrenceType,
       recurrenceInterval: task.recurrenceInterval,
       recurrenceDaysString: task.recurrenceDaysString,
-      recurrenceStartDate: task.recurrenceStartDate,
-      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceStartDate:
+          task.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(task.recurrenceStartDate!) : null,
+      recurrenceEndDate: task.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(task.recurrenceEndDate!) : null,
       recurrenceCount: task.recurrenceCount != null ? task.recurrenceCount! - 1 : null,
       recurrenceParentId: task.id,
     );

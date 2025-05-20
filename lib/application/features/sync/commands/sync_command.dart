@@ -24,6 +24,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
@@ -313,7 +314,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   }
 
   Future<void> _saveSyncDevice(SyncDevice sync) async {
-    sync.lastSyncDate = DateTime.now().toUtc();
+    sync.lastSyncDate = DateTimeHelper.toUtcDateTime(DateTime.now());
     await syncDeviceRepository.update(sync);
   }
 

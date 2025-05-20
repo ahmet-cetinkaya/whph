@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/application/features/tasks/constants/task_translation_keys.dart';
 
@@ -36,7 +37,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
 
     final taskTag = TaskTag(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       taskId: request.taskId,
       tagId: request.tagId,
     );

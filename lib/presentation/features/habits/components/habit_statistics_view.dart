@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
@@ -9,6 +8,7 @@ import 'package:whph/presentation/features/habits/constants/habit_ui_constants.d
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class HabitStatisticsView extends StatefulWidget {
   final HabitStatistics statistics;
@@ -87,8 +87,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   }
 
   Widget _buildStatusBanner() {
-    final dateFormatter = DateFormat('MMM d, yyyy');
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -110,8 +108,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           Expanded(
             child: Text(
               _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
-                'startDate': dateFormatter.format(widget.firstRecordDate),
-                'archivedDate': dateFormatter.format(widget.archivedDate!)
+                'startDate': DateTimeHelper.formatDate(widget.firstRecordDate),
+                'archivedDate': DateTimeHelper.formatDate(widget.archivedDate!)
               }),
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.blue[700],
@@ -360,7 +358,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           SizedBox(
             width: 60,
             child: Text(
-              DateFormat('M/d').format(streak.startDate),
+              DateTimeHelper.formatDate(streak.startDate, format: 'M/d'),
               style: AppTheme.bodySmall.copyWith(color: Colors.grey),
               textAlign: TextAlign.end,
             ),
@@ -425,7 +423,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           SizedBox(
             width: 60,
             child: Text(
-              DateFormat('M/d').format(streak.endDate),
+              DateTimeHelper.formatDate(streak.endDate, format: 'M/d'),
               style: const TextStyle(fontSize: AppTheme.fontSizeSmall, color: Colors.grey),
             ),
           ),

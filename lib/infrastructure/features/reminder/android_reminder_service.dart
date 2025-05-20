@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_reminder_service.dart';
@@ -24,14 +25,13 @@ class AndroidReminderService implements IReminderService {
     // Initialize timezone data
     tz.initializeTimeZones();
 
-    // Set local timezone explicitly
+    // Ensure we use the local timezone
     try {
       final String timeZoneName = DateTime.now().timeZoneName;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } catch (e) {
-      // Fallback to UTC if we can't determine the local timezone
-      tz.setLocalLocation(tz.UTC);
-      if (kDebugMode) debugPrint('Error setting timezone: $e, falling back to UTC');
+      if (kDebugMode) debugPrint('Error setting timezone: $e');
+      // Even if we can't determine the timezone name, we'll use local time
     }
   }
 
@@ -55,17 +55,20 @@ class AndroidReminderService implements IReminderService {
       return;
     }
 
-    // Only schedule if the reminder time is in the future
+    // Ensure the scheduled date is in local time
+    final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
+
+    // Compare with local time
     final now = DateTime.now();
-    if (scheduledDate.isBefore(now)) {
+    if (localScheduledDate.isBefore(now)) {
       if (kDebugMode) debugPrint('Scheduled date is in the past');
       return;
     }
 
     final notificationId = application.KeyHelper.generateNumericId();
 
-    // Calculate seconds until the notification should be shown
-    final int delaySeconds = scheduledDate.difference(now).inSeconds;
+    // Calculate seconds until the notification should be shown using local time
+    final int delaySeconds = localScheduledDate.difference(DateTime.now()).inSeconds;
 
     try {
       final success = await _scheduleNotification(
@@ -163,10 +166,10 @@ class AndroidReminderService implements IReminderService {
 
   /// Calculate the next occurrence of a specific day of the week and time
   DateTime _getNextOccurrence(int day, TimeOfDay time) {
-    // Get current time
-    final now = DateTime.now();
+    // Get current time in local timezone
+    final now = DateTimeHelper.toLocalDateTime(DateTime.now());
 
-    // Create a DateTime for the specified time today
+    // Create a DateTime in local time for the specified time today
     DateTime scheduledDate = DateTime(
       now.year,
       now.month,

@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryResponse> {
   late int pageIndex;
@@ -16,10 +17,11 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     required this.pageSize,
     this.filterByTags,
     this.showNoTagsFilter = false,
-    this.startDate,
-    this.endDate,
+    DateTime? startDate,
+    DateTime? endDate,
     this.searchByProcessName,
-  });
+  })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
+        endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null;
 }
 
 class AppUsageListItem {

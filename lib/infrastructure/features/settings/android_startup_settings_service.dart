@@ -1,4 +1,5 @@
 import 'package:auto_start_flutter/auto_start_flutter.dart' as auto_start_flutter;
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/domain/features/settings/constants/setting_keys.dart';
@@ -54,7 +55,7 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
         key: SettingKeys.startAtStartup,
         value: isActive.toString(),
         valueType: SettingValueType.bool,
-        createdDate: DateTime.now().toUtc(),
+        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       ));
     }
   }

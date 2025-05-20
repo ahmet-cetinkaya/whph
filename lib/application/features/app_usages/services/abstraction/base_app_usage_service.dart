@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/app_usages/app_usage.dart';
 import 'package:whph/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
@@ -135,7 +136,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
           if (existingTag == null) {
             final appUsageTag = AppUsageTag(
               id: KeyHelper.generateStringId(),
-              createdDate: DateTime.now().toUtc(),
+              createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
               appUsageId: appUsage.id,
               tagId: rule.tagId,
             );
@@ -166,7 +167,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
         name: appName,
         color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
         deviceName: deviceName,
-        createdDate: DateTime.now().toUtc(),
+        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       );
       await _appUsageRepository.add(appUsage);
     }

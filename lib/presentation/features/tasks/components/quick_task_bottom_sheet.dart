@@ -9,12 +9,12 @@ import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dar
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
-import 'package:intl/intl.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/models/task_data.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -93,8 +93,8 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           tagIdsToAdd: _selectedTags.map((t) => t.value).toList(),
           priority: _selectedPriority,
           estimatedTime: _estimatedTime,
-          plannedDate: _plannedDate?.toUtc(),
-          deadlineDate: _deadlineDate?.toUtc(),
+          plannedDate: _plannedDate,
+          deadlineDate: _deadlineDate,
           isCompleted: false,
           parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
         );
@@ -110,8 +110,8 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             title: _titleController.text,
             priority: _selectedPriority,
             estimatedTime: _estimatedTime,
-            plannedDate: _plannedDate?.toUtc(),
-            deadlineDate: _deadlineDate?.toUtc(),
+            plannedDate: _plannedDate,
+            deadlineDate: _deadlineDate,
             tags: _selectedTags
                 .map((t) => TaskDataTag(
                       id: t.value,
@@ -121,7 +121,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             isCompleted: false,
             parentTaskId: widget.initialParentTaskId,
             order: 0.0, // Default order
-            createdDate: DateTime.now().toUtc(),
+            createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
           );
 
           widget.onTaskCreated!(response.id, taskData);
@@ -162,7 +162,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
 
   String? _getFormattedDate(DateTime? date) {
     if (date == null) return null;
-    return DateFormat('dd.MM.yy').format(date);
+    return DateTimeHelper.formatDate(date);
   }
 
   void _togglePriority() {

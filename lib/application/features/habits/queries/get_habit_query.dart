@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
 import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
@@ -131,8 +132,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     while (hasMoreRecords) {
       final result = await _habitRecordRepository.getListByHabitIdAndRangeDate(
         habitId,
-        DateTime(1970),
-        DateTime.now(),
+        DateTime(0).toUtc(),
+        DateTimeHelper.toUtcDateTime(DateTime.now()),
         pageIndex,
         pageSize,
       );
@@ -204,11 +205,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     int? totalDaysWithGoal;
 
     if (habit.hasGoal) {
-      // Son periyot için tarihleri hesapla
       final periodEnd = endDate;
       final periodStart = periodEnd.subtract(Duration(days: habit.periodDays - 1));
 
-      // Son periyottaki kayıtları say
       final recordsInCurrentPeriod = records
           .where((record) =>
               (record.date.isAfter(periodStart.subtract(const Duration(days: 1))) ||
@@ -219,7 +218,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       daysGoalMet = recordsInCurrentPeriod;
       totalDaysWithGoal = habit.targetFrequency;
       goalSuccessRate = recordsInCurrentPeriod.toDouble() / habit.targetFrequency;
-      if (goalSuccessRate > 1.0) goalSuccessRate = 1.0; // Hedefi aşsa bile maksimum 1.0 olsun
+      if (goalSuccessRate > 1.0) goalSuccessRate = 1.0;
     }
 
     return HabitStatistics(

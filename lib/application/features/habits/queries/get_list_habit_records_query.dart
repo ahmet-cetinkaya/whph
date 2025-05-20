@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetListHabitRecordsQuery implements IRequest<GetListHabitRecordsQueryResponse> {
   String habitId;
@@ -15,8 +16,10 @@ class GetListHabitRecordsQuery implements IRequest<GetListHabitRecordsQueryRespo
       {required this.pageIndex,
       required this.pageSize,
       required this.habitId,
-      required this.startDate,
-      required this.endDate});
+      required DateTime startDate,
+      required DateTime endDate})
+      : startDate = DateTimeHelper.toUtcDateTime(startDate),
+        endDate = DateTimeHelper.toUtcDateTime(endDate);
 }
 
 class HabitRecordListItem {

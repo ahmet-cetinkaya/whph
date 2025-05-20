@@ -230,7 +230,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     super.build(context);
     // Add today's date for filtering
     final now = DateTime.now();
-    final todayForFilter = DateTime(now.year, now.month, now.day).toUtc();
+    final todayForFilter = DateTime(now.year, now.month, now.day);
     final tomorrowForFilter = todayForFilter.add(const Duration(days: 1));
 
     return PopScope(
@@ -371,8 +371,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                 child: TaskList(
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTagIds,
-                  filterByPlannedEndDate: tomorrowForFilter.toUtc(),
-                  filterByDeadlineEndDate: tomorrowForFilter.toUtc(),
+                  filterByPlannedEndDate: tomorrowForFilter,
+                  filterByDeadlineEndDate: tomorrowForFilter,
                   filterDateOr: true,
                   search: _searchQuery,
                   onTaskCompleted: _onTasksChanged,

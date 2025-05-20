@@ -129,8 +129,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     }
 
     if (request.excludeCompleted) {
-      final startDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-      final endDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
+      final now = DateTime.now();
+      final startDate = DateTime(now.year, now.month, now.day).toUtc();
+      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
       conditions.add(
           "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0");
       variables.add(startDate);

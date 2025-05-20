@@ -198,7 +198,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: date.toUtc());
+        final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
         await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
       },
       onSuccess: () {
@@ -689,7 +689,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               onPreviousMonth: _previousMonth,
               onNextMonth: _nextMonth,
               habitId: widget.habitId,
-              archivedDate: _habit!.archivedDate?.toLocal(),
+              archivedDate: _habit!.archivedDate != null ? DateTimeHelper.toLocalDateTime(_habit!.archivedDate!) : null,
               hasGoal: _habit!.hasGoal,
               targetFrequency: _habit!.targetFrequency,
               periodDays: _habit!.periodDays,
@@ -702,7 +702,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             child: HabitStatisticsView(
               statistics: _habit!.statistics,
               habitId: widget.habitId,
-              archivedDate: _habit!.archivedDate?.toLocal(),
+              archivedDate: _habit!.archivedDate != null ? DateTimeHelper.toLocalDateTime(_habit!.archivedDate!) : null,
               firstRecordDate: _habitRecords!.items.isNotEmpty
                   ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
                   : _habit!.createdDate,
@@ -763,7 +763,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // Check if habit is archived and archived date is in the past
     final now = DateTime.now();
-    final bool isArchived = _habit!.archivedDate != null && _habit!.archivedDate!.toLocal().isBefore(now);
+    final bool isArchived =
+        _habit!.archivedDate != null && DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(now);
 
     return DetailTableRowData(
       label: _translationService.translate(HabitTranslationKeys.reminderSettings),
@@ -860,7 +861,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ),
               const SizedBox(width: 8),
               Text(
-                DateTimeHelper.formatDate(_habit!.archivedDate!.toLocal(), format: "MMM d, yyyy"),
+                DateTimeHelper.formatDate(_habit!.archivedDate!),
                 style: AppTheme.bodyMedium.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
@@ -873,7 +874,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   DetailTableRowData _buildGoalSection() {
     final now = DateTime.now();
-    final bool isArchived = _habit!.archivedDate != null && _habit!.archivedDate!.toLocal().isBefore(now);
+    final bool isArchived =
+        _habit!.archivedDate != null && DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(now);
 
     return DetailTableRowData(
       label: _translationService.translate(HabitTranslationKeys.goalSettings),
@@ -979,7 +981,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final bool hasRecordToday = _hasRecordForToday();
     final now = DateTime.now();
     final bool isArchived = _habit!.archivedDate != null &&
-        _habit!.archivedDate!.toLocal().isBefore(DateTime(now.year, now.month, now.day));
+        DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(DateTime(now.year, now.month, now.day));
     final tooltipText = isArchived
         ? _translationService.translate(HabitTranslationKeys.archivedStatus)
         : hasRecordToday
@@ -1010,7 +1012,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     await _deleteHabitRecord(recordToday.id);
                   }
                 } else {
-                  await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
+                  await _createHabitRecord(widget.habitId, DateTimeHelper.toUtcDateTime(DateTime.now()));
                 }
               },
         tooltip: tooltipText,

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -56,7 +57,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   String _formatDateForDisplay(DateTime? date) {
     if (date == null) return '';
-    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+    return DateTimeHelper.formatDate(date);
   }
 
   void _updateDateInput(String value, bool isStartDate) {

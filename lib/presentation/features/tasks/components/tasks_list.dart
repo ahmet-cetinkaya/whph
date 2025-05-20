@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
@@ -195,10 +196,18 @@ class TaskListState extends State<TaskList> {
         final query = GetListTasksQuery(
           pageIndex: pageIndex,
           pageSize: widget.size,
-          filterByPlannedStartDate: widget.filterByPlannedStartDate,
-          filterByPlannedEndDate: widget.filterByPlannedEndDate,
-          filterByDeadlineStartDate: widget.filterByDeadlineStartDate,
-          filterByDeadlineEndDate: widget.filterByDeadlineEndDate,
+          filterByPlannedStartDate: widget.filterByPlannedStartDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByPlannedStartDate!)
+              : null,
+          filterByPlannedEndDate: widget.filterByPlannedEndDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByPlannedEndDate!)
+              : null,
+          filterByDeadlineStartDate: widget.filterByDeadlineStartDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByDeadlineStartDate!)
+              : null,
+          filterByDeadlineEndDate: widget.filterByDeadlineEndDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByDeadlineEndDate!)
+              : null,
           filterDateOr: widget.filterDateOr,
           filterByTags: widget.filterByTags,
           filterNoTags: widget.filterNoTags,
