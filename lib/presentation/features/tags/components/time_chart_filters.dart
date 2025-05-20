@@ -105,7 +105,12 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
                 selectedStartDate: widget.selectedStartDate,
                 selectedEndDate: widget.selectedEndDate,
                 onDateFilterChange: (start, end) {
-                  if (start != null && end != null) {
+                  if (start == null || end == null) {
+                    // Return to default values when date filter is cleared
+                    final defaultStartDate = DateTime.now().subtract(const Duration(days: 30));
+                    final defaultEndDate = DateTime.now();
+                    widget.onDateFilterChange?.call(defaultStartDate, defaultEndDate);
+                  } else {
                     end = DateTime(end.year, end.month, end.day, 23, 59, 59);
                     widget.onDateFilterChange?.call(start, end);
                   }

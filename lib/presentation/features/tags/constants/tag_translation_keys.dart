@@ -70,6 +70,11 @@ class TagTranslationKeys {
   static const String allCategories = 'tags.filter.all_categories';
   static const String otherCategory = 'tags.time_chart.other_category';
 
+  // Time Bar Chart
+  static const String timeBarChartTitle = 'tags.time_bar_chart.title';
+  static const String timeBarChartNoData = 'tags.time_bar_chart.no_data';
+  static const String timeBarChartByElement = 'tags.time_bar_chart.by_element';
+
   // Time Categories
   static const String categoryAll = 'tags.categories.all';
   static const String categoryTasks = 'tags.categories.tasks';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/notes/commands/add_note_tag_command.dart';
+import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/components/note_add_button.dart';
 import 'package:whph/presentation/features/notes/components/note_filters.dart';
@@ -15,6 +16,8 @@ import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_delete_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_details_content.dart';
+import 'package:whph/presentation/features/tags/components/tag_time_bar_chart.dart';
+import 'package:whph/presentation/features/tags/components/time_chart_filters.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -39,6 +42,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   String? _taskSearchQuery;
   String? _noteSearchQuery;
   bool _showCompletedTasks = false;
+
+  final _barChartKey = GlobalKey<TagTimeBarChartState>();
+  DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime _endDate = DateTime.now();
+  Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
 
   @override
   bool get wantKeepAlive => true;
@@ -102,10 +110,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
             ),
             const SizedBox(height: AppTheme.sizeSmall),
 
-            // Tasks and Notes sections
+            // Tab sections
             Expanded(
               child: DefaultTabController(
-                length: 2,
+                length: 3,
                 child: Column(
                   children: [
                     // Tab Bar with custom decoration
@@ -121,6 +129,16 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                       child: TabBar(
                         dividerColor: Colors.transparent,
                         tabs: [
+                          Tab(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.bar_chart),
+                                const SizedBox(width: 8),
+                                Text(_translationService.translate(TagTranslationKeys.timeBarChartTitle)),
+                              ],
+                            ),
+                          ),
                           Tab(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -149,6 +167,62 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                     Expanded(
                       child: TabBarView(
                         children: [
+                          // Time Bar Chart Tab
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.sizeSmall,
+                                  vertical: AppTheme.sizeXSmall,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      _translationService.translate(TagTranslationKeys.timeBarChartTitle),
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    // Time Chart Filters
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppTheme.sizeSmall,
+                                        vertical: AppTheme.sizeXSmall,
+                                      ),
+                                      child: TimeChartFilters(
+                                        selectedStartDate: _startDate,
+                                        selectedEndDate: _endDate,
+                                        selectedCategories: _selectedCategories,
+                                        onDateFilterChange: (start, end) {
+                                          setState(() {
+                                            _startDate = start;
+                                            _endDate = end;
+                                            _barChartKey.currentState?.refresh();
+                                          });
+                                        },
+                                        onCategoriesChanged: (categories) {
+                                          setState(() {
+                                            _selectedCategories = categories;
+                                            _barChartKey.currentState?.refresh();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Bar Chart
+                              Expanded(
+                                child: TagTimeBarChart(
+                                  key: _barChartKey,
+                                  filterByTags: [widget.tagId],
+                                  startDate: _startDate,
+                                  endDate: _endDate,
+                                  selectedCategories: _selectedCategories,
+                                ),
+                              ),
+                            ],
+                          ),
+
                           // Tasks Tab
                           Column(
                             children: [
