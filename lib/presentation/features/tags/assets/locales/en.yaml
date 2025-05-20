@@ -112,6 +112,7 @@ tags:
     done: Done
   time_chart:
     no_data: No data found
+    other_category: Other
   details:
     help:
       title: Tag Details Help
