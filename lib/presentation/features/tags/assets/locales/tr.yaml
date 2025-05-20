@@ -112,6 +112,7 @@ tags:
     done: Tamam
   time_chart:
     no_data: Veri bulunamadı
+    other_category: Diğer
   details:
     name: İsim
     color: Renk

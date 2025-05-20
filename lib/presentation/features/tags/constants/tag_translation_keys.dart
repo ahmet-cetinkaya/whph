@@ -68,6 +68,7 @@ class TagTranslationKeys {
   static const String timeChartNoData = 'tags.time_chart.no_data';
   static const String selectCategory = 'tags.filter.select_category';
   static const String allCategories = 'tags.filter.all_categories';
+  static const String otherCategory = 'tags.time_chart.other_category';
 
   // Time Categories
   static const String categoryAll = 'tags.categories.all';

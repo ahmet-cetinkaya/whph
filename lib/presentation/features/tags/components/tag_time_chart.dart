@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
+import 'package:whph/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -119,17 +120,36 @@ class TagTimeChartState extends State<TagTimeChart> {
   }
 
   List<PieChartSectionData> _buildSections() {
-    return _tagTimes!.items.asMap().entries.map((entry) {
-      final index = entry.key;
-      final item = entry.value;
-      final isTouched = index == _touchedIndex;
-
+    // Calculate percentages for each item
+    final itemsWithPercentage = _tagTimes!.items.map((item) {
       final percent = (item.duration / _tagTimes!.totalDuration * 100);
+      return (item, percent);
+    }).toList();
 
-      return PieChartSectionData(
+    // Separate items into regular tags (>=1%) and small tags (<1%)
+    final regularTags = <(TagTimeData, double)>[];
+    final smallTags = <(TagTimeData, double)>[];
+
+    for (final itemWithPercent in itemsWithPercentage) {
+      if (itemWithPercent.$2 < 1.0) {
+        smallTags.add(itemWithPercent);
+      } else {
+        regularTags.add(itemWithPercent);
+      }
+    }
+
+    // Create sections for regular tags
+    final sections = <PieChartSectionData>[];
+
+    for (int i = 0; i < regularTags.length; i++) {
+      final item = regularTags[i].$1;
+      final percent = regularTags[i].$2;
+      final isTouched = i == _touchedIndex;
+
+      sections.add(PieChartSectionData(
         color: item.tagColor != null
             ? Color(int.parse('FF${item.tagColor}', radix: 16))
-            : Colors.primaries[index % Colors.primaries.length],
+            : Colors.primaries[i % Colors.primaries.length],
         value: item.duration.toDouble(),
         title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
@@ -137,7 +157,31 @@ class TagTimeChartState extends State<TagTimeChart> {
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
-      );
-    }).toList();
+      ));
+    }
+
+    // Add "Other" section if there are small tags
+    if (smallTags.isNotEmpty) {
+      final otherIndex = sections.length;
+      final isTouched = otherIndex == _touchedIndex;
+
+      // Calculate total duration and percentage for "Other" category
+      final otherDuration = smallTags.fold<double>(0, (sum, item) => sum + item.$1.duration);
+      final otherPercent = smallTags.fold<double>(0, (sum, item) => sum + item.$2);
+
+      sections.add(PieChartSectionData(
+        color: Colors.grey,
+        value: otherDuration,
+        title:
+            '${_translationService.translate(TagTranslationKeys.otherCategory)}\n${otherPercent.toStringAsFixed(1)}%',
+        radius: isTouched ? 110 : 100,
+        titleStyle: AppTheme.bodySmall.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ));
+    }
+
+    return sections;
   }
 }
