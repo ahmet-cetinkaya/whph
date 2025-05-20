@@ -9,9 +9,9 @@ import 'package:whph/application/features/notes/commands/save_note_command.dart'
 import 'package:whph/application/features/notes/queries/get_note_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
-import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
@@ -276,9 +276,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   IconData _getFieldIcon(String fieldKey) {
     switch (fieldKey) {
       case keyTags:
-        return NoteUiConstants.tagsIcon;
+        return TagUiConstants.tagIcon;
       default:
-        return Icons.label;
+        return Icons.question_mark; // Default icon for unknown fields
     }
   }
 
@@ -351,7 +351,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
         label: _translationService.translate(NoteTranslationKeys.tagsLabel),
-        icon: NoteUiConstants.tagsIcon,
+        icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(NoteTranslationKeys.tagsHint),
         widget: _note != null
             ? TagSelectDropdown(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class HabitUiConstants {
   // Icons
   static const IconData habitIcon = Icons.refresh;
-  static const IconData tagsIcon = Icons.label;
   static const IconData descriptionIcon = Icons.description;
   static const IconData calendarIcon = Icons.calendar_today;
   static const IconData statisticsIcon = Icons.analytics;

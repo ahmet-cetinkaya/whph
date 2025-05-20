@@ -4,7 +4,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class TagUiConstants {
   // Icons
-  static const IconData tagIcon = Icons.label;
+  static const IconData tagIcon = Icons.label_outline;
   static const IconData archiveIcon = Icons.archive;
   static const IconData unarchiveIcon = Icons.unarchive;
   static const IconData colorIcon = Icons.color_lens;

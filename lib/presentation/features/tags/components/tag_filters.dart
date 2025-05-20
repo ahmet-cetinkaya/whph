@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -72,7 +73,7 @@ class _TagFiltersState extends State<TagFilters> {
             initialSelectedTags:
                 widget.selectedFilters?.map((id) => DropdownOption(value: id, label: '')).toList() ?? [],
             onTagsSelected: (selectedTags, _) => widget.onTagFiltersChange(selectedTags),
-            icon: Icons.label,
+            icon: TagUiConstants.tagIcon,
             iconSize: AppTheme.iconSizeMedium,
             color: widget.selectedFilters?.isNotEmpty ?? false ? AppTheme.primaryColor : Colors.grey,
             tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),

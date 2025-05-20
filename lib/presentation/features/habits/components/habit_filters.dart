@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -65,7 +66,7 @@ class _HabitFiltersState extends State<HabitFilters> {
             TagSelectDropdown(
               isMultiSelect: true,
               onTagsSelected: (tags, isNoneSelected) => widget.onTagFilterChange?.call(tags, isNoneSelected),
-              icon: Icons.label,
+              icon: TagUiConstants.tagIcon,
               iconSize: AppTheme.iconSizeMedium,
               color:
                   (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter ? primaryColor : Colors.grey,

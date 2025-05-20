@@ -16,6 +16,7 @@ import 'package:whph/presentation/features/habits/components/habit_reminder_sele
 import 'package:whph/presentation/features/habits/components/habit_goal_dialog.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
@@ -541,7 +542,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   IconData _getFieldIcon(String fieldKey) {
     switch (fieldKey) {
       case keyTags:
-        return HabitUiConstants.tagsIcon;
+        return TagUiConstants.tagIcon;
       case keyEstimatedTime:
         return HabitUiConstants.estimatedTimeIcon;
       case keyDescription:
@@ -718,7 +719,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
         label: _translationService.translate(HabitTranslationKeys.tagsLabel),
-        icon: HabitUiConstants.tagsIcon,
+        icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(HabitTranslationKeys.tagsHint),
         widget: _habitTags != null
             ? TagSelectDropdown(

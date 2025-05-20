@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
+import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import '../constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
@@ -15,10 +17,10 @@ class NavigationItems {
   static List<NavItem> topNavItems = [
     NavItem(titleKey: SharedTranslationKeys.navToday, icon: Icons.today, route: TodayPage.route),
     NavItem(titleKey: SharedTranslationKeys.navTasks, icon: Icons.check_circle, route: TasksPage.route),
-    NavItem(titleKey: SharedTranslationKeys.navHabits, icon: Icons.refresh, route: HabitsPage.route),
+    NavItem(titleKey: SharedTranslationKeys.navHabits, icon: HabitUiConstants.habitIcon, route: HabitsPage.route),
     NavItem(titleKey: SharedTranslationKeys.navNotes, icon: Icons.note_alt_outlined, route: NotesPage.route),
     NavItem(titleKey: SharedTranslationKeys.navAppUsages, icon: Icons.bar_chart, route: AppUsageViewPage.route),
-    NavItem(titleKey: SharedTranslationKeys.navTags, icon: Icons.label, route: TagsPage.route),
+    NavItem(titleKey: SharedTranslationKeys.navTags, icon: TagUiConstants.tagIcon, route: TagsPage.route),
   ];
 
   static List<NavItem> bottomNavItems = [
