@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
@@ -48,7 +49,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
             key: SettingKeys.notifications,
             value: 'true',
             valueType: SettingValueType.bool,
-            createdDate: DateTime.now().toUtc(),
+            createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
           ));
           _isEnabled = true;
         } else {

@@ -97,10 +97,10 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
       operation: () async {
         final query = GetAppUsageStatisticsQuery(
           appUsageId: widget.appUsageId,
-          startDate: _startDate,
-          endDate: _endDate,
-          compareStartDate: _showComparison ? _compareStartDate : null,
-          compareEndDate: _showComparison ? _compareEndDate : null,
+          startDate: DateTimeHelper.toUtcDateTime(_startDate),
+          endDate: DateTimeHelper.toUtcDateTime(_endDate),
+          compareStartDate: _showComparison ? DateTimeHelper.toUtcDateTime(_compareStartDate!) : null,
+          compareEndDate: _showComparison ? DateTimeHelper.toUtcDateTime(_compareEndDate!) : null,
         );
 
         return await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(query);
@@ -482,7 +482,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
     // Convert dates to local time zone and format them
     final localStart = DateTimeHelper.toLocalDateTime(start);
     final localEnd = DateTimeHelper.toLocalDateTime(end);
-    return '${DateTimeHelper.formatDate(localStart, format: 'MMM d')} - ${DateTimeHelper.formatDate(localEnd, format: 'MMM d')}';
+    return '${DateTimeHelper.formatDate(localStart)} - ${DateTimeHelper.formatDate(localEnd)}';
   }
 
   String _getDayNameFromIndex(int index) {

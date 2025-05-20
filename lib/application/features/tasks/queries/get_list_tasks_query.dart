@@ -9,6 +9,7 @@ import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -29,10 +30,10 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   GetListTasksQuery({
     required this.pageIndex,
     required this.pageSize,
-    this.filterByPlannedStartDate,
-    this.filterByPlannedEndDate,
-    this.filterByDeadlineStartDate,
-    this.filterByDeadlineEndDate,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
     this.filterDateOr = false,
     this.filterByTags,
     this.filterNoTags = false,
@@ -41,7 +42,14 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.parentTaskId,
     this.sortByPlannedDate,
     this.fetchParentAndSubTasks = false,
-  });
+  })  : filterByPlannedStartDate =
+            filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
+        filterByPlannedEndDate =
+            filterByPlannedEndDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedEndDate) : null,
+        filterByDeadlineStartDate =
+            filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
+        filterByDeadlineEndDate =
+            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
 }
 
 class TaskListItem {
@@ -168,7 +176,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       for (var task in tasks.items) {
         if (task.order == 0) {
           task.order = orderCounter.toDouble();
-          task.modifiedDate = DateTime.now();
+          task.modifiedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
           await _taskRepository.update(task);
           orderCounter += orderStep;
         }

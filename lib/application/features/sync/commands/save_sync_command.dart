@@ -4,6 +4,7 @@ import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
 import 'package:whph/application/features/sync/constants/sync_translation_keys.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {
   final String? id;
@@ -69,13 +70,13 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
   Future<SyncDevice> _add(SyncDevice? syncDevice, SaveSyncDeviceCommand request) async {
     syncDevice = SyncDevice(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       fromIp: request.fromIP,
       toIp: request.toIP,
       fromDeviceId: request.fromDeviceId,
       toDeviceId: request.toDeviceId,
       name: request.name,
-      lastSyncDate: request.lastSyncDate,
+      lastSyncDate: request.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!) : null,
     );
     await _syncDeviceRepository.add(syncDevice);
     return syncDevice;
@@ -85,7 +86,7 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     syncDevice.fromIp = request.fromIP;
     syncDevice.toIp = request.toIP;
     syncDevice.name = request.name;
-    syncDevice.lastSyncDate = request.lastSyncDate;
+    syncDevice.lastSyncDate = request.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!) : null;
     syncDevice.fromDeviceId = request.fromDeviceId;
     syncDevice.toDeviceId = request.toDeviceId;
     await _syncDeviceRepository.update(syncDevice);

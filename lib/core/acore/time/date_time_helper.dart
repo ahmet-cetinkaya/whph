@@ -26,17 +26,25 @@ class DateTimeHelper {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  /// Converts UTC date/time from entity models to local time zone
-  static DateTime toLocalDateTime(DateTime? utcDateTime) {
-    if (utcDateTime == null) return DateTime.now();
+  /// Converts a DateTime to local time zone if it's in UTC, or keeps it as is if already local
+  static DateTime toLocalDateTime(DateTime dateTime) {
+    // If already in local timezone, return as is
+    if (!dateTime.isUtc) {
+      return dateTime;
+    }
+    // Convert UTC date/time to local time zone
+    return dateTime.toLocal();
+  }
 
-    // If DateTime is already in local time zone, return it as is
-    if (!utcDateTime.isUtc) {
-      return utcDateTime;
+  /// Converts a DateTime to UTC if it's in local time zone, or keeps it as is if already UTC
+  static DateTime toUtcDateTime(DateTime dateTime) {
+    // If already in UTC timezone, return as is
+    if (dateTime.isUtc) {
+      return dateTime;
     }
 
-    // Convert UTC date/time to local time zone
-    return utcDateTime.toLocal();
+    // Convert local date/time to UTC
+    return dateTime.toUtc();
   }
 
   /// Formats date/time information with the default format

@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
@@ -48,7 +47,7 @@ class TaskCard extends StatelessWidget {
       id: task.id,
       title: task.title,
       priority: task.priority,
-      plannedDate: date.toUtc(),
+      plannedDate: DateTimeHelper.toUtcDateTime(date),
       deadlineDate: task.deadlineDate,
       estimatedTime: task.estimatedTime,
       isCompleted: task.isCompleted,
@@ -286,7 +285,7 @@ class TaskCard extends StatelessWidget {
       // Use the helper method to get the standardized translation key
       final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.plannedDateReminderTime);
       final reminderType = _translationService.translate(reminderTypeKey);
-      final dateText = DateFormat(SharedUiConstants.defaultDateFormat).format(taskItem.plannedDate!);
+      final dateText = DateTimeHelper.formatDate(taskItem.plannedDate!);
       reminderTexts
           .add('${_translationService.translate(TaskTranslationKeys.reminderPlannedLabel)}: $dateText ($reminderType)');
     }
@@ -295,7 +294,7 @@ class TaskCard extends StatelessWidget {
       // Use the helper method to get the standardized translation key
       final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.deadlineDateReminderTime);
       final reminderType = _translationService.translate(reminderTypeKey);
-      final dateText = DateFormat(SharedUiConstants.defaultDateFormat).format(taskItem.deadlineDate!);
+      final dateText = DateTimeHelper.formatDate(taskItem.deadlineDate!);
       reminderTexts.add(
           '${_translationService.translate(TaskTranslationKeys.reminderDeadlineLabel)}: $dateText ($reminderType)');
     }

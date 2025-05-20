@@ -4,6 +4,7 @@ import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/tags/models/tag_time_data.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final DateTime startDate;
@@ -14,13 +15,14 @@ class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {
   final List<TagTimeCategory>? categories;
 
   GetTopTagsByTimeQuery({
-    required this.startDate,
-    required this.endDate,
+    required DateTime startDate,
+    required DateTime endDate,
     this.limit,
     this.filterByTags,
     this.filterByIsArchived = false,
     this.categories,
-  });
+  })  : startDate = DateTimeHelper.toUtcDateTime(startDate),
+        endDate = DateTimeHelper.toUtcDateTime(endDate);
 }
 
 class GetTopTagsByTimeQueryResponse {

@@ -1,5 +1,6 @@
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 /// Model class for task data used when creating or updating tasks
 class TaskData {
@@ -25,7 +26,7 @@ class TaskData {
       this.parentTaskId,
       this.order = 0.0,
       DateTime? createdDate})
-      : createdDate = createdDate ?? DateTime.now();
+      : createdDate = createdDate ?? DateTimeHelper.toUtcDateTime(DateTime.now());
 
   factory TaskData.fromMap(Map<String, dynamic> map) => TaskData(
         title: map['title'] as String,
@@ -39,7 +40,7 @@ class TaskData {
         isCompleted: map['isCompleted'] as bool? ?? false,
         parentTaskId: map['parentTaskId'] as String?,
         order: (map['order'] as num?)?.toDouble() ?? 0.0,
-        createdDate: map['createdDate'] as DateTime? ?? DateTime.now(),
+        createdDate: map['createdDate'] as DateTime? ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
       );
 
   Map<String, dynamic> toMap() => {

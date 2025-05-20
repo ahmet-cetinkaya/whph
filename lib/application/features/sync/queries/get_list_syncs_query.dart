@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetListSyncDevicesQuery implements IRequest<GetListSyncDevicesQueryResponse> {
   late int pageIndex;
@@ -63,7 +64,7 @@ class GetListSyncDevicesQueryHandler
                 toIP: e.toIp,
                 toDeviceID: e.toDeviceId,
                 name: e.name,
-                lastSyncDate: e.lastSyncDate,
+                lastSyncDate: e.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(e.lastSyncDate!) : null,
               ))
           .toList(),
       totalItemCount: list.totalItemCount,

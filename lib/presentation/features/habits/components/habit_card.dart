@@ -60,13 +60,14 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
-        final endDate = widget.habit.archivedDate ?? DateTime.now().toUtc();
+        final endDate = widget.habit.archivedDate ?? DateTime.now();
         final query = GetListHabitRecordsQuery(
           pageIndex: 0,
           pageSize: widget.dateRange,
           habitId: widget.habit.id,
-          startDate: endDate.subtract(Duration(days: widget.isMiniLayout ? 1 : 7)).toUtc(),
-          endDate: endDate,
+          startDate: DateTimeHelper.toUtcDateTime(
+              endDate.subtract(Duration(days: widget.isMiniLayout ? 1 : widget.dateRange))),
+          endDate: DateTimeHelper.toLocalDateTime(endDate),
         );
         return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       },
@@ -85,7 +86,7 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: date.toUtc());
+        final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
         final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
         if (mounted) {
@@ -267,7 +268,8 @@ class _HabitCardState extends State<HabitCard> {
       );
     }
 
-    final referenceDate = widget.habit.archivedDate?.toLocal() ?? DateTime.now();
+    final referenceDate =
+        widget.habit.archivedDate != null ? DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!) : DateTime.now();
     final days = List.generate(
       widget.dateRange,
       (index) => referenceDate.subtract(Duration(days: index)),
@@ -283,7 +285,7 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildCalendarDay(DateTime date, DateTime referenceDate) {
     // Don't allow interactions with future dates or dates after archive date
     final isDisabled = date.isAfter(DateTime.now()) ||
-        (widget.habit.archivedDate != null && date.isAfter(widget.habit.archivedDate!.toLocal()));
+        (widget.habit.archivedDate != null && date.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
 
     final localDate = DateTimeHelper.toLocalDateTime(date);
     final isToday = DateTimeHelper.isSameDay(localDate, DateTime.now());
@@ -350,7 +352,8 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     final today = DateTime.now();
-    final isDisabled = widget.habit.archivedDate != null && today.isAfter(widget.habit.archivedDate!.toLocal());
+    final isDisabled =
+        widget.habit.archivedDate != null && today.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!));
 
     bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, today));
 

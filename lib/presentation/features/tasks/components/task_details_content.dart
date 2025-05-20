@@ -301,11 +301,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _saveTaskImmediately() async {
     if (!mounted || _task == null) return;
 
-    // Make sure dates are in UTC
-    DateTime? plannedDate = _task!.plannedDate?.toUtc();
-    DateTime? deadlineDate = _task!.deadlineDate?.toUtc();
-    DateTime? recurrenceStartDate = _task!.recurrenceStartDate?.toUtc();
-    DateTime? recurrenceEndDate = _task!.recurrenceEndDate?.toUtc();
+    // Make sure dates are properly converted to UTC using DateTimeHelper
+    DateTime? plannedDate = _task!.plannedDate != null ? DateTimeHelper.toUtcDateTime(_task!.plannedDate!) : null;
+
+    DateTime? deadlineDate = _task!.deadlineDate != null ? DateTimeHelper.toUtcDateTime(_task!.deadlineDate!) : null;
+
+    DateTime? recurrenceStartDate =
+        _task!.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceStartDate!) : null;
+
+    DateTime? recurrenceEndDate =
+        _task!.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceEndDate!) : null;
 
     final saveCommand = SaveTaskCommand(
       id: _task!.id,
@@ -407,14 +412,20 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       if (!mounted) return;
 
-      // Parse dates from controllers and convert to UTC
-      DateTime? plannedDate =
-          _plannedDateController.text.isNotEmpty ? DateTime.tryParse(_plannedDateController.text)?.toUtc() : null;
+      // Parse dates from controllers and properly convert to UTC using DateTimeHelper
+      DateTime? plannedDate = _plannedDateController.text.isNotEmpty
+          ? DateTimeHelper.toUtcDateTime(DateTime.parse(_plannedDateController.text))
+          : null;
 
-      DateTime? deadlineDate =
-          _deadlineDateController.text.isNotEmpty ? DateTime.tryParse(_deadlineDateController.text)?.toUtc() : null;
-      DateTime? recurrenceStartDate = _task!.recurrenceStartDate?.toUtc();
-      DateTime? recurrenceEndDate = _task!.recurrenceEndDate?.toUtc();
+      DateTime? deadlineDate = _deadlineDateController.text.isNotEmpty
+          ? DateTimeHelper.toUtcDateTime(DateTime.parse(_deadlineDateController.text))
+          : null;
+
+      DateTime? recurrenceStartDate =
+          _task!.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceStartDate!) : null;
+
+      DateTime? recurrenceEndDate =
+          _task!.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceEndDate!) : null;
 
       final saveCommand = SaveTaskCommand(
         id: _task!.id,

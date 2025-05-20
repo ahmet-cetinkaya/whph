@@ -5,13 +5,19 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetTagTimesDataQuery implements IRequest<GetTagTimesDataQueryResponse> {
   final String tagId;
   final DateTime startDate;
   final DateTime endDate;
 
-  GetTagTimesDataQuery({required this.tagId, required this.startDate, required this.endDate});
+  GetTagTimesDataQuery({
+    required this.tagId,
+    required DateTime startDate,
+    required DateTime endDate,
+  })  : startDate = DateTimeHelper.toUtcDateTime(startDate),
+        endDate = DateTimeHelper.toUtcDateTime(endDate);
 }
 
 class GetTagTimesDataQueryResponse {

@@ -4,6 +4,7 @@ import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/application/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final String? id;
@@ -23,14 +24,14 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
     required this.name,
     required this.description,
     this.estimatedTime,
-    this.archivedDate,
+    DateTime? archivedDate,
     this.hasReminder,
     this.reminderTime,
     this.reminderDays,
     this.hasGoal,
     this.targetFrequency,
     this.periodDays,
-  });
+  }) : archivedDate = archivedDate != null ? DateTimeHelper.toUtcDateTime(archivedDate) : null;
 }
 
 class SaveHabitCommandResponse {
@@ -96,7 +97,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       // Create habit with default values
       habit = Habit(
         id: KeyHelper.generateStringId(),
-        createdDate: DateTime.now().toUtc(),
+        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
         name: request.name,
         description: request.description,
         estimatedTime: request.estimatedTime,

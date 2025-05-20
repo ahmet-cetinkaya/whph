@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -84,7 +85,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                       id: item.id,
                       pattern: item.pattern,
                       description: item.description,
-                      createdDate: DateTime.now().toUtc(),
+                      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
                     ))
                 .toList();
           });

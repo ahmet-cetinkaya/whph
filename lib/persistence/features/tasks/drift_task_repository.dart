@@ -3,6 +3,7 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
@@ -134,16 +135,17 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Handle DateTime conversions safely
     DateTime? convertToDateTime(dynamic value) {
       if (value == null) return null;
-      if (value is DateTime) return value;
+      if (value is DateTime) return value.toUtc(); // Ensure UTC format
       if (value is int) {
         // Drift stores dates as seconds since epoch, not milliseconds
         // Multiply by 1000 to convert seconds to milliseconds
-        // Use local timezone, not UTC
-        return DateTime.fromMillisecondsSinceEpoch(value * 1000, isUtc: false);
+        // Always use UTC timezone for storage
+        return DateTime.fromMillisecondsSinceEpoch(value * 1000, isUtc: true);
       }
       if (value is String) {
-        // Try to parse ISO 8601 string
-        return DateTime.tryParse(value);
+        // Try to parse ISO 8601 string and ensure UTC
+        final dateTime = DateTime.tryParse(value);
+        return dateTime?.toUtc();
       }
       return null;
     }
@@ -164,7 +166,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Create a task with the base data
     final task = Task(
       id: data['id'] as String,
-      createdDate: convertToDateTime(data['created_date']) ?? DateTime.now(),
+      createdDate: convertToDateTime(data['created_date']) ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
       modifiedDate: convertToDateTime(data['modified_date']),
       deletedDate: convertToDateTime(data['deleted_date']),
       title: data['title'] as String,
@@ -213,13 +215,11 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
   @override
   Insertable<Task> toCompanion(Task entity) {
-    // Keep dates in local timezone
-    DateTime? plannedDate = entity.plannedDate;
-    DateTime? deadlineDate = entity.deadlineDate;
-    DateTime? recurrenceStartDate = entity.recurrenceStartDate;
-    DateTime? recurrenceEndDate = entity.recurrenceEndDate;
-
-    // No need to convert to UTC, keep in local timezone
+    // Ensure all DateTime values are in UTC format
+    DateTime? plannedDate = entity.plannedDate?.toUtc();
+    DateTime? deadlineDate = entity.deadlineDate?.toUtc();
+    DateTime? recurrenceStartDate = entity.recurrenceStartDate?.toUtc();
+    DateTime? recurrenceEndDate = entity.recurrenceEndDate?.toUtc();
 
     return TaskTableCompanion.insert(
       id: entity.id,

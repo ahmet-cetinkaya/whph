@@ -3,6 +3,7 @@ import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
   final String taskId;
@@ -32,8 +33,8 @@ class SaveTaskTimeRecordCommandHandler
 
   @override
   Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
-    final now = DateTime.now();
-    final startOfHour = DateTime(now.year, now.month, now.day, now.hour);
+    final now = DateTimeHelper.toUtcDateTime(DateTime.now());
+    final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
 
     final filter = CustomWhereFilter(

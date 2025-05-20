@@ -144,7 +144,7 @@ class NoteCard extends StatelessWidget {
       return weekday;
     } else {
       // Older than a week
-      return DateTimeHelper.formatDate(localDateTime, format: 'd/M/yyyy');
+      return DateTimeHelper.formatDate(localDateTime);
     }
   }
 

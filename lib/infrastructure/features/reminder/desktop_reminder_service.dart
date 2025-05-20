@@ -112,9 +112,10 @@ class DesktopReminderService implements IReminderService {
 
   /// Calculate the next occurrence of a specific day of the week and time
   DateTime _getNextOccurrence(int day, TimeOfDay time) {
+    // Use local time for scheduling
     final now = DateTime.now();
 
-    // Create a DateTime for the specified time today
+    // Create a DateTime for the specified time today in local time
     DateTime scheduledDate = DateTime(
       now.year,
       now.month,

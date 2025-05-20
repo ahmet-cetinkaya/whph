@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetAppUsageStatisticsQuery implements IRequest<GetAppUsageStatisticsResponse> {
   final String appUsageId;
@@ -11,11 +12,14 @@ class GetAppUsageStatisticsQuery implements IRequest<GetAppUsageStatisticsRespon
 
   GetAppUsageStatisticsQuery({
     required this.appUsageId,
-    required this.startDate,
-    required this.endDate,
-    this.compareStartDate,
-    this.compareEndDate,
-  });
+    required DateTime startDate,
+    required DateTime endDate,
+    DateTime? compareStartDate,
+    DateTime? compareEndDate,
+  })  : startDate = DateTimeHelper.toUtcDateTime(startDate),
+        endDate = DateTimeHelper.toUtcDateTime(endDate),
+        compareStartDate = compareStartDate != null ? DateTimeHelper.toUtcDateTime(compareStartDate) : null,
+        compareEndDate = compareEndDate != null ? DateTimeHelper.toUtcDateTime(compareEndDate) : null;
 }
 
 class DailyUsageData {
@@ -69,15 +73,15 @@ class GetAppUsageStatisticsQueryHandler
     // Get daily data
     final dailyData = await _getDailyUsageData(
       request.appUsageId,
-      request.startDate,
-      request.endDate,
+      DateTimeHelper.toUtcDateTime(request.startDate),
+      DateTimeHelper.toUtcDateTime(request.endDate),
     );
 
     // Get hourly data
     final hourlyData = await _getHourlyUsageData(
       request.appUsageId,
-      request.startDate,
-      request.endDate,
+      DateTimeHelper.toUtcDateTime(request.startDate),
+      DateTimeHelper.toUtcDateTime(request.endDate),
     );
 
     // Get comparison data if needed
@@ -88,14 +92,14 @@ class GetAppUsageStatisticsQueryHandler
     if (request.compareStartDate != null && request.compareEndDate != null) {
       compareDailyData = await _getDailyUsageData(
         request.appUsageId,
-        request.compareStartDate!,
-        request.compareEndDate!,
+        DateTimeHelper.toUtcDateTime(request.compareStartDate!),
+        DateTimeHelper.toUtcDateTime(request.compareEndDate!),
       );
 
       compareHourlyData = await _getHourlyUsageData(
         request.appUsageId,
-        request.compareStartDate!,
-        request.compareEndDate!,
+        DateTimeHelper.toUtcDateTime(request.compareStartDate!),
+        DateTimeHelper.toUtcDateTime(request.compareEndDate!),
       );
 
       // Merge comparison data with primary data

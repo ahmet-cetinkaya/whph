@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetSyncDeviceQuery implements IRequest<GetSyncDeviceQueryResponse> {
   late String? id;
@@ -51,9 +52,10 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
       toIp: syncDevice.toIp,
       toDeviceId: syncDevice.toDeviceId,
       name: syncDevice.name,
-      lastSyncDate: syncDevice.lastSyncDate,
-      createdDate: syncDevice.createdDate,
-      modifiedDate: syncDevice.modifiedDate,
+      lastSyncDate: syncDevice.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(syncDevice.lastSyncDate!) : null,
+      createdDate: DateTimeHelper.toUtcDateTime(syncDevice.createdDate),
+      modifiedDate: syncDevice.modifiedDate != null ? DateTimeHelper.toUtcDateTime(syncDevice.modifiedDate!) : null,
+      deletedDate: syncDevice.deletedDate != null ? DateTimeHelper.toUtcDateTime(syncDevice.deletedDate!) : null,
     );
   }
 

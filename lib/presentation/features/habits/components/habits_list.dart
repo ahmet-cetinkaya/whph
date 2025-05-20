@@ -165,7 +165,7 @@ class HabitsListState extends State<HabitsList> {
           excludeCompleted: _currentFilters.mini,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
-          filterByArchived: _currentFilters.filterByArchived, // Changed from showArchived
+          filterByArchived: _currentFilters.filterByArchived,
         );
 
         return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);

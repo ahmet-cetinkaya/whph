@@ -4,6 +4,7 @@ import 'package:whph/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
@@ -291,15 +292,16 @@ class ReminderService {
     required DateTime scheduledDate,
     String? payload,
   }) async {
-    // Convert to UTC before scheduling and comparing
-    final scheduledUtc = scheduledDate.toUtc();
-    // Only schedule if the reminder time is in the future
-    if (scheduledUtc.isAfter(DateTime.now().toUtc())) {
+    // Convert to local time using helper method that handles UTC check internally
+    final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
+
+    // Compare with current local time
+    if (localScheduledDate.isAfter(DateTime.now())) {
       await _reminderService.scheduleReminder(
         id: id,
         title: title,
         body: body,
-        scheduledDate: scheduledUtc,
+        scheduledDate: localScheduledDate,
         payload: payload,
       );
     }
@@ -371,6 +373,8 @@ class ReminderService {
 
   /// Format a DateTime to a readable time string
   String _formatTime(DateTime dateTime) {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    // Convert to local time before formatting for display
+    final localDateTime = DateTimeHelper.toLocalDateTime(dateTime);
+    return '${localDateTime.hour.toString().padLeft(2, '0')}:${localDateTime.minute.toString().padLeft(2, '0')}';
   }
 }

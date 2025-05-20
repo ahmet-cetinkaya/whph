@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/domain/features/habits/habit_record.dart';
+import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
   final String habitId;
@@ -9,8 +10,8 @@ class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
 
   AddHabitRecordCommand({
     required this.habitId,
-    required this.date,
-  });
+    required DateTime date,
+  }) : date = DateTimeHelper.toUtcDateTime(date);
 }
 
 class AddHabitRecordCommandResponse {}
@@ -25,7 +26,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
     HabitRecord habitRecord = HabitRecord(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
       habitId: request.habitId,
       date: request.date,
     );

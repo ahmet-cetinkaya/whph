@@ -346,8 +346,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                     if (pickedDate != null) {
                       setState(() {
                         _recurrenceStartDate = pickedDate;
-                        _startDateController.text =
-                            DateTimeHelper.formatDateTime(_recurrenceStartDate, format: 'dd.MM.yyyy');
+                        _startDateController.text = DateTimeHelper.formatDateTime(_recurrenceStartDate);
                       });
                       widget.onRecurrenceStartDateChanged(pickedDate);
                     }
@@ -456,16 +455,15 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                         context: context,
                         initialDate: _recurrenceEndDate ??
                             (_recurrenceStartDate?.add(const Duration(days: 30)) ??
-                                DateTime.now().add(const Duration(days: 30))),
-                        firstDate: _recurrenceStartDate ?? DateTime.now(),
+                                DateTimeHelper.toUtcDateTime(DateTime.now()).add(const Duration(days: 30))),
+                        firstDate: _recurrenceStartDate ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
                         lastDate: DateTime(2100),
                       );
 
                       if (pickedDate != null) {
                         setState(() {
                           _recurrenceEndDate = pickedDate;
-                          _endDateController.text =
-                              DateTimeHelper.formatDateTime(_recurrenceEndDate, format: 'dd.MM.yyyy');
+                          _endDateController.text = DateTimeHelper.formatDateTime(_recurrenceEndDate);
                         });
                         widget.onRecurrenceEndDateChanged(pickedDate);
                       }
