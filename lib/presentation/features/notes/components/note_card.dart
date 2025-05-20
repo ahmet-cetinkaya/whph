@@ -31,7 +31,7 @@ class NoteCard extends StatelessWidget {
         onTap: onOpenDetails,
         borderRadius: BorderRadius.circular(AppTheme.sizeXSmall),
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+          padding: const EdgeInsets.all(AppTheme.sizeMedium),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
