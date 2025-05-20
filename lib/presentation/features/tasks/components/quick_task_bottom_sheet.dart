@@ -225,19 +225,27 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   }
 
   List<Widget> _buildQuickActionButtons() {
+    final iconSize = AppTheme.iconSizeMedium;
+
     return [
+      // Clear all button
       IconButton(
         icon: const Icon(Icons.close, color: AppTheme.secondaryTextColor),
         onPressed: _clearAll,
         tooltip: 'Clear all fields',
+        iconSize: iconSize,
       ),
+
+      // Tag select dropdown
       TagSelectDropdown(
         initialSelectedTags: _selectedTags,
         isMultiSelect: true,
         onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
-        iconSize: AppTheme.iconSizeMedium,
-        color: _selectedTags.isEmpty ? AppTheme.secondaryTextColor : TaskUiConstants.tagColor,
+        iconSize: iconSize,
+        color: _selectedTags.isEmpty ? Colors.white : TaskUiConstants.tagColor,
       ),
+
+      // Priority button
       IconButton(
         icon: Icon(
           _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
@@ -245,7 +253,10 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         ),
         onPressed: _togglePriority,
         tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
+        iconSize: iconSize,
       ),
+
+      // Estimated time button
       IconButton(
         icon: _estimatedTime == null
             ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
@@ -258,7 +269,10 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
               ),
         onPressed: _toggleEstimatedTime,
         tooltip: _getEstimatedTimeTooltip(),
+        iconSize: iconSize,
       ),
+
+      // Planned date button
       IconButton(
         icon: Icon(
           _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
@@ -266,7 +280,10 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         ),
         onPressed: () => _selectDate(false),
         tooltip: _getDateTooltip(false),
+        iconSize: iconSize,
       ),
+
+      // Deadline date button
       IconButton(
         icon: Icon(
           _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
@@ -274,96 +291,100 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         ),
         onPressed: () => _selectDate(true),
         tooltip: _getDateTooltip(true),
+        iconSize: iconSize,
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = AppThemeHelper.isSmallScreen(context);
+    final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
 
-    return PopScope(
-      canPop: true,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        // Use different border radius based on platform
+        borderRadius: isDesktop
+            ? BorderRadius.circular(AppTheme.containerBorderRadius)
+            : const BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      // Use mainAxisSize.min to make the container fit its content
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            color: Colors.transparent,
-            child: GestureDetector(
-              onTap: () {}, // Prevent tap from propagating
-              child: DraggableScrollableSheet(
-                initialChildSize: AppThemeHelper.isSmallScreen(context) ? 0.33 : 0.15,
-                minChildSize: 0.15,
-                maxChildSize: 0.9,
-                builder: (context, controller) {
-                  return Container(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        // Use same padding for both platforms
+        padding: EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeMedium),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle for mobile, title for desktop
+            if (isDesktop)
+              Padding(
+                padding: EdgeInsets.only(bottom: AppTheme.sizeLarge),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
+                      style: AppTheme.headlineSmall,
                     ),
-                    child: SingleChildScrollView(
-                      controller: controller,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            behavior: HitTestBehavior.opaque,
-                            child: Container(
-                              width: 40,
-                              height: 4,
-                              margin: const EdgeInsets.only(bottom: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[400],
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Title input
+            TextField(
+              controller: _titleController,
+              focusNode: _focusNode,
+              autofocus: true,
+              style: AppTheme.bodyMedium,
+              decoration: InputDecoration(
+                hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitleHint),
+                // Use same content padding for both platforms
+                contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+                // Send button in the text field
+                suffixIcon: isDesktop
+                    ? IconButton(
+                        icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send, color: AppTheme.primaryColor),
+                        onPressed: _createTask,
+                        tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
+                      )
+                    : SizedBox(
+                        width: AppTheme.iconSizeLarge - 4.0,
+                        height: AppTheme.iconSizeLarge - 4.0,
+                        child: IconButton(
+                          icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send, color: AppTheme.primaryColor),
+                          onPressed: _createTask,
+                          iconSize: AppTheme.iconSizeMedium,
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(
+                            minWidth: AppTheme.iconSizeLarge - 4.0,
+                            minHeight: AppTheme.iconSizeLarge - 4.0,
                           ),
-
-                          // Title input
-                          TextField(
-                            controller: _titleController,
-                            focusNode: _focusNode,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitleHint),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Quick action buttons (large screen)
-                                  if (!isSmallScreen) ..._buildQuickActionButtons(),
-
-                                  // Send button
-                                  IconButton(
-                                    icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send,
-                                        color: AppTheme.primaryColor),
-                                    onPressed: _createTask,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onSubmitted: (_) => _createTask(),
-                          ),
-
-                          // Quick action buttons (small screen)
-                          if (isSmallScreen)
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: _buildQuickActionButtons(),
-                              ),
-                            ),
-                        ],
+                        ),
                       ),
+              ),
+              onSubmitted: (_) => _createTask(),
+            ),
+
+            // Quick action buttons for all screen sizes
+            Padding(
+              padding: EdgeInsets.only(top: AppTheme.sizeSmall),
+              child: Column(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _buildQuickActionButtons(),
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
