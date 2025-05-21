@@ -95,7 +95,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     if (customOrder != null && customOrder.isNotEmpty) {
       query += ' ORDER BY ';
       query += customOrder
-          .map((order) => '${order.field} ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
+          .map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
           .join(', ');
     }
 
