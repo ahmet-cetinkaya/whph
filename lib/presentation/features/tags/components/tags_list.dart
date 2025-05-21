@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/acore/queries/models/sort_option.dart';
 import 'package:whph/presentation/features/tags/components/tag_card.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -18,6 +20,8 @@ class TagsList extends StatefulWidget {
   final void Function(TagListItem tag)? onClickTag;
   final void Function(int count)? onList;
   final bool showArchived;
+  final SortConfig<TagSortFields>? sortConfig;
+  final String? search;
 
   const TagsList({
     super.key,
@@ -26,6 +30,8 @@ class TagsList extends StatefulWidget {
     this.onClickTag,
     this.onList,
     this.showArchived = false,
+    this.sortConfig,
+    this.search,
   });
 
   @override
@@ -57,8 +63,25 @@ class TagsListState extends State<TagsList> {
   @override
   void didUpdateWidget(TagsList oldWidget) {
     super.didUpdateWidget(oldWidget);
+    bool sortConfigChanged =
+        (oldWidget.sortConfig?.orderOptions.length ?? 0) != (widget.sortConfig?.orderOptions.length ?? 0);
+
+    if (oldWidget.sortConfig != null && widget.sortConfig != null && !sortConfigChanged) {
+      // Check if any sort option has changed
+      for (int i = 0; i < oldWidget.sortConfig!.orderOptions.length; i++) {
+        final oldOption = oldWidget.sortConfig!.orderOptions[i];
+        final newOption = widget.sortConfig!.orderOptions[i];
+        if (oldOption.field != newOption.field || oldOption.direction != newOption.direction) {
+          sortConfigChanged = true;
+          break;
+        }
+      }
+    }
+
     if (oldWidget.showArchived != widget.showArchived ||
-        !CollectionUtils.areListsEqual(oldWidget.filterByTags, widget.filterByTags)) {
+        !CollectionUtils.areListsEqual(oldWidget.filterByTags, widget.filterByTags) ||
+        oldWidget.search != widget.search ||
+        sortConfigChanged) {
       refresh();
     }
   }
@@ -104,6 +127,10 @@ class TagsListState extends State<TagsList> {
           pageSize: 10,
           filterByTags: widget.filterByTags,
           showArchived: widget.showArchived,
+          search: widget.search,
+          sortBy: widget.sortConfig?.orderOptions
+              .map((option) => SortOption(field: option.field, direction: option.direction))
+              .toList(),
         );
 
         return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);

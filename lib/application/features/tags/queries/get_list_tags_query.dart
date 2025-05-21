@@ -1,8 +1,15 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/acore/queries/models/sort_option.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
+
+enum TagSortFields {
+  name,
+  createdDate,
+  modifiedDate,
+}
 
 class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   late int pageIndex;
@@ -10,9 +17,16 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   String? search;
   List<String>? filterByTags;
   bool showArchived = false;
+  List<SortOption<TagSortFields>>? sortBy;
 
-  GetListTagsQuery(
-      {required this.pageIndex, required this.pageSize, this.search, this.filterByTags, this.showArchived = false});
+  GetListTagsQuery({
+    required this.pageIndex,
+    required this.pageSize,
+    this.search,
+    this.filterByTags,
+    this.showArchived = false,
+    this.sortBy,
+  });
 }
 
 class TagListItem {
@@ -51,7 +65,7 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
       customWhereFilter: _getFilters(request),
-      customOrder: [CustomOrder(field: "name")],
+      customOrder: _getCustomOrders(request),
     );
 
     final items = tagsWithRelated.items.map((tagPair) {
@@ -112,5 +126,29 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
     filter.query = conditions.join(' AND ');
     return filter;
+  }
+
+  List<CustomOrder>? _getCustomOrders(GetListTagsQuery request) {
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      return null;
+    }
+
+    List<CustomOrder> customOrders = [];
+    for (var option in request.sortBy!) {
+      String field;
+      switch (option.field) {
+        case TagSortFields.name:
+          field = "name";
+          break;
+        case TagSortFields.createdDate:
+          field = "created_date";
+          break;
+        case TagSortFields.modifiedDate:
+          field = "modified_date";
+          break;
+      }
+      customOrders.add(CustomOrder(field: field, direction: option.direction));
+    }
+    return customOrders;
   }
 }
