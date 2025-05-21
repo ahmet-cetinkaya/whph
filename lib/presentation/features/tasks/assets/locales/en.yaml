@@ -179,6 +179,8 @@ tasks:
     loading_tags: Failed to load task tags
     adding_tag: Failed to add tag
     removing_tag: Failed to remove tag
+    same_tag: Cannot add the same tag twice
+    sort_field_not_supported: Sort field not supported
   marathon:
     label: Marathon Mode
     help:

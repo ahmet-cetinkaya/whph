@@ -1,6 +1,8 @@
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/application/features/tasks/constants/task_translation_keys.dart' as application;
 
-class TaskTranslationKeys {
+class TaskTranslationKeys extends application.TaskTranslationKeys {
+  // Pomodoro
   static const String pomodoroNotificationTitle = 'tasks.pomodoro.notifications.title';
   static const String pomodoroWorkSessionCompleted = 'tasks.pomodoro.notifications.work_completed';
   static const String pomodoroBreakSessionCompleted = 'tasks.pomodoro.notifications.break_completed';
@@ -69,6 +71,7 @@ class TaskTranslationKeys {
   static const String searchTasksPlaceholder = 'tasks.filters.search.placeholder';
 
   // Details
+  static const String titleLabel = 'tasks.details.title.label';
   static const String tagsLabel = 'tasks.details.tags.label';
   static const String tagsHint = 'tasks.details.tags.hint';
   static const String priorityLabel = 'tasks.details.priority.label';

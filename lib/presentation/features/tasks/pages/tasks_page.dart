@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TasksPage extends StatefulWidget {
@@ -26,11 +29,15 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   final _translationService = container.resolve<ITranslationService>();
 
   List<String>? _selectedTagIds;
+
   bool _showCompletedTasks = false;
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   String? _searchQuery;
   bool _showNoTagsFilter = false;
+
+  SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
+
   String? _handledTaskId;
 
   @override
@@ -84,6 +91,15 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     if (mounted) {
       setState(() {
         _showCompletedTasks = showCompleted;
+      });
+    }
+  }
+
+  // Handle sort configuration changes
+  void _onSortConfigChange(SortConfig<TaskSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
       });
     }
   }
@@ -155,12 +171,12 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       builder: (context) => ListView(
         children: [
           // Filters with Completed Tasks Toggle
-          TaskFilters(
+          TaskListOptions(
             selectedTagIds: _selectedTagIds,
-            showNoTagsFilter: _showNoTagsFilter, // Pass the None filter state
+            showNoTagsFilter: _showNoTagsFilter,
             selectedStartDate: _filterStartDate,
             selectedEndDate: _filterEndDate,
-            onTagFilterChange: _onFilterTags, // Fix parameter mismatch by using the properly defined function
+            onTagFilterChange: _onFilterTags,
             onDateFilterChange: _onDateFilterChange,
             onSearchChange: _onSearchChange,
             showCompletedTasks: _showCompletedTasks,
@@ -169,7 +185,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             showDateFilter: true,
             showSearchFilter: true,
             showCompletedTasksToggle: true,
-            hasItems: true, // keep filters visible even if list is empty
+            hasItems: true,
+            // Pass the sort configuration and change handler
+            sortConfig: _sortConfig,
+            onSortChange: _onSortConfigChange,
           ),
 
           const SizedBox(height: AppTheme.sizeMedium),
@@ -184,11 +203,11 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             filterByDeadlineStartDate: _filterStartDate,
             filterByDeadlineEndDate: _filterEndDate,
             filterDateOr: true,
-            sortByPlannedDate: SortDirection.asc,
             search: _searchQuery,
             onClickTask: (task) => _openTaskDetails(task.id),
             onList: _showCompletedTasks ? null : _onTasksList,
-            enableReordering: !_showCompletedTasks,
+            enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+            sortConfig: _sortConfig,
           ),
         ],
       ),

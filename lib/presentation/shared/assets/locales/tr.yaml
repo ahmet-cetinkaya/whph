@@ -24,6 +24,15 @@ shared:
     days: gün
     hours: sa
     seconds: sn
+  sort:
+    custom_sort:
+      title: Özel Sıralama
+      description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
+    reset_to_default: Varsayılana Sıfırla
+    ascending: Artan
+    descending: Azalan
+    remove_criteria: Kriteri Kaldır
+    sort: Sırala
   tooltips:
     filter_by_tags: Etiketlere göre filtrele
     refresh: Yenile
@@ -157,3 +166,6 @@ shared:
     not_set: Ayarlanmadı
   date_format:
     hint: GG/AA/YYYY
+  data:
+    created_date_label: Oluşturulma Tarihi
+    modified_date_label: Değiştirilme Tarihi

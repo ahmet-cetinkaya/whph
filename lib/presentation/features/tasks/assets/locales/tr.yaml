@@ -191,6 +191,8 @@ tasks:
     loading_tags: Görev etiketleri yüklenemedi
     adding_tag: Etiket eklenemedi
     removing_tag: Etiket kaldırılamadı
+    same_tag: Aynı etiketi iki kez ekleyemezsiniz
+    sort_field_not_supported: Sıralama alanı desteklenmiyor
   marathon:
     label: Maraton Modu
     help:

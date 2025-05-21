@@ -6,26 +6,44 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
-import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
+import 'package:whph/core/acore/queries/models/sort_option.dart';
+
+enum TaskSortFields {
+  createdDate,
+  deadlineDate,
+  elapsedTime,
+  estimatedTime,
+  modifiedDate,
+  plannedDate,
+  priority,
+  title,
+}
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
   final int pageSize;
+
   final DateTime? filterByPlannedStartDate;
   final DateTime? filterByPlannedEndDate;
   final DateTime? filterByDeadlineStartDate;
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
+
   final List<String>? filterByTags;
   final bool filterNoTags;
+
   final bool? filterByCompleted;
-  final String? search;
-  final String? parentTaskId;
-  final SortDirection? sortByPlannedDate;
-  final bool fetchParentAndSubTasks;
+
+  final String? filterBySearch;
+
+  final String? filterByParentTaskId;
+  final bool areParentAndSubTasksIncluded;
+
+  final List<SortOption<TaskSortFields>>? sortBy;
+  final bool sortByCustomSort;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -38,10 +56,11 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByCompleted,
-    this.search,
-    this.parentTaskId,
-    this.sortByPlannedDate,
-    this.fetchParentAndSubTasks = false,
+    this.filterBySearch,
+    this.filterByParentTaskId,
+    this.areParentAndSubTasksIncluded = false,
+    this.sortBy,
+    this.sortByCustomSort = false,
   })  : filterByPlannedStartDate =
             filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
         filterByPlannedEndDate =
@@ -153,18 +172,10 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getFilters(request),
-      customOrder: [
-        if (request.sortByPlannedDate != null)
-          CustomOrder(field: "planned_date", direction: request.sortByPlannedDate ?? SortDirection.asc),
-        if (request.filterByCompleted != true) ...[
-          CustomOrder(field: "order"),
-          CustomOrder(field: "created_date"),
-        ],
-      ],
+      customOrder: _getCustomOrders(request),
     );
 
     // Remove in-memory where filters
-
     final tasks = await query;
 
     // Fixing task orders with order value 0
@@ -241,9 +252,9 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     final variables = <Object>[];
 
     // Search
-    if (request.search?.isNotEmpty ?? false) {
+    if (request.filterBySearch?.isNotEmpty ?? false) {
       conditions.add('title LIKE ?');
-      variables.add('%${request.search}%');
+      variables.add('%${request.filterBySearch}%');
     }
 
     // Date filters
@@ -286,10 +297,10 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     }
 
     // Parent task filter
-    if (!request.fetchParentAndSubTasks) {
-      if (request.parentTaskId != null) {
+    if (!request.areParentAndSubTasksIncluded) {
+      if (request.filterByParentTaskId != null) {
         conditions.add('parent_task_id = ?');
-        variables.add(request.parentTaskId!);
+        variables.add(request.filterByParentTaskId!);
       } else {
         conditions.add('parent_task_id IS NULL');
       }
@@ -297,5 +308,33 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     if (conditions.isEmpty) return null;
     return CustomWhereFilter(conditions.join(' AND '), variables);
+  }
+
+  List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
+    if (request.sortByCustomSort) {
+      return [CustomOrder(field: "order")];
+    }
+
+    List<CustomOrder> customOrders = [];
+    for (var option in request.sortBy!) {
+      if (option.field == TaskSortFields.createdDate) {
+        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
+      } else if (option.field == TaskSortFields.deadlineDate) {
+        customOrders.add(CustomOrder(field: "deadline_date", direction: option.direction));
+      } else if (option.field == TaskSortFields.elapsedTime) {
+        customOrders.add(CustomOrder(field: "total_elapsed_time", direction: option.direction));
+      } else if (option.field == TaskSortFields.estimatedTime) {
+        customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+      } else if (option.field == TaskSortFields.modifiedDate) {
+        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
+      } else if (option.field == TaskSortFields.plannedDate) {
+        customOrders.add(CustomOrder(field: "planned_date", direction: option.direction));
+      } else if (option.field == TaskSortFields.priority) {
+        customOrders.add(CustomOrder(field: "priority", direction: option.direction));
+      } else if (option.field == TaskSortFields.title) {
+        customOrders.add(CustomOrder(field: "title", direction: option.direction));
+      }
+    }
+    return customOrders;
   }
 }
