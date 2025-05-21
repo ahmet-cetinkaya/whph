@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
@@ -20,6 +21,7 @@ class NotesList extends StatefulWidget {
   final List<String>? filterByTags;
   final bool filterNoTags;
   final Function(String)? onClickNote;
+  final SortConfig<NoteSortFields>? sortConfig;
 
   const NotesList({
     super.key,
@@ -27,6 +29,7 @@ class NotesList extends StatefulWidget {
     this.filterByTags,
     this.filterNoTags = false,
     this.onClickNote,
+    this.sortConfig,
   });
 
   @override
@@ -71,6 +74,7 @@ class NotesListState extends State<NotesList> {
         search: widget.search,
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
+        sortConfig: widget.sortConfig,
       );
 
   bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -78,12 +82,14 @@ class NotesListState extends State<NotesList> {
       'search': oldFilters.search,
       'filterNoTags': oldFilters.filterNoTags,
       'tags': oldFilters.filterByTags,
+      'sortConfig': oldFilters.sortConfig,
     };
 
     final newMap = {
       'search': newFilters.search,
       'filterNoTags': newFilters.filterNoTags,
       'tags': newFilters.filterByTags,
+      'sortConfig': newFilters.sortConfig,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -145,6 +151,8 @@ class NotesListState extends State<NotesList> {
           search: _currentFilters.search,
           filterByTags: _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
+          sortBy: _currentFilters.sortConfig?.orderOptions,
+          sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false,
         );
 
         return await _mediator.send<GetListNotesQuery, GetListNotesQueryResponse>(query);
@@ -242,16 +250,19 @@ class FilterContext {
   final String? search;
   final List<String>? filterByTags;
   final bool filterNoTags;
+  final SortConfig<NoteSortFields>? sortConfig;
 
   const FilterContext({
     this.search,
     this.filterByTags,
     this.filterNoTags = false,
+    this.sortConfig,
   });
 
   /// Returns true if any filter is active
   bool get hasAnyFilter => search?.isNotEmpty == true || filterByTags?.isNotEmpty == true || filterNoTags;
 
   @override
-  String toString() => 'FilterContext(search: $search, tags: $filterByTags, noTags: $filterNoTags)';
+  String toString() =>
+      'FilterContext(search: $search, tags: $filterByTags, noTags: $filterNoTags, sortConfig: $sortConfig)';
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/components/note_add_button.dart';
-import 'package:whph/presentation/features/notes/components/note_filters.dart';
+import 'package:whph/presentation/features/notes/components/note_list_options.dart';
 import 'package:whph/presentation/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
@@ -26,6 +28,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   List<String>? _selectedTagIds;
   bool _showNoTagsFilter = false;
   String? _searchQuery;
+  SortConfig<NoteSortFields>? _sortConfig;
 
   @override
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
@@ -82,10 +85,11 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Filters section with consistent padding
-              NoteFilters(
+              NoteListOptions(
                 selectedTagIds: _selectedTagIds,
                 showNoTagsFilter: _showNoTagsFilter,
                 search: _searchQuery,
+                sortConfig: _sortConfig,
                 onTagFilterChange: (tags, isNoneSelected) {
                   setState(() {
                     _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
@@ -97,6 +101,11 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                     _searchQuery = query;
                   });
                 },
+                onSortChange: (sortConfig) {
+                  setState(() {
+                    _sortConfig = sortConfig;
+                  });
+                },
               ),
 
               // Notes list
@@ -105,6 +114,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                   filterByTags: _selectedTagIds,
                   filterNoTags: _showNoTagsFilter,
                   search: _searchQuery,
+                  sortConfig: _sortConfig,
                   onClickNote: _openDetails,
                 ),
               ),
