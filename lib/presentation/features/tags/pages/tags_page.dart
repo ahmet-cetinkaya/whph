@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
+import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/time_chart_filters.dart';
+import 'package:whph/presentation/features/tags/constants/tag_defaults.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
-import 'package:whph/presentation/features/tags/components/tag_filters.dart';
+import 'package:whph/presentation/features/tags/components/tag_list_options.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
@@ -32,9 +35,12 @@ class _TagsPageState extends State<TagsPage> {
 
   List<String>? _selectedFilters;
   bool _showArchived = false;
+  bool _showNoTagsFilter = false;
+  String? _searchQuery;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
+  SortConfig<TagSortFields> _sortConfig = TagDefaults.sorting;
   final GlobalKey<TagsListState> _tagsListKey = GlobalKey<TagsListState>();
 
   @override
@@ -74,12 +80,30 @@ class _TagsPageState extends State<TagsPage> {
     );
   }
 
-  void _onFilterTags(List<DropdownOption<String>> tagOptions) {
+  void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     final List<String>? newFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
 
-    if (!CollectionUtils.areListsEqual(_selectedFilters, newFilters)) {
+    if (!CollectionUtils.areListsEqual(_selectedFilters, newFilters) || _showNoTagsFilter != isNoneSelected) {
       setState(() {
         _selectedFilters = newFilters;
+        _showNoTagsFilter = isNoneSelected;
+      });
+    }
+  }
+
+  void _onSearchChange(String? query) {
+    if (mounted) {
+      setState(() {
+        _searchQuery = query;
+      });
+    }
+  }
+
+  // Handle sort configuration changes
+  void _onSortConfigChange(SortConfig<TagSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
       });
     }
   }
@@ -117,16 +141,26 @@ class _TagsPageState extends State<TagsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Tag Filters section
-          TagFilters(
-            selectedFilters: _selectedFilters,
+          // Tag List Options section
+          TagListOptions(
+            selectedTagIds: _selectedFilters,
+            showNoTagsFilter: _showNoTagsFilter,
             showArchived: _showArchived,
-            onTagFiltersChange: _onFilterTags,
+            search: _searchQuery,
+            sortConfig: _sortConfig,
+            onTagFilterChange: _onFilterTags,
+            onSearchChange: _onSearchChange,
+            onSortChange: _onSortConfigChange,
             onArchivedToggle: (show) {
               setState(() {
                 _showArchived = show;
               });
             },
+            showTagFilter: true,
+            showSearchFilter: false,
+            showSortButton: false,
+            showArchivedToggle: true,
+            hasItems: true,
           ),
 
           // Tag Times Section
@@ -170,15 +204,28 @@ class _TagsPageState extends State<TagsPage> {
 
           // Tags Section Title
           Padding(
-            padding: const EdgeInsets.only(
-              left: AppTheme.sizeSmall,
-              right: AppTheme.sizeSmall,
-              top: AppTheme.sizeMedium,
-              bottom: AppTheme.sizeXSmall,
-            ),
-            child: Text(
-              _translationService.translate(TagTranslationKeys.listSectionTitle),
-              style: Theme.of(context).textTheme.titleSmall,
+            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+            child: Row(
+              children: [
+                Text(
+                  _translationService.translate(TagTranslationKeys.listSectionTitle),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(width: AppTheme.sizeSmall),
+                TagListOptions(
+                  selectedTagIds: _selectedFilters,
+                  showNoTagsFilter: _showNoTagsFilter,
+                  showArchived: _showArchived,
+                  search: _searchQuery,
+                  sortConfig: _sortConfig,
+                  onSearchChange: _onSearchChange,
+                  onSortChange: _onSortConfigChange,
+                  showTagFilter: false,
+                  showSearchFilter: true,
+                  showSortButton: true,
+                  showArchivedToggle: false,
+                ),
+              ],
             ),
           ),
 
@@ -190,6 +237,8 @@ class _TagsPageState extends State<TagsPage> {
               onClickTag: (tag) => _openDetails(tag.id),
               filterByTags: _selectedFilters,
               showArchived: _showArchived,
+              search: _searchQuery,
+              sortConfig: _sortConfig,
             ),
           ),
         ],
