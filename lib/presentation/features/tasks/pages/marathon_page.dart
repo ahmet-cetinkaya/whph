@@ -19,8 +19,9 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
-import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -35,10 +36,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   TaskListItem? _selectedTask;
+  SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
   List<String>? _selectedTagIds;
-  DateTime? _selectedStartDate;
-  DateTime? _selectedEndDate;
   String? _searchQuery;
   bool _showCompletedTasks = false;
 
@@ -224,6 +224,14 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     );
   }
 
+  void _onSortConfigChange(SortConfig<TaskSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -306,44 +314,25 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     Expanded(
                       child: TaskListOptions(
                         selectedTagIds: _selectedTagIds,
-                        selectedStartDate: _selectedStartDate,
-                        selectedEndDate: _selectedEndDate,
-                        onTagFilterChange: (tags, isNoneSelected) {
-                          setState(() {
-                            _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                          });
-                          _onTasksChanged();
-                        },
-                        onDateFilterChange: (start, end) {
-                          setState(() {
-                            _selectedStartDate = start;
-                            _selectedEndDate = end;
-                          });
-                          _onTasksChanged();
-                        },
+                        showNoTagsFilter: false,
                         onSearchChange: (query) {
                           setState(() {
                             _searchQuery = query;
                           });
-                          _onTasksChanged();
                         },
-                        showDateFilter: false,
                         showCompletedTasks: _showCompletedTasks,
                         onCompletedTasksToggle: (showCompleted) {
                           setState(() {
                             _showCompletedTasks = showCompleted;
                           });
-                          _onTasksChanged();
                         },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: TaskAddButton(
-                        initialTagIds: _selectedTagIds,
-                        initialPlannedDate: todayForFilter,
-                        onTaskCreated: (_, __) => _onTasksChanged(),
-                        buttonColor: Colors.white,
+                        hasItems: true,
+                        showDateFilter: false,
+                        showTagFilter: false,
+                        showSortButton: true,
+                        showSearchFilter: true,
+                        sortConfig: _sortConfig,
+                        onSortChange: _onSortConfigChange,
                       ),
                     ),
                   ],
@@ -381,7 +370,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   selectedTask: _selectedTask,
                   showSelectButton: true,
                   transparentCards: true,
-                  enableReordering: true,
+                  enableReordering: _sortConfig.useCustomOrder,
+                  sortConfig: _sortConfig,
                 ),
               ),
             ],

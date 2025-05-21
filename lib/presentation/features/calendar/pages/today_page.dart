@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/tags/components/tag_select_dropdown.d
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
@@ -21,10 +22,11 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/calendar/constants/calendar_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
-import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
+import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -45,6 +47,15 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   String? _searchQuery;
   bool _hasHabits = false;
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
+  SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
+
+  void _onSortConfigChange(SortConfig<TaskSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -243,11 +254,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           Expanded(
                             child: TaskListOptions(
                               selectedTagIds: _selectedTagFilter,
-                              showNoTagsFilter: _showNoTagsFilter, // Add this to pass the None filter state
+                              showNoTagsFilter: _showNoTagsFilter,
                               onTagFilterChange: (tags, isNoneSelected) {
                                 setState(() {
                                   _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                                  _showNoTagsFilter = isNoneSelected; // Update None filter state
+                                  _showNoTagsFilter = isNoneSelected;
                                 });
                               },
                               onSearchChange: (query) {
@@ -264,6 +275,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                               hasItems: true,
                               showDateFilter: false,
                               showTagFilter: false,
+                              showSortButton: true,
+                              showSearchFilter: true,
+                              sortConfig: _sortConfig,
+                              onSortChange: _onSortConfigChange,
                             ),
                           ),
 
@@ -290,9 +305,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 filterDateOr: true,
                 search: _searchQuery,
                 onClickTask: (task) => _openTaskDetails(context, task.id),
-                enableReordering: true,
+                enableReordering: _sortConfig.useCustomOrder,
                 showDoneOverlayWhenEmpty: true,
-                sortByPlannedDate: SortDirection.desc,
+                sortConfig: _sortConfig,
               ),
             ],
           ),
