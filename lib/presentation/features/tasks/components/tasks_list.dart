@@ -261,12 +261,27 @@ class TaskListState extends State<TaskList> {
     final items = List<TaskListItem>.from(_tasks!.items)..sort((a, b) => a.order.compareTo(b.order));
     final task = items[oldIndex];
 
-    if (oldIndex < newIndex) newIndex -= 1;
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
 
     final existingOrders = items.map((item) => item.order).toList()..removeAt(oldIndex);
 
     try {
-      final targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+      double targetOrder;
+      if (newIndex == 0) {
+        targetOrder = existingOrders.first - OrderRank.initialStep;
+      } else {
+        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+        // Collision check
+        if (existingOrders.contains(targetOrder)) {
+          throw RankGapTooSmallException();
+        }
+        // Gap check
+        if (newIndex > 0 && (existingOrders[newIndex] - existingOrders[newIndex - 1]).abs() < 1e-8) {
+          throw RankGapTooSmallException();
+        }
+      }
 
       await AsyncErrorHandler.executeVoid(
         context: context,
@@ -287,9 +302,7 @@ class TaskListState extends State<TaskList> {
       );
     } catch (e) {
       if (e is RankGapTooSmallException) {
-        // Handle the special case of rank gap being too small
         final targetOrder = items.last.order + OrderRank.initialStep * 2;
-
         if (mounted) {
           await AsyncErrorHandler.executeVoid(
             context: context,
