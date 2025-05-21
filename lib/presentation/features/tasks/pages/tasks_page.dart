@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';

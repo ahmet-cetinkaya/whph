@@ -169,3 +169,6 @@ shared:
   data:
     created_date_label: Oluşturulma Tarihi
     modified_date_label: Değiştirilme Tarihi
+    name_label: İsim
+  filters:
+    search: Ara

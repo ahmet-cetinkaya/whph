@@ -109,6 +109,7 @@ class HabitTranslationKeys {
   static const String showArchived = 'habits.archive.show_archived';
   static const String hideArchived = 'habits.archive.hide_archived';
   static const String archiveHabit = 'habits.archive.archive';
+  static const String archivedDateLabel = 'habits.archive.archived_date';
   static const String unarchiveHabit = 'habits.archive.unarchive';
   static const String archiveHabitConfirm = 'habits.archive.archive_confirm';
   static const String unarchiveHabitConfirm = 'habits.archive.unarchive_confirm';

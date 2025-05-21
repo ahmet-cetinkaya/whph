@@ -154,7 +154,7 @@ habits:
   list:
     no_habits_found: Alışkanlık bulunamadı
     all_habits_done: Tüm alışkanlıklar tamamlandı!
-  
+
   reminders:
     enable: Hatırlatıcıları etkinleştir
     select_days_warning: Lütfen hatırlatıcılar için en az bir gün seçin
@@ -170,7 +170,7 @@ habits:
   notifications:
     reminder_title: "Alışkanlık Hatırlatıcı: {name}"
     reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"
-  
+
   archive:
     show_archived: Arşivlenenleri göster
     hide_archived: Arşivlenenleri gizle
@@ -180,3 +180,4 @@ habits:
     unarchive_confirm: Bu alışkanlığı arşivden çıkarmak istediğinize emin misiniz?
     archive_tooltip: Bu alışkanlığı arşivle
     unarchive_tooltip: Bu alışkanlığı arşivden çıkar
+    archived_date: Arşivlenme Tarihi

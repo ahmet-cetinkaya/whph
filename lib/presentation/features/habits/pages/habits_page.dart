@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_add_button.dart';
-import 'package:whph/presentation/features/habits/components/habit_filters.dart';
+import 'package:whph/presentation/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/features/habits/constants/habit_defaults.dart';
 import 'package:whph/presentation/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
@@ -31,8 +34,10 @@ class _HabitsPageState extends State<HabitsPage> {
 
   List<String> _selectedFilterTags = [];
   bool _showNoTagsFilter = false;
-  bool _filterByArchived = false; // Changed to non-nullable with default value
-  String? _handledHabitId; // Track the habit ID that we've already handled
+  bool _filterByArchived = false;
+  String? _searchQuery;
+  SortConfig<HabitSortFields> _sortConfig = HabitDefaults.sorting;
+  String? _handledHabitId;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -64,6 +69,23 @@ class _HabitsPageState extends State<HabitsPage> {
     });
 
     // HabitsList will detect filter changes via didUpdateWidget
+  }
+
+  void _onSearchChange(String? query) {
+    if (mounted) {
+      setState(() {
+        _searchQuery = query;
+      });
+    }
+  }
+
+  // Handle sort configuration changes
+  void _onSortConfigChange(SortConfig<HabitSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
+      });
+    }
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -172,13 +194,18 @@ class _HabitsPageState extends State<HabitsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Filter by tags
-              HabitFilters(
+              // Filters and sorting
+              HabitListOptions(
                 selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
                 showNoTagsFilter: _showNoTagsFilter,
                 filterByArchived: _filterByArchived,
+                sortConfig: _sortConfig,
                 onTagFilterChange: _onFilterTagsSelect,
                 onArchiveFilterChange: _onToggleArchived,
+                onSearchChange: _onSearchChange,
+                onSortChange: _onSortConfigChange,
+                showSearchFilter: true,
+                showSortButton: true,
               ),
 
               // Calendar
@@ -204,6 +231,8 @@ class _HabitsPageState extends State<HabitsPage> {
             filterByTags: _selectedFilterTags,
             filterNoTags: _showNoTagsFilter,
             filterByArchived: _filterByArchived,
+            search: _searchQuery,
+            sortConfig: _sortConfig,
             onClickHabit: (item) {
               _openDetails(item.id, context);
             },

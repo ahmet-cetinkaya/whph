@@ -177,3 +177,4 @@ habits:
     unarchive_confirm: Are you sure you want to unarchive this habit?
     archive_tooltip: Archive this habit
     unarchive_tooltip: Unarchive this habit
+    archived_date: Archived Date

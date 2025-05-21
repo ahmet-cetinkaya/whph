@@ -6,6 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -20,7 +21,9 @@ class HabitsList extends StatefulWidget {
   final List<String>? filterByTags;
   final bool filterNoTags;
   final bool showDoneOverlayWhenEmpty;
-  final bool filterByArchived; // Changed to non-nullable
+  final bool filterByArchived;
+  final String? search;
+  final SortConfig<HabitSortFields>? sortConfig;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -35,7 +38,9 @@ class HabitsList extends StatefulWidget {
     this.filterByTags,
     this.filterNoTags = false,
     this.showDoneOverlayWhenEmpty = false,
-    this.filterByArchived = false, // Default to showing unarchived
+    this.filterByArchived = false,
+    this.search,
+    this.sortConfig,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -58,7 +63,7 @@ class HabitsListState extends State<HabitsList> {
   @override
   void initState() {
     super.initState();
-    _currentFilters = _captureCurrentFilters(); // Initialize first to avoid LateError
+    _currentFilters = _captureCurrentFilters();
     _getHabits();
     _setupEventListeners();
   }
@@ -104,6 +109,8 @@ class HabitsListState extends State<HabitsList> {
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
         filterByArchived: widget.filterByArchived, // Changed from showArchived
+        search: widget.search,
+        sortConfig: widget.sortConfig,
       );
 
   bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -112,7 +119,9 @@ class HabitsListState extends State<HabitsList> {
       'dateRange': oldFilters.dateRange,
       'filterNoTags': oldFilters.filterNoTags,
       'filterByTags': oldFilters.filterByTags,
-      'filterByArchived': oldFilters.filterByArchived, // Changed from showArchived
+      'filterByArchived': oldFilters.filterByArchived,
+      'search': oldFilters.search,
+      'sortConfig': oldFilters.sortConfig,
     };
 
     final newMap = {
@@ -120,7 +129,9 @@ class HabitsListState extends State<HabitsList> {
       'dateRange': newFilters.dateRange,
       'filterNoTags': newFilters.filterNoTags,
       'filterByTags': newFilters.filterByTags,
-      'filterByArchived': newFilters.filterByArchived, // Changed from showArchived
+      'filterByArchived': newFilters.filterByArchived,
+      'search': newFilters.search,
+      'sortConfig': newFilters.sortConfig,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -166,6 +177,9 @@ class HabitsListState extends State<HabitsList> {
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
           filterByArchived: _currentFilters.filterByArchived,
+          search: _currentFilters.search,
+          sortBy: _currentFilters.sortConfig?.orderOptions,
+          sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
         );
 
         return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
@@ -294,13 +308,17 @@ class FilterContext {
   final int dateRange;
   final List<String>? filterByTags;
   final bool filterNoTags;
-  final bool filterByArchived; // Changed to non-nullable
+  final bool filterByArchived;
+  final String? search;
+  final SortConfig<HabitSortFields>? sortConfig;
 
-  const FilterContext({
+  FilterContext({
     required this.mini,
     required this.dateRange,
-    this.filterByTags,
-    this.filterNoTags = false,
-    this.filterByArchived = false, // Default to showing unarchived
+    required this.filterByTags,
+    required this.filterNoTags,
+    required this.filterByArchived,
+    this.search,
+    this.sortConfig,
   });
 }
