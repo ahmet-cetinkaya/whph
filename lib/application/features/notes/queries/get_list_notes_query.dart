@@ -4,6 +4,13 @@ import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/core/acore/queries/models/sort_option.dart';
+
+enum NoteSortFields {
+  title,
+  createdDate,
+  modifiedDate,
+}
 
 class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final int pageIndex;
@@ -11,6 +18,8 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final List<String>? filterByTags;
   final bool filterNoTags;
   final String? search;
+  final List<SortOption<NoteSortFields>>? sortBy;
+  final bool sortByCustomOrder;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -18,6 +27,8 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.filterByTags,
     this.filterNoTags = false,
     this.search,
+    this.sortBy,
+    this.sortByCustomOrder = false,
   });
 }
 
@@ -117,12 +128,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     final notesPaginated = await _noteRepository.getList(
       request.pageIndex,
       request.pageSize,
-      customOrder: [
-        CustomOrder(
-          field: 'order',
-          direction: SortDirection.desc,
-        ),
-      ],
+      customOrder: _getCustomOrders(request),
       customWhereFilter: filter,
     );
 
@@ -151,5 +157,43 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       pageIndex: notesPaginated.pageIndex,
       pageSize: notesPaginated.pageSize,
     );
+  }
+
+  List<CustomOrder> _getCustomOrders(GetListNotesQuery request) {
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      // Varsayılan sıralama: created_date DESC
+      return [
+        CustomOrder(
+          field: 'created_date',
+          direction: SortDirection.desc,
+        ),
+      ];
+    }
+
+    if (request.sortByCustomOrder) {
+      return [CustomOrder(field: "order")];
+    }
+
+    List<CustomOrder> customOrders = [];
+    for (var option in request.sortBy!) {
+      if (option.field == NoteSortFields.title) {
+        customOrders.add(CustomOrder(field: "title", direction: option.direction));
+      } else if (option.field == NoteSortFields.createdDate) {
+        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
+      } else if (option.field == NoteSortFields.modifiedDate) {
+        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
+      }
+    }
+
+    if (customOrders.isEmpty) {
+      return [
+        CustomOrder(
+          field: 'created_date',
+          direction: SortDirection.desc,
+        ),
+      ];
+    }
+
+    return customOrders;
   }
 }
