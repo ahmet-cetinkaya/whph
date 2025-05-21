@@ -3,9 +3,19 @@ import 'package:whph/application/features/habits/services/i_habit_repository.dar
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/habits/habit.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/acore/queries/models/sort_option.dart';
+
+enum HabitSortFields {
+  name,
+  createdDate,
+  modifiedDate,
+  estimatedTime,
+  archivedDate,
+}
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
@@ -14,6 +24,9 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   List<String>? filterByTags;
   bool filterNoTags;
   bool? filterByArchived;
+  List<SortOption<HabitSortFields>>? sortBy;
+  bool sortByCustomSort;
+  String? search;
 
   GetListHabitsQuery({
     required this.pageIndex,
@@ -22,6 +35,9 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByArchived,
+    this.sortBy,
+    this.sortByCustomSort = false,
+    this.search,
   });
 }
 
@@ -79,6 +95,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getCustomWhereFilter(request),
+      customOrder: _getCustomOrders(request),
     );
 
     List<HabitListItem> habitItems = [];
@@ -122,6 +139,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     final conditions = <String>[];
     final variables = <Object>[];
 
+    // Search filter
+    if (request.search?.isNotEmpty ?? false) {
+      conditions.add("habit_table.name LIKE ?");
+      variables.add('%${request.search}%');
+    }
+
     // Filter by archive status if specified
     if (request.filterByArchived != null) {
       conditions.add(
@@ -153,5 +176,31 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     if (conditions.isEmpty) return null;
 
     return CustomWhereFilter(conditions.join(' AND '), variables);
+  }
+
+  List<CustomOrder>? _getCustomOrders(GetListHabitsQuery request) {
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      return null;
+    }
+
+    if (request.sortByCustomSort) {
+      return [CustomOrder(field: "order")];
+    }
+
+    List<CustomOrder> customOrders = [];
+    for (var option in request.sortBy!) {
+      if (option.field == HabitSortFields.name) {
+        customOrders.add(CustomOrder(field: "name", direction: option.direction));
+      } else if (option.field == HabitSortFields.createdDate) {
+        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
+      } else if (option.field == HabitSortFields.modifiedDate) {
+        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
+      } else if (option.field == HabitSortFields.estimatedTime) {
+        customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+      } else if (option.field == HabitSortFields.archivedDate) {
+        customOrders.add(CustomOrder(field: "archived_date", direction: option.direction));
+      }
+    }
+    return customOrders.isEmpty ? null : customOrders;
   }
 }

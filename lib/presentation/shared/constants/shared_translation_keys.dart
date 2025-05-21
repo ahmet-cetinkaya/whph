@@ -86,6 +86,9 @@ class SharedTranslationKeys {
   static const String dateFilterTooltip = 'shared.date_filter.tooltips.filter';
   static const String clearDateFilterTooltip = 'shared.date_filter.tooltips.clear';
 
+  // Search
+  static const String searchTitle = 'shared.filters.search';
+
   // Load More
   static const String loadMoreButton = 'shared.buttons.load_more';
 
@@ -150,6 +153,7 @@ class SharedTranslationKeys {
   // Data
   static const String createdDateLabel = 'shared.data.created_date_label';
   static const String modifiedDateLabel = 'shared.data.modified_date_label';
+  static const String nameLabel = 'shared.data.name_label';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

@@ -167,5 +167,8 @@ shared:
   date_format:
     hint: DD/MM/YYYY
   data:
-   created_date_label: Created Date
-   modified_date_label: Modified Date
+    created_date_label: Created Date
+    modified_date_label: Modified Date
+    name_label: Name
+  filters:
+    search: Search
