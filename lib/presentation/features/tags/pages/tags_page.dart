@@ -68,7 +68,6 @@ class _TagsPageState extends State<TagsPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(TagTranslationKeys.title),
       child: TagDetailsPage(
         tagId: id,
       ),

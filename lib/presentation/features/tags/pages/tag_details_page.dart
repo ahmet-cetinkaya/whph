@@ -55,7 +55,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
     if (!mounted) return;
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(noteId: noteId),
     );
     setState(() {}); // Refresh the list after dialog closes

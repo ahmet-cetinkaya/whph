@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 
 class DetailTableRowData {
@@ -126,7 +127,7 @@ class DetailTable extends StatelessWidget {
                 Tooltip(
                   message: data.tooltip!,
                   child: Icon(
-                    Icons.help_outline,
+                    SharedUiConstants.helpIcon,
                     size: AppTheme.fontSizeLarge,
                     color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
                   ),

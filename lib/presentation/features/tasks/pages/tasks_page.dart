@@ -39,7 +39,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   Future<void> _openTaskDetails(String taskId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
       child: TaskDetailsPage(
         taskId: taskId,
         hideSidebar: true,

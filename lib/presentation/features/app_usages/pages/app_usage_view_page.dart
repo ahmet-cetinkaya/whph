@@ -54,7 +54,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       child: AppUsageDetailsPage(
         appUsageId: id,
       ),

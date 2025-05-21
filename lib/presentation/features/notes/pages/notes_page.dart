@@ -33,7 +33,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   Future<void> _openDetails(String noteId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(
         noteId: noteId,
       ),

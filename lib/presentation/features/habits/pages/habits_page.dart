@@ -37,7 +37,6 @@ class _HabitsPageState extends State<HabitsPage> {
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(HabitTranslationKeys.helpTitle),
       child: HabitDetailsPage(
         habitId: habitId,
       ),
