@@ -8,7 +8,6 @@ class AppUsageUiConstants {
   static const IconData colorIcon = Icons.color_lens;
   static const IconData editIcon = Icons.edit;
   static const IconData patternIcon = Icons.pattern;
-  static const IconData helpIcon = Icons.help_outline;
   static const IconData saveIcon = Icons.save;
   static const IconData checkIcon = Icons.check;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 
@@ -62,7 +63,7 @@ class HelpMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: const Icon(Icons.help_outline),
+        icon: const Icon(SharedUiConstants.helpIcon),
         onPressed: () => _showHelpModal(context),
         color: AppTheme.primaryColor,
         tooltip: _translationService.translate(SharedTranslationKeys.helpTooltip));

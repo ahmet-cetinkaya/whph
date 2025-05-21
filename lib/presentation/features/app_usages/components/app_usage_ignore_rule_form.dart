@@ -138,7 +138,7 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 32),
-                      icon: Icon(AppUsageUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
+                      icon: Icon(SharedUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
                       tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
                       onPressed: () => RegexHelpDialog.show(context),
                     ),
