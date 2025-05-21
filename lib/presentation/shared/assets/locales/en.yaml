@@ -24,6 +24,15 @@ shared:
     days: days
     hours: hr
     seconds: sec
+  sort:
+    custom_order:
+      title: Custom Sort
+      description: Enable drag and drop to reorder items
+    reset_to_default: Reset to Default
+    ascending: Ascending
+    descending: Descending
+    remove_criteria: Remove Criteria
+    sort: Sort
   tooltips:
     filter_by_tags: Filter by tags
     refresh: Refresh
@@ -157,3 +166,6 @@ shared:
     not_set: "Not set"
   date_format:
     hint: DD/MM/YYYY
+  data:
+   created_date_label: Created Date
+   modified_date_label: Modified Date

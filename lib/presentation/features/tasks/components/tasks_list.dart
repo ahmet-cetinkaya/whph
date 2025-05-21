@@ -8,6 +8,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
+import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
@@ -47,6 +49,8 @@ class TaskList extends StatefulWidget {
   final List<Widget> Function(TaskListItem task)? trailingButtons;
   final Key? rebuildKey;
   final SortDirection? sortByPlannedDate;
+  final SortConfig<TaskSortFields>? sortConfig;
+  final void Function()? onReorderComplete;
 
   const TaskList({
     super.key,
@@ -74,6 +78,8 @@ class TaskList extends StatefulWidget {
     this.trailingButtons,
     this.rebuildKey,
     this.sortByPlannedDate,
+    this.sortConfig,
+    this.onReorderComplete,
   });
 
   @override
@@ -167,6 +173,7 @@ class TaskListState extends State<TaskList> {
       'deadlineStartDate': oldWidget.filterByDeadlineStartDate,
       'deadlineEndDate': oldWidget.filterByDeadlineEndDate,
       'sortByPlannedDate': oldWidget.sortByPlannedDate,
+      'sortConfig': oldWidget.sortConfig,
     };
 
     final newFilters = {
@@ -178,6 +185,7 @@ class TaskListState extends State<TaskList> {
       'deadlineStartDate': widget.filterByDeadlineStartDate,
       'deadlineEndDate': widget.filterByDeadlineEndDate,
       'sortByPlannedDate': widget.sortByPlannedDate,
+      'sortConfig': widget.sortConfig,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldFilters, newFilters);
@@ -212,9 +220,19 @@ class TaskListState extends State<TaskList> {
           filterByTags: widget.filterByTags,
           filterNoTags: widget.filterNoTags,
           filterByCompleted: widget.filterByCompleted,
-          search: widget.search,
-          parentTaskId: widget.parentTaskId,
-          sortByPlannedDate: widget.sortByPlannedDate,
+          filterBySearch: widget.search,
+          filterByParentTaskId: widget.parentTaskId,
+          // Use sortConfig or fallback to sortByPlannedDate
+          sortBy: widget.sortConfig?.orderOptions ??
+              (widget.sortByPlannedDate != null
+                  ? [
+                      SortOptionWithTranslationKey<TaskSortFields>(
+                          field: TaskSortFields.plannedDate,
+                          translationKey: TaskTranslationKeys.plannedDateLabel,
+                          direction: widget.sortByPlannedDate!)
+                    ]
+                  : null),
+          sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
         );
 
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
@@ -255,16 +273,22 @@ class TaskListState extends State<TaskList> {
     widget.onTaskCompleted?.call();
   }
 
+  List<TaskListItem> _getFilteredTasks() {
+    if (_tasks == null) return [];
+    return _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+  }
+
   Future<void> _onReorder(int oldIndex, int newIndex) async {
     if (!mounted) return;
 
-    final items = List<TaskListItem>.from(_tasks!.items)..sort((a, b) => a.order.compareTo(b.order));
+    final items = _getFilteredTasks();
     final task = items[oldIndex];
 
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
 
+    // Extract existing orders for reordering
     final existingOrders = items.map((item) => item.order).toList()..removeAt(oldIndex);
 
     try {
@@ -283,6 +307,8 @@ class TaskListState extends State<TaskList> {
         }
       }
 
+      // Custom order is automatically enabled when reordering
+
       await AsyncErrorHandler.executeVoid(
         context: context,
         errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
@@ -298,6 +324,7 @@ class TaskListState extends State<TaskList> {
         },
         onSuccess: () {
           refresh();
+          widget.onReorderComplete?.call();
         },
       );
     } catch (e) {
@@ -319,6 +346,7 @@ class TaskListState extends State<TaskList> {
             },
             onSuccess: () {
               refresh();
+              widget.onReorderComplete?.call();
             },
           );
         }
@@ -327,7 +355,7 @@ class TaskListState extends State<TaskList> {
   }
 
   List<Widget> _buildTaskCards() {
-    final items = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+    final items = _getFilteredTasks();
     return items
         .map((task) => Material(
               key: ValueKey(task.id),

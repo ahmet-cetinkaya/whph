@@ -10,7 +10,7 @@ import 'package:whph/presentation/features/notes/constants/note_translation_keys
 import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tags/components/tag_archive_button.dart';
@@ -234,7 +234,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: TaskFilters(
+                                      child: TaskListOptions(
                                         onSearchChange: (query) {
                                           setState(() {
                                             _taskSearchQuery = query;

@@ -12,7 +12,7 @@ import 'package:whph/presentation/features/tasks/components/task_details_content
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TaskDetailsPage extends StatefulWidget {
@@ -218,7 +218,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
                           // FILTERS
                           const SizedBox(width: AppTheme.sizeMedium),
-                          TaskFilters(
+                          TaskListOptions(
                             showCompletedTasks: _showCompletedTasks,
                             onCompletedTasksToggle: (showCompleted) {
                               setState(() {

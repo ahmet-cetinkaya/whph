@@ -138,6 +138,19 @@ class SharedTranslationKeys {
 
   static const String dateFormatHint = 'shared.date_format.hint';
 
+  // Sort Dialog
+  static const String sortCustomTitle = 'shared.sort.custom_order.title';
+  static const String sortCustomDescription = 'shared.sort.custom_order.description';
+  static const String sortResetToDefault = 'shared.sort.reset_to_default';
+  static const String sortAscending = 'shared.sort.ascending';
+  static const String sortDescending = 'shared.sort.descending';
+  static const String sortRemoveCriteria = 'shared.sort.remove_criteria';
+  static const String sort = 'shared.sort.sort';
+
+  // Data
+  static const String createdDateLabel = 'shared.data.created_date_label';
+  static const String modifiedDateLabel = 'shared.data.modified_date_label';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     final day = switch (weekday) {

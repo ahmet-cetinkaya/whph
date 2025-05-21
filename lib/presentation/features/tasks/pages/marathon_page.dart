@@ -13,7 +13,7 @@ import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/application/features/tasks/commands/save_task_time_record_command.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -202,7 +202,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
             GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
         final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-            GetListTasksQuery(pageIndex: 0, pageSize: 10, parentTaskId: _selectedTask!.id));
+            GetListTasksQuery(pageIndex: 0, pageSize: 10, filterByParentTaskId: _selectedTask!.id));
 
         if (mounted) {
           setState(() {
@@ -304,7 +304,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                 child: Row(
                   children: [
                     Expanded(
-                      child: TaskFilters(
+                      child: TaskListOptions(
                         selectedTagIds: _selectedTagIds,
                         selectedStartDate: _selectedStartDate,
                         selectedEndDate: _selectedEndDate,

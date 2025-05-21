@@ -20,7 +20,7 @@ import 'package:whph/presentation/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/calendar/constants/calendar_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/tasks/components/task_filters.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -241,7 +241,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         children: [
                           // Task filters
                           Expanded(
-                            child: TaskFilters(
+                            child: TaskListOptions(
                               selectedTagIds: _selectedTagFilter,
                               showNoTagsFilter: _showNoTagsFilter, // Add this to pass the None filter state
                               onTagFilterChange: (tags, isNoneSelected) {

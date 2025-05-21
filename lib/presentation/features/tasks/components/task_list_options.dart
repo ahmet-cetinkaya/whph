@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/components/sort_dialog_button.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/components/search_filter.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
+import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'dart:async';
 
-class TaskFilters extends StatefulWidget {
+class TaskListOptions extends StatefulWidget {
   /// Selected tag IDs for filtering
   final List<String>? selectedTagIds;
 
@@ -24,6 +30,9 @@ class TaskFilters extends StatefulWidget {
   /// Selected end date for filtering
   final DateTime? selectedEndDate;
 
+  /// Current sort configuration
+  final SortConfig<TaskSortFields>? sortConfig;
+
   /// Callback when tag filter changes
   final Function(List<DropdownOption<String>>, bool)? onTagFilterChange;
 
@@ -33,6 +42,9 @@ class TaskFilters extends StatefulWidget {
   /// Callback when search filter changes
   final Function(String?)? onSearchChange;
 
+  /// Callback when sort changes
+  final Function(SortConfig<TaskSortFields>)? onSortChange;
+
   /// Whether to show the tag filter button
   final bool showTagFilter;
 
@@ -41,6 +53,9 @@ class TaskFilters extends StatefulWidget {
 
   /// Whether to show the search filter button
   final bool showSearchFilter;
+
+  /// Whether to show the sort button
+  final bool showSortButton;
 
   /// Whether to show the completed tasks toggle button
   final bool showCompletedTasksToggle;
@@ -54,18 +69,21 @@ class TaskFilters extends StatefulWidget {
   /// Whether there are items to filter
   final bool hasItems;
 
-  const TaskFilters({
+  const TaskListOptions({
     super.key,
     this.selectedTagIds,
     this.showNoTagsFilter = false,
     this.selectedStartDate,
     this.selectedEndDate,
+    this.sortConfig,
     this.onTagFilterChange,
     this.onDateFilterChange,
     this.onSearchChange,
+    this.onSortChange,
     this.showTagFilter = true,
     this.showDateFilter = true,
     this.showSearchFilter = true,
+    this.showSortButton = true,
     this.showCompletedTasksToggle = true,
     this.showCompletedTasks = false,
     this.onCompletedTasksToggle,
@@ -73,10 +91,10 @@ class TaskFilters extends StatefulWidget {
   });
 
   @override
-  State<TaskFilters> createState() => _TaskFiltersState();
+  State<TaskListOptions> createState() => _TaskListOptionsState();
 }
 
-class _TaskFiltersState extends State<TaskFilters> {
+class _TaskListOptionsState extends State<TaskListOptions> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   Timer? _searchDebounce;
 
@@ -111,6 +129,7 @@ class _TaskFiltersState extends State<TaskFilters> {
     final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
         (widget.showDateFilter && widget.onDateFilterChange != null) ||
         (widget.showSearchFilter && widget.onSearchChange != null) ||
+        (widget.showSortButton && widget.onSortChange != null) ||
         (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems));
 
     // If no filters to show, don't render anything
@@ -164,6 +183,88 @@ class _TaskFiltersState extends State<TaskFilters> {
                       iconSize: AppTheme.iconSizeMedium,
                       iconColor: Colors.grey,
                       expandedWidth: 200,
+                    ),
+
+                  // Sort button
+                  if (widget.showSortButton && widget.onSortChange != null)
+                    SortDialogButton<TaskSortFields>(
+                      iconColor: Theme.of(context).primaryColor,
+                      tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                      config: widget.sortConfig ??
+                          SortConfig<TaskSortFields>(
+                            orderOptions: [
+                              SortOptionWithTranslationKey(
+                                field: TaskSortFields.priority,
+                                direction: SortDirection.desc,
+                                translationKey: TaskTranslationKeys.priorityLabel,
+                              ),
+                              SortOptionWithTranslationKey(
+                                field: TaskSortFields.plannedDate,
+                                direction: SortDirection.asc,
+                                translationKey: TaskTranslationKeys.plannedDateLabel,
+                              ),
+                            ],
+                            useCustomOrder: false,
+                          ),
+                      defaultConfig: SortConfig<TaskSortFields>(
+                        orderOptions: [
+                          SortOptionWithTranslationKey(
+                            field: TaskSortFields.priority,
+                            direction: SortDirection.desc,
+                            translationKey: TaskTranslationKeys.priorityLabel,
+                          ),
+                          SortOptionWithTranslationKey(
+                            field: TaskSortFields.plannedDate,
+                            direction: SortDirection.asc,
+                            translationKey: TaskTranslationKeys.plannedDateLabel,
+                          ),
+                        ],
+                        useCustomOrder: false,
+                      ),
+                      onConfigChanged: widget.onSortChange!,
+                      availableOptions: [
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.title,
+                          direction: SortDirection.asc,
+                          translationKey: TaskTranslationKeys.titleLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.priority,
+                          direction: SortDirection.desc,
+                          translationKey: TaskTranslationKeys.priorityLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.plannedDate,
+                          direction: SortDirection.asc,
+                          translationKey: TaskTranslationKeys.plannedDateLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.deadlineDate,
+                          direction: SortDirection.asc,
+                          translationKey: TaskTranslationKeys.deadlineDateLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.estimatedTime,
+                          direction: SortDirection.desc,
+                          translationKey: TaskTranslationKeys.estimatedTimeLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.elapsedTime,
+                          direction: SortDirection.desc,
+                          translationKey: TaskTranslationKeys.elapsedTimeLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.createdDate,
+                          direction: SortDirection.desc,
+                          translationKey: SharedTranslationKeys.createdDateLabel,
+                        ),
+                        SortOptionWithTranslationKey(
+                          field: TaskSortFields.modifiedDate,
+                          direction: SortDirection.desc,
+                          translationKey: SharedTranslationKeys.modifiedDateLabel,
+                        ),
+                      ],
+                      isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                     ),
 
                   // Completed tasks toggle button
