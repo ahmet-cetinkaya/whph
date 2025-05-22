@@ -8,6 +8,7 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_card.
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -200,7 +201,7 @@ class AppUsageListState extends State<AppUsageList> {
             )),
         if (_appUsages.length >= widget.size)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(
               child: LoadMoreButton(
                 onPressed: _loadAppUsages,

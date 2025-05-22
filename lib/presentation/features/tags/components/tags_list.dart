@@ -8,6 +8,7 @@ import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
@@ -176,7 +177,11 @@ class TagsListState extends State<TagsList> {
               tag: tag,
               onOpenDetails: () => widget.onClickTag?.call(tag),
             )),
-        if (_tags!.hasNext) LoadMoreButton(onPressed: () => _getTags(pageIndex: _tags!.pageIndex + 1)),
+        if (_tags!.hasNext)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            child: Center(child: LoadMoreButton(onPressed: () => _getTags(pageIndex: _tags!.pageIndex + 1))),
+          ),
       ],
     );
   }

@@ -239,11 +239,11 @@ class TaskListState extends State<TaskList> {
       },
       onSuccess: (result) {
         setState(() {
-          if (_tasks == null || !isRefresh) {
+          if (_tasks == null || isRefresh) {
             _tasks = result;
           } else {
             _tasks = GetListTasksQueryResponse(
-              items: [...result.items],
+              items: [..._tasks!.items, ...result.items],
               totalItemCount: result.totalItemCount,
               totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
@@ -354,6 +354,12 @@ class TaskListState extends State<TaskList> {
     }
   }
 
+  Future<void> _onLoadMore() async {
+    if (_tasks == null || !_tasks!.hasNext) return;
+
+    await _getTasks(pageIndex: _tasks!.pageIndex + 1);
+  }
+
   List<Widget> _buildTaskCards() {
     final items = _getFilteredTasks();
     return items
@@ -437,8 +443,12 @@ class TaskListState extends State<TaskList> {
         else
           ..._buildTaskCards(),
         if (_tasks!.hasNext)
-          LoadMoreButton(
-            onPressed: () => _getTasks(pageIndex: _tasks!.pageIndex + 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            child: Center(
+                child: LoadMoreButton(
+              onPressed: _onLoadMore,
+            )),
           ),
       ],
     );

@@ -204,7 +204,11 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
             );
           },
         ),
-        if (_rules!.hasNext) LoadMoreButton(onPressed: () => _loadRules(pageIndex: _rules!.pageIndex + 1)),
+        if (_rules!.hasNext)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            child: Center(child: LoadMoreButton(onPressed: () => _loadRules(pageIndex: _rules!.pageIndex + 1))),
+          ),
       ],
     );
   }

@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -159,11 +160,11 @@ class NotesListState extends State<NotesList> {
       },
       onSuccess: (result) {
         setState(() {
-          if (_notes == null || !isRefresh) {
+          if (_notes == null || isRefresh) {
             _notes = result;
           } else {
             _notes = GetListNotesQueryResponse(
-              items: [...result.items],
+              items: [..._notes!.items, ...result.items],
               totalItemCount: result.totalItemCount,
               totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
@@ -212,7 +213,11 @@ class NotesListState extends State<NotesList> {
               note: note,
               onOpenDetails: () => _onNoteSelected(note.id),
             )),
-        if (_notes!.hasNext) LoadMoreButton(onPressed: () => _getNotes(pageIndex: _notes!.pageIndex + 1)),
+        if (_notes!.hasNext)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            child: Center(child: LoadMoreButton(onPressed: () => _getNotes(pageIndex: _notes!.pageIndex + 1))),
+          ),
       ],
     );
   }
