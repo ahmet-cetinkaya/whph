@@ -1,4 +1,5 @@
 class SettingKeys {
+  // Timer settings
   static const String workTime = 'WORK_TIME';
   static const String breakTime = 'BREAK_TIME';
   static const String longBreakTime = 'LONG_BREAK_TIME';
@@ -12,4 +13,7 @@ class SettingKeys {
   static const String tickingEnabled = 'TICKING_ENABLED';
   static const String tickingVolume = 'TICKING_VOLUME';
   static const String tickingSpeed = 'TICKING_SPEED';
+
+  // Filter and sort settings
+  static const String tasksListOptionsSettings = 'TASKS_LIST_OPTIONS_SETTINGS';
 }

@@ -137,6 +137,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    const String subTaskFilterOptionsSettingKeySuffix = 'TASK_DETAILS_PAGE_SUBTASKS';
+
     return Scaffold(
       appBar: AppBar(
         leading: widget.hideSidebar
@@ -242,6 +245,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                             hasItems: true,
                             showDateFilter: false,
                             showTagFilter: false,
+                            settingKeyVariantSuffix: subTaskFilterOptionsSettingKeySuffix,
                           )
                         ],
                       ),

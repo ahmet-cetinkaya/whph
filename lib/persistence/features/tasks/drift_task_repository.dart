@@ -2,9 +2,11 @@ import 'package:drift/drift.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/acore/repository/models/custom_order.dart';
 import 'package:whph/core/acore/repository/models/custom_where_filter.dart';
+import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/domain/features/tasks/task.dart';
+import 'package:whph/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/persistence/shared/repositories/drift/drift_base_repository.dart';
 
@@ -211,6 +213,95 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     task.recurrenceParentId = data['recurrence_parent_id'] as String?;
 
     return task;
+  }
+
+  @override
+  Future<PaginatedList<TaskWithTotalDuration>> getListWithTotalDuration(
+    int pageIndex,
+    int pageSize, {
+    bool includeDeleted = false,
+    CustomWhereFilter? customWhereFilter,
+    List<CustomOrder>? customOrder,
+  }) async {
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'task_table.deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+
+    String? orderByClause = customOrder?.isNotEmpty == true
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        : null;
+
+    final baseQuery = '''
+      SELECT 
+        task_table.*,
+        COALESCE(SUM(task_time_record_table.duration), 0) as total_duration
+      FROM ${table.actualTableName} task_table
+      LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
+        AND task_time_record_table.deleted_date IS NULL
+      ${whereClause ?? ''}
+      GROUP BY task_table.id
+      ${orderByClause ?? ''}
+      LIMIT ? OFFSET ?
+    ''';
+
+    final query = database.customSelect(
+      baseQuery,
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table, database.taskTimeRecordTable},
+    );
+
+    final result = await query.get();
+
+    // Count total records (without pagination)
+    final countQuery = '''
+      SELECT COUNT(*) as count 
+      FROM ${table.actualTableName} task_table
+      ${whereClause ?? ''}
+    ''';
+    final count = await database.customSelect(
+      countQuery,
+      variables: [if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e))],
+    ).getSingleOrNull();
+    final totalCount = count?.data['count'] as int? ?? 0;
+
+    final items = result.map((row) {
+      final taskData = Map<String, dynamic>.from(row.data);
+      final totalDuration = taskData['total_duration'] as int? ?? 0;
+      taskData.remove('total_duration');
+
+      final task = _mapTaskFromRow(taskData);
+      return TaskWithTotalDuration(
+        id: task.id,
+        title: task.title,
+        totalDuration: totalDuration,
+        priority: task.priority,
+        plannedDate: task.plannedDate,
+        deadlineDate: task.deadlineDate,
+        isCompleted: task.isCompleted,
+        estimatedTime: task.estimatedTime,
+        parentTaskId: task.parentTaskId,
+        order: task.order,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+        createdDate: task.createdDate,
+        modifiedDate: task.modifiedDate,
+        deletedDate: task.deletedDate,
+      );
+    }).toList();
+
+    return PaginatedList(
+      items: items,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalItemCount: totalCount,
+      totalPageCount: (totalCount / pageSize).ceil(),
+    );
   }
 
   @override

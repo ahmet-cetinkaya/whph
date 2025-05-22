@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
+import 'package:whph/presentation/features/tasks/models/task_list_option_settings.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -13,6 +16,7 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/services/filter_settings_manager.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TasksPage extends StatefulWidget {
@@ -27,14 +31,15 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
 
-  List<String>? _selectedTagIds;
+  bool _isTaskListVisible = false;
 
+  // Filter state
+  List<String>? _selectedTagIds;
   bool _showCompletedTasks = false;
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   String? _searchQuery;
   bool _showNoTagsFilter = false;
-
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
   String? _handledTaskId;
@@ -50,14 +55,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         hideSidebar: true,
       ),
     );
-  }
-
-  void _onTasksList(count) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
   }
 
   void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
@@ -94,13 +91,18 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     }
   }
 
-  // Handle sort configuration changes
   void _onSortConfigChange(SortConfig<TaskSortFields> newConfig) {
-    if (mounted) {
-      setState(() {
-        _sortConfig = newConfig;
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _sortConfig = newConfig;
+    });
+  }
+
+  void _onSettingsLoaded() {
+    if (!mounted) return;
+    setState(() {
+      _isTaskListVisible = true;
+    });
   }
 
   @override
@@ -146,6 +148,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
 
+    const String tasksListOptionsSettingsKeySuffix = "TASKS_PAGE";
+
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(TaskTranslationKeys.tasksPageTitle),
       appBarActions: [
@@ -185,29 +189,30 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             showSearchFilter: true,
             showCompletedTasksToggle: true,
             hasItems: true,
-            // Pass the sort configuration and change handler
             sortConfig: _sortConfig,
             onSortChange: _onSortConfigChange,
+            settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
+            onSettingsLoaded: _onSettingsLoaded,
           ),
 
           const SizedBox(height: AppTheme.sizeMedium),
 
           // Task List
-          TaskList(
-            filterByCompleted: _showCompletedTasks,
-            filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
-            filterNoTags: _showNoTagsFilter,
-            filterByPlannedStartDate: _filterStartDate,
-            filterByPlannedEndDate: _filterEndDate,
-            filterByDeadlineStartDate: _filterStartDate,
-            filterByDeadlineEndDate: _filterEndDate,
-            filterDateOr: true,
-            search: _searchQuery,
-            onClickTask: (task) => _openTaskDetails(task.id),
-            onList: _showCompletedTasks ? null : _onTasksList,
-            enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
-            sortConfig: _sortConfig,
-          ),
+          if (_isTaskListVisible)
+            TaskList(
+              filterByCompleted: _showCompletedTasks,
+              filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+              filterNoTags: _showNoTagsFilter,
+              filterByPlannedStartDate: _filterStartDate,
+              filterByPlannedEndDate: _filterEndDate,
+              filterByDeadlineStartDate: _filterStartDate,
+              filterByDeadlineEndDate: _filterEndDate,
+              filterDateOr: true,
+              search: _searchQuery,
+              onClickTask: (task) => _openTaskDetails(task.id),
+              enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+              sortConfig: _sortConfig,
+            ),
         ],
       ),
     );

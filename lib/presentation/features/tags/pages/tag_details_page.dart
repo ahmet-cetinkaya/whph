@@ -63,6 +63,9 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    const String taskFilterOptionsSettingKeySuffix = 'TAG_DETAILS_PAGE';
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -249,6 +252,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                         showDateFilter: false,
                                         showTagFilter: false,
                                         hasItems: true,
+                                        settingKeyVariantSuffix: taskFilterOptionsSettingKeySuffix,
                                       ),
                                     ),
                                     if (!_showCompletedTasks)

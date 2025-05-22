@@ -240,6 +240,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     final todayForFilter = DateTime(now.year, now.month, now.day);
     final tomorrowForFilter = todayForFilter.add(const Duration(days: 1));
 
+    const String taskFilterOptionsSettingKeySuffix = 'MARATHON_PAGE';
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (bool didPop, result) {
@@ -333,6 +335,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                         showSearchFilter: true,
                         sortConfig: _sortConfig,
                         onSortChange: _onSortConfigChange,
+                        settingKeyVariantSuffix: taskFilterOptionsSettingKeySuffix,
                       ),
                     ),
                   ],

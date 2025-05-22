@@ -57,7 +57,7 @@ class DateTimeHelper {
   }
 
   /// Formats only the date with the default format
-  static String formatDate(DateTime? dateTime, {String format = 'dd.MM.yyyy'}) {
+  static String formatDate(DateTime? dateTime, {String format = 'dd/MM/yyyy'}) {
     if (dateTime == null) return '';
 
     // First convert to local time zone, then format

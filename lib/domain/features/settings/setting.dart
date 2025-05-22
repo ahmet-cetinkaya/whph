@@ -1,7 +1,7 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
 
-enum SettingValueType { string, int, double, bool }
+enum SettingValueType { string, int, double, bool, json }
 
 @jsonSerializable
 class Setting extends BaseEntity<String> {
@@ -28,6 +28,9 @@ class Setting extends BaseEntity<String> {
         return double.parse(value) as T;
       case SettingValueType.bool:
         return (value == 'true') as T;
+      case SettingValueType.json:
+        // For JSON, just return the string value since the caller needs to parse it
+        return value as T;
     }
   }
 }

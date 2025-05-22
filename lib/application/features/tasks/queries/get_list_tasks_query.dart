@@ -14,7 +14,7 @@ import 'package:whph/core/acore/queries/models/sort_option.dart';
 enum TaskSortFields {
   createdDate,
   deadlineDate,
-  elapsedTime,
+  totalDuration,
   estimatedTime,
   modifiedDate,
   plannedDate,
@@ -168,15 +168,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    var query = _taskRepository.getList(
+    final tasks = await _taskRepository.getListWithTotalDuration(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getFilters(request),
       customOrder: _getCustomOrders(request),
     );
-
-    // Remove in-memory where filters
-    final tasks = await query;
 
     // Fixing task orders with order value 0
     var needsReorder = tasks.items.any((task) => task.order == 0);
@@ -230,6 +227,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         deadlineDate: task.deadlineDate,
         tags: tagItems,
         estimatedTime: task.estimatedTime,
+        totalElapsedTime: task.totalDuration,
         parentTaskId: task.parentTaskId,
         order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
@@ -315,14 +313,17 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       return [CustomOrder(field: "order")];
     }
 
+    // Ensure sortBy is not null before iterating
+    final sortOptions = request.sortBy ?? [];
+
     List<CustomOrder> customOrders = [];
-    for (var option in request.sortBy!) {
+    for (var option in sortOptions) {
       if (option.field == TaskSortFields.createdDate) {
         customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
       } else if (option.field == TaskSortFields.deadlineDate) {
         customOrders.add(CustomOrder(field: "deadline_date", direction: option.direction));
-      } else if (option.field == TaskSortFields.elapsedTime) {
-        customOrders.add(CustomOrder(field: "total_elapsed_time", direction: option.direction));
+      } else if (option.field == TaskSortFields.totalDuration) {
+        customOrders.add(CustomOrder(field: "total_duration", direction: option.direction));
       } else if (option.field == TaskSortFields.estimatedTime) {
         customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
       } else if (option.field == TaskSortFields.modifiedDate) {

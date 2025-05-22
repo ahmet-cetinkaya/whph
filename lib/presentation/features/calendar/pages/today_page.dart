@@ -102,6 +102,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     super.build(context);
 
     final now = DateTime.now();
+    const String taskFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
 
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
@@ -138,7 +139,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       : Colors.grey,
                   tooltip: _translationService.translate(SharedTranslationKeys.filterByTagsTooltip),
                   showLength: true,
-                  showNoneOption: true, // Enable "None" option
+                  showNoneOption: true,
+                  initialNoneSelected: _showNoTagsFilter,
                   initialSelectedTags: _selectedTagFilter != null
                       ? _selectedTagFilter!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
                       : [],
@@ -279,6 +281,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                               showSearchFilter: true,
                               sortConfig: _sortConfig,
                               onSortChange: _onSortConfigChange,
+                              settingKeyVariantSuffix: taskFilterOptionsSettingKeySuffix,
                             ),
                           ),
 
