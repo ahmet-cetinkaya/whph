@@ -4,7 +4,7 @@ import 'package:whph/application/features/notes/commands/add_note_tag_command.da
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/components/note_add_button.dart';
-import 'package:whph/presentation/features/notes/components/note_filters.dart';
+import 'package:whph/presentation/features/notes/components/note_list_options.dart';
 import 'package:whph/presentation/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
@@ -293,7 +293,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: NoteFilters(
+                                      child: NoteListOptions(
                                         search: _noteSearchQuery,
                                         onSearchChange: (query) {
                                           setState(() {
