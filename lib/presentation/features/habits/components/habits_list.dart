@@ -186,11 +186,11 @@ class HabitsListState extends State<HabitsList> {
       },
       onSuccess: (result) {
         setState(() {
-          if (_habits == null || !isRefresh) {
+          if (_habits == null || isRefresh) {
             _habits = result;
           } else {
             _habits = GetListHabitsQueryResponse(
-              items: [...result.items],
+              items: [..._habits!.items, ...result.items],
               totalItemCount: result.totalItemCount,
               totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
@@ -266,7 +266,11 @@ class HabitsListState extends State<HabitsList> {
                 ),
               ),
             )),
-        if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
+        if (_habits!.hasNext)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            child: Center(child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1))),
+          ),
       ],
     );
   }
@@ -289,7 +293,11 @@ class HabitsListState extends State<HabitsList> {
                   onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
                 ),
               )),
-          if (_habits!.hasNext) LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1)),
+          if (_habits!.hasNext)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+              child: Center(child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1))),
+            ),
         ],
       ),
     );

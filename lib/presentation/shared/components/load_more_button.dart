@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class LoadMoreButton extends StatefulWidget {
@@ -14,11 +17,14 @@ class LoadMoreButton extends StatefulWidget {
 }
 
 class _LoadMoreButtonState extends State<LoadMoreButton> {
+  final _translationService = container.resolve<ITranslationService>();
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return TextButton.icon(
+      icon: const Icon(Icons.expand_more),
+      label: Text(_translationService.translate(SharedTranslationKeys.loadMoreButton)),
       onPressed: _isLoading
           ? null
           : () async {
@@ -28,13 +34,6 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
                 operation: widget.onPressed,
               );
             },
-      child: _isLoading
-          ? const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.refresh),
     );
   }
 }
