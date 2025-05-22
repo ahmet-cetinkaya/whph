@@ -183,7 +183,7 @@ class TaskCard extends StatelessWidget {
         if (_hasDateOrTime)
           Expanded(
             child: Wrap(
-              spacing: 8,
+              spacing: AppTheme.sizeXSmall,
               runSpacing: 0,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: _buildDateTimeElements(),
@@ -208,7 +208,7 @@ class TaskCard extends StatelessWidget {
     final elements = <Widget>[];
     void addElement(Widget element) {
       if (elements.isNotEmpty) {
-        elements.add(const SizedBox(width: 8));
+        elements.add(const SizedBox(width: AppTheme.sizeSmall));
       }
       elements.add(element);
     }
@@ -218,6 +218,14 @@ class TaskCard extends StatelessWidget {
         TaskUiConstants.estimatedTimeIcon,
         SharedUiConstants.formatMinutes(taskItem.estimatedTime),
         TaskUiConstants.estimatedTimeColor,
+      ));
+    }
+
+    if (taskItem.totalElapsedTime > 0) {
+      addElement(_buildInfoRow(
+        TaskUiConstants.totalElapsedTimeIcon,
+        SharedUiConstants.formatMinutes(taskItem.totalElapsedTime ~/ 60),
+        TaskUiConstants.totalElapsedTimeColor,
       ));
     }
 

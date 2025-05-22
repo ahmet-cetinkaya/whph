@@ -27,6 +27,7 @@ class TagSelectDropdown extends StatefulWidget {
   final bool showArchived;
   final bool showNoneOption;
   final bool initialNoneSelected;
+  final bool initialShowNoTagsFilter;
   final Function(List<DropdownOption<String>>, bool isNoneSelected) onTagsSelected;
 
   const TagSelectDropdown({
@@ -46,6 +47,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.showArchived = false,
     this.showNoneOption = false,
     this.initialNoneSelected = false,
+    this.initialShowNoTagsFilter = false,
   });
 
   @override
@@ -67,8 +69,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   @override
   void initState() {
     _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
-    // Initialize the None selection state
-    _hasExplicitlySelectedNone = widget.showNoneOption && _selectedTags.isEmpty && widget.initialNoneSelected;
+    _hasExplicitlySelectedNone = widget.showNoneOption &&
+        (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
+
+    if (_hasExplicitlySelectedNone) {
+      _selectedTags.clear();
+    }
+
     _getTags(pageIndex: 0);
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -78,25 +85,28 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   void didUpdateWidget(TagSelectDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Handle changes to showArchived
+    if (_selectedTagsChanged(oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
+      setState(() {
+        _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
+      });
+    }
+
     if (oldWidget.showArchived != widget.showArchived) {
-      // Clear non-matching tags when switching archived mode by refreshing the list
       _tags = null;
       _getTags(pageIndex: 0);
     }
 
-    // Handle changes to initialNoneSelected
-    if (oldWidget.initialNoneSelected != widget.initialNoneSelected) {
-      if (widget.initialNoneSelected) {
-        setState(() {
-          // Update None selection state when it changes externally
-          _hasExplicitlySelectedNone = widget.initialNoneSelected;
-          // Clear tag selections when None is selected
-          if (_hasExplicitlySelectedNone) {
-            _selectedTags.clear();
-          }
-        });
-      }
+    if (oldWidget.initialShowNoTagsFilter != widget.initialShowNoTagsFilter ||
+        oldWidget.initialNoneSelected != widget.initialNoneSelected) {
+      setState(() {
+        _hasExplicitlySelectedNone = widget.showNoneOption &&
+            (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
+
+        if (_hasExplicitlySelectedNone) {
+          _selectedTags.clear();
+          widget.onTagsSelected(const [], true);
+        }
+      });
     }
   }
 
@@ -105,6 +115,17 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     _searchFocusNode.dispose();
     _searchDebounce?.cancel();
     super.dispose();
+  }
+
+  bool _selectedTagsChanged(List<DropdownOption<String>> oldTags, List<DropdownOption<String>> newTags) {
+    if (oldTags.length != newTags.length) {
+      return true;
+    }
+
+    final oldValues = oldTags.map((e) => e.value).toSet();
+    final newValues = newTags.map((e) => e.value).toSet();
+
+    return oldValues.union(newValues).length != oldValues.length;
   }
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
@@ -129,7 +150,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
             if (_tags == null) {
               _tags = result;
-              // Only include valid initial tags that match the current archive state
               _selectedTags = widget.initialSelectedTags
                   .where((tag) => result.items.any((t) => t.id == tag.value))
                   .map((e) => e.value)
@@ -208,7 +228,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                // Clear tag selections AND reset None selection state
                                 tempSelectedTags.clear();
                                 _hasExplicitlySelectedNone = false;
                               });
@@ -223,12 +242,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     height: 300,
                     child: ListView.builder(
                       controller: _scrollController,
-                      // Adjust itemCount for headers
-                      itemCount: (_tags?.items.length ?? 0) +
-                          (widget.showNoneOption ? 2 : 0) + // +1 for None option, +1 for header
-                          1, // Tags header
+                      itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
                       itemBuilder: (context, index) {
-                        // Show "Special Filters" header
                         if (widget.showNoneOption && index == 0) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -241,7 +256,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           );
                         }
 
-                        // Show "None" option
                         if (widget.showNoneOption && index == 1) {
                           return CheckboxListTile(
                             title: Text(
@@ -263,7 +277,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           );
                         }
 
-                        // Show "Tags" header
                         if (widget.showNoneOption ? index == 2 : index == 0) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -276,7 +289,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           );
                         }
 
-                        // Calculate actual index for tag items
                         final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
 
                         if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
@@ -329,11 +341,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                             if (mounted) {
                               setState(() {
                                 _selectedTags = List<String>.from(tempSelectedTags);
-                                // Also update the explicit None selection state
                               });
                             }
 
-                            // Get None selection state for callback
                             final isNoneSelected = _hasExplicitlySelectedNone;
 
                             final selectedOptions = tempSelectedTags.map((id) {
@@ -344,7 +354,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                               );
                             }).toList();
 
-                            // Pass the selections to the parent with None state
                             widget.onTagsSelected(selectedOptions, isNoneSelected);
 
                             Future.delayed(const Duration(milliseconds: 1), () {
@@ -367,16 +376,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     );
   }
 
-  void reset() {
-    setState(() {
-      _selectedTags.clear();
-      _searchController.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Initialize display variables
     Widget displayWidget;
     String? displayTooltip = widget.tooltip;
 
@@ -389,7 +390,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       );
       displayTooltip = _translationService.translate(SharedTranslationKeys.noneOption);
     } else if (_selectedTags.isNotEmpty && _tags != null) {
-      // Make tagIds unique to prevent duplicates
       final uniqueSelectedTagIds = _selectedTags.toSet().toList();
       final selectedTagNames = uniqueSelectedTagIds
           .map((id) {
@@ -404,7 +404,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        // Only chips scroll horizontally; button will stay fixed in final Row
         displayWidget = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

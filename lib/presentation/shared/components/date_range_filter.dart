@@ -49,6 +49,19 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   }
 
   @override
+  void didUpdateWidget(DateRangeFilter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.selectedStartDate != oldWidget.selectedStartDate ||
+        widget.selectedEndDate != oldWidget.selectedEndDate) {
+      _selectedStartDate = widget.selectedStartDate;
+      _selectedEndDate = widget.selectedEndDate;
+      _startDateController.text = _formatDateForDisplay(_selectedStartDate);
+      _endDateController.text = _formatDateForDisplay(_selectedEndDate);
+    }
+  }
+
+  @override
   void dispose() {
     _startDateController.dispose();
     _endDateController.dispose();

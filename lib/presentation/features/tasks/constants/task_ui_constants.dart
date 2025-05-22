@@ -16,6 +16,7 @@ class TaskUiConstants {
   static const IconData deadlineDateOutlinedIcon = Icons.alarm_outlined;
   static const IconData descriptionIcon = Icons.description;
   static const IconData timerIcon = Icons.timelapse_outlined;
+  static const IconData totalElapsedTimeIcon = Icons.timer;
 
   // Pomodoro Icons
   static const IconData pomodoroPlayIcon = Icons.play_arrow;
@@ -28,6 +29,7 @@ class TaskUiConstants {
   static const Color deadlineDateColor = Colors.orange;
   static const Color tagsColor = Colors.grey;
   static const Color tagColor = AppTheme.primaryColor;
+  static const Color totalElapsedTimeColor = Colors.purple;
 
   // Time options
   static const List<int> defaultEstimatedTimeOptions = [10, 30, 50, 90, 120];

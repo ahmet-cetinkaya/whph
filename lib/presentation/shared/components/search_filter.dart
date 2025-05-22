@@ -36,12 +36,25 @@ class _SearchFilterState extends State<SearchFilter> {
   void initState() {
     super.initState();
     _controller.text = widget.initialValue ?? '';
+    // If initial value is provided, expand the search field
+    _isExpanded = (widget.initialValue != null && widget.initialValue!.isNotEmpty);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(SearchFilter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update text controller when initialValue changes from parent
+    if (widget.initialValue != oldWidget.initialValue) {
+      _controller.text = widget.initialValue ?? '';
+      // Don't trigger onSearch here, as it would cause a loop
+    }
   }
 
   void _toggleSearch() {

@@ -9,13 +9,11 @@ import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
-import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/acore/utils/order_rank.dart';
-import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
@@ -48,7 +46,6 @@ class TaskList extends StatefulWidget {
   final void Function(TaskListItem task, DateTime date)? onScheduleTask;
   final List<Widget> Function(TaskListItem task)? trailingButtons;
   final Key? rebuildKey;
-  final SortDirection? sortByPlannedDate;
   final SortConfig<TaskSortFields>? sortConfig;
   final void Function()? onReorderComplete;
 
@@ -77,7 +74,6 @@ class TaskList extends StatefulWidget {
     this.onScheduleTask,
     this.trailingButtons,
     this.rebuildKey,
-    this.sortByPlannedDate,
     this.sortConfig,
     this.onReorderComplete,
   });
@@ -164,27 +160,28 @@ class TaskListState extends State<TaskList> {
   }
 
   bool _isFilterChanged(TaskList oldWidget) {
+    // Then check other filters
     final oldFilters = {
       'completed': oldWidget.filterByCompleted,
-      'tags': oldWidget.filterByTags,
+      'tags': oldWidget.filterByTags?.join(','),
+      'noTags': oldWidget.filterNoTags,
       'search': oldWidget.search,
-      'plannedStartDate': oldWidget.filterByPlannedStartDate,
-      'plannedEndDate': oldWidget.filterByPlannedEndDate,
-      'deadlineStartDate': oldWidget.filterByDeadlineStartDate,
-      'deadlineEndDate': oldWidget.filterByDeadlineEndDate,
-      'sortByPlannedDate': oldWidget.sortByPlannedDate,
+      'plannedStartDate': oldWidget.filterByPlannedStartDate?.toIso8601String(),
+      'plannedEndDate': oldWidget.filterByPlannedEndDate?.toIso8601String(),
+      'deadlineStartDate': oldWidget.filterByDeadlineStartDate?.toIso8601String(),
+      'deadlineEndDate': oldWidget.filterByDeadlineEndDate?.toIso8601String(),
       'sortConfig': oldWidget.sortConfig,
     };
 
     final newFilters = {
       'completed': widget.filterByCompleted,
-      'tags': widget.filterByTags,
+      'tags': widget.filterByTags?.join(','),
+      'noTags': widget.filterNoTags,
       'search': widget.search,
-      'plannedStartDate': widget.filterByPlannedStartDate,
-      'plannedEndDate': widget.filterByPlannedEndDate,
-      'deadlineStartDate': widget.filterByDeadlineStartDate,
-      'deadlineEndDate': widget.filterByDeadlineEndDate,
-      'sortByPlannedDate': widget.sortByPlannedDate,
+      'plannedStartDate': widget.filterByPlannedStartDate?.toIso8601String(),
+      'plannedEndDate': widget.filterByPlannedEndDate?.toIso8601String(),
+      'deadlineStartDate': widget.filterByDeadlineStartDate?.toIso8601String(),
+      'deadlineEndDate': widget.filterByDeadlineEndDate?.toIso8601String(),
       'sortConfig': widget.sortConfig,
     };
 
@@ -222,16 +219,7 @@ class TaskListState extends State<TaskList> {
           filterByCompleted: widget.filterByCompleted,
           filterBySearch: widget.search,
           filterByParentTaskId: widget.parentTaskId,
-          // Use sortConfig or fallback to sortByPlannedDate
-          sortBy: widget.sortConfig?.orderOptions ??
-              (widget.sortByPlannedDate != null
-                  ? [
-                      SortOptionWithTranslationKey<TaskSortFields>(
-                          field: TaskSortFields.plannedDate,
-                          translationKey: TaskTranslationKeys.plannedDateLabel,
-                          direction: widget.sortByPlannedDate!)
-                    ]
-                  : null),
+          sortBy: widget.sortConfig?.orderOptions,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
         );
 
