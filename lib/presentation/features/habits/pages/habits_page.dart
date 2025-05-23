@@ -38,6 +38,7 @@ class _HabitsPageState extends State<HabitsPage> {
   String? _searchQuery;
   SortConfig<HabitSortFields> _sortConfig = HabitDefaults.sorting;
   String? _handledHabitId;
+  bool _isHabitListVisible = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -86,6 +87,13 @@ class _HabitsPageState extends State<HabitsPage> {
         _sortConfig = newConfig;
       });
     }
+  }
+
+  void _onSettingsLoaded() {
+    if (!mounted) return;
+    setState(() {
+      _isHabitListVisible = true;
+    });
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -167,6 +175,8 @@ class _HabitsPageState extends State<HabitsPage> {
 
     List<DateTime> lastDays = List.generate(daysToShow, (index) => today.subtract(Duration(days: index)));
 
+    const String habitListOptionsSettingKeySuffix = 'HABITS_PAGE';
+
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(HabitTranslationKeys.pageTitle),
       appBarActions: [
@@ -206,10 +216,15 @@ class _HabitsPageState extends State<HabitsPage> {
                 onSortChange: _onSortConfigChange,
                 showSearchFilter: true,
                 showSortButton: true,
+                showSaveButton: true,
+                settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
+                onSettingsLoaded: _onSettingsLoaded,
               ),
 
               // Calendar
-              if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) && !_filterByArchived)
+              if (_isHabitListVisible &&
+                  AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
+                  !_filterByArchived)
                 Padding(
                   padding: const EdgeInsets.only(right: AppTheme.sizeMedium),
                   child: SizedBox(
@@ -226,17 +241,18 @@ class _HabitsPageState extends State<HabitsPage> {
           const SizedBox(height: AppTheme.sizeMedium),
 
           // List
-          HabitsList(
-            dateRange: daysToShow,
-            filterByTags: _selectedFilterTags,
-            filterNoTags: _showNoTagsFilter,
-            filterByArchived: _filterByArchived,
-            search: _searchQuery,
-            sortConfig: _sortConfig,
-            onClickHabit: (item) {
-              _openDetails(item.id, context);
-            },
-          ),
+          if (_isHabitListVisible)
+            HabitsList(
+              dateRange: daysToShow,
+              filterByTags: _selectedFilterTags,
+              filterNoTags: _showNoTagsFilter,
+              filterByArchived: _filterByArchived,
+              search: _searchQuery,
+              sortConfig: _sortConfig,
+              onClickHabit: (item) {
+                _openDetails(item.id, context);
+              },
+            ),
         ],
       ),
     );

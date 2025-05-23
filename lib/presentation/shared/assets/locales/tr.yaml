@@ -1,4 +1,5 @@
 shared:
+  save_list_options: Liste Seçeneklerini Kaydet
   buttons:
     save: Kaydet
     saved: Kaydedildi

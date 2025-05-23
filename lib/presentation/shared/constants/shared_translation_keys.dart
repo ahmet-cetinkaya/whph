@@ -133,15 +133,15 @@ class SharedTranslationKeys {
   // Help
   static const String helpTooltip = 'shared.help.tooltip';
 
-  // Sections and Options
+  // Sections
   static const String specialFiltersLabel = 'shared.sections.special_filters';
   static const String tagsLabel = 'shared.sections.tags';
   static const String statisticsLabel = 'shared.sections.statistics';
+
   static const String noneOption = 'shared.none_option';
-
   static const String dateFormatHint = 'shared.date_format.hint';
+  static const String saveListOptions = 'shared.save_list_options';
 
-  // Sort Dialog
   static const String sortCustomTitle = 'shared.sort.custom_order.title';
   static const String sortCustomDescription = 'shared.sort.custom_order.description';
   static const String sortResetToDefault = 'shared.sort.reset_to_default';
