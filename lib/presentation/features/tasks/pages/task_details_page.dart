@@ -5,6 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_delete_button.dart';
@@ -12,7 +13,6 @@ import 'package:whph/presentation/features/tasks/components/task_details_content
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TaskDetailsPage extends StatefulWidget {

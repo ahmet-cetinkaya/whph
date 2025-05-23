@@ -1,4 +1,5 @@
 shared:
+  save_list_options: Save List Options
   buttons:
     save: Save
     saved: Saved

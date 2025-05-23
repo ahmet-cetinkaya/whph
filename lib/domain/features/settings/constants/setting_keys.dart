@@ -16,4 +16,5 @@ class SettingKeys {
 
   // Filter and sort settings
   static const String tasksListOptionsSettings = 'TASKS_LIST_OPTIONS_SETTINGS';
+  static const String habitsListOptionsSettings = 'HABITS_LIST_OPTIONS_SETTINGS';
 }
