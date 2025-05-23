@@ -27,7 +27,16 @@ class BarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color finalBarColor = barColor ?? AppThemeHelper.getRandomChartColor();
-    double barWidth = (MediaQuery.of(context).size.width - 100) * (value / maxValue);
+
+    // Calculate bar width safely
+    final screenWidth = MediaQuery.of(context).size.width;
+    final baseWidth = screenWidth - 100;
+
+    // Use a minimum of 1.0 for maxValue to avoid division by zero
+    final safeMaxValue = maxValue > 0 ? maxValue : 1.0;
+    // Ensure ratio is between 0 and 1
+    final ratio = (value / safeMaxValue).clamp(0.0, 1.0);
+    final barWidth = baseWidth * ratio;
 
     return GestureDetector(
       onTap: onTap,
@@ -44,8 +53,8 @@ class BarChart extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   constraints: BoxConstraints(
-                    minWidth: barWidth,
-                    maxWidth: barWidth,
+                    minWidth: barWidth.isFinite ? barWidth : 0,
+                    maxWidth: barWidth.isFinite ? barWidth : 0,
                     minHeight: 40,
                     maxHeight: 40,
                   ),

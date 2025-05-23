@@ -60,7 +60,7 @@ class AppUsageListState extends State<AppUsageList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
-  late List<AppUsageListItem> _appUsages = [];
+  GetListByTopAppUsagesQueryResponse? _appUsagesList;
   late FilterContext _currentFilters;
   Timer? _refreshDebounce;
 
@@ -69,7 +69,7 @@ class AppUsageListState extends State<AppUsageList> {
     super.initState();
     _currentFilters = _captureCurrentFilters();
     _setupEventListeners();
-    _loadAppUsages();
+    _getList(isRefresh: true);
   }
 
   @override
@@ -120,17 +120,13 @@ class AppUsageListState extends State<AppUsageList> {
 
     _refreshDebounce?.cancel();
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
-      setState(() {
-        _appUsages = [];
-      });
-
-      await _loadAppUsages();
+      await _getList(isRefresh: true);
     });
   }
 
-  Future<void> _loadAppUsages() async {
+  Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
-      pageIndex: 0,
+      pageIndex: pageIndex,
       pageSize: widget.size,
       filterByTags: _currentFilters.filterByTags,
       showNoTagsFilter: _currentFilters.showNoTagsFilter,
@@ -141,17 +137,27 @@ class AppUsageListState extends State<AppUsageList> {
           _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
     );
 
-    await AsyncErrorHandler.execute<List<AppUsageListItem>>(
+    await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(AppUsageTranslationKeys.getUsageError),
       operation: () async {
         final result = await _mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(query);
-        return result.items;
+        return result;
       },
-      onSuccess: (appUsages) {
+      onSuccess: (data) {
         if (mounted) {
           setState(() {
-            _appUsages = appUsages;
+            if (isRefresh) {
+              _appUsagesList = data;
+            } else {
+              _appUsagesList = GetListByTopAppUsagesQueryResponse(
+                items: [...?_appUsagesList?.items, ...data.items],
+                pageIndex: data.pageIndex,
+                pageSize: data.pageSize,
+                totalItemCount: data.totalItemCount,
+                totalPageCount: data.totalPageCount,
+              );
+            }
           });
         }
       },
@@ -175,36 +181,44 @@ class AppUsageListState extends State<AppUsageList> {
     refresh();
   }
 
+  Future<void> _onLoadMore() async {
+    if (_appUsagesList?.hasNext == false) return;
+
+    await _getList(pageIndex: _appUsagesList!.pageIndex + 1);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_appUsages.isEmpty) {
+    if (_appUsagesList?.items.isEmpty ?? true) {
       return IconOverlay(
         icon: Icons.bar_chart,
         message: _translationService.translate(AppUsageTranslationKeys.noUsage),
       );
     }
 
-    final maxDuration = _appUsages.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
+    final maxDuration = _appUsagesList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return ListView(
       shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        ..._appUsages.map((appUsage) => Padding(
+        ...?_appUsagesList?.items.map((appUsage) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: AppUsageCard(
                 appUsage: appUsage,
-                maxDurationInListing: maxDuration,
+                maxDurationInListing: maxDuration!,
                 onTap: () => widget.onOpenDetails?.call(appUsage.id),
               ),
             )),
-        if (_appUsages.length >= widget.size)
+
+        // Load more button
+        if (_appUsagesList?.hasNext == true)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(
               child: LoadMoreButton(
-                onPressed: _loadAppUsages,
+                onPressed: _onLoadMore,
               ),
             ),
           ),

@@ -49,10 +49,14 @@ class AppUsageCard extends StatelessWidget {
           );
         }
 
+        final duration = appUsage.duration.toDouble() / 60;
+        // Use 1.0 as minimum maxDuration to avoid division by zero
+        final maxDuration = maxDurationInListing > 0 ? maxDurationInListing.toDouble() : 1.0;
+
         return BarChart(
           title: appUsage.displayName ?? appUsage.name,
-          value: appUsage.duration.toDouble() / 60,
-          maxValue: maxDurationInListing.toDouble(),
+          value: duration,
+          maxValue: maxDuration,
           formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), translationService),
           barColor: barColor,
           onTap: onTap,
