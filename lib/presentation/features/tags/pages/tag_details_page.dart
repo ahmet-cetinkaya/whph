@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
-import 'package:whph/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/components/note_add_button.dart';
@@ -9,6 +7,7 @@ import 'package:whph/presentation/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
+import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -22,8 +21,8 @@ import 'package:whph/presentation/features/tags/constants/tag_translation_keys.d
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -36,17 +35,23 @@ class TagDetailsPage extends StatefulWidget {
 }
 
 class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAliveClientMixin {
-  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
-  String? _taskSearchQuery;
+  // Note list options state
+  bool _isNoteListVisible = false;
   String? _noteSearchQuery;
+  SortConfig<NoteSortFields>? _sortConfig;
+
+  // Task list options state
+  String? _taskSearchQuery;
   bool _showCompletedTasks = false;
 
   final _barChartKey = GlobalKey<TagTimeBarChartState>();
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime _endDate = DateTime.now();
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
+
+  static const String _listOptionSettingKey = 'TAG_DETAILS_PAGE';
 
   @override
   bool get wantKeepAlive => true;
@@ -64,8 +69,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   Widget build(BuildContext context) {
     super.build(context);
 
-    const String taskFilterOptionsSettingKeySuffix = 'TAG_DETAILS_PAGE';
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -73,23 +76,18 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          // Archive
           TagArchiveButton(
             tagId: widget.tagId,
             onArchiveSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.archiveTagTooltip),
           ),
-
-          // Delete
           TagDeleteButton(
             tagId: widget.tagId,
             onDeleteSuccess: () => Navigator.of(context).pop(),
             buttonColor: AppTheme.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
           ),
-
-          // Help
           HelpMenu(
             titleKey: TagTranslationKeys.detailsHelpTitle,
             markdownContentKey: TagTranslationKeys.helpContent,
@@ -101,29 +99,24 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
         padding: const EdgeInsets.all(AppTheme.sizeMedium),
         child: Column(
           children: [
-            // Details
             TagDetailsContent(
               tagId: widget.tagId,
               onTagUpdated: () {
-                // Force refresh of all tag-related components when tag properties change
                 final tagsService = container.resolve<TagsService>();
                 tagsService.notifyTagUpdated(widget.tagId);
               },
             ),
             const SizedBox(height: AppTheme.sizeSmall),
-
-            // Tab sections
             Expanded(
               child: DefaultTabController(
                 length: 3,
                 child: Column(
                   children: [
-                    // Tab Bar with custom decoration
                     Container(
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                            color: Theme.of(context).dividerColor.withOpacity(0.1),
                             width: 1,
                           ),
                         ),
@@ -164,8 +157,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                         ],
                       ),
                     ),
-
-                    // Tab Bar Views
                     Expanded(
                       child: TabBarView(
                         children: [
@@ -183,12 +174,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                       _translationService.translate(TagTranslationKeys.timeBarChartTitle),
                                       style: Theme.of(context).textTheme.titleMedium,
                                     ),
-                                    // Time Chart Filters
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: AppTheme.sizeSmall,
-                                        vertical: AppTheme.sizeXSmall,
-                                      ),
+                                    Expanded(
                                       child: TimeChartFilters(
                                         selectedStartDate: _startDate,
                                         selectedEndDate: _endDate,
@@ -211,8 +197,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   ],
                                 ),
                               ),
-
-                              // Bar Chart
                               Expanded(
                                 child: TagTimeBarChart(
                                   key: _barChartKey,
@@ -228,7 +212,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                           // Tasks Tab
                           Column(
                             children: [
-                              // Tasks header with filters
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.sizeSmall,
@@ -252,7 +235,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                         showDateFilter: false,
                                         showTagFilter: false,
                                         hasItems: true,
-                                        settingKeyVariantSuffix: taskFilterOptionsSettingKeySuffix,
+                                        settingKeyVariantSuffix: _listOptionSettingKey,
                                       ),
                                     ),
                                     if (!_showCompletedTasks)
@@ -262,8 +245,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   ],
                                 ),
                               ),
-
-                              // Tasks List
                               Expanded(
                                 child: TaskList(
                                   filterByTags: [widget.tagId],
@@ -288,7 +269,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                           // Notes Tab
                           Column(
                             children: [
-                              // Notes header with filters and add button
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.sizeSmall,
@@ -299,54 +279,51 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     Expanded(
                                       child: NoteListOptions(
                                         search: _noteSearchQuery,
+                                        sortConfig: _sortConfig,
                                         onSearchChange: (query) {
                                           setState(() {
                                             _noteSearchQuery = query;
                                           });
                                         },
+                                        onSortChange: (sortConfig) {
+                                          setState(() {
+                                            _sortConfig = sortConfig;
+                                          });
+                                        },
                                         showTagFilter: false,
+                                        onSettingsLoaded: () {
+                                          setState(() {
+                                            _isNoteListVisible = true;
+                                          });
+                                        },
+                                        onSaveSettings: () {
+                                          setState(() {});
+                                        },
+                                        settingKeyVariantSuffix: _listOptionSettingKey,
                                       ),
                                     ),
                                     NoteAddButton(
                                       mini: true,
+                                      initialTagIds: [widget.tagId],
                                       onNoteCreated: (noteId) async {
-                                        try {
-                                          final command = AddNoteTagCommand(
-                                            noteId: noteId,
-                                            tagId: widget.tagId,
-                                          );
-                                          await _mediator.send(command);
-                                          if (context.mounted) {
-                                            await ResponsiveDialogHelper.showResponsiveDialog(
-                                              context: context,
-                                              title: _translationService.translate(NoteTranslationKeys.noteDetails),
-                                              child: NoteDetailsPage(noteId: noteId),
-                                            );
-                                            setState(() {}); // Refresh the list after dialog closes
-                                          }
-                                        } catch (e) {
-                                          if (context.mounted) {
-                                            ErrorHelper.showUnexpectedError(
-                                              context,
-                                              e as Exception,
-                                              StackTrace.current,
-                                            );
-                                          }
-                                        }
+                                        // Open note details dialog
+                                        await _openNoteDetails(noteId);
+                                        // Refresh the list after dialog closes
+                                        setState(() {});
                                       },
                                     ),
                                   ],
                                 ),
                               ),
-
-                              // Notes List
-                              Expanded(
-                                child: NotesList(
-                                  filterByTags: [widget.tagId],
-                                  search: _noteSearchQuery,
-                                  onClickNote: _openNoteDetails,
+                              if (_isNoteListVisible)
+                                Expanded(
+                                  child: NotesList(
+                                    filterByTags: [widget.tagId],
+                                    search: _noteSearchQuery,
+                                    sortConfig: _sortConfig,
+                                    onClickNote: _openNoteDetails,
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ],

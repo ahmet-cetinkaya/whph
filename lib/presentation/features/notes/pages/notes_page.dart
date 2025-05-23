@@ -25,6 +25,7 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
 
+  bool _isListVisible = false;
   List<String>? _selectedTagIds;
   bool _showNoTagsFilter = false;
   String? _searchQuery;
@@ -56,9 +57,19 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
     }
   }
 
+  /// Callback when settings are loaded from storage
+  void _handleSettingsLoaded() {
+    if (!mounted) return;
+    setState(() {
+      _isListVisible = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    const String noteListSettingKeySuffix = "NOTES_PAGE";
 
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(NoteTranslationKeys.notesLabel),
@@ -106,18 +117,25 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                     _sortConfig = sortConfig;
                   });
                 },
+                onSettingsLoaded: _handleSettingsLoaded,
+                onSaveSettings: () {
+                  // Force refresh the list when settings are saved
+                  setState(() {});
+                },
+                settingKeyVariantSuffix: noteListSettingKeySuffix,
               ),
 
               // Notes list
-              Expanded(
-                child: NotesList(
-                  filterByTags: _selectedTagIds,
-                  filterNoTags: _showNoTagsFilter,
-                  search: _searchQuery,
-                  sortConfig: _sortConfig,
-                  onClickNote: _openDetails,
+              if (_isListVisible)
+                Expanded(
+                  child: NotesList(
+                    filterByTags: _selectedTagIds,
+                    filterNoTags: _showNoTagsFilter,
+                    search: _searchQuery,
+                    sortConfig: _sortConfig,
+                    onClickNote: _openDetails,
+                  ),
                 ),
-              ),
             ],
           ),
         ],
