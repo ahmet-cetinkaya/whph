@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
-import 'package:whph/presentation/features/app_usages/components/app_usage_filters.dart';
+import 'package:whph/presentation/features/app_usages/components/app_usage_list_options.dart';
 import 'package:whph/presentation/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_rules_page.dart';
@@ -31,6 +31,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
+  bool _isListVisible = false;
 
   @override
   void initState() {
@@ -42,6 +43,13 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       endDate: DateTime(now.year, now.month, now.day, 23, 59, 59),
     );
     _checkPermission();
+  }
+
+  void _onSettingsLoaded() {
+    if (!mounted) return;
+    setState(() {
+      _isListVisible = true;
+    });
   }
 
   Future<void> _checkPermission() async {
@@ -61,12 +69,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   void _handleFiltersChanged(AppUsageFilterState newState) {
+    if (!mounted) return;
     setState(() {
       _filterState = newState;
     });
   }
 
   void _onPermissionGranted() {
+    if (!mounted) return;
     setState(() {
       _hasPermission = true;
     });
@@ -115,19 +125,25 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
           // Filters
           if (_hasPermission) ...[
-            AppUsageFilters(
+            AppUsageListOptions(
               initialState: _filterState,
               onFiltersChanged: _handleFiltersChanged,
+              onSettingsLoaded: _onSettingsLoaded,
+              onSaveSettings: () {
+                // Force refresh the list when settings are saved
+                setState(() {});
+              },
             ),
 
             // List
-            AppUsageList(
-              onOpenDetails: _openDetails,
-              filterByTags: _filterState.tags,
-              showNoTagsFilter: _filterState.showNoTagsFilter,
-              filterStartDate: _filterState.startDate,
-              filterEndDate: _filterState.endDate,
-            ),
+            if (_isListVisible)
+              AppUsageList(
+                onOpenDetails: _openDetails,
+                filterByTags: _filterState.tags,
+                showNoTagsFilter: _filterState.showNoTagsFilter,
+                filterStartDate: _filterState.startDate,
+                filterEndDate: _filterState.endDate,
+              ),
           ],
         ],
       ),
