@@ -338,22 +338,13 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                     },
                   ),
 
-                // Vertical divider
-                if (showSavedMessage || hasUnsavedChanges)
-                  Container(
-                    width: 1,
-                    height: 24,
-                    color: AppTheme.surface3,
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-
                 // Save button
                 if (widget.showSaveButton)
                   SaveButton(
-                    onSave: saveFilterSettings,
-                    tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
                     hasUnsavedChanges: hasUnsavedChanges,
                     showSavedMessage: showSavedMessage,
+                    onSave: saveFilterSettings,
+                    tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
                   ),
               ],
             ),

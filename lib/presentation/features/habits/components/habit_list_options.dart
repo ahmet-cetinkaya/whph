@@ -17,6 +17,7 @@ import 'package:whph/presentation/shared/constants/shared_translation_keys.dart'
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
+import 'package:whph/presentation/shared/components/save_button.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
 class HabitListOptions extends PersistentListOptionsBase {
@@ -268,103 +269,86 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
     // If no filters to show, don't render anything
     if (!showAnyFilters) return const SizedBox.shrink();
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Filter by tags
-                  if (widget.showTagFilter && widget.onTagFilterChange != null)
-                    TagSelectDropdown(
-                      key: ValueKey({
-                        'showNoTagsFilter': widget.showNoTagsFilter,
-                        'selectedTags': widget.selectedTagIds?.join(',') ?? '',
-                      }.toString()),
-                      isMultiSelect: true,
-                      onTagsSelected: widget.onTagFilterChange!,
-                      icon: TagUiConstants.tagIcon,
-                      iconSize: AppTheme.iconSizeMedium,
-                      color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
-                          ? primaryColor
-                          : Colors.grey,
-                      tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
-                      showLength: true,
-                      showNoneOption: true,
-                      initialSelectedTags: widget.selectedTagIds != null
-                          ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
-                          : [],
-                      initialShowNoTagsFilter: widget.showNoTagsFilter,
-                      initialNoneSelected: widget.showNoTagsFilter,
-                    ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Filter by tags
+                if (widget.showTagFilter && widget.onTagFilterChange != null)
+                  TagSelectDropdown(
+                    key: ValueKey({
+                      'showNoTagsFilter': widget.showNoTagsFilter,
+                      'selectedTags': widget.selectedTagIds?.join(',') ?? '',
+                    }.toString()),
+                    isMultiSelect: true,
+                    onTagsSelected: widget.onTagFilterChange!,
+                    icon: TagUiConstants.tagIcon,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
+                        ? primaryColor
+                        : Colors.grey,
+                    tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
+                    showLength: true,
+                    showNoneOption: true,
+                    initialSelectedTags: widget.selectedTagIds != null
+                        ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                        : [],
+                    initialShowNoTagsFilter: widget.showNoTagsFilter,
+                    initialNoneSelected: widget.showNoTagsFilter,
+                  ),
 
-                  // Archive filter
-                  if (widget.showArchiveFilter && widget.onArchiveFilterChange != null)
-                    FilterIconButton(
-                      icon: widget.filterByArchived ? Icons.archive : Icons.archive_outlined,
-                      iconSize: AppTheme.iconSizeMedium,
-                      color: widget.filterByArchived ? primaryColor : Colors.grey,
-                      tooltip: _translationService.translate(
-                        widget.filterByArchived ? HabitTranslationKeys.hideArchived : HabitTranslationKeys.showArchived,
-                      ),
-                      onPressed: () => widget.onArchiveFilterChange!(!widget.filterByArchived),
+                // Archive filter
+                if (widget.showArchiveFilter && widget.onArchiveFilterChange != null)
+                  FilterIconButton(
+                    icon: widget.filterByArchived ? Icons.archive : Icons.archive_outlined,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: widget.filterByArchived ? primaryColor : Colors.grey,
+                    tooltip: _translationService.translate(
+                      widget.filterByArchived ? HabitTranslationKeys.hideArchived : HabitTranslationKeys.showArchived,
                     ),
+                    onPressed: () => widget.onArchiveFilterChange!(!widget.filterByArchived),
+                  ),
 
-                  // Search filter
-                  if (widget.showSearchFilter && widget.onSearchChange != null)
-                    SearchFilter(
-                      key: ValueKey<String?>(lastSearchQuery),
-                      initialValue: lastSearchQuery,
-                      onSearch: _onSearchChanged,
-                      placeholder: _translationService.translate(SharedTranslationKeys.searchPlaceholder),
-                      iconSize: AppTheme.iconSizeMedium,
-                      iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
-                      expandedWidth: 200,
-                    ),
+                // Search filter
+                if (widget.showSearchFilter && widget.onSearchChange != null)
+                  SearchFilter(
+                    key: ValueKey<String?>(lastSearchQuery),
+                    initialValue: lastSearchQuery,
+                    onSearch: _onSearchChanged,
+                    placeholder: _translationService.translate(SharedTranslationKeys.searchPlaceholder),
+                    iconSize: AppTheme.iconSizeMedium,
+                    iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
+                    expandedWidth: 200,
+                  ),
 
-                  // Sort button
-                  if (widget.showSortButton && widget.onSortChange != null)
-                    SortDialogButton<HabitSortFields>(
-                      iconColor: Theme.of(context).primaryColor,
-                      tooltip: _translationService.translate(SharedTranslationKeys.sort),
-                      config: widget.sortConfig ??
-                          SortConfig<HabitSortFields>(
-                            orderOptions: [
-                              SortOptionWithTranslationKey(
-                                field: HabitSortFields.name,
-                                direction: SortDirection.asc,
-                                translationKey: SharedTranslationKeys.nameLabel,
-                              ),
-                              SortOptionWithTranslationKey(
-                                field: HabitSortFields.createdDate,
-                                direction: SortDirection.desc,
-                                translationKey: SharedTranslationKeys.createdDateLabel,
-                              ),
-                            ],
-                            useCustomOrder: false,
-                          ),
-                      defaultConfig: SortConfig<HabitSortFields>(
-                        orderOptions: [
-                          SortOptionWithTranslationKey(
-                            field: HabitSortFields.name,
-                            direction: SortDirection.asc,
-                            translationKey: SharedTranslationKeys.nameLabel,
-                          ),
-                          SortOptionWithTranslationKey(
-                            field: HabitSortFields.createdDate,
-                            direction: SortDirection.desc,
-                            translationKey: SharedTranslationKeys.createdDateLabel,
-                          ),
-                        ],
-                        useCustomOrder: false,
-                      ),
-                      onConfigChanged: widget.onSortChange!,
-                      availableOptions: [
+                // Sort button
+                if (widget.showSortButton && widget.onSortChange != null)
+                  SortDialogButton<HabitSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                    config: widget.sortConfig ??
+                        SortConfig<HabitSortFields>(
+                          orderOptions: [
+                            SortOptionWithTranslationKey(
+                              field: HabitSortFields.name,
+                              direction: SortDirection.asc,
+                              translationKey: SharedTranslationKeys.nameLabel,
+                            ),
+                            SortOptionWithTranslationKey(
+                              field: HabitSortFields.createdDate,
+                              direction: SortDirection.desc,
+                              translationKey: SharedTranslationKeys.createdDateLabel,
+                            ),
+                          ],
+                          useCustomOrder: false,
+                        ),
+                    defaultConfig: SortConfig<HabitSortFields>(
+                      orderOptions: [
                         SortOptionWithTranslationKey(
                           field: HabitSortFields.name,
                           direction: SortDirection.asc,
@@ -375,60 +359,48 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                           direction: SortDirection.desc,
                           translationKey: SharedTranslationKeys.createdDateLabel,
                         ),
-                        SortOptionWithTranslationKey(
-                          field: HabitSortFields.modifiedDate,
-                          direction: SortDirection.desc,
-                          translationKey: SharedTranslationKeys.modifiedDateLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: HabitSortFields.archivedDate,
-                          direction: SortDirection.desc,
-                          translationKey: HabitTranslationKeys.archivedDateLabel,
-                        ),
                       ],
-                      isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                      useCustomOrder: false,
                     ),
-
-                  // Save or Done indication
-                  if (widget.showSaveButton) ...[
-                    if (showSavedMessage || hasUnsavedChanges)
-                      // Vertical divider
-                      Container(
-                        width: 1,
-                        height: 24,
-                        color: AppTheme.surface3,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                    onConfigChanged: widget.onSortChange!,
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.name,
+                        direction: SortDirection.asc,
+                        translationKey: SharedTranslationKeys.nameLabel,
                       ),
-
-                    // Save button or saved message
-                    if (showSavedMessage)
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.done,
-                            color: Colors.green,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _translationService.translate(SharedTranslationKeys.savedButton),
-                            style: const TextStyle(color: Colors.green),
-                          ),
-                        ],
-                      )
-                    else if (hasUnsavedChanges)
-                      IconButton(
-                        icon: const Icon(Icons.save),
-                        color: primaryColor,
-                        tooltip: _translationService.translate(SharedTranslationKeys.saveButton),
-                        onPressed: saveFilterSettings,
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.createdDate,
+                        direction: SortDirection.desc,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
                       ),
-                  ],
-                ],
-              ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.modifiedDate,
+                        direction: SortDirection.desc,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.archivedDate,
+                        direction: SortDirection.desc,
+                        translationKey: HabitTranslationKeys.archivedDateLabel,
+                      ),
+                    ],
+                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                  ),
+
+                // Save button
+                if (widget.showSaveButton)
+                  SaveButton(
+                    hasUnsavedChanges: hasUnsavedChanges,
+                    showSavedMessage: showSavedMessage,
+                    onSave: saveFilterSettings,
+                    tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
+                  ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -323,38 +323,14 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                     isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                   ),
 
-                // Save button or saved message
-                if (widget.showSaveButton) ...[
-                  if (showSavedMessage || hasUnsavedChanges)
-                    // Vertical divider
-                    Container(
-                      width: 1,
-                      height: 24,
-                      color: AppTheme.surface3,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-
-                  // Save button or saved message
-                  if (showSavedMessage)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.done,
-                          color: Colors.green,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _translationService.translate(SharedTranslationKeys.savedButton),
-                          style: const TextStyle(color: Colors.green),
-                        ),
-                      ],
-                    )
-                  else if (hasUnsavedChanges)
-                    SaveButton(
-                      onSave: saveFilterSettings,
-                      tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
-                    )
-                ],
+                // Save button
+                if (widget.showSaveButton)
+                  SaveButton(
+                    hasUnsavedChanges: hasUnsavedChanges,
+                    showSavedMessage: showSavedMessage,
+                    onSave: saveFilterSettings,
+                    tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
+                  )
               ],
             ),
           ),

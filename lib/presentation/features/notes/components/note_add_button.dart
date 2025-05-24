@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/application/features/notes/commands/save_note_command.dart';
-import 'package:whph/application/features/notes/commands/save_note_tag_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
