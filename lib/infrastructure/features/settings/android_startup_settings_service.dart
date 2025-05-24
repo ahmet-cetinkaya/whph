@@ -2,7 +2,7 @@ import 'package:auto_start_flutter/auto_start_flutter.dart' as auto_start_flutte
 import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 

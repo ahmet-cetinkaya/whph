@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/about/components/onboarding_dialog.dart';

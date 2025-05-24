@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/features/app_usages/models/app_usage_filter_settings.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';

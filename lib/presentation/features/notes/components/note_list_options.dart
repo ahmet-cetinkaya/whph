@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/models/note_list_option_settings.dart';

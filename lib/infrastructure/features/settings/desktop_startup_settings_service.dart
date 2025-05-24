@@ -6,7 +6,7 @@ import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/constants/app_args.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 
 class DesktopStartupSettingsService implements IStartupSettingsService {

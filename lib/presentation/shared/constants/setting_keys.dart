@@ -1,13 +1,18 @@
 class SettingKeys {
-  // Timer settings
+  // Onboarding State
+  static const String onboardingCompleted = 'ONBOARDING_COMPLETED';
+
+  // Notification settings
+  static const String notifications = 'NOTIFICATIONS_ENABLED';
+
+  // Startup settings
+  static const String startAtStartup = 'START_AT_STARTUP';
+
+  // Pomodoro Timer settings
   static const String workTime = 'WORK_TIME';
   static const String breakTime = 'BREAK_TIME';
   static const String longBreakTime = 'LONG_BREAK_TIME';
   static const String sessionsBeforeLongBreak = 'SESSIONS_BEFORE_LONG_BREAK';
-  static const String startAtStartup = 'START_AT_STARTUP';
-  static const String notifications = 'NOTIFICATIONS_ENABLED';
-  static const String onboardingCompleted = 'ONBOARDING_COMPLETED';
-  static const String supportDialogShown = 'SUPPORT_DIALOG_SHOWN';
   static const String autoStartBreak = 'AUTO_START_BREAK';
   static const String autoStartWork = 'AUTO_START_WORK';
   static const String tickingEnabled = 'TICKING_ENABLED';
@@ -22,4 +27,7 @@ class SettingKeys {
   static const String tagTimeChartOptionsSettings = 'TAG_TIME_CHART_OPTIONS_SETTINGS';
   static const String todayPageListOptionsSettings = 'TODAY_PAGE_LIST_OPTIONS_SETTINGS';
   static const String appUsagesFilterSettings = 'APP_USAGES_FILTER_SETTINGS';
+
+  // Support State
+  static const String supportDialogShown = 'SUPPORT_DIALOG_SHOWN';
 }

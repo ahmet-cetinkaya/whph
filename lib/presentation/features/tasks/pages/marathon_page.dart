@@ -38,8 +38,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   TaskListItem? _selectedTask;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
-  List<String>? _selectedTagIds;
-  String? _searchQuery;
+  // Task filter options
+  static const String _taskFilterOptionsSettingKeySuffix = 'MARATHON_PAGE';
+  List<String>? _selectedTaskTagIds;
+  String? _taskSearchQuery;
   bool _showCompletedTasks = false;
 
   @override
@@ -88,7 +90,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     setState(() {
       _selectedTask = task;
     });
-    await _refreshSelectedTask(); // Refresh task to get sub-tasks
+    await _refreshSelectedTask();
   }
 
   void _clearSelectedTask() {
@@ -240,8 +242,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     final todayForFilter = DateTime(now.year, now.month, now.day);
     final tomorrowForFilter = todayForFilter.add(const Duration(days: 1));
 
-    const String taskFilterOptionsSettingKeySuffix = 'MARATHON_PAGE';
-
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (bool didPop, result) {
@@ -315,11 +315,11 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   children: [
                     Expanded(
                       child: TaskListOptions(
-                        selectedTagIds: _selectedTagIds,
+                        selectedTagIds: _selectedTaskTagIds,
                         showNoTagsFilter: false,
                         onSearchChange: (query) {
                           setState(() {
-                            _searchQuery = query;
+                            _taskSearchQuery = query;
                           });
                         },
                         showCompletedTasks: _showCompletedTasks,
@@ -335,7 +335,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                         showSearchFilter: true,
                         sortConfig: _sortConfig,
                         onSortChange: _onSortConfigChange,
-                        settingKeyVariantSuffix: taskFilterOptionsSettingKeySuffix,
+                        settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                       ),
                     ),
                   ],
@@ -361,11 +361,11 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
               Expanded(
                 child: TaskList(
                   filterByCompleted: _showCompletedTasks,
-                  filterByTags: _selectedTagIds,
+                  filterByTags: _selectedTaskTagIds,
                   filterByPlannedEndDate: tomorrowForFilter,
                   filterByDeadlineEndDate: tomorrowForFilter,
                   filterDateOr: true,
-                  search: _searchQuery,
+                  search: _taskSearchQuery,
                   onTaskCompleted: _onTasksChanged,
                   onClickTask: (task) => _showTaskDetails(task.id),
                   onSelectTask: _onSelectTask,
