@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
@@ -22,12 +23,24 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final _mediator = container.resolve<Mediator>();
   final _supportDialogService = container.resolve<ISupportDialogService>();
+  final _setupService = container.resolve<ISetupService>();
+  bool _isCheckedUpdate = false;
 
   @override
   void initState() {
     super.initState();
     _checkAndShowOnboarding();
     _checkAndShowSupportDialog();
+    _checkForUpdates();
+  }
+
+  Future<void> _checkForUpdates() async {
+    if (!_isCheckedUpdate) {
+      await _setupService.checkForUpdates(context);
+      setState(() {
+        _isCheckedUpdate = true;
+      });
+    }
   }
 
   Future<void> _checkAndShowSupportDialog() async {

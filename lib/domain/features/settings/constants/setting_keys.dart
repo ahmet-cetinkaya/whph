@@ -20,5 +20,6 @@ class SettingKeys {
   static const String tagsListOptionsSettings = 'TAGS_LIST_OPTIONS_SETTINGS';
   static const String notesListOptionsSettings = 'NOTES_LIST_OPTIONS_SETTINGS';
   static const String tagTimeChartOptionsSettings = 'TAG_TIME_CHART_OPTIONS_SETTINGS';
+  static const String todayPageListOptionsSettings = 'TODAY_PAGE_LIST_OPTIONS_SETTINGS';
   static const String appUsagesFilterSettings = 'APP_USAGES_FILTER_SETTINGS';
 }
