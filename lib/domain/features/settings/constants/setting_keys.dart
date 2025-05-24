@@ -17,6 +17,8 @@ class SettingKeys {
   // Filter and sort settings
   static const String tasksListOptionsSettings = 'TASKS_LIST_OPTIONS_SETTINGS';
   static const String habitsListOptionsSettings = 'HABITS_LIST_OPTIONS_SETTINGS';
+  static const String tagsListOptionsSettings = 'TAGS_LIST_OPTIONS_SETTINGS';
   static const String notesListOptionsSettings = 'NOTES_LIST_OPTIONS_SETTINGS';
+  static const String tagTimeChartOptionsSettings = 'TAG_TIME_CHART_OPTIONS_SETTINGS';
   static const String appUsagesFilterSettings = 'APP_USAGES_FILTER_SETTINGS';
 }

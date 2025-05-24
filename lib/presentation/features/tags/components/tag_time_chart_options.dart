@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
+import 'package:whph/domain/features/settings/constants/setting_keys.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/features/tags/models/tag_time_chart_option_settings.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/shared/components/persistent_list_options_base.dart';
+import 'package:whph/presentation/shared/components/save_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/main.dart';
 
-class TimeChartFilters extends StatefulWidget {
+class TagTimeChartOptions extends PersistentListOptionsBase {
+  /// Selected start date for filtering
   final DateTime? selectedStartDate;
+
+  /// Selected end date for filtering
   final DateTime? selectedEndDate;
+
+  /// Selected categories for filtering
   final Set<TagTimeCategory> selectedCategories;
+
+  /// Whether to show date filter
   final bool showDateFilter;
+
+  /// Whether to show category filter
   final bool showCategoryFilter;
 
+  /// Callback when date filter changes
   final void Function(DateTime, DateTime)? onDateFilterChange;
+
+  /// Callback when categories filter changes
   final void Function(Set<TagTimeCategory>)? onCategoriesChanged;
 
-  const TimeChartFilters({
+  const TagTimeChartOptions({
     super.key,
     this.selectedStartDate,
     this.selectedEndDate,
@@ -28,13 +45,18 @@ class TimeChartFilters extends StatefulWidget {
     this.onCategoriesChanged,
     this.showDateFilter = true,
     this.showCategoryFilter = true,
+    super.showSaveButton = true,
+    super.hasUnsavedChanges = false,
+    super.settingKeyVariantSuffix,
+    super.onSettingsLoaded,
+    super.onSaveSettings,
   });
 
   @override
-  State<TimeChartFilters> createState() => _TimeChartFiltersState();
+  State<TagTimeChartOptions> createState() => _TagTimeChartOptionsState();
 }
 
-class _TimeChartFiltersState extends State<TimeChartFilters> {
+class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeChartOptions> {
   late Set<TagTimeCategory> _selectedCategories;
   final _translationService = container.resolve<ITranslationService>();
 
@@ -45,10 +67,103 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
   }
 
   @override
-  void didUpdateWidget(TimeChartFilters oldWidget) {
+  void initSettingKey() {
+    settingKey = widget.settingKeyVariantSuffix != null
+        ? "${SettingKeys.tagTimeChartOptionsSettings}_${widget.settingKeyVariantSuffix}"
+        : SettingKeys.tagTimeChartOptionsSettings;
+  }
+
+  @override
+  Future<void> loadSavedFilterSettings() async {
+    try {
+      final savedSettings = await filterSettingsManager.loadFilterSettings(
+        settingKey: settingKey,
+      );
+
+      if (savedSettings != null && mounted) {
+        final filterSettings = TagTimeChartOptionSettings.fromJson(savedSettings);
+
+        final startDate = filterSettings.selectedStartDate;
+        final endDate = filterSettings.selectedEndDate;
+
+        // Convert List<TagTimeCategory> to Set<TagTimeCategory>
+        final categories = filterSettings.selectedCategories.toSet();
+
+        if (categories.isNotEmpty && widget.onCategoriesChanged != null) {
+          widget.onCategoriesChanged!(categories);
+        }
+
+        if (startDate != null && endDate != null && widget.onDateFilterChange != null) {
+          widget.onDateFilterChange!(startDate, endDate);
+        }
+      }
+
+      widget.onSettingsLoaded?.call();
+    } catch (e) {
+      widget.onSettingsLoaded?.call();
+    }
+  }
+
+  @override
+  Future<void> saveFilterSettings() async {
+    final settings = TagTimeChartOptionSettings(
+      selectedStartDate: widget.selectedStartDate,
+      selectedEndDate: widget.selectedEndDate,
+      selectedCategories: widget.selectedCategories.toList(),
+    );
+
+    try {
+      await filterSettingsManager.saveFilterSettings(
+        settingKey: settingKey,
+        filterSettings: settings.toJson(),
+      );
+
+      if (mounted) {
+        setState(() {
+          hasUnsavedChanges = false;
+        });
+
+        showSavedMessageTemporarily();
+      }
+
+      // Notify parent that settings were saved
+      widget.onSaveSettings?.call();
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  @override
+  Future<void> checkForUnsavedChanges() async {
+    final currentSettings = TagTimeChartOptionSettings(
+      selectedStartDate: widget.selectedStartDate,
+      selectedEndDate: widget.selectedEndDate,
+      selectedCategories: widget.selectedCategories.toList(),
+    ).toJson();
+
+    final hasChanges = await filterSettingsManager.hasUnsavedChanges(
+      settingKey: settingKey,
+      currentSettings: currentSettings,
+    );
+
+    if (mounted && hasUnsavedChanges != hasChanges) {
+      setState(() {
+        hasUnsavedChanges = hasChanges;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(TagTimeChartOptions oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!CollectionUtils.areSetsEqual(oldWidget.selectedCategories, widget.selectedCategories)) {
+
+    if (!CollectionUtils.areSetsEqual(oldWidget.selectedCategories, widget.selectedCategories) ||
+        widget.selectedStartDate != oldWidget.selectedStartDate ||
+        widget.selectedEndDate != oldWidget.selectedEndDate) {
       _selectedCategories = {...widget.selectedCategories};
+
+      // Force immediate check for unsaved changes
+      Future.microtask(handleFilterChange);
     }
   }
 
@@ -63,6 +178,21 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
       case TagTimeCategory.habits:
         return TagTranslationKeys.categoryHabits;
     }
+  }
+
+  void _onDateFilterChange(DateTime? start, DateTime? end) {
+    if (start == null || end == null) {
+      // Return to default values when date filter is cleared
+      final defaultStartDate = DateTime.now().subtract(const Duration(days: 30));
+      final defaultEndDate = DateTime.now();
+      widget.onDateFilterChange?.call(defaultStartDate, defaultEndDate);
+    } else {
+      end = DateTime(end.year, end.month, end.day, 23, 59, 59);
+      widget.onDateFilterChange?.call(start, end);
+    }
+
+    // Force immediate check for unsaved changes
+    Future.microtask(handleFilterChange);
   }
 
   String _buildTooltipMessage() {
@@ -87,6 +217,9 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
         _selectedCategories = result;
       });
       widget.onCategoriesChanged?.call(result);
+
+      // Force immediate check for unsaved changes
+      Future.microtask(handleFilterChange);
     }
   }
 
@@ -104,17 +237,7 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
               DateRangeFilter(
                 selectedStartDate: widget.selectedStartDate,
                 selectedEndDate: widget.selectedEndDate,
-                onDateFilterChange: (start, end) {
-                  if (start == null || end == null) {
-                    // Return to default values when date filter is cleared
-                    final defaultStartDate = DateTime.now().subtract(const Duration(days: 30));
-                    final defaultEndDate = DateTime.now();
-                    widget.onDateFilterChange?.call(defaultStartDate, defaultEndDate);
-                  } else {
-                    end = DateTime(end.year, end.month, end.day, 23, 59, 59);
-                    widget.onDateFilterChange?.call(start, end);
-                  }
-                },
+                onDateFilterChange: _onDateFilterChange,
                 iconColor: Colors.grey,
               ),
 
@@ -165,6 +288,15 @@ class _TimeChartFiltersState extends State<TimeChartFilters> {
                     ],
                   ),
                 ),
+              ),
+
+            // Save Button
+            if (widget.showSaveButton)
+              SaveButton(
+                onSave: saveFilterSettings,
+                hasUnsavedChanges: hasUnsavedChanges,
+                showSavedMessage: showSavedMessage,
+                tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
               ),
           ],
         ),
