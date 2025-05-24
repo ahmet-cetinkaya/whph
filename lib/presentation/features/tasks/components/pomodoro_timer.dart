@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/constants/task_sounds.dart';

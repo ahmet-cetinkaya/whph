@@ -5,7 +5,7 @@ import 'package:whph/application/features/app_usages/queries/get_list_by_top_app
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';

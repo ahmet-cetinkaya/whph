@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/features/habits/models/habit_list_option_settings.dart';

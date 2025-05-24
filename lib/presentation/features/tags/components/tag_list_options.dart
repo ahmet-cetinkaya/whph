@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
-import 'package:whph/domain/features/settings/constants/setting_keys.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
