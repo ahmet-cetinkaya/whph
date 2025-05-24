@@ -313,127 +313,105 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     // If no filters to show, don't render anything
     if (!showAnyFilters) return const SizedBox.shrink();
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 300),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Tag filter
-                  if (widget.showTagFilter && widget.onTagFilterChange != null)
-                    TagSelectDropdown(
-                      key: ValueKey({
-                        'showNoTagsFilter': widget.showNoTagsFilter,
-                        'selectedTags': widget.selectedTagIds?.join(',') ?? '',
-                      }.toString()),
-                      isMultiSelect: true,
-                      onTagsSelected: (tags, isNoneSelected) {
-                        if (mounted) {
-                          widget.onTagFilterChange!(tags, isNoneSelected);
-                        }
-                      },
-                      icon: TagUiConstants.tagIcon,
-                      iconSize: AppTheme.iconSizeMedium,
-                      color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
-                          ? primaryColor
-                          : Colors.grey,
-                      tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
-                      showLength: true,
-                      showNoneOption: true,
-                      initialSelectedTags: widget.selectedTagIds != null
-                          ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
-                          : [],
-                      initialShowNoTagsFilter: widget.showNoTagsFilter,
-                      initialNoneSelected: widget.showNoTagsFilter,
-                    ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Tag filter
+                if (widget.showTagFilter && widget.onTagFilterChange != null)
+                  TagSelectDropdown(
+                    key: ValueKey({
+                      'showNoTagsFilter': widget.showNoTagsFilter,
+                      'selectedTags': widget.selectedTagIds?.join(',') ?? '',
+                    }.toString()),
+                    isMultiSelect: true,
+                    onTagsSelected: (tags, isNoneSelected) {
+                      if (mounted) {
+                        widget.onTagFilterChange!(tags, isNoneSelected);
+                      }
+                    },
+                    icon: TagUiConstants.tagIcon,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
+                        ? primaryColor
+                        : Colors.grey,
+                    tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
+                    showLength: true,
+                    showNoneOption: true,
+                    initialSelectedTags: widget.selectedTagIds != null
+                        ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
+                        : [],
+                    initialShowNoTagsFilter: widget.showNoTagsFilter,
+                    initialNoneSelected: widget.showNoTagsFilter,
+                  ),
 
-                  // Date filter
-                  if (widget.showDateFilter && widget.onDateFilterChange != null)
-                    DateRangeFilter(
-                      selectedStartDate: widget.selectedStartDate,
-                      selectedEndDate: widget.selectedEndDate,
-                      onDateFilterChange: widget.onDateFilterChange!,
-                      iconColor: (widget.selectedStartDate != null || widget.selectedEndDate != null)
-                          ? primaryColor
-                          : Colors.grey,
-                    ),
+                // Date filter
+                if (widget.showDateFilter && widget.onDateFilterChange != null)
+                  DateRangeFilter(
+                    selectedStartDate: widget.selectedStartDate,
+                    selectedEndDate: widget.selectedEndDate,
+                    onDateFilterChange: widget.onDateFilterChange!,
+                    iconColor: (widget.selectedStartDate != null || widget.selectedEndDate != null)
+                        ? primaryColor
+                        : Colors.grey,
+                  ),
 
-                  // Search filter
-                  if (widget.showSearchFilter && widget.onSearchChange != null)
-                    // Use key based on search value to force recreation when lastSearchQuery changes
-                    SearchFilter(
-                      key: ValueKey<String?>(lastSearchQuery),
-                      initialValue: lastSearchQuery ?? widget.search,
-                      onSearch: _onSearchChanged,
-                      placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
-                      iconSize: AppTheme.iconSizeMedium,
-                      iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
-                      expandedWidth: 200,
-                    ),
+                // Search filter
+                if (widget.showSearchFilter && widget.onSearchChange != null)
+                  // Use key based on search value to force recreation when lastSearchQuery changes
+                  SearchFilter(
+                    key: ValueKey<String?>(lastSearchQuery),
+                    initialValue: lastSearchQuery ?? widget.search,
+                    onSearch: _onSearchChanged,
+                    placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
+                    iconSize: AppTheme.iconSizeMedium,
+                    iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
+                    expandedWidth: 200,
+                  ),
 
-                  // Completed tasks toggle button
-                  if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
-                    FilterIconButton(
-                      icon: widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
-                      iconSize: AppTheme.iconSizeMedium,
-                      color: widget.showCompletedTasks
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                      tooltip: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
-                      onPressed: () {
-                        final newState = !widget.showCompletedTasks;
-                        widget.onCompletedTasksToggle!(newState);
-                      },
-                    ),
+                // Completed tasks toggle button
+                if (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems)
+                  FilterIconButton(
+                    icon: widget.showCompletedTasks ? Icons.check_circle : Icons.check_circle_outline,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: widget.showCompletedTasks
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    tooltip: _translationService.translate(TaskTranslationKeys.showCompletedTasksTooltip),
+                    onPressed: () {
+                      final newState = !widget.showCompletedTasks;
+                      widget.onCompletedTasksToggle!(newState);
+                    },
+                  ),
 
-                  // Sort button
-                  if (widget.showSortButton && widget.onSortChange != null)
-                    SortDialogButton<TaskSortFields>(
-                      iconColor: Theme.of(context).primaryColor,
-                      tooltip: _translationService.translate(SharedTranslationKeys.sort),
-                      config: widget.sortConfig ??
-                          SortConfig<TaskSortFields>(
-                            orderOptions: [
-                              SortOptionWithTranslationKey(
-                                field: TaskSortFields.priority,
-                                direction: SortDirection.desc,
-                                translationKey: TaskTranslationKeys.priorityLabel,
-                              ),
-                              SortOptionWithTranslationKey(
-                                field: TaskSortFields.plannedDate,
-                                direction: SortDirection.asc,
-                                translationKey: TaskTranslationKeys.plannedDateLabel,
-                              ),
-                            ],
-                            useCustomOrder: false,
-                          ),
-                      defaultConfig: SortConfig<TaskSortFields>(
-                        orderOptions: [
-                          SortOptionWithTranslationKey(
-                            field: TaskSortFields.priority,
-                            direction: SortDirection.desc,
-                            translationKey: TaskTranslationKeys.priorityLabel,
-                          ),
-                          SortOptionWithTranslationKey(
-                            field: TaskSortFields.plannedDate,
-                            direction: SortDirection.asc,
-                            translationKey: TaskTranslationKeys.plannedDateLabel,
-                          ),
-                        ],
-                        useCustomOrder: false,
-                      ),
-                      onConfigChanged: widget.onSortChange!,
-                      availableOptions: [
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.title,
-                          direction: SortDirection.asc,
-                          translationKey: TaskTranslationKeys.titleLabel,
+                // Sort button
+                if (widget.showSortButton && widget.onSortChange != null)
+                  SortDialogButton<TaskSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                    config: widget.sortConfig ??
+                        SortConfig<TaskSortFields>(
+                          orderOptions: [
+                            SortOptionWithTranslationKey(
+                              field: TaskSortFields.priority,
+                              direction: SortDirection.desc,
+                              translationKey: TaskTranslationKeys.priorityLabel,
+                            ),
+                            SortOptionWithTranslationKey(
+                              field: TaskSortFields.plannedDate,
+                              direction: SortDirection.asc,
+                              translationKey: TaskTranslationKeys.plannedDateLabel,
+                            ),
+                          ],
+                          useCustomOrder: false,
                         ),
+                    defaultConfig: SortConfig<TaskSortFields>(
+                      orderOptions: [
                         SortOptionWithTranslationKey(
                           field: TaskSortFields.priority,
                           direction: SortDirection.desc,
@@ -444,72 +422,68 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                           direction: SortDirection.asc,
                           translationKey: TaskTranslationKeys.plannedDateLabel,
                         ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.deadlineDate,
-                          direction: SortDirection.asc,
-                          translationKey: TaskTranslationKeys.deadlineDateLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.estimatedTime,
-                          direction: SortDirection.desc,
-                          translationKey: TaskTranslationKeys.estimatedTimeLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.totalDuration,
-                          direction: SortDirection.desc,
-                          translationKey: TaskTranslationKeys.elapsedTimeLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.createdDate,
-                          direction: SortDirection.desc,
-                          translationKey: SharedTranslationKeys.createdDateLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.modifiedDate,
-                          direction: SortDirection.desc,
-                          translationKey: SharedTranslationKeys.modifiedDateLabel,
-                        ),
                       ],
-                      isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                      useCustomOrder: false,
                     ),
-
-                  // Save or Done indication
-                  if (widget.showSaveButton) ...[
-                    if (showSavedMessage || hasUnsavedChanges)
-                      // Vertical divider
-                      Container(
-                        width: 1,
-                        height: 24,
-                        color: AppTheme.surface3,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                    onConfigChanged: widget.onSortChange!,
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.title,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.titleLabel,
                       ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.priority,
+                        direction: SortDirection.desc,
+                        translationKey: TaskTranslationKeys.priorityLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.plannedDate,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.plannedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.deadlineDate,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.deadlineDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.estimatedTime,
+                        direction: SortDirection.desc,
+                        translationKey: TaskTranslationKeys.estimatedTimeLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.totalDuration,
+                        direction: SortDirection.desc,
+                        translationKey: TaskTranslationKeys.elapsedTimeLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.createdDate,
+                        direction: SortDirection.desc,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.modifiedDate,
+                        direction: SortDirection.desc,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                    ],
+                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                  ),
 
-                    // Save button or saved message
-                    if (showSavedMessage)
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.done,
-                            color: Colors.green,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _translationService.translate(SharedTranslationKeys.savedButton),
-                            style: const TextStyle(color: Colors.green),
-                          ),
-                        ],
-                      )
-                    else if (hasUnsavedChanges)
-                      SaveButton(
-                          onSave: saveFilterSettings,
-                          tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions))
-                  ],
-                ],
-              ),
+                // Save button
+                if (widget.showSaveButton)
+                  SaveButton(
+                    hasUnsavedChanges: hasUnsavedChanges,
+                    showSavedMessage: showSavedMessage,
+                    onSave: saveFilterSettings,
+                    tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
+                  ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

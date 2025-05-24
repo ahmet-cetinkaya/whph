@@ -192,6 +192,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          // Tag Filter
           TagSelectDropdown(
             isMultiSelect: true,
             initialSelectedTags: _currentState.tags
@@ -211,28 +212,22 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
                 : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
           ),
+
+          // Date Range Filter
           DateRangeFilter(
             selectedStartDate: _currentState.startDate,
             selectedEndDate: _currentState.endDate,
             onDateFilterChange: _handleDateChange,
           ),
-          if (widget.showSaveButton && hasUnsavedChanges) ...[
-            const SizedBox(width: 8),
+
+          // Save Button
+          if (widget.showSaveButton)
             SaveButton(
               onSave: saveFilterSettings,
               tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
+              hasUnsavedChanges: hasUnsavedChanges,
+              showSavedMessage: showSavedMessage,
             ),
-          ],
-          if (showSavedMessage) ...[
-            const SizedBox(width: 8),
-            Text(
-              _translationService.translate(SharedTranslationKeys.savedButton),
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
         ],
       ),
     );

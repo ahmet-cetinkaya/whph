@@ -293,9 +293,9 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
             // Save Button
             if (widget.showSaveButton)
               SaveButton(
-                onSave: saveFilterSettings,
                 hasUnsavedChanges: hasUnsavedChanges,
                 showSavedMessage: showSavedMessage,
+                onSave: saveFilterSettings,
                 tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions),
               ),
           ],
