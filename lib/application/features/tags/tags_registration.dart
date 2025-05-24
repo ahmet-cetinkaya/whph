@@ -4,7 +4,9 @@ import 'package:whph/application/features/app_usages/services/abstraction/i_app_
 import 'package:whph/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
+import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/application/features/tags/queries/get_elements_by_time_query.dart';
 import 'package:whph/application/features/tags/queries/get_list_tag_tags_query.dart';
@@ -84,5 +86,11 @@ void registerTagsFeature(
     )
     ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse, DeleteTagCommandHandler>(
       () => DeleteTagCommandHandler(tagRepository: tagRepository),
+    )
+    ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(
+      () => AddTagTagCommandHandler(tagTagRepository: tagTagRepository),
+    )
+    ..registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse, RemoveTagTagCommandHandler>(
+      () => RemoveTagTagCommandHandler(tagTagRepository: tagTagRepository),
     );
 }

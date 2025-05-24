@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/tags/components/time_chart_filters.dart';
+import 'package:whph/presentation/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/features/tags/constants/tag_defaults.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -12,13 +12,13 @@ import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
-import 'package:whph/presentation/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -33,15 +33,22 @@ class _TagsPageState extends State<TagsPage> {
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
 
-  List<String>? _selectedFilters;
+  // Main List Options
+  static const String _mainSettingKeyVariantSuffix = 'MAIN';
+  List<String>? _selectedTagIds;
   bool _showArchived = false;
   bool _showNoTagsFilter = false;
-  String? _searchQuery;
+
+  // Tag Time Chart Options
+  static const String _timeChartSettingKeyVariantSuffix = 'TIME_CHART';
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
   DateTime _endDate = DateTime.now();
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
+
+  // List Options
+  static const String _listSettingKeyVariantSuffix = 'LIST';
+  String? _searchFilterQuery;
   SortConfig<TagSortFields> _sortConfig = TagDefaults.sorting;
-  final GlobalKey<TagsListState> _tagsListKey = GlobalKey<TagsListState>();
 
   @override
   void initState() {
@@ -56,19 +63,23 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _setupEventListeners() {
-    _tagsService.onTagCreated.addListener(_handleTagChange);
-    _tagsService.onTagUpdated.addListener(_handleTagChange);
-    _tagsService.onTagDeleted.addListener(_handleTagChange);
+    _tagsService.onTagCreated.addListener(_onTagChange);
+    _tagsService.onTagUpdated.addListener(_onTagChange);
+    _tagsService.onTagDeleted.addListener(_onTagChange);
   }
 
   void _removeEventListeners() {
-    _tagsService.onTagCreated.removeListener(_handleTagChange);
-    _tagsService.onTagUpdated.removeListener(_handleTagChange);
-    _tagsService.onTagDeleted.removeListener(_handleTagChange);
+    _tagsService.onTagCreated.removeListener(_onTagChange);
+    _tagsService.onTagUpdated.removeListener(_onTagChange);
+    _tagsService.onTagDeleted.removeListener(_onTagChange);
   }
 
-  void _handleTagChange() {
-    _tagsListKey.currentState?.refresh();
+  void _onTagChange() {
+    if (!mounted) return;
+    setState(() {
+      _mainListOptionLoaded = false;
+      _listOptionLoaded = false;
+    });
   }
 
   Future<void> _openDetails(String id) async {
@@ -80,30 +91,13 @@ class _TagsPageState extends State<TagsPage> {
     );
   }
 
-  void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
+  void _onTagFilterChange(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     final List<String>? newFilters = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
 
-    if (!CollectionUtils.areListsEqual(_selectedFilters, newFilters) || _showNoTagsFilter != isNoneSelected) {
+    if (!CollectionUtils.areListsEqual(_selectedTagIds, newFilters) || _showNoTagsFilter != isNoneSelected) {
       setState(() {
-        _selectedFilters = newFilters;
+        _selectedTagIds = newFilters;
         _showNoTagsFilter = isNoneSelected;
-      });
-    }
-  }
-
-  void _onSearchChange(String? query) {
-    if (mounted) {
-      setState(() {
-        _searchQuery = query;
-      });
-    }
-  }
-
-  // Handle sort configuration changes
-  void _onSortConfigChange(SortConfig<TagSortFields> newConfig) {
-    if (mounted) {
-      setState(() {
-        _sortConfig = newConfig;
       });
     }
   }
@@ -119,6 +113,61 @@ class _TagsPageState extends State<TagsPage> {
         _endDate = newEndDate;
       });
     }
+  }
+
+  void _onListSearchChange(String? query) {
+    if (mounted) {
+      setState(() {
+        _searchFilterQuery = query;
+      });
+    }
+  }
+
+  void _onListSortConfigChange(SortConfig<TagSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _sortConfig = newConfig;
+      });
+    }
+  }
+
+  bool _mainListOptionLoaded = false;
+  void _onMainSettingsLoaded() {
+    if (mounted) {
+      setState(() {
+        _mainListOptionLoaded = true;
+      });
+    }
+  }
+
+  bool _listOptionLoaded = false;
+  void _onListOptionLoaded() {
+    if (mounted) {
+      setState(() {
+        _listOptionLoaded = true;
+      });
+    }
+  }
+
+  bool _tagTimeChartOptionsLoaded = false;
+  void _onTagTimeChartOptionsLoaded() {
+    if (mounted) {
+      setState(() {
+        _tagTimeChartOptionsLoaded = true;
+      });
+    }
+  }
+
+  void _onTimeChartCategoryChanged(categories) {
+    setState(() {
+      _selectedCategories = categories;
+    });
+  }
+
+  void _onArchivedToggle(show) {
+    setState(() {
+      _showArchived = show;
+    });
   }
 
   @override
@@ -141,29 +190,20 @@ class _TagsPageState extends State<TagsPage> {
       ],
       builder: (context) => ListView(
         children: [
-          // Tag List Options section
+          // Main List Options
           TagListOptions(
-            selectedTagIds: _selectedFilters,
+            settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
+            onSettingsLoaded: _onMainSettingsLoaded,
+            selectedTagIds: _selectedTagIds,
             showNoTagsFilter: _showNoTagsFilter,
             showArchived: _showArchived,
-            search: _searchQuery,
-            sortConfig: _sortConfig,
-            onTagFilterChange: _onFilterTags,
-            onSearchChange: _onSearchChange,
-            onSortChange: _onSortConfigChange,
-            onArchivedToggle: (show) {
-              setState(() {
-                _showArchived = show;
-              });
-            },
-            showTagFilter: true,
+            onTagFilterChange: _onTagFilterChange,
+            onArchivedToggle: _onArchivedToggle,
             showSearchFilter: false,
             showSortButton: false,
-            showArchivedToggle: true,
-            hasItems: true,
           ),
 
-          // Tag Times Section
+          // Tag Time Title
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall),
             child: Row(
@@ -173,36 +213,35 @@ class _TagsPageState extends State<TagsPage> {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(width: AppTheme.sizeSmall),
-                TimeChartFilters(
+                TagTimeChartOptions(
                   selectedStartDate: _startDate,
                   selectedEndDate: _endDate,
                   onDateFilterChange: _onDateFilterChange,
                   selectedCategories: _selectedCategories,
-                  onCategoriesChanged: (categories) {
-                    setState(() {
-                      _selectedCategories = categories;
-                    });
-                  },
+                  onCategoriesChanged: _onTimeChartCategoryChanged,
+                  settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
+                  onSettingsLoaded: _onTagTimeChartOptionsLoaded,
                 ),
               ],
             ),
           ),
 
-          // Chart
-          Padding(
-            padding: const EdgeInsets.all(AppTheme.sizeSmall),
-            child: Center(
-              child: TagTimeChart(
-                filterByTags: _selectedFilters,
-                startDate: _startDate,
-                endDate: _endDate,
-                filterByIsArchived: _showArchived,
-                selectedCategories: _selectedCategories,
+          // Tag Time Chart
+          if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
+            Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+              child: Center(
+                child: TagTimeChart(
+                  filterByTags: _selectedTagIds,
+                  startDate: _startDate,
+                  endDate: _endDate,
+                  filterByIsArchived: _showArchived,
+                  selectedCategories: _selectedCategories,
+                ),
               ),
             ),
-          ),
 
-          // Tags Section Title
+          // List Options
           Padding(
             padding: const EdgeInsets.all(AppTheme.sizeSmall),
             child: Row(
@@ -213,34 +252,33 @@ class _TagsPageState extends State<TagsPage> {
                 ),
                 const SizedBox(width: AppTheme.sizeSmall),
                 TagListOptions(
-                  selectedTagIds: _selectedFilters,
-                  showNoTagsFilter: _showNoTagsFilter,
-                  showArchived: _showArchived,
-                  search: _searchQuery,
-                  sortConfig: _sortConfig,
-                  onSearchChange: _onSearchChange,
-                  onSortChange: _onSortConfigChange,
-                  showTagFilter: false,
+                  onSettingsLoaded: _onListOptionLoaded,
                   showSearchFilter: true,
+                  search: _searchFilterQuery,
+                  onSearchChange: _onListSearchChange,
                   showSortButton: true,
+                  sortConfig: _sortConfig,
+                  onSortChange: _onListSortConfigChange,
+                  showTagFilter: false,
                   showArchivedToggle: false,
+                  settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
                 ),
               ],
             ),
           ),
 
           // List
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-            child: TagsList(
-              key: _tagsListKey,
-              onClickTag: (tag) => _openDetails(tag.id),
-              filterByTags: _selectedFilters,
-              showArchived: _showArchived,
-              search: _searchQuery,
-              sortConfig: _sortConfig,
+          if (_mainListOptionLoaded && _listOptionLoaded)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+              child: TagsList(
+                onClickTag: (tag) => _openDetails(tag.id),
+                filterByTags: _selectedTagIds,
+                search: _searchFilterQuery,
+                showArchived: _showArchived,
+                sortConfig: _sortConfig,
+              ),
             ),
-          ),
         ],
       ),
     );

@@ -65,6 +65,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   final FocusNode _searchFocusNode = FocusNode();
   Timer? _searchDebounce;
   bool _hasExplicitlySelectedNone = false;
+  bool _needsStateUpdate = false;
 
   @override
   void initState() {
@@ -86,9 +87,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     super.didUpdateWidget(oldWidget);
 
     if (_selectedTagsChanged(oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
-      setState(() {
-        _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
-      });
+      _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
+      _needsStateUpdate = true;
     }
 
     if (oldWidget.showArchived != widget.showArchived) {
@@ -98,13 +98,27 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     if (oldWidget.initialShowNoTagsFilter != widget.initialShowNoTagsFilter ||
         oldWidget.initialNoneSelected != widget.initialNoneSelected) {
-      setState(() {
-        _hasExplicitlySelectedNone = widget.showNoneOption &&
-            (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
+      _hasExplicitlySelectedNone = widget.showNoneOption &&
+          (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
 
-        if (_hasExplicitlySelectedNone) {
-          _selectedTags.clear();
-          widget.onTagsSelected(const [], true);
+      if (_hasExplicitlySelectedNone) {
+        _selectedTags.clear();
+        // Defer the callback to next frame
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            widget.onTagsSelected(const [], true);
+          }
+        });
+      }
+      _needsStateUpdate = true;
+    }
+
+    if (_needsStateUpdate) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _needsStateUpdate = false;
+          });
         }
       });
     }
