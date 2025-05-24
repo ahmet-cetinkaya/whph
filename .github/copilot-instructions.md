@@ -20,8 +20,6 @@
     ),
     ```
 
-## Color and Style
-
 ## State Management
 - Avoid suggesting `setState` for complex applications; use appropriate state management.
 
@@ -38,3 +36,9 @@
 * Prefer async/await over `then()` for better readability.
 * Use `FutureBuilder` and `StreamBuilder` when dealing with async data in the UI.
 * `withOpacity` is deprecated and shouldn't be used. Use `.withValues()` to avoid precision loss.
+* Use `ListView.builder` for large lists instead of `ListView` with a static list.
+* Use `const` constructors for widgets that do not depend on runtime values.
+* Use `final` for variables that are not reassigned.
+* Use `const` for compile-time constants.
+* Use `async` and `await` for asynchronous operations.
+* Use method for event handlers instead of inline functions.
