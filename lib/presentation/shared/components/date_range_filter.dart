@@ -129,13 +129,20 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       case 'this_month':
         // Start of the current month
         startDate = DateTime(now.year, now.month, 1);
-        endDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        // End of the current month
+        final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+        endDate = DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
         break;
       case 'this_3_months':
         // Start of the current quarter
         final monthsToSubtract = (now.month - 1) % 3;
         startDate = DateTime(now.year, now.month - monthsToSubtract, 1);
-        endDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        // End of the third month
+        final endMonth = now.month - monthsToSubtract + 2; // +2 because we want the third month (0,1,2)
+        final endYear = now.year + (endMonth > 12 ? 1 : 0);
+        final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
+        final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
+        endDate = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
         break;
       case 'last_week':
         endDate = now;
@@ -438,13 +445,18 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         return _isSameDay(selectedStart, startOfWeek) && _isSameDay(selectedEnd, endOfWeek);
       case 'this_month':
         final startOfMonth = DateTime(now.year, now.month, 1);
-        return _isSameDay(selectedStart, startOfMonth) &&
-            _isSameDay(selectedEnd.copyWith(hour: 0, minute: 0, second: 0), today);
+        final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+        final endOfMonth = DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
+        return _isSameDay(selectedStart, startOfMonth) && _isSameDay(selectedEnd, endOfMonth);
       case 'this_3_months':
         final monthsToSubtract = (now.month - 1) % 3;
         final startOfQuarter = DateTime(now.year, now.month - monthsToSubtract, 1);
-        final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
-        return _isSameDay(selectedStart, startOfQuarter) && _isSameDay(selectedEnd, endOfToday);
+        final endMonth = now.month - monthsToSubtract + 2;
+        final endYear = now.year + (endMonth > 12 ? 1 : 0);
+        final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
+        final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
+        final endOfQuarter = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
+        return _isSameDay(selectedStart, startOfQuarter) && _isSameDay(selectedEnd, endOfQuarter);
       case 'last_week':
         final weekAgo = DateTime(now.year, now.month, now.day - 7);
         return _isSameDay(selectedStart, weekAgo) && _isSameDay(selectedEnd, today);
