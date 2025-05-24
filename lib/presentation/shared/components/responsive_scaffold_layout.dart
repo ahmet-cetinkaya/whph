@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/components/app_logo.dart';
+import 'package:whph/presentation/shared/constants/app_routes.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/constants/navigation_items.dart';
@@ -123,6 +124,21 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   /// Handles navigation item clicks with proper state updates
   void _onClickNavItem(NavItem navItem) {
+    String? currentRoute = ModalRoute.of(context)?.settings.name;
+
+    const String initialRoute = "/";
+    if (currentRoute == initialRoute) {
+      currentRoute = AppRoutes.defaultRouteName;
+    }
+
+    if (navItem.route != null && navItem.route == currentRoute) {
+      // Close drawer if open and return early if we're already on this page
+      if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+        Navigator.of(context).pop();
+      }
+      return;
+    }
+
     // Check if this is a navigation item from the "More" menu that should be tracked
     final screenWidth = MediaQuery.of(context).size.width;
     final maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
