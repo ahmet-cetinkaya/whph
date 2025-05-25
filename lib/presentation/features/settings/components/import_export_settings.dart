@@ -6,19 +6,25 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:path/path.dart' as path;
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
 
-  void _showImportExportBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  void _showImportExportDialog(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => _ImportExportBottomSheet(),
+      title: translationService.translate(SettingsTranslationKeys.importExportTitle),
+      maxHeightRatio: 0.25,
+      maxWidthRatio: 0.6,
+      child: const _ImportExportActionsDialog(),
     );
   }
 
@@ -33,79 +39,239 @@ class ImportExportSettings extends StatelessWidget {
           style: AppTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
-        onTap: () => _showImportExportBottomSheet(context),
+        onTap: () => _showImportExportDialog(context),
       ),
     );
   }
 }
 
-class _ImportExportBottomSheet extends StatelessWidget {
-  _ImportExportBottomSheet()
-      : _translationService = container.resolve<ITranslationService>(),
-        _fileService = container.resolve<IFileService>();
+class _ImportExportActionsDialog extends StatefulWidget {
+  const _ImportExportActionsDialog();
 
-  final ITranslationService _translationService;
-  final IFileService _fileService;
+  @override
+  State<_ImportExportActionsDialog> createState() => _ImportExportActionsDialogState();
+}
 
-  void _showImportStrategyDialog(BuildContext context, String filePath) {
-    // Building import strategy dialog
+class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> {
+  final _translationService = container.resolve<ITranslationService>();
+  final _fileService = container.resolve<IFileService>();
+  final PageController _pageController = PageController();
+  String? _selectedFilePath;
+  ExportDataFileOptions? _selectedExportOption;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent closing dialog by tapping outside
-      builder: (dialogContext) => AlertDialog(
-        title: Text(_translationService.translate(SettingsTranslationKeys.importStrategyTitle)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+  void _navigateToPage(int page) {
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          _translationService.translate(SettingsTranslationKeys.importExportTitle),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildImportStrategyOption(
-              dialogContext,
-              filePath,
-              Icons.delete_sweep,
-              SettingsTranslationKeys.importStrategyReplace,
-              ImportStrategy.replace,
-            ),
-            _buildImportStrategyOption(
-              dialogContext,
-              filePath,
-              Icons.merge,
-              SettingsTranslationKeys.importStrategyMerge,
-              ImportStrategy.merge,
-            ),
+            _buildMainPage(context),
+            if (_selectedFilePath != null) _buildImportStrategyPage(context),
+            if (_selectedExportOption == null) _buildExportOptionsPage(context),
           ],
         ),
       ),
     );
   }
 
-  ListTile _buildImportStrategyOption(
-    BuildContext context,
-    String filePath,
-    IconData icon,
-    String translationKey,
-    ImportStrategy strategy,
-  ) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(_translationService.translate(translationKey)),
-      onTap: () {
-        Navigator.of(context).pop();
-        _importData(context, filePath, strategy);
+  Widget _buildMainPage(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Description Section
+        Text(
+          _translationService.translate(SettingsTranslationKeys.importExportDescription),
+          style: AppTheme.bodyMedium,
+        ),
+        const SizedBox(height: AppTheme.sizeMedium),
+
+        // Actions Section
+        Column(
+          children: [
+            _ImportExportActionTile(
+              icon: Icons.download,
+              titleKey: SettingsTranslationKeys.importTitle,
+              onTap: () => _handleImport(context),
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+            _ImportExportActionTile(
+              icon: Icons.upload,
+              titleKey: SettingsTranslationKeys.exportTitle,
+              onTap: () => _navigateToPage(2),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImportStrategyPage(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header Section
+        Text(
+          _translationService.translate(SettingsTranslationKeys.importStrategyTitle),
+          style: AppTheme.bodyLarge,
+        ),
+        const SizedBox(height: AppTheme.sizeMedium),
+
+        // Strategy Options Section
+        Column(
+          children: [
+            _ImportStrategyOption(
+              icon: Icons.delete_sweep,
+              translationKey: SettingsTranslationKeys.importStrategyReplace,
+              strategy: ImportStrategy.replace,
+              onSelect: () => _handleStrategySelect(ImportStrategy.replace, context),
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+            _ImportStrategyOption(
+              icon: Icons.merge,
+              translationKey: SettingsTranslationKeys.importStrategyMerge,
+              strategy: ImportStrategy.merge,
+              onSelect: () => _handleStrategySelect(ImportStrategy.merge, context),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppTheme.sizeLarge),
+
+        // Navigation Buttons
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _selectedFilePath = null;
+                });
+                _navigateToPage(0);
+              },
+              child: Text(
+                _translationService.translate(SharedTranslationKeys.backButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () => _closeDialog(context),
+              child: Text(
+                _translationService.translate(SharedTranslationKeys.cancelButton),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExportOptionsPage(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header Section
+        Text(
+          _translationService.translate(SettingsTranslationKeys.exportSelectType),
+          style: AppTheme.bodyLarge,
+        ),
+        const SizedBox(height: AppTheme.sizeMedium),
+
+        // Export Options Section
+        Column(
+          children: [
+            _ExportOptionTile(
+              icon: Icons.code,
+              title: 'JSON',
+              descriptionKey: SettingsTranslationKeys.exportJsonDescription,
+              fileOption: ExportDataFileOptions.json,
+              onSelect: () => _handleExportOptionSelect(ExportDataFileOptions.json, context),
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+            _ExportOptionTile(
+              icon: Icons.table_chart,
+              title: 'CSV',
+              descriptionKey: SettingsTranslationKeys.exportCsvDescription,
+              fileOption: ExportDataFileOptions.csv,
+              onSelect: () => _handleExportOptionSelect(ExportDataFileOptions.csv, context),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppTheme.sizeLarge),
+
+        // Navigation Buttons
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () => _navigateToPage(0),
+              child: Text(
+                _translationService.translate(SharedTranslationKeys.backButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () => _closeDialog(context),
+              child: Text(
+                _translationService.translate(SharedTranslationKeys.cancelButton),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleImport(BuildContext context) async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+      operation: () async {
+        // Pick JSON file
+        final filePath = await _fileService.pickFile(
+          allowedExtensions: ['json'],
+          dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
+        );
+
+        if (filePath != null && mounted) {
+          setState(() {
+            _selectedFilePath = filePath;
+          });
+          _navigateToPage(1);
+        }
       },
     );
   }
 
-  Future<void> _importData(BuildContext dialogContext, String filePath, ImportStrategy strategy) async {
-    // Get global context for showing success message
-    final scaffoldContext = navigatorKey.currentContext;
-    if (scaffoldContext == null || !scaffoldContext.mounted) return;
+  Future<void> _handleStrategySelect(ImportStrategy strategy, BuildContext context) async {
+    if (_selectedFilePath == null) return;
 
     await AsyncErrorHandler.execute<ImportDataCommandResponse>(
-      context: scaffoldContext,
+      context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
         // Read file content
-        final content = await _fileService.readFile(filePath);
+        final content = await _fileService.readFile(_selectedFilePath!);
         final mediator = container.resolve<Mediator>();
 
         // Execute import command
@@ -115,126 +281,20 @@ class _ImportExportBottomSheet extends StatelessWidget {
       },
       onSuccess: (_) {
         // Show success message
-        _showSuccessMessage(scaffoldContext);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_translationService.translate(SettingsTranslationKeys.importSuccess)),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Close dialog
+        Navigator.of(context).pop();
       },
     );
   }
 
-  void _showSuccessMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_translationService.translate(SettingsTranslationKeys.importSuccess)),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-  Future<void> _handleImport(BuildContext parentContext) async {
-    // Close bottom sheet and wait for animation
-    Navigator.of(parentContext).pop();
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    if (parentContext.mounted) {
-      await AsyncErrorHandler.executeVoid(
-        context: parentContext,
-        errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
-        operation: () async {
-          // Pick JSON file
-          final filePath = await _fileService.pickFile(
-            allowedExtensions: ['json'],
-            dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
-          );
-
-          // Show import strategy dialog if file is selected
-          if (filePath != null && navigatorKey.currentContext != null) {
-            _showImportStrategyDialog(navigatorKey.currentContext!, filePath);
-          }
-        },
-      );
-    }
-  }
-
-  Future<void> _handleExport(BuildContext context) async {
-    Navigator.of(context).pop(); // Close bottom sheet before starting export
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => _ExportOptionsBottomSheet(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(_translationService.translate(SettingsTranslationKeys.importExportSelectAction)),
-            _buildActionTile(
-              icon: Icons.download,
-              titleKey: SettingsTranslationKeys.importTitle,
-              onTap: () => _handleImport(context),
-            ),
-            _buildActionTile(
-              icon: Icons.upload,
-              titleKey: SettingsTranslationKeys.exportTitle,
-              onTap: () => _handleExport(context),
-            ),
-          ],
-        ),
-      );
-
-  ListTile _buildActionTile({
-    required IconData icon,
-    required String titleKey,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(_translationService.translate(titleKey)),
-      onTap: onTap,
-    );
-  }
-}
-
-class _ExportOptionsBottomSheet extends StatelessWidget {
-  _ExportOptionsBottomSheet()
-      : _translationService = container.resolve<ITranslationService>(),
-        _fileService = container.resolve<IFileService>();
-
-  final ITranslationService _translationService;
-  final IFileService _fileService;
-
-  String _getFormattedDate() {
-    final now = DateTime.now();
-    return '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
-        '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
-  }
-
-  Future<String?> _getSavePath(ExportDataFileOptions fileOption) async {
-    final version = AppInfo.version;
-    final extension = fileOption == ExportDataFileOptions.json ? 'json' : 'csv';
-    final fileName = 'whph_export_${version}_${_getFormattedDate()}.$extension';
-
-    return await _fileService.getSavePath(
-      fileName: fileName,
-      allowedExtensions: [extension],
-      dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
-    );
-  }
-
-  void _showSuccessMessage(BuildContext context, String displayPath) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$displayPath',
-        ),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 5),
-      ),
-    );
-  }
-
-  Future<void> _exportData(BuildContext context, ExportDataFileOptions fileOption) async {
+  Future<void> _handleExportOptionSelect(ExportDataFileOptions option, BuildContext context) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.exportError),
@@ -242,15 +302,24 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
         // Get export data
         final mediator = container.resolve<Mediator>();
         final response = await mediator.send<ExportDataCommand, ExportDataCommandResponse>(
-          ExportDataCommand(fileOption),
+          ExportDataCommand(option),
         );
 
         // Get save path
-        String? savePath = await _getSavePath(fileOption);
-        if (savePath == null) {
-          if (context.mounted) Navigator.of(context).pop();
-          return;
-        }
+        final extension = option == ExportDataFileOptions.json ? 'json' : 'csv';
+        final version = AppInfo.version;
+        final now = DateTime.now();
+        final fileName = 'whph_export_${version}_'
+            '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
+            '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$extension';
+
+        String? savePath = await _fileService.getSavePath(
+          fileName: fileName,
+          allowedExtensions: [extension],
+          dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
+        );
+
+        if (savePath == null) return;
 
         // Write file
         await _fileService.writeFile(
@@ -258,53 +327,120 @@ class _ExportOptionsBottomSheet extends StatelessWidget {
           content: response.fileContent,
         );
 
-        if (!context.mounted) return;
+        if (!mounted) return;
 
-        // Close bottom sheet and show success message
-        Navigator.of(context).pop();
+        // Show success message
         final displayPath = Platform.isAndroid ? '/storage/emulated/0/Download/${path.basename(savePath)}' : savePath;
-        _showSuccessMessage(context, displayPath);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$displayPath',
+              ),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+
+        // Close dialog
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
       },
     );
   }
 
-  ListTile _buildExportOption({
-    required IconData icon,
-    required String title,
-    required String descriptionKey,
-    required ExportDataFileOptions fileOption,
-    required BuildContext context,
-  }) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: Text(_translationService.translate(descriptionKey)),
-      onTap: () => _exportData(context, fileOption),
-    );
+  void _closeDialog(BuildContext context) {
+    Navigator.of(context).pop();
   }
+}
+
+class _ImportExportActionTile extends StatelessWidget {
+  const _ImportExportActionTile({
+    required this.icon,
+    required this.titleKey,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String titleKey;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(_translationService.translate(SettingsTranslationKeys.exportSelectType)),
-            _buildExportOption(
-              icon: Icons.code,
-              title: 'JSON',
-              descriptionKey: SettingsTranslationKeys.exportJsonDescription,
-              fileOption: ExportDataFileOptions.json,
-              context: context,
-            ),
-            _buildExportOption(
-              icon: Icons.table_chart,
-              title: 'CSV',
-              descriptionKey: SettingsTranslationKeys.exportCsvDescription,
-              fileOption: ExportDataFileOptions.csv,
-              context: context,
-            ),
-          ],
+  Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(
+          translationService.translate(titleKey),
+          style: AppTheme.bodyMedium,
         ),
-      );
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
+class _ImportStrategyOption extends StatelessWidget {
+  const _ImportStrategyOption({
+    required this.icon,
+    required this.translationKey,
+    required this.strategy,
+    required this.onSelect,
+  });
+
+  final IconData icon;
+  final String translationKey;
+  final ImportStrategy strategy;
+  final VoidCallback onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(
+          translationService.translate(translationKey),
+          style: AppTheme.bodyMedium,
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: onSelect,
+      ),
+    );
+  }
+}
+
+class _ExportOptionTile extends StatelessWidget {
+  const _ExportOptionTile({
+    required this.icon,
+    required this.title,
+    required this.descriptionKey,
+    required this.fileOption,
+    required this.onSelect,
+  });
+
+  final IconData icon;
+  final String title;
+  final String descriptionKey;
+  final ExportDataFileOptions fileOption;
+  final VoidCallback onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    return Card(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: Text(translationService.translate(descriptionKey)),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: onSelect,
+      ),
+    );
+  }
 }

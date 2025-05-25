@@ -6,9 +6,7 @@ settings:
   title: Settings
   language:
     title: Language
-    languages:
-      en: English
-      tr: Turkish
+    choose_title: Choose your language
   notifications:
     title: Notifications
     enable_error: Failed to enable notifications
@@ -24,7 +22,7 @@ settings:
     title: About
   import_export:
     title: Import/Export
-    select_action: Please select an action
+    description: You can backup your data in JSON format or restore from a previously created backup
   import:
     title: Import
     strategy:
@@ -94,3 +92,8 @@ settings:
         step2: Go to "Privacy" or "Security & Privacy"
         step3: Find and tap on "Usage Access" and enable it for {appName}
       not_granted: App usage permission is not granted yet. Provide permission for the relevant function to work correctly.
+  errors:
+    setting_not_found: Setting not found
+    version_mismatch: Version mismatch
+    import_failed: Import failed
+    export_failed: Export failed

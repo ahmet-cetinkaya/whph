@@ -6,9 +6,7 @@ settings:
   title: Ayarlar
   language:
     title: Dil
-    languages:
-      en: İngilizce
-      tr: Türkçe
+    choose_title: Dilini seç
   notifications:
     title: Bildirimler
     enable_error: Bildirimler etkinleştirilemedi
@@ -24,7 +22,7 @@ settings:
     title: Hakkında
   import_export:
     title: İçe/Dışa Aktar
-    select_action: Lütfen bir işlem seçin
+    description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
   import:
     title: İçe Aktar
     strategy:
@@ -94,3 +92,8 @@ settings:
         step2: '"Gizlilik" veya "Güvenlik ve Gizlilik"e gidin'
         step3: '"Kullanım Erişimi"ni bulun ve {appName} için etkinleştirin'
       not_granted: Uygulama kullanım izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
+  errors:
+    setting_not_found: Ayar bulunamadı
+    version_mismatch: Sürüm uyumsuzluğu
+    import_failed: İçe aktarma başarısız
+    export_failed: Dışa aktarma başarısız

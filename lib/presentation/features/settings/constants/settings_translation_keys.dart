@@ -1,11 +1,12 @@
-class SettingsTranslationKeys {
+import 'package:whph/application/features/settings/constants/setting_translation_keys.dart' as application;
+
+class SettingsTranslationKeys extends application.SettingTranslationKeys {
   // Common UI Elements
   static const String commonCancel = 'common.buttons.cancel';
 
   // Language Settings
   static const String languageTitle = 'settings.language.title';
-  static const String languageEnglish = 'settings.language.languages.en';
-  static const String languageTurkish = 'settings.language.languages.tr';
+  static const String languageChooseTitle = 'settings.language.choose_title';
 
   // Notifications
   static const String notificationsTitle = 'settings.notifications.title';
@@ -37,6 +38,7 @@ class SettingsTranslationKeys {
   static const String exportJsonDescription = 'settings.export.json_description';
   static const String exportTitle = 'settings.export.title';
   static const String importError = 'settings.import.error';
+  static const String importExportDescription = 'settings.import_export.description';
   static const String importExportSelectAction = 'settings.import_export.select_action';
   static const String importExportTitle = 'settings.import_export.title';
   static const String importSelectFile = 'settings.import.select_file';
