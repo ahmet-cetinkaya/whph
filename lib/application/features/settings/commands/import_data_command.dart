@@ -15,6 +15,8 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'dart:convert';
 import 'package:whph/core/acore/repository/abstraction/i_repository.dart';
 import 'package:whph/core/acore/repository/models/base_entity.dart';
@@ -33,6 +35,8 @@ import 'package:whph/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/features/sync/sync_device.dart';
+import 'package:whph/domain/features/notes/note.dart';
+import 'package:whph/domain/features/notes/note_tag.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
@@ -76,6 +80,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final ISettingRepository settingRepository;
   final ISyncDeviceRepository syncDeviceRepository;
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
+  final INoteRepository noteRepository;
+  final INoteTagRepository noteTagRepository;
 
   late final List<ImportConfig> _importConfigs;
 
@@ -95,6 +101,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.settingRepository,
     required this.syncDeviceRepository,
     required this.appUsageIgnoreRuleRepository,
+    required this.noteRepository,
+    required this.noteTagRepository,
   }) {
     _importConfigs = [
       ImportConfig<Tag>(
@@ -172,6 +180,16 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         repository: appUsageIgnoreRuleRepository,
         fromJson: (json) => JsonMapper.deserialize<AppUsageIgnoreRule>(jsonEncode(json))!,
       ),
+      ImportConfig<Note>(
+        name: 'notes',
+        repository: noteRepository,
+        fromJson: (json) => JsonMapper.deserialize<Note>(jsonEncode(json))!,
+      ),
+      ImportConfig<NoteTag>(
+        name: 'noteTags',
+        repository: noteTagRepository,
+        fromJson: (json) => JsonMapper.deserialize<NoteTag>(jsonEncode(json))!,
+      ),
     ];
   }
 
@@ -220,6 +238,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       taskRepository.truncate(),
       taskTagRepository.truncate(),
       taskTimeRecordRepository.truncate(),
+      noteRepository.truncate(),
+      noteTagRepository.truncate(),
       settingRepository.truncate(),
       syncDeviceRepository.truncate(),
       appUsageIgnoreRuleRepository.truncate(),

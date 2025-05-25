@@ -15,6 +15,8 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
@@ -49,6 +51,8 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
   final ISettingRepository settingRepository;
   final ISyncDeviceRepository syncDeviceRepository;
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
+  final INoteRepository noteRepository;
+  final INoteTagRepository noteTagRepository;
 
   ExportDataCommandHandler({
     required this.appUsageRepository,
@@ -66,6 +70,8 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
     required this.settingRepository,
     required this.syncDeviceRepository,
     required this.appUsageIgnoreRuleRepository,
+    required this.noteRepository,
+    required this.noteTagRepository,
   });
 
   @override
@@ -85,6 +91,8 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
     final settings = await settingRepository.getAll();
     final syncDevices = await syncDeviceRepository.getAll();
     final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
+    final notes = await noteRepository.getAll();
+    final noteTags = await noteTagRepository.getAll();
 
     final data = {
       'appInfo': {
@@ -105,6 +113,8 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
       'settings': settings,
       'syncDevices': syncDevices,
       'appUsageIgnoreRules': appUsageIgnoreRules,
+      'notes': notes,
+      'noteTags': noteTags,
     };
 
     return ExportDataCommandResponse(

@@ -1,4 +1,6 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
@@ -40,6 +42,8 @@ void registerSettingsFeature(
   ITaskRepository taskRepository,
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
+  INoteRepository noteRepository,
+  INoteTagRepository noteTagRepository,
 ) {
   mediator
     ..registerHandler<SaveSettingCommand, SaveSettingCommandResponse, SaveSettingCommandHandler>(
@@ -71,6 +75,8 @@ void registerSettingsFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        noteRepository: noteRepository,
+        noteTagRepository: noteTagRepository,
       ),
     )
     ..registerHandler<ImportDataCommand, ImportDataCommandResponse, ImportDataCommandHandler>(
@@ -90,6 +96,8 @@ void registerSettingsFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        noteRepository: noteRepository,
+        noteTagRepository: noteTagRepository,
       ),
     );
 }
