@@ -26,7 +26,7 @@ class OptionalFieldChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(label),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppTheme.sizeXSmall),
           Icon(Icons.add, size: AppTheme.iconSizeSmall),
         ],
       ),

@@ -1,4 +1,6 @@
-class SharedTranslationKeys {
+import 'package:whph/application/shared/constants/shared_translation_keys.dart' as application;
+
+class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
   static const String savedButton = 'shared.buttons.saved';
   static const String addButton = 'shared.buttons.add';
@@ -7,17 +9,19 @@ class SharedTranslationKeys {
   static const String closeButton = 'shared.buttons.close';
   static const String doneButton = 'shared.buttons.done';
   static const String confirmButton = 'shared.buttons.confirm';
+  static const String backButton = 'shared.buttons.back';
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
   static const String requiredValidation = 'shared.validation.required';
   static const String refreshTooltip = 'shared.tooltips.refresh';
 
-  // Keep only generic errors
+  // UI-specific errors (inherited from application layer but also defined here for UI components)
   static const String unexpectedError = 'shared.errors.unexpected';
   static const String loadingError = 'shared.errors.loading';
   static const String savingError = 'shared.errors.saving';
   static const String deletingError = 'shared.errors.deleting';
 
+  // Units
   static const String minutes = 'shared.units.minutes';
   static const String days = 'shared.units.days';
   static const String hours = 'shared.units.hours';

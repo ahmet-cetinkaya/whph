@@ -9,6 +9,7 @@ import 'package:whph/application/features/app_usages/commands/start_track_app_us
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/presentation/features/notifications/services/reminder_service.dart';
 import 'package:whph/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/core/acore/dependency_injection/container.dart' as acore;
@@ -44,7 +45,7 @@ void main() async {
         child: Container(
           color: Colors.red,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
             child: Text(
               ' ${details.exception}',
               style: const TextStyle(color: Colors.white),

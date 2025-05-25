@@ -36,6 +36,9 @@ abstract class PersistentListOptionsBaseState<T extends PersistentListOptionsBas
   /// Filter settings manager instance
   late final FilterSettingsManager filterSettingsManager;
 
+  /// Flag indicating if settings have been loaded
+  bool isSettingLoaded = false;
+
   /// Timer for debouncing search input
   Timer? searchDebounce;
 
@@ -66,7 +69,7 @@ abstract class PersistentListOptionsBaseState<T extends PersistentListOptionsBas
     filterSettingsManager = FilterSettingsManager(_mediator);
 
     initSettingKey();
-    loadSavedFilterSettings();
+    loadSavedListOptionSettings();
   }
 
   @override
@@ -81,7 +84,7 @@ abstract class PersistentListOptionsBaseState<T extends PersistentListOptionsBas
   void initSettingKey();
 
   /// Load saved filter settings from persistent storage
-  Future<void> loadSavedFilterSettings();
+  Future<void> loadSavedListOptionSettings();
 
   /// Save current filter settings to persistent storage
   Future<void> saveFilterSettings();

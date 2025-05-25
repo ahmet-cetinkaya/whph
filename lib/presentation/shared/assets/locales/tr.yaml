@@ -10,9 +10,10 @@ shared:
     load_more: Daha Fazla
     done: Tamam
     confirm: Onayla
+    back: Geri
   messages:
     confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
-    no_items_found: Öğe bulunamadı
+    no_items_found: Öğe yok
   validation:
     required: "{field} alanı zorunludur"
   errors:
@@ -26,7 +27,7 @@ shared:
     hours: sa
     seconds: sn
   sort:
-    custom_sort:
+    custom_order:
       title: Özel Sıralama
       description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
     reset_to_default: Varsayılana Sıfırla
@@ -113,7 +114,7 @@ shared:
       description: Günün saatlerine göre toplam kullanım süresini gösterir
   editor:
     markdown:
-      hint: Markdown formatını kullanarak yazabilirsiniz
+      hint: Markdown formatını kullanarak yazabilirsiniz...
   color_picker:
     title: Renk Seçici
     tabs:

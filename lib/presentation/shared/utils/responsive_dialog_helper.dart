@@ -42,8 +42,9 @@ class ResponsiveDialogHelper {
                 child: _wrapWithConstrainedContent(
                   context,
                   child,
-                  maxHeight: dialogHeight,
+                  maxHeight: fullHeight ? dialogHeight : null,
                   maxWidth: dialogWidth < 1200 ? dialogWidth : 1200,
+                  isScrollable: isScrollable,
                 ),
               ),
             ),
@@ -102,16 +103,21 @@ class ResponsiveDialogHelper {
     double? maxWidth,
   }) {
     // Create a bounded container with optional scrolling
-    Widget constrainedContent = ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: maxHeight ?? double.infinity,
-        maxWidth: maxWidth ?? double.infinity,
-      ),
-      child: child,
-    );
+    Widget constrainedContent = child;
+
+    // Only apply constraints if maxHeight or maxWidth are specified
+    if (maxHeight != null || maxWidth != null) {
+      constrainedContent = ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: maxHeight ?? double.infinity,
+          maxWidth: maxWidth ?? double.infinity,
+        ),
+        child: child,
+      );
+    }
 
     // If scrollable, wrap with SingleChildScrollView
-    if (isScrollable) {
+    if (isScrollable && maxHeight != null) {
       constrainedContent = SingleChildScrollView(
         controller: scrollController,
         child: constrainedContent,

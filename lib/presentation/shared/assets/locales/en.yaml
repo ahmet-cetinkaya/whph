@@ -10,9 +10,10 @@ shared:
     load_more: Load More
     done: Done
     confirm: Confirm
+    back: Back
   messages:
     confirm_delete: Are you sure you want to delete this item?
-    no_items_found: No items found
+    no_items_found: No items
   validation:
     required: "{field} is required"
   errors:
@@ -113,7 +114,7 @@ shared:
       description: Shows the total usage time per hour of the day
   editor:
     markdown:
-      hint: You can write using Markdown format
+      hint: You can write using Markdown format...
   color_picker:
     title: Color Picker
     tabs:

@@ -47,7 +47,7 @@ class SaveButton extends StatelessWidget {
           width: 1,
           height: 24,
           color: AppTheme.surface3,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
+          margin: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
         ),
 
       // Save Button
@@ -71,7 +71,7 @@ class SaveButton extends StatelessWidget {
               Icons.done,
               color: Colors.green,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppTheme.sizeSmall),
             Text(
               translationService.translate(SharedTranslationKeys.savedButton),
               style: const TextStyle(color: Colors.green),
