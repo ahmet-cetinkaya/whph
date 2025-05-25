@@ -51,32 +51,16 @@ abstract class BaseSetupService implements ISetupService {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => _dismissUpdateDialog(context),
             child: Text(translationService.translate(SharedTranslationKeys.updateLaterButton)),
           ),
           TextButton(
-            onPressed: () async {
-              final url = Uri.parse(updateInfo.releaseUrl);
-              if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                throw Exception('Could not launch $url');
-              }
-            },
+            onPressed: () => _openReleaseUrl(updateInfo.releaseUrl),
             child: Text(translationService.translate(SharedTranslationKeys.updateDownloadPageButton)),
           ),
           if (updateInfo.platformSpecificDownloadUrl != null)
             TextButton(
-              onPressed: () async {
-                try {
-                  Navigator.of(context).pop();
-                  await downloadAndInstallUpdate(updateInfo.platformSpecificDownloadUrl!);
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(translationService.translate(SharedTranslationKeys.updateFailedMessage))),
-                    );
-                  }
-                }
-              },
+              onPressed: () => _downloadAndInstallUpdate(context, updateInfo.platformSpecificDownloadUrl!),
               child: Text(translationService.translate(SharedTranslationKeys.updateNowButton)),
             ),
         ],
@@ -85,6 +69,31 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   Future<void> downloadAndInstallUpdate(String downloadUrl);
+
+  void _dismissUpdateDialog(BuildContext context) {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _openReleaseUrl(String releaseUrl) async {
+    final url = Uri.parse(releaseUrl);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  Future<void> _downloadAndInstallUpdate(BuildContext context, String downloadUrl) async {
+    final translationService = container.resolve<ITranslationService>();
+    try {
+      Navigator.of(context).pop();
+      await downloadAndInstallUpdate(downloadUrl);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(translationService.translate(SharedTranslationKeys.updateFailedMessage))),
+        );
+      }
+    }
+  }
 
   // Common file and directory operations
   Future<void> createDirectories(List<String> dirs) async {
