@@ -2,7 +2,7 @@ notes:
   title: Notlar
   new_note: Yeni Not
   note_details: Not Detayları
-  no_notes: Not bulunamadı
+  no_notes: Not yok
   no_notes_with_filters: Mevcut filtrelerle not bulunamadı
   notes: Notlar
   details:
@@ -32,7 +32,7 @@ notes:
       save_button: Kaydet
       saved_message: Not başarıyla kaydedildi
     notes_list:
-      empty_message: Not bulunamadı
+      empty_message: Not yok
       loading: Notlar yükleniyor...
   errors:
     loading_details: Not detayları yüklenemedi

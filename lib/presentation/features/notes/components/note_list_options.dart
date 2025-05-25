@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
@@ -88,76 +89,92 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(
+          settingKey: settingKey,
+        );
 
-      if (savedSettings != null && mounted) {
-        final filterSettings = NoteListOptionSettings.fromJson(savedSettings);
+        if (savedSettings != null && mounted) {
+          final filterSettings = NoteListOptionSettings.fromJson(savedSettings);
 
-        // Set search state
-        setState(() {
-          lastSearchQuery = filterSettings.search;
-        });
+          // Set search state
+          setState(() {
+            lastSearchQuery = filterSettings.search;
+          });
 
-        // Apply tag filters
-        if (widget.onTagFilterChange != null) {
-          final tagIds = filterSettings.selectedTagIds ?? [];
-          final showNoTags = filterSettings.showNoTagsFilter;
+          // Apply tag filters
+          if (widget.onTagFilterChange != null) {
+            final tagIds = filterSettings.selectedTagIds ?? [];
+            final showNoTags = filterSettings.showNoTagsFilter;
 
-          widget.onTagFilterChange!(
-            tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-            showNoTags,
-          );
+            widget.onTagFilterChange!(
+              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+              showNoTags,
+            );
+          }
+
+          // Apply search filter
+          if (widget.onSearchChange != null && filterSettings.search != null) {
+            widget.onSearchChange!(filterSettings.search);
+          }
+
+          // Apply sort configuration
+          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+            widget.onSortChange!(filterSettings.sortConfig!);
+          }
         }
 
-        // Apply search filter
-        if (widget.onSearchChange != null && filterSettings.search != null) {
-          widget.onSearchChange!(filterSettings.search);
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
 
-        // Apply sort configuration
-        if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-          widget.onSortChange!(filterSettings.sortConfig!);
+        widget.onSettingsLoaded?.call();
+      },
+      finallyAction: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
-      }
-
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
-    }
+        widget.onSettingsLoaded?.call();
+      },
+    );
   }
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = NoteListOptionSettings(
-      selectedTagIds: widget.selectedTagIds,
-      showNoTagsFilter: widget.showNoTagsFilter,
-      search: lastSearchQuery ?? widget.search,
-      sortConfig: widget.sortConfig,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = NoteListOptionSettings(
+          selectedTagIds: widget.selectedTagIds,
+          showNoTagsFilter: widget.showNoTagsFilter,
+          search: lastSearchQuery ?? widget.search,
+          sortConfig: widget.sortConfig,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+          widget.onSaveSettings?.call();
+        }
+      },
     );
-
-    try {
-      await filterSettingsManager.saveFilterSettings(
-        settingKey: settingKey,
-        filterSettings: settings.toJson(),
-      );
-
-      if (mounted) {
-        setState(() {
-          hasUnsavedChanges = false;
-        });
-
-        showSavedMessageTemporarily();
-      }
-
-      // Notify parent that settings were saved
-      widget.onSaveSettings?.call();
-    } catch (e) {
-      // Handle error
-    }
   }
 
   @override
@@ -228,7 +245,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
         (widget.showSortButton && widget.onSortChange != null) ||
         (widget.showSaveButton && hasUnsavedChanges);
 
-    if (!showAnyFilters) return const SizedBox.shrink();
+    if (!showAnyFilters || !isSettingLoaded) return const SizedBox.shrink();
 
     return Row(
       mainAxisSize: MainAxisSize.min,

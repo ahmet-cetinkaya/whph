@@ -81,6 +81,8 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
               mini: true,
               onNoteCreated: _handleNoteCreated,
               buttonColor: AppTheme.primaryColor,
+              initialTitle: _searchQuery,
+              initialTagIds: _selectedTagIds,
             ),
             HelpMenu(
               titleKey: NoteTranslationKeys.helpTitle,
@@ -124,6 +126,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                 },
                 settingKeyVariantSuffix: noteListSettingKeySuffix,
               ),
+              const SizedBox(height: AppTheme.sizeMedium),
 
               // Notes list
               if (_isListVisible)

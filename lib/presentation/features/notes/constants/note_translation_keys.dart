@@ -1,4 +1,6 @@
-class NoteTranslationKeys {
+import 'package:whph/application/features/notes/constants/note_translation_keys.dart' as application;
+
+class NoteTranslationKeys extends application.NoteTranslationKeys {
   static const String notesLabel = 'notes.title';
   static const String newNote = 'notes.new_note';
   static const String noteDetails = 'notes.note_details';
@@ -37,9 +39,6 @@ class NoteTranslationKeys {
   static const String loadingTagsError = 'notes.errors.loading_tags';
   static const String addTagError = 'notes.errors.adding_tag';
   static const String removeTagError = 'notes.errors.removing_tag';
-  static const String noteNotFound = 'notes.errors.note_not_found';
-  static const String noteTagNotFound = 'notes.errors.note_tag_not_found';
-  static const String tagAlreadyExists = 'notes.errors.tag_already_exists';
 
   // Filters
   static const String searchPlaceholder = 'notes.filters.search.placeholder';
