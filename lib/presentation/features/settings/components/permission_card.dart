@@ -62,7 +62,7 @@ class PermissionCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,7 +71,7 @@ class PermissionCard extends StatelessWidget {
               children: [
                 // Title
                 Icon(icon),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppTheme.sizeMedium),
                 Expanded(
                   child: Text(
                     title,
@@ -98,7 +98,7 @@ class PermissionCard extends StatelessWidget {
             ),
 
             // Description
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.sizeSmall),
             Text(
               description,
               style: theme.textTheme.bodyMedium,
@@ -106,7 +106,7 @@ class PermissionCard extends StatelessWidget {
 
             // Not granted text
             if (showError && notGrantedText != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.sizeSmall),
               Text(
                 notGrantedText!,
                 style: TextStyle(
@@ -154,7 +154,7 @@ class PermissionCard extends StatelessWidget {
               Text(learnMoreDialogDescription),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppTheme.sizeLarge),
                 decoration: BoxDecoration(
                   color: AppTheme.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -169,9 +169,9 @@ class PermissionCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.info_outline_rounded,
-                          size: 20,
+                          size: AppTheme.fontSizeXLarge,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppTheme.sizeSmall),
                         Expanded(
                           child: Text(_translationService.translate(SettingsTranslationKeys.instructions),
                               style: theme.textTheme.titleMedium),
@@ -180,9 +180,9 @@ class PermissionCard extends StatelessWidget {
                     ),
 
                     // Instructions section with steps
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppTheme.sizeMedium),
                     ...learnMoreDialogSteps.map((step) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -213,14 +213,11 @@ class PermissionCard extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => _dismissDialog(context),
             child: Text(_translationService.translate(SettingsTranslationKeys.commonCancel)),
           ),
           FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onRequestPermission();
-            },
+            onPressed: () => _requestPermissionAndClose(context),
             style: TextButton.styleFrom(
               alignment: Alignment.centerLeft,
               minimumSize: const Size(0, 36),
@@ -231,5 +228,14 @@ class PermissionCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _dismissDialog(BuildContext context) {
+    Navigator.of(context).pop();
+  }
+
+  void _requestPermissionAndClose(BuildContext context) {
+    Navigator.of(context).pop();
+    onRequestPermission();
   }
 }
