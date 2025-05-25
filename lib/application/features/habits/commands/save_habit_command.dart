@@ -106,6 +106,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         hasGoal: request.hasGoal ?? false,
         targetFrequency: request.targetFrequency ?? 1,
         periodDays: request.periodDays ?? 7,
+        archivedDate: request.archivedDate,
       );
 
       // Set reminder days using the helper method
