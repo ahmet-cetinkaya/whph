@@ -1,4 +1,6 @@
-class TagTranslationKeys {
+import 'package:whph/application/features/tags/constants/tag_translation_keys.dart' as application;
+
+class TagTranslationKeys extends application.TagTranslationKeys {
   // Common
   static const String defaultTagName = 'tags.default_name';
 
@@ -99,4 +101,6 @@ class TagTranslationKeys {
   static const String title = 'tags.title';
   static const String timeDistribution = 'tags.time_distribution';
   static const String listSectionTitle = 'tags.sections.list';
+
+  static const String timeRecords = 'tags.time_records';
 }

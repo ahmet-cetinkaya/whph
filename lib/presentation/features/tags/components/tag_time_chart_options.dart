@@ -11,6 +11,7 @@ import 'package:whph/presentation/shared/components/save_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/main.dart';
 
@@ -30,6 +31,9 @@ class TagTimeChartOptions extends PersistentListOptionsBase {
   /// Whether to show category filter
   final bool showCategoryFilter;
 
+  /// Whether there are items to filter
+  final bool hasItems;
+
   /// Callback when date filter changes
   final void Function(DateTime, DateTime)? onDateFilterChange;
 
@@ -45,6 +49,7 @@ class TagTimeChartOptions extends PersistentListOptionsBase {
     this.onCategoriesChanged,
     this.showDateFilter = true,
     this.showCategoryFilter = true,
+    this.hasItems = true,
     super.showSaveButton = true,
     super.hasUnsavedChanges = false,
     super.settingKeyVariantSuffix,
@@ -74,34 +79,57 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
-
-      if (savedSettings != null && mounted) {
-        final filterSettings = TagTimeChartOptionSettings.fromJson(savedSettings);
-
-        final startDate = filterSettings.selectedStartDate;
-        final endDate = filterSettings.selectedEndDate;
-
-        // Convert List<TagTimeCategory> to Set<TagTimeCategory>
-        final categories = filterSettings.selectedCategories.toSet();
-
-        if (categories.isNotEmpty && widget.onCategoriesChanged != null) {
-          widget.onCategoriesChanged!(categories);
-        }
-
-        if (startDate != null && endDate != null && widget.onDateFilterChange != null) {
-          widget.onDateFilterChange!(startDate, endDate);
-        }
-      }
-
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
+  Future<void> loadSavedListOptionSettings() async {
+    // Set initial state
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = false;
+      });
     }
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(
+          settingKey: settingKey,
+        );
+
+        if (savedSettings != null) {
+          final filterSettings = TagTimeChartOptionSettings.fromJson(savedSettings);
+
+          final startDate = filterSettings.selectedStartDate;
+          final endDate = filterSettings.selectedEndDate;
+
+          // Convert List<TagTimeCategory> to Set<TagTimeCategory>
+          final categories = filterSettings.selectedCategories.toSet();
+
+          if (categories.isNotEmpty && widget.onCategoriesChanged != null) {
+            widget.onCategoriesChanged!(categories);
+          }
+
+          if (startDate != null && endDate != null && widget.onDateFilterChange != null) {
+            widget.onDateFilterChange!(startDate, endDate);
+          }
+        }
+      },
+      onSuccess: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
+        }
+        widget.onSettingsLoaded?.call();
+      },
+      onError: (_) {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
+        }
+        widget.onSettingsLoaded?.call();
+      },
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+    );
   }
 
   @override
@@ -225,6 +253,13 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
 
   @override
   Widget build(BuildContext context) {
+    final bool showAnyFilters = widget.hasItems &&
+        ((widget.showDateFilter && widget.onDateFilterChange != null) ||
+            (widget.showCategoryFilter && widget.onCategoriesChanged != null) ||
+            (widget.showSaveButton && hasUnsavedChanges));
+
+    if (!isSettingLoaded || !showAnyFilters) return const SizedBox.shrink();
+
     return Container(
       alignment: Alignment.centerRight,
       child: SingleChildScrollView(
@@ -233,7 +268,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             // Date Range Filter
-            if (widget.showDateFilter)
+            if (widget.showDateFilter && widget.onDateFilterChange != null)
               DateRangeFilter(
                 selectedStartDate: widget.selectedStartDate,
                 selectedEndDate: widget.selectedEndDate,
@@ -242,7 +277,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
               ),
 
             // Category Filter
-            if (widget.showCategoryFilter)
+            if (widget.showCategoryFilter && widget.onCategoriesChanged != null)
               Tooltip(
                 message: _buildTooltipMessage(),
                 child: IconButton(
@@ -265,25 +300,13 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
                         )
                       else ...[
                         for (int i = 0; i < _selectedCategories.length; i++)
-                          if (i == 0 || i == _selectedCategories.length - 1)
-                            Icon(
-                              TagUiConstants.getTagTimeCategoryIcon(
-                                _selectedCategories.elementAt(i),
-                              ),
-                              size: AppTheme.iconSizeMedium,
-                              color: Colors.amber,
-                            )
-                          else
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4),
-                              child: Icon(
-                                TagUiConstants.getTagTimeCategoryIcon(
-                                  _selectedCategories.elementAt(i),
-                                ),
-                                size: AppTheme.iconSizeMedium,
-                                color: Colors.amber,
-                              ),
+                          Icon(
+                            TagUiConstants.getTagTimeCategoryIcon(
+                              _selectedCategories.elementAt(i),
                             ),
+                            size: AppTheme.iconSizeMedium,
+                            color: Theme.of(context).primaryColor,
+                          ),
                       ],
                     ],
                   ),
@@ -291,7 +314,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
               ),
 
             // Save Button
-            if (widget.showSaveButton)
+            if (widget.showSaveButton && hasUnsavedChanges)
               SaveButton(
                 hasUnsavedChanges: hasUnsavedChanges,
                 showSavedMessage: showSavedMessage,

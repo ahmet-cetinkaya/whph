@@ -1,11 +1,12 @@
 tags:
+  time_records: Time Records
   title: Tags
   new_tag: New Tag
   filter:
     select_category: Select Category
     all_categories: All Categories
   tag_details: Tag Details
-  no_tags: No tags found
+  no_tags: No tags
   filter_tooltip: Filter by tags
   none_option: None
   time_distribution: Time Distribution
@@ -111,11 +112,11 @@ tags:
   selection:
     done: Done
   time_chart:
-    no_data: No data found
+    no_data: No data
     other_category: Other
   time_bar_chart:
     title: Time Distribution
-    no_data: No data found
+    no_data: No data
   details:
     help:
       title: Tag Details Help

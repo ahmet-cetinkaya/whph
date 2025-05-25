@@ -1,11 +1,12 @@
 tags:
+  time_records: Zaman Kayıtları
   title: Etiketler
   new_tag: Yeni Etiket
   filter:
     select_category: Kategori Seç
     all_categories: Tüm Kategoriler
   tag_details: Etiket Detayları
-  no_tags: Etiket bulunamadı
+  no_tags: Etiket yok
   filter_tooltip: Etiketlere göre filtrele
   none_option: Hiçbiri
   time_distribution: Zaman Dağılımı
@@ -111,11 +112,11 @@ tags:
   selection:
     done: Tamam
   time_chart:
-    no_data: Veri bulunamadı
+    no_data: Veri yok
     other_category: Diğer
   time_bar_chart:
     title: Zaman Dağılımı
-    no_data: Veri bulunamadı
+    no_data: Veri yok
   details:
     name: İsim
     color: Renk

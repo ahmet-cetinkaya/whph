@@ -18,7 +18,6 @@ import 'package:whph/presentation/features/tags/constants/tag_translation_keys.d
 import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -31,7 +30,6 @@ class TagsPage extends StatefulWidget {
 
 class _TagsPageState extends State<TagsPage> {
   final _translationService = container.resolve<ITranslationService>();
-  final _tagsService = container.resolve<TagsService>();
 
   // Main List Options
   static const String _mainSettingKeyVariantSuffix = 'MAIN';
@@ -49,38 +47,6 @@ class _TagsPageState extends State<TagsPage> {
   static const String _listSettingKeyVariantSuffix = 'LIST';
   String? _searchFilterQuery;
   SortConfig<TagSortFields> _sortConfig = TagDefaults.sorting;
-
-  @override
-  void initState() {
-    super.initState();
-    _setupEventListeners();
-  }
-
-  @override
-  void dispose() {
-    _removeEventListeners();
-    super.dispose();
-  }
-
-  void _setupEventListeners() {
-    _tagsService.onTagCreated.addListener(_onTagChange);
-    _tagsService.onTagUpdated.addListener(_onTagChange);
-    _tagsService.onTagDeleted.addListener(_onTagChange);
-  }
-
-  void _removeEventListeners() {
-    _tagsService.onTagCreated.removeListener(_onTagChange);
-    _tagsService.onTagUpdated.removeListener(_onTagChange);
-    _tagsService.onTagDeleted.removeListener(_onTagChange);
-  }
-
-  void _onTagChange() {
-    if (!mounted) return;
-    setState(() {
-      _mainListOptionLoaded = false;
-      _listOptionLoaded = false;
-    });
-  }
 
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -181,6 +147,8 @@ class _TagsPageState extends State<TagsPage> {
           },
           buttonColor: AppTheme.primaryColor,
           tooltip: _translationService.translate(TagTranslationKeys.addTagTooltip),
+          initialName: _searchFilterQuery,
+          initialArchived: _showArchived,
         ),
         HelpMenu(
           titleKey: TagTranslationKeys.overviewHelpTitle,
