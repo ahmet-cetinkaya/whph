@@ -9,7 +9,7 @@ publish_to: "none"
 # - Windows: product/file version components = version, build suffix = build
 #
 # Update /lib/domain/shared/constants/app_info.dart file too.
-version: 0.5.1+14
+version: 0.6.0+15
 
 environment:
   sdk: ^3.5.3
