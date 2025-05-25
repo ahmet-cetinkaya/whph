@@ -11,6 +11,17 @@ class SupportDialog extends StatelessWidget {
 
   SupportDialog({super.key});
 
+  void _closeDialog(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _openSupportUrl() {
+    launchUrl(
+      Uri.parse(AppInfo.supportUrl),
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -29,7 +40,7 @@ class SupportDialog extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => _closeDialog(context),
                     ),
                   ],
                 ),
@@ -48,7 +59,7 @@ class SupportDialog extends StatelessWidget {
                           color: AppTheme.primaryColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(AppTheme.sizeXSmall),
                         child: const Icon(
                           Icons.favorite,
                           size: AppTheme.iconSizeMedium,
@@ -79,10 +90,7 @@ class SupportDialog extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.sizeLarge),
             FilledButton.icon(
-              onPressed: () => launchUrl(
-                Uri.parse(AppInfo.supportUrl),
-                mode: LaunchMode.externalApplication,
-              ),
+              onPressed: _openSupportUrl,
               icon: const Icon(Icons.coffee),
               label: Text(
                 _translationService.translate(AboutTranslationKeys.supportMeButtonText),
