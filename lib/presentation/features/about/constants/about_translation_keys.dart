@@ -1,6 +1,9 @@
+import 'package:whph/application/features/about/constants/about_translation_keys.dart' as application;
+
 // A class to store translation keys for the About section
-class AboutTranslationKeys {
+class AboutTranslationKeys extends application.AboutTranslationKeys {
   // App About
+  static const String aboutTitle = 'about.about_title';
   static const String version = 'about.version';
   static const String description = 'about.description';
 
@@ -38,4 +41,7 @@ class AboutTranslationKeys {
   static const String onboardingButtonBack = 'about.onboarding.buttons.back';
   static const String onboardingButtonStart = 'about.onboarding.buttons.start';
   static const String onboardingButtonSkip = 'about.onboarding.buttons.skip';
+
+  static const String feedback = 'about.links.feedback';
+  static const String contact = 'about.links.contact';
 }

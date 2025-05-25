@@ -70,12 +70,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
           extraWidget: (context) => Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: OutlinedButton.icon(
-              onPressed: () {
-                ResponsiveDialogHelper.showResponsiveDialog(
-                  context: context,
-                  child: const PermissionsPage(),
-                );
-              },
+              onPressed: () => _showPermissionsPage(context),
               icon: const Icon(Icons.lock_open),
               label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
             ),
@@ -121,6 +116,13 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       valueType: SettingValueType.bool,
     ));
     if (mounted) Navigator.of(context).pop();
+  }
+
+  void _showPermissionsPage(BuildContext context) {
+    ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: const PermissionsPage(),
+    );
   }
 
   @override
