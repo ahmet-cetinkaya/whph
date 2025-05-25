@@ -8,10 +8,23 @@ import 'package:whph/presentation/features/tags/constants/tag_translation_keys.d
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagAddButton extends StatefulWidget {
+  /// The color of the button icon
   final Color? buttonColor;
+
+  /// The background color of the button
   final Color? buttonBackgroundColor;
+
+  /// Callback when a tag is created
   final Function(String tagId)? onTagCreated;
+
+  /// Button tooltip text
   final String? tooltip;
+
+  /// Initial name for the tag
+  final String? initialName;
+
+  /// Whether to create the tag as archived
+  final bool? initialArchived;
 
   const TagAddButton({
     super.key,
@@ -19,6 +32,8 @@ class TagAddButton extends StatefulWidget {
     this.buttonBackgroundColor,
     this.onTagCreated,
     this.tooltip,
+    this.initialName,
+    this.initialArchived,
   });
 
   @override
@@ -36,7 +51,8 @@ class _TagAddButtonState extends State<TagAddButton> {
       errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
       operation: () async {
         final command = SaveTagCommand(
-          name: _translationService.translate(TagTranslationKeys.newTag),
+          name: widget.initialName ?? _translationService.translate(TagTranslationKeys.newTag),
+          isArchived: widget.initialArchived == true,
         );
         return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -103,59 +104,79 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
 
-      if (savedSettings != null && mounted) {
-        final settings = TagListOptionSettings.fromJson(savedSettings);
+        if (savedSettings != null && mounted) {
+          final settings = TagListOptionSettings.fromJson(savedSettings);
 
-        // Pass tag IDs first with empty labels, actual names will be loaded by TagSelectDropdown
-        if (widget.onTagFilterChange != null && settings.selectedTagIds != null) {
-          widget.onTagFilterChange!(
-            settings.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: '')).toList(),
-            settings.showNoTagsFilter,
-          );
+          // Pass tag IDs first with empty labels, actual names will be loaded by TagSelectDropdown
+          if (widget.onTagFilterChange != null && settings.selectedTagIds != null) {
+            widget.onTagFilterChange!(
+              settings.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: '')).toList(),
+              settings.showNoTagsFilter,
+            );
+          }
+
+          widget.onSearchChange?.call(settings.search);
+          if (settings.sortConfig != null) {
+            widget.onSortChange?.call(settings.sortConfig!);
+          }
+          widget.onArchivedToggle?.call(settings.showArchived);
         }
 
-        widget.onSearchChange?.call(settings.search);
-        if (settings.sortConfig != null) {
-          widget.onSortChange?.call(settings.sortConfig!);
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
-        widget.onArchivedToggle?.call(settings.showArchived);
 
         widget.onSettingsLoaded?.call();
-      }
-
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
-    }
+      },
+      finallyAction: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
+        }
+        widget.onSettingsLoaded?.call();
+      },
+    );
   }
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = TagListOptionSettings(
-      selectedTagIds: widget.selectedTagIds,
-      showNoTagsFilter: widget.showNoTagsFilter,
-      showArchived: widget.showArchived,
-      search: widget.search,
-      sortConfig: widget.sortConfig,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = TagListOptionSettings(
+          selectedTagIds: widget.selectedTagIds,
+          showNoTagsFilter: widget.showNoTagsFilter,
+          showArchived: widget.showArchived,
+          search: widget.search,
+          sortConfig: widget.sortConfig,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+          widget.onSaveSettings?.call();
+        }
+      },
     );
-
-    await filterSettingsManager.saveFilterSettings(
-      settingKey: settingKey,
-      filterSettings: settings.toJson(),
-    );
-
-    if (mounted) {
-      setState(() {
-        hasUnsavedChanges = false;
-      });
-
-      showSavedMessageTemporarily();
-      widget.onSaveSettings?.call();
-    }
   }
 
   @override
@@ -183,23 +204,31 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
   Future<void> _revalidateSelectedFilters() async {
     if (widget.selectedTagIds == null || widget.selectedTagIds!.isEmpty) return;
 
-    final query = GetListTagsQuery(
-      pageIndex: 0,
-      pageSize: widget.selectedTagIds!.length,
-      filterByTags: widget.selectedTagIds,
-      showArchived: widget.showArchived,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
+      operation: () async {
+        final query = GetListTagsQuery(
+          pageIndex: 0,
+          pageSize: widget.selectedTagIds!.length,
+          filterByTags: widget.selectedTagIds,
+          showArchived: widget.showArchived,
+        );
+
+        final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+
+        // Only keep selected filters that exist in the current archive state
+        final validSelectedTags = result.items
+            .where((tag) => widget.selectedTagIds!.contains(tag.id))
+            .map((tag) => DropdownOption(value: tag.id, label: tag.name))
+            .toList();
+
+        if (mounted) {
+          widget.onTagFilterChange?.call(validSelectedTags, widget.showNoTagsFilter);
+          handleFilterChange();
+        }
+      },
     );
-
-    final result = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
-
-    // Only keep selected filters that exist in the current archive state
-    final validSelectedTags = result.items
-        .where((tag) => widget.selectedTagIds!.contains(tag.id))
-        .map((tag) => DropdownOption(value: tag.id, label: tag.name))
-        .toList();
-
-    widget.onTagFilterChange?.call(validSelectedTags, widget.showNoTagsFilter);
-    handleFilterChange();
   }
 
   void _onSearchChanged(String? query) {
@@ -248,8 +277,8 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
         (widget.showArchivedToggle && widget.onArchivedToggle != null && widget.hasItems) ||
         (widget.showSaveButton && hasUnsavedChanges));
 
-    // If no filters to show, don't render anything
-    if (!showAnyFilters) return const SizedBox.shrink();
+    // If no filters to show or settings not loaded, don't render anything
+    if (!showAnyFilters || !isSettingLoaded) return const SizedBox.shrink();
 
     return Row(
       mainAxisSize: MainAxisSize.min,

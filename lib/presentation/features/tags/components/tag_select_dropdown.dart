@@ -347,7 +347,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: _cancelTagSelection,
                           child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
                         ),
                         TextButton(
@@ -388,6 +388,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         );
       },
     );
+  }
+
+  void _cancelTagSelection() {
+    Navigator.pop(context);
   }
 
   @override

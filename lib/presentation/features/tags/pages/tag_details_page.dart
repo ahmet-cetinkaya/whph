@@ -56,6 +56,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   @override
   bool get wantKeepAlive => true;
 
+  void _goBack() {
+    Navigator.of(context).pop();
+  }
+
   Future<void> _openNoteDetails(String noteId) async {
     if (!mounted) return;
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -73,18 +77,18 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: _goBack,
         ),
         actions: [
           TagArchiveButton(
             tagId: widget.tagId,
-            onArchiveSuccess: () => Navigator.of(context).pop(),
+            onArchiveSuccess: _goBack,
             buttonColor: AppTheme.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.archiveTagTooltip),
           ),
           TagDeleteButton(
             tagId: widget.tagId,
-            onDeleteSuccess: () => Navigator.of(context).pop(),
+            onDeleteSuccess: _goBack,
             buttonColor: AppTheme.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
           ),
@@ -130,7 +134,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                               children: [
                                 const Icon(Icons.bar_chart),
                                 const SizedBox(width: 8),
-                                Text(_translationService.translate(TagTranslationKeys.timeBarChartTitle)),
+                                Text(_translationService.translate(TagTranslationKeys.timeRecords)),
                               ],
                             ),
                           ),
@@ -170,29 +174,23 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                 ),
                                 child: Row(
                                   children: [
-                                    Text(
-                                      _translationService.translate(TagTranslationKeys.timeBarChartTitle),
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    ),
-                                    Expanded(
-                                      child: TagTimeChartOptions(
-                                        selectedStartDate: _startDate,
-                                        selectedEndDate: _endDate,
-                                        selectedCategories: _selectedCategories,
-                                        onDateFilterChange: (start, end) {
-                                          setState(() {
-                                            _startDate = start;
-                                            _endDate = end;
-                                            _barChartKey.currentState?.refresh();
-                                          });
-                                        },
-                                        onCategoriesChanged: (categories) {
-                                          setState(() {
-                                            _selectedCategories = categories;
-                                            _barChartKey.currentState?.refresh();
-                                          });
-                                        },
-                                      ),
+                                    TagTimeChartOptions(
+                                      selectedStartDate: _startDate,
+                                      selectedEndDate: _endDate,
+                                      selectedCategories: _selectedCategories,
+                                      onDateFilterChange: (start, end) {
+                                        setState(() {
+                                          _startDate = start;
+                                          _endDate = end;
+                                          _barChartKey.currentState?.refresh();
+                                        });
+                                      },
+                                      onCategoriesChanged: (categories) {
+                                        setState(() {
+                                          _selectedCategories = categories;
+                                          _barChartKey.currentState?.refresh();
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
@@ -241,6 +239,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     if (!_showCompletedTasks)
                                       TaskAddButton(
                                         initialTagIds: [widget.tagId],
+                                        initialTitle: _taskSearchQuery,
+                                        initialCompleted: _showCompletedTasks,
                                       ),
                                   ],
                                 ),
@@ -305,6 +305,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     NoteAddButton(
                                       mini: true,
                                       initialTagIds: [widget.tagId],
+                                      initialTitle: _noteSearchQuery,
                                       onNoteCreated: (noteId) async {
                                         // Open note details dialog
                                         await _openNoteDetails(noteId);
