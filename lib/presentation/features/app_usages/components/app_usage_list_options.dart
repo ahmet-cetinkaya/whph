@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/features/app_usages/models/app_usage_filter_settings.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/date_range_filter.dart';
@@ -79,53 +80,66 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.loadListOptionsError),
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
 
-    if (savedSettings != null) {
-      final settings = AppUsageFilterSettings.fromJson(savedSettings);
+        if (savedSettings != null) {
+          final settings = AppUsageFilterSettings.fromJson(savedSettings);
 
-      // Create a new state with the saved settings
-      final newState = AppUsageFilterState(
-        tags: settings.tags,
-        showNoTagsFilter: settings.showNoTagsFilter,
-        startDate: settings.startDate,
-        endDate: settings.endDate,
-      );
+          // Create a new state with the saved settings
+          final newState = AppUsageFilterState(
+            tags: settings.tags,
+            showNoTagsFilter: settings.showNoTagsFilter,
+            startDate: settings.startDate,
+            endDate: settings.endDate,
+          );
 
-      if (mounted) {
-        setState(() {
-          _currentState = newState;
-        });
-        widget.onFiltersChanged(newState);
-      }
+          if (mounted) {
+            setState(() {
+              _currentState = newState;
+              isSettingLoaded = true;
+            });
+            widget.onFiltersChanged(newState);
+          }
 
-      widget.onSettingsLoaded?.call();
-    }
+          widget.onSettingsLoaded?.call();
+        }
+      },
+    );
   }
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = AppUsageFilterSettings(
-      tags: _currentState.tags,
-      showNoTagsFilter: _currentState.showNoTagsFilter,
-      startDate: _currentState.startDate,
-      endDate: _currentState.endDate,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.saveListOptionsError),
+      operation: () async {
+        final settings = AppUsageFilterSettings(
+          tags: _currentState.tags,
+          showNoTagsFilter: _currentState.showNoTagsFilter,
+          startDate: _currentState.startDate,
+          endDate: _currentState.endDate,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+          widget.onSaveSettings?.call();
+        }
+      },
     );
-
-    await filterSettingsManager.saveFilterSettings(
-      settingKey: settingKey,
-      filterSettings: settings.toJson(),
-    );
-
-    if (mounted) {
-      setState(() {
-        hasUnsavedChanges = false;
-      });
-
-      showSavedMessageTemporarily();
-      widget.onSaveSettings?.call();
-    }
   }
 
   @override
@@ -188,6 +202,10 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
 
   @override
   Widget build(BuildContext context) {
+    if (!isSettingLoaded) {
+      return const SizedBox.shrink();
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(

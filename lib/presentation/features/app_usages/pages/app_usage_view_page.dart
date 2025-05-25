@@ -86,6 +86,15 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     _appUsagesService.notifyRefresh();
   }
 
+  Future<void> _showTagRulesSettings() async {
+    await ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      title: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
+      child: const AppUsageRulesPage(),
+    );
+    setState(() {}); // Trigger rebuild to refresh list
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -93,14 +102,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       appBarActions: [
         IconButton(
           icon: const Icon(Icons.settings),
-          onPressed: () async {
-            await ResponsiveDialogHelper.showResponsiveDialog(
-              context: context,
-              title: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
-              child: const AppUsageRulesPage(),
-            );
-            setState(() {}); // Trigger rebuild to refresh list
-          },
+          onPressed: _showTagRulesSettings,
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),

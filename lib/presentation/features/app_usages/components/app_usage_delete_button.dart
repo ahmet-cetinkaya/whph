@@ -34,6 +34,14 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   bool _isDeleting = false;
 
+  void _cancelDelete(BuildContext context) {
+    Navigator.of(context).pop(false);
+  }
+
+  void _confirmDeleteAction(BuildContext context) {
+    Navigator.of(context).pop(true);
+  }
+
   Future<void> confirmDelete(BuildContext context) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -42,11 +50,11 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
         content: Text(_translationService.translate(SharedTranslationKeys.confirmDeleteMessage)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => _cancelDelete(context),
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => _confirmDeleteAction(context),
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],

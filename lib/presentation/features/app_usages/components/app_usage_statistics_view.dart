@@ -479,77 +479,37 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
 
   // Formatting helpers
   String _formatDateRange(DateTime start, DateTime end) {
-    // Convert dates to local time zone and format them
+    // Convert dates to local time zone and format them with locale
+    final locale = Localizations.localeOf(context);
     final localStart = DateTimeHelper.toLocalDateTime(start);
     final localEnd = DateTimeHelper.toLocalDateTime(end);
-    return '${DateTimeHelper.formatDate(localStart)} - ${DateTimeHelper.formatDate(localEnd)}';
+    return '${DateTimeHelper.formatDate(localStart, locale: locale)} - ${DateTimeHelper.formatDate(localEnd, locale: locale)}';
   }
 
   String _getDayNameFromIndex(int index) {
-    String translationKey = 'shared.calendar.week_days.';
-
-    switch (index) {
-      case 1:
-        translationKey += 'mon';
-        break;
-      case 2:
-        translationKey += 'tue';
-        break;
-      case 3:
-        translationKey += 'wed';
-        break;
-      case 4:
-        translationKey += 'thu';
-        break;
-      case 5:
-        translationKey += 'fri';
-        break;
-      case 6:
-        translationKey += 'sat';
-        break;
-      case 7:
-        translationKey += 'sun';
-        break;
-      default:
-        return '';
-    }
-
-    return _translationService.translate(translationKey);
+    final locale = Localizations.localeOf(context);
+    return DateTimeHelper.getWeekday(index, locale);
   }
 
   String _getDayShortName(int index) {
-    return _getDayNameFromIndex(index);
+    final locale = Localizations.localeOf(context);
+    return DateTimeHelper.getWeekdayShort(index, locale);
   }
 
   String _formatHour(int hour) {
-    return '${hour % 12 == 0 ? 12 : hour % 12}${hour < 12 ? 'am' : 'pm'}';
+    final locale = Localizations.localeOf(context);
+    return DateTimeHelper.formatHour(hour, locale);
   }
 
   String _formatDuration(int seconds) {
-    final Duration duration = Duration(seconds: seconds);
-    final int hours = duration.inHours;
-    final int minutes = duration.inMinutes.remainder(60);
-
-    if (hours > 0) {
-      return '$hours h ${minutes > 0 ? '$minutes m' : ''}';
-    } else if (minutes > 0) {
-      return '$minutes min';
-    } else {
-      return '${duration.inSeconds} sec';
-    }
+    final locale = Localizations.localeOf(context);
+    final duration = Duration(seconds: seconds);
+    return DateTimeHelper.formatDuration(duration, locale);
   }
 
   String _formatDurationShort(int seconds) {
-    final Duration duration = Duration(seconds: seconds);
-    final int hours = duration.inHours;
-    final int minutes = duration.inMinutes.remainder(60);
-
-    if (hours > 0) {
-      return '${hours}h';
-    } else if (minutes > 0) {
-      return '${minutes}m';
-    } else {
-      return '${duration.inSeconds}s';
-    }
+    final locale = Localizations.localeOf(context);
+    final duration = Duration(seconds: seconds);
+    return DateTimeHelper.formatDurationShort(duration, locale);
   }
 }

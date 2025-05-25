@@ -34,6 +34,10 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
   final _descriptionController = TextEditingController();
   bool _isSubmitting = false;
 
+  void _showRegexHelp() {
+    RegexHelpDialog.show(context);
+  }
+
   @override
   void dispose() {
     _patternController.dispose();
@@ -140,14 +144,14 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                       constraints: const BoxConstraints(minWidth: 32),
                       icon: Icon(SharedUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
                       tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
-                      onPressed: () => RegexHelpDialog.show(context),
+                      onPressed: _showRegexHelp,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.sizeMedium),
 
           // Description Field
           TextFormField(
@@ -159,13 +163,13 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
               hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: AppTheme.fontSizeMedium),
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
               constraints: BoxConstraints(maxHeight: 36),
             ),
             style: AppTheme.bodySmall,
             maxLines: 1,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
 
           // Action Buttons
           Row(

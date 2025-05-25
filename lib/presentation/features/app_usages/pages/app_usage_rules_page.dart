@@ -72,7 +72,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                       children: [
                         Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(AppTheme.sizeLarge),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -80,18 +80,18 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                                   _translationService.translate(AppUsageTranslationKeys.addNewRule),
                                   style: AppTheme.headlineSmall,
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppTheme.sizeLarge),
                                 AppUsageTagRuleForm(),
                               ],
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppTheme.sizeXLarge),
                         Text(
                           _translationService.translate(AppUsageTranslationKeys.existingRules),
                           style: AppTheme.headlineSmall,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppTheme.sizeLarge),
                         AppUsageTagRuleList(
                           mediator: _mediator,
                         ),
@@ -106,7 +106,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                       children: [
                         Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(AppTheme.sizeLarge),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -114,7 +114,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                                   _translationService.translate(AppUsageTranslationKeys.addNewRule),
                                   style: AppTheme.headlineSmall,
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppTheme.sizeLarge),
                                 AppUsageIgnoreRuleForm(),
                               ],
                             ),
