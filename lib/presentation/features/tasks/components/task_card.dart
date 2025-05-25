@@ -14,6 +14,7 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
+import 'package:whph/presentation/shared/extensions/widget_extensions.dart';
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -79,70 +80,87 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMainContent(BuildContext context) => Row(
-        children: [
-          SizedBox(
-            width: 32,
-            height: 32,
-            child: TaskCompleteButton(
-              taskId: taskItem.id,
-              isCompleted: taskItem.isCompleted,
-              onToggleCompleted: onCompleted ?? () {},
-              color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
+  Widget _buildMainContent(BuildContext context) {
+    // Re-check hasReminder state in case it changed during reordering
+    final hasCurrentReminder = _hasReminder;
+
+    return Row(
+      children: [
+        SizedBox(
+          width: 32,
+          height: 32,
+          child: TaskCompleteButton(
+            taskId: taskItem.id,
+            isCompleted: taskItem.isCompleted,
+            onToggleCompleted: onCompleted ?? () {},
+            color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: _buildTitleAndMetadata(context)),
+        // Show reminder icon if task has reminders, using the latest state
+        if (hasCurrentReminder)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Icon(
+              Icons.notifications,
+              size: AppTheme.iconSizeSmall,
+              color: Theme.of(context).colorScheme.primary,
+            ).wrapWithTooltip(
+              enabled: hasCurrentReminder,
+              message: _getReminderTooltip(),
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(child: _buildTitleAndMetadata(context)),
-          // Show reminder icon if task has reminders
-          if (_hasReminder)
-            Tooltip(
-              message: _getReminderTooltip(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Icon(
-                  Icons.notifications,
-                  size: AppTheme.iconSizeSmall,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          if (onScheduled != null)
-            StatefulBuilder(
-              builder: (context, setState) => IconButton(
-                icon: const Icon(Icons.schedule, color: Colors.grey),
-                onPressed: () {
-                  final now = DateTime.now();
-                  final today = DateTime(now.year, now.month, now.day);
-                  final tomorrow = today.add(const Duration(days: 1));
+        if (onScheduled != null)
+          StatefulBuilder(
+            builder: (context, setState) => IconButton(
+              icon: const Icon(Icons.schedule, color: Colors.grey),
+              tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
+              onPressed: () {
+                final now = DateTime.now();
+                final today = DateTime(now.year, now.month, now.day);
+                final tomorrow = today.add(const Duration(days: 1));
 
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
-                          onTap: () {
-                            _handleSchedule(today);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
-                          onTap: () {
-                            _handleSchedule(tomorrow);
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
+                        onTap: () {
+                          _handleSchedule(today);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
+                        onTap: () {
+                          _handleSchedule(tomorrow);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          if (trailingButtons != null) ...trailingButtons!,
-        ],
-      );
+          ),
+        if (trailingButtons != null)
+          ...trailingButtons!.map((widget) {
+            if (widget is IconButton) {
+              return IconButton(
+                icon: widget.icon,
+                onPressed: widget.onPressed,
+                color: widget.color,
+                tooltip: widget.tooltip,
+              );
+            }
+            return widget;
+          }),
+      ],
+    );
+  }
 
   Widget _buildTitleAndMetadata(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,

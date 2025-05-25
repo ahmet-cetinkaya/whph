@@ -17,6 +17,7 @@ import 'package:whph/core/acore/utils/order_rank.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
+import 'package:whph/presentation/shared/providers/drag_state_provider.dart';
 
 class TaskList extends StatefulWidget {
   final int size;
@@ -91,15 +92,20 @@ class TaskListState extends State<TaskList> {
   double? _savedScrollPosition;
   final PageStorageKey _pageStorageKey = const PageStorageKey<String>('task_list_scroll');
 
+  // Drag state notifier for reorderable list
+  late final DragStateNotifier _dragStateNotifier;
+
   @override
   void initState() {
     super.initState();
-    _getTasks();
+    _dragStateNotifier = DragStateNotifier();
+    _getTasksList();
     _setupEventListeners();
   }
 
   @override
   void dispose() {
+    _dragStateNotifier.dispose();
     _removeEventListeners();
     super.dispose();
   }
@@ -146,7 +152,7 @@ class TaskListState extends State<TaskList> {
     if (!mounted) return;
 
     _saveScrollPosition();
-    await _getTasks(isRefresh: true);
+    await _getTasksList(isRefresh: true);
     _backLastScrollPosition();
   }
 
@@ -188,7 +194,7 @@ class TaskListState extends State<TaskList> {
     return CollectionUtils.hasAnyMapValueChanged(oldFilters, newFilters);
   }
 
-  Future<void> _getTasks({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false}) async {
     List<TaskListItem>? existingItems;
     if (isRefresh && _tasks != null) {
       existingItems = List.from(_tasks!.items);
@@ -239,6 +245,13 @@ class TaskListState extends State<TaskList> {
             );
           }
         });
+
+        // Check if we need to normalize very small orders
+        if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _normalizeTaskOrders();
+          });
+        }
       },
       onError: (_) {
         if (existingItems != null && _tasks != null) {
@@ -269,33 +282,56 @@ class TaskListState extends State<TaskList> {
   Future<void> _onReorder(int oldIndex, int newIndex) async {
     if (!mounted) return;
 
-    final items = _getFilteredTasks();
-    final task = items[oldIndex];
+    // Start dragging state
+    _dragStateNotifier.startDragging();
 
+    final items = _getFilteredTasks();
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
 
-    // Extract existing orders for reordering
+    final task = items[oldIndex];
+    final originalOrder = task.order;
+
+    // Apply visual reordering immediately
+    setState(() {
+      final reorderedItems = List<TaskListItem>.from(_tasks!.items);
+      final taskToMove = reorderedItems.removeAt(oldIndex);
+      reorderedItems.insert(newIndex, taskToMove);
+      _tasks = GetListTasksQueryResponse(
+        items: reorderedItems,
+        totalItemCount: _tasks!.totalItemCount,
+        totalPageCount: _tasks!.totalPageCount,
+        pageIndex: _tasks!.pageIndex,
+        pageSize: _tasks!.pageSize,
+      );
+    });
+
+    // Get target order for server update
     final existingOrders = items.map((item) => item.order).toList()..removeAt(oldIndex);
+    double targetOrder;
 
     try {
-      double targetOrder;
       if (newIndex == 0) {
-        targetOrder = existingOrders.first - OrderRank.initialStep;
+        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
+        if (firstOrder <= 0 || firstOrder < 1e-10) {
+          targetOrder = OrderRank.initialStep / 2;
+        } else if (firstOrder < 1e-6) {
+          targetOrder = firstOrder / 1000;
+        } else {
+          targetOrder = firstOrder - OrderRank.initialStep;
+          if (targetOrder <= 0) {
+            targetOrder = firstOrder / 2;
+          }
+        }
       } else {
         targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
-        // Collision check
-        if (existingOrders.contains(targetOrder)) {
-          throw RankGapTooSmallException();
-        }
-        // Gap check
-        if (newIndex > 0 && (existingOrders[newIndex] - existingOrders[newIndex - 1]).abs() < 1e-8) {
-          throw RankGapTooSmallException();
-        }
       }
 
-      // Custom order is automatically enabled when reordering
+      if ((targetOrder - originalOrder).abs() < 1e-10) {
+        _dragStateNotifier.stopDragging();
+        return; // No real change in order
+      }
 
       await AsyncErrorHandler.executeVoid(
         context: context,
@@ -305,39 +341,57 @@ class TaskListState extends State<TaskList> {
             UpdateTaskOrderCommand(
               taskId: task.id,
               parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: task.order,
+              beforeTaskOrder: originalOrder,
               afterTaskOrder: targetOrder,
             ),
           );
         },
         onSuccess: () {
-          refresh();
+          _dragStateNotifier.stopDragging();
           widget.onReorderComplete?.call();
+          // Refresh in background to sync with server
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) refresh();
+          });
+        },
+        onError: (_) {
+          _dragStateNotifier.stopDragging();
+          if (mounted) refresh(); // Revert on error
         },
       );
     } catch (e) {
-      if (e is RankGapTooSmallException) {
+      if (e is RankGapTooSmallException && mounted) {
+        // Try to recover by placing at the end
         final targetOrder = items.last.order + OrderRank.initialStep * 2;
-        if (mounted) {
-          await AsyncErrorHandler.executeVoid(
-            context: context,
-            errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-            operation: () async {
-              await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-                UpdateTaskOrderCommand(
-                  taskId: task.id,
-                  parentTaskId: widget.parentTaskId,
-                  beforeTaskOrder: task.order,
-                  afterTaskOrder: targetOrder,
-                ),
-              );
-            },
-            onSuccess: () {
-              refresh();
-              widget.onReorderComplete?.call();
-            },
-          );
-        }
+
+        await AsyncErrorHandler.executeVoid(
+          context: context,
+          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          operation: () async {
+            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+              UpdateTaskOrderCommand(
+                taskId: task.id,
+                parentTaskId: widget.parentTaskId,
+                beforeTaskOrder: originalOrder,
+                afterTaskOrder: targetOrder,
+              ),
+            );
+          },
+          onSuccess: () {
+            _dragStateNotifier.stopDragging();
+            widget.onReorderComplete?.call();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) refresh();
+            });
+          },
+          onError: (_) {
+            _dragStateNotifier.stopDragging();
+            if (mounted) refresh(); // Revert on error
+          },
+        );
+      } else {
+        _dragStateNotifier.stopDragging();
+        if (mounted) refresh(); // Revert on other errors
       }
     }
   }
@@ -345,7 +399,7 @@ class TaskListState extends State<TaskList> {
   Future<void> _onLoadMore() async {
     if (_tasks == null || !_tasks!.hasNext) return;
 
-    await _getTasks(pageIndex: _tasks!.pageIndex + 1);
+    await _getTasksList(pageIndex: _tasks!.pageIndex + 1);
   }
 
   List<Widget> _buildTaskCards() {
@@ -380,8 +434,60 @@ class TaskListState extends State<TaskList> {
         .toList();
   }
 
+  // Helper method to check and normalize very small orders
+  bool _shouldNormalizeOrders(List<TaskListItem> items) {
+    return items.any((item) => item.order.abs() < 1e-10 || (item.order > 0 && item.order < 1e-6));
+  }
+
+  Future<void> _normalizeTaskOrders() async {
+    if (_tasks == null) return;
+
+    final items = _tasks!.items;
+    final shouldNormalize = _shouldNormalizeOrders(items);
+
+    if (!shouldNormalize) return;
+
+    debugPrint('Normalizing task orders due to precision issues');
+
+    // Sort items by current order to maintain relative positioning
+    final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
+
+    // Normalize orders with proper spacing
+    for (int i = 0; i < sortedItems.length; i++) {
+      final newOrder = (i + 1) * OrderRank.initialStep;
+      final item = sortedItems[i];
+
+      if ((item.order - newOrder).abs() > 1e-10) {
+        debugPrint('Normalizing task ${item.id} from ${item.order} to $newOrder');
+
+        try {
+          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+            UpdateTaskOrderCommand(
+              taskId: item.id,
+              parentTaskId: widget.parentTaskId,
+              beforeTaskOrder: item.order,
+              afterTaskOrder: newOrder,
+            ),
+          );
+        } catch (e) {
+          debugPrint('Failed to normalize task ${item.id}: $e');
+        }
+      }
+    }
+
+    // Refresh to get updated orders
+    await refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
+    return DragStateProvider(
+      notifier: _dragStateNotifier,
+      child: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     if (_tasks == null) {
       // No loading indicator because local DB is fast
       return const SizedBox.shrink();
@@ -419,6 +525,7 @@ class TaskListState extends State<TaskList> {
                   scale: Curves.easeInOut.transform(animation.value) * 0.02 + 1,
                   child: Material(
                     elevation: Curves.easeInOut.transform(animation.value) * 5 + 1,
+                    shadowColor: Theme.of(context).shadowColor.withValues(alpha: 0.3),
                     child: child,
                   ),
                 ),
@@ -429,7 +536,7 @@ class TaskListState extends State<TaskList> {
             ),
           )
         else
-          ..._buildTaskCards(),
+          ...List<Widget>.from(_buildTaskCards()),
         if (_tasks!.hasNext)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),

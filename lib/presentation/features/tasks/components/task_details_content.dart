@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:markdown_editor_plus/widgets/markdown_auto_preview.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/shared/components/markdown_editor.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
@@ -26,7 +26,6 @@ import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
@@ -557,7 +556,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     widget.onCompletedChanged?.call(_task!.isCompleted);
                   },
                 ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.sizeSmall),
               Expanded(
                 child: TextFormField(
                   controller: _titleController,
@@ -842,10 +841,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           DetailTableRowData(
             label: _translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
             widget: Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: MarkdownAutoPreview(
+              child: MarkdownEditor(
                 controller: _descriptionController,
                 onChanged: (value) {
                   // Handle empty whitespace
@@ -862,7 +860,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   // Simply trigger the update
                   _updateTask();
                 },
-                hintText: _translationService.translate(TaskTranslationKeys.addDescriptionHint),
                 toolbarBackground: AppTheme.surface1,
               ),
             ),

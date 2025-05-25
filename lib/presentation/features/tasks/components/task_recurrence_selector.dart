@@ -178,7 +178,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         InputDecorator(
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 0),
             isDense: true,
           ),
           child: DropdownButtonHideUnderline(
@@ -245,7 +245,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
 
         // Only show configuration options if a recurrence type is selected
         if (_selectedRecurrenceType != RecurrenceType.none) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
 
           // Interval configuration (for daily, weekly, monthly, yearly, custom)
           if (_selectedRecurrenceType != RecurrenceType.none) ...[
@@ -258,7 +258,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                     decoration: InputDecoration(
                       labelText: widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
                       border: const OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
                     ),
                     onChanged: (value) {
                       final interval = int.tryParse(value);
@@ -271,7 +272,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                     },
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppTheme.sizeSmall),
                 Text(_getIntervalSuffix()),
               ],
             ),
@@ -279,12 +280,12 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
 
           // Specific weekdays selector (only for weekly recurrence)
           if (_selectedRecurrenceType == RecurrenceType.weekly) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.sizeLarge),
             Text(
               widget.translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
               style: AppTheme.bodyMedium,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -293,7 +294,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                 return FilterChip(
                   label: Text(_getWeekDayLabel(day)),
                   labelStyle: TextStyle(fontSize: 13),
-                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
                   selected: isSelected,
                   onSelected: (selected) {
                     setState(() {
@@ -317,14 +318,14 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
               }).toList(),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
 
           // Recurrence date range
           Text(
             widget.translationService.translate(TaskTranslationKeys.recurrenceRangeLabel),
             style: AppTheme.bodyMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppTheme.sizeSmall),
 
           // Start date
           Row(
@@ -358,7 +359,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                         hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
                         suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
                       ),
                     ),
                   ),
@@ -367,7 +369,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppTheme.sizeSmall),
 
           // End type selector (end date or count)
           Wrap(
@@ -402,7 +404,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                   ),
                 ],
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.sizeSmall),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -438,7 +440,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppTheme.sizeSmall),
 
           // End date selector (if using end date)
           if (_isUsingEndDate) ...[
@@ -475,7 +477,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                           hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
                           suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
                         ),
                       ),
                     ),
@@ -500,7 +503,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                     decoration: InputDecoration(
                       hintText: widget.translationService.translate(TaskTranslationKeys.enterCountHint),
                       isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
                     ),
                     onChanged: (value) {
                       final count = int.tryParse(value);

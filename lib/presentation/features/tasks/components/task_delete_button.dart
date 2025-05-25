@@ -59,11 +59,11 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
         content: Text(_translationService.translate(TaskTranslationKeys.taskDeleteMessage)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => _cancelDelete(context),
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => _confirmDeleteAction(context),
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
@@ -71,6 +71,14 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
     );
 
     if (confirmed == true && context.mounted) _deleteTask(context);
+  }
+
+  void _cancelDelete(BuildContext context) {
+    Navigator.of(context).pop(false);
+  }
+
+  void _confirmDeleteAction(BuildContext context) {
+    Navigator.of(context).pop(true);
   }
 
   @override

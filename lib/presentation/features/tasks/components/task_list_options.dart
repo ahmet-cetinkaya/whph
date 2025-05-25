@@ -20,6 +20,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class TaskListOptions extends PersistentListOptionsBase {
   /// Selected tag IDs for filtering
@@ -118,53 +119,69 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(
+          settingKey: settingKey,
+        );
 
-      if (savedSettings != null && mounted) {
-        final filterSettings = TaskListOptionSettings.fromJson(savedSettings);
+        if (savedSettings != null) {
+          final filterSettings = TaskListOptionSettings.fromJson(savedSettings);
 
-        setState(() {
-          lastSearchQuery = filterSettings.search;
-        });
+          setState(() {
+            lastSearchQuery = filterSettings.search;
+          });
 
-        if (widget.onTagFilterChange != null) {
-          final tagIds = filterSettings.selectedTagIds ?? [];
-          final showNoTags = filterSettings.showNoTagsFilter;
+          if (widget.onTagFilterChange != null) {
+            final tagIds = filterSettings.selectedTagIds ?? [];
+            final showNoTags = filterSettings.showNoTagsFilter;
 
-          widget.onTagFilterChange!(
-            tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-            showNoTags,
-          );
+            widget.onTagFilterChange!(
+              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+              showNoTags,
+            );
+          }
+
+          if (widget.onDateFilterChange != null) {
+            widget.onDateFilterChange!(
+              filterSettings.selectedStartDate,
+              filterSettings.selectedEndDate,
+            );
+          }
+
+          if (widget.onSearchChange != null && filterSettings.search != null) {
+            widget.onSearchChange!(filterSettings.search);
+          }
+
+          if (widget.onCompletedTasksToggle != null) {
+            widget.onCompletedTasksToggle!(filterSettings.showCompletedTasks);
+          }
+
+          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+            widget.onSortChange!(filterSettings.sortConfig!);
+          }
         }
-
-        if (widget.onDateFilterChange != null) {
-          widget.onDateFilterChange!(
-            filterSettings.selectedStartDate,
-            filterSettings.selectedEndDate,
-          );
+      },
+      onSuccess: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
-
-        if (widget.onSearchChange != null && filterSettings.search != null) {
-          widget.onSearchChange!(filterSettings.search);
+        widget.onSettingsLoaded?.call();
+      },
+      onError: (_) {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
-
-        if (widget.onCompletedTasksToggle != null) {
-          widget.onCompletedTasksToggle!(filterSettings.showCompletedTasks);
-        }
-
-        if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-          widget.onSortChange!(filterSettings.sortConfig!);
-        }
-      }
-
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
-    }
+        widget.onSettingsLoaded?.call();
+      },
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+    );
   }
 
   @override
@@ -301,17 +318,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-
-    // Calculate whether we need the filter row at all
-    final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
-        (widget.showDateFilter && widget.onDateFilterChange != null) ||
-        (widget.showSearchFilter && widget.onSearchChange != null) ||
-        (widget.showSortButton && widget.onSortChange != null) ||
-        (widget.showCompletedTasksToggle && widget.onCompletedTasksToggle != null && widget.hasItems));
-
-    // If no filters to show, don't render anything
-    if (!showAnyFilters) return const SizedBox.shrink();
+    if (!isSettingLoaded) return const SizedBox.shrink();
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -338,7 +345,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     icon: TagUiConstants.tagIcon,
                     iconSize: AppTheme.iconSizeMedium,
                     color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
-                        ? primaryColor
+                        ? AppTheme.primaryColor
                         : Colors.grey,
                     tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
                     showLength: true,
@@ -357,7 +364,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     selectedEndDate: widget.selectedEndDate,
                     onDateFilterChange: widget.onDateFilterChange!,
                     iconColor: (widget.selectedStartDate != null || widget.selectedEndDate != null)
-                        ? primaryColor
+                        ? AppTheme.primaryColor
                         : Colors.grey,
                   ),
 
@@ -370,7 +377,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
                     iconSize: AppTheme.iconSizeMedium,
-                    iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
+                    iconColor:
+                        (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? AppTheme.primaryColor : Colors.grey,
                     expandedWidth: 200,
                   ),
 
@@ -408,7 +416,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                               translationKey: TaskTranslationKeys.plannedDateLabel,
                             ),
                           ],
-                          useCustomOrder: false,
                         ),
                     defaultConfig: SortConfig<TaskSortFields>(
                       orderOptions: [
@@ -423,7 +430,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                           translationKey: TaskTranslationKeys.plannedDateLabel,
                         ),
                       ],
-                      useCustomOrder: false,
+                      useCustomOrder: true,
                     ),
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
@@ -469,6 +476,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       ),
                     ],
                     isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                    showCustomOrderOption: true,
                   ),
 
                 // Save button

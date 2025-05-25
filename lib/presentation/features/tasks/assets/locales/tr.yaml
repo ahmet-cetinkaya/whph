@@ -173,7 +173,7 @@ tasks:
   title: Görevler
   new_task: Yeni Görev
   task_details: Görev Detayları
-  no_tasks: Görev bulunamadı
+  no_tasks: Görev yok
   all_tasks_done: Tüm görevler tamamlandı!
   errors:
     get_task: Görev yüklenirken beklenmedik bir hata oluştu

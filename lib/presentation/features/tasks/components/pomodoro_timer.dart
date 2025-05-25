@@ -354,8 +354,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     // Calculate responsive sizes with running state multiplier
     final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0;
-    final double buttonSize = (screenWidth < 600 ? 32.0 : 40.0) * multiplier;
-    final double spacing = (screenWidth < 600 ? 8.0 : 16.0) * multiplier;
+    final double baseButtonSize = screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge;
+    final double baseSpacing = screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge;
+    final double buttonSize = baseButtonSize * multiplier;
+    final double spacing = baseSpacing * multiplier;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -421,7 +423,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Widget _buildSettingsModal(StateSetter setState) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
