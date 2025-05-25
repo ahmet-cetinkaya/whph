@@ -28,7 +28,7 @@ sync:
         - Senkronizasyonun tamamlanmasını bekleyin
       title: Cihaz Senkronizasyonu Yardım
     last_sync_label: Son Senkronizasyon
-    no_devices_found: Senkronize edilmiş cihaz bulunamadı
+    no_devices_found: Senkronize edilmiş cihaz yok
     title: Cihazları Senkronize Et
     to_label: Kime
     unnamed_device: İsimsiz Cihaz

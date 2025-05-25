@@ -1,4 +1,6 @@
-class SyncTranslationKeys {
+import 'package:whph/application/features/sync/constants/sync_translation_keys.dart' as application;
+
+class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Messages
   static const String testingConnection = 'sync.messages.testing_connection';
   static const String syncInProgress = 'sync.messages.sync_in_progress';
