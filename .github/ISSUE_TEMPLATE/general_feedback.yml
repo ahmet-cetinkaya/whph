@@ -1,0 +1,75 @@
+name: General Feedback
+description: Share your feedback about the WHPH app
+title: "[FEEDBACK] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your feedback! Your input helps us improve WHPH.
+
+  - type: dropdown
+    id: feedback-type
+    attributes:
+      label: Feedback Type
+      description: What type of feedback are you providing?
+      options:
+        - Bug Report
+        - Feature Request
+        - General Suggestion
+        - Performance Issue
+        - UI/UX Improvement
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please describe your feedback in detail
+      placeholder: Tell us what you think...
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App Version
+      description: Which version of WHPH are you using?
+      placeholder: e.g., 1.0.0
+
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Model
+      description: What device are you using?
+      placeholder: e.g., Samsung Galaxy S21, iPhone 12 Pro
+
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What OS and version?
+      placeholder: e.g., Android 12, iOS 15.1, Windows 11
+
+  - type: input
+    id: app-language
+    attributes:
+      label: App Language
+      description: What language is your app set to?
+      placeholder: e.g., English, Turkish
+
+  - type: input
+    id: screen-size
+    attributes:
+      label: Screen Size
+      description: Screen resolution (if relevant)
+      placeholder: e.g., 1080x2400
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any other information you'd like to share
+      placeholder: Screenshots, logs, or other relevant information...
