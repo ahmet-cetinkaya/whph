@@ -21,7 +21,9 @@ class TranslationService implements ITranslationService {
   String translate(String key, {Map<String, String>? namedArgs}) {
     String translation = key.tr(namedArgs: namedArgs);
 
-    if (translation == key && kDebugMode) debugPrint('❗Translation not found for key: $key');
+    if (translation == key && kDebugMode) {
+      debugPrint('[Error] [TranslationService] Translation not found for key: $key');
+    }
 
     return translation;
   }

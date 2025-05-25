@@ -53,7 +53,7 @@ class IconOverlay extends StatelessWidget {
 
           //
           if (message != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.sizeSmall),
             Text(
               message!,
               style: messageStyle ?? defaultStyle,

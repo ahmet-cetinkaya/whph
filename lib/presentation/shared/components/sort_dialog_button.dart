@@ -217,7 +217,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +249,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               ),
             ),
             if (!_currentConfig.useCustomOrder) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.sizeSmall),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -328,7 +328,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                   : SharedTranslationKeys.sortDescending,
             ),
             onPressed: () => _toggleDirection(index),
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppTheme.sizeSmall),
             constraints: const BoxConstraints(
               minWidth: 36,
               minHeight: 36,
@@ -339,13 +339,13 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               icon: const Icon(Icons.close, size: 20),
               tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
               onPressed: () => _removeCriteria(index),
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(AppTheme.sizeSmall),
               constraints: const BoxConstraints(
                 minWidth: 36,
                 minHeight: 36,
               ),
             ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_editor_plus/markdown_editor_plus.dart';
+import 'package:whph/presentation/shared/components/markdown_renderer.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
@@ -42,14 +42,14 @@ class HelpMenu extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => _closeDialog(context),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppTheme.sizeLarge),
               Expanded(
-                child: MarkdownParse(
+                child: MarkdownRenderer(
                   data: _translationService.translate(markdownContentKey),
                 ),
               ),
@@ -58,6 +58,10 @@ class HelpMenu extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _closeDialog(BuildContext context) {
+    Navigator.pop(context);
   }
 
   @override

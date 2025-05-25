@@ -38,6 +38,10 @@ class RegexHelpDialog extends StatelessWidget {
     );
   }
 
+  void _closeDialog(BuildContext context) {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
@@ -104,7 +108,7 @@ class RegexHelpDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => _closeDialog(context),
           child: Text(translationService.translate(SharedTranslationKeys.closeButton)),
         ),
       ],

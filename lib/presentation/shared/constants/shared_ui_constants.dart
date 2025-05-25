@@ -20,30 +20,6 @@ class SharedUiConstants {
   static const IconData calendarIcon = Icons.calendar_today;
   static const IconData helpIcon = Icons.lightbulb_outline;
 
-  // Date Formats
-  static const String defaultDateFormat = 'dd.MM.yy';
-  static const String defaultDateTimeFormat = 'yyyy-MM-dd HH:mm';
-
-  // Dialog & Modal
-  static const String confirmLabel = 'Confirm';
-  static const String cancelLabel = 'Cancel';
-  static const String deleteLabel = 'Delete';
-  static const String saveLabel = 'Save';
-
-  // Messages
-  static const String confirmDeleteTitle = 'Confirm Delete';
-  static const String confirmDeleteMessage = 'Are you sure you want to delete this item?';
-  static const String successMessage = 'Operation completed successfully';
-  static const String errorMessage = 'An error occurred';
-  static const String addDescriptionHint = 'Add a description...';
-  static const String markdownEditorHint = 'Tap to edit markdown text';
-
-  // Error Messages
-  static const String errorLoadingData = 'Failed to load data';
-  static const String errorSavingData = 'Failed to save data';
-  static const String errorDeletingData = 'Failed to delete data';
-  static const String errorUnexpected = 'An unexpected error occurred';
-
   // Time formatting
   static String formatDuration(Duration duration) {
     final minutes = duration.inMinutes;
@@ -52,7 +28,7 @@ class SharedUiConstants {
   }
 
   static String formatMinutes(int? minutes) {
-    if (minutes == null) return 'Not set';
+    if (minutes == null) return '';
     return '${minutes}m';
   }
 

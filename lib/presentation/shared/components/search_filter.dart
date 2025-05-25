@@ -35,7 +35,12 @@ class _SearchFilterState extends State<SearchFilter> {
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.initialValue ?? '';
+
+    // Set the initial text with cursor at the end
+    final initialText = widget.initialValue ?? '';
+    _controller.text = initialText;
+    _controller.selection = TextSelection.collapsed(offset: initialText.length);
+
     // If initial value is provided, expand the search field
     _isExpanded = (widget.initialValue != null && widget.initialValue!.isNotEmpty);
   }
@@ -51,8 +56,15 @@ class _SearchFilterState extends State<SearchFilter> {
     super.didUpdateWidget(oldWidget);
 
     // Update text controller when initialValue changes from parent
-    if (widget.initialValue != oldWidget.initialValue) {
-      _controller.text = widget.initialValue ?? '';
+    if (widget.initialValue != oldWidget.initialValue && widget.initialValue != _controller.text) {
+      // Preserve cursor position when updating text
+      final currentSelection = _controller.selection;
+      _controller.value = TextEditingValue(
+        text: widget.initialValue ?? '',
+        selection: currentSelection.isValid && (widget.initialValue?.length ?? 0) >= currentSelection.end
+            ? currentSelection
+            : TextSelection.collapsed(offset: widget.initialValue?.length ?? 0),
+      );
       // Don't trigger onSearch here, as it would cause a loop
     }
   }
@@ -64,6 +76,11 @@ class _SearchFilterState extends State<SearchFilter> {
         // When expanding, if there's an initial value, trigger search
         if (_controller.text.isNotEmpty) {
           widget.onSearch(_controller.text);
+
+          // Set cursor at the end of text for better editing experience
+          Future.microtask(() {
+            _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+          });
         }
       } else {
         // When collapsing, clear the search
@@ -105,6 +122,14 @@ class _SearchFilterState extends State<SearchFilter> {
               onChanged: (value) {
                 // Always call onSearch with the current value, even if it's empty
                 widget.onSearch(value.isEmpty ? null : value);
+              },
+              // Prevent text selection on focus
+              onTap: () {
+                if (_controller.selection.start == 0 &&
+                    _controller.selection.end == _controller.text.length &&
+                    _controller.text.isNotEmpty) {
+                  _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+                }
               },
             )
           : FilterIconButton(

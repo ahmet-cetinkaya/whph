@@ -157,6 +157,10 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
   }
 
+  void _goBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.fullScreen) {
@@ -173,7 +177,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 ? IconButton(
                     icon: const Icon(Icons.arrow_back, size: AppTheme.fontSizeXLarge),
                     padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: _goBack,
                   )
                 : null),
         title: widget.appBarTitle ??
@@ -416,7 +420,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               child: Row(
                 children: [
                   const AppLogo(width: 24, height: 24),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppTheme.sizeMedium),
                   Text(
                     AppInfo.name,
                     style: Theme.of(context).textTheme.titleLarge,

@@ -203,7 +203,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           hintText: _translationService.translate(SharedTranslationKeys.dateFormatHint),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeSmall),
                           isDense: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -230,7 +231,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                       child: Text('-'),
                     ),
                     Expanded(
@@ -239,7 +240,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           hintText: _translationService.translate(SharedTranslationKeys.dateFormatHint),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeSmall),
                           isDense: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -369,7 +371,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                 const SizedBox(height: AppTheme.sizeMedium),
 
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: _closeDatePicker,
                   child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
                 ),
               ],
@@ -386,6 +388,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       _selectedStartDate = _selectedStartDate;
       _selectedEndDate = _selectedEndDate;
     });
+  }
+
+  void _closeDatePicker() {
+    Navigator.pop(context);
   }
 
   Widget _buildSimpleQuickOption(BuildContext context, String value, String label, StateSetter setState) {
