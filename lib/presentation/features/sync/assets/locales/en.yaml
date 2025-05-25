@@ -28,7 +28,7 @@ sync:
         - Wait for sync completion
       title: Device Synchronization Help
     last_sync_label: Last Sync
-    no_devices_found: No synced devices found
+    no_devices_found: No synced devices
     title: Sync Devices
     to_label: To
     unnamed_device: Unnamed Device
