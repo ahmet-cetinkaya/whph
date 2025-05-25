@@ -68,7 +68,7 @@ app_usages:
     delete_confirm: "\"{pattern}\" yok sayma kuralını silmek istediğinize emin misiniz?"
     delete_title: Kural Sil
     delete_tooltip: Kuralı sil
-    no_rules: Yok sayma kuralı bulunamadı
+    no_rules: Yok sayma kuralı yok
     pattern_label: Desen
   no_usage: Henüz uygulama kullanımı yok
   pages:

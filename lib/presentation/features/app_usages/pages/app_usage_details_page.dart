@@ -61,6 +61,22 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
     }
   }
 
+  void _navigateBack() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(_hasChanges);
+    }
+  }
+
+  void _onDeleteSuccess() {
+    if (mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  void _onAppUsageUpdated() {
+    _hasChanges = true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -74,20 +90,12 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop(_hasChanges);
-              }
-            },
+            onPressed: _navigateBack,
           ),
           actions: [
             AppUsageDeleteButton(
               appUsageId: widget.appUsageId,
-              onDeleteSuccess: () {
-                if (mounted && Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop(true);
-                }
-              },
+              onDeleteSuccess: _onDeleteSuccess,
               buttonColor: AppTheme.primaryColor,
             ),
             HelpMenu(
@@ -106,9 +114,7 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
                 // App Usage Details Section
                 AppUsageDetailsContent(
                   id: widget.appUsageId,
-                  onAppUsageUpdated: () {
-                    _hasChanges = true;
-                  },
+                  onAppUsageUpdated: _onAppUsageUpdated,
                 ),
 
                 const SizedBox(height: 24),

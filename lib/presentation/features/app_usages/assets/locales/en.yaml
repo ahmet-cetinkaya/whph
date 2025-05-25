@@ -68,7 +68,7 @@ app_usages:
     delete_confirm: "Are you sure you want to delete the ignore rule \"{pattern}\"?"
     delete_title: Delete Rule
     delete_tooltip: Delete rule
-    no_rules: No ignore rules found
+    no_rules: No ignore rules
     pattern_label: Pattern
   no_usage: No app usage yet
   pages:

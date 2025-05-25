@@ -1,4 +1,6 @@
-class AppUsageTranslationKeys {
+import 'package:whph/application/features/app_usages/constants/app_usage_translation_keys.dart' as application;
+
+class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String noUsage = 'app_usages.no_usage';
 
   // Device
@@ -27,6 +29,10 @@ class AppUsageTranslationKeys {
   static const String appUsageTagNotFoundError = 'app_usages.errors.app_usage_tag_not_found';
   static const String appUsageTagRuleNotFoundError = 'app_usages.errors.app_usage_tag_rule_not_found';
   static const String appUsageIgnoreRuleNotFoundError = 'app_usages.errors.app_usage_ignore_rule_not_found';
+
+  // List Options Errors
+  static const String loadListOptionsError = 'app_usages.list_options.errors.load';
+  static const String saveListOptionsError = 'app_usages.list_options.errors.save';
 
   // Delete
   static const String deleteConfirmTitle = 'app_usages.delete.confirm_title';

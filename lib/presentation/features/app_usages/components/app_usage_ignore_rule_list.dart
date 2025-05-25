@@ -121,6 +121,14 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     );
   }
 
+  void _cancelDelete() {
+    Navigator.of(context).pop(false);
+  }
+
+  void _confirmDeleteAction() {
+    Navigator.of(context).pop(true);
+  }
+
   Future<void> _confirmDelete(String id) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -129,11 +137,11 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
         content: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleConfirmMessage)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: _cancelDelete,
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: _confirmDeleteAction,
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],

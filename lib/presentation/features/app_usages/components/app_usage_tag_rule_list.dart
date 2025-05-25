@@ -67,6 +67,14 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     }
   }
 
+  void _cancelDelete() {
+    Navigator.pop(context, false);
+  }
+
+  void _confirmDelete() {
+    Navigator.pop(context, true);
+  }
+
   Future<void> refresh() async {
     await _loadRules(isRefresh: true);
   }
@@ -224,11 +232,11 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
             .translate(AppUsageTranslationKeys.deleteRuleConfirm, namedArgs: {'pattern': rule.pattern})),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: _cancelDelete,
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: _confirmDelete,
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],

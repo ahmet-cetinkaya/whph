@@ -104,6 +104,14 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
     }
   }
 
+  void _showRegexHelp() {
+    RegexHelpDialog.show(context);
+  }
+
+  void _clearSelectedTag() {
+    setState(() => _selectedTagId = null);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -155,7 +163,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                       constraints: const BoxConstraints(minWidth: 32),
                       icon: Icon(SharedUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
                       tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
-                      onPressed: () => RegexHelpDialog.show(context),
+                      onPressed: _showRegexHelp,
                     ),
                   ),
                 ],
@@ -207,7 +215,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                                 size: AppTheme.fontSizeLarge,
                                 color: Colors.grey,
                               ),
-                              onPressed: () => setState(() => _selectedTagId = null),
+                              onPressed: _clearSelectedTag,
                             ),
                         ],
                       ),
@@ -241,7 +249,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.sizeMedium),
 
           // Description Field
           TextFormField(
@@ -253,13 +261,13 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               hintStyle: AppTheme.bodySmall,
               prefixIcon: Icon(Icons.description, size: AppTheme.fontSizeMedium),
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
               constraints: BoxConstraints(maxHeight: 36),
             ),
             style: AppTheme.bodySmall,
             maxLines: 1,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeLarge),
 
           // Action Buttons
           Row(
