@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -10,11 +11,37 @@ import 'package:whph/presentation/features/habits/constants/habit_translation_ke
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 
 class HabitAddButton extends StatefulWidget {
+  /// The color of the button icon
   final Color? buttonColor;
+
+  /// The background color of the button
   final Color? buttonBackgroundColor;
+
+  /// Callback when a habit is created
   final Function(String habitId)? onHabitCreated;
 
-  const HabitAddButton({super.key, this.buttonColor, this.buttonBackgroundColor, this.onHabitCreated});
+  /// Initial tag IDs for filtering new habits
+  final List<String>? initialTagIds;
+
+  /// Initial name for the habit
+  final String? initialName;
+
+  /// Initial description for the habit
+  final String? initialDescription;
+
+  /// Whether to initialize the habit with an archive status
+  final bool? initialArchived;
+
+  const HabitAddButton({
+    super.key,
+    this.buttonColor,
+    this.buttonBackgroundColor,
+    this.onHabitCreated,
+    this.initialTagIds,
+    this.initialName,
+    this.initialDescription,
+    this.initialArchived,
+  });
 
   @override
   State<HabitAddButton> createState() => _HabitAddButtonState();
@@ -31,16 +58,38 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () async {
         final command = SaveHabitCommand(
-          name: _translationService.translate(HabitTranslationKeys.newHabit),
-          description: "",
+          name: widget.initialName ?? _translationService.translate(HabitTranslationKeys.newHabit),
+          description: widget.initialDescription ?? "",
+          archivedDate: widget.initialArchived == true ? DateTime.now() : null,
         );
         return await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
       },
       onSuccess: (response) {
         _habitsService.notifyHabitCreated(response.id);
+
+        // If tag IDs were provided, add tags to the newly created habit
+        if (widget.initialTagIds != null && widget.initialTagIds!.isNotEmpty) {
+          _addTagsToHabit(response.id, widget.initialTagIds!);
+        }
+
         widget.onHabitCreated?.call(response.id);
       },
     );
+  }
+
+  /// Adds tags to a newly created habit
+  Future<void> _addTagsToHabit(String habitId, List<String> tagIds) async {
+    // Add each tag to the habit
+    for (final tagId in tagIds) {
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(HabitTranslationKeys.addingTagError),
+        operation: () async {
+          final command = AddHabitTagCommand(habitId: habitId, tagId: tagId);
+          await _mediator.send(command);
+        },
+      );
+    }
   }
 
   @override

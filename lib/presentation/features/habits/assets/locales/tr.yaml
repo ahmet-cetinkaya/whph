@@ -152,7 +152,7 @@ habits:
       sat: Cmt
       sun: Paz
   list:
-    no_habits_found: Alışkanlık bulunamadı
+    no_habits_found: Alışkanlık yok
     all_habits_done: Tüm alışkanlıklar tamamlandı!
 
   reminders:

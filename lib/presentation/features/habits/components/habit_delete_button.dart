@@ -58,11 +58,11 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
         content: Text(_translationService.translate(HabitTranslationKeys.deleteConfirmMessage)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => _cancelDelete(context),
             child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => _confirmDeleteAction(context),
             child: Text(_translationService.translate(SharedTranslationKeys.deleteButton)),
           ),
         ],
@@ -70,6 +70,14 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
     );
 
     if (confirmed == true && context.mounted) _deleteHabit(context);
+  }
+
+  void _cancelDelete(BuildContext context) {
+    Navigator.of(context).pop(false);
+  }
+
+  void _confirmDeleteAction(BuildContext context) {
+    Navigator.of(context).pop(true);
   }
 
   @override

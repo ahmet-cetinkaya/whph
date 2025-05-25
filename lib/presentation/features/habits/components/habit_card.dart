@@ -132,7 +132,7 @@ class _HabitCardState extends State<HabitCard> {
       onTap: widget.onOpenDetails,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall),
           child: widget.isMiniLayout ||
                   (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
               ? _buildCompactView()
@@ -154,7 +154,7 @@ class _HabitCardState extends State<HabitCard> {
         children: [
           _buildHabitInfo(),
           if (!widget.habit.isArchived()) ...[
-            const SizedBox(width: 8),
+            const SizedBox(width: AppTheme.sizeSmall),
             Align(
               alignment: Alignment.centerRight,
               child: SingleChildScrollView(
@@ -170,7 +170,7 @@ class _HabitCardState extends State<HabitCard> {
         child: Row(
           children: [
             Icon(HabitUiConstants.habitIcon, size: AppTheme.fontSizeXLarge),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppTheme.sizeSmall),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

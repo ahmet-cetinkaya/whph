@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/shared/components/markdown_editor.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
@@ -652,21 +652,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 DetailTableRowData(
                   label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
                   icon: HabitUiConstants.descriptionIcon,
-                  hintText: SharedUiConstants.markdownEditorHint,
                   widget: Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: MarkdownAutoPreview(
+                    child: MarkdownEditor(
                       controller: _descriptionController,
                       onChanged: _onDescriptionChanged,
-                      hintText: SharedUiConstants.addDescriptionHint,
                       toolbarBackground: AppTheme.surface1,
-                      style: AppTheme.bodyMedium,
                     ),
                   ),
                 ),
               ],
             ),
-
           const SizedBox(height: 16),
 
           // Optional field chips moved to just above Records header
