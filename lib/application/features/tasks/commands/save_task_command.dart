@@ -159,7 +159,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
           estimatedTime: request.estimatedTime,
-          isCompleted: false,
+          isCompleted: request.isCompleted,
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
