@@ -31,13 +31,13 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
     showModalBottomSheet(
       context: context,
       builder: (context) => Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeLarge),
               child: Text(
                 _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
                 style: AppTheme.headlineSmall,
@@ -60,15 +60,15 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         Navigator.pop(context);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeLarge),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.surface3 : null,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
         ),
         child: Row(
           children: [
             Icon(TaskUiConstants.priorityIcon, color: textColor, size: AppTheme.fontSizeLarge),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppTheme.sizeSmall),
             Text(
               option.label,
               style: AppTheme.bodySmall.copyWith(
@@ -101,7 +101,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         borderRadius: BorderRadius.circular(14),
         child: Container(
           height: 36,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
           decoration: BoxDecoration(
             color: isHovered ? AppTheme.surface2.withAlpha((255 * 0.5).toInt()) : AppTheme.surface1,
             borderRadius: BorderRadius.circular(14),

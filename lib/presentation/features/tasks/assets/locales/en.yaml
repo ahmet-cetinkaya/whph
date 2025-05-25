@@ -171,7 +171,8 @@ tasks:
     remove_tag: Unexpected error occurred while removing tag
     get_tags: Error occurred while fetching tags
     task_not_found: Task not found
-    task_tag_not_found: Task tag is already deleted
+    task_tag_not_found: Task tag not found
+    task_tag_already_deleted: Task tag is already deleted
     task_tag_already_exists: This task tag already exists
     loading_task: Failed to load task
     saving_task: Failed to save task
@@ -225,7 +226,7 @@ tasks:
   title: Tasks
   new_task: New Task
   task_details: Task Details
-  no_tasks: No tasks found
+  no_tasks: No tasks
   all_tasks_done: All tasks completed!
   priorities:
     urgent_important: Urgent and Important

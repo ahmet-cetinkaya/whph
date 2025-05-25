@@ -108,6 +108,10 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     }
   }
 
+  void _goBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   void didUpdateWidget(TaskDetailsPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -145,7 +149,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         leading: widget.hideSidebar
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: _goBack,
               )
             : null,
         actions: [
@@ -167,7 +171,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
             titleKey: TaskTranslationKeys.detailsHelpTitle,
             markdownContentKey: TaskTranslationKeys.detailsHelpContent,
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: AppTheme.sizeXSmall),
         ],
       ),
       body: SafeArea(
@@ -205,14 +209,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                         children: [
                           // TITLE
                           const Icon(Icons.list),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppTheme.sizeSmall),
                           Flexible(
                             child: Text(
                               _translationService.translate(TaskTranslationKeys.subTasksLabel),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppTheme.sizeSmall),
                           if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
                             Text(
                               '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
@@ -258,6 +262,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                           _refreshEverything();
                         },
                         initialParentTaskId: widget.taskId,
+                        initialCompleted: _showCompletedTasks,
                       ),
                   ],
                 ),

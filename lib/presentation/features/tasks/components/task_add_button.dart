@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
 import 'package:whph/presentation/features/tasks/models/task_data.dart';
@@ -14,7 +15,12 @@ class TaskAddButton extends StatefulWidget {
   final Function(String taskId, TaskData taskData)? onTaskCreated;
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
+  final DateTime? initialDeadlineDate;
+  final EisenhowerPriority? initialPriority;
+  final int? initialEstimatedTime;
   final String? initialParentTaskId;
+  final String? initialTitle;
+  final bool? initialCompleted;
 
   const TaskAddButton({
     super.key,
@@ -23,7 +29,12 @@ class TaskAddButton extends StatefulWidget {
     this.onTaskCreated,
     this.initialTagIds,
     this.initialPlannedDate,
+    this.initialDeadlineDate,
+    this.initialPriority,
+    this.initialEstimatedTime,
     this.initialParentTaskId,
+    this.initialTitle,
+    this.initialCompleted,
   });
 
   @override
@@ -54,7 +65,12 @@ class _TaskAddButtonState extends State<TaskAddButton> {
                 child: QuickTaskBottomSheet(
                   initialTagIds: widget.initialTagIds,
                   initialPlannedDate: widget.initialPlannedDate,
+                  initialDeadlineDate: widget.initialDeadlineDate,
+                  initialPriority: widget.initialPriority,
+                  initialEstimatedTime: widget.initialEstimatedTime,
                   initialParentTaskId: widget.initialParentTaskId,
+                  initialTitle: widget.initialTitle,
+                  initialCompleted: widget.initialCompleted,
                   onTaskCreated: (taskId, taskData) {
                     if (widget.onTaskCreated != null) {
                       widget.onTaskCreated!(taskId, taskData);
@@ -78,14 +94,19 @@ class _TaskAddButtonState extends State<TaskAddButton> {
         constraints: null,
         // Use custom shape with smaller corners
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.sizeLarge)),
         ),
         builder: (context) => Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: QuickTaskBottomSheet(
             initialTagIds: widget.initialTagIds,
             initialPlannedDate: widget.initialPlannedDate,
+            initialDeadlineDate: widget.initialDeadlineDate,
+            initialPriority: widget.initialPriority,
+            initialEstimatedTime: widget.initialEstimatedTime,
             initialParentTaskId: widget.initialParentTaskId,
+            initialTitle: widget.initialTitle,
+            initialCompleted: widget.initialCompleted,
             onTaskCreated: (taskId, taskData) {
               if (widget.onTaskCreated != null) {
                 widget.onTaskCreated!(taskId, taskData);

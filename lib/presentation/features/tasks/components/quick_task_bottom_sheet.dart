@@ -19,6 +19,11 @@ import 'package:whph/core/acore/time/date_time_helper.dart';
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
+  final DateTime? initialDeadlineDate;
+  final EisenhowerPriority? initialPriority;
+  final int? initialEstimatedTime;
+  final String? initialTitle;
+  final bool? initialCompleted;
   final Function(String taskId, TaskData taskData)? onTaskCreated;
   final String? initialParentTaskId;
 
@@ -26,6 +31,11 @@ class QuickTaskBottomSheet extends StatefulWidget {
     super.key,
     this.initialTagIds,
     this.initialPlannedDate,
+    this.initialDeadlineDate,
+    this.initialPriority,
+    this.initialEstimatedTime,
+    this.initialTitle,
+    this.initialCompleted,
     this.onTaskCreated,
     this.initialParentTaskId,
   });
@@ -42,6 +52,10 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   final _focusNode = FocusNode();
   bool _isLoading = false;
 
+  void _closeDialog() {
+    Navigator.pop(context);
+  }
+
   // Quick action state variables
   EisenhowerPriority? _selectedPriority;
   int? _estimatedTime;
@@ -53,7 +67,13 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   void initState() {
     super.initState();
     _plannedDate = widget.initialPlannedDate;
+    _deadlineDate = widget.initialDeadlineDate;
+    _selectedPriority = widget.initialPriority;
+    _estimatedTime = widget.initialEstimatedTime;
     _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
+    if (widget.initialTitle != null) {
+      _titleController.text = widget.initialTitle!;
+    }
   }
 
   @override
@@ -63,18 +83,19 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     super.dispose();
   }
 
-  void _resetState() {
-    _titleController.clear();
-  }
-
   void _clearAll() {
     setState(() {
-      _titleController.clear();
-      _selectedPriority = null;
-      _estimatedTime = null;
+      if (widget.initialTitle != null) {
+        _titleController.text = widget.initialTitle!;
+      } else {
+        _titleController.clear();
+      }
+
+      _selectedPriority = widget.initialPriority;
+      _estimatedTime = widget.initialEstimatedTime;
       _plannedDate = widget.initialPlannedDate;
-      _deadlineDate = null;
-      _selectedTags = [];
+      _deadlineDate = widget.initialDeadlineDate;
+      _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
     });
   }
 
@@ -95,7 +116,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           estimatedTime: _estimatedTime,
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
-          isCompleted: false,
+          isCompleted: widget.initialCompleted ?? false,
           parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
         );
         return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
@@ -129,8 +150,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
 
         if (mounted) {
           setState(() {
-            _titleController.clear();
-            _resetState();
+            _clearAll();
           });
           _focusNode.requestFocus();
         }
@@ -306,7 +326,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         // Use different border radius based on platform
         borderRadius: isDesktop
             ? BorderRadius.circular(AppTheme.containerBorderRadius)
-            : const BorderRadius.vertical(top: Radius.circular(16)),
+            : const BorderRadius.vertical(top: Radius.circular(AppTheme.sizeLarge)),
       ),
       // Use mainAxisSize.min to make the container fit its content
       child: Padding(
@@ -328,7 +348,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: _closeDialog,
                     ),
                   ],
                 ),

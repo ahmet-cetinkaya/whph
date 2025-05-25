@@ -38,6 +38,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   TaskListItem? _selectedTask;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
+  void _closeDialog() {
+    Navigator.pop(context);
+  }
+
   // Task filter options
   static const String _taskFilterOptionsSettingKeySuffix = 'MARATHON_PAGE';
   List<String>? _selectedTaskTagIds;
@@ -264,7 +268,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: _closeDialog,
                       tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                     ),
                     Expanded(
@@ -278,7 +282,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       titleKey: TaskTranslationKeys.marathonHelpTitle,
                       markdownContentKey: TaskTranslationKeys.marathonHelpContent,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppTheme.sizeSmall),
                   ],
                 ),
               ),

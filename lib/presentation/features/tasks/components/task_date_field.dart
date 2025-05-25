@@ -103,12 +103,13 @@ class TaskDateField extends StatelessWidget {
         // Show reminder text if there's a reminder
         if (hasReminder && controller.text.isNotEmpty && reminderText.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall * 1.5, vertical: AppTheme.sizeXSmall / 2),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppTheme.sizeXSmall),
               ),
               child: Text(
                 reminderText,
