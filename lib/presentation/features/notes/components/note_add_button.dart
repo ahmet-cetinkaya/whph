@@ -17,12 +17,17 @@ class NoteAddButton extends StatefulWidget {
   final Color? buttonColor;
   final List<String>? initialTagIds;
 
+  /// Initial note title. If provided, will be used instead of the default title.
+  /// Useful for creating notes from search context.
+  final String? initialTitle;
+
   const NoteAddButton({
     super.key,
     this.onNoteCreated,
     this.mini = false,
     this.buttonColor,
     this.initialTagIds,
+    this.initialTitle,
   });
 
   @override
@@ -59,7 +64,7 @@ class _NoteAddButtonState extends State<NoteAddButton> {
       errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
       operation: () async {
         final command = SaveNoteCommand(
-          title: _translationService.translate(NoteTranslationKeys.newNote),
+          title: widget.initialTitle ?? _translationService.translate(NoteTranslationKeys.newNote),
           content: '',
         );
 
@@ -105,7 +110,7 @@ class _NoteAddButtonState extends State<NoteAddButton> {
         foregroundColor: AppTheme.textColor,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
         ),
       ),
     );

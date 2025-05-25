@@ -20,13 +20,17 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
     Navigator.of(context).pop();
   }
 
+  void _goBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: _goBack,
         ),
         actions: [
           NoteDeleteButton(

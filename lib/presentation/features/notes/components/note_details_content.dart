@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/shared/components/markdown_editor.dart';
 import 'package:whph/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/application/features/notes/commands/save_note_command.dart';
@@ -333,11 +333,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
           // Note Content (always visible)
           const SizedBox(height: AppTheme.sizeSmall),
-          MarkdownAutoPreview(
+          MarkdownEditor(
             controller: _contentController,
             onChanged: (_) => _saveNote(),
-            hintText: SharedUiConstants.markdownEditorHint,
-            toolbarBackground: AppTheme.surface1,
             style: AppTheme.bodyMedium,
           ),
         ],
