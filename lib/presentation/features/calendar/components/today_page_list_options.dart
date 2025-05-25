@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -52,39 +53,55 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(
+          settingKey: settingKey,
+        );
 
-      if (savedSettings != null && mounted) {
-        final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
+        if (savedSettings != null && mounted) {
+          final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
 
-        if (filterSettings.selectedTagIds != null && filterSettings.selectedTagIds!.isNotEmpty) {
-          // Fetch actual tag data to populate the dropdown
-          final query = GetListTagsQuery(
-            pageIndex: 0,
-            pageSize: filterSettings.selectedTagIds!.length,
-            filterByTags: filterSettings.selectedTagIds!,
-          );
+          if (filterSettings.selectedTagIds != null && filterSettings.selectedTagIds!.isNotEmpty) {
+            // Fetch actual tag data to populate the dropdown
+            final query = GetListTagsQuery(
+              pageIndex: 0,
+              pageSize: filterSettings.selectedTagIds!.length,
+              filterByTags: filterSettings.selectedTagIds!,
+            );
 
-          final tagResult = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+            final tagResult = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-          // Only update if we have valid tags
-          if (tagResult.items.isNotEmpty) {
-            widget.onFilterChange?.call(filterSettings.selectedTagIds, filterSettings.showNoTagsFilter);
+            // Only update if we have valid tags
+            if (tagResult.items.isNotEmpty) {
+              widget.onFilterChange?.call(filterSettings.selectedTagIds, filterSettings.showNoTagsFilter);
+            }
+          } else if (filterSettings.showNoTagsFilter) {
+            // Handle "None" filter case
+            widget.onFilterChange?.call(null, true);
           }
-        } else if (filterSettings.showNoTagsFilter) {
-          // Handle "None" filter case
-          widget.onFilterChange?.call(null, true);
         }
-      }
 
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
-    }
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
+        }
+
+        widget.onSettingsLoaded?.call();
+      },
+      finallyAction: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
+        }
+        widget.onSettingsLoaded?.call();
+      },
+    );
   }
 
   @override
@@ -99,29 +116,30 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = TodayPageListOptionSettings(
-      selectedTagIds: widget.selectedTagIds,
-      showNoTagsFilter: widget.showNoTagsFilter,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = TodayPageListOptionSettings(
+          selectedTagIds: widget.selectedTagIds,
+          showNoTagsFilter: widget.showNoTagsFilter,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+          widget.onSaveSettings?.call();
+        }
+      },
     );
-
-    try {
-      await filterSettingsManager.saveFilterSettings(
-        settingKey: settingKey,
-        filterSettings: settings.toJson(),
-      );
-
-      if (mounted) {
-        setState(() {
-          hasUnsavedChanges = false;
-        });
-
-        showSavedMessageTemporarily();
-      }
-
-      widget.onSaveSettings?.call();
-    } catch (e) {
-      // Handle error
-    }
   }
 
   @override
@@ -173,6 +191,10 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
 
   @override
   Widget build(BuildContext context) {
+    if (!isSettingLoaded) {
+      return const SizedBox.shrink();
+    }
+
     return Row(
       children: [
         Expanded(

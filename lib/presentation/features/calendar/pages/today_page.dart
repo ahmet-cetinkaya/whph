@@ -280,8 +280,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             Padding(
                               padding: const EdgeInsets.only(right: AppTheme.sizeLarge),
                               child: TaskAddButton(
-                                initialTagIds: _selectedTagFilter,
+                                initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
                                 initialPlannedDate: DateTime.now(),
+                                initialTitle: _taskSearchQuery,
+                                initialCompleted: _showCompletedTasks,
                               ),
                             ),
                           ],
