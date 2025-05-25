@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
+
 class OrderRank {
   static const double minOrder = 0;
-  static const double maxOrder = 1000000; // Upper limit for normalization
+  static const double maxOrder = 1000000;
   static const double initialStep = 1000;
   static const double minimumOrderGap = 1;
 
@@ -9,18 +11,22 @@ class OrderRank {
     if (beforeOrder >= afterOrder || (afterOrder - beforeOrder) < minimumOrderGap) {
       throw RankGapTooSmallException();
     }
-    return beforeOrder + ((afterOrder - beforeOrder) / 2);
+    final result = beforeOrder + ((afterOrder - beforeOrder) / 2);
+    return result;
   }
 
   // Get order value for first position
-  static double first() => initialStep;
+  static double first() {
+    return initialStep;
+  }
 
   // Get next available order after the given one
   static double after(double currentOrder) {
     if (currentOrder >= maxOrder - initialStep) {
       throw RankGapTooSmallException();
     }
-    return currentOrder + initialStep;
+    final result = currentOrder + initialStep;
+    return result;
   }
 
   // Get next available order before the given one
@@ -28,12 +34,17 @@ class OrderRank {
     if (currentOrder <= initialStep) {
       return currentOrder / 2;
     }
-    return currentOrder - initialStep;
+    final result = currentOrder - initialStep;
+    debugPrint('Calculated previous order: $result');
+    return result;
   }
 
   // Find target order for moving an item to a specific position
   static double getTargetOrder(List<double> existingOrders, int targetPosition) {
-    if (existingOrders.isEmpty) return initialStep;
+    if (existingOrders.isEmpty) {
+      debugPrint('No existing orders, returning initialStep');
+      return initialStep;
+    }
 
     // Sort to ensure we're working with ordered data
     existingOrders.sort();
@@ -41,29 +52,48 @@ class OrderRank {
     // Handle special cases
     if (targetPosition <= 0) {
       // Place at beginning - use half of first item's order to ensure it comes first
-      return existingOrders.first > initialStep ? existingOrders.first / 2 : initialStep / 2;
+      final firstOrder = existingOrders.first;
+      if (firstOrder > initialStep) {
+        final result = firstOrder / 2;
+        return result;
+      } else if (firstOrder > 1e-6) {
+        // If first order is small but not too small, make it 1000 times smaller
+        final result = firstOrder / 1000;
+        return result;
+      } else if (firstOrder > 1e-10) {
+        // If first order is very small, make it even smaller
+        final result = firstOrder / 1000;
+        return result;
+      } else {
+        // If first order is extremely small or zero, use a tiny safe value
+        final result = 1e-12;
+        return result;
+      }
     }
 
     if (targetPosition >= existingOrders.length) {
       // Place at end - add a significant step to the last order to ensure it comes last
-      return existingOrders.last + initialStep * 2;
+      final result = existingOrders.last + initialStep * 2;
+      return result;
     }
 
     // Get orders before and after target position
     final beforeOrder = existingOrders[targetPosition - 1];
     final afterOrder = existingOrders[targetPosition];
-
     try {
       // Try to place in between
-      return between(beforeOrder, afterOrder);
+      final result = between(beforeOrder, afterOrder);
+      return result;
     } catch (e) {
       // If the gap is too small, create a larger gap
       if (targetPosition < existingOrders.length - 1) {
         // Not at the end, place closer to the next item
-        return afterOrder - (minimumOrderGap / 2);
+        final result = afterOrder - (minimumOrderGap / 2);
+        return result;
       } else {
         // At the end, place after the last item
-        return beforeOrder + initialStep;
+        final result = beforeOrder + initialStep;
+        return result;
       }
     }
   }
