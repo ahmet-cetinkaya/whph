@@ -20,6 +20,10 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
   final _habitsService = container.resolve<HabitsService>();
   bool _isDeleted = false;
 
+  void _goBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +70,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: _goBack,
         ),
         actions: [
           HabitArchiveButton(

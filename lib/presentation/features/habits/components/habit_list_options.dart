@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
@@ -97,77 +98,93 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
   }
 
   @override
-  Future<void> loadSavedFilterSettings() async {
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
+  Future<void> loadSavedListOptionSettings() async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
+      operation: () async {
+        final savedSettings = await filterSettingsManager.loadFilterSettings(
+          settingKey: settingKey,
+        );
 
-      if (savedSettings != null && mounted) {
-        final filterSettings = HabitListOptionSettings.fromJson(savedSettings);
+        if (savedSettings != null && mounted) {
+          final filterSettings = HabitListOptionSettings.fromJson(savedSettings);
 
-        setState(() {
-          lastSearchQuery = filterSettings.search;
-        });
+          setState(() {
+            lastSearchQuery = filterSettings.search;
+          });
 
-        if (widget.onTagFilterChange != null) {
-          final tagIds = filterSettings.selectedTagIds ?? [];
-          final showNoTags = filterSettings.showNoTagsFilter;
+          if (widget.onTagFilterChange != null) {
+            final tagIds = filterSettings.selectedTagIds ?? [];
+            final showNoTags = filterSettings.showNoTagsFilter;
 
-          widget.onTagFilterChange!(
-            tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-            showNoTags,
-          );
+            widget.onTagFilterChange!(
+              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+              showNoTags,
+            );
+          }
+
+          if (widget.onSearchChange != null && filterSettings.search != null) {
+            widget.onSearchChange!(filterSettings.search);
+          }
+
+          if (widget.onArchiveFilterChange != null) {
+            widget.onArchiveFilterChange!(filterSettings.filterByArchived);
+          }
+
+          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+            widget.onSortChange!(filterSettings.sortConfig!);
+          }
         }
 
-        if (widget.onSearchChange != null && filterSettings.search != null) {
-          widget.onSearchChange!(filterSettings.search);
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
 
-        if (widget.onArchiveFilterChange != null) {
-          widget.onArchiveFilterChange!(filterSettings.filterByArchived);
+        widget.onSettingsLoaded?.call();
+      },
+      finallyAction: () {
+        if (mounted) {
+          setState(() {
+            isSettingLoaded = true;
+          });
         }
-
-        if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-          widget.onSortChange!(filterSettings.sortConfig!);
-        }
-      }
-
-      widget.onSettingsLoaded?.call();
-    } catch (e) {
-      widget.onSettingsLoaded?.call();
-    }
+        widget.onSettingsLoaded?.call();
+      },
+    );
   }
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = HabitListOptionSettings(
-      selectedTagIds: widget.selectedTagIds,
-      showNoTagsFilter: widget.showNoTagsFilter,
-      filterByArchived: widget.filterByArchived,
-      search: lastSearchQuery,
-      sortConfig: widget.sortConfig,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = HabitListOptionSettings(
+          selectedTagIds: widget.selectedTagIds,
+          showNoTagsFilter: widget.showNoTagsFilter,
+          filterByArchived: widget.filterByArchived,
+          search: lastSearchQuery,
+          sortConfig: widget.sortConfig,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+          widget.onSaveSettings?.call();
+        }
+      },
     );
-
-    try {
-      await filterSettingsManager.saveFilterSettings(
-        settingKey: settingKey,
-        filterSettings: settings.toJson(),
-      );
-
-      if (mounted) {
-        setState(() {
-          hasUnsavedChanges = false;
-        });
-
-        showSavedMessageTemporarily();
-      }
-
-      // Notify parent that settings were saved
-      widget.onSaveSettings?.call();
-    } catch (e) {
-      // Handle error
-    }
   }
 
   @override
@@ -266,8 +283,8 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
         (widget.showSearchFilter && widget.onSearchChange != null) ||
         (widget.showSortButton && widget.onSortChange != null));
 
-    // If no filters to show, don't render anything
-    if (!showAnyFilters) return const SizedBox.shrink();
+    // If no filters to show or settings not loaded, don't render anything
+    if (!showAnyFilters || !isSettingLoaded) return const SizedBox.shrink();
 
     return Row(
       mainAxisSize: MainAxisSize.min,

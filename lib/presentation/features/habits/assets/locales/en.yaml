@@ -152,7 +152,7 @@ habits:
       sat: Sat
       sun: Sun
   list:
-    no_habits_found: No habits found
+    no_habits_found: No habits
     all_habits_done: All habits completed!
   reminders:
     enable: Enable reminders

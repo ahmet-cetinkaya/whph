@@ -216,7 +216,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
             ),
           // Content
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeSmall),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -227,7 +227,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     style: AppTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppTheme.sizeXSmall),
                   Text(
                     isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
                     style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
@@ -262,7 +262,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
         SizedBox(
           height: 300,
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(AppTheme.sizeXLarge),
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(show: false),

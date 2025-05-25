@@ -60,6 +60,10 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
     });
   }
 
+  void _toggleGoal(bool value) {
+    setState(() => _hasGoal = value);
+  }
+
   String _getGoalDescription() {
     if (!_hasGoal) {
       return widget.translationService.translate(HabitTranslationKeys.enableGoals);
@@ -106,6 +110,18 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
     );
   }
 
+  void _cancelDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _confirmDialog() {
+    Navigator.of(context).pop(HabitGoalResult(
+      hasGoal: _hasGoal,
+      targetFrequency: _targetFrequency,
+      periodDays: _periodDays,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -118,7 +134,7 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
               contentPadding: EdgeInsets.zero,
               leading: Switch(
                 value: _hasGoal,
-                onChanged: (value) => setState(() => _hasGoal = value),
+                onChanged: _toggleGoal,
               ),
               title: Text(widget.translationService.translate(HabitTranslationKeys.goal)),
               subtitle: Text(
@@ -147,15 +163,11 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: _cancelDialog,
           child: Text(widget.translationService.translate(SharedTranslationKeys.cancelButton)),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(context).pop(HabitGoalResult(
-            hasGoal: _hasGoal,
-            targetFrequency: _targetFrequency,
-            periodDays: _periodDays,
-          )),
+          onPressed: _confirmDialog,
           child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
         ),
       ],

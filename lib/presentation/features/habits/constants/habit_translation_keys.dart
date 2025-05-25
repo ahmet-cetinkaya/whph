@@ -1,4 +1,6 @@
-class HabitTranslationKeys {
+import 'package:whph/application/features/habits/constants/habit_translation_keys.dart' as application;
+
+class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String newHabit = 'habits.new_habit';
   static const String loadingRecordsError = 'habits.errors.loading_records';
   static const String creatingRecordError = 'habits.errors.creating_record';

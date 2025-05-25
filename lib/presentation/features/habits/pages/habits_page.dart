@@ -190,6 +190,13 @@ class _HabitsPageState extends State<HabitsPage> {
             _openDetails(habitId, context);
           },
           buttonColor: AppTheme.primaryColor,
+          initialTagIds: _showNoTagsFilter
+              ? []
+              : _selectedFilterTags.isEmpty
+                  ? null
+                  : _selectedFilterTags,
+          initialName: _searchQuery,
+          initialArchived: _filterByArchived,
         ),
         HelpMenu(
           titleKey: HabitTranslationKeys.overviewHelpTitle,
