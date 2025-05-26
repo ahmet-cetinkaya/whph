@@ -81,6 +81,7 @@ jobs:
           flutter build windows --release --verbose
           if ($LASTEXITCODE -eq 0) {
             Write-Host "Standard release build succeeded!"
+            echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
           } else {
             Write-Host "Standard release build failed with exit code: $LASTEXITCODE"
             
@@ -89,6 +90,7 @@ jobs:
             flutter build windows --release --no-tree-shake-icons --verbose
             if ($LASTEXITCODE -eq 0) {
               Write-Host "Release build with --no-tree-shake-icons succeeded!"
+              echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
             } else {
               Write-Host "Release build with --no-tree-shake-icons failed with exit code: $LASTEXITCODE"
               
@@ -97,6 +99,7 @@ jobs:
               flutter build windows --profile --verbose
               if ($LASTEXITCODE -eq 0) {
                 Write-Host "Profile build succeeded as fallback!"
+                echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
               } else {
                 Write-Host "All build attempts failed! Profile build exit code: $LASTEXITCODE"
                 exit 1
@@ -132,6 +135,20 @@ jobs:
           }
 
       # Publish the build artifacts
+      - name: Verify build output
+        run: |
+          Write-Host "Verifying build output in ${{ env.BUILD_TYPE }} folder..."
+          $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
+          if (Test-Path $buildPath) {
+            Write-Host "Build folder exists: $buildPath"
+            Get-ChildItem -Path $buildPath -Recurse | Where-Object { -not $_.PSIsContainer } | ForEach-Object {
+              Write-Host "File: $($_.FullName) (Size: $($_.Length) bytes)"
+            }
+          } else {
+            Write-Host "ERROR: Build folder not found: $buildPath"
+            exit 1
+          }
+
       - name: Get application version
         id: app_version
         run: |
@@ -143,7 +160,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: whph-v${{ env.APP_VERSION }}-windows
-          path: build\windows\x64\runner\Release\
+          path: build\windows\x64\runner\${{ env.BUILD_TYPE }}\
           if-no-files-found: error
           compression-level: 6
           overwrite: false
