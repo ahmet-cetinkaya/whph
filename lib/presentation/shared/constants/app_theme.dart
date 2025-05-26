@@ -167,7 +167,7 @@ class AppTheme {
     primaryColor: domain.AppTheme.primaryColor,
     scaffoldBackgroundColor: AppTheme.surface0,
     highlightColor: surface3,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: surface2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       clipBehavior: Clip.antiAlias,
@@ -264,7 +264,7 @@ class AppTheme {
         return textColor;
       }),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       barrierColor: barrierColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(containerBorderRadius),
