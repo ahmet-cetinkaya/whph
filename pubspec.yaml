@@ -1,7 +1,6 @@
 name: whph
 description: WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
 publish_to: "none"
-
 # Version format: major.minor.patch+build
 # Build versioning differs by platform:
 # - Android: versionName = version, versionCode = build
@@ -10,27 +9,24 @@ publish_to: "none"
 #
 # Update /lib/domain/shared/constants/app_info.dart file too.
 version: 0.6.0+15
-
 environment:
   sdk: ^3.5.3
-
 # https://pub.dev/packages/rps: dart pub global activate rps
 scripts:
   clean: flutter clean && rm -rf ~/.pub-cache/hosted/pub.dev/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
   format: dart format . -l 120
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && rps format
-  gen-icons: flutter pub run icons_launcher:create
-  migrate: flutter pub run drift_dev make-migrations && rps format
-  fix-android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh && bash scripts/fix_auto_start_flutter.sh
-  release-linux: flutter build linux --release
-  release-windows: flutter build windows --release
-  release-android: flutter build apk --release
+  gen:icons: flutter pub run icons_launcher:create
+  gen:migrate: flutter pub run drift_dev make-migrations && rps format
+  fix:android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh && bash scripts/fix_auto_start_flutter.sh
+  release:linux: flutter build linux --release
+  release:windows: flutter build windows --release
+  release:android: flutter build apk --release
   test: flutter test
-  test-ci: act -j build
-  test-ci-android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
-  test-ci-linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
-  test-ci-windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
-
+  test:ci: act -j build
+  test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
+  test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -41,21 +37,25 @@ dependencies:
   flutter:
     sdk: flutter
   test: ^1.25.8
-
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1
   sqflite: ^2.4.0
   sqlite3_flutter_libs: ^0.5.26
-
   # Utils
+  archive: ^4.0.5
   audioplayers: ^6.1.0
+  csv: ^6.0.0
   dart_json_mapper: ^2.2.13
   device_info_plus: ^11.4.0
+  file_picker: ^10.0.0
+  file_saver: ^0.2.12
+  flutter_local_notifications: ^19.0.0
   http: ^1.3.0
-  kiwi: ^5.0.1 # Dependency Injection
-  mediatr: ^0.2.1 # Mediator Pattern
-  meta: ^1.15.0 # Annotations
+  intl: ^0.19.0
+  kiwi: ^5.0.1
+  mediatr: ^0.2.1
+  meta: ^1.15.0
   network_info_plus: ^6.1.3
   path: ^1.8.3
   path_provider: ^2.1.1
@@ -64,40 +64,27 @@ dependencies:
   url_launcher: ^6.3.1
   web_socket_channel: ^3.0.1
   window_manager: ^0.4.3
-  archive: ^4.0.5
-  file_picker: ^10.0.0
-  csv: ^6.0.0
-  file_saver: ^0.2.12
-
   # UI
   calendar_date_picker2: ^2.0.0
   cupertino_icons: ^1.0.8
-  fl_chart: ^1.0.0
-  flutter_colorpicker: ^1.1.0
-  markdown_editor_plus: ^0.2.15
-  intl: ^0.19.0
   easy_localization: ^3.0.2
   easy_localization_multi: ^0.2.0
   easy_localization_yaml: ^0.1.2
-
+  fl_chart: ^1.0.0
+  flutter_colorpicker: ^1.1.0
+  markdown_editor_plus: ^0.2.15
   # Desktop
   launch_at_startup: ^0.5.1
   qr_flutter: ^4.1.0
-
-
+  # Mobile
+  qr_code_scanner_plus: ^2.0.6
   # Android
+  android_intent_plus: ^5.3.0
   app_usage: ^4.0.1
   auto_start_flutter: ^0.1.3
-
-  # Mobile
-  flutter_local_notifications: ^19.0.0
-  qr_code_scanner_plus: ^2.0.6
-  android_intent_plus: ^5.3.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -105,27 +92,15 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
-
-  rps: ^0.7.0
-
-  # Data
-  drift_dev: ^2.21.2 # ORM Generator
-
-  # Icon
-  icons_launcher: ^3.0.0
-
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
+  rps: ^0.7.0 # Run Pretty Scripts
+  drift_dev: ^2.21.2 # Drift code generation
+  icons_launcher: ^3.0.0 # Flutter app icon generator
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
+  # The assets section specifies the files that should be included in the
   assets:
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
@@ -148,28 +123,3 @@ flutter:
     - lib/presentation/features/tasks/assets/locales/
     - lib/presentation/features/tasks/assets/sounds/
     - lib/presentation/features/notes/assets/locales/
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
