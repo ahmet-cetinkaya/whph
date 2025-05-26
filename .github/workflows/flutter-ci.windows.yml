@@ -19,13 +19,43 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
+
+      - name: Setup Visual Studio tools
+        uses: microsoft/setup-msbuild@v2
 
       - name: Install Flutter dependencies
-        run: flutter pub get
+        run: |
+          flutter config --enable-windows-desktop
+          flutter pub get
+          echo "Checking for plugin compatibility..."
+          flutter pub deps
 
-      # Build for Windows
-      - name: Build for Windows
-        run: flutter build windows --release
+      - name: Clean previous builds
+        run: flutter clean
+
+      - name: Build for Windows (with verbose output)
+        run: |
+          echo "Starting Windows build..."
+          flutter config --enable-windows-desktop
+          flutter doctor -v
+          echo "Cleaning previous builds..."
+          flutter clean
+          echo "Getting dependencies..."
+          flutter pub get
+          echo "Building for Windows..."
+          flutter build windows --release --verbose || (echo "Build failed, checking logs..." && exit 1)
+        env:
+          FLUTTER_BUILD_DIR: build
+
+      - name: Debug build output on failure
+        if: failure()
+        run: |
+          echo "Build failed. Checking for build logs..."
+          ls -la build/ || echo "No build directory found"
+          ls -la build/windows/ || echo "No windows build directory found"
+          echo "Checking CMake files..."
+          find build/ -name "*.log" -exec cat {} \; || echo "No log files found"
 
       # Publish the build artifacts
       - name: Get application version
