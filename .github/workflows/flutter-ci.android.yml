@@ -34,7 +34,7 @@ jobs:
       run: flutter pub get
 
     - name: Fix Android Packages
-      run: flutter pub run rps fix-android
+      run: flutter pub run rps fix:android
 
     - name: Setup Keystore
       run: |
