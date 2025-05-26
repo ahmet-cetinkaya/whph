@@ -50,14 +50,16 @@ if [ ! -f "$PROJECT_PROGUARD" ]; then
     touch "$PROJECT_PROGUARD"
 fi
 
-# Add app_usage specific rules to main project
-cat >> "$PROJECT_PROGUARD" << 'EOL'
+# Add app_usage specific rules to main project if not already present
+if ! grep -q "dk.cachet.app_usage" "$PROJECT_PROGUARD"; then
+    cat >> "$PROJECT_PROGUARD" << 'EOL'
 
 # App Usage Plugin
 -keep class dk.cachet.app_usage.** { *; }
 -keepclassmembers class dk.cachet.app_usage.** { *; }
 -keep class com.google.android.gms.** { *; }
 EOL
+fi
 
 # Update app/build.gradle to use ProGuard rules
 APP_GRADLE="android/app/build.gradle"
