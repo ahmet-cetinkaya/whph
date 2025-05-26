@@ -28,34 +28,108 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
-          echo "Checking for plugin compatibility..."
+          Write-Host "Checking for plugin compatibility..."
           flutter pub deps
 
       - name: Clean previous builds
         run: flutter clean
 
-      - name: Build for Windows (with verbose output)
+      # Add workaround for flutter_local_notifications_windows AOT issue
+      - name: Apply Windows build workarounds
         run: |
-          echo "Starting Windows build..."
+          Write-Host "Applying workarounds for Windows build issues..."
+          
+          # Check if the problematic plugin exists
+          Write-Host "Checking for flutter_local_notifications_windows plugin..."
+          if (Test-Path "pubspec.lock") {
+            $pubspecLock = Get-Content "pubspec.lock" -Raw
+            if ($pubspecLock -match "flutter_local_notifications_windows") {
+              Write-Host "Found flutter_local_notifications_windows plugin - applying AOT workarounds"
+              
+              # Set environment variables to help with AOT compilation
+              echo "FLUTTER_AOT_WORKAROUND=true" >> $env:GITHUB_ENV
+              echo "FLUTTER_DISABLE_TREE_SHAKE=true" >> $env:GITHUB_ENV
+              echo "FLUTTER_LOCAL_NOTIFICATIONS_DETECTED=true" >> $env:GITHUB_ENV
+              
+              Write-Host "Plugin version information:"
+              Select-String -Path "pubspec.lock" -Pattern "flutter_local_notifications" -Context 5
+            } else {
+              Write-Host "flutter_local_notifications_windows plugin not found"
+            }
+          } else {
+            Write-Host "pubspec.lock not found"
+          }
+          
+          Write-Host "Setting additional build environment variables..."
+          # These flags may help with the AOT compilation issue
+          echo "FLUTTER_BUILD_MODE=release" >> $env:GITHUB_ENV
+
+      - name: Build for Windows (with verbose output and multiple strategies)
+        run: |
+          Write-Host "Starting Windows build..."
           flutter config --enable-windows-desktop
           flutter doctor -v
-          echo "Cleaning previous builds..."
+          Write-Host "Cleaning previous builds..."
           flutter clean
-          echo "Getting dependencies..."
+          Write-Host "Getting dependencies..."
           flutter pub get
-          echo "Building for Windows..."
-          flutter build windows --release --verbose || (echo "Build failed, checking logs..." && exit 1)
+          
+          Write-Host "Attempting Windows build with multiple strategies..."
+          
+          # Strategy 1: Standard release build
+          Write-Host "Attempt 1: Standard release build"
+          flutter build windows --release --verbose
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Standard release build succeeded!"
+          } else {
+            Write-Host "Standard release build failed with exit code: $LASTEXITCODE"
+            
+            # Strategy 2: Release build with tree-shake disabled
+            Write-Host "Attempt 2: Release build with --no-tree-shake-icons"
+            flutter build windows --release --no-tree-shake-icons --verbose
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "Release build with --no-tree-shake-icons succeeded!"
+            } else {
+              Write-Host "Release build with --no-tree-shake-icons failed with exit code: $LASTEXITCODE"
+              
+              # Strategy 3: Profile build as fallback
+              Write-Host "Attempt 3: Profile build as fallback"
+              flutter build windows --profile --verbose
+              if ($LASTEXITCODE -eq 0) {
+                Write-Host "Profile build succeeded as fallback!"
+              } else {
+                Write-Host "All build attempts failed! Profile build exit code: $LASTEXITCODE"
+                exit 1
+              }
+            }
+          }
         env:
           FLUTTER_BUILD_DIR: build
 
       - name: Debug build output on failure
         if: failure()
         run: |
-          echo "Build failed. Checking for build logs..."
-          ls -la build/ || echo "No build directory found"
-          ls -la build/windows/ || echo "No windows build directory found"
-          echo "Checking CMake files..."
-          find build/ -name "*.log" -exec cat {} \; || echo "No log files found"
+          Write-Host "Build failed. Checking for build logs..."
+          if (Test-Path "build/") {
+            Get-ChildItem -Path "build/" -Recurse
+          } else {
+            Write-Host "No build directory found"
+          }
+          if (Test-Path "build/windows/") {
+            Get-ChildItem -Path "build/windows/" -Recurse
+          } else {
+            Write-Host "No windows build directory found"
+          }
+          Write-Host "Checking for log files..."
+          $logFiles = Get-ChildItem -Path "build/" -Recurse -Filter "*.log" -ErrorAction SilentlyContinue
+          if ($logFiles) {
+            foreach ($file in $logFiles) {
+              Write-Host "=== Contents of $($file.FullName) ==="
+              Get-Content $file.FullName
+            }
+          } else {
+            Write-Host "No log files found"
+          }
 
       # Publish the build artifacts
       - name: Get application version
