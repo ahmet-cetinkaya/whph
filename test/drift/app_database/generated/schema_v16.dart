@@ -1752,7 +1752,7 @@ class HabitTable extends Table with TableInfo<HabitTable, HabitTableData> {
   late final GeneratedColumn<String> reminderTime = GeneratedColumn<String>('reminder_time', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   late final GeneratedColumn<String> reminderDays = GeneratedColumn<String>('reminder_days', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const CustomExpression('\'[]\''));
+      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const CustomExpression('\'\''));
   @override
   List<GeneratedColumn> get $columns => [
         id,

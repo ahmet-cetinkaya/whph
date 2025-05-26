@@ -4758,7 +4758,7 @@ i1.GeneratedColumn<String> _column_42(String aliasedName) =>
     i1.GeneratedColumn<String>('reminder_time', aliasedName, true, type: i1.DriftSqlType.string);
 i1.GeneratedColumn<String> _column_43(String aliasedName) =>
     i1.GeneratedColumn<String>('reminder_days', aliasedName, false,
-        type: i1.DriftSqlType.string, defaultValue: const CustomExpression('\'[]\''));
+        type: i1.DriftSqlType.string, defaultValue: const CustomExpression('\'\''));
 
 class Shape26 extends i0.VersionedTable {
   Shape26({required super.source, required super.alias}) : super.aliased();
