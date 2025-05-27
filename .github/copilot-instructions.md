@@ -26,19 +26,19 @@
 ## Theming
 - Use `Theme.of(context)` to access theme values.
 - Avoid hardcoding styles or colors.
+- Use `.withValues()` instead of `.withOpacity()` etc. for colors to maintain consistency with the theme.
 
 ## Naming Conventions
 
-* Use camelCase for variables and methods.
-* Use PascalCase for class names and widgets.
+- Use camelCase for variables and methods.
+- Use PascalCase for class names and widgets.
 
 ## Misc
-* Prefer async/await over `then()` for better readability.
-* Use `FutureBuilder` and `StreamBuilder` when dealing with async data in the UI.
-* `withOpacity` is deprecated and shouldn't be used. Use `.withValues()` to avoid precision loss.
-* Use `ListView.builder` for large lists instead of `ListView` with a static list.
-* Use `const` constructors for widgets that do not depend on runtime values.
-* Use `final` for variables that are not reassigned.
-* Use `const` for compile-time constants.
-* Use `async` and `await` for asynchronous operations.
-* Use method for event handlers instead of inline functions.
+- Prefer async/await over `then()` for better readability.
+- Use `FutureBuilder` and `StreamBuilder` when dealing with async data in the UI.
+- Use `ListView.builder` for large lists instead of `ListView` with a static list.
+- Use `const` constructors for widgets that do not depend on runtime values.
+- Use `final` for variables that are not reassigned.
+- Use `const` for compile-time constants.
+- Use `async` and `await` for asynchronous operations.
+- Use method for event handlers instead of inline functions.
