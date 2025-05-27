@@ -112,7 +112,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
           }
         }
       },
-      onSuccess: () {
+      finallyAction: () {
         if (mounted) {
           setState(() {
             isSettingLoaded = true;
@@ -120,15 +120,6 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
         }
         widget.onSettingsLoaded?.call();
       },
-      onError: (_) {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
-      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
     );
   }
 

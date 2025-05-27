@@ -81,42 +81,40 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(AppUsageTranslationKeys.loadListOptionsError),
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
+    final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
 
-        if (savedSettings != null) {
-          final settings = AppUsageFilterSettings.fromJson(savedSettings);
+    if (savedSettings != null) {
+      final settings = AppUsageFilterSettings.fromJson(savedSettings);
 
-          // Create a new state with the saved settings
-          final newState = AppUsageFilterState(
-            tags: settings.tags,
-            showNoTagsFilter: settings.showNoTagsFilter,
-            startDate: settings.startDate,
-            endDate: settings.endDate,
-          );
+      // Create a new state with the saved settings
+      final newState = AppUsageFilterState(
+        tags: settings.tags,
+        showNoTagsFilter: settings.showNoTagsFilter,
+        startDate: settings.startDate,
+        endDate: settings.endDate,
+      );
 
-          if (mounted) {
-            setState(() {
-              _currentState = newState;
-              isSettingLoaded = true;
-            });
-            widget.onFiltersChanged(newState);
-          }
+      if (mounted) {
+        setState(() {
+          _currentState = newState;
+        });
+        widget.onFiltersChanged(newState);
+      }
+    }
 
-          widget.onSettingsLoaded?.call();
-        }
-      },
-    );
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override
   Future<void> saveFilterSettings() async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService.translate(AppUsageTranslationKeys.saveListOptionsError),
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () async {
         final settings = AppUsageFilterSettings(
           tags: _currentState.tags,

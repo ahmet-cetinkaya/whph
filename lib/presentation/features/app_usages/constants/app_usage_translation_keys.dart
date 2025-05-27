@@ -30,10 +30,6 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String appUsageTagRuleNotFoundError = 'app_usages.errors.app_usage_tag_rule_not_found';
   static const String appUsageIgnoreRuleNotFoundError = 'app_usages.errors.app_usage_ignore_rule_not_found';
 
-  // List Options Errors
-  static const String loadListOptionsError = 'app_usages.list_options.errors.load';
-  static const String saveListOptionsError = 'app_usages.list_options.errors.save';
-
   // Delete
   static const String deleteConfirmTitle = 'app_usages.delete.confirm_title';
 

@@ -99,61 +99,46 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(
-          settingKey: settingKey,
-        );
-
-        if (savedSettings != null && mounted) {
-          final filterSettings = HabitListOptionSettings.fromJson(savedSettings);
-
-          setState(() {
-            lastSearchQuery = filterSettings.search;
-          });
-
-          if (widget.onTagFilterChange != null) {
-            final tagIds = filterSettings.selectedTagIds ?? [];
-            final showNoTags = filterSettings.showNoTagsFilter;
-
-            widget.onTagFilterChange!(
-              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-              showNoTags,
-            );
-          }
-
-          if (widget.onSearchChange != null && filterSettings.search != null) {
-            widget.onSearchChange!(filterSettings.search);
-          }
-
-          if (widget.onArchiveFilterChange != null) {
-            widget.onArchiveFilterChange!(filterSettings.filterByArchived);
-          }
-
-          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-            widget.onSortChange!(filterSettings.sortConfig!);
-          }
-        }
-
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-
-        widget.onSettingsLoaded?.call();
-      },
-      finallyAction: () {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
+    final savedSettings = await filterSettingsManager.loadFilterSettings(
+      settingKey: settingKey,
     );
+
+    if (savedSettings != null && mounted) {
+      final filterSettings = HabitListOptionSettings.fromJson(savedSettings);
+
+      setState(() {
+        lastSearchQuery = filterSettings.search;
+      });
+
+      if (widget.onTagFilterChange != null) {
+        final tagIds = filterSettings.selectedTagIds ?? [];
+        final showNoTags = filterSettings.showNoTagsFilter;
+
+        widget.onTagFilterChange!(
+          tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+          showNoTags,
+        );
+      }
+
+      if (widget.onSearchChange != null && filterSettings.search != null) {
+        widget.onSearchChange!(filterSettings.search);
+      }
+
+      if (widget.onArchiveFilterChange != null) {
+        widget.onArchiveFilterChange!(filterSettings.filterByArchived);
+      }
+
+      if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+        widget.onSortChange!(filterSettings.sortConfig!);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override
