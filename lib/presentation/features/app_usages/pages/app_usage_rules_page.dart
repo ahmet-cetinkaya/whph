@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/app_usages/components/app_usage_ignor
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:whph/presentation/shared/components/border_fade_overlay.dart';
 
 class AppUsageRulesPage extends StatefulWidget {
   static const String route = '/app-usages/rules';
@@ -53,13 +54,18 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(text: _translationService.translate(AppUsageTranslationKeys.tagRules)),
-                Tab(text: _translationService.translate(AppUsageTranslationKeys.ignoreRules)),
-              ],
-              dividerColor: Colors.transparent,
+            BorderFadeOverlay(
+              fadeBorders: {FadeBorder.right},
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                tabs: [
+                  Tab(text: _translationService.translate(AppUsageTranslationKeys.tagRules)),
+                  Tab(text: _translationService.translate(AppUsageTranslationKeys.ignoreRules)),
+                ],
+                dividerColor: Colors.transparent,
+              ),
             ),
             Expanded(
               child: TabBarView(
