@@ -18,41 +18,76 @@ class ColorPicker extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children: [
+          // Tab Bar Section
           BorderFadeOverlay(
             fadeBorders: {FadeBorder.right},
             child: TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                  icon: Icon(Icons.palette),
-                  text: translationService.translate(SharedTranslationKeys.colorPickerPaletteTab),
                   key: const Key('color_picker_palette_tab'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.palette),
+                      const SizedBox(width: 8),
+                      Text(translationService.translate(SharedTranslationKeys.colorPickerPaletteTab)),
+                    ],
+                  ),
                 ),
                 Tab(
-                  icon: Icon(Icons.gradient),
-                  text: translationService.translate(SharedTranslationKeys.colorPickerCustomTab),
                   key: const Key('color_picker_custom_tab'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.gradient),
+                      const SizedBox(width: 8),
+                      Text(translationService.translate(SharedTranslationKeys.colorPickerCustomTab)),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: 300,
+
+          // Tab View Section
+          Expanded(
             child: TabBarView(
               children: [
-                SingleChildScrollView(
-                  child: flutter_colorpicker.MaterialPicker(
-                    pickerColor: pickerColor,
-                    onColorChanged: onChangeColor,
+                // Material Picker Tab
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: flutter_colorpicker.MaterialPicker(
+                      pickerColor: pickerColor,
+                      onColorChanged: onChangeColor,
+                    ),
                   ),
                 ),
-                SingleChildScrollView(
-                  child: flutter_colorpicker.ColorPicker(
-                    pickerColor: pickerColor,
-                    onColorChanged: onChangeColor,
+
+                // Custom Color Picker Tab
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return flutter_colorpicker.ColorPicker(
+                          pickerColor: pickerColor,
+                          onColorChanged: onChangeColor,
+                          // Ensure picker fits within available width
+                          pickerAreaHeightPercent: 0.7,
+                          displayThumbColor: true,
+                          enableAlpha: false,
+                          // Constrain the color picker to available width
+                          portraitOnly: true,
+                          hexInputBar: true,
+                          colorPickerWidth: constraints.maxWidth > 200 ? 200 : constraints.maxWidth - 32,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/commands/add_app_usage_tag_command.dart';
 import 'package:whph/application/features/app_usages/commands/remove_tag_tag_command.dart';
@@ -10,11 +9,11 @@ import 'package:whph/application/features/app_usages/queries/get_app_usage_query
 import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
-import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
-import 'package:whph/presentation/shared/components/color_preview.dart';
+import 'package:whph/presentation/shared/components/color_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/extensions/color_extensions.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
@@ -213,16 +212,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
     // Notify that app usage has been updated with the color change
     _appUsagesService.notifyAppUsageUpdated(widget.id);
-  }
-
-  void _onChangeColorOpen() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => color_picker.ColorPicker(
-        pickerColor: Color(int.parse("FF${_appUsage!.color!}", radix: 16)),
-        onChangeColor: _onChangeColor,
-      ),
-    );
   }
 
   // Process field content and update UI after app usage data is loaded
@@ -427,15 +416,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
                 icon: AppUsageUiConstants.colorIcon,
                 hintText: _translationService.translate(AppUsageTranslationKeys.colorHint),
-                widget: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ColorPreview(color: AppUsageUiConstants.getTagColor(_appUsage!.color)),
-                    IconButton(
-                      onPressed: _onChangeColorOpen,
-                      icon: Icon(AppUsageUiConstants.editIcon, size: AppTheme.iconSizeSmall),
-                    )
-                  ],
+                widget: ColorField(
+                  initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
+                  onColorChanged: _onChangeColor,
                 ),
               ),
           ]),
