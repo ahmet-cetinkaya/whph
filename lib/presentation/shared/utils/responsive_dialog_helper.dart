@@ -59,33 +59,43 @@ class ResponsiveDialogHelper {
         isDismissible: isDismissible,
         enableDrag: enableDrag,
         builder: (BuildContext context) {
-          // Calculate available height for the bottom sheet
-          final bottomSheetMaxHeight = screenSize.height * 0.9;
+          final mediaQuery = MediaQuery.of(context);
+          final bottomPadding = mediaQuery.padding.bottom;
+          final bottomInset = mediaQuery.viewInsets.bottom;
 
-          return DraggableScrollableSheet(
-            initialChildSize: fullHeight ? 0.9 : 0.6,
-            minChildSize: 0.5,
-            maxChildSize: 0.95,
-            expand: false,
-            builder: (context, scrollController) {
-              return Material(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Content with constraints to prevent unbounded height
-                    Expanded(
-                      child: _wrapWithConstrainedContent(
-                        context,
-                        child,
-                        scrollController: isScrollable ? scrollController : null,
-                        isScrollable: isScrollable,
-                        maxHeight: bottomSheetMaxHeight,
-                      ),
+          // Calculate available height considering navigation bar and system UI
+          final safeAreaHeight = screenSize.height - bottomPadding;
+          final bottomSheetMaxHeight = safeAreaHeight * 0.9;
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: DraggableScrollableSheet(
+              initialChildSize: fullHeight ? 0.9 : 0.6,
+              minChildSize: 0.5,
+              maxChildSize: 0.95,
+              expand: false,
+              builder: (context, scrollController) {
+                return Material(
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Content with constraints to prevent unbounded height
+                        Expanded(
+                          child: _wrapWithConstrainedContent(
+                            context,
+                            child,
+                            scrollController: isScrollable ? scrollController : null,
+                            isScrollable: isScrollable,
+                            maxHeight: bottomSheetMaxHeight,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
+                  ),
+                );
+              },
+            ),
           );
         },
       );
