@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/application/features/tags/commands/remove_tag_tag_command.dart';
@@ -12,13 +11,13 @@ import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart'
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/extensions/color_extensions.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/presentation/shared/components/color_picker.dart' as color_picker;
-import 'package:whph/presentation/shared/components/color_preview.dart';
+import 'package:whph/presentation/shared/components/color_field.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
 
 class TagDetailsContent extends StatefulWidget {
@@ -265,16 +264,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     _saveTag();
   }
 
-  void _onChangeColorOpen() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => color_picker.ColorPicker(
-        pickerColor: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16)),
-        onChangeColor: _onChangeColor,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_tag == null || _tagTags == null) {
@@ -325,20 +314,11 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                   DetailTableRowData(
                     label: _translationService.translate(TagTranslationKeys.colorLabel),
                     icon: TagUiConstants.colorIcon,
-                    widget: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ColorPreview(color: Color(int.parse("FF${_tag!.color ?? 'FFFFFF'}", radix: 16))),
-                          IconButton(
-                            onPressed: _onChangeColorOpen,
-                            icon: Icon(TagUiConstants.editIcon, size: AppTheme.iconSizeSmall),
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                          )
-                        ],
-                      ),
+                    widget: ColorField(
+                      initialColor: _tag!.color != null && _tag!.color!.isNotEmpty
+                          ? Color(int.parse("FF${_tag!.color}", radix: 16))
+                          : Colors.blue,
+                      onColorChanged: _onChangeColor,
                     ),
                   ),
                 if (_tagTags != null && (_tagTags!.items.isNotEmpty || _visibleOptionalFields.contains(keyRelatedTags)))

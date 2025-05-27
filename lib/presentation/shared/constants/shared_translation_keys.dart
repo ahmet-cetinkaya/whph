@@ -84,6 +84,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String colorPickerTitle = 'shared.color_picker.title';
   static const String colorPickerPaletteTab = 'shared.color_picker.tabs.palette';
   static const String colorPickerCustomTab = 'shared.color_picker.tabs.custom';
+  static const String selectColorTitle = 'shared.color_picker.select_color_title';
+  static const String confirmSelection = 'shared.color_picker.confirm_selection';
 
   // Date Filter
   static const String dateRangeTitle = 'shared.date_filter.title';
