@@ -130,14 +130,12 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
 
               // Notes list
               if (_isListVisible)
-                Expanded(
-                  child: NotesList(
-                    filterByTags: _selectedTagIds,
-                    filterNoTags: _showNoTagsFilter,
-                    search: _searchQuery,
-                    sortConfig: _sortConfig,
-                    onClickNote: _openDetails,
-                  ),
+                NotesList(
+                  filterByTags: _selectedTagIds,
+                  filterNoTags: _showNoTagsFilter,
+                  search: _searchQuery,
+                  sortConfig: _sortConfig,
+                  onClickNote: _openDetails,
                 ),
             ],
           ),

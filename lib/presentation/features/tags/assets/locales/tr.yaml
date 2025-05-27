@@ -95,7 +95,7 @@ tags:
     description: Açıklama
     tags: Etiketler
   list:
-    no_tags_found: Etiket bulunamadı
+    no_tags: Etiket yok
     filter_tooltip: Etiketlere göre filtrele
   tooltips:
     add_tag: Etiket ekle

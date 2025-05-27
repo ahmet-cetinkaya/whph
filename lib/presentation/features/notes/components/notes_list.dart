@@ -197,13 +197,10 @@ class NotesListState extends State<NotesList> {
     }
 
     if (_notes == null || _notes!.items.isEmpty) {
-      final hasFilters = _currentFilters.hasAnyFilter;
       return IconOverlay(
         icon: Icons.note_alt_outlined,
         iconSize: 48,
-        message: _translationService.translate(
-          hasFilters ? NoteTranslationKeys.noNotesWithFilters : NoteTranslationKeys.noNotes,
-        ),
+        message: _translationService.translate(NoteTranslationKeys.noNotes),
       );
     }
 

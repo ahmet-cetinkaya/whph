@@ -3,7 +3,6 @@ notes:
   new_note: New Note
   note_details: Note Details
   no_notes: No notes
-  no_notes_with_filters: No notes found with current filters
   notes: Notes
   details:
     title: Title

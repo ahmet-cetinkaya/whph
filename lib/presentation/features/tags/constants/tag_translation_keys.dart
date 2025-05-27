@@ -46,7 +46,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String overviewHelpContent = 'tags.help.overview.content';
 
   // List
-  static const String noTagsFound = 'tags.list.no_tags_found';
+  static const String noTags = 'tags.list.no_tags';
   static const String filterTagsTooltip = 'tags.list.filter_tooltip';
 
   // Tooltips

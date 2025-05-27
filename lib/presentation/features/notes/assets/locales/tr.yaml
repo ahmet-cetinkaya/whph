@@ -3,7 +3,6 @@ notes:
   new_note: Yeni Not
   note_details: Not Detayları
   no_notes: Not yok
-  no_notes_with_filters: Mevcut filtrelerle not bulunamadı
   notes: Notlar
   details:
     title: Başlık

@@ -166,7 +166,7 @@ class TagsListState extends State<TagsList> {
     if (_tags == null || _tags!.items.isEmpty) {
       return IconOverlay(
         icon: Icons.label_off,
-        message: _translationService.translate(TagTranslationKeys.noTagsFound),
+        message: _translationService.translate(TagTranslationKeys.noTags),
       );
     }
 
