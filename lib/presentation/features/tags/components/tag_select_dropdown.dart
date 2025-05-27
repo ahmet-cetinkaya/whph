@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/tags/constants/tag_translation_keys.d
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'dart:async';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -417,23 +418,26 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               final tag = _tags!.items.firstWhere((t) => t.id == id);
               return Padding(
                 padding: const EdgeInsets.only(right: 4.0),
-                child: Chip(
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  label: Text(tag.name, style: AppTheme.bodySmall),
-                  onDeleted: () {
-                    final List<DropdownOption<String>> updatedTags =
-                        uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                      final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
-                      return DropdownOption(label: tagItem.name, value: tagItem.id);
-                    }).toList();
-                    widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                    setState(() {
-                      _selectedTags.removeWhere((tagId) => tagId == id);
-                    });
-                  },
+                child: GestureDetector(
+                  onTap: () => _navigateToTagDetails(tag.id),
+                  child: Chip(
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: EdgeInsets.zero,
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    label: Text(tag.name, style: AppTheme.bodySmall),
+                    onDeleted: () {
+                      final List<DropdownOption<String>> updatedTags =
+                          uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                        final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
+                        return DropdownOption(label: tagItem.name, value: tagItem.id);
+                      }).toList();
+                      widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                      setState(() {
+                        _selectedTags.removeWhere((tagId) => tagId == id);
+                      });
+                    },
+                  ),
                 ),
               );
             }).toList(),
@@ -524,6 +528,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
           ),
       ],
+    );
+  }
+
+  void _navigateToTagDetails(String tagId) {
+    ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: TagDetailsPage(tagId: tagId),
     );
   }
 }
