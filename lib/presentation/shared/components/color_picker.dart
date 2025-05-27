@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart' as flutter_colorpi
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import '../constants/shared_translation_keys.dart';
+import 'border_fade_overlay.dart';
 
 class ColorPicker extends StatelessWidget {
   final Color pickerColor;
@@ -19,19 +20,24 @@ class ColorPicker extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(Icons.palette),
-                text: translationService.translate(SharedTranslationKeys.colorPickerPaletteTab),
-                key: const Key('color_picker_palette_tab'),
-              ),
-              Tab(
-                icon: Icon(Icons.gradient),
-                text: translationService.translate(SharedTranslationKeys.colorPickerCustomTab),
-                key: const Key('color_picker_custom_tab'),
-              ),
-            ],
+          BorderFadeOverlay(
+            fadeBorders: {FadeBorder.right},
+            child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.palette),
+                  text: translationService.translate(SharedTranslationKeys.colorPickerPaletteTab),
+                  key: const Key('color_picker_palette_tab'),
+                ),
+                Tab(
+                  icon: Icon(Icons.gradient),
+                  text: translationService.translate(SharedTranslationKeys.colorPickerCustomTab),
+                  key: const Key('color_picker_custom_tab'),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 300,

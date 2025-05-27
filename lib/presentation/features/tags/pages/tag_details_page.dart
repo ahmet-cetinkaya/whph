@@ -19,6 +19,7 @@ import 'package:whph/presentation/features/tags/components/tag_time_bar_chart.da
 import 'package:whph/presentation/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/shared/components/border_fade_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
@@ -116,17 +117,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                 length: 3,
                 child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
-                            width: 1,
-                          ),
-                        ),
-                      ),
+                    BorderFadeOverlay(
+                      fadeBorders: {FadeBorder.right},
                       child: TabBar(
-                        dividerColor: Colors.transparent,
+                        isScrollable: true,
+                        tabAlignment: TabAlignment.start,
                         tabs: [
                           Tab(
                             child: Row(
@@ -159,6 +154,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                             ),
                           ),
                         ],
+                        dividerColor: Colors.transparent,
                       ),
                     ),
                     Expanded(
