@@ -3,7 +3,9 @@ import 'package:whph/presentation/shared/components/markdown_renderer.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 
 class HelpMenu extends StatelessWidget {
@@ -19,41 +21,25 @@ class HelpMenu extends StatelessWidget {
   });
 
   void _showHelpModal(BuildContext context) {
-    showDialog(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => Dialog(
-        child: Container(
+      size: DialogSize.large,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_translationService.translate(titleKey)),
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => _closeDialog(context),
+            ),
+          ],
+        ),
+        body: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           padding: const EdgeInsets.all(AppTheme.sizeXLarge),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _translationService.translate(titleKey),
-                        style: AppTheme.headlineSmall,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => _closeDialog(context),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppTheme.sizeLarge),
-              Expanded(
-                child: MarkdownRenderer(
-                  data: _translationService.translate(markdownContentKey),
-                ),
-              ),
-            ],
+          child: MarkdownRenderer(
+            data: _translationService.translate(markdownContentKey),
           ),
         ),
       ),

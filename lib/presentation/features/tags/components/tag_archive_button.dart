@@ -4,7 +4,9 @@ import 'package:whph/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -62,9 +64,10 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
   Future<void> _toggleArchiveStatus() async {
     final newStatus = !(_isArchived ?? false);
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(
           _isArchived! ? TagTranslationKeys.unarchiveTag : TagTranslationKeys.archiveTag,
         )),

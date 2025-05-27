@@ -3,6 +3,7 @@ import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -48,9 +49,7 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
   Future<void> _showOrderDialog(BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      fullHeight: false,
-      maxHeightRatio: widget.dialogMaxHeightRatio ?? 0.4,
-      maxWidthRatio: widget.dialogMaxWidthRatio ?? 0.6,
+      size: DialogSize.small,
       child: _SortDialog<T>(
         availableOptions: widget.availableOptions,
         config: widget.config,
@@ -214,6 +213,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               Navigator.of(context).pop();
             },
           ),
+          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(

@@ -10,8 +10,10 @@ import 'package:whph/presentation/shared/components/persistent_list_options_base
 import 'package:whph/presentation/shared/components/save_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/main.dart';
 
@@ -222,13 +224,12 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
   }
 
   Future<void> _showCategoryDialog() async {
-    final result = await showDialog<Set<TagTimeCategory>>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<Set<TagTimeCategory>>(
       context: context,
-      builder: (BuildContext context) {
-        return _CategorySelectionDialog(
-          selectedCategories: _selectedCategories,
-        );
-      },
+      size: DialogSize.min,
+      child: _CategorySelectionDialog(
+        selectedCategories: _selectedCategories,
+      ),
     );
 
     if (result != null) {

@@ -11,6 +11,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/constants/task_sounds.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
@@ -18,6 +20,7 @@ import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dar
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Function(Duration) onTimeUpdate;
@@ -317,15 +320,26 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       });
     }
 
-    await showModalBottomSheet(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return _buildSettingsModal(setState);
-          },
-        );
-      },
+      size: DialogSize.medium,
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(_translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel)),
+              automaticallyImplyLeading: false,
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+                ),
+              ],
+            ),
+            body: _buildSettingsContent(setState),
+          );
+        },
+      ),
     );
 
     // Save settings
@@ -421,7 +435,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     return _startTimer;
   }
 
-  Widget _buildSettingsModal(StateSetter setState) {
+  Widget _buildSettingsContent(StateSetter setState) {
     return Padding(
       padding: const EdgeInsets.all(AppTheme.sizeLarge),
       child: SingleChildScrollView(
@@ -429,9 +443,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-                child: Text(_translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel),
-                    style: AppTheme.headlineSmall)),
             Text(
               _translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
               style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),

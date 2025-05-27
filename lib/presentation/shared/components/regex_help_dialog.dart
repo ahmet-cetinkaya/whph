@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import '../constants/shared_translation_keys.dart';
 
 class RegexHelpDialog extends StatelessWidget {
   const RegexHelpDialog({super.key});
 
   static void show(BuildContext context) {
-    showDialog(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => const RegexHelpDialog(),
+      size: DialogSize.min,
+      child: const RegexHelpDialog(),
     );
   }
 
@@ -111,6 +114,7 @@ class RegexHelpDialog extends StatelessWidget {
           onPressed: () => _closeDialog(context),
           child: Text(translationService.translate(SharedTranslationKeys.closeButton)),
         ),
+        const SizedBox(width: AppTheme.sizeSmall),
       ],
     );
   }

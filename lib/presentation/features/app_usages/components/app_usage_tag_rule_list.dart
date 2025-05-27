@@ -5,7 +5,9 @@ import 'package:whph/application/features/app_usages/commands/delete_app_usage_t
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -224,9 +226,10 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   Future<void> _delete(BuildContext context, AppUsageTagRuleListItem rule) async {
     if (!mounted) return;
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleTitle)),
         content: Text(_translationService
             .translate(AppUsageTranslationKeys.deleteRuleConfirm, namedArgs: {'pattern': rule.pattern})),

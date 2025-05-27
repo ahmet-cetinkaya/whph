@@ -42,19 +42,14 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
             titleKey: NoteTranslationKeys.noteDetails,
             markdownContentKey: NoteTranslationKeys.helpContent,
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: NoteDetailsContent(
-              noteId: widget.noteId,
-              onNoteUpdated: () {},
-              onTitleUpdated: (_) {},
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: NoteDetailsContent(
+            noteId: widget.noteId,
           ),
         ),
       ),

@@ -97,7 +97,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
             titleKey: TagTranslationKeys.detailsHelpTitle,
             markdownContentKey: TagTranslationKeys.helpContent,
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(

@@ -204,7 +204,8 @@ class _HabitsPageState extends State<HabitsPage> {
         ),
         const SizedBox(width: 8),
       ],
-      builder: (context) => ListView(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Filters and Calendar row
           Row(
@@ -249,16 +250,18 @@ class _HabitsPageState extends State<HabitsPage> {
 
           // List
           if (_isHabitListVisible)
-            HabitsList(
-              dateRange: daysToShow,
-              filterByTags: _selectedFilterTags,
-              filterNoTags: _showNoTagsFilter,
-              filterByArchived: _filterByArchived,
-              search: _searchQuery,
-              sortConfig: _sortConfig,
-              onClickHabit: (item) {
-                _openDetails(item.id, context);
-              },
+            Expanded(
+              child: HabitsList(
+                dateRange: daysToShow,
+                filterByTags: _selectedFilterTags,
+                filterNoTags: _showNoTagsFilter,
+                filterByArchived: _filterByArchived,
+                search: _searchQuery,
+                sortConfig: _sortConfig,
+                onClickHabit: (item) {
+                  _openDetails(item.id, context);
+                },
+              ),
             ),
         ],
       ),

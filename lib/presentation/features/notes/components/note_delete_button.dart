@@ -6,8 +6,10 @@ import 'package:whph/presentation/features/notes/constants/note_translation_keys
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class NoteDeleteButton extends StatefulWidget {
   final String noteId;
@@ -32,9 +34,10 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
   bool _isDeleting = false;
 
   Future<void> _confirmDelete() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(NoteTranslationKeys.confirmDeleteTitle)),
         content: Text(_translationService.translate(NoteTranslationKeys.confirmDeleteMessage)),
         actions: [

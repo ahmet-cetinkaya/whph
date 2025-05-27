@@ -11,6 +11,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_translation_serv
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'dart:async';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -190,215 +191,194 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       _searchFocusNode.requestFocus();
     });
 
-    await showModalBottomSheet(
+    await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Padding(
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
+              automaticallyImplyLeading: false,
+              actions: [
+                if (tempSelectedTags.isNotEmpty || _hasExplicitlySelectedNone)
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        tempSelectedTags.clear();
+                        _hasExplicitlySelectedNone = false;
+                      });
+                    },
+                    icon: Icon(SharedUiConstants.clearIcon),
+                    tooltip: _translationService.translate(TagTranslationKeys.clearAllButton),
+                  ),
+                TextButton(
+                  onPressed: () => _confirmTagSelection(tempSelectedTags),
+                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+                ),
+                const SizedBox(width: AppTheme.sizeSmall),
+              ],
+            ),
+            body: Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.8,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _searchController,
-                              focusNode: _searchFocusNode,
-                              decoration: InputDecoration(
-                                labelText: _translationService.translate(TagTranslationKeys.searchLabel),
-                                fillColor: Colors.transparent,
-                                labelStyle: AppTheme.bodySmall,
-                              ),
-                              onChanged: (value) {
-                                if (!mounted) return;
+              child: Column(
+                children: [
+                  // Search Section
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      decoration: InputDecoration(
+                        labelText: _translationService.translate(TagTranslationKeys.searchLabel),
+                        fillColor: Colors.transparent,
+                        labelStyle: AppTheme.bodySmall,
+                      ),
+                      onChanged: (value) {
+                        if (!mounted) return;
 
-                                setState(() {
-                                  _tags = null;
-                                });
+                        setState(() {
+                          _tags = null;
+                        });
 
-                                if (value.isEmpty) {
-                                  _getTags(pageIndex: 0);
-                                  return;
-                                }
+                        if (value.isEmpty) {
+                          _getTags(pageIndex: 0);
+                          return;
+                        }
 
-                                _searchDebounce?.cancel();
-                                _searchDebounce = Timer(
-                                    value.length == 1
-                                        ? const Duration(milliseconds: 100)
-                                        : const Duration(milliseconds: 300), () {
-                                  _getTags(pageIndex: 0, search: value);
-                                });
-                              },
+                        _searchDebounce?.cancel();
+                        _searchDebounce = Timer(
+                            value.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 300),
+                            () {
+                          _getTags(pageIndex: 0, search: value);
+                        });
+                      },
+                    ),
+                  ),
+
+                  // Tag List Section
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
+                      itemBuilder: (context, index) {
+                        if (widget.showNoneOption && index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Text(
+                              _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: Colors.grey,
+                                  ),
                             ),
-                          ),
-                          if (tempSelectedTags.isNotEmpty || _hasExplicitlySelectedNone)
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
+                          );
+                        }
+
+                        if (widget.showNoneOption && index == 1) {
+                          return CheckboxListTile(
+                            title: Text(
+                              _translationService.translate(SharedTranslationKeys.noneOption),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            value: _hasExplicitlySelectedNone,
+                            onChanged: (bool? value) {
+                              if (!mounted) return;
+                              setState(() {
+                                if (value == true) {
                                   tempSelectedTags.clear();
+                                  _hasExplicitlySelectedNone = true;
+                                } else {
                                   _hasExplicitlySelectedNone = false;
-                                });
-                              },
-                              icon: Icon(SharedUiConstants.clearIcon),
-                              tooltip: _translationService.translate(TagTranslationKeys.clearAllButton),
-                            ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
-                      child: SizedBox(
-                        height: 300,
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
-                          itemBuilder: (context, index) {
-                            if (widget.showNoneOption && index == 0) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                child: Text(
-                                  _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
-                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        color: Colors.grey,
-                                      ),
-                                ),
-                              );
-                            }
-
-                            if (widget.showNoneOption && index == 1) {
-                              return CheckboxListTile(
-                                title: Text(
-                                  _translationService.translate(SharedTranslationKeys.noneOption),
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                value: _hasExplicitlySelectedNone,
-                                onChanged: (bool? value) {
-                                  if (!mounted) return;
-                                  setState(() {
-                                    if (value == true) {
-                                      tempSelectedTags.clear();
-                                      _hasExplicitlySelectedNone = true;
-                                    } else {
-                                      _hasExplicitlySelectedNone = false;
-                                    }
-                                  });
-                                },
-                              );
-                            }
-
-                            if (widget.showNoneOption ? index == 2 : index == 0) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                child: Text(
-                                  _translationService.translate(TagTranslationKeys.tagsLabel),
-                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        color: Colors.grey,
-                                      ),
-                                ),
-                              );
-                            }
-
-                            final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
-
-                            if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
-                              return const SizedBox.shrink();
-                            }
-
-                            final tag = _tags!.items[actualIndex];
-                            return CheckboxListTile(
-                              title: Text(tag.name),
-                              value: tempSelectedTags.contains(tag.id),
-                              onChanged: (bool? value) {
-                                if (!mounted) return;
-                                setState(() {
-                                  if (value == true && _hasExplicitlySelectedNone) {
-                                    _hasExplicitlySelectedNone = false;
-                                  }
-
-                                  if (widget.isMultiSelect) {
-                                    if (value == true) {
-                                      if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
-                                        tempSelectedTags.removeAt(0);
-                                      }
-                                      tempSelectedTags.add(tag.id);
-                                    } else {
-                                      tempSelectedTags.remove(tag.id);
-                                    }
-                                  } else {
-                                    tempSelectedTags.clear();
-                                    if (value == true) {
-                                      tempSelectedTags.add(tag.id);
-                                    }
-                                  }
-                                });
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: _cancelTagSelection,
-                            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              if (mounted) {
-                                setState(() {
-                                  _selectedTags = List<String>.from(tempSelectedTags);
-                                });
-                              }
-
-                              final isNoneSelected = _hasExplicitlySelectedNone;
-
-                              final selectedOptions = tempSelectedTags.map((id) {
-                                final tag = _tags!.items.firstWhere((tag) => tag.id == id);
-                                return DropdownOption(
-                                  label: tag.name,
-                                  value: tag.id,
-                                );
-                              }).toList();
-
-                              widget.onTagsSelected(selectedOptions, isNoneSelected);
-
-                              Future.delayed(const Duration(milliseconds: 1), () {
-                                if (context.mounted && Navigator.canPop(context)) {
-                                  Navigator.pop(context);
                                 }
                               });
                             },
-                            child: Text(_translationService.translate(TagTranslationKeys.doneButton)),
-                          ),
-                        ],
-                      ),
+                          );
+                        }
+
+                        if (widget.showNoneOption ? index == 2 : index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Text(
+                              _translationService.translate(TagTranslationKeys.tagsLabel),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                            ),
+                          );
+                        }
+
+                        final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
+
+                        if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final tag = _tags!.items[actualIndex];
+                        return CheckboxListTile(
+                          title: Text(tag.name),
+                          value: tempSelectedTags.contains(tag.id),
+                          onChanged: (bool? value) {
+                            if (!mounted) return;
+                            setState(() {
+                              if (value == true && _hasExplicitlySelectedNone) {
+                                _hasExplicitlySelectedNone = false;
+                              }
+
+                              if (widget.isMultiSelect) {
+                                if (value == true) {
+                                  if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
+                                    tempSelectedTags.removeAt(0);
+                                  }
+                                  tempSelectedTags.add(tag.id);
+                                } else {
+                                  tempSelectedTags.remove(tag.id);
+                                }
+                              } else {
+                                tempSelectedTags.clear();
+                                if (value == true) {
+                                  tempSelectedTags.add(tag.id);
+                                }
+                              }
+                            });
+                          },
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
-        );
-      },
+            ),
+          );
+        },
+      ),
     );
   }
 
-  void _cancelTagSelection() {
-    Navigator.pop(context);
+  void _confirmTagSelection(List<String> tempSelectedTags) {
+    if (mounted) {
+      setState(() {
+        _selectedTags = List<String>.from(tempSelectedTags);
+      });
+    }
+
+    final isNoneSelected = _hasExplicitlySelectedNone;
+
+    final selectedOptions = tempSelectedTags.map((id) {
+      final tag = _tags!.items.firstWhere((tag) => tag.id == id);
+      return DropdownOption(
+        label: tag.name,
+        value: tag.id,
+      );
+    }).toList();
+
+    widget.onTagsSelected(selectedOptions, isNoneSelected);
+
+    Future.delayed(const Duration(milliseconds: 1), () {
+      if (mounted && context.mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   @override

@@ -199,12 +199,13 @@ class NotesListState extends State<NotesList> {
     if (_notes == null || _notes!.items.isEmpty) {
       return IconOverlay(
         icon: Icons.note_alt_outlined,
-        iconSize: 48,
+        iconSize: AppTheme.iconSizeXLarge,
         message: _translationService.translate(NoteTranslationKeys.noNotes),
       );
     }
 
     return ListView(
+      shrinkWrap: true,
       children: [
         ..._notes!.items.map((note) => NoteCard(
               note: note,

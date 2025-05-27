@@ -14,7 +14,9 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/extensions/widget_extensions.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -121,9 +123,10 @@ class TaskCard extends StatelessWidget {
                 final today = DateTime(now.year, now.month, now.day);
                 final tomorrow = today.add(const Duration(days: 1));
 
-                showModalBottomSheet(
+                ResponsiveDialogHelper.showResponsiveDialog(
                   context: context,
-                  builder: (context) => Column(
+                  size: DialogSize.small,
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(

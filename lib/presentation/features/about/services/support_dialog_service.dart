@@ -9,6 +9,8 @@ import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/presentation/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class SupportDialogService implements ISupportDialogService {
   final Mediator _mediator;
@@ -49,9 +51,10 @@ class SupportDialogService implements ISupportDialogService {
 
     // Show the dialog
     if (context.mounted) {
-      await showDialog(
+      await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        builder: (context) => SupportDialog(),
+        size: DialogSize.min,
+        child: SupportDialog(),
       );
 
       // Mark as shown

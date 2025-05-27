@@ -5,7 +5,9 @@ import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import '../constants/shared_translation_keys.dart';
 
 class DateRangeFilter extends StatefulWidget {
@@ -170,12 +172,23 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   }
 
   Future<void> _showDatePicker(BuildContext context) async {
-    await showModalBottomSheet<List<DateTime?>>(
+    await ResponsiveDialogHelper.showResponsiveDialog<List<DateTime?>>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => SingleChildScrollView(
-          child: Padding(
+      size: DialogSize.large,
+      child: StatefulBuilder(
+        builder: (context, setState) => Scaffold(
+          appBar: AppBar(
+            title: Text(_translationService.translate(SharedTranslationKeys.dateRangeTitle)),
+            automaticallyImplyLeading: false,
+            actions: [
+              TextButton(
+                onPressed: _closeDatePicker,
+                child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+              ),
+              const SizedBox(width: AppTheme.sizeSmall),
+            ],
+          ),
+          body: SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(
               AppTheme.sizeMedium,
               AppTheme.sizeMedium,
@@ -186,15 +199,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Header
-                Text(
-                  _translationService.translate(SharedTranslationKeys.dateRangeTitle),
-                  style: AppTheme.headlineSmall,
-                ),
-
-                const SizedBox(height: AppTheme.sizeMedium),
-
-                // Date Range Inputs
+                // Date Range Inputs Section
                 Row(
                   children: [
                     Expanded(
@@ -272,7 +277,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
                 const SizedBox(height: AppTheme.sizeMedium),
 
-                // Quick Options
+                // Quick Options Section
                 Container(
                   margin: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
                   child: Wrap(
@@ -326,7 +331,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                   ),
                 ),
 
-                // Calendar
+                // Calendar Section
                 CalendarDatePicker2(
                   key: ValueKey(_selectedStartDate ?? _selectedEndDate),
                   config: CalendarDatePicker2Config(
@@ -366,13 +371,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                       widget.onDateFilterChange(startDate, endDate);
                     }
                   },
-                ),
-
-                const SizedBox(height: AppTheme.sizeMedium),
-
-                ElevatedButton(
-                  onPressed: _closeDatePicker,
-                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
                 ),
               ],
             ),

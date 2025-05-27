@@ -112,7 +112,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       return IconOverlay(
         icon: Icons.bar_chart,
         message: _translationService.translate(TagTranslationKeys.timeChartNoData),
-        iconSize: 48,
+        iconSize: AppTheme.iconSizeXLarge,
       );
     }
 
