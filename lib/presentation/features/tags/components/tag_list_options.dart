@@ -105,47 +105,32 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
+    final savedSettings = await filterSettingsManager.loadFilterSettings(settingKey: settingKey);
 
-        if (savedSettings != null && mounted) {
-          final settings = TagListOptionSettings.fromJson(savedSettings);
+    if (savedSettings != null && mounted) {
+      final settings = TagListOptionSettings.fromJson(savedSettings);
 
-          // Pass tag IDs first with empty labels, actual names will be loaded by TagSelectDropdown
-          if (widget.onTagFilterChange != null && settings.selectedTagIds != null) {
-            widget.onTagFilterChange!(
-              settings.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: '')).toList(),
-              settings.showNoTagsFilter,
-            );
-          }
+      // Pass tag IDs first with empty labels, actual names will be loaded by TagSelectDropdown
+      if (widget.onTagFilterChange != null && settings.selectedTagIds != null) {
+        widget.onTagFilterChange!(
+          settings.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: '')).toList(),
+          settings.showNoTagsFilter,
+        );
+      }
 
-          widget.onSearchChange?.call(settings.search);
-          if (settings.sortConfig != null) {
-            widget.onSortChange?.call(settings.sortConfig!);
-          }
-          widget.onArchivedToggle?.call(settings.showArchived);
-        }
+      widget.onSearchChange?.call(settings.search);
+      if (settings.sortConfig != null) {
+        widget.onSortChange?.call(settings.sortConfig!);
+      }
+      widget.onArchivedToggle?.call(settings.showArchived);
+    }
 
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-
-        widget.onSettingsLoaded?.call();
-      },
-      finallyAction: () {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
-    );
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override

@@ -120,101 +120,88 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(
-          settingKey: settingKey,
-        );
-
-        if (savedSettings != null) {
-          final filterSettings = TaskListOptionSettings.fromJson(savedSettings);
-
-          setState(() {
-            lastSearchQuery = filterSettings.search;
-          });
-
-          if (widget.onTagFilterChange != null) {
-            final tagIds = filterSettings.selectedTagIds ?? [];
-            final showNoTags = filterSettings.showNoTagsFilter;
-
-            widget.onTagFilterChange!(
-              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-              showNoTags,
-            );
-          }
-
-          if (widget.onDateFilterChange != null) {
-            widget.onDateFilterChange!(
-              filterSettings.selectedStartDate,
-              filterSettings.selectedEndDate,
-            );
-          }
-
-          if (widget.onSearchChange != null && filterSettings.search != null) {
-            widget.onSearchChange!(filterSettings.search);
-          }
-
-          if (widget.onCompletedTasksToggle != null) {
-            widget.onCompletedTasksToggle!(filterSettings.showCompletedTasks);
-          }
-
-          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-            widget.onSortChange!(filterSettings.sortConfig!);
-          }
-        }
-      },
-      onSuccess: () {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
-      onError: (_) {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
-      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+    final savedSettings = await filterSettingsManager.loadFilterSettings(
+      settingKey: settingKey,
     );
+
+    if (savedSettings != null) {
+      final filterSettings = TaskListOptionSettings.fromJson(savedSettings);
+
+      setState(() {
+        lastSearchQuery = filterSettings.search;
+      });
+
+      if (widget.onTagFilterChange != null) {
+        final tagIds = filterSettings.selectedTagIds ?? [];
+        final showNoTags = filterSettings.showNoTagsFilter;
+
+        widget.onTagFilterChange!(
+          tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+          showNoTags,
+        );
+      }
+
+      if (widget.onDateFilterChange != null) {
+        widget.onDateFilterChange!(
+          filterSettings.selectedStartDate,
+          filterSettings.selectedEndDate,
+        );
+      }
+
+      if (widget.onSearchChange != null && filterSettings.search != null) {
+        widget.onSearchChange!(filterSettings.search);
+      }
+
+      if (widget.onCompletedTasksToggle != null) {
+        widget.onCompletedTasksToggle!(filterSettings.showCompletedTasks);
+      }
+
+      if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+        widget.onSortChange!(filterSettings.sortConfig!);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = TaskListOptionSettings(
-      selectedTagIds: widget.selectedTagIds,
-      showNoTagsFilter: widget.showNoTagsFilter,
-      selectedStartDate: widget.selectedStartDate,
-      selectedEndDate: widget.selectedEndDate,
-      search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
-      showCompletedTasks: widget.showCompletedTasks,
-      sortConfig: widget.sortConfig,
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = TaskListOptionSettings(
+          selectedTagIds: widget.selectedTagIds,
+          showNoTagsFilter: widget.showNoTagsFilter,
+          selectedStartDate: widget.selectedStartDate,
+          selectedEndDate: widget.selectedEndDate,
+          search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
+          showCompletedTasks: widget.showCompletedTasks,
+          sortConfig: widget.sortConfig,
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+        }
+
+        // Notify parent that settings were saved
+        widget.onSaveSettings?.call();
+      },
     );
-
-    try {
-      await filterSettingsManager.saveFilterSettings(
-        settingKey: settingKey,
-        filterSettings: settings.toJson(),
-      );
-
-      if (mounted) {
-        setState(() {
-          hasUnsavedChanges = false;
-        });
-
-        showSavedMessageTemporarily();
-      }
-
-      // Notify parent that settings were saved
-      widget.onSaveSettings?.call();
-    } catch (e) {
-      // Handle error
-    }
   }
 
   @override

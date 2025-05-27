@@ -90,61 +90,46 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(
-          settingKey: settingKey,
-        );
-
-        if (savedSettings != null && mounted) {
-          final filterSettings = NoteListOptionSettings.fromJson(savedSettings);
-
-          // Set search state
-          setState(() {
-            lastSearchQuery = filterSettings.search;
-          });
-
-          // Apply tag filters
-          if (widget.onTagFilterChange != null) {
-            final tagIds = filterSettings.selectedTagIds ?? [];
-            final showNoTags = filterSettings.showNoTagsFilter;
-
-            widget.onTagFilterChange!(
-              tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
-              showNoTags,
-            );
-          }
-
-          // Apply search filter
-          if (widget.onSearchChange != null && filterSettings.search != null) {
-            widget.onSearchChange!(filterSettings.search);
-          }
-
-          // Apply sort configuration
-          if (widget.onSortChange != null && filterSettings.sortConfig != null) {
-            widget.onSortChange!(filterSettings.sortConfig!);
-          }
-        }
-
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-
-        widget.onSettingsLoaded?.call();
-      },
-      finallyAction: () {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
+    final savedSettings = await filterSettingsManager.loadFilterSettings(
+      settingKey: settingKey,
     );
+
+    if (savedSettings != null && mounted) {
+      final filterSettings = NoteListOptionSettings.fromJson(savedSettings);
+
+      // Set search state
+      setState(() {
+        lastSearchQuery = filterSettings.search;
+      });
+
+      // Apply tag filters
+      if (widget.onTagFilterChange != null) {
+        final tagIds = filterSettings.selectedTagIds ?? [];
+        final showNoTags = filterSettings.showNoTagsFilter;
+
+        widget.onTagFilterChange!(
+          tagIds.map((id) => DropdownOption<String>(value: id, label: id)).toList(),
+          showNoTags,
+        );
+      }
+
+      // Apply search filter
+      if (widget.onSearchChange != null && filterSettings.search != null) {
+        widget.onSearchChange!(filterSettings.search);
+      }
+
+      // Apply sort configuration
+      if (widget.onSortChange != null && filterSettings.sortConfig != null) {
+        widget.onSortChange!(filterSettings.sortConfig!);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override

@@ -54,54 +54,39 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
 
   @override
   Future<void> loadSavedListOptionSettings() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(SharedTranslationKeys.loadingError),
-      operation: () async {
-        final savedSettings = await filterSettingsManager.loadFilterSettings(
-          settingKey: settingKey,
+    final savedSettings = await filterSettingsManager.loadFilterSettings(
+      settingKey: settingKey,
+    );
+
+    if (savedSettings != null && mounted) {
+      final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
+
+      if (filterSettings.selectedTagIds != null && filterSettings.selectedTagIds!.isNotEmpty) {
+        // Fetch actual tag data to populate the dropdown
+        final query = GetListTagsQuery(
+          pageIndex: 0,
+          pageSize: filterSettings.selectedTagIds!.length,
+          filterByTags: filterSettings.selectedTagIds!,
         );
 
-        if (savedSettings != null && mounted) {
-          final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
+        final tagResult = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-          if (filterSettings.selectedTagIds != null && filterSettings.selectedTagIds!.isNotEmpty) {
-            // Fetch actual tag data to populate the dropdown
-            final query = GetListTagsQuery(
-              pageIndex: 0,
-              pageSize: filterSettings.selectedTagIds!.length,
-              filterByTags: filterSettings.selectedTagIds!,
-            );
-
-            final tagResult = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
-
-            // Only update if we have valid tags
-            if (tagResult.items.isNotEmpty) {
-              widget.onFilterChange?.call(filterSettings.selectedTagIds, filterSettings.showNoTagsFilter);
-            }
-          } else if (filterSettings.showNoTagsFilter) {
-            // Handle "None" filter case
-            widget.onFilterChange?.call(null, true);
-          }
+        // Only update if we have valid tags
+        if (tagResult.items.isNotEmpty) {
+          widget.onFilterChange?.call(filterSettings.selectedTagIds, filterSettings.showNoTagsFilter);
         }
+      } else if (filterSettings.showNoTagsFilter) {
+        // Handle "None" filter case
+        widget.onFilterChange?.call(null, true);
+      }
+    }
 
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-
-        widget.onSettingsLoaded?.call();
-      },
-      finallyAction: () {
-        if (mounted) {
-          setState(() {
-            isSettingLoaded = true;
-          });
-        }
-        widget.onSettingsLoaded?.call();
-      },
-    );
+    if (mounted) {
+      setState(() {
+        isSettingLoaded = true;
+      });
+    }
+    widget.onSettingsLoaded?.call();
   }
 
   @override
@@ -144,35 +129,20 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
 
   @override
   Future<void> checkForUnsavedChanges() async {
-    if (!mounted) return;
+    final currentSettings = TodayPageListOptionSettings(
+      selectedTagIds: widget.selectedTagIds,
+      showNoTagsFilter: widget.showNoTagsFilter,
+    ).toJson();
 
-    try {
-      final savedSettings = await filterSettingsManager.loadFilterSettings(
-        settingKey: settingKey,
-      );
+    final hasChanges = await filterSettingsManager.hasUnsavedChanges(
+      settingKey: settingKey,
+      currentSettings: currentSettings,
+    );
 
-      final currentSettings = TodayPageListOptionSettings(
-        selectedTagIds: widget.selectedTagIds,
-        showNoTagsFilter: widget.showNoTagsFilter,
-      ).toJson();
-
-      bool hasChanges;
-      if (savedSettings == null) {
-        // If there are no saved settings, check if we have any active filters
-        hasChanges = widget.selectedTagIds?.isNotEmpty == true || widget.showNoTagsFilter;
-      } else {
-        // Compare current settings with saved settings
-        hasChanges = savedSettings['selectedTagIds']?.toString() != currentSettings['selectedTagIds']?.toString() ||
-            savedSettings['showNoTagsFilter'] != currentSettings['showNoTagsFilter'];
-      }
-
-      if (mounted && hasChanges != hasUnsavedChanges) {
-        setState(() {
-          hasUnsavedChanges = hasChanges;
-        });
-      }
-    } catch (e) {
-      // Handle error silently
+    if (mounted && hasUnsavedChanges != hasChanges) {
+      setState(() {
+        hasUnsavedChanges = hasChanges;
+      });
     }
   }
 
