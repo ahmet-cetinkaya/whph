@@ -102,7 +102,7 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
               titleKey: AppUsageTranslationKeys.helpTitle,
               markdownContentKey: AppUsageTranslationKeys.helpContent,
             ),
-            const SizedBox(width: 2),
+            const SizedBox(width: AppTheme.sizeSmall),
           ],
         ),
         body: SingleChildScrollView(

@@ -5,9 +5,11 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TaskDeleteButton extends StatefulWidget {
   final String taskId;
@@ -52,9 +54,10 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    bool? confirmed = await showDialog(
+    bool? confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(TaskTranslationKeys.taskDeleteTitle)),
         content: Text(_translationService.translate(TaskTranslationKeys.taskDeleteMessage)),
         actions: [

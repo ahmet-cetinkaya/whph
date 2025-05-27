@@ -156,7 +156,8 @@ class _TagsPageState extends State<TagsPage> {
         ),
         const SizedBox(width: 8),
       ],
-      builder: (context) => ListView(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Main List Options
           TagListOptions(
@@ -237,14 +238,18 @@ class _TagsPageState extends State<TagsPage> {
 
           // List
           if (_mainListOptionLoaded && _listOptionLoaded)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: TagsList(
-                onClickTag: (tag) => _openDetails(tag.id),
-                filterByTags: _selectedTagIds,
-                search: _searchFilterQuery,
-                showArchived: _showArchived,
-                sortConfig: _sortConfig,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                  child: TagsList(
+                    onClickTag: (tag) => _openDetails(tag.id),
+                    filterByTags: _selectedTagIds,
+                    search: _searchFilterQuery,
+                    showArchived: _showArchived,
+                    sortConfig: _sortConfig,
+                  ),
+                ),
               ),
             ),
         ],

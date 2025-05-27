@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class TagDeleteButton extends StatefulWidget {
   final String tagId;
@@ -51,9 +53,10 @@ class _TagDeleteButtonState extends State<TagDeleteButton> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    bool? confirmed = await showDialog(
+    bool? confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(TagTranslationKeys.deleteTag)),
         content: Text(_translationService.translate(TagTranslationKeys.confirmDelete)),
         actions: [

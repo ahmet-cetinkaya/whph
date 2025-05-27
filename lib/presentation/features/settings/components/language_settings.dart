@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/features/settings/pages/settings_page.dart';
@@ -15,8 +16,7 @@ class LanguageSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(SettingsTranslationKeys.languageChooseTitle),
-      maxHeightRatio: 0.15,
-      maxWidthRatio: 0.6,
+      size: DialogSize.small,
       child: _LanguageDialog(),
     );
   }

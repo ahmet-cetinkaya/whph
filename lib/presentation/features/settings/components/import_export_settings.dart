@@ -4,6 +4,7 @@ import 'package:whph/application/features/settings/commands/export_data_command.
 import 'package:whph/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -22,8 +23,7 @@ class ImportExportSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: translationService.translate(SettingsTranslationKeys.importExportTitle),
-      maxHeightRatio: 0.25,
-      maxWidthRatio: 0.6,
+      size: DialogSize.small,
       child: const _ImportExportActionsDialog(),
     );
   }
@@ -161,7 +161,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
         // Navigation Buttons
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton(
               onPressed: () {
@@ -172,12 +172,6 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               },
               child: Text(
                 _translationService.translate(SharedTranslationKeys.backButton),
-              ),
-            ),
-            TextButton(
-              onPressed: () => _closeDialog(context),
-              child: Text(
-                _translationService.translate(SharedTranslationKeys.cancelButton),
               ),
             ),
           ],
@@ -228,12 +222,6 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               onPressed: () => _navigateToPage(0),
               child: Text(
                 _translationService.translate(SharedTranslationKeys.backButton),
-              ),
-            ),
-            TextButton(
-              onPressed: () => _closeDialog(context),
-              child: Text(
-                _translationService.translate(SharedTranslationKeys.cancelButton),
               ),
             ),
           ],
@@ -350,10 +338,6 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         }
       },
     );
-  }
-
-  void _closeDialog(BuildContext context) {
-    Navigator.of(context).pop();
   }
 }
 

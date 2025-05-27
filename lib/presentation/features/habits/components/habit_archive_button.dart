@@ -7,8 +7,10 @@ import 'package:whph/presentation/features/habits/constants/habit_translation_ke
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class HabitArchiveButton extends StatefulWidget {
   final String habitId;
@@ -62,9 +64,10 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
   Future<void> _toggleArchiveStatus() async {
     final newStatus = !(_isArchived ?? false);
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(
           _isArchived! ? HabitTranslationKeys.unarchiveHabit : HabitTranslationKeys.archiveHabit,
         )),

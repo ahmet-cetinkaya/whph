@@ -92,53 +92,51 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
           ],
         ),
       ],
-      builder: (context) => Stack(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Filters section with consistent padding
-              NoteListOptions(
-                selectedTagIds: _selectedTagIds,
-                showNoTagsFilter: _showNoTagsFilter,
+          // Filters section with consistent padding
+          NoteListOptions(
+            selectedTagIds: _selectedTagIds,
+            showNoTagsFilter: _showNoTagsFilter,
+            search: _searchQuery,
+            sortConfig: _sortConfig,
+            onTagFilterChange: (tags, isNoneSelected) {
+              setState(() {
+                _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                _showNoTagsFilter = isNoneSelected;
+              });
+            },
+            onSearchChange: (query) {
+              setState(() {
+                _searchQuery = query;
+              });
+            },
+            onSortChange: (sortConfig) {
+              setState(() {
+                _sortConfig = sortConfig;
+              });
+            },
+            onSettingsLoaded: _handleSettingsLoaded,
+            onSaveSettings: () {
+              // Force refresh the list when settings are saved
+              setState(() {});
+            },
+            settingKeyVariantSuffix: noteListSettingKeySuffix,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+
+          // Notes list
+          if (_isListVisible)
+            Expanded(
+              child: NotesList(
+                filterByTags: _selectedTagIds,
+                filterNoTags: _showNoTagsFilter,
                 search: _searchQuery,
                 sortConfig: _sortConfig,
-                onTagFilterChange: (tags, isNoneSelected) {
-                  setState(() {
-                    _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                    _showNoTagsFilter = isNoneSelected;
-                  });
-                },
-                onSearchChange: (query) {
-                  setState(() {
-                    _searchQuery = query;
-                  });
-                },
-                onSortChange: (sortConfig) {
-                  setState(() {
-                    _sortConfig = sortConfig;
-                  });
-                },
-                onSettingsLoaded: _handleSettingsLoaded,
-                onSaveSettings: () {
-                  // Force refresh the list when settings are saved
-                  setState(() {});
-                },
-                settingKeyVariantSuffix: noteListSettingKeySuffix,
+                onClickNote: _openDetails,
               ),
-              const SizedBox(height: AppTheme.sizeMedium),
-
-              // Notes list
-              if (_isListVisible)
-                NotesList(
-                  filterByTags: _selectedTagIds,
-                  filterNoTags: _showNoTagsFilter,
-                  search: _searchQuery,
-                  sortConfig: _sortConfig,
-                  onClickNote: _openDetails,
-                ),
-            ],
-          ),
+            ),
         ],
       ),
     );

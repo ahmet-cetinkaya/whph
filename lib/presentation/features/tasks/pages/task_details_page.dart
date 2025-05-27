@@ -171,7 +171,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
             titleKey: TaskTranslationKeys.detailsHelpTitle,
             markdownContentKey: TaskTranslationKeys.detailsHelpContent,
           ),
-          const SizedBox(width: AppTheme.sizeXSmall),
+          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: SafeArea(

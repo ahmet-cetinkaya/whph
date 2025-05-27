@@ -117,6 +117,8 @@ shared:
       hint: Markdown formatını kullanarak yazabilirsiniz...
   color_picker:
     title: Renk Seçici
+    select_color_title: Renk Seç
+    confirm_selection: Seçimi Onayla
     tabs:
       palette: Renkler
       custom: Özel

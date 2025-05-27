@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 
 /// A utility class for showing detail pages responsively,
@@ -14,9 +15,7 @@ class ResponsiveDialogHelper {
     required BuildContext context,
     required Widget child,
     String? title,
-    bool fullHeight = true,
-    double maxWidthRatio = 0.8,
-    double maxHeightRatio = 0.8,
+    DialogSize size = DialogSize.medium,
     bool isScrollable = true,
     bool isDismissible = true,
     bool enableDrag = true,
@@ -30,20 +29,26 @@ class ResponsiveDialogHelper {
         context: context,
         barrierDismissible: isDismissible,
         builder: (BuildContext context) {
-          final dialogHeight = screenSize.height * maxHeightRatio;
-          final dialogWidth = screenSize.width * maxWidthRatio;
+          // For minimum size, use default Dialog behavior (content-based sizing)
+          if (size == DialogSize.min) {
+            return child; // Completely default behavior - no Dialog wrapper, no constraints
+          }
+
+          // For other sizes, use ratio-based sizing
+          final dialogHeight = screenSize.height * size.desktopHeightRatio;
+          final dialogWidth = screenSize.width * size.desktopWidthRatio;
+          final maxWidth = size.maxDesktopWidth;
 
           return Dialog(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
               child: SizedBox(
-                width: dialogWidth,
-                height: fullHeight ? dialogHeight : null,
                 child: _wrapWithConstrainedContent(
                   context,
                   child,
-                  maxHeight: fullHeight ? dialogHeight : null,
-                  maxWidth: dialogWidth < 1200 ? dialogWidth : 1200,
+                  maxHeight: dialogHeight,
+                  maxWidth:
+                      maxWidth == double.infinity ? dialogWidth : (dialogWidth < maxWidth ? dialogWidth : maxWidth),
                   isScrollable: isScrollable,
                 ),
               ),
@@ -53,6 +58,18 @@ class ResponsiveDialogHelper {
       );
     } else {
       // Show as bottom sheet on mobile
+      // For minimum size, use simple modal dialog instead of bottom sheet
+      if (size == DialogSize.min) {
+        return showDialog<T>(
+          context: context,
+          barrierDismissible: isDismissible,
+          builder: (BuildContext context) {
+            return child; // Completely default behavior - no Dialog wrapper, no constraints
+          },
+        );
+      }
+
+      // For other sizes, use bottom sheet
       return showModalBottomSheet<T>(
         context: context,
         isScrollControlled: true,
@@ -65,14 +82,14 @@ class ResponsiveDialogHelper {
 
           // Calculate available height considering navigation bar and system UI
           final safeAreaHeight = screenSize.height - bottomPadding;
-          final bottomSheetMaxHeight = safeAreaHeight * 0.9;
+          final bottomSheetMaxHeight = safeAreaHeight * size.mobileMaxSize;
 
           return Padding(
             padding: EdgeInsets.only(bottom: bottomInset),
             child: DraggableScrollableSheet(
-              initialChildSize: fullHeight ? 0.9 : 0.6,
-              minChildSize: 0.5,
-              maxChildSize: 0.95,
+              initialChildSize: size.mobileInitialSize,
+              minChildSize: size.mobileMinSize,
+              maxChildSize: size.mobileMaxSize,
               expand: false,
               builder: (context, scrollController) {
                 return Material(

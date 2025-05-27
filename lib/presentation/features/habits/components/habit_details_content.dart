@@ -19,8 +19,10 @@ import 'package:whph/presentation/features/tags/components/tag_select_dropdown.d
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/presentation/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/features/habits/components/habit_statistics_view.dart';
@@ -896,9 +898,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           onTap: isArchived
               ? null
               : () async {
-                  final result = await showDialog<HabitGoalResult>(
+                  final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
                     context: context,
-                    builder: (context) => HabitGoalDialog(
+                    size: DialogSize.min,
+                    child: HabitGoalDialog(
                       hasGoal: _habit!.hasGoal,
                       targetFrequency: _habit!.targetFrequency,
                       periodDays: _habit!.periodDays,

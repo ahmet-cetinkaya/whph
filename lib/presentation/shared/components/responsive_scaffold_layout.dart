@@ -6,6 +6,8 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 
@@ -403,14 +405,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     // Get current route to highlight the active item in the More menu
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
-    showModalBottomSheet(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      backgroundColor: Theme.of(context).cardColor,
-      builder: (context) => SafeArea(
+      size: DialogSize.small,
+      isDismissible: true,
+      enableDrag: true,
+      child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

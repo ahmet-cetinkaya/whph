@@ -10,6 +10,8 @@ import 'package:whph/presentation/features/about/components/onboarding_dialog.da
 import 'package:whph/presentation/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/app_routes.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class App extends StatefulWidget {
   const App({super.key, required this.navigatorKey});
@@ -67,10 +69,11 @@ class _AppState extends State<App> {
       // Add a small delay to ensure the app is fully loaded
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted && widget.navigatorKey.currentContext != null) {
-          showDialog(
+          ResponsiveDialogHelper.showResponsiveDialog(
             context: widget.navigatorKey.currentContext!,
-            barrierDismissible: false,
-            builder: (context) => const OnboardingDialog(),
+            size: DialogSize.min,
+            isDismissible: false,
+            child: const OnboardingDialog(),
           );
         }
       });

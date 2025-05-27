@@ -6,8 +6,10 @@ import 'package:whph/presentation/features/app_usages/constants/app_usage_transl
 import 'package:whph/presentation/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 /// A button component that handles app usage deletion
 class AppUsageDeleteButton extends StatefulWidget {
@@ -43,9 +45,10 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   }
 
   Future<void> confirmDelete(BuildContext context) async {
-    final bool? confirmed = await showDialog<bool>(
+    final bool? confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(AppUsageTranslationKeys.deleteConfirmTitle)),
         content: Text(_translationService.translate(SharedTranslationKeys.confirmDeleteMessage)),
         actions: [

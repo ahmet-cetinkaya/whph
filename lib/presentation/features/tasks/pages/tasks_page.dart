@@ -171,7 +171,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           ],
         ),
       ],
-      builder: (context) => ListView(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Filters with Completed Tasks Toggle
           TaskListOptions(
@@ -199,19 +200,21 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
           // Task List
           if (_isTaskListVisible)
-            TaskList(
-              filterByCompleted: _showCompletedTasks,
-              filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
-              filterNoTags: _showNoTagsFilter,
-              filterByPlannedStartDate: _filterStartDate,
-              filterByPlannedEndDate: _filterEndDate,
-              filterByDeadlineStartDate: _filterStartDate,
-              filterByDeadlineEndDate: _filterEndDate,
-              filterDateOr: true,
-              search: _searchQuery,
-              onClickTask: (task) => _openTaskDetails(task.id),
-              enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
-              sortConfig: _sortConfig,
+            Expanded(
+              child: TaskList(
+                filterByCompleted: _showCompletedTasks,
+                filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+                filterNoTags: _showNoTagsFilter,
+                filterByPlannedStartDate: _filterStartDate,
+                filterByPlannedEndDate: _filterEndDate,
+                filterByDeadlineStartDate: _filterStartDate,
+                filterByDeadlineEndDate: _filterEndDate,
+                filterDateOr: true,
+                search: _searchQuery,
+                onClickTask: (task) => _openTaskDetails(task.id),
+                enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+                sortConfig: _sortConfig,
+              ),
             ),
         ],
       ),

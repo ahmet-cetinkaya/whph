@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/features/settings/pages/permissions_page.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
@@ -17,8 +18,7 @@ class PermissionSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(SettingsTranslationKeys.permissionsTitle),
-      maxHeightRatio: 0.4,
-      maxWidthRatio: 0.6,
+      size: DialogSize.medium,
       child: const PermissionsPage(),
     );
   }

@@ -3,6 +3,8 @@ import 'package:whph/presentation/features/about/components/support_dialog.dart'
 import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import '../constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/features/calendar/pages/today_page.dart';
@@ -29,9 +31,10 @@ class NavigationItems {
         titleKey: AboutTranslationKeys.supportMeButtonText,
         icon: Icons.coffee,
         onTap: (context) {
-          showDialog(
+          ResponsiveDialogHelper.showResponsiveDialog(
             context: context,
-            builder: (context) => SupportDialog(),
+            size: DialogSize.min,
+            child: SupportDialog(),
           );
         }),
   ];

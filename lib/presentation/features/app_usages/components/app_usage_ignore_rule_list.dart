@@ -12,8 +12,10 @@ import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final VoidCallback? onRuleDeleted;
@@ -130,9 +132,10 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   }
 
   Future<void> _confirmDelete(String id) async {
-    final bool? confirmed = await showDialog<bool>(
+    final bool? confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleConfirmTitle)),
         content: Text(_translationService.translate(AppUsageTranslationKeys.deleteRuleConfirmMessage)),
         actions: [
@@ -163,7 +166,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     if (_rules.isEmpty) {
       return IconOverlay(
         icon: Icons.rule_folder,
-        iconSize: 48,
+        iconSize: AppTheme.iconSizeXLarge,
         message: _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
       );
     }

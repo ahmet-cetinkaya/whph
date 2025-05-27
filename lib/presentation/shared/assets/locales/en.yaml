@@ -117,6 +117,8 @@ shared:
       hint: You can write using Markdown format...
   color_picker:
     title: Color Picker
+    select_color_title: Select Color
+    confirm_selection: Confirm Selection
     tabs:
       palette: Colors
       custom: Custom

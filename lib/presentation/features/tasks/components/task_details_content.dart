@@ -20,6 +20,8 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
@@ -765,9 +767,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _openRecurrenceDialog() async {
     if (_task == null) return;
 
-    final result = await showDialog<Map<String, dynamic>>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
       context: context,
-      builder: (BuildContext context) => RecurrenceSettingsDialog(
+      size: DialogSize.min,
+      child: RecurrenceSettingsDialog(
         initialRecurrenceType: _task!.recurrenceType,
         initialRecurrenceInterval: _task!.recurrenceInterval,
         initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),

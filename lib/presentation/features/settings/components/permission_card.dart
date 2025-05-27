@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 /// A shared card component for displaying permission settings with consistent UI
 class PermissionCard extends StatelessWidget {
@@ -142,9 +144,10 @@ class PermissionCard extends StatelessWidget {
 
   Future<void> _showLearnMoreDialog(BuildContext context) {
     final theme = Theme.of(context);
-    return showDialog(
+    return ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      size: DialogSize.min,
+      child: AlertDialog(
         title: Text(title),
         content: SingleChildScrollView(
           child: Column(

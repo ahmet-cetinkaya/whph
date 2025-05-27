@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class PrioritySelectField extends StatefulWidget {
   final EisenhowerPriority? value;
@@ -28,9 +30,10 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   bool isHovered = false;
 
   void _showPrioritySelection(BuildContext context) {
-    showModalBottomSheet(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => Padding(
+      size: DialogSize.small,
+      child: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           mainAxisSize: MainAxisSize.min,
