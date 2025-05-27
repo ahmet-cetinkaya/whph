@@ -95,7 +95,7 @@ tags:
     description: Description
     tags: Tags
   list:
-    no_tags_found: No tags found
+    no_tags: No tags
     filter_tooltip: Filter by tags
   tooltips:
     color: Click to assign color to tag
