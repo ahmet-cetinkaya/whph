@@ -98,9 +98,10 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       onSuccess: () {
         // Notify the service about the completed task
         if (_isCompleted) {
-          Future.delayed(const Duration(seconds: 3), () {
+          Future.delayed(const Duration(seconds: 1), () {
             _tasksService.notifyTaskCompleted(widget.taskId);
           });
+          _tasksService.notifyTaskUpdated(widget.taskId);
         } else {
           _tasksService.notifyTaskUpdated(widget.taskId);
         }
