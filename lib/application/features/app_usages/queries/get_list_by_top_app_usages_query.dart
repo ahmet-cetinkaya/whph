@@ -44,11 +44,7 @@ class AppUsageListItem {
 
 class GetListByTopAppUsagesQueryResponse extends PaginatedList<AppUsageListItem> {
   GetListByTopAppUsagesQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListByTopAppUsagesQueryHandler
@@ -85,7 +81,6 @@ class GetListByTopAppUsagesQueryHandler
     return GetListByTopAppUsagesQueryResponse(
       items: items,
       totalItemCount: results.totalItemCount,
-      totalPageCount: results.totalPageCount,
       pageIndex: results.pageIndex,
       pageSize: results.pageSize,
     );

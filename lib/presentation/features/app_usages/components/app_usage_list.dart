@@ -179,7 +179,6 @@ class AppUsageListState extends State<AppUsageList> {
                 pageIndex: data.pageIndex,
                 pageSize: data.pageSize,
                 totalItemCount: data.totalItemCount,
-                totalPageCount: data.totalPageCount,
               );
             }
           });

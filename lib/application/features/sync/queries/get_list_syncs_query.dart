@@ -34,11 +34,7 @@ class SyncDeviceListItem {
 
 class GetListSyncDevicesQueryResponse extends PaginatedList<SyncDeviceListItem> {
   GetListSyncDevicesQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListSyncDevicesQueryHandler
@@ -68,7 +64,6 @@ class GetListSyncDevicesQueryHandler
               ))
           .toList(),
       totalItemCount: list.totalItemCount,
-      totalPageCount: list.totalPageCount,
       pageIndex: list.pageIndex,
       pageSize: list.pageSize,
     );

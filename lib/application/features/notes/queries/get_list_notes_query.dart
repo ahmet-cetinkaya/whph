@@ -68,7 +68,6 @@ class GetListNotesQueryResponse extends PaginatedList<NoteListItem> {
   GetListNotesQueryResponse({
     required super.items,
     required super.totalItemCount,
-    required super.totalPageCount,
     required super.pageIndex,
     required super.pageSize,
   });
@@ -153,7 +152,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     return GetListNotesQueryResponse(
       items: items,
       totalItemCount: notesPaginated.totalItemCount,
-      totalPageCount: notesPaginated.totalPageCount,
       pageIndex: notesPaginated.pageIndex,
       pageSize: notesPaginated.pageSize,
     );
@@ -161,7 +159,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
 
   List<CustomOrder> _getCustomOrders(GetListNotesQuery request) {
     if (request.sortBy == null || request.sortBy!.isEmpty) {
-      // Varsayılan sıralama: created_date DESC
       return [
         CustomOrder(
           field: 'created_date',

@@ -216,7 +216,6 @@ class HabitsListState extends State<HabitsList> {
             _habits = GetListHabitsQueryResponse(
               items: [..._habits!.items, ...result.items],
               totalItemCount: result.totalItemCount,
-              totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
@@ -235,7 +234,6 @@ class HabitsListState extends State<HabitsList> {
           // Use non-nullable cast since we've already verified existingItems is not null
           items: existingItems!.toList(),
           totalItemCount: _habits!.totalItemCount,
-          totalPageCount: _habits!.totalPageCount,
           pageIndex: _habits!.pageIndex,
           pageSize: _habits!.pageSize,
         );

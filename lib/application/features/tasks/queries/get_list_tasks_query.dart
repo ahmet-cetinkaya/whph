@@ -146,11 +146,7 @@ class TaskListItem {
 
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
   GetListTasksQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, GetListTasksQueryResponse> {
@@ -239,7 +235,6 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     return GetListTasksQueryResponse(
       items: taskListItems,
       totalItemCount: tasks.totalItemCount,
-      totalPageCount: tasks.totalPageCount,
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
     );

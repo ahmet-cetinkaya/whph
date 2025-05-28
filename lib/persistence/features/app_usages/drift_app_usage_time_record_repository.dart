@@ -207,14 +207,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         .get();
 
     int totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
-    int totalPageCount = (totalCount / pageSize).ceil();
-
     return PaginatedList<AppUsageTimeRecordWithDetails>(
       items: results,
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: totalPageCount,
     );
   }
 }

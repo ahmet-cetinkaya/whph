@@ -239,7 +239,6 @@ class TaskListState extends State<TaskList> {
             _tasks = GetListTasksQueryResponse(
               items: [..._tasks!.items, ...result.items],
               totalItemCount: result.totalItemCount,
-              totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
@@ -260,7 +259,6 @@ class TaskListState extends State<TaskList> {
             _tasks = GetListTasksQueryResponse(
               items: existingItems!,
               totalItemCount: _tasks!.totalItemCount,
-              totalPageCount: _tasks!.totalPageCount,
               pageIndex: _tasks!.pageIndex,
               pageSize: _tasks!.pageSize,
             );
@@ -301,7 +299,6 @@ class TaskListState extends State<TaskList> {
       _tasks = GetListTasksQueryResponse(
         items: reorderedItems,
         totalItemCount: _tasks!.totalItemCount,
-        totalPageCount: _tasks!.totalPageCount,
         pageIndex: _tasks!.pageIndex,
         pageSize: _tasks!.pageSize,
       );

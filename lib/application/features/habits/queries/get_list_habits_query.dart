@@ -69,11 +69,7 @@ class HabitListItem {
 
 class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
   GetListHabitsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, GetListHabitsQueryResponse> {
@@ -129,7 +125,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     return GetListHabitsQueryResponse(
       items: habitItems,
       totalItemCount: habits.totalItemCount,
-      totalPageCount: habits.totalPageCount,
       pageIndex: habits.pageIndex,
       pageSize: habits.pageSize,
     );

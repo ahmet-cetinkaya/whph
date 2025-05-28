@@ -168,7 +168,6 @@ class TagsListState extends State<TagsList> {
             _tags = GetListTagsQueryResponse(
               items: [..._tags!.items, ...result.items],
               totalItemCount: result.totalItemCount,
-              totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );

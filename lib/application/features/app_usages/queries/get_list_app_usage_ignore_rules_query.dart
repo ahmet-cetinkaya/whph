@@ -18,7 +18,6 @@ class GetListAppUsageIgnoreRulesQueryResponse extends PaginatedList<AppUsageIgno
     required super.pageIndex,
     required super.pageSize,
     required super.totalItemCount,
-    required super.totalPageCount,
   });
 }
 
@@ -64,7 +63,6 @@ class GetListAppUsageIgnoreRulesQueryHandler
       pageIndex: result.pageIndex,
       pageSize: result.pageSize,
       totalItemCount: result.totalItemCount,
-      totalPageCount: result.totalPageCount,
     );
   }
 }

@@ -300,7 +300,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
     );
   }
 

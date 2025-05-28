@@ -56,7 +56,6 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
     );
   }
 }

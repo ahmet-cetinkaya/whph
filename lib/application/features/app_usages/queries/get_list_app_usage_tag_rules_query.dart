@@ -25,7 +25,6 @@ class GetListAppUsageTagRulesQueryResponse extends PaginatedList<AppUsageTagRule
     required super.pageIndex,
     required super.pageSize,
     required super.totalItemCount,
-    required super.totalPageCount,
   });
 }
 
@@ -107,7 +106,6 @@ class GetListAppUsageTagRulesQueryHandler
       pageIndex: result.pageIndex,
       pageSize: result.pageSize,
       totalItemCount: result.totalItemCount,
-      totalPageCount: result.totalPageCount,
     );
   }
 }

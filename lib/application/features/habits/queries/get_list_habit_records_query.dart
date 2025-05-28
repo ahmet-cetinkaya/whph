@@ -31,11 +31,7 @@ class HabitRecordListItem {
 
 class GetListHabitRecordsQueryResponse extends PaginatedList<HabitRecordListItem> {
   GetListHabitRecordsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListHabitRecordsQueryHandler
@@ -58,7 +54,6 @@ class GetListHabitRecordsQueryHandler
     return GetListHabitRecordsQueryResponse(
       items: habitRecords.items.map((e) => HabitRecordListItem(id: e.id, date: e.date)).toList(),
       totalItemCount: habitRecords.totalItemCount,
-      totalPageCount: habitRecords.totalPageCount,
       pageIndex: habitRecords.pageIndex,
       pageSize: habitRecords.pageSize,
     );
