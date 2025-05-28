@@ -6,7 +6,6 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/constants/navigation_items.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -407,7 +406,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
       isDismissible: true,
       enableDrag: true,
       child: SafeArea(
