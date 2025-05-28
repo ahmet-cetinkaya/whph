@@ -58,7 +58,6 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       return PaginatedList<(Tag, List<Tag>)>(
         items: [],
         totalItemCount: 0,
-        totalPageCount: 0,
         pageIndex: pageIndex,
         pageSize: pageSize,
       );
@@ -108,7 +107,6 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
     return PaginatedList<(Tag, List<Tag>)>(
       items: resultItems,
       totalItemCount: tags.totalItemCount,
-      totalPageCount: tags.totalPageCount,
       pageIndex: tags.pageIndex,
       pageSize: tags.pageSize,
     );

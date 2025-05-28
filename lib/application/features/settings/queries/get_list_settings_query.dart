@@ -21,11 +21,7 @@ class SettingListItem {
 
 class GetListSettingsQueryResponse extends PaginatedList<SettingListItem> {
   GetListSettingsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListSettingsQueryHandler implements IRequestHandler<GetListSettingsQuery, GetListSettingsQueryResponse> {
@@ -45,7 +41,6 @@ class GetListSettingsQueryHandler implements IRequestHandler<GetListSettingsQuer
           .map((e) => SettingListItem(id: e.id, key: e.key, value: e.value, valueType: e.valueType))
           .toList(),
       totalItemCount: settings.totalItemCount,
-      totalPageCount: settings.totalPageCount,
       pageIndex: settings.pageIndex,
       pageSize: settings.pageSize,
     );

@@ -161,13 +161,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     );
 
     final totalItemCount = await totalCountQuery.map((row) => row.read<int>('count')).getSingle();
-    final totalPageCount = (totalItemCount / pageSize).ceil();
-
     return PaginatedList<AppUsage>(
-        items: result,
-        totalItemCount: totalItemCount,
-        totalPageCount: totalPageCount,
-        pageIndex: pageIndex,
-        pageSize: pageSize);
+        items: result, totalItemCount: totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
   }
 }

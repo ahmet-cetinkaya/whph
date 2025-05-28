@@ -81,7 +81,6 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       return PaginatedList<Note>(
         items: [],
         totalItemCount: 0,
-        totalPageCount: 0,
         pageIndex: pageIndex,
         pageSize: pageSize,
       );
@@ -135,7 +134,6 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     return PaginatedList<Note>(
       items: notesWithTags,
       totalItemCount: paginatedNotes.totalItemCount,
-      totalPageCount: paginatedNotes.totalPageCount,
       pageIndex: paginatedNotes.pageIndex,
       pageSize: paginatedNotes.pageSize,
     );

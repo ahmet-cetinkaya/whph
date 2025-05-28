@@ -26,11 +26,7 @@ class AppUsageTagListItem {
 
 class GetListAppUsageTagsQueryResponse extends PaginatedList<AppUsageTagListItem> {
   GetListAppUsageTagsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListAppUsageTagsQueryHandler
@@ -65,7 +61,6 @@ class GetListAppUsageTagsQueryHandler
     return GetListAppUsageTagsQueryResponse(
       items: listItems,
       totalItemCount: appUsageTags.totalItemCount,
-      totalPageCount: appUsageTags.totalPageCount,
       pageIndex: appUsageTags.pageIndex,
       pageSize: appUsageTags.pageSize,
     );

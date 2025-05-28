@@ -190,7 +190,6 @@ class NotesListState extends State<NotesList> {
             _notes = GetListNotesQueryResponse(
               items: [..._notes!.items, ...result.items],
               totalItemCount: result.totalItemCount,
-              totalPageCount: result.totalPageCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
@@ -205,7 +204,6 @@ class NotesListState extends State<NotesList> {
         _notes = GetListNotesQueryResponse(
           items: existingItems!,
           totalItemCount: _notes!.totalItemCount,
-          totalPageCount: _notes!.totalPageCount,
           pageIndex: _notes!.pageIndex,
           pageSize: _notes!.pageSize,
         );

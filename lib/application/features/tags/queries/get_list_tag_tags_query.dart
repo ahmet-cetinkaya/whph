@@ -34,11 +34,7 @@ class TagTagListItem {
 
 class GetListTagTagsQueryResponse extends PaginatedList<TagTagListItem> {
   GetListTagTagsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse> {
@@ -74,7 +70,6 @@ class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery,
     return GetListTagTagsQueryResponse(
       items: listItems,
       totalItemCount: tagTags.totalItemCount,
-      totalPageCount: tagTags.totalPageCount,
       pageIndex: tagTags.pageIndex,
       pageSize: tagTags.pageSize,
     );

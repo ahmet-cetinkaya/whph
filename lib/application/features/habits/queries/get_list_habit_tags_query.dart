@@ -27,11 +27,7 @@ class HabitTagListItem {
 
 class GetListHabitTagsQueryResponse extends PaginatedList<HabitTagListItem> {
   GetListHabitTagsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.totalPageCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
 class GetListHabitTagsQueryHandler implements IRequestHandler<GetListHabitTagsQuery, GetListHabitTagsQueryResponse> {
@@ -62,7 +58,6 @@ class GetListHabitTagsQueryHandler implements IRequestHandler<GetListHabitTagsQu
     return GetListHabitTagsQueryResponse(
       items: listItems,
       totalItemCount: habitTags.totalItemCount,
-      totalPageCount: habitTags.totalPageCount,
       pageIndex: habitTags.pageIndex,
       pageSize: habitTags.pageSize,
     );

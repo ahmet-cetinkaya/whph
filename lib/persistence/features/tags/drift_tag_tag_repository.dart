@@ -54,7 +54,6 @@ class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTa
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
     );
   }
 

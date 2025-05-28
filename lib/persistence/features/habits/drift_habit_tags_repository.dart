@@ -63,7 +63,6 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
     return PaginatedList(
       items: result,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
       pageIndex: pageIndex,
       pageSize: pageSize,
     );

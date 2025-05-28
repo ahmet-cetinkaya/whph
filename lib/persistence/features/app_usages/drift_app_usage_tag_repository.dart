@@ -57,7 +57,6 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
     );
   }
 

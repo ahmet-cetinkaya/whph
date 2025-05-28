@@ -59,7 +59,6 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
-      totalPageCount: (totalCount / pageSize).ceil(),
     );
   }
 
