@@ -55,7 +55,7 @@ class AsyncErrorHandler {
           context,
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
-          message: errorMessage ?? 'An unexpected error occurred.',
+          message: errorMessage,
         );
       }
 
@@ -116,7 +116,7 @@ class AsyncErrorHandler {
           context,
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
-          message: errorMessage ?? 'An unexpected error occurred.',
+          message: errorMessage,
         );
       }
 
@@ -182,7 +182,7 @@ class AsyncErrorHandler {
           context,
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
-          message: errorMessage ?? 'An unexpected error occurred.',
+          message: errorMessage,
         );
       }
 

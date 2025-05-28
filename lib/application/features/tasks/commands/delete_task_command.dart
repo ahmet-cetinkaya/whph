@@ -21,7 +21,7 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
   Future<DeleteTaskCommandResponse> call(DeleteTaskCommand request) async {
     Task? task = await _taskRepository.getById(request.id);
     if (task == null) {
-      throw BusinessException(TaskTranslationKeys.taskNotFoundError);
+      throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
     }
 
     await _taskRepository.delete(task);

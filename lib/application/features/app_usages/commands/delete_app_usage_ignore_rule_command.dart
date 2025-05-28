@@ -31,7 +31,8 @@ class DeleteAppUsageIgnoreRuleCommandHandler
   Future<DeleteAppUsageIgnoreRuleCommandResponse> call(DeleteAppUsageIgnoreRuleCommand request) async {
     AppUsageIgnoreRule? rule = await _repository.getById(request.id);
     if (rule == null) {
-      throw BusinessException(AppUsageTranslationKeys.appUsageIgnoreRuleNotFoundError);
+      throw BusinessException(
+          'App usage ignore rule not found', AppUsageTranslationKeys.appUsageIgnoreRuleNotFoundError);
     }
 
     await _repository.delete(rule);

@@ -1,9 +1,10 @@
 class BusinessException implements Exception {
-  final String messageKey;
+  final String message;
+  final String errorCode;
   final Map<String, String>? args;
 
-  BusinessException(this.messageKey, {this.args});
+  BusinessException(this.message, this.errorCode, {this.args});
 
   @override
-  String toString() => messageKey;
+  String toString() => message;
 }

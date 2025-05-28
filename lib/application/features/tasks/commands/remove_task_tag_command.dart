@@ -29,10 +29,10 @@ class RemoveTaskTagCommandHandler implements IRequestHandler<RemoveTaskTagComman
   Future<RemoveTaskTagCommandResponse> call(RemoveTaskTagCommand request) async {
     TaskTag? taskTag = await _taskTagRepository.getById(request.id);
     if (taskTag == null) {
-      throw BusinessException(TaskTranslationKeys.taskTagNotFoundError);
+      throw BusinessException('Task tag not found', TaskTranslationKeys.taskTagNotFoundError);
     }
     if (taskTag.deletedDate != null) {
-      throw BusinessException(TaskTranslationKeys.taskTagAlreadyDeletedError);
+      throw BusinessException('Task tag already deleted', TaskTranslationKeys.taskTagAlreadyDeletedError);
     }
     await _taskTagRepository.delete(taskTag);
 

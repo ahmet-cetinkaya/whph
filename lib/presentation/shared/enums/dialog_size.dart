@@ -64,11 +64,11 @@ enum DialogSize {
       case DialogSize.min:
         return 0; // No initial size for min size
       case DialogSize.small:
-        return 0.35;
+        return 0.6;
       case DialogSize.medium:
-        return 0.7;
+        return 0.8;
       case DialogSize.large:
-        return 0.85;
+        return 0.9;
       case DialogSize.max:
         return 0.95;
     }
@@ -92,18 +92,7 @@ enum DialogSize {
 
   /// Returns the maximum child size for mobile bottom sheets
   double get mobileMaxSize {
-    switch (this) {
-      case DialogSize.min:
-        return 0; // No maximum size for min size
-      case DialogSize.small:
-        return 0.7;
-      case DialogSize.medium:
-        return 0.85;
-      case DialogSize.large:
-        return 0.95;
-      case DialogSize.max:
-        return 0.98;
-    }
+    return 0.95; // Maximum size for all mobile dialogs
   }
 
   /// Returns the maximum width constraint for desktop dialogs

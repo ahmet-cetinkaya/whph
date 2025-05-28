@@ -253,7 +253,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
             await _saveSyncDevice(request.syncDataDto!.syncDevice);
             return response;
           }
-          throw BusinessException('Failed to process sync data');
+          throw BusinessException('Failed to process sync data', SyncTranslationKeys.processFailedError);
         } else {
           try {
             await _sendDataToWebSocket(syncDevice.fromIp, jsonData);
@@ -396,20 +396,20 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         if (syncSuccess) {
           return;
         } else {
-          throw BusinessException(SyncTranslationKeys.syncFailedError);
+          throw BusinessException('Sync failed', SyncTranslationKeys.syncFailedError);
         }
       } catch (e) {
         if (kDebugMode) debugPrint('Error during WebSocket communication (Attempt ${attempt + 1}): $e');
 
         // For device mismatch errors, just return without retrying
-        if (e is BusinessException && e.messageKey == SyncTranslationKeys.deviceMismatchError) {
+        if (e is BusinessException && e.errorCode == SyncTranslationKeys.deviceMismatchError) {
           if (kDebugMode) debugPrint('Device ID mismatch, skipping this device');
           return;
         }
 
         attempt++;
         if (attempt >= maxRetries) {
-          throw BusinessException(SyncTranslationKeys.syncFailedError);
+          throw BusinessException('Sync failed after retries', SyncTranslationKeys.syncFailedError);
         }
 
         await Future.delayed(Duration(seconds: pow(2, attempt).toInt()));
@@ -422,6 +422,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   Future<void> _checkVersion(String remoteVersion) async {
     if (remoteVersion != AppInfo.version) {
       throw BusinessException(
+        'Version mismatch detected',
         SyncTranslationKeys.versionMismatchError,
         args: {
           'currentVersion': AppInfo.version,
@@ -440,7 +441,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       return;
     }
 
-    throw BusinessException(SyncTranslationKeys.deviceMismatchError);
+    throw BusinessException('Device ID mismatch', SyncTranslationKeys.deviceMismatchError);
   }
 
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {

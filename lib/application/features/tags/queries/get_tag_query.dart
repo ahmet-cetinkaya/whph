@@ -33,7 +33,7 @@ class GetTagQueryHandler implements IRequestHandler<GetTagQuery, GetTagQueryResp
       request.id,
     );
     if (tags == null) {
-      throw BusinessException(TagTranslationKeys.tagNotFoundError);
+      throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
     }
 
     return GetTagQueryResponse(

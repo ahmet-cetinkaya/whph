@@ -32,10 +32,10 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
   @override
   Future<AddTagTagCommandResponse> call(AddTagTagCommand request) async {
     if (request.primaryTagId == request.secondaryTagId) {
-      throw BusinessException(TagTranslationKeys.sameTagError);
+      throw BusinessException('Cannot tag the same tag', TagTranslationKeys.sameTagError);
     }
     if (await _tagTagRepository.anyByPrimaryAndSecondaryId(request.primaryTagId, request.secondaryTagId)) {
-      throw BusinessException(TagTranslationKeys.tagTagAlreadyExistsError);
+      throw BusinessException('Tag tag already exists', TagTranslationKeys.tagTagAlreadyExistsError);
     }
 
     final tagTag = TagTag(

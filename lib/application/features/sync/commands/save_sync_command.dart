@@ -52,7 +52,7 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     if (request.id != null) {
       syncDevice = await _syncDeviceRepository.getById(request.id!);
       if (syncDevice == null) {
-        throw BusinessException(SyncTranslationKeys.syncDeviceNotFoundError);
+        throw BusinessException('Sync device not found', SyncTranslationKeys.syncDeviceNotFoundError);
       }
 
       await _update(syncDevice, request);

@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 // ignore: unused_import
@@ -24,7 +25,7 @@ class RemoveNoteTagCommandHandler implements IRequestHandler<RemoveNoteTagComman
     final noteTag = await _noteTagRepository.getById(request.id);
 
     if (noteTag == null) {
-      throw BusinessException('notes.errors.note_tag_not_found');
+      throw BusinessException('Note tag not found', NoteTranslationKeys.noteTagNotFound);
     }
 
     await _noteTagRepository.delete(noteTag);

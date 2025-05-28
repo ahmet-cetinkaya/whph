@@ -55,7 +55,7 @@ class GetSettingQueryHandler implements IRequestHandler<GetSettingQuery, GetSett
       );
     }
     if (settings == null) {
-      throw BusinessException(SettingTranslationKeys.settingNotFoundError);
+      throw BusinessException('Setting not found', SettingTranslationKeys.settingNotFoundError);
     }
 
     return GetSettingQueryResponse(

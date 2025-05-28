@@ -33,7 +33,7 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
   @override
   Future<AddHabitTagCommandResponse> call(AddHabitTagCommand request) async {
     if (await _habitTagRepository.anyByHabitIdAndTagId(request.habitId, request.tagId)) {
-      throw BusinessException(HabitTranslationKeys.habitTagAlreadyExistsError);
+      throw BusinessException('Habit tag already exists', HabitTranslationKeys.habitTagAlreadyExistsError);
     }
 
     final habitTag = HabitTag(

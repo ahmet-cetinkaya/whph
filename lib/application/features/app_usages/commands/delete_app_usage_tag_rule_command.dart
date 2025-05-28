@@ -30,7 +30,7 @@ class DeleteAppUsageTagRuleCommandHandler
   Future<DeleteAppUsageTagRuleCommandResponse> call(DeleteAppUsageTagRuleCommand request) async {
     AppUsageTagRule? rule = await _repository.getById(request.id);
     if (rule == null) {
-      throw BusinessException(AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
+      throw BusinessException('App usage tag rule not found', AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
     }
 
     await _repository.delete(rule);

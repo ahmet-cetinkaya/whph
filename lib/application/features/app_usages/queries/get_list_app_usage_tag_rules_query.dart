@@ -83,7 +83,10 @@ class GetListAppUsageTagRulesQueryHandler
     List<AppUsageTagRuleListItem> items = await Future.wait(result.items.map((rule) async {
       if (!cachedTags.containsKey(rule.tagId)) {
         Tag? tag = await _tagRepository.getById(rule.tagId);
-        if (tag == null) throw BusinessException(AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
+        if (tag == null) {
+          throw BusinessException(
+              'Tag not found for app usage tag rule', AppUsageTranslationKeys.appUsageTagRuleNotFoundError);
+        }
 
         cachedTags[rule.tagId] = tag;
       }

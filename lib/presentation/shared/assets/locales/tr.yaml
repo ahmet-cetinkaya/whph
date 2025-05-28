@@ -1,4 +1,5 @@
 shared:
+  report_error: Hata Bildir
   save_list_options: Liste Seçeneklerini Kaydet
   buttons:
     save: Kaydet
@@ -21,6 +22,32 @@ shared:
     loading: Veri yüklenirken hata oluştu
     saving: Veri kaydedilirken hata oluştu
     deleting: Veri silinirken hata oluştu
+    file_pick: Dosya seçilirken hata oluştu
+    file_save: Dosya kaydedilirken hata oluştu
+    file_read: Dosya okunurken hata oluştu
+    file_write: Dosya yazılırken hata oluştu
+    file_not_found: Dosya bulunamadı
+    storage_permission: Depolama izni gerekli
+    storage_permission_denied: Depolama izni reddedildi
+    report_subject: "WHPH: Beklenmeyen Hata Bildirimi"
+    report_template: |
+      Merhaba, WHPH uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
+
+      Sorunu teşhis etmenize yardımcı olabilecek bilgiler:
+      Uygulama Sürümü: {version}
+      Cihaz Bilgisi: {device}
+      İşletim Sistemi: {os}
+      İşletim Sistemi Sürümü: {osVersion}
+      Hata Mesajı:
+      ```
+      {error}
+      Yığın İzleme:
+      {stackTrace}
+      ```
+
+      Lütfen bu sorunu çözmeme yardımcı olun.
+
+      Teşekkürler!
   units:
     minutes: dk
     days: gün

@@ -55,7 +55,7 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
     if (request.id != null) {
       appUsage = await _appUsageRepository.getById(request.id!);
       if (appUsage == null) {
-        throw BusinessException(AppUsageTranslationKeys.appUsageNotFoundError);
+        throw BusinessException('App usage not found', AppUsageTranslationKeys.appUsageNotFoundError);
       }
 
       appUsage.displayName = request.displayName;

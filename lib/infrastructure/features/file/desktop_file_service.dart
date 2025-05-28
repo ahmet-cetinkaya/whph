@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class DesktopFileService implements IFileService {
   @override
@@ -19,7 +20,7 @@ class DesktopFileService implements IFileService {
 
       return result?.files.firstOrNull?.path;
     } catch (e) {
-      throw BusinessException('Failed to pick file: $e');
+      throw BusinessException('Failed to pick file: $e', SharedTranslationKeys.filePickError);
     }
   }
 
@@ -37,7 +38,7 @@ class DesktopFileService implements IFileService {
         dialogTitle: dialogTitle,
       );
     } catch (e) {
-      throw BusinessException('Failed to get save path: $e');
+      throw BusinessException('Failed to get save path: $e', SharedTranslationKeys.fileSaveError);
     }
   }
 
@@ -46,11 +47,11 @@ class DesktopFileService implements IFileService {
     try {
       final file = File(filePath);
       if (!await file.exists()) {
-        throw BusinessException('File does not exist: $filePath');
+        throw BusinessException('File does not exist: $filePath', SharedTranslationKeys.fileNotFoundError);
       }
       return await file.readAsString();
     } catch (e) {
-      throw BusinessException('Failed to read file: $e');
+      throw BusinessException('Failed to read file: $e', SharedTranslationKeys.fileReadError);
     }
   }
 
@@ -69,7 +70,7 @@ class DesktopFileService implements IFileService {
 
       await file.writeAsString(content);
     } catch (e) {
-      throw BusinessException('Failed to write file: $e');
+      throw BusinessException('Failed to write file: $e', SharedTranslationKeys.fileWriteError);
     }
   }
 }

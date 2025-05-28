@@ -23,7 +23,7 @@ class DeleteSyncDeviceCommandHandler
   Future<DeleteSyncDeviceCommandResponse> call(DeleteSyncDeviceCommand request) async {
     SyncDevice? syncDevice = await _syncDeviceRepository.getById(request.id);
     if (syncDevice == null) {
-      throw BusinessException(SyncTranslationKeys.syncDeviceNotFoundError);
+      throw BusinessException('Sync device not found', SyncTranslationKeys.syncDeviceNotFoundError);
     }
 
     await _syncDeviceRepository.delete(syncDevice);

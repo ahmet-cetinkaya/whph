@@ -33,7 +33,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
   @override
   Future<AddAppUsageTagCommandResponse> call(AddAppUsageTagCommand request) async {
     if (await _appUsageTagRepository.anyByAppUsageIdAndTagId(request.appUsageId, request.tagId)) {
-      throw BusinessException(AppUsageTranslationKeys.tagAlreadyExistsError);
+      throw BusinessException('Tag already exists for this app usage', AppUsageTranslationKeys.tagAlreadyExistsError);
     }
 
     final appUsageTag = AppUsageTag(

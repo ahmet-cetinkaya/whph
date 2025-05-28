@@ -21,7 +21,7 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
   Future<DeleteTagCommandResponse> call(DeleteTagCommand request) async {
     Tag? tag = await _tagRepository.getById(request.id);
     if (tag == null) {
-      throw BusinessException(TagTranslationKeys.tagNotFoundError);
+      throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
     }
 
     await _tagRepository.delete(tag);

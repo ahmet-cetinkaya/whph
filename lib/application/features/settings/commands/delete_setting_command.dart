@@ -21,7 +21,7 @@ class DeleteSettingCommandHandler implements IRequestHandler<DeleteSettingComman
   Future<DeleteSettingCommandResponse> call(DeleteSettingCommand request) async {
     Setting? setting = await _settingRepository.getById(request.id);
     if (setting == null) {
-      throw BusinessException(SettingTranslationKeys.settingNotFoundError);
+      throw BusinessException('Setting not found', SettingTranslationKeys.settingNotFoundError);
     }
 
     await _settingRepository.delete(setting);

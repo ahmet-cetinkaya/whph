@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/shared/utils/key_helper.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
@@ -31,7 +32,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
     final existingNoteTag = await _noteTagRepository.getByNoteIdAndTagId(request.noteId, request.tagId);
 
     if (existingNoteTag != null) {
-      throw BusinessException('notes.errors.tag_already_exists');
+      throw BusinessException('Tag already exists', NoteTranslationKeys.tagAlreadyExists);
     }
 
     final id = KeyHelper.generateStringId();

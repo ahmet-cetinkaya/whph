@@ -44,7 +44,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
     if (request.id != null) {
       setting = await _settingRepository.getById(request.id!);
       if (setting == null) {
-        throw BusinessException(SettingTranslationKeys.settingNotFoundError);
+        throw BusinessException('Setting not found', SettingTranslationKeys.settingNotFoundError);
       }
 
       await _update(setting, request);

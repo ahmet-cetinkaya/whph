@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 
@@ -56,7 +57,7 @@ class GetNoteQueryHandler implements IRequestHandler<GetNoteQuery, GetNoteQueryR
     final note = await _noteRepository.getById(request.id);
 
     if (note == null) {
-      throw BusinessException('notes.errors.note_not_found');
+      throw BusinessException('Note not found', NoteTranslationKeys.noteNotFound);
     }
 
     return GetNoteQueryResponse(

@@ -36,7 +36,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
   @override
   Future<UpdateTaskOrderResponse> call(UpdateTaskOrderCommand request) async {
     final task = await _taskRepository.getById(request.taskId);
-    if (task == null) throw BusinessException(TaskTranslationKeys.taskNotFoundError);
+    if (task == null) throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
 
     final otherTasks = await _taskRepository.getAll(
       customWhereFilter: CustomWhereFilter(

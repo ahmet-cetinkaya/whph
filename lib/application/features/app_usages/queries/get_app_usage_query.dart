@@ -33,7 +33,7 @@ class GetAppUsageQueryHandler implements IRequestHandler<GetAppUsageQuery, GetAp
   Future<GetAppUsageQueryResponse> call(GetAppUsageQuery request) async {
     AppUsage? appUsages = await _appUsageRepository.getById(request.id);
     if (appUsages == null) {
-      throw BusinessException(AppUsageTranslationKeys.appUsageNotFoundError);
+      throw BusinessException('App usage not found', AppUsageTranslationKeys.appUsageNotFoundError);
     }
 
     return GetAppUsageQueryResponse(

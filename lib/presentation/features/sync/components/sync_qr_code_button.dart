@@ -25,7 +25,7 @@ class SyncQrCodeButton extends StatelessWidget {
     if (ipAddress == null) {
       if (context.mounted) {
         BusinessException exception =
-            BusinessException(_translationService.translate(SyncTranslationKeys.ipAddressError));
+            BusinessException('IP address could not be determined', SyncTranslationKeys.ipAddressError);
         ErrorHelper.showError(context, exception);
       }
       return;
