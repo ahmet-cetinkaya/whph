@@ -55,7 +55,6 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
         _showError = !hasPermission;
       });
     } catch (e) {
-      debugPrint('Error checking app usage permission: $e');
       setState(() {
         _hasAppUsagePermission = false;
         _isLoading = false;
@@ -87,7 +86,6 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
         widget.onPermissionGranted?.call();
       }
     } catch (e) {
-      debugPrint('Error requesting app usage permission: $e');
       setState(() {
         _isLoading = false;
         _showError = true;
