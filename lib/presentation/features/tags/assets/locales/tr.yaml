@@ -1,62 +1,42 @@
 tags:
-  time_records: Zaman Kayıtları
-  title: Etiketler
-  new_tag: Yeni Etiket
-  filter:
-    select_category: Kategori Seç
-    all_categories: Tüm Kategoriler
-  tag_details: Etiket Detayları
-  no_tags: Etiket yok
-  filter_tooltip: Etiketlere göre filtrele
-  none_option: Hiçbiri
-  time_distribution: Zaman Dağılımı
-  sections:
-    list: Etiketler
+  actions:
+    add: Etiket Ekle
+    archive: Etiketi Arşivle
+    delete: Etiketi Sil
+    edit: Etiketi Düzenle
+    hide_archived: Arşivlenen etiketleri gizle
+    show_archived: Arşivlenen etiketleri göster
+    unarchive: Etiketi Arşivden Çıkar
   categories:
     all: Tümü
-    tasks: Görevler
     app_usage: Uygulama Kullanımı
     habits: Alışkanlıklar
-  actions:
-    show_archived: Arşivlenen etiketleri göster
-    hide_archived: Arşivlenen etiketleri gizle
-    add: Etiket Ekle
-    edit: Etiketi Düzenle
-    delete: Etiketi Sil
-    archive: Etiketi Arşivle
-    unarchive: Etiketi Arşivden Çıkar
+    tasks: Görevler
+  default_name: Yeni Etiket
+  details:
+    archived: Arşivlenmiş
+    color: Renk
+    name: İsim
+    related_tags: İlgili Etiketler
+    select_tag: Etiket seç
+    tasks_label: Görevler
+  errors:
+    creating: Etiket oluşturulurken hata oluştu
+    deleting: Etiket silinirken hata oluştu
+    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    loading: Etiketler yüklenirken hata oluştu
+    loading_archive_status: Arşiv durumu yüklenemedi
+    same_tag: Birincil ve ikincil etiketler aynı olamaz
+    saving: Etiket kaydedilirken hata oluştu
+    tag_not_found: Etiket bulunamadı
+    tag_tag_already_exists: Bu etiket ilişkisi zaten mevcut
+    tag_tag_not_found: Etiket ilişkisi bulunamadı
+    toggling_archive: Arşiv durumu değiştirilirken hata oluştu
+  filter:
+    all_categories: Tüm Kategoriler
+    select_category: Kategori Seç
+  filter_tooltip: Etiketlere göre filtrele
   help:
-    overview:
-      title: Etiketler Genel Bakış Yardımı
-      content: |
-        🏷️ Etiketler, görevleriniz arasında zamanı organize etmenize ve takip etmenize yardımcı olur.
-
-        ## 📊 Zaman Analizi
-        - Etiketlere göre zaman dağılımını görüntüle
-        - Özel dönemler için zaman yatırımlarını takip et
-        - Farklı alanlarda harcanan zamanı karşılaştır
-        - Günlük ve haftalık desenleri izle
-        - Odaklanma dağılımını analiz et
-
-        ## ⚡ Özellikler
-        - Birden fazla etikete göre filtrele
-        - Tamamlanan proje etiketlerini arşivle
-        - Etiket hiyerarşileri oluştur
-        - İlgili etiket gruplarını takip et
-        - Görevler arası zaman takibi
-        - Etiket tabanlı organizasyon
-
-        ## 💡 İpuçları
-        - Anlamlı etiket isimleri kullan
-        - Hiyerarşik yapılar oluştur:
-          - Departmanlar altında projeler
-          - Ana projeler altında alt görevler
-          - Alanlar altında kategoriler
-        - Zaman grafiklerini düzenli olarak gözden geçir
-        - Tamamlanan projeleri arşivle
-        - Odaklanmak için etiket filtrelerini kullan
-    title: Etiket Yardım
-    description: Etiketler, öğeleri kategorize etmenize ve gruplandırmanıza yardımcı olur
     content: |
       🏷️ Etiketler, öğeleri gruplandırmanıza ve organize etmenize yardımcı olur.
 
@@ -70,83 +50,87 @@ tags:
       - Benzer öğeleri aynı etiketle gruplandırın
       - Renk kodlaması ile görsel düzen sağlayın
       - Arşivleme özelliği ile düzeni koruyun
-  default_name: Yeni Etiket
-  messages:
-    confirm_delete: Bu etiketi silmek istediğinize emin misiniz?
-    confirm_archive: Bu etiketi arşivlemek istediğinize emin misiniz?
-    confirm_unarchive: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
-    unarchive_confirm: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
-    archive_confirm: Bu etiketi arşivlemek istediğinize emin misiniz?
-  errors:
-    loading: Etiketler yüklenirken hata oluştu
-    saving: Etiket kaydedilirken hata oluştu
-    deleting: Etiket silinirken hata oluştu
-    creating: Etiket oluşturulurken hata oluştu
-    loading_archive_status: Arşiv durumu yüklenemedi
-    toggling_archive: Arşiv durumu değiştirilirken hata oluştu
-    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
-    tag_not_found: Etiket bulunamadı
-    tag_tag_not_found: Etiket ilişkisi bulunamadı
-    tag_tag_already_exists: Bu etiket ilişkisi zaten mevcut
-    same_tag: Birincil ve ikincil etiketler aynı olamaz
+    description: Etiketler, öğeleri kategorize etmenize ve gruplandırmanıza yardımcı olur
+    overview:
+      content: |
+        İşlerinizi organize etmenize, zaman yatırımlarınızı takip etmenize ve en önemli konularda net odaklanma sağlamanıza yardımcı olan stratejik etiketleme ile verimliliğinizi dönüştürün.
+
+        ## ⚡ Neden Önemli?
+
+        Etiket tabanlı organizasyon, etkili zaman yönetimi ve verimliliğin temelidir. Faaliyetlerinizi anlamlı etiketlerle kategorilere ayırarak, zamanınızı nasıl geçirdiğiniz konusunda net içgörüler kazanır ve odağınızı ve verimliliğinizi optimize etmek için bilinçli kararlar alabilirsiniz.
+
+        ## 📊 Zaman Yatırımı Analizi
+
+        Zamanınızın nereye gittiğini anlayın ve öncelikleriniz hakkında veri odaklı kararlar alın. Etiketlerle zaman takibi, zamanlamanızı ve çalışma alışkanlıklarınızı optimize etmenize yardımcı olan kalıpları ortaya çıkarır.
+
+        - ⏱️ Farklı faaliyet kategorilerinde harcanan zamanı izleyin
+        - 📅 Belirli dönemler ve eğilimler boyunca zaman yatırımlarını takip edin
+        - ⚖️ Projeler ve sorumluluklar arasında zaman dağılımını karşılaştırın
+        - 📈 Verimlilik kalıplarını ve en üst performans zamanlarını belirleyin
+        - 🎯 Enerjinizi yüksek etkili faaliyetlere odaklayın
+
+        ## 🗂️ Stratejik Organizasyon
+
+        İhtiyaçlarınızla ölçeklenen sistematik bir iş organizasyonu yaklaşımı oluşturun. İyi yapılandırılmış etiketler, verimli bir verimlilik sisteminin temelini oluşturur.
+
+        - 🔍 Çoklu etiket aramalarıyla bilgileri hızlı filtreleyerek bulun
+        - 🗄️ Temiz organizasyonu korumak için tamamlanan projeleri arşivleyin
+        - 🧩 İş kalıplarınızı yansıtan hiyerarşik yapılar oluşturun
+        - 👥 Daha iyi proje yönetimi için ilgili faaliyetleri gruplayın
+        - ⏳ Tüm faaliyetlerde kapsamlı zaman takibini etkinleştirin
+
+        ## 💡 Optimizasyon Stratejileri
+
+        Organizasyon sisteminizin etkinliğini maksimize etmek ve uzun vadeli verimlilik büyümesini sürdürmek için gelişmiş etiketleme tekniklerinden yararlanın.
+
+        - 🏷️ Zaman içinde anlamlı kalacak açık, tanımlayıcı isimler kullanın
+        - 🔗 **Hiyerarşik yapılar oluşturun:** Projeler → Departmanlar → Alanlar
+        - 📊 Gelişim fırsatlarını belirlemek için zaman analizi raporlarını düzenli inceleyin
+        - 🗄️ Tamamlanan işleri arşivleyerek sistem temizliğini koruyun
+        - 🎯 Dikkat dağıtıcıları ortadan kaldırmak ve konsantrasyonu artırmak için odaklı filtreleme uygulayın
+      title: Etiket Tabanlı Organizasyon ve Zaman Yönetimi Rehberi
+
+    title: Etiket Yardım
   labels:
-    name: İsim
     color: Renk
     description: Açıklama
+    name: İsim
     tags: Etiketler
   list:
-    no_tags: Etiket yok
     filter_tooltip: Etiketlere göre filtrele
-  tooltips:
-    add_tag: Etiket ekle
-    delete_tag: Etiketi sil
-    archive_tag: Etiketi arşivle
-    unarchive_tag: Etiketi arşivden çıkar
-    add_task: Yeni görev ekle
-    color: Etikete renk ata
-    select: Etiket seç
-    edit_name: İsmi düzenle
+    no_tags: Etiket yok
+  messages:
+    archive_confirm: Bu etiketi arşivlemek istediğinize emin misiniz?
+    confirm_archive: Bu etiketi arşivlemek istediğinize emin misiniz?
+    confirm_delete: Bu etiketi silmek istediğinize emin misiniz?
+    confirm_unarchive: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
+    unarchive_confirm: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
+  new_tag: Yeni Etiket
+  no_tags: Etiket yok
+  none_option: Hiçbiri
   search:
-    label: Etiket ara
     clear_all: Tümünü Temizle
+    label: Etiket ara
+  sections:
+    list: Etiketler
   selection:
     done: Tamam
+  tag_details: Etiket Detayları
+  time_bar_chart:
+    no_data: Veri yok
+    title: Zaman Dağılımı
   time_chart:
     no_data: Veri yok
     other_category: Diğer
-  time_bar_chart:
-    title: Zaman Dağılımı
-    no_data: Veri yok
-  details:
-    name: İsim
-    color: Renk
-    archived: Arşivlenmiş
-    related_tags: İlgili Etiketler
-    select_tag: Etiket seç
-    help:
-      title: Etiket Detayları Yardım
-      description: 🏷️ Etiketler, ilgili görevler arasında zamanı organize etmenize ve takip etmenize yardımcı olur.
-      features_title: ⚡ Özellikler
-      features_list:
-        - • Görevler arası zaman takibi:
-        - • İlgili etiketler:
-        - • Görev organizasyonu
-        - • Arşivleme fonksiyonu
-      tips_title: 💡 Kullanım İpuçları
-      tips_list:
-        - • Projeler, kategoriler veya bağlamlar için kullanın
-        - • Hiyerarşiler oluşturmak için ilgili etiketleri bağlayın
-        - • Etiket grupları arasında zaman yatırımını takip edin
-        - • İlgili görevleri gruplandırın
-        - • Tamamlanan projeler için etiketleri arşivleyin
-        - • Daha iyi organizasyon için anlamlı isimler kullanın
-      management_title: ⚙️ Yönetim
-      management_list:
-        - • İstediğiniz zaman etiket adını düzenleyin
-        - • İlgili etiketleri ekleyin/kaldırın
-        - • Gerektiğinde görevleri ekleyin/kaldırın
-        - • Tamamlanan projeleri gizlemek için etiketleri arşivleyin
-        - • İhtiyacınız olmayan etiketleri silin
-        - • Zaman istatistiklerini görüntüleyin
-        - • İlgili etiketler arasında toplam zamanı takip edin
-    tasks_label: Görevler
+  time_distribution: Zaman Dağılımı
+  time_records: Zaman Kayıtları
+  title: Etiketler
+  tooltips:
+    add_tag: Etiket ekle
+    add_task: Yeni görev ekle
+    archive_tag: Etiketi arşivle
+    color: Etikete renk ata
+    delete_tag: Etiketi sil
+    edit_name: İsmi düzenle
+    select: Etiket seç
+    unarchive_tag: Etiketi arşivden çıkar

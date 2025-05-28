@@ -1,180 +1,189 @@
 habits:
-  new_habit: New Habit
-  tooltips:
-    edit_name: Edit Name
-    add_habit: Add Habit
+  archive:
+    archive: Archive
+    archive_confirm: Are you sure you want to archive this habit?
+    archive_tooltip: Archive this habit
+    archived_date: Archived Date
+    hide_archived: Hide archived
+    show_archived: Show archived
+    unarchive: Unarchive
+    unarchive_confirm: Are you sure you want to unarchive this habit?
+    unarchive_tooltip: Unarchive this habit
+
+  calendar:
+    week_days:
+      fri: Fri
+      mon: Mon
+      sat: Sat
+      sun: Sun
+      thu: Thu
+      tue: Tue
+      wed: Wed
   delete:
-    confirm_title: Delete Habit
     confirm_message: Are you sure you want to delete this habit?
-  errors:
-    loading_records: Failed to load habit records
-    creating_record: Failed to create habit record
-    deleting_record: Failed to delete habit record
-    deleting: Unexpected error occurred while deleting habit
-    loading_details: Failed to load habit details
-    saving_details: Failed to save habit
-    loading_tags: Failed to load habit tags
-    adding_tag: Failed to add tag
-    removing_tag: Failed to remove tag
-    loading_habit: Failed to load habit
-    saving_habit: Failed to save habit
-    loading_habits: Failed to load habits
-    habit_not_found: Habit not found
-    habit_tag_not_found: Habit tag not found
-    habit_record_not_found: Habit record not found
-    tag_already_exists: This tag is already added
-    loading_archive_status: Failed to load archive status
-    toggling_archive: Failed to toggle archive status
-  goals:
-    goal: Goal
-    target_frequency: Target Frequency
-    period_days: Period Days
-    enable: Enable Goals
-    goal_format: "{count} times in {dayCount} days"
-    settings: Goal Settings
-    current_goal: Goal
+    confirm_title: Delete Habit
   details:
+    archived_status: Archived
+    create_record_tooltip: Mark as completed today
     description: Description
-    tags: Tags
-    tags_hint: Select tags to associate
     estimated_time: Estimated Time
     estimated_time_not_set: Not set
+    help:
+      content: |
+        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+
+        ## ⚡ Why Is It Important?
+
+        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+
+        ## ⚙️ Strategic Habit Design
+
+        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+
+        - 📝 Design clear, specific habits with actionable descriptions
+        - 📅 Establish consistent schedules that align with your natural rhythms
+        - 🏷️ Organize similar habits into coherent groups for systematic tracking
+        - 🎯 Connect each habit to meaningful outcomes and personal values
+
+        ## ⏱️ Performance Monitoring
+
+        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+
+        - ⏳ Record completion times to understand habit duration and efficiency
+        - 📊 Analyze time investments across habit categories for balanced development
+        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
+        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+
+        ## 📅 Consistency & Momentum
+
+        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+
+        - 📚 Review completion history to assess progress and identify success patterns
+        - 🔗 Track daily streaks to build and maintain momentum for long-term success
+        - 📌 Monitor consistency metrics to enhance motivation and commitment
+        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+
+        ## 🚀 Optimization Strategies
+
+        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+
+        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
+        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
+        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
+        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
+      title: Habit Formation & Performance Tracking Guide
     records: Records
-    statistics_label: Statistics
-    create_record_tooltip: Mark as completed today
     remove_record_tooltip: Remove today's completion
-    archived_status: Archived
     statistics:
-      overall: Overall
+      archived_note: "Archived on:"
+      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
       monthly: Monthly
-      yearly: Yearly
+      overall: Overall
       records: Records
       score_trends: Score Trends
       top_streaks: Top Streaks
-      archived_note: "Archived on:"
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-    help:
-      title: Habit Details Help
-      description: 🔄 Configure and track your habit details to build consistent routines.
-      features_title: ⚡ Features
-      tips_title: 💡 Tips
-      features_list:
-        - "• Basic Settings:"
-        - "  - Set habit name"
-        - "  - Define schedule"
-        - "  - Add to tag groups"
-        - "• Time Tracking:"
-        - "  - Record completion time"
-        - "  - Track time by tags"
-        - "  - View time patterns"
-        - "• History:"
-        - "  - View completion history"
-        - "  - Track daily streaks"
-        - "  - Monitor consistency"
-      tips_list:
-        - "• Give clear, actionable names"
-        - "• Use tags for habit grouping"
-        - "• Set realistic schedules"
-        - "• Track time consistently"
-        - "• Review and adjust as needed"
-        - "• Delete unused habits"
-      content: |
-        🔄 Configure and track your habit details to build consistent routines.
-
-        ## ⚡ Features
-
-        - **Basic Settings:**
-          - Set habit name
-          - Define schedule
-          - Add to tag groups
-        - **Time Tracking:**
-          - Record completion time
-          - Track time by tags
-          - View time patterns
-        - **History:**
-          - View completion history
-          - Track daily streaks
-          - Monitor consistency
-
-        ## 💡 Tips
-
-        - Give clear, actionable names
-        - Use tags for habit grouping
-        - Set realistic schedules
-        - Track time consistently
-        - Review and adjust as needed
-        - Delete unused habits
+      yearly: Yearly
+    statistics_label: Statistics
+    tags: Tags
+    tags_hint: Select tags to associate
+  errors:
+    adding_tag: Failed to add tag
+    creating_record: Failed to create habit record
+    deleting: Unexpected error occurred while deleting habit
+    deleting_record: Failed to delete habit record
+    habit_not_found: Habit not found
+    habit_record_not_found: Habit record not found
+    habit_tag_not_found: Habit tag not found
+    loading_archive_status: Failed to load archive status
+    loading_details: Failed to load habit details
+    loading_habit: Failed to load habit
+    loading_habits: Failed to load habits
+    loading_records: Failed to load habit records
+    loading_tags: Failed to load habit tags
+    removing_tag: Failed to remove tag
+    saving_details: Failed to save habit
+    saving_habit: Failed to save habit
+    tag_already_exists: This tag is already added
+    toggling_archive: Failed to toggle archive status
+  goals:
+    current_goal: Goal
+    enable: Enable Goals
+    goal: Goal
+    goal_format: "{count} times in {dayCount} days"
+    period_days: Period Days
+    settings: Goal Settings
+    target_frequency: Target Frequency
+  list:
+    all_habits_done: All habits completed!
+    no_habits_found: No habits
+  new_habit: New Habit
+  notifications:
+    reminder_message: "Remember to complete your habit: {name}"
+    reminder_title: "Habit Reminder: {name}"
   overview:
-    title: Habits
     filter_by_tags_tooltip: Filter by tags
     help:
-      title: Habits Overview Help
       content: |
-        🔄 Habits help you build and maintain daily routines while tracking time investments.
+        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
 
-        ## ⚡ Features
+        ## ⚡ Why Is It Important?
 
-        - **Daily Tracking:**
-          - Track habit completion
-          - View multiple days at once
-          - Monitor streaks and patterns
-        - **Time Investment:**
-          - Record time spent on habits
-          - Accumulate time by tags
-          - Track routine durations
-        - **Organization:**
-          - Group habits with tags
-          - Flexible scheduling
+        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
 
-        ## 💡 Tips
+        ## 📅 Daily Execution & Tracking
 
-        - Start with small, manageable habits
-        - Use tags to group related routines
-        - Track time to understand patterns
-        - Complete important habits early
-        - Review your habit history regularly
-        - Adjust habits as needed
+        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
 
-        ## 📊 Calendar View
+        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
+        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
+        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
+        - 📊 **Progress Visualization:** Track completion rates and patterns over time
 
-        - View multiple days at once
-        - Track completion patterns
-        - Quick completion marking
-        - Visual streak tracking
-        - Flexible date navigation
-  calendar:
-    week_days:
-      mon: Mon
-      tue: Tue
-      wed: Wed
-      thu: Thu
-      fri: Fri
-      sat: Sat
-      sun: Sun
-  list:
-    no_habits_found: No habits
-    all_habits_done: All habits completed!
+        ## ⏱️ Time Analysis & Optimization
+
+        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+
+        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
+        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
+        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
+        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+
+        ## 🗂️ Strategic Organization
+
+        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+
+        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
+        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
+        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+
+        ## 💡 Mastery Principles
+
+        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+
+        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
+        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
+        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
+        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+
+        ### 📊 Using the Calendar View
+        - 📅 View multiple days simultaneously in the calendar view.
+        - ✅ Visually track your completion patterns.
+        - ⚡ Save time with quick completion marking.
+        - 🎯 Increase motivation with visual streak tracking.
+        - 🔄 Explore past and future habits with flexible date navigation.
+      title: Daily Habit Management & Routine Optimization Guide
+    title: Habits
+  reminder:
+    enableReminders: Enable reminders
+    everyDay: Every day
+    noReminder: No reminder set
+    reminderDays: Reminder days
+    reminderSettings: Reminder Settings
+    reminderTime: Reminder time
+    selectDaysWarning: Please select at least one day for reminders
   reminders:
     enable: Enable reminders
     select_days_warning: Please select at least one day for reminders
-  reminder:
-    enableReminders: Enable reminders
-    reminderTime: Reminder time
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    selectDaysWarning: Please select at least one day for reminders
-    noReminder: No reminder set
-    everyDay: Every day
-  notifications:
-    reminder_title: "Habit Reminder: {name}"
-    reminder_message: "Remember to complete your habit: {name}"
-  archive:
-    show_archived: Show archived
-    hide_archived: Hide archived
-    archive: Archive
-    unarchive: Unarchive
-    archive_confirm: Are you sure you want to archive this habit?
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    archive_tooltip: Archive this habit
-    unarchive_tooltip: Unarchive this habit
-    archived_date: Archived Date
+  tooltips:
+    add_habit: Add Habit
+    edit_name: Edit Name

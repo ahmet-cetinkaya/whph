@@ -1,44 +1,51 @@
 calendar:
   pages:
     today:
-      title: Bugün
       help:
-        title: Bugün Görünümü Yardım
         content: |
-          📅 Bugün görünümü, günlük görevlerinizi, alışkanlıklarınızı ve zaman yatırımlarınızı tek bir yerde gösterir.
+          Görevleri, alışkanlıkları ve zaman takibini entegre eden birleşik bir görünümle günlük verimliliğinizi optimize edin, odaklanmanızı koruyun ve hedeflerinize verimli şekilde ulaşın.
 
-          ## ⚡ Özellikler
+          ## ⚡ Neden Önemli?
 
-          - **Günlük Alışkanlıklar:**
-            - Günlük alışkanlıklarınıza hızlı erişim
-            - Alışkanlık tamamlama takibi
-            - Rutinlerinizi sürdürme
-          - **Bugünün Görevleri:**
-            - Planlanan ve vadesi gelen görevleri görüntüleyin
-            - Yeni görevler ekleyin
-            - Görev tamamlama takibi
-          - **Zaman Yatırımı:**
-            - Etikete göre harcanan zamanı görüntüleyin
-            - Üretkenlik desenlerini takip edin
-            - Günlük aktiviteleri izleyin
+          Günlük verimlilik yönetimi, etkili zaman kullanımı ve hedef başarısının temel taşıdır. Günlük aktivitelerinizi tek bir görünümde merkezileştirerek bağlam değiştirmeyi ortadan kaldırır, net öncelikler korur ve en önemli işlerinizi başarmak için sistematik bir yaklaşım oluşturursunuz.
 
-          ## 💡 İpuçları
+          ## 🔄 Alışkanlık Tutarlılığı
 
-          - Belirli alanlara odaklanmak için etiket filtrelerini kullanın
-          - Alışkanlıkları günün erken saatlerinde tamamlayın
-          - Gününüzü optimize etmek için zaman grafiklerini gözden geçirin
-          - Odaklanmış çalışma için Marathon modunu başlatın
-          - İlgili görevleri etiketlerle gruplayın
-          - Önemli görevleri önce planlayın
+          Gününüz boyunca momentum yaratan ve pozitif davranış kalıplarını güçlendiren akıcı alışkanlık takibi ile günlük rutinlerinizi izleyin ve sürdürün.
 
-          ## ⚙️ Hızlı Eylemler
+          - ✅ **Hızlı Değerlendirme:** Hızlı ilerleme değerlendirmesi için tüm günlük alışkanlıkları bir bakışta görün
+          - ✔️ **Anında Tamamlama:** Akışı koruyan basit etkileşimlerle alışkanlıkları tamamlandı olarak işaretleyin
+          - 🔄 **Rutin Güçlendirme:** Tutarlı takip ve onay yoluyla günlük kalıpları güçlendirin
+          - 📈 **Momentum Oluşturma:** Sürekli tutarlılığı motive eden görsel ilerleme göstergeleri
 
-          - Marathon modunu başlatmak için zamanlayıcı simgesine tıklayın
-          - Belirli projelere odaklanmak için etiket filtresini kullanın
-          - Alışkanlıkları tamamlamak için üzerine tıklayın
-          - Bugüne atanmış yeni görevler ekleyin
-          - Görev detaylarını görüntülemek için görevlerin üzerine tıklayın
-          - Günlük içgörüler için zaman grafiğini kontrol edin
+          ## 📋 Görev Yürütme
+
+          Son tarihler ve taahhütlerden gözünüzü ayırmadan etkili yürütmeye yardımcı olan bugünün önceliklerinin net görünümü ile görev yönetiminizi odaklayın.
+
+          - 🗓️ **Öncelik Netliği:** Optimal yürütme için düzenlenmiş planlı ve vadeli görevleri görün
+          - ➕ **Hızlı Yakalama:** Mevcut iş akışını bozmadan hızlıca yeni görevler ekleyin
+          - ✔️ **İlerleme Takibi:** Hesap verebilirlik ve momentumu korumak için tamamlanma durumunu izleyin
+          - 🎯 **Odak Koruma:** Net günlük görünüm gelecekteki yükümlülüklerden kaynaklanan bunalmayı önler
+
+          ## ⏰ Zaman Yatırımı Analizi
+
+          Verimlilik kalıplarını ortaya çıkaran ve günlük programınızı maksimum etkinlik için optimize etmeye yardımcı olan kategorize edilmiş analiz yoluyla zamanınızı nasıl geçirdiğinizi anlayın.
+
+          - 📊 **Kategori İçgörüleri:** Farklı aktivite etiketleri ve projelerdeki zaman dağılımını analiz edin
+          - 📈 **Kalıp Tanıma:** Verimlilik trendlerini ve en yüksek performans dönemlerini belirleyin
+          - 🕒 **Aktivite İzleme:** Çeşitli günlük aktiviteler ve sorumluluklar için harcanan zamanı takip edin
+          - 🎯 **Optimizasyon Fırsatları:** Zaman tahsisi hakkında bilinçli kararlar almak için verileri kullanın
+
+          ## ⚙️ Verimlilik Kısayolları
+
+          Sürtünmeyi minimize eden ve gün boyunca yüksek değerli aktivitelere odaklanma kabiliyetinizi maksimize eden hızlı eylemler ve verimli iş akışlarından yararlanın.
+
+          - ▶️ **Odak Oturumları:** Maraton modu zamanlayıcı entegrasyonu ile konsantre çalışma dönemlerine başlayın
+          - 🔎 **Akıllı Filtreleme:** Belirli projelere veya yaşam alanlarına odaklanmak için etiket tabanlı filtreleme kullanın
+          - ✅ **Verimli Tamamlama:** Akıcı, dikkat dağıtmayan etkileşimlerle alışkanlıkları ve görevleri tamamlayın
+          - 📊 **Performans İçgörüleri:** Günlük verimlilik kalıpları hakkında anında geri bildirim için zaman çizelgelerine erişin
+        title: Günlük Verimlilik Yönetimi Rehberi
+      title: Bugün
   sections:
     habits: Alışkanlıklar
     tasks: Görevler

@@ -1,67 +1,82 @@
 common:
   buttons:
     cancel: İptal
-
 settings:
-  title: Ayarlar
-  language:
-    title: Dil
-    choose_title: Dilini seç
-  notifications:
-    title: Bildirimler
-    enable_error: Bildirimler etkinleştirilemedi
-    disable_error: Bildirimler devre dışı bırakılamadı
-  startup:
-    title: Başlangıçta Başlat
-    subtitle: Uygulama için otomatik başlatma iznini etkinleştirmek üzere sistem ayarlarını açmak için dokunun
-    enable_error: Başlangıç ayarı etkinleştirilemedi
-    disable_error: Başlangıç ayarı devre dışı bırakılamadı
-  sync_devices:
-    title: Cihazları Senkronize Et
   about:
     title: Hakkında
-  import_export:
-    title: İçe/Dışa Aktar
-    description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
+  errors:
+    export_failed: Dışa aktarma başarısız
+    import_failed: İçe aktarma başarısız
+    setting_not_found: Ayar bulunamadı
+    version_mismatch: Sürüm uyumsuzluğu
+  export:
+    csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
+    error: Dışa aktarma başarısız
+    json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
+    select_path: Kayıt konumu seçin
+    select_type: Dışa aktarma formatını seçin
+    success: "Dışa aktarma başarılı. Dosya konumu:"
+    title: Dışa Aktar
   import:
-    title: İçe Aktar
-    strategy:
-      title: İçe Aktarma Stratejisi
-      replace: Mevcut Verileri Sil ve Yenisini Ekle
-      merge: Mevcut Verilerle Birleştir
-    success: İçe aktarma başarılı
     error: İçe aktarma başarısız
     select_file: Dosya seçin
-  export:
-    title: Dışa Aktar
-    select_path: Kayıt konumu seçin
-    success: "Dışa aktarma başarılı. Dosya konumu:"
-    error: Dışa aktarma başarısız
-    select_type: Dışa aktarma formatını seçin
-    json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
-    csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
+    strategy:
+      merge: Mevcut Verilerle Birleştir
+      replace: Mevcut Verileri Sil ve Yenisini Ekle
+      title: İçe Aktarma Stratejisi
+    success: İçe aktarma başarılı
+    title: İçe Aktar
+  import_export:
+    description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
+    title: İçe/Dışa Aktar
+  language:
+    choose_title: Dilini seç
+    title: Dil
+  notifications:
+    disable_error: Bildirimler devre dışı bırakılamadı
+    enable_error: Bildirimler etkinleştirilemedi
+    title: Bildirimler
   permissions:
-    title: İzinler
-    fix_it: Düzelt
-    open_settings: Ayarları Aç
-    instructions: İzinlerin verilmesi için talimatlar
+    app_usage:
+      description: Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.
+      instructions: "Talimatlar:"
+      not_granted: Uygulama kullanım izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
+      steps:
+        step1: Cihaz Ayarlarınızı açın
+        step2: '"Gizlilik" veya "Güvenlik ve Gizlilik"e gidin'
+        step3: '"Kullanım Erişimi"ni bulun ve {appName} için etkinleştirin'
+      title: Uygulama Kullanım İzni
     battery_optimization:
-      title: Pil Optimizasyonu
       description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç teslim edilmeyebilir.
       instructions: "Talimatlar:"
+      location_note: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
+      not_disabled: Pil optimizasyonu hala etkin. İlgili işlevin doğru çalışabilmesi için izni verin.
+      not_granted: Pil optimizasyonu izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
         step1: Cihaz Ayarlarınızı açın
         step2: Pil > Pil optimizasyonu'na gidin
         step3: Açılır menüden "Tüm uygulamalar"ı seçin
         step4: Listede {appName}'yi bulun
         step5: '"Optimize etme"yi seçin'
-      location_note: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
-      not_disabled: Pil optimizasyonu hala etkin. Lütfen tekrar deneyin.
-      not_granted: Pil optimizasyonu izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
-    notification:
-      title: Bildirim İzni
-      description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
+      title: Pil Optimizasyonu
+    exact_alarm:
+      description: Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
       instructions: "Talimatlar:"
+      not_granted: Tam alarm izni hala verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
+      steps:
+        android12plus:
+          step2: '"Alarmlar ve hatırlatıcılar"a dokunun'
+          step3: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
+        step1: Açılan ayarlar ekranında {appName}'yi bulun
+        step2: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
+      title: Tam Alarm İzni
+    fix_it: Düzelt
+    instructions: İzinlerin verilmesi için talimatlar
+    notification:
+      description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
+      importance: Bildirim izni olmadan, hiçbir hatırlatıcı alamazsınız.
+      instructions: "Talimatlar:"
+      not_granted: İzin henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
         android:
           step1: Açılan ayarlar ekranında bu uygulamayı bulun
@@ -70,30 +85,14 @@ settings:
           step1: Açılan ayarlar ekranında bu uygulamayı bulun
           step2: '"Bildirimler"e dokunun ve "Bildirimlere İzin Ver"i etkinleştirin'
         step3: İşlem tamamlandığında bu uygulamaya geri dönün
-      not_granted: İzin henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
-      importance: Bildirim izni olmadan, hiçbir hatırlatıcı alamazsınız.
-    exact_alarm:
-      title: Tam Alarm İzni
-      description: Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
-      instructions: "Talimatlar:"
-      steps:
-        step1: Açılan ayarlar ekranında {appName}'yi bulun
-        android12plus:
-          step2: '"Alarmlar ve hatırlatıcılar"a dokunun'
-          step3: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
-        step2: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
-      not_granted: Tam alarm izni hala verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
-    app_usage:
-      title: Uygulama Kullanım İzni
-      description: Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.
-      instructions: "Talimatlar:"
-      steps:
-        step1: Cihaz Ayarlarınızı açın
-        step2: '"Gizlilik" veya "Güvenlik ve Gizlilik"e gidin'
-        step3: '"Kullanım Erişimi"ni bulun ve {appName} için etkinleştirin'
-      not_granted: Uygulama kullanım izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
-  errors:
-    setting_not_found: Ayar bulunamadı
-    version_mismatch: Sürüm uyumsuzluğu
-    import_failed: İçe aktarma başarısız
-    export_failed: Dışa aktarma başarısız
+      title: Bildirim İzni
+    open_settings: Ayarları Aç
+    title: İzinler
+  startup:
+    disable_error: Başlangıç ayarı devre dışı bırakılamadı
+    enable_error: Başlangıç ayarı etkinleştirilemedi
+    subtitle: Uygulama için otomatik başlatma iznini etkinleştirmek üzere sistem ayarlarını açmak için dokunun
+    title: Başlangıçta Başlat
+  sync_devices:
+    title: Cihazları Senkronize Et
+  title: Ayarlar

@@ -39,18 +39,16 @@ sync:
       1. Her iki cihaz aynı ağda
       2. Her iki uygulama açık ve çalışıyor
       3. Güvenlik duvarı bağlantıyı engellemiyor
-    device_mismatch: Senkronizasyon hatası. Senkronizasyon yapmaya çalışan cihaz bu
-      cihazla eşleştirilmemiş.
+    device_mismatch: Senkronizasyon hatası. Senkronizasyon yapmaya çalışan cihaz bu cihazla eşleştirilmemiş.
     device_not_found: Senkronizasyon cihazı bulunamadı
     ip_address: Yerel IP adresi alınamadı
     parse_message: Taranan mesaj işlenemedi
-    scan: QR kodu taranamadı
+    process_failed: Senkronizasyon işlemi başarısız oldu.
     save_device: Senkronizasyon cihazı kaydedilemedi
+    scan: QR kodu taranamadı
     sync_failed: Senkronizasyon başarısız oldu. Lütfen tekrar deneyin.
     sync_timeout: Senkronizasyon zaman aşımına uğradı
-    version_mismatch: "Sürüm uyumsuzluğu. Yerel sürüm: {currentVersion}, Uzak sürüm:
-      {remoteVersion}. Lütfen iki uygulamayı da aynı sürüme güncelleyin."
-    process_failed: Senkronizasyon işlemi başarısız oldu.
+    version_mismatch: "Sürüm uyumsuzluğu. Yerel sürüm: {currentVersion}, Uzak sürüm: {remoteVersion}. Lütfen iki uygulamayı da aynı sürüme güncelleyin."
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı
@@ -60,42 +58,4 @@ sync:
     close_button: Kapat
     dialog_title: Senkronize Etmek için QR Kodu Tarayın
   scanner:
-    help:
-      content: |
-        📱 Diğer cihazlarla bağlantı kurmak ve senkronize etmek için QR kodlarını tarayın.
-
-        ## 📸 Tarama İpuçları
-
-        - Kamerayı sabit tutun
-        - İyi aydınlatma olduğundan emin olun
-        - QR kodu ortalayın
-        - Uygun mesafede tutun
-        - Otomatik odaklanmayı bekleyin
-        - Gerekirse kamera lensini temizleyin
-
-        ## ⚡ Süreç
-
-        1. Kamerayı QR koduna yöneltin
-        2. Otomatik tarama için bekleyin
-        3. Cihazları aynı ağda tutun
-        4. Bağlantı onayını bekleyin
-        5. Verileri senkronize etmeye başlayın
-      intro: 📱 Diğer cihazlarla bağlantı kurmak ve senkronize etmek için QR kodlarını
-        tarayın.
-      process:
-        - 1. Kamerayı QR koduna yöneltin
-        - 2. Otomatik tarama için bekleyin
-        - 3. Cihazları aynı ağda tutun
-        - 4. Bağlantı onayını bekleyin
-        - 5. Verileri senkronize etmeye başlayın
-      process_title: ⚡ Süreç
-      tips:
-        - • Kamerayı sabit tutun
-        - • İyi aydınlatma olduğundan emin olun
-        - • QR kodu ortalayın
-        - • Uygun mesafede tutun
-        - • Otomatik odaklanmayı bekleyin
-        - • Gerekirse kamera lensini temizleyin
-      tips_title: 📸 Tarama İpuçları
-      title: QR Tarayıcı Yardım
     title: QR Kodu Tara

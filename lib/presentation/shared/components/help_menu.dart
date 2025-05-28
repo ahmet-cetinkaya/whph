@@ -27,27 +27,15 @@ class HelpMenu extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_translationService.translate(titleKey)),
-          automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => _closeDialog(context),
-            ),
-          ],
         ),
-        body: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          padding: const EdgeInsets.all(AppTheme.sizeXLarge),
+        body: Padding(
+          padding: const EdgeInsets.all(AppTheme.sizeMedium),
           child: MarkdownRenderer(
             data: _translationService.translate(markdownContentKey),
           ),
         ),
       ),
     );
-  }
-
-  void _closeDialog(BuildContext context) {
-    Navigator.pop(context);
   }
 
   @override

@@ -86,13 +86,8 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   // Details Page
   static const String detailsHelpTitle = 'tags.details.help.title';
   static const String detailsHelpDescription = 'tags.details.help.description';
-  static const String detailsHelpFeaturesTitle = 'tags.details.help.features_title';
-  static const String detailsHelpFeaturesList = 'tags.details.help.features_list';
-  static const String detailsHelpTipsTitle = 'tags.details.help.tips_title';
-  static const String detailsHelpTipsList = 'tags.details.help.tips_list';
-  static const String detailsHelpManagementTitle = 'tags.details.help.management_title';
-  static const String detailsHelpManagementList = 'tags.details.help.management_list';
   static const String detailsTasksLabel = 'tags.details.tasks_label';
+
   // Details fields
   static const String detailsRelatedTags = 'tags.details.related_tags';
   static const String detailsArchived = 'tags.details.archived';

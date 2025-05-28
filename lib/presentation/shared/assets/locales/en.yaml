@@ -1,34 +1,93 @@
 shared:
-  report_error: Report Error
-  save_list_options: Save List Options
   buttons:
+    add: Add
+    back: Back
+    cancel: Cancel
+    close: Close
+    confirm: Confirm
+    delete: Delete
+    done: Done
+    load_more: Load More
     save: Save
     saved: Saved
-    add: Add
-    cancel: Cancel
-    delete: Delete
-    close: Close
-    load_more: Load More
-    done: Done
-    confirm: Confirm
-    back: Back
-  messages:
-    confirm_delete: Are you sure you want to delete this item?
-    no_items_found: No items
-  validation:
-    required: "{field} is required"
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: August
+      aug_short: Aug
+      dec: December
+      dec_short: Dec
+      feb: February
+      feb_short: Feb
+      jan: January
+      jan_short: Jan
+      jul: July
+      jul_short: Jul
+      jun: June
+      jun_short: Jun
+      mar: March
+      mar_short: Mar
+      may: May
+      may_short: May
+      nov: November
+      nov_short: Nov
+      oct: October
+      oct_short: Oct
+      sep: September
+      sep_short: Sep
+    week_days:
+      fri: Fri
+      mon: Mon
+      sat: Sat
+      sun: Sun
+      thu: Thu
+      tue: Tue
+      wed: Wed
+  color_picker:
+    confirm_selection: Confirm Selection
+    select_color_title: Select Color
+    tabs:
+      custom: Custom
+      palette: Colors
+    title: Color Picker
+  data:
+    created_date_label: Created Date
+    modified_date_label: Modified Date
+    name_label: Name
+  date_filter:
+    title: Select Date Range
+    tooltips:
+      clear: Clear date filter
+      filter: Filter by date
+  date_format:
+    hint: DD/MM/YYYY
+  days:
+    friday: Friday
+    friday_short: Fri
+    monday: Monday
+    monday_short: Mon
+    saturday: Saturday
+    saturday_short: Sat
+    sunday: Sunday
+    sunday_short: Sun
+    thursday: Thursday
+    thursday_short: Thu
+    tuesday: Tuesday
+    tuesday_short: Tue
+    wednesday: Wednesday
+    wednesday_short: Wed
+  editor:
+    markdown:
+      hint: You can write using Markdown format...
   errors:
-    unexpected: An unexpected error occurred
-    loading: Error occurred while loading data
-    saving: Error occurred while saving data
     deleting: Error occurred while deleting data
-    file_pick: Error while picking file
-    file_save: Error while saving file
-    file_read: Error while reading file
-    file_write: Error while writing file
     file_not_found: File not found
-    storage_permission: Storage permission required
-    storage_permission_denied: Storage permission denied
+    file_pick: Error while picking file
+    file_read: Error while reading file
+    file_save: Error while saving file
+    file_write: Error while writing file
+    loading: Error occurred while loading data
     report_subject: "WHPH App: Unexpected Error Report"
     report_template: |
       Hi, I encountered an unexpected error while using the WHPH app.
@@ -48,160 +107,101 @@ shared:
       Please help me resolve this issue.
 
       Thanks!
-  ui:
-    report_error: Report
-  units:
-    minutes: min
-    days: days
-    hours: hr
-    seconds: sec
-  sort:
-    custom_order:
-      title: Custom Sort
-      description: Enable drag and drop to reorder items
-    reset_to_default: Reset to Default
-    ascending: Ascending
-    descending: Descending
-    remove_criteria: Remove Criteria
-    sort: Sort
-  tooltips:
-    filter_by_tags: Filter by tags
-    refresh: Refresh
-    compare_with_previous: Compare with previous period
-  sections:
-    habits: Habits
-    tasks: Tasks
-    time: Time
-    special_filters: Special Filters
-    tags: Tags
-    statistics: Statistics
+    saving: Error occurred while saving data
+    storage_permission: Storage permission required
+    storage_permission_denied: Storage permission denied
+    unexpected: An unexpected error occurred
+  filters:
+    search: Search
+  help:
+    tooltip: Help
+  messages:
+    confirm_delete: Are you sure you want to delete this item?
+    no_items_found: No items
+  nav:
+    items:
+      app_usages: App Usages
+      habits: Habits
+      more: More
+      notes: Notes
+      settings: Settings
+      tags: Tags
+      tasks: Tasks
+      today: Today
   none_option: "No tags"
-  calendar:
-    week_days:
-      mon: Mon
-      tue: Tue
-      wed: Wed
-      thu: Thu
-      fri: Fri
-      sat: Sat
-      sun: Sun
-    months:
-      jan: January
-      feb: February
-      mar: March
-      apr: April
-      may: May
-      jun: June
-      jul: July
-      aug: August
-      sep: September
-      oct: October
-      nov: November
-      dec: December
-      jan_short: Jan
-      feb_short: Feb
-      mar_short: Mar
-      apr_short: Apr
-      may_short: May
-      jun_short: Jun
-      jul_short: Jul
-      aug_short: Aug
-      sep_short: Sep
-      oct_short: Oct
-      nov_short: Nov
-      dec_short: Dec
-  time_periods:
-    today: Today
-    this_week: This Week
-    this_month: This Month
-    this_three_months: This 3 Months
-    last_week: Last Week
-    last_month: Last Month
-    last_three_months: Last 3 Months
-    custom: Custom
-  days:
-    monday: Monday
-    tuesday: Tuesday
-    wednesday: Wednesday
-    thursday: Thursday
-    friday: Friday
-    saturday: Saturday
-    sunday: Sunday
-    monday_short: Mon
-    tuesday_short: Tue
-    wednesday_short: Wed
-    thursday_short: Thu
-    friday_short: Fri
-    saturday_short: Sat
-    sunday_short: Sun
-  statistics:
-    daily_usage:
-      title: Daily Usage
-      description: Shows the total usage time per day of the week
-    hourly_usage:
-      title: Hourly Usage
-      description: Shows the total usage time per hour of the day
-  editor:
-    markdown:
-      hint: You can write using Markdown format...
-  color_picker:
-    title: Color Picker
-    select_color_title: Select Color
-    confirm_selection: Confirm Selection
-    tabs:
-      palette: Colors
-      custom: Custom
-  date_filter:
-    title: Select Date Range
-    tooltips:
-      filter: Filter by date
-      clear: Clear date filter
   regex_help:
-    title: Pattern Examples
-    tips_title: Tips
+    examples:
+      chat: Matches either \"Slack\" or \"Discord\"
+      chrome: Matches any window title containing \"Chrome\"
+      exact_chrome: Matches exactly \"Chrome\"
+      pdf: Matches any PDF file
+      vscode: Matches any VS Code window
     tips:
       any_chars: Use \".*\" to match any characters
-      start: \"^\" matches start of text
+      dot: \"\\.\" matches a dot
       end: \"$\" matches end of text
       or: \"|\" means OR
-      dot: \"\\.\" matches a dot
-    examples:
-      chrome: Matches any window title containing \"Chrome\"
-      vscode: Matches any VS Code window
-      exact_chrome: Matches exactly \"Chrome\"
-      chat: Matches either \"Slack\" or \"Discord\"
-      pdf: Matches any PDF file
+      start: \"^\" matches start of text
+    tips_title: 💡 Tips
+    title: Pattern Examples
+  report_error: Report Error
+  save_list_options: Save List Options
   search:
     placeholder: Search
     tooltip: Search for items
-  nav:
-    items:
-      today: Today
-      tasks: Tasks
-      habits: Habits
-      notes: Notes
-      app_usages: App Usages
-      tags: Tags
-      settings: Settings
-      more: More
-  update_dialog:
-    title: Update Available!
-    message: A new version ({version}) is available.
-    question: Would you like to update now?
-    buttons:
-      later: Later
-      download_page: Download Page
-      update_now: Update Now
-    failed: Failed to update.
-  help:
-    tooltip: Help
+  sections:
+    habits: Habits
+    special_filters: Special Filters
+    statistics: Statistics
+    tags: Tags
+    tasks: Tasks
+    time: Time
+  sort:
+    ascending: Ascending
+    custom_order:
+      description: Enable drag and drop to reorder items
+      title: Custom Sort
+    descending: Descending
+    remove_criteria: Remove Criteria
+    reset_to_default: Reset to Default
+    sort: Sort
+  statistics:
+    daily_usage:
+      description: Shows the total usage time per day of the week
+      title: Daily Usage
+    hourly_usage:
+      description: Shows the total usage time per hour of the day
+      title: Hourly Usage
   time:
     not_set: "Not set"
-  date_format:
-    hint: DD/MM/YYYY
-  data:
-    created_date_label: Created Date
-    modified_date_label: Modified Date
-    name_label: Name
-  filters:
-    search: Search
+  time_periods:
+    custom: Custom
+    last_month: Last Month
+    last_three_months: Last 3 Months
+    last_week: Last Week
+    this_month: This Month
+    this_three_months: This 3 Months
+    this_week: This Week
+    today: Today
+  tooltips:
+    compare_with_previous: Compare with previous period
+    filter_by_tags: Filter by tags
+    refresh: Refresh
+  ui:
+    report_error: Report
+  units:
+    days: days
+    hours: hr
+    minutes: min
+    seconds: sec
+  update_dialog:
+    buttons:
+      download_page: Download Page
+      later: Later
+      update_now: Update Now
+    failed: Failed to update.
+    message: A new version ({version}) is available.
+    question: Would you like to update now?
+    title: Update Available!
+  validation:
+    required: "{field} is required"

@@ -1,44 +1,51 @@
 calendar:
   pages:
     today:
-      title: Today
       help:
-        title: Today View Help
         content: |
-          📅 The Today view shows your daily tasks, habits, and time investments in one place.
+          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
 
-          ## ⚡ Features
+          ## ⚡ Why Is It Important?
 
-          - **Daily Habits:**
-            - Quick access to daily habits
-            - Track habit completion
-            - Maintain routines
-          - **Today's Tasks:**
-            - View scheduled and due tasks
-            - Add new tasks
-            - Track task completion
-          - **Time Investment:**
-            - View time spent by tag
-            - Track productivity patterns
-            - Monitor daily activities
+          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
 
-          ## 💡 Tips
+          ## 🔄 Habit Consistency
 
-          - Use tag filters to focus on specific areas
-          - Complete habits early in the day
-          - Review time charts to optimize your day
-          - Start Marathon mode for focused work
-          - Group related tasks with tags
-          - Plan important tasks first
+          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
 
-          ## ⚙️ Quick Actions
+          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
+          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
+          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
+          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
 
-          - Click the timer icon to start Marathon mode
-          - Use tag filter to focus on specific projects
-          - Click on habits to mark them complete
-          - Add new tasks assigned to today
-          - Click on tasks to view details
-          - Check the time chart for daily insights
+          ## 📋 Task Execution
+
+          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+
+          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
+          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
+          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
+          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+
+          ## ⏰ Time Investment Analysis
+
+          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+
+          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
+          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
+          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
+          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+
+          ## ⚙️ Productivity Shortcuts
+
+          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+
+          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
+          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
+          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
+          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
+        title: Daily Productivity Management Guide
+      title: Today
   sections:
     habits: Habits
     tasks: Tasks
