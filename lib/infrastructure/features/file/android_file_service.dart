@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 
@@ -37,8 +38,28 @@ class AndroidFileService implements IFileService {
     String? dialogTitle,
   }) async {
     try {
-      final tempDir = await getTemporaryDirectory();
-      return path.join(tempDir.path, fileName);
+      // Check storage permissions first
+      final storagePermission = await _checkStoragePermission();
+      if (!storagePermission) {
+        throw BusinessException('Storage permission is required to save files');
+      }
+
+      // On Android, FilePicker.saveFile() requires bytes, so we use getDirectoryPath instead
+      // and let the user choose a directory, then we construct the full path
+      final directoryPath = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: dialogTitle ?? 'Choose save location',
+      );
+
+      if (directoryPath == null) {
+        if (kDebugMode) debugPrint('User cancelled directory selection');
+        return null;
+      }
+
+      // Construct full file path
+      final fullPath = path.join(directoryPath, fileName);
+
+      if (kDebugMode) debugPrint('Selected save path: $fullPath');
+      return fullPath;
     } catch (e) {
       if (kDebugMode) debugPrint('Save path error: $e');
       throw BusinessException('Failed to get save path: $e');
@@ -64,17 +85,35 @@ class AndroidFileService implements IFileService {
     required String content,
   }) async {
     try {
-      final fileName = path.basename(filePath);
-      final downloadsPath = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
-      final downloadsDir = Directory(downloadsPath.path);
-
-      if (!await downloadsDir.exists()) {
-        await downloadsDir.create(recursive: true);
+      // Check storage permissions first
+      final storagePermission = await _checkStoragePermission();
+      if (!storagePermission) {
+        throw BusinessException('Storage permission is required to save files');
       }
 
-      final file = File(path.join(downloadsDir.path, fileName));
+      final file = File(filePath);
+      final dir = path.dirname(filePath);
+
+      // Create directory if it doesn't exist
+      if (!await Directory(dir).exists()) {
+        await Directory(dir).create(recursive: true);
+      }
+
+      // Write the file content
       await file.writeAsString(content);
 
+      // Verify the file was actually written
+      if (!await file.exists()) {
+        throw BusinessException('Failed to save file: File does not exist after write operation');
+      }
+
+      // Verify the content was written correctly
+      final writtenContent = await file.readAsString();
+      if (writtenContent != content) {
+        throw BusinessException('Failed to save file: Content mismatch after write operation');
+      }
+
+      // Update file timestamp
       try {
         await file.setLastModified(DateTime.now());
       } catch (e) {
@@ -82,8 +121,63 @@ class AndroidFileService implements IFileService {
           debugPrint('[AndroidFileService]: Failed to update file timestamp: $e');
         }
       }
+
+      if (kDebugMode) {
+        debugPrint('[AndroidFileService]: Successfully saved file to: $filePath');
+      }
     } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[AndroidFileService]: Failed to write file: $e');
+      }
       throw BusinessException('Failed to write file: $e');
+    }
+  }
+
+  /// Check and request storage permissions for Android
+  Future<bool> _checkStoragePermission() async {
+    try {
+      // For Android 13+ (API 33+), we need different permissions
+      if (Platform.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        final sdkInt = androidInfo.version.sdkInt;
+
+        Permission permission;
+        if (sdkInt >= 33) {
+          // Android 13+ uses scoped storage, but for downloads we can use MANAGE_EXTERNAL_STORAGE
+          // or rely on the Downloads directory which doesn't require permissions
+          permission = Permission.manageExternalStorage;
+        } else {
+          // Android 12 and below use WRITE_EXTERNAL_STORAGE
+          permission = Permission.storage;
+        }
+
+        // Check current permission status
+        final status = await permission.status;
+
+        if (status.isGranted) {
+          return true;
+        }
+
+        if (status.isDenied) {
+          // Request permission
+          final result = await permission.request();
+          return result.isGranted;
+        }
+
+        if (status.isPermanentlyDenied) {
+          throw BusinessException('Storage permission is permanently denied. Please enable it in app settings.');
+        }
+
+        return false;
+      }
+
+      // Non-Android platforms don't need this permission
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[AndroidFileService]: Error checking storage permission: $e');
+      }
+      return false;
     }
   }
 }
