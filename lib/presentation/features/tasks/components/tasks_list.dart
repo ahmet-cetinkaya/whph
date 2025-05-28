@@ -399,7 +399,9 @@ class TaskListState extends State<TaskList> {
   Future<void> _onLoadMore() async {
     if (_tasks == null || !_tasks!.hasNext) return;
 
+    _saveScrollPosition();
     await _getTasksList(pageIndex: _tasks!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 
   List<Widget> _buildTaskCards() {

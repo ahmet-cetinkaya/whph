@@ -13,6 +13,7 @@ import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
@@ -32,11 +33,13 @@ class AppUsageTagRuleList extends StatefulWidget {
 }
 
 class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
+  final ScrollController _scrollController = ScrollController();
   GetListAppUsageTagRulesQueryResponse? _rules;
   bool _isLoading = false;
   final int _pageSize = 10;
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
+  double? _savedScrollPosition;
 
   @override
   void initState() {
@@ -48,6 +51,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   @override
   void dispose() {
     _removeEventListeners();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -77,8 +81,29 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     Navigator.pop(context, true);
   }
 
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  void _backLastScrollPosition() {
+    if (_savedScrollPosition == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          _scrollController.hasClients &&
+          _scrollController.position.hasViewportDimension &&
+          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+        _scrollController.jumpTo(_savedScrollPosition!);
+      }
+    });
+  }
+
   Future<void> refresh() async {
+    _saveScrollPosition();
     await _loadRules(isRefresh: true);
+    _backLastScrollPosition();
   }
 
   Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false}) async {
@@ -126,101 +151,111 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     }
 
     if (_rules == null || _rules!.items.isEmpty) {
-      return Center(
-        child: Text(
-          _translationService.translate(SharedTranslationKeys.noItemsFoundMessage),
-          style: AppTheme.bodyMedium.copyWith(color: AppTheme.disabledColor),
-        ),
+      return IconOverlay(
+        icon: Icons.rule_folder,
+        iconSize: AppTheme.iconSizeXLarge,
+        message: _translationService.translate(AppUsageTranslationKeys.noRules),
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _rules!.items.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 4),
-          itemBuilder: (context, index) {
-            final rule = _rules!.items[index];
-            return Card(
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: AppUsageUiConstants.cardPadding,
-                child: Row(
-                  children: [
-                    // Tag
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surface1,
-                        borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
-                      ),
-                      child: Text(
-                        rule.tagName,
-                        style: AppTheme.bodySmall.copyWith(
-                          color: AppUsageUiConstants.getTagColor(rule.tagColor),
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _rules!.items.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 4),
+            itemBuilder: (context, index) {
+              final rule = _rules!.items[index];
+              return Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: AppUsageUiConstants.cardPadding,
+                  child: Row(
+                    children: [
+                      // Tag
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surface1,
+                          borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
+                        ),
+                        child: Text(
+                          rule.tagName,
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppUsageUiConstants.getTagColor(rule.tagColor),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                    // Pattern and Description
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
-                                style: AppTheme.bodySmall.copyWith(color: Colors.grey),
-                              ),
-                              const SizedBox(width: AppTheme.sizeXSmall),
-                              Expanded(
+                      // Pattern and Description
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
+                                  style: AppTheme.bodySmall.copyWith(color: Colors.grey),
+                                ),
+                                const SizedBox(width: AppTheme.sizeXSmall),
+                                Expanded(
+                                  child: Text(
+                                    rule.pattern,
+                                    style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (rule.description != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
                                 child: Text(
-                                  rule.pattern,
-                                  style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
+                                  rule.description!,
+                                  style: AppTheme.bodySmall,
                                 ),
                               ),
-                            ],
-                          ),
-                          if (rule.description != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                rule.description!,
-                                style: AppTheme.bodySmall,
-                              ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
-                    // Delete Button
-                    IconButton(
-                      icon: Icon(SharedUiConstants.deleteIcon, size: AppTheme.iconSizeSmall),
-                      onPressed: () {
-                        if (mounted) _delete(context, rule);
-                      },
-                      visualDensity: VisualDensity.compact,
-                      tooltip: _translationService.translate(AppUsageTranslationKeys.deleteRuleTooltip),
-                    ),
-                  ],
+                      // Delete Button
+                      IconButton(
+                        icon: Icon(SharedUiConstants.deleteIcon, size: AppTheme.iconSizeSmall),
+                        onPressed: () {
+                          if (mounted) _delete(context, rule);
+                        },
+                        visualDensity: VisualDensity.compact,
+                        tooltip: _translationService.translate(AppUsageTranslationKeys.deleteRuleTooltip),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-        if (_rules!.hasNext)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-            child: Center(child: LoadMoreButton(onPressed: () => _loadRules(pageIndex: _rules!.pageIndex + 1))),
+              );
+            },
           ),
-      ],
+          if (_rules!.hasNext)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+            ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _onLoadMore() async {
+    if (_rules == null || !_rules!.hasNext) return;
+
+    _saveScrollPosition();
+    await _loadRules(pageIndex: _rules!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 
   Future<void> _delete(BuildContext context, AppUsageTagRuleListItem rule) async {

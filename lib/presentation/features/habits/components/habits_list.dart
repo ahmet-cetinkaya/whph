@@ -55,10 +55,12 @@ class HabitsListState extends State<HabitsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
+  final ScrollController _scrollController = ScrollController();
   GetListHabitsQueryResponse? _habits;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
+  double? _savedScrollPosition;
 
   @override
   void initState() {
@@ -72,6 +74,7 @@ class HabitsListState extends State<HabitsList> {
   void dispose() {
     _removeEventListeners();
     _refreshDebounce?.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -137,9 +140,29 @@ class HabitsListState extends State<HabitsList> {
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  void _backLastScrollPosition() {
+    if (_savedScrollPosition == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          _scrollController.hasClients &&
+          _scrollController.position.hasViewportDimension &&
+          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+        _scrollController.jumpTo(_savedScrollPosition!);
+      }
+    });
+  }
+
   Future<void> refresh() async {
     if (!mounted) return;
 
+    _saveScrollPosition();
     _refreshDebounce?.cancel();
 
     if (_pendingRefresh) {
@@ -148,6 +171,7 @@ class HabitsListState extends State<HabitsList> {
 
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
       await _getHabits(isRefresh: true);
+      _backLastScrollPosition();
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
@@ -269,7 +293,7 @@ class HabitsListState extends State<HabitsList> {
         if (_habits!.hasNext)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-            child: Center(child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1))),
+            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
           ),
       ],
     );
@@ -277,6 +301,7 @@ class HabitsListState extends State<HabitsList> {
 
   Widget _buildColumnList() {
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -296,11 +321,19 @@ class HabitsListState extends State<HabitsList> {
           if (_habits!.hasNext)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-              child: Center(child: LoadMoreButton(onPressed: () => _getHabits(pageIndex: _habits!.pageIndex + 1))),
+              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
             ),
         ],
       ),
     );
+  }
+
+  Future<void> _onLoadMore() async {
+    if (_habits == null || !_habits!.hasNext) return;
+
+    _saveScrollPosition();
+    await _getHabits(pageIndex: _habits!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 
   void _onHabitRecordChanged() {

@@ -65,7 +65,7 @@ app_usages:
     save: Kaydet
     saved: Kaydedildi
   ignore_rules:
-    delete_confirm: "\"{pattern}\" yok sayma kuralını silmek istediğinize emin misiniz?"
+    delete_confirm: '"{pattern}" yok sayma kuralını silmek istediğinize emin misiniz?'
     delete_title: Kural Sil
     delete_tooltip: Kuralı sil
     no_rules: Yok sayma kuralı yok
@@ -118,6 +118,12 @@ app_usages:
   rules:
     add_new_rule: Yeni Kural Ekle
     existing_rules: Mevcut Kurallar
+    no_rules: Henüz kural yok
+    delete_confirm_title: Kural Sil
+    delete_confirm_message: Bu kuralı silmek istediğinize emin misiniz?
+    errors:
+      get_rules: Kurallar alınırken beklenmedik bir hata oluştu
+      delete_rule: Kural silinirken beklenmedik bir hata oluştu
     help:
       content: |
         Etiket atamayı otomatikleştirmenize ve uygulama takibini yönetmenize yardımcı olur.

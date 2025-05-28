@@ -60,9 +60,11 @@ class AppUsageListState extends State<AppUsageList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
+  final ScrollController _scrollController = ScrollController();
   GetListByTopAppUsagesQueryResponse? _appUsagesList;
   late FilterContext _currentFilters;
   Timer? _refreshDebounce;
+  double? _savedScrollPosition;
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ class AppUsageListState extends State<AppUsageList> {
   void dispose() {
     _removeEventListeners();
     _refreshDebounce?.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -115,12 +118,33 @@ class AppUsageListState extends State<AppUsageList> {
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  void _backLastScrollPosition() {
+    if (_savedScrollPosition == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          _scrollController.hasClients &&
+          _scrollController.position.hasViewportDimension &&
+          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+        _scrollController.jumpTo(_savedScrollPosition!);
+      }
+    });
+  }
+
   Future<void> refresh() async {
     if (!mounted) return;
 
+    _saveScrollPosition();
     _refreshDebounce?.cancel();
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
       await _getList(isRefresh: true);
+      _backLastScrollPosition();
     });
   }
 
@@ -184,7 +208,9 @@ class AppUsageListState extends State<AppUsageList> {
   Future<void> _onLoadMore() async {
     if (_appUsagesList?.hasNext == false) return;
 
+    _saveScrollPosition();
     await _getList(pageIndex: _appUsagesList!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 
   @override
@@ -199,6 +225,7 @@ class AppUsageListState extends State<AppUsageList> {
     final maxDuration = _appUsagesList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return ListView(
+      controller: _scrollController,
       shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 8),

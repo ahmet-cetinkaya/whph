@@ -41,10 +41,12 @@ class NotesListState extends State<NotesList> {
   final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   final _mediator = container.resolve<Mediator>();
+  final ScrollController _scrollController = ScrollController();
   GetListNotesQueryResponse? _notes;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
+  double? _savedScrollPosition;
   static const int _pageSize = 10;
 
   @override
@@ -58,6 +60,7 @@ class NotesListState extends State<NotesList> {
   @override
   void dispose() {
     _removeEventListeners();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -96,9 +99,29 @@ class NotesListState extends State<NotesList> {
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  void _backLastScrollPosition() {
+    if (_savedScrollPosition == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          _scrollController.hasClients &&
+          _scrollController.position.hasViewportDimension &&
+          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+        _scrollController.jumpTo(_savedScrollPosition!);
+      }
+    });
+  }
+
   Future<void> refresh() async {
     if (!mounted) return;
 
+    _saveScrollPosition();
     _refreshDebounce?.cancel();
 
     if (_pendingRefresh) {
@@ -107,6 +130,7 @@ class NotesListState extends State<NotesList> {
 
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
       await _getNotes(isRefresh: true);
+      _backLastScrollPosition();
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
@@ -205,6 +229,7 @@ class NotesListState extends State<NotesList> {
     }
 
     return ListView(
+      controller: _scrollController,
       shrinkWrap: true,
       children: [
         ..._notes!.items.map((note) => NoteCard(
@@ -214,10 +239,18 @@ class NotesListState extends State<NotesList> {
         if (_notes!.hasNext)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-            child: Center(child: LoadMoreButton(onPressed: () => _getNotes(pageIndex: _notes!.pageIndex + 1))),
+            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
           ),
       ],
     );
+  }
+
+  Future<void> _onLoadMore() async {
+    if (_notes == null || !_notes!.hasNext) return;
+
+    _saveScrollPosition();
+    await _getNotes(pageIndex: _notes!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 
   Future<void> _onNoteSelected(String id) async {

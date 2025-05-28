@@ -224,8 +224,10 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   TagSelectDropdown(
                     key: UniqueKey(),
                     onTagsSelected: (options, _) => setState(() {
-                      _selectedTagId = options.first.value;
-                      _selectedTagLabel = options.first.label;
+                      if (options.isNotEmpty) {
+                        _selectedTagId = options.first.value;
+                        _selectedTagLabel = options.first.label;
+                      }
                     }),
                     isMultiSelect: false,
                     limit: 1,

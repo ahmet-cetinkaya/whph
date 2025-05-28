@@ -43,8 +43,10 @@ class TagsListState extends State<TagsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
+  final ScrollController _scrollController = ScrollController();
 
   GetListTagsQueryResponse? _tags;
+  double? _savedScrollPosition;
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class TagsListState extends State<TagsList> {
   @override
   void dispose() {
     super.dispose();
+    _scrollController.dispose();
 
     _removeEventListeners();
   }
@@ -105,10 +108,31 @@ class TagsListState extends State<TagsList> {
     _getTags(isRefresh: true);
   }
 
+  void _saveScrollPosition() {
+    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+      _savedScrollPosition = _scrollController.position.pixels;
+    }
+  }
+
+  void _backLastScrollPosition() {
+    if (_savedScrollPosition == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          _scrollController.hasClients &&
+          _scrollController.position.hasViewportDimension &&
+          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
+        _scrollController.jumpTo(_savedScrollPosition!);
+      }
+    });
+  }
+
   Future<void> refresh() async {
     if (!mounted) return;
 
+    _saveScrollPosition();
     await _getTags(isRefresh: true);
+    _backLastScrollPosition();
   }
 
   Future<void> _getTags({
@@ -170,19 +194,30 @@ class TagsListState extends State<TagsList> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ..._tags!.items.map((tag) => TagCard(
-              tag: tag,
-              onOpenDetails: () => widget.onClickTag?.call(tag),
-            )),
-        if (_tags!.hasNext)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-            child: Center(child: LoadMoreButton(onPressed: () => _getTags(pageIndex: _tags!.pageIndex + 1))),
-          ),
-      ],
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._tags!.items.map((tag) => TagCard(
+                tag: tag,
+                onOpenDetails: () => widget.onClickTag?.call(tag),
+              )),
+          if (_tags!.hasNext)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+            ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _onLoadMore() async {
+    if (_tags == null || !_tags!.hasNext) return;
+
+    _saveScrollPosition();
+    await _getTags(pageIndex: _tags!.pageIndex + 1);
+    _backLastScrollPosition();
   }
 }
