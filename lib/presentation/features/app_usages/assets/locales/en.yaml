@@ -118,6 +118,12 @@ app_usages:
   rules:
     add_new_rule: Add New Rule
     existing_rules: Existing Rules
+    no_rules: No rules
+    delete_confirm_title: Delete Rule
+    delete_confirm_message: Are you sure you want to delete this rule?
+    errors:
+      get_rules: An unexpected error occurred while fetching rules
+      delete_rule: An unexpected error occurred while deleting rule
     help:
       content: |
         Helps automate tag assignment and manage app tracking.
