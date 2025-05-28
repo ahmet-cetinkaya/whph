@@ -34,7 +34,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   final ScrollController _scrollController = ScrollController();
 
-  GetListAppUsageIgnoreRulesQueryResponse? _rulesResponse;
+  GetListAppUsageIgnoreRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   double _savedScrollPosition = 0.0;
   static const int _pageSize = 20;
@@ -98,21 +98,19 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
       operation: () async {
         final query = GetListAppUsageIgnoreRulesQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh && _rulesResponse != null && _rulesResponse!.items.length > _pageSize
-              ? _rulesResponse!.items.length
-              : _pageSize,
+          pageSize: isRefresh ? _ruleList?.items.length ?? _pageSize : _pageSize,
         );
         return await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
       },
       onSuccess: (response) {
         if (mounted) {
           setState(() {
-            if (_rulesResponse == null || pageIndex == 0 || isRefresh) {
-              _rulesResponse = response;
+            if (_ruleList == null || pageIndex == 0 || isRefresh) {
+              _ruleList = response;
             } else {
               // Append new items for load more
-              _rulesResponse!.items.addAll(response.items);
-              _rulesResponse!.pageIndex = response.pageIndex;
+              _ruleList!.items.addAll(response.items);
+              _ruleList!.pageIndex = response.pageIndex;
             }
           });
         }
@@ -134,10 +132,10 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   }
 
   Future<void> _onLoadMore() async {
-    if (_rulesResponse?.hasNext == false) return;
+    if (_ruleList?.hasNext == false) return;
 
     _saveScrollPosition();
-    await _getList(pageIndex: _rulesResponse!.pageIndex + 1);
+    await _getList(pageIndex: _ruleList!.pageIndex + 1);
     _backLastScrollPosition();
   }
 
@@ -192,12 +190,12 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading && _rulesResponse == null) {
+    if (_isLoading && _ruleList == null) {
       // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
-    if (_rulesResponse?.items.isEmpty ?? true) {
+    if (_ruleList?.items.isEmpty ?? true) {
       return IconOverlay(
         icon: Icons.rule_folder,
         iconSize: AppTheme.iconSizeXLarge,
@@ -211,10 +209,10 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
           controller: _scrollController,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: _rulesResponse!.items.length,
+          itemCount: _ruleList!.items.length,
           separatorBuilder: (context, index) => const SizedBox(height: 4),
           itemBuilder: (context, index) {
-            final rule = _rulesResponse!.items[index];
+            final rule = _ruleList!.items[index];
             return Card(
               margin: EdgeInsets.zero,
               child: Padding(
@@ -269,7 +267,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
         ),
 
         // Load more button
-        if (_rulesResponse?.hasNext == true)
+        if (_ruleList?.hasNext == true)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(

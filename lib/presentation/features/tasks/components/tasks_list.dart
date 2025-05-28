@@ -195,18 +195,13 @@ class TaskListState extends State<TaskList> {
   }
 
   Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false}) async {
-    List<TaskListItem>? existingItems;
-    if (isRefresh && _tasks != null) {
-      existingItems = List.from(_tasks!.items);
-    }
-
     await AsyncErrorHandler.execute<GetListTasksQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
       operation: () async {
         final query = GetListTasksQuery(
           pageIndex: pageIndex,
-          pageSize: widget.size,
+          pageSize: isRefresh ? _tasks?.items.length ?? widget.size : widget.size,
           filterByPlannedStartDate: widget.filterByPlannedStartDate != null
               ? DateTimeHelper.toUtcDateTime(widget.filterByPlannedStartDate!)
               : null,
@@ -249,19 +244,6 @@ class TaskListState extends State<TaskList> {
         if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _normalizeTaskOrders();
-          });
-        }
-      },
-      onError: (_) {
-        if (existingItems != null && _tasks != null) {
-          // Restore previous items on error
-          setState(() {
-            _tasks = GetListTasksQueryResponse(
-              items: existingItems!,
-              totalItemCount: _tasks!.totalItemCount,
-              pageIndex: _tasks!.pageIndex,
-              pageSize: _tasks!.pageSize,
-            );
           });
         }
       },
