@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/presentation/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/shared/components/border_fade_overlay.dart';
 import 'package:whph/presentation/shared/components/label.dart';
+import 'package:whph/presentation/shared/components/markdown_renderer.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 
@@ -61,13 +63,15 @@ class NoteCard extends StatelessWidget {
                 const SizedBox(height: AppTheme.sizeXSmall),
                 Padding(
                   padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
-                  child: Text(
-                    note.content!,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                        ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
+                  child: BorderFadeOverlay(
+                    fadeBorders: {FadeBorder.bottom},
+                    backgroundColor: AppTheme.surface1,
+                    child: SizedBox(
+                      height: 80,
+                      child: MarkdownRenderer(
+                        data: note.content!,
+                      ),
+                    ),
                   ),
                 ),
               ],
