@@ -24,6 +24,8 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
+import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -46,6 +48,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   // Task list options state
   String? _taskSearchQuery;
   bool _showCompletedTasks = false;
+  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
 
   final _barChartKey = GlobalKey<TagTimeBarChartState>();
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
@@ -229,6 +232,12 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                         showDateFilter: false,
                                         showTagFilter: false,
                                         hasItems: true,
+                                        sortConfig: _taskSortConfig,
+                                        onSortChange: (newConfig) {
+                                          setState(() {
+                                            _taskSortConfig = newConfig;
+                                          });
+                                        },
                                         settingKeyVariantSuffix: _listOptionSettingKey,
                                       ),
                                     ),
@@ -246,6 +255,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   filterByTags: [widget.tagId],
                                   filterByCompleted: _showCompletedTasks,
                                   search: _taskSearchQuery,
+                                  sortConfig: _taskSortConfig,
+                                  enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
                                   onClickTask: (task) async {
                                     await ResponsiveDialogHelper.showResponsiveDialog(
                                       context: context,
