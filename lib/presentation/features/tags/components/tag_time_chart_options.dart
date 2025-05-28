@@ -127,31 +127,33 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
 
   @override
   Future<void> saveFilterSettings() async {
-    final settings = TagTimeChartOptionSettings(
-      selectedStartDate: widget.selectedStartDate,
-      selectedEndDate: widget.selectedEndDate,
-      selectedCategories: widget.selectedCategories.toList(),
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
+      operation: () async {
+        final settings = TagTimeChartOptionSettings(
+          selectedStartDate: widget.selectedStartDate,
+          selectedEndDate: widget.selectedEndDate,
+          selectedCategories: widget.selectedCategories.toList(),
+        );
+
+        await filterSettingsManager.saveFilterSettings(
+          settingKey: settingKey,
+          filterSettings: settings.toJson(),
+        );
+
+        if (mounted) {
+          setState(() {
+            hasUnsavedChanges = false;
+          });
+
+          showSavedMessageTemporarily();
+        }
+
+        // Notify parent that settings were saved
+        widget.onSaveSettings?.call();
+      },
     );
-
-    try {
-      await filterSettingsManager.saveFilterSettings(
-        settingKey: settingKey,
-        filterSettings: settings.toJson(),
-      );
-
-      if (mounted) {
-        setState(() {
-          hasUnsavedChanges = false;
-        });
-
-        showSavedMessageTemporarily();
-      }
-
-      // Notify parent that settings were saved
-      widget.onSaveSettings?.call();
-    } catch (e) {
-      // Handle error
-    }
   }
 
   @override
@@ -248,7 +250,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
     final bool showAnyFilters = widget.hasItems &&
         ((widget.showDateFilter && widget.onDateFilterChange != null) ||
             (widget.showCategoryFilter && widget.onCategoriesChanged != null) ||
-            (widget.showSaveButton && hasUnsavedChanges));
+            (widget.showSaveButton && (hasUnsavedChanges || showSavedMessage)));
 
     if (!isSettingLoaded || !showAnyFilters) return const SizedBox.shrink();
 
@@ -270,43 +272,53 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
 
             // Category Filter
             if (widget.showCategoryFilter && widget.onCategoriesChanged != null)
-              Tooltip(
-                message: _buildTooltipMessage(),
-                child: IconButton(
-                  onPressed: _showCategoryDialog,
-                  visualDensity: VisualDensity.compact,
-                  padding: _selectedCategories.contains(TagTimeCategory.all)
-                      ? EdgeInsets.zero
-                      : const EdgeInsets.symmetric(horizontal: 8),
-                  icon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (_selectedCategories.contains(TagTimeCategory.all))
-                        Icon(
-                          TagUiConstants.getTagTimeCategoryIcon(
-                            TagTimeCategory.all,
-                          ),
-                          size: AppTheme.iconSizeMedium,
-                          color: Colors.grey,
-                        )
-                      else ...[
-                        for (int i = 0; i < _selectedCategories.length; i++)
-                          Icon(
-                            TagUiConstants.getTagTimeCategoryIcon(
-                              _selectedCategories.elementAt(i),
-                            ),
-                            size: AppTheme.iconSizeMedium,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                      ],
-                    ],
+              SizedBox(
+                height: kMinInteractiveDimension - 6,
+                child: Tooltip(
+                  message: _buildTooltipMessage(),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      onTap: _showCategoryDialog,
+                      borderRadius: BorderRadius.circular(kMinInteractiveDimension / 2),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          minWidth: kMinInteractiveDimension - 6,
+                          minHeight: kMinInteractiveDimension - 6,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_selectedCategories.contains(TagTimeCategory.all))
+                              Icon(
+                                TagUiConstants.getTagTimeCategoryIcon(
+                                  TagTimeCategory.all,
+                                ),
+                                size: AppTheme.iconSizeMedium,
+                                color: Colors.grey,
+                              )
+                            else ...[
+                              for (int i = 0; i < _selectedCategories.length; i++)
+                                Icon(
+                                  TagUiConstants.getTagTimeCategoryIcon(
+                                    _selectedCategories.elementAt(i),
+                                  ),
+                                  size: AppTheme.iconSizeMedium,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
 
             // Save Button
-            if (widget.showSaveButton && hasUnsavedChanges)
+            if (widget.showSaveButton)
               SaveButton(
                 hasUnsavedChanges: hasUnsavedChanges,
                 showSavedMessage: showSavedMessage,
