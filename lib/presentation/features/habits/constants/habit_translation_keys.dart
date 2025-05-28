@@ -75,14 +75,8 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   // Help Dialog
   static const String helpTitle = 'habits.details.help.title';
   static const String helpDescription = 'habits.details.help.description';
-  static const String helpFeaturesTitle = 'habits.details.help.features_title';
-  static const String helpTipsTitle = 'habits.details.help.tips_title';
-  static const String helpFeaturesList = 'habits.details.help.features_list';
-  static const String helpTipsList = 'habits.details.help.tips_list';
   static const String detailsHelpTitle = 'habits.details.help.title';
   static const String detailsHelpContent = 'habits.details.help.content';
-
-  // Overview Help
   static const String overviewHelpTitle = 'habits.overview.help.title';
   static const String overviewHelpContent = 'habits.overview.help.content';
 

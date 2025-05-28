@@ -11,32 +11,36 @@ app_usages:
       unknown: Bilinmeyen Cihaz
     help:
       content: |
-        Uygulamalarda harcanan zamanı gösterir ve etiket ilişkilerini yönetir.
+        Uygulamalarda harcadığınız zamanı net bir şekilde görün ve etiketlerle düzenleyerek kontrolü elinizde tutun.
 
-        ## ⚡ Özellikler
+        ## ⚡ Neden Önemli?
 
-        - **Zaman Takibi:**
-          - Ayrıntılı kullanım sürelerini görüntüleyin
-          - Günlük desenleri takip edin
-          - Aktif pencereleri izleyin
-        - **Etiket Yönetimi:**
-          - Etiketlerle ilişkilendirin
-          - Kuralları kullanarak otomatik etiketleme
-          - Kategoriye göre zamanı takip edin
-        - **Analiz:**
-          - Kullanım desenlerini görüntüleyin
-          - Diğer uygulamalarla karşılaştırın
-          - Verimlilik zamanını takip edin
+        Zaman yönetimi, verimliliğinizin anahtarıdır. Uygulama kullanımınızı takip etmek ve doğru kategorilerle etiketlemek, odaklanmanızı artırır ve gereksiz zaman kayıplarını önler.
 
-        ## 💡 İpuçları
+        ## ⏱️ Zaman Takibi
 
-        - Uygulamaları kategorize etmek için etiketleri kullanın
-        - Otomatik etiketleme kuralları oluşturun
-        - Kullanım desenlerini gözden geçirin
-        - Benzer uygulamaları gruplandırın
-        - Verimli ve verimsiz zamanı takip edin
-        - Otomasyon için etiket kurallarını kullanın
-      title: Uygulama Kullanım Detayları Yardım
+        Zamanınızı doğru analiz etmek için günlük kullanım alışkanlıklarınızı takip edin. Uygulama içindeki detaylı kullanım süreleri ve aktif pencere izleme özellikleriyle hangi uygulamalara ne kadar odaklandığınızı kolayca görün. Bu veriler, nerede iyileşme yapmanız gerektiği konusunda size yol gösterir.
+
+        - ⏳ Günlük kullanım sürelerini inceleyin  
+        - 🔍 Aktif pencereleri takip edin  
+        - 📊 Detaylı raporlarla zaman dağılımını anlayın
+
+        ## 🏷️ Etiket Yönetimi
+
+        Uygulamalarınızı kategorilere ayırmak ve düzenli tutmak verimliliği artırır. Etiketleme sistemi ile uygulamalarınızı gruplandırabilir, otomatik kurallar sayesinde işlerinizi hızlandırabilirsiniz. Böylece zamanınızı daha verimli kullanmak için gereken odaklanmayı sağlayabilirsiniz.
+
+        - 🏷️ Uygulamaları anlamlı kategorilere etiketleyin  
+        - ⚙️ Otomatik etiketleme kuralları oluşturun  
+        - 🔄 Manuel işleri azaltarak zamandan tasarruf edin
+
+        ## 📈 Analiz & Verimlilik Takibi
+
+        Kendi kullanım desenlerinizi görselleştirerek güçlü ve zayıf yönlerinizi keşfedin. Verimlilik zamanınızı takip etmek, odaklanmanızı artırmak için kritik öneme sahiptir. Uygulama içindeki karşılaştırma ve raporlama araçları ile gelişiminizi somut olarak görebilirsiniz.
+
+        - 📊 Kullanım desenlerinizi görselleştirin  
+        - 🤝 Benzer uygulamalarla karşılaştırın  
+        - 🚀 Verimli ve verimsiz zamanı takip edin
+      title: Zaman ve Verimlilik Takibi Rehberi
     tags:
       hint: Etiket seç
       label: Etiketler
@@ -78,88 +82,87 @@ app_usages:
         tag_rules: Etiket Kuralları
       help:
         content: |
-          Uygulama kullanımınızı etkili bir şekilde yönetin ve takip edin.
+          Uygulama kullanımınızı analiz edin, düzenleyin ve daha verimli çalışmak için kontrol altına alın. Etiketleme ve analiz araçlarıyla zamanınızı nasıl değerlendirdiğinizi görün, yönetin ve iyileştirin.
 
-          ## ⚡ Özellikler
+          ## ⏱️ Kullanım Takibi
 
-          - **Detaylı Kullanım:**
-            - Kullanım sürelerini görüntüleyin
-            - Günlük desenleri takip edin
-            - Aktif pencereleri izleyin
-          - **Etiket Yönetimi:**
-            - Etiket atayın
-            - Kuralları kullanarak otomatik etiketleme
-            - Kategoriye göre zamanı takip edin
-          - **Analiz:**
-            - Kullanım desenlerini görüntüleyin
-            - Diğer uygulamalarla karşılaştırın
-            - Verimlilik zamanını takip edin
+          Günlük kullanım alışkanlıklarınızı keşfedin. Aktif pencereleri ve süreleri takip ederek hangi uygulamalara zaman ayırdığınızı öğrenin. Bu sayede odak gerektiren alanları belirleyebilir, zaman israfını azaltabilirsiniz.
 
-          ## 🛠️ Yönetim
+          - ⌛ Uygulama kullanım sürelerini inceleyin  
+          - 📅 Günlük desenleri analiz edin  
+          - 🖥️ Aktif pencere geçmişini takip edin  
 
-          - **Kurallar:**
-            - Yeni kurallar oluşturun
-            - Mevcut kuralları düzenleyin
-            - Kullanılmayan kuralları silin
-          - **Filtreler:**
-            - Etiketlere göre filtreleyin
-            - Tarih aralığına göre filtreleyin
+          ## 🏷️ Etiketleme ve Kategorilendirme
 
-          ## 💡 İpuçları
+          Uygulamaları gruplandırarak düzenli bir yapı oluşturun. Etiketleme sistemi sayesinde verilerinizi daha anlamlı hale getirin ve zamanınızı hangi kategoriye ayırdığınızı kolayca analiz edin.
 
-          - Uygulamaları kategorize etmek için etiketleri kullanın
-          - Otomatik etiketleme kuralları oluşturun
-          - Kullanım desenlerini gözden geçirin
-          - Benzer uygulamaları gruplandırın
-          - Verimli ve verimsiz zamanı takip edin
-          - Otomasyon için etiket kurallarını kullanın
-        title: Uygulama Kullanımı Yardım
-      title: Uygulama Kullanımı
+          - 🏷️ Uygulamalara anlamlı etiketler atayın  
+          - ⚙️ Otomatik etiketleme kuralları tanımlayın  
+          - 📚 Kategori bazlı kullanım süresini görüntüleyin  
+
+          ## 📊 Kullanım Analizi
+
+          Zamanınızı ne kadar verimli kullandığınızı analiz edin. Uygulama karşılaştırmaları ve kullanım desenleri sayesinde hangi araçların size fayda sağladığını görebilirsiniz.
+
+          - 📈 Kendi kullanım desenlerinizi analiz edin  
+          - 🔄 Uygulamaları karşılaştırın  
+          - 🚀 Verimli ve verimsiz zamanınızı takip edin  
+
+          ## ⚙️ Yönetim Araçları
+
+          Uygulama davranışlarını daha etkin kontrol edebilmek için kurallar ve filtreleme seçeneklerini kullanın. Özellikle otomatikleştirme ile zaman kazanın.
+
+          - 🛠️ Yeni kurallar tanımlayın, mevcutları düzenleyin  
+          - 🗑️ Gereksiz kuralları kaldırın  
+          - 🔍 Etiket ve tarih aralığına göre filtreleyin
+        title: Uygulama Kullanımı ve Zaman Yönetimi Rehberi
+
   rules:
     add_new_rule: Yeni Kural Ekle
-    existing_rules: Mevcut Kurallar
-    no_rules: Henüz kural yok
-    delete_confirm_title: Kural Sil
     delete_confirm_message: Bu kuralı silmek istediğinize emin misiniz?
+    delete_confirm_title: Kural Sil
     errors:
-      get_rules: Kurallar alınırken beklenmedik bir hata oluştu
       delete_rule: Kural silinirken beklenmedik bir hata oluştu
+      get_rules: Kurallar alınırken beklenmedik bir hata oluştu
+    existing_rules: Mevcut Kurallar
     help:
       content: |
-        Etiket atamayı otomatikleştirmenize ve uygulama takibini yönetmenize yardımcı olur.
+        Uygulama verilerini düzenli, tutarlı ve verimli bir şekilde yönetmek için kuralları kullanın. Otomatik etiketleme ve hariç tutma seçenekleriyle uygulama takibini kişiselleştirin ve zaman yönetiminizi güçlendirin.
 
-        ## 🏷️ Etiket Kuralları
+        ## 🏷️ Otomatik Etiketleme Kuralları
 
-        - **Otomatik Etiket Atama:**
-          - Uygulamaları isim desenlerine göre eşleştirin
-          - Birden fazla etiket atayın
-          - Zamanı otomatik olarak takip edin
-        - **Kural Yönetimi:**
-          - Yeni kurallar oluşturun
-          - Mevcut kuralları düzenleyin
-          - Kullanılmayan kuralları silin
+        Uygulamalarınız için kurallar oluşturarak, hangi yazılımın hangi etikete ait olduğunu sistemin sizin yerinize belirlemesini sağlayabilirsiniz. Böylece manuel etiketleme ihtiyacını ortadan kaldırırsınız.
+
+        - 🧠 Uygulama isimlerine göre otomatik etiket atayın  
+        - 🗂️ Birden fazla etiketi tek kuralla eşleştirin  
+        - ⏱️ Etiketli uygulamalarla zamanı otomatik takip edin  
+
+        ## ⚙️ Kural Yönetimi
+
+        Kendi sisteminizi oluşturmak için esnek kural yönetim ekranını kullanın. Gereksiz kuralları silin, yenilerini ekleyin, mevcutları güncelleyin.
+
+        - ➕ Yeni kurallar tanımlayın  
+        - ✏️ Mevcut kuralları düzenleyin  
+        - 🗑️ Artık kullanmadığınız kuralları kaldırın  
 
         ## 🚫 Yok Sayma Kuralları
 
-        - **Uygulamaları Hariç Tutma:**
-          - İstenmeyen uygulamaları atlayın
-          - Sistem süreçlerini yok sayın
-          - Arka plan uygulamalarını filtreleyin
-        - **Desen Eşleştirme:**
-          - Joker karakterler kullanın
-          - Tam isimleri eşleştirin
-          - Büyük/küçük harf duyarlılığı seçenekleri
+        Verimlilik analizlerinizi bozabilecek sistem veya arka plan uygulamalarını dışarıda bırakın. Bu kurallarla sadece gerçekten önemli uygulamalara odaklanabilirsiniz.
 
-        ## 💡 İpuçları
+        - 🧹 Belirli uygulamaları takibin dışında bırakın  
+        - 🖥️ Sistem süreçlerini ve yardımcı uygulamaları hariç tutun  
+        - 🔕 Arka planda çalışan uygulamaları filtreleyin  
 
-        - Daha iyi eşleştirme için belirli desenler kullanın
-        - Benzer uygulamaları ortak etiketler altında gruplandırın
-        - Kuralları düzenli olarak gözden geçirin ve güncelleyin
-        - Farklı uygulama isimleriyle kuralları test edin
-        - Sistem yardımcı programları için yok sayma kurallarını kullanın
-        - Ayrıntılı takip için kuralları birleştirin
-      title: Uygulama Kullanım Kuralları Yardım
+        ## 🧩 Gelişmiş Eşleştirme Seçenekleri
+
+        Kurallarınızı daha güçlü hale getirmek için desen eşleştirme seçeneklerinden yararlanın.
+
+        - ✳️ Joker karakterlerle esnek kurallar oluşturun  
+        - 🧾 Tam uygulama isimlerini kullanarak eşleştirme yapın  
+        - 🔠 Büyük/küçük harf duyarlılığına karar verin
+      title: Etiketleme ve Hariç Tutma Kuralları Rehberi
     ignore_rules: Yok Sayma Kuralları
+    no_rules: Henüz kural yok
     tag_rules: Etiket Kuralları
     title: Uygulama Kullanım Kuralları
   tooltips:

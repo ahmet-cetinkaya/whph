@@ -39,19 +39,16 @@ sync:
       1. Both devices are on the same network
       2. Both apps are open and running
       3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly
-      paired with this device.
+    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
     device_not_found: Sync device not found
     ip_address: Unable to fetch local IP address
     parse_message: Unable to parse scanned message
-    scan: Failed to scan QR code
+    process_failed: Sync process failed.
     save_device: Failed to save sync device
+    scan: Failed to scan QR code
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote
-      version: {remoteVersion}. Please update both applications to the same
-      version."
-    process_failed: Sync process failed.
+    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
@@ -61,41 +58,4 @@ sync:
     close_button: Close
     dialog_title: Scan QR Code to Sync
   scanner:
-    help:
-      content: |
-        📱 Scan QR codes to connect and sync with other devices.
-
-        ## 📸 Scanning Tips
-
-        - Hold camera steady
-        - Ensure good lighting
-        - Center the QR code
-        - Keep proper distance
-        - Wait for auto-focus
-        - Clean camera lens if needed
-
-        ## ⚡ Process
-
-        1. Point camera at QR code
-        2. Wait for automatic scan
-        3. Keep devices on same network
-        4. Wait for connection confirmation
-        5. Start syncing data
-      intro: 📱 Scan QR codes to connect and sync with other devices.
-      process:
-        - 1. Point camera at QR code
-        - 2. Wait for automatic scan
-        - 3. Keep devices on same network
-        - 4. Wait for connection confirmation
-        - 5. Start syncing data
-      process_title: ⚡ Process
-      tips:
-        - • Hold camera steady
-        - • Ensure good lighting
-        - • Center the QR code
-        - • Keep proper distance
-        - • Wait for auto-focus
-        - • Clean camera lens if needed
-      tips_title: 📸 Scanning Tips
-      title: QR Scanner Help
     title: Scan QR Code

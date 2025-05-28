@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:whph/presentation/shared/components/secondary_app_bar.dart';
-import 'package:whph/presentation/shared/components/help_menu.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
@@ -36,13 +34,6 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
       appBar: SecondaryAppBar(
         context: context,
         title: Text(_translationService.translate(SyncTranslationKeys.scannerTitle)),
-        actions: [
-          HelpMenu(
-            titleKey: SyncTranslationKeys.scannerHelpTitle,
-            markdownContentKey: SyncTranslationKeys.scannerHelpContent,
-          ),
-          const SizedBox(width: AppTheme.sizeSmall),
-        ],
       ),
       body: QRView(
         key: qrKey,

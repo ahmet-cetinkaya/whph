@@ -1,154 +1,140 @@
 tasks:
-  pomodoro:
-    notifications:
-      title: Pomodoro Zamanlayıcı
-      work_completed: Çalışma oturumu tamamlandı!
-      break_completed: Mola süresi tamamlandı!
-      long_break_completed: Uzun mola tamamlandı!
-    settings:
-      title: Zamanlayıcı Ayarları
-      timer_label: Oturum süreleri
-      ticking_sound_section: Tik Tak Sesi
-      ticking_sound: Tik tak sesini etkinleştir
-      ticking_volume: Ses Seviyesi
-      ticking_speed: Hız
-      auto_start_section: Otomatik Başlatma Seçenekleri
-      work_duration: Çalışma Süresi
-      break_duration: Mola Süresi
-      long_break_duration: Uzun Mola Süresi
-      sessions_before_long_break: Uzun Mola Öncesi Oturum Sayısı
-      auto_start_break: Çalışmadan sonra molayı otomatik başlat
-      auto_start_work: Moladan sonra çalışmayı otomatik başlat
-    actions:
-      stop_timer: Zamanlayıcıyı Durdur
-  priority:
-    selection:
-      title: Öncelik Seç
-    types:
-      urgent_important: Acil ve Önemli
-      not_urgent_important: Acil Değil ama Önemli
-      urgent_not_important: Acil ama Önemli Değil
-      not_urgent_not_important: Acil ve Önemli Değil
-      none: Öncelik Yok
-    tooltips:
-      urgent_important: Acil ve Önemli
-      not_urgent_important: Acil Değil ama Önemli
-      urgent_not_important: Acil ama Önemli Değil
-      not_urgent_not_important: Acil ve Önemli Değil
-      none: Öncelik Yok
-  quick_task:
-    title: Hızlı Görev
-    title_hint: Görev başlığı
-    create_error: Görev oluşturulurken hata oluştu
-    tooltips:
-      estimated_time: 'Tahmini Süre: {time}'
-      estimated_time_not_set: 'Tahmini Süre: Ayarlanmadı'
-      planned_date: 'Planlanan: {date}'
-      planned_date_not_set: 'Planlanan: Ayarlanmadı'
-      deadline_date: 'Son Tarih: {date}'
-      deadline_date_not_set: 'Son Tarih: Ayarlanmadı'
   add_button:
     tooltip: Yeni görev ekle
+  all_tasks_done: Tüm görevler tamamlandı!
   card:
-    tooltips:
-      schedule: Görevi planla
-      edit_title: Başlığı düzenle
     schedule:
       today: Bugün için planla
       tomorrow: Yarın için planla
-  delete:
-    title: Görevi Sil
-    message: Bu görevi silmek istediğinize emin misiniz?
-    error: Görev silinirken beklenmedik bir hata oluştu.
+    tooltips:
+      edit_title: Başlığı düzenle
+      schedule: Görevi planla
   complete:
     error: Görev tamamlanırken beklenmedik bir hata oluştu.
-  filters:
-    tooltips:
-      filter_by_tags: Etiketlere göre filtrele
-    search:
-      placeholder: Görev ara
-    planned_date: Planlanan Tarihe Göre
-    deadline_date: Son Tarihe Göre
-    completion: Tamamlanma Durumuna Göre
-    tags: Etiketlere Göre
+  delete:
+    error: Görev silinirken beklenmedik bir hata oluştu.
+    message: Bu görevi silmek istediğinize emin misiniz?
+    title: Görevi Sil
   details:
-    title: Başlık
-    tags_hint: Görev için etiket seçin
-    total_elapsed_time: Toplam Geçen Süre
-    is_completed: Tamamlandı
-    tags:
-      label: Etiketler
-      hint: Etiket seç
-    priority:
-      label: Öncelik
-    estimated_time:
-      label: Tahmini Süre
-    elapsed_time:
-      label: Geçen Süre
-    planned_date:
-      label: Planlanan Tarih
     deadline_date:
       label: Son Tarih
     description:
-      label: Açıklama
       hint: Açıklama ekle...
+      label: Açıklama
+    elapsed_time:
+      label: Geçen Süre
+    estimated_time:
+      label: Tahmini Süre
+    is_completed: Tamamlandı
+    planned_date:
+      label: Planlanan Tarih
+    priority:
+      label: Öncelik
     sub_tasks:
       label: Alt görevler
+    tags:
+      hint: Etiket seç
+      label: Etiketler
+    tags_hint: Görev için etiket seçin
+    title: Başlık
+    total_elapsed_time: Toplam Geçen Süre
+  errors:
+    add_tag: Etiket eklenirken beklenmedik bir hata oluştu
+    adding_tag: Etiket eklenemedi
+    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    get_task: Görev yüklenirken beklenmedik bir hata oluştu
+    loading_tags: Görev etiketleri yüklenemedi
+    loading_task: Görev yüklenemedi
+    loading_tasks: Görevler yüklenemedi
+    remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu
+    removing_tag: Etiket kaldırılamadı
+    same_tag: Aynı etiketi iki kez ekleyemezsiniz
+    save_task: Görev kaydedilirken beklenmedik bir hata oluştu
+    saving_task: Görev kaydedilemedi
+    sort_field_not_supported: Sıralama alanı desteklenmiyor
+    task_not_found: Görev bulunamadı
+    task_tag_already_deleted: Görev etiketi zaten silinmiş
+    task_tag_already_exists: Bu görev etiketi zaten mevcut
+    task_tag_not_found: Görev etiketi bulunamadı
+  filters:
+    completion: Tamamlanma Durumuna Göre
+    deadline_date: Son Tarihe Göre
+    planned_date: Planlanan Tarihe Göre
+    search:
+      placeholder: Görev ara
+    tags: Etiketlere Göre
+    tooltips:
+      filter_by_tags: Etiketlere göre filtrele
   help:
     details:
-      title: Görev Detayları Yardım
       content: |
-        📝 Görev detaylarınızı yönetin ve takip edin.
+        Görev yönetiminizde ustalaşın ve işlerinizi organize ederek, önceliklendirerek ve takip ederek verimliliğinizi maksimuma çıkarın.
 
-        ## ⚡ Özellikler
+        ## ⚡ Neden Önemli?
 
-        - **Temel Bilgiler:**
-          - Etiketler ile organize edin
-          - Öncelik belirleyin
-          - Süre tahminlerinizi kaydedin
+        Etkili görev yönetimi, verimliliğin temelidir. Açık öncelikler ve son tarihlerle düzgün yapılandırılmış görevler, en önemli işlere odaklanmanıza yardımcı olur ve önemli işlerin gözden kaçmasını önler.
 
-        - **Zaman Yönetimi:**
-          - Planlama tarihi ekleyin
-          - Son tarih belirleyin
-          - Harcanan zamanı takip edin
+        ## 📝 Görev Organizasyonu
 
-        - **Açıklama:**
-          - Detaylı notlar ekleyin
-          - Markdown formatı kullanın
-          - Görev detaylarını organize edin
+        Netlik ve odaklanmayı korumak için görevlerinizi kapsamlı detaylarla yapılandırın. Sistematik bir iş yükü yaklaşımı oluşturmak için etiketler, öncelikler ve zaman tahminleri kullanın.
 
-        ## 💡 İpuçları
+        - 🏷️ Görevleri anlamlı etiketlerle kategorilere ayırın
+        - ⚖️ Kanıtlanmış çerçeveleri kullanarak öncelikler belirleyin
+        - ⏱️ Zaman gereksinimlerini doğru bir şekilde tahmin edin
+        - 📅 Gerçekçi son tarihler ve programlar planlayın
 
-        - Etiketleri etkin kullanın
-        - Gerçekçi süreler belirleyin
-        - Önemli görevlere öncelik verin
-        - İlerlemeyi düzenli takip edin
-        - Açıklamaları güncel tutun
+        ## ⏰ Zaman Yönetimi
 
-        ## 📊 Eisenhower Matrisi
+        İş modellerinizi anlamak ve verimliliği artırmak için zaman yatırımlarınızı takip edin. Doğru zaman yönetimi, dağınık çabaları odaklı verimliliğe dönüştürür.
 
-        Eisenhower Matrisi, görevleri aciliyet ve önemine göre önceliklendirmenize yardımcı olur:
+        - 📊 Gerçek ve tahmini zamanı karşılaştırın
+        - 🎯 Yüksek etkili faaliyetlere odaklanın
+        - 📈 Zaman içinde verimlilik modellerini analiz edin
+        - ⏳ Acil ve önemli görevleri dengeleyin
 
-        - **Acil ve Önemli:** Hemen dikkat gerektiren görevler. Bu görevler kritik olup mümkün olan en kısa sürede tamamlanmalıdır.
-        - **Acil Değil ama Önemli:** Önemli ancak daha sonra planlanabilecek görevler. Bu görevler uzun vadeli hedeflerinize ulaşmanıza yardımcı olur.
-        - **Acil ama Önemli Değil:** Başkalarına devredilebilecek görevler. Bu görevler genellikle kesintiler veya dikkat dağıtıcı unsurlardır.
-        - **Acil ve Önemli Değil:** Ortadan kaldırılabilecek görevler. Bu görevler hedeflerinize önemli ölçüde katkıda bulunmaz.
+        ## 📊 Öncelik Çerçevesi (Eisenhower Matrisi)
+
+        Her zaman doğru zamanda doğru işler üzerinde çalıştığınızdan emin olmak için bu kanıtlanmış önceliklendirme yöntemini kullanarak görevlerinizi organize edin.
+
+        - 🔥 **Acil ve Önemli:** Hemen halledin - kriz yönetimi ve son tarihler
+        - 📈 **Önemli, Acil Değil:** Stratejik olarak planlayın - planlama ve beceri geliştirme
+        - ⚡ **Acil, Önemli Değil:** Mümkün olduğunda devredin - kesintiler ve bazı toplantılar
+        - 🗑️ **Ne Acil Ne Önemli:** Ortadan kaldırın - zaman kaybettiren ve düşük değerli faaliyetler
+      title: Görev Yönetimi ve Verimlilik Rehberi
     overview:
-      title: Görevler Genel Bakış Yardım
       content: |
-        📝 Görevlerinizi verimli bir şekilde yönetin ve organize edin.
+        İş yükünüzü organize etmenize, odaklı kalmanıza ve kontrolü elinizde tutmanıza yardımcı olan sistematik görev yönetimi ile verimliliğinizi dönüştürün.
 
-        ## ⚡ Özellikler
+        ## ⚡ Neden Önemli?
 
-        - **Görev Yönetimi:**
-          - Görev oluşturun ve düzenleyin
-          - Öncelikler ve son tarihler belirleyin
-          - İlerlemeyi takip edin
+        Etkili görev yönetimi, kişisel ve profesyonel başarının temel taşıdır. İşinizi sistematik olarak organize ederek stresi azaltır, son tarihlere tutarlı bir şekilde uyar ve önemli hedeflerde anlamlı ilerleme için alan yaratırsınız.
 
-        - **Organizasyon:**
-          - Görevleri etiketlerle gruplayın
-          - Filtreleyin ve arayın
-          - Hızlı eylemler
+        ## 📋 Görev Organizasyonu
+
+        Sorumluluklarınızı yönetmek için yapılandırılmış bir yaklaşım oluşturun. İyi organize edilmiş görevler, net önceliklere ve günlük işlerinizin verimli yürütülmesine yol açar.
+
+        - ✅ Görevleri sistematik olarak oluşturun ve kategorilere ayırın
+        - 🏷️ İlgili işleri anlamlı etiketlerle gruplayın
+        - ⚖️ Net öncelikler ve son tarihler belirleyin
+        - 🔍 Hızlı erişim için filtreler ve arama kullanın
+
+        ## ⏱️ Zaman Takibi ve Odaklanma
+
+        Verimlilik modellerini anlamak ve iş akışınızı optimize etmek için zaman yatırımlarınızı izleyin. Zaman bilinci, daha iyi planlamaya ve gelişmiş performansa yol açar.
+
+        - ⏰ Her görev için harcanan gerçek zamanı takip edin
+        - 🎯 Odaklı çalışma seansları için Maraton Modu'nu kullanın
+        - 📊 Tamamlama kalıplarını ve eğilimlerini analiz edin
+        - 🔄 Zaman tahminlerini düzenli olarak gözden geçirin ve ayarlayın
+
+        ## 📈 İlerleme İzleme
+
+        Başarılarınızı takip edin ve iş modellerinizden öğrenin. Düzenli inceleme ve düşünme, verimlilik sisteminizde sürekli gelişimi sağlar.
+
+        - 📈 Görev tamamlama oranlarını izleyin
+        - 📅 Günlük ve haftalık ilerlemeyi gözden geçirin
+        - 🎯 Darboğazları ve optimizasyon fırsatlarını belirleyin
+        - 🏆 Başarıları ve dönüm noktası tamamlamalarını kutlayın
 
         - **Zaman Takibi:**
           - Odaklanma için Maraton modu
@@ -162,122 +148,159 @@ tasks:
         - Gerçekçi son tarihler belirleyin
         - İlerlemenizi takip edin
         - Düzenli olarak gözden geçirin
-  page:
-    title: Görevler
-    completed_tasks_title: Tamamlanan görevler
-  tooltips:
-    edit_title: Başlığı düzenle
-    show_completed_tasks: Tamamlanan görevleri filtrele
-    set_reminder: Hatırlatıcı ayarla
-    clear_date: Tarihi temizle
-  title: Görevler
-  new_task: Yeni Görev
-  task_details: Görev Detayları
-  no_tasks: Görev yok
-  all_tasks_done: Tüm görevler tamamlandı!
-  errors:
-    get_task: Görev yüklenirken beklenmedik bir hata oluştu
-    save_task: Görev kaydedilirken beklenmedik bir hata oluştu
-    add_tag: Etiket eklenirken beklenmedik bir hata oluştu
-    remove_tag: Etiket kaldırılırken beklenmedik bir hata oluştu
-    get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
-    task_not_found: Görev bulunamadı
-    task_tag_not_found: Görev etiketi bulunamadı
-    task_tag_already_deleted: Görev etiketi zaten silinmiş
-    task_tag_already_exists: Bu görev etiketi zaten mevcut
-    loading_task: Görev yüklenemedi
-    saving_task: Görev kaydedilemedi
-    loading_tasks: Görevler yüklenemedi
-    loading_tags: Görev etiketleri yüklenemedi
-    adding_tag: Etiket eklenemedi
-    removing_tag: Etiket kaldırılamadı
-    same_tag: Aynı etiketi iki kez ekleyemezsiniz
-    sort_field_not_supported: Sıralama alanı desteklenmiyor
+      title: Görev Yönetimi ve İş Akışı Rehberi
   marathon:
-    label: Maraton Modu
-    help:
-      title: Maraton Modu Yardımı
-      content: |
-        🎯 Maraton Modu, Pomodoro Tekniğini kullanarak görevlerinize odaklanmanıza yardımcı olur.
+    current_task: "Şu Anda Çalışılan:"
 
-        ## ⏰ Pomodoro Tekniği
-        Çalışmayı aralıklara bölen bir zaman yönetimi yöntemidir. Çalışma ve mola sürelerini tercihinize göre özelleştirebilirsiniz:
-
-        - **Yaygın Modeller:**
-          - 25 dk çalışma / 5 dk mola (Klasik)
-          - 50 dk çalışma / 10 dk mola (Uzatılmış)
-        - 4 çalışma oturumundan sonra 15-30 dakikalık uzun mola verin
-        - Size en uygun olanı seçin
-
-        ## 🎯 Faydaları
-        - Odaklanmayı ve konsantrasyonu artırır
-        - Zihinsel yorgunluğu azaltır
-        - Küçük başarılarla motivasyonu korur
-        - Aciliyet hissi yaratır
-
-        ## 💡 İpuçları
-        - İlgili görevler arasında zamanı takip etmek için etiketleri kullanın
-        - Odak alanlarınızı anlamak için etiket zaman raporlarını inceleyin
-        - Başlamadan önce görevleri alakalı etiketlerle düzenleyin
-        - Başlamadan önce tüm dikkat dağıtıcıları kaldırın
-        - Molaları esneme veya hareket etmek için kullanın
-        - Molalarda su içmeyi unutmayın
-        - Molaları atlamayın - önemlidirler!
-        - En önemli görevle başlayın
     details:
       title: Görev Detayları
-    current_task: "Şu Anda Çalışılan:"
+    help:
+      content: |
+        Tükenmişliği önlerken derin konsantrasyonu korumanıza yardımcı olan yapılandırılmış çalışma seansları ile odaklanmanızı ve verimliliğinizi maksimuma çıkarın.
+
+        ## ⚡ Neden Önemli?
+
+        Odaklı çalışma seansları, derin çalışma ve yüksek kaliteli çıktı için hayati önemdedir. Düzenli molalarla yapılandırılmış aralıklarla çalışarak, uzun, odaksız çalışma dönemlerinden gelen yorgunluğu önlerken zihinsel performansınızı en üst düzeyde tutarsınız.
+
+        ## ⏰ Zaman Kutulu Odak Seansları
+
+        Maximum verimlilik için çalışmanızı yapılandırmak amacıyla kanıtlanmış zaman yönetimi tekniklerini kullanın. Yapılandırılmış seanslar, konsantrasyonu korumanıza ve görevleri daha etkili bir şekilde tamamlamanıza yardımcı olur.
+
+        - 🎯 **Klasik Odak:** 25 dakika çalışma / 5 dakika mola
+        - 📈 **Uzatılmış Odak:** 50 dakika çalışma / 10 dakika mola
+        - 🔄 **Uzun Mola:** 4 seanstan sonra 15-30 dakika
+        - ⚖️ **Özel Zamanlama:** Doğal ritminize uyacak şekilde aralıkları ayarlayın
+
+        ## 🧠 Bilişsel Faydalar
+
+        Yapılandırılmış çalışma seansları, performansı optimize etmek ve kalite ile yaratıcılığı azaltan zihinsel yorgunluğu önlemek için beynin doğal dikkat döngülerinden yararlanır.
+
+        - 🎯 Gelişmiş odaklanma ve derin konsantrasyon
+        - 🔋 Azaltılmış zihinsel yorgunluk ve tükenmişlik
+        - 💪 Düzenli başarılar yoluyla sürdürülen motivasyon
+        - ⚡ Gelişmiş zaman bilinci ve planlama doğruluğu
+
+        ## 📊 Performans Optimizasyonu
+
+        En yüksek etkililik için zamanlamanızı optimize etmek amacıyla odaklı çalışma modellerinizi takip ederek en üst verimlilik zamanlarınızı anlayın.
+
+        - 🏷️ Analiz için odak seanslarını etiketlerle kategorilere ayırın
+        - 📈 Farklı zamanlarda verimlilik modellerini izleyin
+        - 🚫 Seans başlamadan önce dikkat dağıtıcıları ortadan kaldırın
+        - 🚶 Fiziksel hareket ve zihinsel reset için molaları kullanın
+      title: Odaklı Çalışma Seansları ve Zaman Yönetimi Rehberi
+    label: Maraton Modu
     select_task_hint: Aşağıdaki listeden çalışmak için bir görev seçin.
     unpin_task_tooltip: Mevcut görevi kaldır
+  new_task: Yeni Görev
+  no_tasks: Görev yok
+  notifications:
+    deadline_message: "Görevinizin son tarihi: {time}"
+    deadline_title: "Görev Son Tarih: {title}"
+    planned_message: "Göreviniz için planlanan zaman: {time}"
+    reminder_title: "Görev Hatırlatıcı: {title}"
+  page:
+    completed_tasks_title: Tamamlanan görevler
+    title: Görevler
+  pomodoro:
+    actions:
+      stop_timer: Zamanlayıcıyı Durdur
+    notifications:
+      break_completed: Mola süresi tamamlandı!
+      long_break_completed: Uzun mola tamamlandı!
+      title: Pomodoro Zamanlayıcı
+      work_completed: Çalışma oturumu tamamlandı!
+    settings:
+      auto_start_break: Çalışmadan sonra molayı otomatik başlat
+      auto_start_section: Otomatik Başlatma Seçenekleri
+      auto_start_work: Moladan sonra çalışmayı otomatik başlat
+      break_duration: Mola Süresi
+      long_break_duration: Uzun Mola Süresi
+      sessions_before_long_break: Uzun Mola Öncesi Oturum Sayısı
+      ticking_sound: Tik tak sesini etkinleştir
+      ticking_sound_section: Tik Tak Sesi
+      ticking_speed: Hız
+      ticking_volume: Ses Seviyesi
+      timer_label: Oturum süreleri
+      title: Zamanlayıcı Ayarları
+      work_duration: Çalışma Süresi
   priorities:
-    urgent_important: Acil ve Önemli
     not_urgent_important: Acil Değil ama Önemli
-    urgent_not_important: Acil ama Önemli Değil
     not_urgent_not_important: Acil ve Önemli Değil
-  reminder:
-    none: Hatırlatıcı yok
-    atTime: Zamanında
-    fiveMinutesBefore: 5 dakika önce
-    fifteenMinutesBefore: 15 dakika önce
-    oneHourBefore: 1 saat önce
-    oneDayBefore: 1 gün önce
-    plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
-    deadlineReminderLabel: Son Tarih Hatırlatıcısı
+    urgent_important: Acil ve Önemli
+    urgent_not_important: Acil ama Önemli Değil
+  priority:
+    selection:
+      title: Öncelik Seç
+    tooltips:
+      none: Öncelik Yok
+      not_urgent_important: Acil Değil ama Önemli
+      not_urgent_not_important: Acil ve Önemli Değil
+      urgent_important: Acil ve Önemli
+      urgent_not_important: Acil ama Önemli Değil
+    types:
+      none: Öncelik Yok
+      not_urgent_important: Acil Değil ama Önemli
+      not_urgent_not_important: Acil ve Önemli Değil
+      urgent_important: Acil ve Önemli
+      urgent_not_important: Acil ama Önemli Değil
+  quick_task:
+    create_error: Görev oluşturulurken hata oluştu
+    title: Hızlı Görev
+    title_hint: Görev başlığı
+    tooltips:
+      deadline_date: "Son Tarih: {date}"
+      deadline_date_not_set: "Son Tarih: Ayarlanmadı"
+      estimated_time: "Tahmini Süre: {time}"
+      estimated_time_not_set: "Tahmini Süre: Ayarlanmadı"
+      planned_date: "Planlanan: {date}"
+      planned_date_not_set: "Planlanan: Ayarlanmadı"
   recurrence:
-    label: Tekrarlama
-    none: Tekrarlama yok
-    daily: Günlük
-    weekly: Haftalık
-    monthly: Aylık
-    yearly: Yıllık
-    custom: Özel
-    weekDays: Haftanın günleri
-    range: Aralık
-    startDate: Başlangıç tarihi
-    endDate: Bitiş tarihi
     count: Tekrarlama sayısı
-    selectDateHint: Tarih seçin
+    custom: Özel
+    daily: Günlük
+    daySuffix: gün
+    endDate: Bitiş tarihi
     enterCountHint: Sayı girin
     interval:
       label: Her
       prefix: her
       suffix:
         days: gün
-        weeks: hafta
         months: ay
+        weeks: hafta
         years: yıl
+    label: Tekrarlama
+    monthSuffix: ay
+    monthly: Aylık
+    none: Tekrarlama yok
+    range: Aralık
+    selectDateHint: Tarih seçin
+    startDate: Başlangıç tarihi
     summary:
+      endsAfter: sonra sona erer
+      endsOnDate: bitiş
+      occurrences: tekrarlama
       on: günlerinde
       starts: başlangıç
-      endsOnDate: bitiş
-      endsAfter: sonra sona erer
-      occurrences: tekrarlama
-    daySuffix: gün
+    weekDays: Haftanın günleri
     weekSuffix: hafta
-    monthSuffix: ay
+    weekly: Haftalık
     yearSuffix: yıl
-  notifications:
-    reminder_title: "Görev Hatırlatıcı: {title}"
-    deadline_title: "Görev Son Tarih: {title}"
-    planned_message: "Göreviniz için planlanan zaman: {time}"
-    deadline_message: "Görevinizin son tarihi: {time}"
+    yearly: Yıllık
+  reminder:
+    atTime: Zamanında
+    deadlineReminderLabel: Son Tarih Hatırlatıcısı
+    fifteenMinutesBefore: 15 dakika önce
+    fiveMinutesBefore: 5 dakika önce
+    none: Hatırlatıcı yok
+    oneDayBefore: 1 gün önce
+    oneHourBefore: 1 saat önce
+    plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
+  task_details: Görev Detayları
+  title: Görevler
+  tooltips:
+    clear_date: Tarihi temizle
+    edit_title: Başlığı düzenle
+    set_reminder: Hatırlatıcı ayarla
+    show_completed_tasks: Tamamlanan görevleri filtrele

@@ -1,183 +1,174 @@
 habits:
-  new_habit: Yeni Alışkanlık
-  tooltips:
-    edit_name: İsmi düzenle
-    add_habit: Alışkanlık ekle
+  archive:
+    archive: Arşivle
+    archive_confirm: Bu alışkanlığı arşivlemek istediğinize emin misiniz?
+    archive_tooltip: Bu alışkanlığı arşivle
+    archived_date: Arşivlenme Tarihi
+    hide_archived: Arşivlenenleri gizle
+    show_archived: Arşivlenenleri göster
+    unarchive: Arşivden çıkar
+    unarchive_confirm: Bu alışkanlığı arşivden çıkarmak istediğinize emin misiniz?
+    unarchive_tooltip: Bu alışkanlığı arşivden çıkar
+
+  calendar:
+    week_days:
+      fri: Cum
+      mon: Pzt
+      sat: Cmt
+      sun: Paz
+      thu: Per
+      tue: Sal
+      wed: Çar
   delete:
-    confirm_title: Alışkanlığı Sil
     confirm_message: Bu alışkanlığı silmek istediğinize emin misiniz?
-  errors:
-    loading_records: Alışkanlık kayıtları yüklenemedi
-    creating_record: Alışkanlık kaydı oluşturulamadı
-    deleting_record: Alışkanlık kaydı silinemedi
-    deleting: Alışkanlık silinirken beklenmedik bir hata oluştu
-    loading_details: Alışkanlık detayları yüklenemedi
-    saving_details: Alışkanlık kaydedilemedi
-    loading_tags: Alışkanlık etiketleri yüklenemedi
-    adding_tag: Etiket eklenemedi
-    removing_tag: Etiket kaldırılamadı
-    loading_habit: Alışkanlık yüklenemedi
-    saving_habit: Alışkanlık kaydedilemedi
-    loading_habits: Alışkanlıklar yüklenemedi
-    habit_not_found: Alışkanlık bulunamadı
-    habit_tag_not_found: Alışkanlık etiketi bulunamadı
-    habit_record_not_found: Alışkanlık kaydı bulunamadı
-    tag_already_exists: Bu etiket zaten eklenmiş
-    loading_archive_status: Arşiv durumu yüklenemedi
-    toggling_archive: Arşiv durumu değiştirilemedi
-  goals:
-    goal: Hedef
-    target_frequency: Hedef Sıklığı
-    period_days: Periyot Günleri
-    enable: Hedefleri Etkinleştir
-    goal_format: "{count} kez {dayCount} gün içinde"
-    settings: Hedef Ayarları
-    current_goal: Hedef
+    confirm_title: Alışkanlığı Sil
   details:
+    archived_status: Arşivlendi
+    create_record_tooltip: Bugün tamamlandı olarak işaretle
     description: Açıklama
-    tags: Etiketler
-    tags_hint: İlişkilendirilecek etiketleri seçin
     estimated_time: Tahmini Süre
     estimated_time_not_set: Ayarlanmadı
+    help:
+      content: |
+        🔄 Alışkanlıklarınızı düzenleyerek günlük rutininizde istikrar sağlayın ve ilerlemenizi kolayca takip edin.
+
+        ## ⚙️ Temel Ayarlar
+
+        - 📝 Alışkanlıklarınıza anlamlı ve motive edici isimler verin.
+        - 📅 Düzenli programlar oluşturarak alışkanlıkların takibini kolaylaştırın.
+        - 🏷️ Etiket gruplarıyla benzer alışkanlıkları bir araya getirerek düzen oluşturun.
+
+        ## ⏱️ Zaman Takibi
+
+        - ⏳ Her tamamlanma zamanını kaydedin ve gelişiminizi görün.
+        - 📊 Etiketlere göre zaman takibi yaparak hangi alışkanlıkların daha fazla zaman aldığını analiz edin.
+        - 📈 Zaman desenlerinizi inceleyerek verimliliğinizi artıracak düzenlemeler yapın.
+
+        ## 📅 Geçmiş ve Tutarlılık
+
+        - 📚 Tamamlanma geçmişinizi görüntüleyerek ilerlemenizi değerlendirin.
+        - 🔗 Günlük serileri takip ederek alışkanlıklarınızın sürekliliğini ölçün.
+        - 📌 Tutarlılığınızı izleyerek motivasyonunuzu artırın.
+        - 🔄 Veri içgörülerini kullanarak sürdürülebilir başarı için alışkanlık zorluğunu ve zamanlamasını iyileştirin
+
+        ## 📅 Tutarlılık ve Momentum
+
+        Sistematik takip ve ilerleme kalıplarınızın stratejik gözden geçirilmesi yoluyla kalıcı davranış değişikliği için gereken tutarlılığı oluşturun ve sürdürün.
+
+        - 📚 İlerlemeyi değerlendirmek ve başarı kalıplarını belirlemek için tamamlanma geçmişini gözden geçirin
+        - 🔗 Uzun vadeli başarı için momentum oluşturmak ve sürdürmek amacıyla günlük serileri takip edin
+        - 📌 Motivasyon ve kararlılığı artırmak için tutarlılık metriklerini izleyin
+        - 🎯 Pozitif davranış değişikliğini güçlendirmek için dönüm noktalarını ve başarıları kutlayın
+
+        ## 🚀 Optimizasyon Stratejileri
+
+        İlerlemeyi hızlandıran ve çabalarınızın yaşamınız ve verimliliğinizde anlamlı, kalıcı iyileştirmelere dönüştürülmesini sağlayan alışkanlık optimizasyonu için kanıtlanmış teknikleri uygulayın.
+
+        - 🐾 **Küçük Başlayın:** Erken kazanımları garanti eden yönetilebilir alışkanlıklarla başlayın
+        - 🏷️ **Stratejik Gruplama:** Alışkanlıkları yaşam alanı veya günün saatine göre organize edin
+        - 📊 **Veri Odaklı Ayarlamalar:** Zamanlama ve yaklaşımı optimize etmek için takip içgörülerini kullanın
+        - 🌅 **Ana Zaman Odağı:** Önemli alışkanlıkları en yüksek enerji dönemlerinizde planlayın
+
+        ———
+
+        🔑 Bu özellikleri kullanarak alışkanlıklarınızı düzenli takip etmek, hedeflerinize ulaşmada size büyük kolaylık sağlar. Düzenli gözden geçirme ve ayarlamalar, sürdürülebilir başarı için çok önemlidir.
+      title: Alışkanlık Takibi ve Yönetimi Rehberi
     records: Kayıtlar
-    statistics_label: İstatistikler
-    create_record_tooltip: Bugün tamamlandı olarak işaretle
     remove_record_tooltip: Bugünkü tamamlamayı kaldır
-    archived_status: Arşivlendi
     statistics:
-      overall: Genel
+      archived_note: "Arşivlenme tarihi:"
+      archived_warning: "İstatistikler arşivlendiği tarihe kadar gösterilmektedir. {startDate} - {archivedDate}"
       monthly: Aylık
-      yearly: Yıllık
+      overall: Genel
       records: Kayıtlar
       score_trends: Puan Trendi
       top_streaks: En İyi Seriler
-      archived_note: "Arşivlenme tarihi:"
-      archived_warning: "İstatistikler arşivlendiği tarihe kadar gösterilmektedir. {startDate} - {archivedDate}"
-    help:
-      title: Alışkanlık Detayları Yardım
-      description: 🔄 Tutarlı rutinler oluşturmak için alışkanlık detaylarınızı yapılandırın ve takip edin.
-      features_title: ⚡ Özellikler
-      tips_title: 💡 İpuçları
-      features_list:
-        - "• Temel Ayarlar:"
-        - "  - Alışkanlık adını ayarlayın"
-        - "  - Program tanımlayın"
-        - "  - Etiket gruplarına ekleyin"
-        - "• Zaman Takibi:"
-        - "  - Tamamlanma süresini kaydedin"
-        - "  - Zamanı etiketlere göre takip edin"
-        - "  - Zaman modellerini görüntüleyin"
-        - "• Geçmiş:"
-        - "  - Tamamlanma geçmişini görüntüleyin"
-        - "  - Günlük serileri takip edin"
-        - "  - Tutarlılığı izleyin"
-      tips_list:
-        - "• Net, eyleme geçirilebilir isimler verin"
-        - "• Alışkanlık gruplandırması için etiketleri kullanın"
-        - "• Gerçekçi programlar belirleyin"
-        - "• Zamanı tutarlı şekilde takip edin"
-        - "• Gözden geçirin ve gerektiğinde ayarlayın"
-        - "• Kullanılmayan alışkanlıkları silin"
-      content: |
-        🔄 Alışkanlık detaylarınızı yapılandırarak tutarlı rutinler oluşturun.
-
-        ## ⚡ Özellikler
-
-        - **Temel Ayarlar:**
-          - Alışkanlık ismi belirleyin
-          - Program tanımlayın
-          - Etiket gruplarına ekleyin
-        - **Zaman Takibi:**
-          - Tamamlanma zamanını kaydedin
-          - Etiketlere göre zamanı takip edin
-          - Zaman desenlerini görüntüleyin
-        - **Geçmiş:**
-          - Tamamlanma geçmişini görüntüleyin
-          - Günlük serileri takip edin
-          - Tutarlılığı izleyin
-
-        ## 💡 İpuçları
-
-        - Net, eyleme geçirilebilir isimler verin
-        - Alışkanlıkları gruplandırmak için etiketleri kullanın
-        - Gerçekçi programlar belirleyin
-        - Zamanı tutarlı şekilde takip edin
-        - Gözden geçirin ve gerektiğinde ayarlayın
-        - Kullanılmayan alışkanlıkları silin
+      yearly: Yıllık
+    statistics_label: İstatistikler
+    tags: Etiketler
+    tags_hint: İlişkilendirilecek etiketleri seçin
+  errors:
+    adding_tag: Etiket eklenemedi
+    creating_record: Alışkanlık kaydı oluşturulamadı
+    deleting: Alışkanlık silinirken beklenmedik bir hata oluştu
+    deleting_record: Alışkanlık kaydı silinemedi
+    habit_not_found: Alışkanlık bulunamadı
+    habit_record_not_found: Alışkanlık kaydı bulunamadı
+    habit_tag_not_found: Alışkanlık etiketi bulunamadı
+    loading_archive_status: Arşiv durumu yüklenemedi
+    loading_details: Alışkanlık detayları yüklenemedi
+    loading_habit: Alışkanlık yüklenemedi
+    loading_habits: Alışkanlıklar yüklenemedi
+    loading_records: Alışkanlık kayıtları yüklenemedi
+    loading_tags: Alışkanlık etiketleri yüklenemedi
+    removing_tag: Etiket kaldırılamadı
+    saving_details: Alışkanlık kaydedilemedi
+    saving_habit: Alışkanlık kaydedilemedi
+    tag_already_exists: Bu etiket zaten eklenmiş
+    toggling_archive: Arşiv durumu değiştirilemedi
+  goals:
+    current_goal: Hedef
+    enable: Hedefleri Etkinleştir
+    goal: Hedef
+    goal_format: "{count} kez {dayCount} gün içinde"
+    period_days: Periyot Günleri
+    settings: Hedef Ayarları
+    target_frequency: Hedef Sıklığı
+  list:
+    all_habits_done: Tüm alışkanlıklar tamamlandı!
+    no_habits_found: Alışkanlık yok
+  new_habit: Yeni Alışkanlık
+  notifications:
+    reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"
+    reminder_title: "Alışkanlık Hatırlatıcı: {name}"
   overview:
-    title: Alışkanlıklar
     filter_by_tags_tooltip: Etiketlere göre filtrele
     help:
-      title: Alışkanlıklar Genel Bakış Yardım
       content: |
-        🔄 Alışkanlıklar, zaman yatırımlarını takip ederken günlük rutinler oluşturmanıza ve sürdürmenize yardımcı olur.
+        🔄 **Alışkanlıklar**, günlük rutinlerinizi oluşturup sürdürürken zaman yönetimini kolaylaştırır. Bu rehber, alışkanlıklarınızı etkin kullanmanız için adım adım yol gösterir.
 
-        ## ⚡ Özellikler
+        ### 📅 Günlük Takip ve Tamamlama
+        - ✅ Alışkanlıklarınızı her gün kontrol edin ve tamamladıklarınızı işaretleyin.
+        - 📆 Birden fazla günü görüntüleyerek, alışkanlıklarınızın düzenini ve tutarlılığını takip edin.
+        - 🔄 Uzun seriler oluşturarak motivasyonunuzu artırın.
 
-        - **Günlük Takip:**
-          - Alışkanlık tamamlamayı takip edin
-          - Birden çok günü aynı anda görüntüleyin
-          - Serileri ve desenleri izleyin
-        - **Zaman Yatırımı:**
-          - Alışkanlıklara harcanan zamanı kaydedin
-          - Etiketlere göre zamanı biriktirin
-          - Rutin sürelerini takip edin
-        - **Organizasyon:**
-          - Etiketlerle alışkanlıkları gruplandırın
-          - Esnek programlama
+        ### ⏱️ Zaman Takibi ve Analiz
+        - ⏳ Alışkanlıklarınıza harcadığınız zamanı kaydedin ve günlük analiz yapın.
+        - 🏷️ Etiketler kullanarak benzer alışkanlıkların zamanlarını toplayın ve hangi alanlara daha çok zaman ayırdığınızı görün.
+        - ⏰ Düzenli takip ile alışkanlık sürelerinizi dengeleyin.
 
-        ## 💡 İpuçları
+        ### 🗂️ Organizasyon ve Programlama
+        - 🏷️ Alışkanlıklarınızı anlamlı etiket gruplarına ayırın.
+        - ⚙️ Esnek programlama sayesinde alışkanlıklarınızı ihtiyaçlarınıza göre planlayın.
 
-        - Küçük, yönetilebilir alışkanlıklarla başlayın
-        - İlgili rutinleri gruplamak için etiketleri kullanın
-        - Desenleri anlamak için zamanı takip edin
-        - Önemli alışkanlıkları erken tamamlayın
-        - Alışkanlık geçmişinizi düzenli olarak gözden geçirin
-        - Alışkanlıkları gerektiğinde ayarlayın
+        ### 💡 Alışkanlıklarınızı Güçlendirme İpuçları
+        - 🐾 Başlangıçta küçük ve yönetilebilir alışkanlıklar seçin.
+        - 🏷️ Alışkanlıklarınızı etiketlerle gruplayarak organizasyonu kolaylaştırın.
+        - 📊 Alışkanlıklarınızdaki desenleri ve eğilimleri anlamak için zaman takibini kullanın.
+        - 🌅 Önemli alışkanlıkları günün erken saatlerinde tamamlayın.
+        - 🔍✏️ Düzenli aralıklarla alışkanlık geçmişinizi gözden geçirin ve gerekirse ayarlamalar yapın.
 
-        ## 📊 Takvim Görünümü
+        ### 📊 Takvim Görünümü Kullanımı
+        - 📅 Takvim görünümünde birden çok günü aynı anda görüntüleyin.
+        - ✅ Tamamlama desenlerinizi görsel olarak takip edin.
+        - ⚡ Hızlı tamamlama işaretleme ile zaman kazanın.
+        - 🎯 Görsel seri takibi sayesinde motivasyonunuzu artırın.
+        - 🔄 Esnek tarih gezinme ile geçmiş ve gelecekteki alışkanlıklarınızı inceleyin.
+      title: Alışkanlıklar Genel Bakış Rehberi
+    title: Alışkanlıklar
 
-        - Birden çok günü aynı anda görüntüleyin
-        - Tamamlama desenlerini takip edin
-        - Hızlı tamamlama işaretleme
-        - Görsel seri takibi
-        - Esnek tarih gezinme
-  calendar:
-    week_days:
-      mon: Pzt
-      tue: Sal
-      wed: Çar
-      thu: Per
-      fri: Cum
-      sat: Cmt
-      sun: Paz
-  list:
-    no_habits_found: Alışkanlık yok
-    all_habits_done: Tüm alışkanlıklar tamamlandı!
+  reminder:
+    enableReminders: Hatırlatıcıları etkinleştir
+    everyDay: Her gün
+    noReminder: Hatırlatıcı ayarlanmadı
+    reminderDays: Hatırlatıcı günleri
+    reminderSettings: Hatırlatıcı Ayarları
+    reminderTime: Hatırlatıcı zamanı
+    selectDaysWarning: Lütfen hatırlatıcılar için en az bir gün seçin
 
   reminders:
     enable: Hatırlatıcıları etkinleştir
     select_days_warning: Lütfen hatırlatıcılar için en az bir gün seçin
-
-  reminder:
-    enableReminders: Hatırlatıcıları etkinleştir
-    reminderTime: Hatırlatıcı zamanı
-    reminderDays: Hatırlatıcı günleri
-    reminderSettings: Hatırlatıcı Ayarları
-    selectDaysWarning: Lütfen hatırlatıcılar için en az bir gün seçin
-    noReminder: Hatırlatıcı ayarlanmadı
-    everyDay: Her gün
-  notifications:
-    reminder_title: "Alışkanlık Hatırlatıcı: {name}"
-    reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"
-
-  archive:
-    show_archived: Arşivlenenleri göster
-    hide_archived: Arşivlenenleri gizle
-    archive: Arşivle
-    unarchive: Arşivden çıkar
-    archive_confirm: Bu alışkanlığı arşivlemek istediğinize emin misiniz?
-    unarchive_confirm: Bu alışkanlığı arşivden çıkarmak istediğinize emin misiniz?
-    archive_tooltip: Bu alışkanlığı arşivle
-    unarchive_tooltip: Bu alışkanlığı arşivden çıkar
-    archived_date: Arşivlenme Tarihi
+  tooltips:
+    add_habit: Alışkanlık ekle
+    edit_name: İsmi düzenle
