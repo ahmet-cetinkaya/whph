@@ -56,7 +56,7 @@ class HabitsListState extends State<HabitsList> {
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final ScrollController _scrollController = ScrollController();
-  GetListHabitsQueryResponse? _habits;
+  GetListHabitsQueryResponse? _habitList;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
@@ -184,19 +184,13 @@ class HabitsListState extends State<HabitsList> {
     int pageIndex = 0,
     bool isRefresh = false,
   }) async {
-    List<HabitListItem>? existingItems;
-    if (isRefresh && _habits != null) {
-      existingItems = List<HabitListItem>.from(_habits!.items);
-    }
-
-    final result = await AsyncErrorHandler.execute<GetListHabitsQueryResponse>(
+    await AsyncErrorHandler.execute<GetListHabitsQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
       operation: () async {
         final query = GetListHabitsQuery(
           pageIndex: pageIndex,
-          pageSize:
-              isRefresh && _habits != null && _habits!.items.length > widget.size ? _habits!.items.length : widget.size,
+          pageSize: isRefresh ? _habitList?.items.length ?? widget.size : widget.size,
           excludeCompleted: _currentFilters.mini,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
@@ -210,11 +204,11 @@ class HabitsListState extends State<HabitsList> {
       },
       onSuccess: (result) {
         setState(() {
-          if (_habits == null || isRefresh) {
-            _habits = result;
+          if (_habitList == null || isRefresh) {
+            _habitList = result;
           } else {
-            _habits = GetListHabitsQueryResponse(
-              items: [..._habits!.items, ...result.items],
+            _habitList = GetListHabitsQueryResponse(
+              items: [..._habitList!.items, ...result.items],
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
@@ -222,32 +216,19 @@ class HabitsListState extends State<HabitsList> {
           }
 
           // Notify about listing count
-          widget.onListing?.call(_habits?.items.length ?? 0);
+          widget.onListing?.call(_habitList?.items.length ?? 0);
         });
       },
     );
-
-    // If error occurred (result is null) and we have existing items, restore them
-    if (result == null && existingItems != null && _habits != null) {
-      setState(() {
-        _habits = GetListHabitsQueryResponse(
-          // Use non-nullable cast since we've already verified existingItems is not null
-          items: existingItems!.toList(),
-          totalItemCount: _habits!.totalItemCount,
-          pageIndex: _habits!.pageIndex,
-          pageSize: _habits!.pageSize,
-        );
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_habits == null) {
+    if (_habitList == null) {
       return const SizedBox.shrink();
     }
 
-    if (_habits!.items.isEmpty) {
+    if (_habitList!.items.isEmpty) {
       return SizedBox(
         width: double.infinity,
         child: widget.showDoneOverlayWhenEmpty
@@ -269,7 +250,7 @@ class HabitsListState extends State<HabitsList> {
   Widget _buildMiniCardList() {
     return Wrap(
       children: [
-        ..._habits!.items.map((habit) => SizedBox(
+        ..._habitList!.items.map((habit) => SizedBox(
               key: ValueKey(habit.id), // Add this key
               width: 200,
               child: IgnorePointer(
@@ -288,7 +269,7 @@ class HabitsListState extends State<HabitsList> {
                 ),
               ),
             )),
-        if (_habits!.hasNext)
+        if (_habitList!.hasNext)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
@@ -303,7 +284,7 @@ class HabitsListState extends State<HabitsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._habits!.items.map((habit) => SizedBox(
+          ..._habitList!.items.map((habit) => SizedBox(
                 key: ValueKey(habit.id), // Add this key
                 height: 64,
                 child: HabitCard(
@@ -316,7 +297,7 @@ class HabitsListState extends State<HabitsList> {
                   onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
                 ),
               )),
-          if (_habits!.hasNext)
+          if (_habitList!.hasNext)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
@@ -327,10 +308,10 @@ class HabitsListState extends State<HabitsList> {
   }
 
   Future<void> _onLoadMore() async {
-    if (_habits == null || !_habits!.hasNext) return;
+    if (_habitList == null || !_habitList!.hasNext) return;
 
     _saveScrollPosition();
-    await _getHabits(pageIndex: _habits!.pageIndex + 1);
+    await _getHabits(pageIndex: _habitList!.pageIndex + 1);
     _backLastScrollPosition();
   }
 

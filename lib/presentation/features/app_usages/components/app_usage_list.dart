@@ -61,7 +61,7 @@ class AppUsageListState extends State<AppUsageList> {
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
   final ScrollController _scrollController = ScrollController();
-  GetListByTopAppUsagesQueryResponse? _appUsagesList;
+  GetListByTopAppUsagesQueryResponse? _appUsageList;
   late FilterContext _currentFilters;
   Timer? _refreshDebounce;
   double? _savedScrollPosition;
@@ -151,7 +151,7 @@ class AppUsageListState extends State<AppUsageList> {
   Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
       pageIndex: pageIndex,
-      pageSize: widget.size,
+      pageSize: isRefresh ? _appUsageList?.items.length ?? widget.size : widget.size,
       filterByTags: _currentFilters.filterByTags,
       showNoTagsFilter: _currentFilters.showNoTagsFilter,
       startDate: _currentFilters.filterStartDate != null
@@ -172,10 +172,10 @@ class AppUsageListState extends State<AppUsageList> {
         if (mounted) {
           setState(() {
             if (isRefresh) {
-              _appUsagesList = data;
+              _appUsageList = data;
             } else {
-              _appUsagesList = GetListByTopAppUsagesQueryResponse(
-                items: [...?_appUsagesList?.items, ...data.items],
+              _appUsageList = GetListByTopAppUsagesQueryResponse(
+                items: [...?_appUsageList?.items, ...data.items],
                 pageIndex: data.pageIndex,
                 pageSize: data.pageSize,
                 totalItemCount: data.totalItemCount,
@@ -205,23 +205,23 @@ class AppUsageListState extends State<AppUsageList> {
   }
 
   Future<void> _onLoadMore() async {
-    if (_appUsagesList?.hasNext == false) return;
+    if (_appUsageList?.hasNext == false) return;
 
     _saveScrollPosition();
-    await _getList(pageIndex: _appUsagesList!.pageIndex + 1);
+    await _getList(pageIndex: _appUsageList!.pageIndex + 1);
     _backLastScrollPosition();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_appUsagesList?.items.isEmpty ?? true) {
+    if (_appUsageList?.items.isEmpty ?? true) {
       return IconOverlay(
         icon: Icons.bar_chart,
         message: _translationService.translate(AppUsageTranslationKeys.noUsage),
       );
     }
 
-    final maxDuration = _appUsagesList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
+    final maxDuration = _appUsageList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return ListView(
       controller: _scrollController,
@@ -229,7 +229,7 @@ class AppUsageListState extends State<AppUsageList> {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        ...?_appUsagesList?.items.map((appUsage) => Padding(
+        ...?_appUsageList?.items.map((appUsage) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: AppUsageCard(
                 appUsage: appUsage,
@@ -239,7 +239,7 @@ class AppUsageListState extends State<AppUsageList> {
             )),
 
         // Load more button
-        if (_appUsagesList?.hasNext == true)
+        if (_appUsageList?.hasNext == true)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(

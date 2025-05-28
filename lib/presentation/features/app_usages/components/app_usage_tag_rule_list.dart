@@ -34,7 +34,7 @@ class AppUsageTagRuleList extends StatefulWidget {
 
 class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   final ScrollController _scrollController = ScrollController();
-  GetListAppUsageTagRulesQueryResponse? _rules;
+  GetListAppUsageTagRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   final int _pageSize = 10;
   final _translationService = container.resolve<ITranslationService>();
@@ -117,7 +117,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       operation: () async {
         final query = GetListAppUsageTagRulesQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh && _rules != null && _rules!.items.length > _pageSize ? _rules!.items.length : _pageSize,
+          pageSize: isRefresh ? _ruleList?.items.length ?? _pageSize : _pageSize,
           filterByTags: widget.filterByTags,
         );
 
@@ -126,11 +126,11 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       onSuccess: (result) {
         if (mounted) {
           setState(() {
-            if (_rules == null || pageIndex == 0) {
-              _rules = result;
+            if (_ruleList == null || pageIndex == 0) {
+              _ruleList = result;
             } else {
-              _rules!.items.addAll(result.items);
-              _rules!.pageIndex = result.pageIndex;
+              _ruleList!.items.addAll(result.items);
+              _ruleList!.pageIndex = result.pageIndex;
             }
           });
         }
@@ -145,12 +145,12 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading && _rules == null) {
+    if (_isLoading && _ruleList == null) {
       // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
-    if (_rules == null || _rules!.items.isEmpty) {
+    if (_ruleList == null || _ruleList!.items.isEmpty) {
       return IconOverlay(
         icon: Icons.rule_folder,
         iconSize: AppTheme.iconSizeXLarge,
@@ -166,10 +166,10 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: _rules!.items.length,
+            itemCount: _ruleList!.items.length,
             separatorBuilder: (context, index) => const SizedBox(height: 4),
             itemBuilder: (context, index) {
-              final rule = _rules!.items[index];
+              final rule = _ruleList!.items[index];
               return Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
@@ -240,7 +240,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
               );
             },
           ),
-          if (_rules!.hasNext)
+          if (_ruleList!.hasNext)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
@@ -251,10 +251,10 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   }
 
   Future<void> _onLoadMore() async {
-    if (_rules == null || !_rules!.hasNext) return;
+    if (_ruleList == null || !_ruleList!.hasNext) return;
 
     _saveScrollPosition();
-    await _loadRules(pageIndex: _rules!.pageIndex + 1);
+    await _loadRules(pageIndex: _ruleList!.pageIndex + 1);
     _backLastScrollPosition();
   }
 

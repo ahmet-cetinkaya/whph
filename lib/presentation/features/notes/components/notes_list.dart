@@ -23,6 +23,7 @@ class NotesList extends StatefulWidget {
   final bool filterNoTags;
   final Function(String)? onClickNote;
   final SortConfig<NoteSortFields>? sortConfig;
+  final int size;
 
   const NotesList({
     super.key,
@@ -31,6 +32,7 @@ class NotesList extends StatefulWidget {
     this.filterNoTags = false,
     this.onClickNote,
     this.sortConfig,
+    this.size = 20,
   });
 
   @override
@@ -42,12 +44,11 @@ class NotesListState extends State<NotesList> {
   final _translationService = container.resolve<ITranslationService>();
   final _mediator = container.resolve<Mediator>();
   final ScrollController _scrollController = ScrollController();
-  GetListNotesQueryResponse? _notes;
+  GetListNotesQueryResponse? _noteList;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
-  static const int _pageSize = 10;
 
   @override
   void initState() {
@@ -152,7 +153,7 @@ class NotesListState extends State<NotesList> {
     String? noteId = _notesService.onNoteUpdated.value ?? _notesService.onNoteDeleted.value;
 
     // Refresh if noteId is null or if the note is in our list
-    if (noteId == null || _notes?.items.any((n) => n.id == noteId) == true) {
+    if (noteId == null || _noteList?.items.any((n) => n.id == noteId) == true) {
       refresh();
     }
   }
@@ -161,18 +162,13 @@ class NotesListState extends State<NotesList> {
     int pageIndex = 0,
     bool isRefresh = false,
   }) async {
-    List<NoteListItem>? existingItems;
-    if (isRefresh && _notes != null) {
-      existingItems = List.from(_notes!.items);
-    }
-
-    final result = await AsyncErrorHandler.execute<GetListNotesQueryResponse>(
+    await AsyncErrorHandler.execute<GetListNotesQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(NoteTranslationKeys.loadingError),
       operation: () async {
         final query = GetListNotesQuery(
           pageIndex: pageIndex,
-          pageSize: _pageSize,
+          pageSize: isRefresh ? _noteList?.items.length ?? widget.size : widget.size,
           search: _currentFilters.search,
           filterByTags: _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
@@ -184,11 +180,11 @@ class NotesListState extends State<NotesList> {
       },
       onSuccess: (result) {
         setState(() {
-          if (_notes == null || isRefresh) {
-            _notes = result;
+          if (_noteList == null || isRefresh) {
+            _noteList = result;
           } else {
-            _notes = GetListNotesQueryResponse(
-              items: [..._notes!.items, ...result.items],
+            _noteList = GetListNotesQueryResponse(
+              items: [..._noteList!.items, ...result.items],
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
@@ -197,28 +193,16 @@ class NotesListState extends State<NotesList> {
         });
       },
     );
-
-    // If an error occurred (result is null) and we have existing items, restore them
-    if (result == null && existingItems != null && _notes != null) {
-      setState(() {
-        _notes = GetListNotesQueryResponse(
-          items: existingItems!,
-          totalItemCount: _notes!.totalItemCount,
-          pageIndex: _notes!.pageIndex,
-          pageSize: _notes!.pageSize,
-        );
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_notes == null) {
+    if (_noteList == null) {
       // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
-    if (_notes == null || _notes!.items.isEmpty) {
+    if (_noteList == null || _noteList!.items.isEmpty) {
       return IconOverlay(
         icon: Icons.note_alt_outlined,
         iconSize: AppTheme.iconSizeXLarge,
@@ -230,11 +214,11 @@ class NotesListState extends State<NotesList> {
       controller: _scrollController,
       shrinkWrap: true,
       children: [
-        ..._notes!.items.map((note) => NoteCard(
+        ..._noteList!.items.map((note) => NoteCard(
               note: note,
               onOpenDetails: () => _onNoteSelected(note.id),
             )),
-        if (_notes!.hasNext)
+        if (_noteList!.hasNext)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
             child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
@@ -244,10 +228,10 @@ class NotesListState extends State<NotesList> {
   }
 
   Future<void> _onLoadMore() async {
-    if (_notes == null || !_notes!.hasNext) return;
+    if (_noteList == null || !_noteList!.hasNext) return;
 
     _saveScrollPosition();
-    await _getNotes(pageIndex: _notes!.pageIndex + 1);
+    await _getNotes(pageIndex: _noteList!.pageIndex + 1);
     _backLastScrollPosition();
   }
 

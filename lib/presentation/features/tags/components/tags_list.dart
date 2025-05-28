@@ -23,6 +23,7 @@ class TagsList extends StatefulWidget {
   final bool showArchived;
   final SortConfig<TagSortFields>? sortConfig;
   final String? search;
+  final int size;
 
   const TagsList({
     super.key,
@@ -33,6 +34,7 @@ class TagsList extends StatefulWidget {
     this.showArchived = false,
     this.sortConfig,
     this.search,
+    this.size = 20,
   });
 
   @override
@@ -135,10 +137,7 @@ class TagsListState extends State<TagsList> {
     _backLastScrollPosition();
   }
 
-  Future<void> _getTags({
-    int pageIndex = 0,
-    bool isRefresh = false,
-  }) async {
+  Future<void> _getTags({int pageIndex = 0, bool isRefresh = false}) async {
     if (isRefresh) {
       _tags = null;
     }
@@ -149,8 +148,7 @@ class TagsListState extends State<TagsList> {
       operation: () async {
         final query = GetListTagsQuery(
           pageIndex: pageIndex,
-          pageSize: 10,
-          filterByTags: widget.filterByTags,
+          pageSize: isRefresh ? _tags?.items.length ?? widget.size : widget.size,
           showArchived: widget.showArchived,
           search: widget.search,
           sortBy: widget.sortConfig?.orderOptions
