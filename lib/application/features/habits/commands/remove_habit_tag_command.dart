@@ -31,7 +31,7 @@ class RemoveHabitTagCommandHandler implements IRequestHandler<RemoveHabitTagComm
   Future<RemoveHabitTagCommandResponse> call(RemoveHabitTagCommand request) async {
     HabitTag? habitTag = await _habitTagRepository.getById(request.id);
     if (habitTag == null) {
-      throw BusinessException(HabitTranslationKeys.habitTagNotFoundError);
+      throw BusinessException('Habit tag not found', HabitTranslationKeys.habitTagNotFoundError);
     }
     await _habitTagRepository.delete(habitTag);
 

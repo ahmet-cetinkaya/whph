@@ -44,7 +44,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
     if (request.id != null) {
       tag = await _tagRepository.getById(request.id!);
       if (tag == null) {
-        throw BusinessException(TagTranslationKeys.tagNotFoundError);
+        throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
       }
 
       tag.name = request.name;

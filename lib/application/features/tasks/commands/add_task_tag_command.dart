@@ -32,7 +32,7 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
   @override
   Future<AddTaskTagCommandResponse> call(AddTaskTagCommand request) async {
     if (await _taskTagRepository.anyByTaskIdAndTagId(request.taskId, request.tagId)) {
-      throw BusinessException(TaskTranslationKeys.taskTagAlreadyExistsError);
+      throw BusinessException('Task tag already exists', TaskTranslationKeys.taskTagAlreadyExistsError);
     }
 
     final taskTag = TaskTag(

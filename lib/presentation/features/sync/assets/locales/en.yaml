@@ -51,6 +51,7 @@ sync:
     version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote
       version: {remoteVersion}. Please update both applications to the same
       version."
+    process_failed: Sync process failed.
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully

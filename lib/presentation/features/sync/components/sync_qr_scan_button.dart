@@ -44,7 +44,7 @@ class SyncQrScanButton extends StatelessWidget {
 
         final parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
         if (parsedMessage == null) {
-          throw BusinessException(_translationService.translate(SyncTranslationKeys.parseError));
+          throw BusinessException('Failed to parse QR code message', SyncTranslationKeys.parseError);
         }
 
         if (context.mounted) {
@@ -64,7 +64,7 @@ class SyncQrScanButton extends StatelessWidget {
         // Get local IP
         final localIp = await NetworkUtils.getLocalIpAddress();
         if (localIp == null) {
-          throw BusinessException(_translationService.translate(SyncTranslationKeys.ipAddressError));
+          throw BusinessException('Local IP address could not be determined', SyncTranslationKeys.ipAddressError);
         }
 
         // Show testing connection message
@@ -98,7 +98,7 @@ class SyncQrScanButton extends StatelessWidget {
         );
 
         if (!canConnect) {
-          throw BusinessException(_translationService.translate(SyncTranslationKeys.connectionFailedError));
+          throw BusinessException('Cannot connect to remote device', SyncTranslationKeys.connectionFailedError);
         }
 
         return localIp;
@@ -208,7 +208,7 @@ class SyncQrScanButton extends StatelessWidget {
           const Duration(seconds: 30),
           onTimeout: () {
             subscription.cancel();
-            throw BusinessException(_translationService.translate(SyncTranslationKeys.syncTimeoutError));
+            throw BusinessException('Sync operation timed out', SyncTranslationKeys.syncTimeoutError);
           },
         );
 

@@ -29,7 +29,7 @@ class RemoveTagTagCommandHandler implements IRequestHandler<RemoveTagTagCommand,
   Future<RemoveTagTagCommandResponse> call(RemoveTagTagCommand request) async {
     TagTag? tagTag = await _tagTagRepository.getById(request.id);
     if (tagTag == null) {
-      throw BusinessException(TagTranslationKeys.tagTagNotFoundError);
+      throw BusinessException('Tag tag not found', TagTranslationKeys.tagTagNotFoundError);
     }
     await _tagTagRepository.delete(tagTag);
 

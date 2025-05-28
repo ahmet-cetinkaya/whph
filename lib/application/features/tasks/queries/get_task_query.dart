@@ -58,7 +58,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
   Future<GetTaskQueryResponse> call(GetTaskQuery request) async {
     Task? task = await _taskRepository.getById(request.id);
     if (task == null) {
-      throw BusinessException(TaskTranslationKeys.taskNotFoundError);
+      throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
     }
 
     final totalDuration = await _taskTimeRecordRepository.getTotalDurationByTaskId(request.id);

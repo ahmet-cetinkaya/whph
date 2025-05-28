@@ -20,6 +20,16 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String loadingError = 'shared.errors.loading';
   static const String savingError = 'shared.errors.saving';
   static const String deletingError = 'shared.errors.deleting';
+  static const String reportError = 'shared.report_error';
+
+  // File operation errors
+  static const String filePickError = 'shared.errors.file_pick';
+  static const String fileSaveError = 'shared.errors.file_save';
+  static const String fileReadError = 'shared.errors.file_read';
+  static const String fileWriteError = 'shared.errors.file_write';
+  static const String fileNotFoundError = 'shared.errors.file_not_found';
+  static const String storagePermissionError = 'shared.errors.storage_permission';
+  static const String storagePermissionDeniedError = 'shared.errors.storage_permission_denied';
 
   // Units
   static const String minutes = 'shared.units.minutes';
@@ -160,6 +170,10 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String createdDateLabel = 'shared.data.created_date_label';
   static const String modifiedDateLabel = 'shared.data.modified_date_label';
   static const String nameLabel = 'shared.data.name_label';
+
+  // Error Report Translation Keys
+  static const String errorReportTemplate = 'shared.errors.report_template';
+  static const String errorReportSubject = 'shared.errors.report_subject';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

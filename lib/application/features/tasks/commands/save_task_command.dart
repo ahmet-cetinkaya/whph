@@ -86,7 +86,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.id != null) {
       task = await _taskRepository.getById(request.id!);
       if (task == null) {
-        throw BusinessException(TaskTranslationKeys.taskNotFoundError);
+        throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
       }
 
       task.title = request.title;

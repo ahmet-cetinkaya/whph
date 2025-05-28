@@ -58,7 +58,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
     if (request.id != null) {
       habit = await _habitRepository.getById(request.id!);
       if (habit == null) {
-        throw BusinessException(HabitTranslationKeys.habitNotFoundError);
+        throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
       }
 
       // Get the actual reminderDays from the database to ensure we have the latest value

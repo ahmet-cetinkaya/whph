@@ -1,4 +1,5 @@
 shared:
+  report_error: Report Error
   save_list_options: Save List Options
   buttons:
     save: Save
@@ -21,6 +22,34 @@ shared:
     loading: Error occurred while loading data
     saving: Error occurred while saving data
     deleting: Error occurred while deleting data
+    file_pick: Error while picking file
+    file_save: Error while saving file
+    file_read: Error while reading file
+    file_write: Error while writing file
+    file_not_found: File not found
+    storage_permission: Storage permission required
+    storage_permission_denied: Storage permission denied
+    report_subject: "WHPH App: Unexpected Error Report"
+    report_template: |
+      Hi, I encountered an unexpected error while using the WHPH app.
+
+      Here's information that might help you diagnose the issue:
+      App Version: {version}
+      Device Info: {device}
+      OS: {os}
+      OS Version: {osVersion}
+      Error Message:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Please help me resolve this issue.
+
+      Thanks!
+  ui:
+    report_error: Report
   units:
     minutes: min
     days: days

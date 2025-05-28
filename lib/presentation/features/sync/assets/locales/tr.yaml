@@ -50,6 +50,7 @@ sync:
     sync_timeout: Senkronizasyon zaman aşımına uğradı
     version_mismatch: "Sürüm uyumsuzluğu. Yerel sürüm: {currentVersion}, Uzak sürüm:
       {remoteVersion}. Lütfen iki uygulamayı da aynı sürüme güncelleyin."
+    process_failed: Senkronizasyon işlemi başarısız oldu.
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı

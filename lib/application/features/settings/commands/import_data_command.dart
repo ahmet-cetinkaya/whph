@@ -201,6 +201,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     final importedVersion = data['appInfo']?['version'];
     if (importedVersion != AppInfo.version) {
       throw BusinessException(
+        'Version mismatch in imported data',
         SettingTranslationKeys.versionMismatchError,
         args: {
           'importedVersion': importedVersion ?? 'unknown',
@@ -273,7 +274,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         await config.repository.add(entity);
       }
     } catch (e) {
-      throw BusinessException(SettingTranslationKeys.importFailedError);
+      throw BusinessException('Import failed', SettingTranslationKeys.importFailedError);
     }
   }
 }

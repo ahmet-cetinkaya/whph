@@ -23,7 +23,7 @@ class DeleteHabitRecordCommandHandler
   Future<DeleteHabitRecordCommandResponse> call(DeleteHabitRecordCommand request) async {
     HabitRecord? habitRecord = await _habitRecordRepository.getById(request.id);
     if (habitRecord == null) {
-      throw BusinessException(HabitTranslationKeys.habitRecordNotFoundError);
+      throw BusinessException('Habit record not found', HabitTranslationKeys.habitRecordNotFoundError);
     }
 
     await _habitRecordRepository.delete(habitRecord);

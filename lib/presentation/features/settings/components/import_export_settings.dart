@@ -7,6 +7,7 @@ import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/overlay_notification_helper.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -20,7 +21,7 @@ class ImportExportSettings extends StatelessWidget {
     final translationService = container.resolve<ITranslationService>();
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.small,
       title: translationService.translate(SettingsTranslationKeys.importExportTitle),
       child: const _ImportExportActionsDialog(),
     );
@@ -267,15 +268,20 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       },
       onSuccess: (_) {
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_translationService.translate(SettingsTranslationKeys.importSuccess)),
-            backgroundColor: Colors.green,
-          ),
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: _translationService.translate(SettingsTranslationKeys.importSuccess),
         );
 
         // Close dialog
         Navigator.of(context).pop();
+      },
+      onError: (_) {
+        // Navigate back to main page
+        setState(() {
+          _selectedFilePath = null;
+        });
+        _navigateToPage(0);
       },
     );
   }
@@ -317,14 +323,10 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
         // Show success message with the actual saved path
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$savePath',
-              ),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 5),
-            ),
+          OverlayNotificationHelper.showSuccess(
+            context: context,
+            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$savePath',
+            duration: const Duration(seconds: 5),
           );
         }
 

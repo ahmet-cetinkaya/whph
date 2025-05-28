@@ -31,7 +31,7 @@ class RemoveAppUsageTagCommandHandler
   Future<RemoveAppUsageTagCommandResponse> call(RemoveAppUsageTagCommand request) async {
     AppUsageTag? appUsageTag = await _appUsageTagRepository.getById(request.id);
     if (appUsageTag == null) {
-      throw BusinessException(AppUsageTranslationKeys.appUsageTagNotFoundError);
+      throw BusinessException('App usage tag not found', AppUsageTranslationKeys.appUsageTagNotFoundError);
     }
     await _appUsageTagRepository.delete(appUsageTag);
 

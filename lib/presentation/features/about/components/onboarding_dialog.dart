@@ -198,16 +198,16 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Back button
                 if (_currentPage > 0)
                   TextButton(
                     onPressed: _previousPage,
                     child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
                   )
                 else
-                  TextButton(
-                    onPressed: _completeOnboarding,
-                    child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonSkip)),
-                  ),
+                  const SizedBox.shrink(),
+
+                // Next/Start button
                 FilledButton(
                   onPressed: _nextPage,
                   child: Text(

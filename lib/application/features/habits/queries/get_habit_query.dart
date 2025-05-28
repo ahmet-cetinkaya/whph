@@ -88,7 +88,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   Future<GetHabitQueryResponse> call(GetHabitQuery request) async {
     Habit? habit = await _habitRepository.getById(request.id!);
     if (habit == null) {
-      throw BusinessException(HabitTranslationKeys.habitNotFoundError);
+      throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
     }
 
     // Get all records for statistics calculation using pagination

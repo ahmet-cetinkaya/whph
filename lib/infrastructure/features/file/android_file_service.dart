@@ -6,6 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 
 class AndroidFileService implements IFileService {
   @override
@@ -27,7 +28,7 @@ class AndroidFileService implements IFileService {
       return result?.files.firstOrNull?.path;
     } catch (e) {
       if (kDebugMode) debugPrint('File pick error: $e');
-      throw BusinessException('Failed to pick file: $e');
+      throw BusinessException('Failed to pick file: $e', SharedTranslationKeys.filePickError);
     }
   }
 
@@ -41,7 +42,8 @@ class AndroidFileService implements IFileService {
       // Check storage permissions first
       final storagePermission = await _checkStoragePermission();
       if (!storagePermission) {
-        throw BusinessException('Storage permission is required to save files');
+        throw BusinessException(
+            'Storage permission is required to save files', SharedTranslationKeys.storagePermissionError);
       }
 
       // On Android, FilePicker.saveFile() requires bytes, so we use getDirectoryPath instead
@@ -62,7 +64,7 @@ class AndroidFileService implements IFileService {
       return fullPath;
     } catch (e) {
       if (kDebugMode) debugPrint('Save path error: $e');
-      throw BusinessException('Failed to get save path: $e');
+      throw BusinessException('Failed to get save path: $e', SharedTranslationKeys.fileSaveError);
     }
   }
 
@@ -71,11 +73,11 @@ class AndroidFileService implements IFileService {
     try {
       final file = File(filePath);
       if (!await file.exists()) {
-        throw BusinessException('File does not exist: $filePath');
+        throw BusinessException('File does not exist: $filePath', SharedTranslationKeys.fileNotFoundError);
       }
       return await file.readAsString();
     } catch (e) {
-      throw BusinessException('Failed to read file: $e');
+      throw BusinessException('Failed to read file: $e', SharedTranslationKeys.fileReadError);
     }
   }
 
@@ -88,7 +90,8 @@ class AndroidFileService implements IFileService {
       // Check storage permissions first
       final storagePermission = await _checkStoragePermission();
       if (!storagePermission) {
-        throw BusinessException('Storage permission is required to save files');
+        throw BusinessException(
+            'Storage permission is required to save files', SharedTranslationKeys.storagePermissionError);
       }
 
       final file = File(filePath);
@@ -104,13 +107,15 @@ class AndroidFileService implements IFileService {
 
       // Verify the file was actually written
       if (!await file.exists()) {
-        throw BusinessException('Failed to save file: File does not exist after write operation');
+        throw BusinessException(
+            'Failed to save file: File does not exist after write operation', SharedTranslationKeys.fileSaveError);
       }
 
       // Verify the content was written correctly
       final writtenContent = await file.readAsString();
       if (writtenContent != content) {
-        throw BusinessException('Failed to save file: Content mismatch after write operation');
+        throw BusinessException(
+            'Failed to save file: Content mismatch after write operation', SharedTranslationKeys.fileSaveError);
       }
 
       // Update file timestamp
@@ -129,7 +134,7 @@ class AndroidFileService implements IFileService {
       if (kDebugMode) {
         debugPrint('[AndroidFileService]: Failed to write file: $e');
       }
-      throw BusinessException('Failed to write file: $e');
+      throw BusinessException('Failed to write file: $e', SharedTranslationKeys.fileWriteError);
     }
   }
 
@@ -165,7 +170,8 @@ class AndroidFileService implements IFileService {
         }
 
         if (status.isPermanentlyDenied) {
-          throw BusinessException('Storage permission is permanently denied. Please enable it in app settings.');
+          throw BusinessException('Storage permission is permanently denied. Please enable it in app settings.',
+              SharedTranslationKeys.storagePermissionDeniedError);
         }
 
         return false;

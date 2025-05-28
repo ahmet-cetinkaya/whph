@@ -21,7 +21,7 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
   Future<DeleteHabitCommandResponse> call(DeleteHabitCommand request) async {
     Habit? habit = await _habitRepository.getById(request.id);
     if (habit == null) {
-      throw BusinessException(HabitTranslationKeys.habitNotFoundError);
+      throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
     }
 
     await _habitRepository.delete(habit);
