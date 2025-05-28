@@ -1,55 +1,13 @@
+import 'package:whph/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/core/acore/time/week_days.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/acore/time/date_time_helper.dart';
 
 import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 
 class TaskRecurrenceService implements ITaskRecurrenceService {
-  @override
-  Task createNextRecurrenceInstance(Task task) {
-    if (!isRecurring(task)) {
-      throw Exception('Cannot create next instance: Task is not recurring');
-    }
-
-    DateTime? nextPlannedDate;
-    DateTime? nextDeadlineDate;
-
-    if (task.plannedDate != null) {
-      nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate!);
-    }
-
-    if (task.deadlineDate != null) {
-      nextDeadlineDate = calculateNextRecurrenceDate(task, task.deadlineDate!);
-    }
-
-    return Task(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
-      title: task.title,
-      description: task.description,
-      plannedDate: nextPlannedDate != null ? DateTimeHelper.toUtcDateTime(nextPlannedDate) : null,
-      deadlineDate: nextDeadlineDate != null ? DateTimeHelper.toUtcDateTime(nextDeadlineDate) : null,
-      priority: task.priority,
-      estimatedTime: task.estimatedTime,
-      isCompleted: false,
-      parentTaskId: task.parentTaskId,
-      order: task.order,
-      plannedDateReminderTime: task.plannedDateReminderTime,
-      deadlineDateReminderTime: task.deadlineDateReminderTime,
-      recurrenceType: task.recurrenceType,
-      recurrenceInterval: task.recurrenceInterval,
-      recurrenceDaysString: task.recurrenceDaysString,
-      recurrenceStartDate:
-          task.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(task.recurrenceStartDate!) : null,
-      recurrenceEndDate: task.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(task.recurrenceEndDate!) : null,
-      recurrenceCount: task.recurrenceCount != null ? task.recurrenceCount! - 1 : null,
-      recurrenceParentId: task.id,
-    );
-  }
-
   @override
   bool isRecurring(Task task) {
     return task.recurrenceType != RecurrenceType.none;
@@ -223,28 +181,32 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       return null;
     }
 
-    // Create the next instance
-    final nextTask = createNextRecurrenceInstance(task);
+    // Calculate the next recurrence date
+    final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
+    final nextDeadlineDate = calculateNextRecurrenceDate(task, task.deadlineDate ?? DateTime.now().toUtc());
+
+    final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+      GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: double.maxFinite.toInt()),
+    );
 
     // Create the new task via the mediator
     final saveCommand = SaveTaskCommand(
-      title: nextTask.title,
-      description: nextTask.description,
-      priority: nextTask.priority,
-      plannedDate: nextTask.plannedDate,
-      deadlineDate: nextTask.deadlineDate,
-      estimatedTime: nextTask.estimatedTime,
-      isCompleted: nextTask.isCompleted,
-      parentTaskId: nextTask.parentTaskId,
-      plannedDateReminderTime: nextTask.plannedDateReminderTime,
-      deadlineDateReminderTime: nextTask.deadlineDateReminderTime,
-      recurrenceType: nextTask.recurrenceType,
-      recurrenceInterval: nextTask.recurrenceInterval,
-      recurrenceDays: getRecurrenceDays(nextTask),
-      recurrenceStartDate: nextTask.recurrenceStartDate,
-      recurrenceEndDate: nextTask.recurrenceEndDate,
-      recurrenceCount: nextTask.recurrenceCount,
-      order: nextTask.order,
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      plannedDate: nextPlannedDate,
+      deadlineDate: nextDeadlineDate,
+      estimatedTime: task.estimatedTime,
+      parentTaskId: task.parentTaskId,
+      plannedDateReminderTime: task.plannedDateReminderTime,
+      deadlineDateReminderTime: task.deadlineDateReminderTime,
+      recurrenceType: task.recurrenceType,
+      recurrenceInterval: task.recurrenceInterval,
+      recurrenceDays: getRecurrenceDays(task),
+      recurrenceStartDate: task.recurrenceStartDate,
+      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceCount: task.recurrenceCount,
+      tagIdsToAdd: taskTags.items.map((tag) => tag.id).toList(),
     );
 
     final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
