@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:whph/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/main.dart';
@@ -13,7 +12,6 @@ import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
-import 'package:path/path.dart' as path;
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
@@ -22,8 +20,8 @@ class ImportExportSettings extends StatelessWidget {
     final translationService = container.resolve<ITranslationService>();
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.medium,
       title: translationService.translate(SettingsTranslationKeys.importExportTitle),
-      size: DialogSize.small,
       child: const _ImportExportActionsDialog(),
     );
   }
@@ -317,14 +315,12 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
         if (!mounted) return;
 
-        // Show success message
-        final displayPath = Platform.isAndroid ? '/storage/emulated/0/Download/${path.basename(savePath)}' : savePath;
-
+        // Show success message with the actual saved path
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$displayPath',
+                '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$savePath',
               ),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 5),
