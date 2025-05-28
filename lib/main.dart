@@ -23,6 +23,7 @@ import 'package:whph/presentation/shared/services/abstraction/i_system_tray_serv
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/error_helper.dart';
 import 'package:whph/infrastructure/features/window/abstractions/i_window_manager.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'main.mapper.g.dart' show initializeJsonMapper;
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
@@ -142,6 +143,7 @@ Future<void> runDesktopWorkers() async {
   final windowManager = container.resolve<IWindowManager>();
   await windowManager.initialize();
   await windowManager.setPreventClose(true);
+  await windowManager.setTitle(AppInfo.name);
   if (!kDebugMode) await windowManager.setSize(const Size(800, 600));
 
   // Set up system tray integration

@@ -34,7 +34,7 @@ class AppAbout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${AppInfo.shortName} (${AppInfo.name})",
+                      "${AppInfo.name} (${AppInfo.shortName})",
                       style: AppTheme.headlineMedium,
                     ),
                     Text(
@@ -103,7 +103,14 @@ class AppAbout extends StatelessWidget {
   Widget _buildExternalLink({required String title, required String url, required IconData icon}) {
     return TextButton.icon(
       onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-      label: Text(title, style: AppTheme.bodyLarge),
+      label: Flexible(
+        child: Text(
+          title,
+          style: AppTheme.bodyLarge,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+        ),
+      ),
       icon: Icon(icon),
     );
   }

@@ -34,7 +34,7 @@
         tools:ignore="ScopedStorage" />
 
     <application
-        android:label="whph"
+        android:label="Work Hard Play Hard"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
