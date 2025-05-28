@@ -48,7 +48,15 @@ class DateTimeHelper {
         localeName.startsWith('en_CA') ||
         localeName.startsWith('en_AU') ||
         localeName.startsWith('en_NZ') ||
-        localeName.startsWith('en_PH')) {
+        localeName.startsWith('en_PH') ||
+        localeName.startsWith('en_IN') ||
+        localeName.startsWith('en_MY') ||
+        localeName.startsWith('en_SG') ||
+        localeName.startsWith('ar_SA') ||
+        localeName.startsWith('ar_EG') ||
+        localeName.startsWith('hi') ||
+        localeName.startsWith('bn') ||
+        localeName.startsWith('ur')) {
       return false;
     }
 
@@ -108,8 +116,10 @@ class DateTimeHelper {
       return DateFormat(format, locale?.toString()).format(localDateTime);
     }
 
-    // Use locale-appropriate default format
-    return DateFormat.yMd(locale?.toString()).format(localDateTime);
+    // Use locale-appropriate default date format
+    final localeName = locale?.toString() ?? Intl.getCurrentLocale();
+    final defaultFormat = _getDefaultDateFormat(localeName);
+    return DateFormat(defaultFormat, locale?.toString()).format(localDateTime);
   }
 
   /// Formats only the time with locale-aware format
@@ -124,11 +134,9 @@ class DateTimeHelper {
     }
 
     // Use locale-appropriate time format (12/24 hour)
-    if (is24HourFormat(locale)) {
-      return DateFormat.Hm(locale?.toString()).format(localDateTime);
-    } else {
-      return DateFormat.jm(locale?.toString()).format(localDateTime);
-    }
+    final localeName = locale?.toString() ?? Intl.getCurrentLocale();
+    final defaultFormat = _getDefaultTimeFormat(localeName);
+    return DateFormat(defaultFormat, locale?.toString()).format(localDateTime);
   }
 
   /// Formats hour with locale-aware format (12/24 hour)
@@ -200,20 +208,154 @@ class DateTimeHelper {
     }
   }
 
+  /// Formats date/time with medium locale-aware format
+  static String formatDateTimeMedium(DateTime? dateTime, {Locale? locale}) {
+    if (dateTime == null) return '';
+
+    // First convert to local time zone
+    final localDateTime = toLocalDateTime(dateTime);
+
+    final localeName = locale?.toString() ?? Intl.getCurrentLocale();
+
+    // Use appropriate medium format based on locale
+    if (localeName.startsWith('en_US')) {
+      return DateFormat('MMM d, yyyy h:mm a', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('en_GB') || localeName.startsWith('en_AU')) {
+      return DateFormat('d MMM yyyy HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('tr')) {
+      return DateFormat('d MMM yyyy HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('de')) {
+      return DateFormat('d. MMM yyyy HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('fr')) {
+      return DateFormat('d MMM yyyy HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('ja')) {
+      return DateFormat('yyyy年M月d日 HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('ko')) {
+      return DateFormat('yyyy년 M월 d일 HH:mm', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('zh')) {
+      return DateFormat('yyyy年M月d日 HH:mm', locale?.toString()).format(localDateTime);
+    }
+
+    // Default medium format
+    return DateFormat.yMMMd(locale?.toString()).add_Hm().format(localDateTime);
+  }
+
+  /// Formats date with medium locale-aware format
+  static String formatDateMedium(DateTime? dateTime, {Locale? locale}) {
+    if (dateTime == null) return '';
+
+    // First convert to local time zone
+    final localDateTime = toLocalDateTime(dateTime);
+
+    final localeName = locale?.toString() ?? Intl.getCurrentLocale();
+
+    // Use appropriate medium format based on locale
+    if (localeName.startsWith('ja')) {
+      return DateFormat('yyyy年M月d日', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('ko')) {
+      return DateFormat('yyyy년 M월 d일', locale?.toString()).format(localDateTime);
+    } else if (localeName.startsWith('zh')) {
+      return DateFormat('yyyy年M月d日', locale?.toString()).format(localDateTime);
+    }
+
+    // Default medium date format
+    return DateFormat.yMMMd(locale?.toString()).format(localDateTime);
+  }
+
   /// Gets default datetime format for locale
   static String _getDefaultDateTimeFormat(String localeName) {
+    // Use 24-hour or 12-hour format based on locale
+    final timePattern = is24HourFormat(Locale(localeName.split('_')[0])) ? 'HH:mm' : 'h:mm a';
+
     if (localeName.startsWith('en_US')) {
-      return 'M/d/yyyy h:mm a';
-    } else if (localeName.startsWith('en_GB') || localeName.startsWith('en_AU')) {
-      return 'd/M/yyyy HH:mm';
+      return 'M/d/yyyy $timePattern';
+    } else if (localeName.startsWith('en_GB') || localeName.startsWith('en_AU') || localeName.startsWith('en_NZ')) {
+      return 'd/M/yyyy $timePattern';
+    } else if (localeName.startsWith('en_CA')) {
+      return 'yyyy-MM-dd $timePattern';
     } else if (localeName.startsWith('de')) {
       return 'd.M.yyyy HH:mm';
     } else if (localeName.startsWith('fr')) {
       return 'd/M/yyyy HH:mm';
     } else if (localeName.startsWith('tr')) {
+      return 'd.MM.yyyy HH:mm';
+    } else if (localeName.startsWith('ja')) {
+      return 'yyyy/M/d $timePattern';
+    } else if (localeName.startsWith('ko')) {
+      return 'yyyy. M. d. $timePattern';
+    } else if (localeName.startsWith('zh')) {
+      return 'yyyy/M/d $timePattern';
+    } else if (localeName.startsWith('ar')) {
+      return 'd/M/yyyy $timePattern';
+    } else if (localeName.startsWith('ru')) {
       return 'd.M.yyyy HH:mm';
+    } else if (localeName.startsWith('es')) {
+      return 'd/M/yyyy HH:mm';
+    } else if (localeName.startsWith('it')) {
+      return 'd/M/yyyy HH:mm';
+    } else if (localeName.startsWith('pt')) {
+      return 'd/M/yyyy HH:mm';
+    } else if (localeName.startsWith('nl')) {
+      return 'd-M-yyyy HH:mm';
+    } else if (localeName.startsWith('sv') || localeName.startsWith('no') || localeName.startsWith('da')) {
+      return 'yyyy-MM-dd HH:mm';
     }
 
     return 'yyyy-MM-dd HH:mm'; // ISO format as fallback
+  }
+
+  /// Gets default date format for locale
+  static String _getDefaultDateFormat(String localeName) {
+    if (localeName.startsWith('en_US')) {
+      return 'M/d/yyyy';
+    } else if (localeName.startsWith('en_GB') || localeName.startsWith('en_AU') || localeName.startsWith('en_NZ')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('en_CA')) {
+      return 'yyyy-MM-dd';
+    } else if (localeName.startsWith('de')) {
+      return 'd.M.yyyy';
+    } else if (localeName.startsWith('fr')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('tr')) {
+      return 'd.MM.yyyy';
+    } else if (localeName.startsWith('ja')) {
+      return 'yyyy/M/d';
+    } else if (localeName.startsWith('ko')) {
+      return 'yyyy. M. d.';
+    } else if (localeName.startsWith('zh')) {
+      return 'yyyy/M/d';
+    } else if (localeName.startsWith('ar')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('ru')) {
+      return 'd.M.yyyy';
+    } else if (localeName.startsWith('es')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('it')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('pt')) {
+      return 'd/M/yyyy';
+    } else if (localeName.startsWith('nl')) {
+      return 'd-M-yyyy';
+    } else if (localeName.startsWith('sv') || localeName.startsWith('no') || localeName.startsWith('da')) {
+      return 'yyyy-MM-dd';
+    }
+
+    return 'yyyy-MM-dd'; // ISO format as fallback
+  }
+
+  /// Gets default time format for locale
+  static String _getDefaultTimeFormat(String localeName) {
+    final use24Hour = is24HourFormat(Locale(localeName.split('_')[0]));
+
+    if (use24Hour) {
+      return 'HH:mm';
+    } else {
+      // For 12-hour format locales
+      if (localeName.startsWith('en_US')) {
+        return 'h:mm a';
+      } else {
+        return 'h:mm a'; // Standard 12-hour format
+      }
+    }
   }
 }
