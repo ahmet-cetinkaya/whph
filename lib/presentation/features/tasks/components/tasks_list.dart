@@ -447,8 +447,6 @@ class TaskListState extends State<TaskList> {
 
     if (!shouldNormalize) return;
 
-    debugPrint('Normalizing task orders due to precision issues');
-
     // Sort items by current order to maintain relative positioning
     final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
 
@@ -458,20 +456,14 @@ class TaskListState extends State<TaskList> {
       final item = sortedItems[i];
 
       if ((item.order - newOrder).abs() > 1e-10) {
-        debugPrint('Normalizing task ${item.id} from ${item.order} to $newOrder');
-
-        try {
-          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-            UpdateTaskOrderCommand(
-              taskId: item.id,
-              parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: item.order,
-              afterTaskOrder: newOrder,
-            ),
-          );
-        } catch (e) {
-          debugPrint('Failed to normalize task ${item.id}: $e');
-        }
+        await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+          UpdateTaskOrderCommand(
+            taskId: item.id,
+            parentTaskId: widget.parentTaskId,
+            beforeTaskOrder: item.order,
+            afterTaskOrder: newOrder,
+          ),
+        );
       }
     }
 

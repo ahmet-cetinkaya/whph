@@ -786,10 +786,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       setState(() {
         // Update recurrence type first since it affects other fields
         final recurrenceType = result['recurrenceType'] as RecurrenceType;
-        debugPrint('Recurrence type from dialog: $recurrenceType');
-
         _task!.recurrenceType = recurrenceType;
-        debugPrint('Set task recurrence type to: ${_task!.recurrenceType}');
 
         if (_task!.recurrenceType == RecurrenceType.none) {
           // Clear all recurrence settings if type is none

@@ -63,7 +63,6 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
           recurrenceEndDate: _recurrenceEndDate,
           recurrenceCount: _recurrenceCount,
           onRecurrenceTypeChanged: (type) {
-            debugPrint('RecurrenceSettingsDialog - Recurrence type changing from $_recurrenceType to $type');
             setState(() {
               _recurrenceType = type;
               if (type == RecurrenceType.none) {
@@ -125,7 +124,6 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
         TextButton(
           child: Text(_translationService.translate(SharedTranslationKeys.saveButton)),
           onPressed: () {
-            debugPrint('RecurrenceSettingsDialog - Saving with type: $_recurrenceType');
             // Return the selected settings
             Navigator.of(context).pop({
               'recurrenceType': _recurrenceType,
