@@ -21,7 +21,7 @@ class ImportExportSettings extends StatelessWidget {
     final translationService = container.resolve<ITranslationService>();
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
+      size: DialogSize.medium,
       title: translationService.translate(SettingsTranslationKeys.importExportTitle),
       child: const _ImportExportActionsDialog(),
     );
