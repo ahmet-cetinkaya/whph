@@ -232,7 +232,10 @@ tasks:
       urgent_important: Urgent & Important
       urgent_not_important: Urgent but Not Important
   quick_task:
+    clear_all: Clear all fields
     create_error: Error creating task
+    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
+    lock_settings: Lock Settings
     title: Quick Task
     title_hint: Task title
     tooltips:

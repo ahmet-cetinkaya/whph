@@ -11,10 +11,13 @@ import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tasks/models/task_data.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
+import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 
 class QuickTaskBottomSheet extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -63,6 +66,13 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
   DateTime? _deadlineDate;
   List<DropdownOption<String>> _selectedTags = [];
 
+  // Lock state variables
+  bool _lockTags = false;
+  bool _lockPriority = false;
+  bool _lockEstimatedTime = false;
+  bool _lockPlannedDate = false;
+  bool _lockDeadlineDate = false;
+
   @override
   void initState() {
     super.initState();
@@ -91,11 +101,22 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
         _titleController.clear();
       }
 
-      _selectedPriority = widget.initialPriority;
-      _estimatedTime = widget.initialEstimatedTime;
-      _plannedDate = widget.initialPlannedDate;
-      _deadlineDate = widget.initialDeadlineDate;
-      _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
+      // Only reset values that are not locked
+      if (!_lockPriority) {
+        _selectedPriority = widget.initialPriority;
+      }
+      if (!_lockEstimatedTime) {
+        _estimatedTime = widget.initialEstimatedTime;
+      }
+      if (!_lockPlannedDate) {
+        _plannedDate = widget.initialPlannedDate;
+      }
+      if (!_lockDeadlineDate) {
+        _deadlineDate = widget.initialDeadlineDate;
+      }
+      if (!_lockTags) {
+        _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
+      }
     });
   }
 
@@ -117,7 +138,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
           isCompleted: widget.initialCompleted ?? false,
-          parentTaskId: widget.initialParentTaskId, // Use initialParentTaskId
+          parentTaskId: widget.initialParentTaskId,
         );
         return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },
@@ -218,6 +239,108 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     });
   }
 
+  Future<void> _showLockSettingsDialog() async {
+    await ResponsiveDialogHelper.showResponsiveDialog<void>(
+      context: context,
+      size: DialogSize.small,
+      child: StatefulBuilder(
+        builder: (context, setDialogState) {
+          return Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_translationService.translate(TaskTranslationKeys.quickTaskLockSettings)),
+
+                // Description
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    _translationService.translate(TaskTranslationKeys.quickTaskLockDescription),
+                    style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                  ),
+                ),
+
+                // Lock options
+                CheckboxListTile(
+                  title: Text(_translationService.translate(TaskTranslationKeys.tagsLabel)),
+                  value: _lockTags,
+                  onChanged: (bool? value) {
+                    setDialogState(() {
+                      _lockTags = value ?? false;
+                    });
+                    setState(() {
+                      _lockTags = value ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: Text(_translationService.translate(TaskTranslationKeys.priorityLabel)),
+                  value: _lockPriority,
+                  onChanged: (bool? value) {
+                    setDialogState(() {
+                      _lockPriority = value ?? false;
+                    });
+                    setState(() {
+                      _lockPriority = value ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: Text(_translationService.translate(TaskTranslationKeys.estimatedTimeLabel)),
+                  value: _lockEstimatedTime,
+                  onChanged: (bool? value) {
+                    setDialogState(() {
+                      _lockEstimatedTime = value ?? false;
+                    });
+                    setState(() {
+                      _lockEstimatedTime = value ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: Text(_translationService.translate(TaskTranslationKeys.plannedDateLabel)),
+                  value: _lockPlannedDate,
+                  onChanged: (bool? value) {
+                    setDialogState(() {
+                      _lockPlannedDate = value ?? false;
+                    });
+                    setState(() {
+                      _lockPlannedDate = value ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: Text(_translationService.translate(TaskTranslationKeys.deadlineDateLabel)),
+                  value: _lockDeadlineDate,
+                  onChanged: (bool? value) {
+                    setDialogState(() {
+                      _lockDeadlineDate = value ?? false;
+                    });
+                    setState(() {
+                      _lockDeadlineDate = value ?? false;
+                    });
+                  },
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   String _getEstimatedTimeTooltip() {
     if (_estimatedTime == null) {
       return _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet);
@@ -244,76 +367,137 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
     );
   }
 
-  List<Widget> _buildQuickActionButtons() {
+  Widget _buildQuickActionButtons() {
     final iconSize = AppTheme.iconSizeMedium;
 
-    return [
-      // Clear all button
-      IconButton(
-        icon: const Icon(Icons.close, color: AppTheme.secondaryTextColor),
-        onPressed: _clearAll,
-        tooltip: 'Clear all fields',
-        iconSize: iconSize,
-      ),
-
-      // Tag select dropdown
-      TagSelectDropdown(
-        initialSelectedTags: _selectedTags,
-        isMultiSelect: true,
-        onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
-        iconSize: iconSize,
-        color: _selectedTags.isEmpty ? Colors.white : TaskUiConstants.tagColor,
-      ),
-
-      // Priority button
-      IconButton(
-        icon: Icon(
-          _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
-          color: TaskUiConstants.getPriorityColor(_selectedPriority),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Clear all button
+        IconButton(
+          icon: const Icon(Icons.close, color: AppTheme.secondaryTextColor),
+          onPressed: _clearAll,
+          tooltip: _translationService.translate(TaskTranslationKeys.quickTaskClearAll),
+          iconSize: iconSize,
         ),
-        onPressed: _togglePriority,
-        tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
-        iconSize: iconSize,
-      ),
 
-      // Estimated time button
-      IconButton(
-        icon: _estimatedTime == null
-            ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
-            : Text(
-                SharedUiConstants.formatMinutes(_estimatedTime!),
-                style: AppTheme.bodyMedium.copyWith(
-                  color: TaskUiConstants.estimatedTimeColor,
-                  fontWeight: FontWeight.bold,
-                ),
+        // Lock settings button
+        IconButton(
+          icon: const Icon(Icons.lock_outline, color: AppTheme.secondaryTextColor),
+          onPressed: _showLockSettingsDialog,
+          tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
+          iconSize: iconSize,
+        ),
+
+        // Tag select dropdown with lock indicator
+        _buildActionButtonWithLock(
+          child: TagSelectDropdown(
+            initialSelectedTags: _selectedTags,
+            isMultiSelect: true,
+            onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
+            iconSize: iconSize,
+            color: _selectedTags.isEmpty ? Colors.white : TaskUiConstants.tagColor,
+          ),
+          isLocked: _lockTags,
+        ),
+
+        // Priority button with lock indicator
+        _buildActionButtonWithLock(
+          child: IconButton(
+            icon: Icon(
+              _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
+              color: TaskUiConstants.getPriorityColor(_selectedPriority),
+            ),
+            onPressed: _togglePriority,
+            tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
+            iconSize: iconSize,
+          ),
+          isLocked: _lockPriority,
+        ),
+
+        // Estimated time button with lock indicator
+        _buildActionButtonWithLock(
+          child: IconButton(
+            icon: _estimatedTime == null
+                ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
+                : Text(
+                    SharedUiConstants.formatMinutes(_estimatedTime!),
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: TaskUiConstants.estimatedTimeColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+            onPressed: _toggleEstimatedTime,
+            tooltip: _getEstimatedTimeTooltip(),
+            iconSize: iconSize,
+          ),
+          isLocked: _lockEstimatedTime,
+        ),
+
+        // Planned date button with lock indicator
+        _buildActionButtonWithLock(
+          child: IconButton(
+            icon: Icon(
+              _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
+              color: _plannedDate == null ? null : TaskUiConstants.plannedDateColor,
+            ),
+            onPressed: () => _selectDate(false),
+            tooltip: _getDateTooltip(false),
+            iconSize: iconSize,
+          ),
+          isLocked: _lockPlannedDate,
+        ),
+
+        // Deadline date button with lock indicator
+        _buildActionButtonWithLock(
+          child: IconButton(
+            icon: Icon(
+              _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
+              color: _deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
+            ),
+            onPressed: () => _selectDate(true),
+            tooltip: _getDateTooltip(true),
+            iconSize: iconSize,
+          ),
+          isLocked: _lockDeadlineDate,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtonWithLock({
+    required Widget child,
+    required bool isLocked,
+  }) {
+    return Stack(
+      children: [
+        child,
+        if (isLocked)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
-        onPressed: _toggleEstimatedTime,
-        tooltip: _getEstimatedTimeTooltip(),
-        iconSize: iconSize,
-      ),
-
-      // Planned date button
-      IconButton(
-        icon: Icon(
-          _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
-          color: _plannedDate == null ? null : TaskUiConstants.plannedDateColor,
-        ),
-        onPressed: () => _selectDate(false),
-        tooltip: _getDateTooltip(false),
-        iconSize: iconSize,
-      ),
-
-      // Deadline date button
-      IconButton(
-        icon: Icon(
-          _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
-          color: _deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
-        ),
-        onPressed: () => _selectDate(true),
-        tooltip: _getDateTooltip(true),
-        iconSize: iconSize,
-      ),
-    ];
+              child: Icon(
+                Icons.lock,
+                size: 12,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+          ),
+      ],
+    );
   }
 
   @override
@@ -396,10 +580,7 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
                 children: [
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _buildQuickActionButtons(),
-                    ),
+                    child: _buildQuickActionButtons(),
                   ),
                 ],
               ),

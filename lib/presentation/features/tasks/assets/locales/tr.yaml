@@ -245,7 +245,10 @@ tasks:
       urgent_important: Acil ve Önemli
       urgent_not_important: Acil ama Önemli Değil
   quick_task:
-    create_error: Görev oluşturulurken hata oluştu
+    clear_all: Tüm alanları temizle
+    create_error: Görev oluşturulürken hata oluştu
+    lock_description: Benzer görevler oluştururken değerlerini korumak için özellikleri kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
+    lock_settings: Kilit Ayarları
     title: Hızlı Görev
     title_hint: Görev başlığı
     tooltips:
