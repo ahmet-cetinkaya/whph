@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/components/app_logo.dart';
@@ -66,6 +68,9 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
   /// Controls whether to respect bottom system insets for proper padding
   final bool respectBottomInset;
 
+  /// Floating action button widget (only visible on mobile devices)
+  final Widget? floatingActionButton;
+
   const ResponsiveScaffoldLayout({
     super.key,
     this.title,
@@ -78,6 +83,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
     this.hideSidebar = false,
     this.showBackButton = false,
     this.respectBottomInset = true,
+    this.floatingActionButton,
   });
 
   @override
@@ -206,6 +212,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       ),
       // Add bottom navigation bar for mobile devices
       bottomNavigationBar: _shouldShowBottomNavBar() ? _buildBottomNavigationBar() : null,
+      // Add floating action button only on mobile devices
+      floatingActionButton: _shouldShowFloatingActionButton() ? widget.floatingActionButton : null,
       body: Row(
         children: [
           if (AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium) &&
@@ -332,6 +340,11 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     return AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) &&
         !widget.showBackButton &&
         !widget.hideSidebar;
+  }
+
+  /// Determines whether to show the floating action button based on screen size and widget availability
+  bool _shouldShowFloatingActionButton() {
+    return widget.floatingActionButton != null && (Platform.isAndroid || Platform.isIOS);
   }
 
   /// Builds the bottom navigation bar for smaller screens
