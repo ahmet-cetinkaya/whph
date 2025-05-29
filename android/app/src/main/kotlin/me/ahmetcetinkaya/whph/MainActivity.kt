@@ -309,7 +309,14 @@ class MainActivity : FlutterActivity() {
                             // Also check using the AlarmManager API
                             val canScheduleExactAlarms = alarmManager.canScheduleExactAlarms()
 
-                            // Try to create a test alarm to verify permission
+                            // If we already know we don't have permission, don't try to set test alarm
+                            if (!hasDirectPermission && !canScheduleExactAlarms) {
+                                Log.d("ExactAlarm", "No exact alarm permission detected, skipping test alarm")
+                                result.success(false)
+                                return@setMethodCallHandler
+                            }
+
+                            // Try to create a test alarm to verify permission only if we think we have permission
                             if (Build.VERSION.SDK_INT >= 31) {
                                 // Create a test PendingIntent
                                 val intent = Intent(context, MainActivity::class.java)
@@ -334,15 +341,15 @@ class MainActivity : FlutterActivity() {
 
                                     // Immediately cancel the alarm
                                     alarmManager.cancel(pendingIntent)
+                                    Log.d("ExactAlarm", "Test alarm successfully created and canceled")
                                     result.success(true)
+                                } catch (e: SecurityException) {
+                                    // Handle security exception specifically to avoid scary logs
+                                    Log.d("ExactAlarm", "Test alarm failed due to security restriction (expected if permission not granted)")
+                                    result.success(false)
                                 } catch (e: Exception) {
-                                    Log.e("ExactAlarm", "Error setting test alarm: ${e.message}", e)
-
-                                    if (hasDirectPermission || canScheduleExactAlarms) {
-                                        result.success(true)
-                                    } else {
-                                        result.error("ALARM_SET_ERROR", e.message, null)
-                                    }
+                                    Log.e("ExactAlarm", "Unexpected error setting test alarm: ${e.message}", e)
+                                    result.success(hasDirectPermission || canScheduleExactAlarms)
                                 }
                             } else {
                                 val canSchedule = alarmManager.canScheduleExactAlarms()

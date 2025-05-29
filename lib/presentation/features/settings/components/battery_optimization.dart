@@ -107,8 +107,10 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
     }
 
     if (!_isIgnoringBatteryOptimizations) {
-      Future.delayed(const Duration(seconds: 2), () {
-        _checkPermission();
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && !_isIgnoringBatteryOptimizations) {
+          _checkPermission();
+        }
       });
     }
   }

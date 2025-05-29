@@ -135,15 +135,20 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
           final permissionStatus = await platform.invokeMethod<int>('checkExactAlarmPermission');
           final hasDirectPermission = permissionStatus == 0; // PERMISSION_GRANTED = 0
 
-          // Try to create a test notification to verify permission
-          try {
-            await platform.invokeMethod('testExactAlarmPermission');
-          } catch (e) {
-            // Ignore errors
+          // Try to create a test notification to verify permission only if other checks suggest we might have it
+          bool testResult = false;
+          if (canSchedule || hasDirectPermission) {
+            try {
+              testResult = await platform.invokeMethod('testExactAlarmPermission') ?? false;
+            } catch (e) {
+              // If test fails, rely on other permission checks
+              testResult = false;
+            }
           }
 
           // Consider permission granted if at least the API check or direct permission check passes
-          actualPermissionStatus = canSchedule || hasDirectPermission;
+          // The test result is used as additional confirmation when other checks are positive
+          actualPermissionStatus = canSchedule || hasDirectPermission || testResult;
 
           // Update UI based on the actual permission status
           if (mounted) {
@@ -186,10 +191,12 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       }
     }
 
-    if (_hasExactAlarmPermission) {
-      // Check permission status again
-      Future.delayed(const Duration(seconds: 2), () {
-        _checkPermission();
+    if (!_hasExactAlarmPermission) {
+      // Check permission status again after a delay only if permission is not granted
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && !_hasExactAlarmPermission) {
+          _checkPermission();
+        }
       });
     }
   }
