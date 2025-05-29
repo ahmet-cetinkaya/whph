@@ -58,43 +58,6 @@ enum DialogSize {
     }
   }
 
-  /// Returns the initial child size for mobile bottom sheets
-  double get mobileInitialSize {
-    switch (this) {
-      case DialogSize.min:
-        return 0; // No initial size for min size
-      case DialogSize.small:
-        return 0.6;
-      case DialogSize.medium:
-        return 0.8;
-      case DialogSize.large:
-        return 0.9;
-      case DialogSize.max:
-        return 0.95;
-    }
-  }
-
-  /// Returns the minimum child size for mobile bottom sheets
-  double get mobileMinSize {
-    switch (this) {
-      case DialogSize.min:
-        return 0; // No minimum size for min size
-      case DialogSize.small:
-        return 0.35;
-      case DialogSize.medium:
-        return 0.4;
-      case DialogSize.large:
-        return 0.5;
-      case DialogSize.max:
-        return 0.6;
-    }
-  }
-
-  /// Returns the maximum child size for mobile bottom sheets
-  double get mobileMaxSize {
-    return 0.95; // Maximum size for all mobile dialogs
-  }
-
   /// Returns the maximum width constraint for desktop dialogs
   double get maxDesktopWidth {
     switch (this) {
@@ -109,5 +72,31 @@ enum DialogSize {
       case DialogSize.max:
         return double.infinity;
     }
+  }
+
+  /// Returns the initial child size for mobile bottom sheets
+  double get mobileInitialSize {
+    switch (this) {
+      case DialogSize.min:
+        return 0; // No initial size for min size
+      case DialogSize.small:
+        return 0.35;
+      case DialogSize.medium:
+        return 0.8;
+      case DialogSize.large:
+        return 0.8;
+      case DialogSize.max:
+        return 0.95;
+    }
+  }
+
+  /// Returns the minimum child size for mobile bottom sheets
+  double get mobileMinSize {
+    return 0; // Minimum size for all mobile dialogs
+  }
+
+  /// Returns the maximum child size for mobile bottom sheets
+  double get mobileMaxSize {
+    return 0.95; // Maximum size for all mobile dialogs
   }
 }
