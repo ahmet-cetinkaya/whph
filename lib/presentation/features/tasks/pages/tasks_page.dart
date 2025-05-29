@@ -5,6 +5,7 @@ import 'package:whph/presentation/features/tasks/components/task_list_options.da
 import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
@@ -171,6 +172,14 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           ],
         ),
       ],
+      // Add floating action button for mobile devices
+      floatingActionButton: TaskAddFloatingButton(
+        initialTagIds: _showNoTagsFilter ? [] : _selectedTagIds,
+        initialTitle: _searchQuery,
+        initialPlannedDate: _filterStartDate,
+        initialDeadlineDate: _filterEndDate,
+        initialCompleted: _showCompletedTasks,
+      ),
       builder: (context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

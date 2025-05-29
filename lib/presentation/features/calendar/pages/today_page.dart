@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
@@ -160,6 +161,13 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         ),
         const SizedBox(width: 8),
       ],
+      // Add floating action button for mobile devices
+      floatingActionButton: TaskAddFloatingButton(
+        initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
+        initialPlannedDate: DateTime.now(),
+        initialTitle: _taskSearchQuery,
+        initialCompleted: _showCompletedTasks,
+      ),
       builder: (context) => ListView(
         children: [
           // Page list options
