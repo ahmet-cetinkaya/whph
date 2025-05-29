@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/application/features/app_usages/models/app_usage_time_record_with_details.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/domain/features/app_usages/app_usage_time_record.dart';
@@ -158,27 +159,32 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         ad.display_name,
         ad.color,
         ad.device_name,
-        ad.total_duration as duration
+        ad.total_duration as duration,
+        aut.id as tag_app_usage_tag_id,
+        aut.tag_id,
+        t.name as tag_name,
+        t.color as tag_color
       FROM app_usages_data ad
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      WHERE EXISTS (
-        SELECT 1 
-        FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = ad.id
-          AND aut.tag_id IN (${filterByTags.map((_) => '?').join(', ')})
-          AND aut.deleted_date IS NULL
-        GROUP BY aut.app_usage_id
-        HAVING COUNT(DISTINCT aut.tag_id) = ?
-      )
+      INNER JOIN (
+        SELECT DISTINCT app_usage_id 
+        FROM app_usage_tag_table 
+        WHERE tag_id IN (${filterByTags.map((_) => '?').join(', ')})
+          AND deleted_date IS NULL
+        GROUP BY app_usage_id
+        HAVING COUNT(DISTINCT tag_id) = ?
+      ) filter_aut ON ad.id = filter_aut.app_usage_id
       ''' : showNoTagsFilter ? '''
       WHERE NOT EXISTS (
         SELECT 1 
-        FROM app_usage_tag_table aut 
-        WHERE aut.app_usage_id = ad.id
-          AND aut.deleted_date IS NULL
+        FROM app_usage_tag_table aut_filter 
+        WHERE aut_filter.app_usage_id = ad.id
+          AND aut_filter.deleted_date IS NULL
       )
       ''' : ''}
-      ORDER BY ad.total_duration DESC
+      LEFT JOIN app_usage_tag_table aut ON ad.id = aut.app_usage_id AND aut.deleted_date IS NULL
+      LEFT JOIN tag_table t ON aut.tag_id = t.id AND t.deleted_date IS NULL
+      ORDER BY ad.total_duration DESC, ad.id, aut.id
       LIMIT ? OFFSET ?
       ''',
       variables: [
@@ -189,26 +195,54 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
         ],
-        Variable<int>(pageSize),
+        Variable<int>(pageSize * 100), // Get more rows to handle tag denormalization
         Variable<int>(pageIndex * pageSize),
       ],
       readsFrom: {table},
     );
 
-    final results = await dataQuery
-        .map((row) => AppUsageTimeRecordWithDetails(
-              id: row.read<String>('id'),
-              name: row.read<String>('name'),
-              displayName: row.read<String?>('display_name'),
-              color: row.read<String?>('color'),
-              deviceName: row.read<String?>('device_name'),
-              duration: row.read<int>('duration'),
-            ))
-        .get();
+    final rows = await dataQuery.get();
+
+    // Group rows by app usage and collect tags
+    final Map<String, AppUsageTimeRecordWithDetails> appUsageMap = {};
+
+    for (final row in rows) {
+      final id = row.read<String>('id');
+
+      if (!appUsageMap.containsKey(id)) {
+        appUsageMap[id] = AppUsageTimeRecordWithDetails(
+          id: id,
+          name: row.read<String>('name'),
+          displayName: row.read<String?>('display_name'),
+          color: row.read<String?>('color'),
+          deviceName: row.read<String?>('device_name'),
+          duration: row.read<int>('duration'),
+          tags: [],
+        );
+      }
+
+      // Add tag if it exists
+      final tagAppUsageTagId = row.read<String?>('tag_app_usage_tag_id');
+      if (tagAppUsageTagId != null) {
+        appUsageMap[id]!.tags.add(AppUsageTagListItem(
+              id: tagAppUsageTagId,
+              appUsageId: id,
+              tagId: row.read<String>('tag_id'),
+              tagName: row.read<String>('tag_name'),
+              tagColor: row.read<String?>('tag_color'),
+            ));
+      }
+    }
+
+    // Convert to list and apply pagination
+    final allResults = appUsageMap.values.toList();
+    final startIndex = pageIndex * pageSize;
+    final endIndex = (startIndex + pageSize).clamp(0, allResults.length);
+    final pagedResults = allResults.sublist(startIndex, endIndex);
 
     int totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
     return PaginatedList<AppUsageTimeRecordWithDetails>(
-      items: results,
+      items: pagedResults,
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,

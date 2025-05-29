@@ -1,3 +1,5 @@
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
+
 class AppUsageTimeRecordWithDetails {
   final String id;
   final String name;
@@ -5,6 +7,7 @@ class AppUsageTimeRecordWithDetails {
   final String? color;
   final String? deviceName;
   final int duration;
+  final List<AppUsageTagListItem> tags;
 
   AppUsageTimeRecordWithDetails({
     required this.id,
@@ -13,5 +16,6 @@ class AppUsageTimeRecordWithDetails {
     this.color,
     this.deviceName,
     required this.duration,
+    this.tags = const [],
   });
 }
