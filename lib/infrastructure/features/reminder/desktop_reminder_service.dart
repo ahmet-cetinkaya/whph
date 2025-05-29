@@ -6,6 +6,25 @@ import 'package:whph/infrastructure/features/window/abstractions/i_window_manage
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_reminder_service.dart';
 
+/// Configuration for a recurring reminder
+class _RecurringReminderConfig {
+  final String id;
+  final String title;
+  final String body;
+  final TimeOfDay time;
+  final List<int> days;
+  final String? payload;
+
+  _RecurringReminderConfig({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.time,
+    required this.days,
+    this.payload,
+  });
+}
+
 /// Implementation of the reminder service for desktop platforms
 class DesktopReminderService implements IReminderService {
   final IWindowManager _windowManager;
@@ -17,12 +36,21 @@ class DesktopReminderService implements IReminderService {
   // Store active notification IDs
   final Map<String, int> _activeNotificationIds = {};
 
+  // Store recurring reminder configurations for weekly refresh
+  final Map<String, _RecurringReminderConfig> _recurringReminders = {};
+
+  // Weekly refresh timer
+  Timer? _weeklyRefreshTimer;
+
   DesktopReminderService(IWindowManager windowManager, INotificationService notificationService)
       : _windowManager = windowManager,
         _notificationService = notificationService;
 
   @override
-  Future<void> init() async {}
+  Future<void> init() async {
+    // Start the weekly refresh mechanism
+    _startWeeklyRefresh();
+  }
 
   @override
   Future<void> scheduleReminder({
@@ -75,7 +103,30 @@ class DesktopReminderService implements IReminderService {
       days = List.generate(7, (index) => index + 1); // 1-7 (Monday-Sunday)
     }
 
-    // For each day, schedule the next occurrence
+    // Store the recurring reminder configuration for future refreshes
+    _recurringReminders[id] = _RecurringReminderConfig(
+      id: id,
+      title: title,
+      body: body,
+      time: time,
+      days: days,
+      payload: payload,
+    );
+
+    // Schedule the reminders for this week period
+    await _scheduleReminderForCurrentWeek(id, title, body, time, days, payload);
+  }
+
+  /// Schedule reminders for the current week period only
+  Future<void> _scheduleReminderForCurrentWeek(
+    String id,
+    String title,
+    String body,
+    TimeOfDay time,
+    List<int> days,
+    String? payload,
+  ) async {
+    // For each day, schedule only the next occurrence within the current week period
     for (final day in days) {
       final reminderKey = '${id}_day_$day';
 
@@ -83,35 +134,30 @@ class DesktopReminderService implements IReminderService {
       _cancelTimer(reminderKey);
 
       try {
-        // Calculate the next occurrence
-        final nextOccurrence = _getNextOccurrence(day, time);
+        // Calculate the next occurrence within the current week period
+        final nextOccurrence = _getNextOccurrenceInCurrentWeek(day, time);
 
-        // Calculate delay until the next occurrence
-        final now = DateTime.now();
-        final delay = nextOccurrence.difference(now);
+        // Only schedule if the occurrence is within the current week period
+        if (nextOccurrence != null) {
+          // Calculate delay until the next occurrence
+          final now = DateTime.now();
+          final delay = nextOccurrence.difference(now);
 
-        // Schedule a timer to show the notification
-        _scheduledTimers[reminderKey] = Timer(delay, () {
-          _showNotification(reminderKey, title, body, payload);
-
-          // Reschedule for next week
-          scheduleRecurringReminder(
-            id: id,
-            title: title,
-            body: body,
-            time: time,
-            days: [day], // Only reschedule this specific day
-            payload: payload,
-          );
-        });
+          // Schedule a timer to show the notification
+          _scheduledTimers[reminderKey] = Timer(delay, () {
+            _showNotification(reminderKey, title, body, payload);
+            // Note: No automatic rescheduling - this will be handled by the weekly refresh mechanism
+          });
+        }
       } catch (e) {
         if (kDebugMode) debugPrint('Error scheduling recurring reminder: $e');
       }
     }
   }
 
-  /// Calculate the next occurrence of a specific day of the week and time
-  DateTime _getNextOccurrence(int day, TimeOfDay time) {
+  /// Calculate the next occurrence of a specific day of the week and time within the current week period
+  /// Returns null if no occurrence is available within the current week period
+  DateTime? _getNextOccurrenceInCurrentWeek(int day, TimeOfDay time) {
     // Use local time for scheduling
     final now = DateTime.now();
 
@@ -136,7 +182,61 @@ class DesktopReminderService implements IReminderService {
     // Add the days
     scheduledDate = scheduledDate.add(Duration(days: daysToAdd));
 
+    // Check if the scheduled date is within the current week period (next 7 days)
+    final weekFromNow = now.add(const Duration(days: 7));
+    if (scheduledDate.isAfter(weekFromNow)) {
+      return null; // Don't schedule beyond current week period
+    }
+
     return scheduledDate;
+  }
+
+  /// Start the weekly refresh mechanism
+  void _startWeeklyRefresh() {
+    // Cancel any existing weekly refresh timer
+    _weeklyRefreshTimer?.cancel();
+
+    // Calculate time until next Monday at 00:00
+    final now = DateTime.now();
+    final nextMonday = _getNextMonday(now);
+    final delayUntilMonday = nextMonday.difference(now);
+
+    // Schedule the first refresh at the start of next week
+    _weeklyRefreshTimer = Timer(delayUntilMonday, () {
+      _refreshAllRecurringReminders();
+
+      // Set up a weekly periodic timer
+      _weeklyRefreshTimer = Timer.periodic(const Duration(days: 7), (_) {
+        _refreshAllRecurringReminders();
+      });
+    });
+  }
+
+  /// Get the next Monday at 00:00
+  DateTime _getNextMonday(DateTime from) {
+    final currentWeekday = from.weekday; // 1 = Monday, 7 = Sunday
+    int daysUntilMonday = 8 - currentWeekday; // Days until next Monday
+    if (daysUntilMonday == 8) daysUntilMonday = 7; // If today is Monday, next Monday is in 7 days
+
+    final nextMonday = DateTime(from.year, from.month, from.day, 0, 0, 0, 0).add(Duration(days: daysUntilMonday));
+
+    return nextMonday;
+  }
+
+  /// Refresh all recurring reminders for the new week
+  void _refreshAllRecurringReminders() {
+    if (kDebugMode) debugPrint('🔄 DesktopReminderService: Refreshing all recurring reminders for new week');
+
+    for (final config in _recurringReminders.values) {
+      _scheduleReminderForCurrentWeek(
+        config.id,
+        config.title,
+        config.body,
+        config.time,
+        config.days,
+        config.payload,
+      );
+    }
   }
 
   /// Show a notification using the notification service
@@ -237,6 +337,46 @@ class DesktopReminderService implements IReminderService {
     for (final key in keysToRemove) {
       await cancelReminder(key);
     }
+
+    // Also remove matching recurring reminder configurations
+    final configKeysToRemove = <String>[];
+    for (final configKey in _recurringReminders.keys) {
+      bool shouldRemove = false;
+
+      // Apply custom filter if provided
+      if (idFilter != null && idFilter(configKey)) {
+        shouldRemove = true;
+      }
+
+      // Check startsWith filter
+      if (startsWith != null && configKey.startsWith(startsWith)) {
+        shouldRemove = true;
+      }
+
+      // Check contains filter
+      if (contains != null && configKey.contains(contains)) {
+        shouldRemove = true;
+      }
+
+      // Check equals filter
+      if (equals != null && configKey == equals) {
+        shouldRemove = true;
+      }
+
+      if (shouldRemove) {
+        configKeysToRemove.add(configKey);
+      }
+    }
+
+    // Remove matching configurations
+    for (final configKey in configKeysToRemove) {
+      _recurringReminders.remove(configKey);
+    }
+
+    if (kDebugMode) {
+      debugPrint(
+          '🔔 DesktopReminderService: Cancelled ${keysToRemove.length} scheduled reminders and ${configKeysToRemove.length} recurring configurations');
+    }
   }
 
   @override
@@ -249,5 +389,16 @@ class DesktopReminderService implements IReminderService {
     }
     _scheduledTimers.clear();
     _activeNotificationIds.clear();
+
+    // Clear all recurring reminder configurations
+    _recurringReminders.clear();
+
+    // Cancel the weekly refresh timer
+    _weeklyRefreshTimer?.cancel();
+    _weeklyRefreshTimer = null;
+
+    if (kDebugMode) {
+      debugPrint('🔔 DesktopReminderService: Cancelled all reminders and cleared all configurations');
+    }
   }
 }

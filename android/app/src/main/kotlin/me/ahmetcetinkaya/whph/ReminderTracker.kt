@@ -87,13 +87,19 @@ class ReminderTracker(context: Context) {
      * @return List of notification IDs that match the criteria
      */
     fun findRemindersByPattern(startsWith: String? = null, contains: String? = null): List<Int> {
+        Log.d(TAG, "Searching for reminders with startsWith='$startsWith', contains='$contains'")
+        
         if (startsWith == null && contains == null) {
-            return getReminderIds().mapNotNull { it.toIntOrNull() }
+            val allIds = getReminderIds().mapNotNull { it.toIntOrNull() }
+            Log.d(TAG, "No pattern specified, returning all ${allIds.size} reminder IDs")
+            return allIds
         }
         
         val matchingIds = mutableListOf<Int>()
+        val allReminderIds = getReminderIds()
+        Log.d(TAG, "Total tracked reminders: ${allReminderIds.size}")
         
-        for (id in getReminderIds()) {
+        for (id in allReminderIds) {
             try {
                 // Get the stored data for this reminder
                 val reminderData = prefs.getString("$KEY_PREFIX$id", null) ?: continue
@@ -102,6 +108,8 @@ class ReminderTracker(context: Context) {
                 if (parts.isEmpty()) continue
                 
                 val reminderId = parts[0]
+                Log.d(TAG, "Checking reminder ID=$id, reminderId='$reminderId'")
+                
                 val matches = when {
                     startsWith != null && contains != null -> 
                         reminderId.startsWith(startsWith) && reminderId.contains(contains)
@@ -113,13 +121,17 @@ class ReminderTracker(context: Context) {
                 }
                 
                 if (matches) {
+                    Log.d(TAG, "✓ Reminder ID=$id matches pattern")
                     matchingIds.add(id.toInt())
+                } else {
+                    Log.d(TAG, "✗ Reminder ID=$id does not match pattern")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error processing reminder ID $id: ${e.message}")
             }
         }
         
+        Log.d(TAG, "Found ${matchingIds.size} matching reminders: $matchingIds")
         return matchingIds
     }
     

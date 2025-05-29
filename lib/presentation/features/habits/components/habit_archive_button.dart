@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/habits/commands/save_habit_command.dart';
@@ -55,7 +56,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
       },
       onSuccess: (habit) {
         setState(() {
-          _isArchived = habit.isArchived();
+          _isArchived = habit.isArchived;
         });
       },
     );
@@ -125,6 +126,12 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
             _habitsService.notifyHabitUpdated(widget.habitId);
 
             widget.onArchiveSuccess?.call();
+
+            if (kDebugMode) {
+              debugPrint(
+                '🔔 HabitArchiveButton: Habit ${newStatus ? "archived" : "unarchived"} successfully: ${widget.habitId}',
+              );
+            }
           },
         );
       }

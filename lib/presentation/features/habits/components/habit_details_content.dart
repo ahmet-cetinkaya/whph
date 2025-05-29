@@ -593,8 +593,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       keyTags,
       keyEstimatedTime,
       keyDescription,
-      if (!_habit!.isArchived()) keyReminder,
-      if (!_habit!.isArchived()) keyGoal,
+      if (!_habit!.isArchived) keyReminder,
+      if (!_habit!.isArchived) keyGoal,
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(

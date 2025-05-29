@@ -35,6 +35,8 @@ class TasksService extends ChangeNotifier {
   }
 
   void notifyTaskCompleted(String taskId) async {
+    if (kDebugMode) debugPrint('🔔 TasksService: notifyTaskCompleted called for task: $taskId');
+
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();
 
