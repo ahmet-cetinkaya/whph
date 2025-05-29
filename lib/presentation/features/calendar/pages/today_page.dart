@@ -216,7 +216,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 // Habits list
                 if (_habitListOptionSettingsLoaded)
                   HabitsList(
-                    size: 5,
+                    pageSize: 5,
                     mini: true,
                     filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                     filterNoTags: _showNoTagsFilter,
@@ -303,6 +303,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
                     filterDateOr: true,
                     search: _taskSearchQuery,
+                    pageSize: 10,
                     onClickTask: (task) => _openTaskDetails(context, task.id),
                     enableReordering: _taskSortConfig.useCustomOrder,
                     showDoneOverlayWhenEmpty: true,

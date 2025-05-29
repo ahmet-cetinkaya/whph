@@ -20,12 +20,14 @@ class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;
   final Function(String id)? onRuleSelected;
   final List<String>? filterByTags;
+  final int pageSize;
 
   const AppUsageTagRuleList({
     super.key,
     required this.mediator,
     this.onRuleSelected,
     this.filterByTags,
+    this.pageSize = 20,
   });
 
   @override
@@ -36,7 +38,6 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   final ScrollController _scrollController = ScrollController();
   GetListAppUsageTagRulesQueryResponse? _ruleList;
   bool _isLoading = false;
-  final int _pageSize = 10;
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
   double? _savedScrollPosition;
@@ -117,7 +118,9 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
       operation: () async {
         final query = GetListAppUsageTagRulesQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _ruleList?.items.length ?? _pageSize : _pageSize,
+          pageSize: isRefresh && (_ruleList?.items.length ?? 0) > widget.pageSize
+              ? _ruleList?.items.length ?? widget.pageSize
+              : widget.pageSize,
           filterByTags: widget.filterByTags,
         );
 

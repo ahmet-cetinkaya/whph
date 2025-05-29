@@ -23,7 +23,7 @@ class TagsList extends StatefulWidget {
   final bool showArchived;
   final SortConfig<TagSortFields>? sortConfig;
   final String? search;
-  final int size;
+  final int pageSize;
 
   const TagsList({
     super.key,
@@ -34,7 +34,7 @@ class TagsList extends StatefulWidget {
     this.showArchived = false,
     this.sortConfig,
     this.search,
-    this.size = 20,
+    this.pageSize = 20,
   });
 
   @override
@@ -148,7 +148,9 @@ class TagsListState extends State<TagsList> {
       operation: () async {
         final query = GetListTagsQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _tags?.items.length ?? widget.size : widget.size,
+          pageSize: isRefresh && (_tags?.items.length ?? 0) > widget.pageSize
+              ? _tags?.items.length ?? widget.pageSize
+              : widget.pageSize,
           showArchived: widget.showArchived,
           search: widget.search,
           sortBy: widget.sortConfig?.orderOptions

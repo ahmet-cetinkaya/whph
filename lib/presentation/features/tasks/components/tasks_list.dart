@@ -20,7 +20,7 @@ import 'package:whph/core/acore/utils/collection_utils.dart';
 import 'package:whph/presentation/shared/providers/drag_state_provider.dart';
 
 class TaskList extends StatefulWidget {
-  final int size;
+  final int pageSize;
 
   // Filter props to match query parameters
   final List<String>? filterByTags;
@@ -52,7 +52,7 @@ class TaskList extends StatefulWidget {
 
   const TaskList({
     super.key,
-    this.size = 10,
+    this.pageSize = 20,
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByPlannedStartDate,
@@ -201,7 +201,9 @@ class TaskListState extends State<TaskList> {
       operation: () async {
         final query = GetListTasksQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _tasks?.items.length ?? widget.size : widget.size,
+          pageSize: isRefresh && (_tasks?.items.length ?? 0) > widget.pageSize
+              ? _tasks?.items.length ?? widget.pageSize
+              : widget.pageSize,
           filterByPlannedStartDate: widget.filterByPlannedStartDate != null
               ? DateTimeHelper.toUtcDateTime(widget.filterByPlannedStartDate!)
               : null,
