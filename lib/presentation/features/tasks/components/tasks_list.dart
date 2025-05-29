@@ -45,6 +45,7 @@ class TaskList extends StatefulWidget {
   final void Function()? onTaskCompleted;
   final void Function(TaskListItem task)? onSelectTask;
   final void Function(TaskListItem task, DateTime date)? onScheduleTask;
+  final void Function(List<TaskListItem> tasks)? onTasksLoaded;
   final List<Widget> Function(TaskListItem task)? trailingButtons;
   final Key? rebuildKey;
   final SortConfig<TaskSortFields>? sortConfig;
@@ -73,6 +74,7 @@ class TaskList extends StatefulWidget {
     this.onTaskCompleted,
     this.onSelectTask,
     this.onScheduleTask,
+    this.onTasksLoaded,
     this.trailingButtons,
     this.rebuildKey,
     this.sortConfig,
@@ -241,6 +243,9 @@ class TaskListState extends State<TaskList> {
             );
           }
         });
+
+        // Notify about loaded tasks
+        widget.onTasksLoaded?.call(_tasks?.items ?? []);
 
         // Check if we need to normalize very small orders
         if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {

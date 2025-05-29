@@ -6,6 +6,7 @@ import 'package:whph/application/features/tasks/queries/get_list_task_tags_query
 import 'package:whph/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
@@ -36,6 +37,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   TaskListItem? _selectedTask;
+  List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
   void _closeDialog() {
@@ -87,6 +89,21 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   void _refreshSelectedTaskIfNeeded() {
     if (_selectedTask != null) {
       _refreshSelectedTask();
+    }
+  }
+
+  void _onTasksLoaded(List<TaskListItem> tasks) {
+    _availableTasks = tasks;
+  }
+
+  void _onTimerStart() {
+    // Auto-select first uncompleted task if no task is currently selected
+    if (_selectedTask == null && _availableTasks.isNotEmpty) {
+      final firstUncompletedTask = _availableTasks.firstWhere(
+        (task) => !task.isCompleted,
+        orElse: () => _availableTasks.first,
+      );
+      _onSelectTask(firstUncompletedTask);
     }
   }
 
@@ -275,6 +292,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       child: Center(
                         child: PomodoroTimer(
                           onTimeUpdate: _handleTimerUpdate,
+                          onTimerStart: _onTimerStart,
                         ),
                       ),
                     ),
@@ -342,24 +360,18 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                         settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                       ),
                     ),
+                    // Add task button
+                    if (!_showCompletedTasks)
+                      TaskAddButton(
+                        initialTagIds: _selectedTaskTagIds,
+                        initialPlannedDate: DateTime.now(),
+                        initialTitle: _taskSearchQuery,
+                        initialCompleted: _showCompletedTasks,
+                        onTaskCreated: (_, __) => _onTasksChanged(),
+                      ),
                   ],
                 ),
               ),
-
-              // Hint Text
-              if (_selectedTask == null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 18),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _translationService.translate(TaskTranslationKeys.marathonSelectTaskHint),
-                        style: AppTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
 
               // Update TaskList with today's date filter
               Expanded(
@@ -374,6 +386,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   onClickTask: (task) => _showTaskDetails(task.id),
                   onSelectTask: _onSelectTask,
                   onScheduleTask: (_, __) => _onTasksChanged(),
+                  onTasksLoaded: _onTasksLoaded,
                   selectedTask: _selectedTask,
                   showSelectButton: true,
                   transparentCards: true,

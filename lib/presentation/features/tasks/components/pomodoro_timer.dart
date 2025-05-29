@@ -24,10 +24,12 @@ import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class PomodoroTimer extends StatefulWidget {
   final Function(Duration) onTimeUpdate;
+  final VoidCallback? onTimerStart;
 
   const PomodoroTimer({
     super.key,
     required this.onTimeUpdate,
+    this.onTimerStart,
   });
 
   @override
@@ -197,6 +199,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _startTimer() {
     if (_isRunning || _isAlarmPlaying) return;
+
+    // Call the onTimerStart callback if provided
+    widget.onTimerStart?.call();
 
     if (mounted) {
       _soundPlayer.play(SharedSounds.button);

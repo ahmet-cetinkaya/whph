@@ -190,7 +190,6 @@ tasks:
         - 🚶 Fiziksel hareket ve zihinsel reset için molaları kullanın
       title: Odaklı Çalışma Seansları ve Zaman Yönetimi Rehberi
     label: Maraton Modu
-    select_task_hint: Aşağıdaki listeden çalışmak için bir görev seçin.
     unpin_task_tooltip: Mevcut görevi kaldır
   new_task: Yeni Görev
   no_tasks: Görev yok
