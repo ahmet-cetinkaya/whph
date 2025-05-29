@@ -8,4 +8,6 @@ abstract class BaseEntity<TId> {
   DateTime? deletedDate;
 
   BaseEntity({required this.id, required this.createdDate, this.modifiedDate, this.deletedDate});
+
+  bool get isDeleted => deletedDate != null;
 }

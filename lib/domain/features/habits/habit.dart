@@ -139,9 +139,7 @@ class Habit extends BaseEntity<String> {
   // ARCHIVE RELATED METHODS
 
   /// Checks if the habit is archived
-  bool isArchived() {
-    return archivedDate != null;
-  }
+  bool get isArchived => archivedDate != null;
 
   /// Archives the habit by setting archivedDate to current DateTime
   void setArchived() {

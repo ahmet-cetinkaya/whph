@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/application/features/tasks/queries/get_task_query.dart';
@@ -98,11 +99,22 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       onSuccess: () {
         // Notify the service about the completed task
         if (_isCompleted) {
+          if (kDebugMode) {
+            debugPrint(
+                '🔔 TaskCompleteButton: Task completed, scheduling notification events for task: ${widget.taskId}');
+          }
+
           Future.delayed(const Duration(seconds: 1), () {
+            if (kDebugMode) {
+              debugPrint('🔔 TaskCompleteButton: Calling notifyTaskCompleted for task: ${widget.taskId}');
+            }
             _tasksService.notifyTaskCompleted(widget.taskId);
           });
           _tasksService.notifyTaskUpdated(widget.taskId);
         } else {
+          if (kDebugMode) {
+            debugPrint('🔔 TaskCompleteButton: Task uncompleted, calling notifyTaskUpdated for task: ${widget.taskId}');
+          }
           _tasksService.notifyTaskUpdated(widget.taskId);
         }
 
