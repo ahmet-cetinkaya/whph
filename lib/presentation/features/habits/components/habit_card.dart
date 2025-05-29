@@ -153,6 +153,21 @@ class _HabitCardState extends State<HabitCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHabitInfo(),
+          // Show reminder icon if habit has reminders
+          if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
+            Tooltip(
+              message: _getReminderTooltip(),
+              child: Container(
+                padding: const EdgeInsets.only(left: 4.0),
+                height: 24, // Fixed height to match text line height
+                alignment: Alignment.center, // Center the icon vertically
+                child: Icon(
+                  Icons.notifications,
+                  size: AppTheme.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
           if (!widget.habit.isArchived()) ...[
             const SizedBox(width: AppTheme.sizeSmall),
             Align(
@@ -186,21 +201,6 @@ class _HabitCardState extends State<HabitCard> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      // Show reminder icon if habit has reminders
-                      if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
-                        Tooltip(
-                          message: _getReminderTooltip(),
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            height: 24, // Fixed height to match text line height
-                            alignment: Alignment.center, // Center the icon vertically
-                            child: Icon(
-                              Icons.notifications,
-                              size: AppTheme.iconSizeSmall,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
