@@ -63,8 +63,10 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
     }
 
     if (!_hasAppUsagePermission) {
-      Future.delayed(const Duration(seconds: 2), () {
-        _checkPermission();
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && !_hasAppUsagePermission) {
+          _checkPermission();
+        }
       });
     }
   }

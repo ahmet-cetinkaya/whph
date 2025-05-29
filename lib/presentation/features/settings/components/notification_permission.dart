@@ -41,8 +41,10 @@ class _NotificationPermissionState extends State<NotificationPermission> {
     });
 
     if (!_hasNotificationPermission) {
-      Future.delayed(const Duration(seconds: 2), () {
-        _checkPermission();
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted && !_hasNotificationPermission) {
+          _checkPermission();
+        }
       });
     }
   }
