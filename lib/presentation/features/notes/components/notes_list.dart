@@ -23,7 +23,7 @@ class NotesList extends StatefulWidget {
   final bool filterNoTags;
   final Function(String)? onClickNote;
   final SortConfig<NoteSortFields>? sortConfig;
-  final int size;
+  final int pageSize;
 
   const NotesList({
     super.key,
@@ -32,7 +32,7 @@ class NotesList extends StatefulWidget {
     this.filterNoTags = false,
     this.onClickNote,
     this.sortConfig,
-    this.size = 20,
+    this.pageSize = 20,
   });
 
   @override
@@ -168,7 +168,9 @@ class NotesListState extends State<NotesList> {
       operation: () async {
         final query = GetListNotesQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _noteList?.items.length ?? widget.size : widget.size,
+          pageSize: isRefresh && (_noteList?.items.length ?? 0) > widget.pageSize
+              ? _noteList?.items.length ?? widget.pageSize
+              : widget.pageSize,
           search: _currentFilters.search,
           filterByTags: _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,

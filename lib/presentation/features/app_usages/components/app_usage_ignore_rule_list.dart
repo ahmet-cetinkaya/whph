@@ -18,10 +18,12 @@ import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final VoidCallback? onRuleDeleted;
+  final int pageSize;
 
   const AppUsageIgnoreRuleList({
     super.key,
     this.onRuleDeleted,
+    this.pageSize = 20,
   });
 
   @override
@@ -37,7 +39,6 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   GetListAppUsageIgnoreRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   double _savedScrollPosition = 0.0;
-  static const int _pageSize = 20;
 
   @override
   void initState() {
@@ -98,7 +99,9 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
       operation: () async {
         final query = GetListAppUsageIgnoreRulesQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _ruleList?.items.length ?? _pageSize : _pageSize,
+          pageSize: isRefresh && (_ruleList?.items.length ?? 0) > widget.pageSize
+              ? _ruleList?.items.length ?? widget.pageSize
+              : widget.pageSize,
         );
         return await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
       },

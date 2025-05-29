@@ -15,7 +15,7 @@ import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 
 class HabitsList extends StatefulWidget {
-  final int size;
+  final int pageSize;
   final bool mini;
   final int dateRange;
   final List<String>? filterByTags;
@@ -32,7 +32,7 @@ class HabitsList extends StatefulWidget {
 
   const HabitsList({
     super.key,
-    this.size = 10,
+    this.pageSize = 20,
     this.mini = false,
     this.dateRange = 7,
     this.filterByTags,
@@ -190,7 +190,9 @@ class HabitsListState extends State<HabitsList> {
       operation: () async {
         final query = GetListHabitsQuery(
           pageIndex: pageIndex,
-          pageSize: isRefresh ? _habitList?.items.length ?? widget.size : widget.size,
+          pageSize: isRefresh && (_habitList?.items.length ?? 0) > widget.pageSize
+              ? _habitList?.items.length ?? widget.pageSize
+              : widget.pageSize,
           excludeCompleted: _currentFilters.mini,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,

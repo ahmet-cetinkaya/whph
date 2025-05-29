@@ -35,7 +35,7 @@ class FilterContext {
 }
 
 class AppUsageList extends StatefulWidget {
-  final int size;
+  final int pageSize;
   final List<String>? filterByTags;
   final bool showNoTagsFilter;
   final Function(String id)? onOpenDetails;
@@ -44,7 +44,7 @@ class AppUsageList extends StatefulWidget {
 
   const AppUsageList({
     super.key,
-    this.size = 10,
+    this.pageSize = 20,
     this.filterByTags,
     this.showNoTagsFilter = false,
     this.onOpenDetails,
@@ -151,7 +151,9 @@ class AppUsageListState extends State<AppUsageList> {
   Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
       pageIndex: pageIndex,
-      pageSize: isRefresh ? _appUsageList?.items.length ?? widget.size : widget.size,
+      pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
+          ? _appUsageList?.items.length ?? widget.pageSize
+          : widget.pageSize,
       filterByTags: _currentFilters.filterByTags,
       showNoTagsFilter: _currentFilters.showNoTagsFilter,
       startDate: _currentFilters.filterStartDate != null
