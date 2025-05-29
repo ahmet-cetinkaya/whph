@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/acore/repository/models/paginated_list.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 
 class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryResponse> {
@@ -31,6 +32,7 @@ class AppUsageListItem {
   String? color;
   String? deviceName;
   int duration;
+  List<AppUsageTagListItem> tags;
 
   AppUsageListItem({
     required this.id,
@@ -39,6 +41,7 @@ class AppUsageListItem {
     this.color,
     this.deviceName,
     required this.duration,
+    this.tags = const [],
   });
 }
 
@@ -75,6 +78,7 @@ class GetListByTopAppUsagesQueryHandler
               color: record.color,
               deviceName: record.deviceName,
               duration: record.duration,
+              tags: record.tags,
             ))
         .toList();
 

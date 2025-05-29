@@ -44,7 +44,9 @@ void registerAppUsagesFeature(
     )
     ..registerHandler<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse,
         GetListByTopAppUsagesQueryHandler>(
-      () => GetListByTopAppUsagesQueryHandler(timeRecordRepository: appUsageTimeRecordRepository),
+      () => GetListByTopAppUsagesQueryHandler(
+        timeRecordRepository: appUsageTimeRecordRepository,
+      ),
     )
     ..registerHandler<AddAppUsageTagCommand, AddAppUsageTagCommandResponse, AddAppUsageTagCommandHandler>(
       () => AddAppUsageTagCommandHandler(appUsageTagRepository: appUsageTagRepository),
