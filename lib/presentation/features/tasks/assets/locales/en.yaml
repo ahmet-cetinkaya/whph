@@ -177,7 +177,6 @@ tasks:
         - 🚶 Use breaks for physical movement and mental reset
       title: Focused Work Sessions & Time Management Guide
     label: Marathon Mode
-    select_task_hint: Select a task to work on from the list below.
     unpin_task_tooltip: Unpin current task
   new_task: New Task
   no_tasks: No tasks
