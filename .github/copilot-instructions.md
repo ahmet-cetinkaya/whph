@@ -27,11 +27,17 @@
 - Use `Theme.of(context)` to access theme values.
 - Avoid hardcoding styles or colors.
 - Use `.withValues()` instead of `.withOpacity()` etc. for colors to maintain consistency with the theme.
+- Use `lib/presentation/shared/constants/app_theme.dart` for theme constants.
 
 ## Naming Conventions
 
 - Use camelCase for variables and methods.
 - Use PascalCase for class names and widgets.
+
+## Native
+- Use platform channels for native code integration.
+- Use constants for channels.
+  * Example: `android/app/src/main/kotlin/me/ahmetcetinkaya/whph/Constants.kt` and `lib/infrastructure/android/constants/android_app_constants.dart`.
 
 ## Misc
 - Prefer async/await over `then()` for better readability.

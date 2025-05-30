@@ -3,10 +3,11 @@ import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
-  static const platform = MethodChannel('whph/background_service');
-  static const appUsageStatsChannel = MethodChannel('me.ahmetcetinkaya.whph/app_usage_stats');
+  static final platform = MethodChannel(AndroidAppConstants.channels.backgroundService);
+  static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
   final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
 
   AndroidAppUsageService(
