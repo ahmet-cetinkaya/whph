@@ -4,6 +4,7 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
@@ -45,6 +46,7 @@ class TaskCard extends StatelessWidget {
 
   Future<void> _handleSchedule(DateTime date) async {
     final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
+    final taskService = container.resolve<TasksService>();
 
     final command = SaveTaskCommand(
       id: task.id,
@@ -58,6 +60,8 @@ class TaskCard extends StatelessWidget {
     );
 
     await _mediator.send(command);
+
+    taskService.notifyTaskUpdated(task.id);
     onScheduled?.call();
   }
 
@@ -88,6 +92,7 @@ class TaskCard extends StatelessWidget {
 
     return Row(
       children: [
+        // Task completion button
         SizedBox(
           width: 32,
           height: 32,
@@ -99,8 +104,11 @@ class TaskCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
+
+        // Task title and metadata
         Expanded(child: _buildTitleAndMetadata(context)),
-        // Show reminder icon if task has reminders, using the latest state
+
+        // Reminder icon
         if (hasCurrentReminder)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -113,42 +121,43 @@ class TaskCard extends StatelessWidget {
               message: _getReminderTooltip(),
             ),
           ),
-        if (onScheduled != null)
-          StatefulBuilder(
-            builder: (context, setState) => IconButton(
-              icon: const Icon(Icons.schedule, color: Colors.grey),
-              tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
-              onPressed: () {
-                final now = DateTime.now();
-                final today = DateTime(now.year, now.month, now.day);
-                final tomorrow = today.add(const Duration(days: 1));
 
-                ResponsiveDialogHelper.showResponsiveDialog(
-                  context: context,
-                  size: DialogSize.small,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
-                        onTap: () {
-                          _handleSchedule(today);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
-                        onTap: () {
-                          _handleSchedule(tomorrow);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+        // Schedule button
+        StatefulBuilder(
+          builder: (context, setState) => IconButton(
+            icon: const Icon(Icons.schedule, color: Colors.grey),
+            tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
+            onPressed: () {
+              final now = DateTime.now();
+              final today = DateTime(now.year, now.month, now.day);
+              final tomorrow = today.add(const Duration(days: 1));
+
+              ResponsiveDialogHelper.showResponsiveDialog(
+                context: context,
+                size: DialogSize.small,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
+                      onTap: () {
+                        _handleSchedule(today);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
+                      onTap: () {
+                        _handleSchedule(tomorrow);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
+        ),
         if (trailingButtons != null)
           ...trailingButtons!.map((widget) {
             if (widget is IconButton) {
