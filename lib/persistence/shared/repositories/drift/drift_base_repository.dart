@@ -163,9 +163,17 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<SyncData<TEntity>> getSyncData(DateTime lastSyncDate) async {
-    Future<List<TEntity>> queryToGetSyncData(String columnName) async {
+    if (kDebugMode) {
+      debugPrint('🔍 getSyncData called for table: ${table.actualTableName}, lastSyncDate: $lastSyncDate');
+    }
+
+    Future<List<TEntity>> queryForCreateSync() async {
+      final query = 'SELECT * FROM ${table.actualTableName} WHERE created_date > ?';
+      if (kDebugMode) {
+        debugPrint('📝 CreateSync Query: $query with lastSyncDate: $lastSyncDate');
+      }
       final a = database.customSelect(
-        'SELECT * FROM ${table.actualTableName} WHERE $columnName > ?',
+        query,
         variables: [Variable.withDateTime(lastSyncDate)],
         readsFrom: {table},
       );
@@ -174,13 +182,64 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
         (entity) async => entity is Future<TEntity> ? await entity : entity,
       );
       final d = await c.get();
+      if (kDebugMode) {
+        debugPrint('✅ CreateSync results: ${d.length} records');
+      }
+      return d;
+    }
+
+    Future<List<TEntity>> queryForUpdateSync() async {
+      // Include records where:
+      // 1. modified_date > lastSyncDate (explicitly modified after sync)
+      // 2. modified_date IS NULL AND created_date > lastSyncDate (created after sync but never modified)
+      final query =
+          'SELECT * FROM ${table.actualTableName} WHERE (modified_date > ? OR (modified_date IS NULL AND created_date > ?))';
+      if (kDebugMode) {
+        debugPrint('📝 UpdateSync Query: $query with lastSyncDate: $lastSyncDate');
+      }
+      final a = database.customSelect(
+        query,
+        variables: [Variable.withDateTime(lastSyncDate), Variable.withDateTime(lastSyncDate)],
+        readsFrom: {table},
+      );
+      final b = a.map((row) => table.map(row.data));
+      final c = b.asyncMap(
+        (entity) async => entity is Future<TEntity> ? await entity : entity,
+      );
+      final d = await c.get();
+      if (kDebugMode) {
+        debugPrint('✅ UpdateSync results: ${d.length} records');
+      }
+      return d;
+    }
+
+    Future<List<TEntity>> queryForDeleteSync() async {
+      // Include only records that were actually deleted after the last sync
+      // deleted_date > lastSyncDate AND deleted_date IS NOT NULL
+      final query = 'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?';
+      if (kDebugMode) {
+        debugPrint('📝 DeleteSync Query: $query with lastSyncDate: $lastSyncDate');
+      }
+      final a = database.customSelect(
+        query,
+        variables: [Variable.withDateTime(lastSyncDate)],
+        readsFrom: {table},
+      );
+      final b = a.map((row) => table.map(row.data));
+      final c = b.asyncMap(
+        (entity) async => entity is Future<TEntity> ? await entity : entity,
+      );
+      final d = await c.get();
+      if (kDebugMode) {
+        debugPrint('✅ DeleteSync results: ${d.length} records');
+      }
       return d;
     }
 
     return SyncData(
-      createSync: await queryToGetSyncData('created_date'),
-      updateSync: await queryToGetSyncData('modified_date'),
-      deleteSync: await queryToGetSyncData('deleted_date'),
+      createSync: await queryForCreateSync(),
+      updateSync: await queryForUpdateSync(),
+      deleteSync: await queryForDeleteSync(),
     );
   }
 

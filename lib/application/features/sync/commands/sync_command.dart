@@ -284,9 +284,38 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   }
 
   Future<SyncDataDto> _prepareSyncData(SyncDevice syncDevice) async {
-    final lastSyncDate = syncDevice.lastSyncDate ?? syncDevice.createdDate;
+    // For initial sync (when lastSyncDate is null), use a very old date to get all records
+    // For subsequent syncs, use the actual lastSyncDate
+    final DateTime lastSyncDate;
+    if (syncDevice.lastSyncDate == null) {
+      // Use a date far in the past for initial sync to get all existing data
+      lastSyncDate = DateTime(1900, 1, 1);
+      if (kDebugMode) {
+        debugPrint('🆕 Initial sync detected - using very old date to get all data');
+      }
+    } else {
+      lastSyncDate = syncDevice.lastSyncDate!;
+      if (kDebugMode) {
+        debugPrint('🔄 Incremental sync - using lastSyncDate: $lastSyncDate');
+      }
+    }
+
+    if (kDebugMode) {
+      debugPrint('🔄 Preparing sync data for device: ${syncDevice.id}');
+      debugPrint('📅 Using effective lastSyncDate: $lastSyncDate');
+      debugPrint('📊 Total sync configs: ${_syncConfigs.length}');
+    }
 
     final syncDataResults = await Future.wait(_syncConfigs.map((config) => config.getSyncData(lastSyncDate)));
+
+    if (kDebugMode) {
+      for (int i = 0; i < _syncConfigs.length; i++) {
+        final config = _syncConfigs[i];
+        final result = syncDataResults[i];
+        debugPrint(
+            '📋 ${config.name}: createSync=${result.createSync.length}, updateSync=${result.updateSync.length}, deleteSync=${result.deleteSync.length}');
+      }
+    }
 
     final dto = SyncDataDto(
       appVersion: AppInfo.version,
