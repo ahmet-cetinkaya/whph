@@ -71,7 +71,7 @@ class NotificationHelper(private val context: Context) {
         // Create an explicit intent to launch MainActivity
         // Use the specific action we defined in the AndroidManifest
         val activityIntent = Intent(context, MainActivity::class.java).apply {
-            action = "me.ahmetcetinkaya.whph.NOTIFICATION_CLICK"
+            action = Constants.IntentActions.NOTIFICATION_CLICK
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP
 

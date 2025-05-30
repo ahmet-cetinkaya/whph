@@ -3,10 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'abstraction/base_setup_service.dart';
 
 class AndroidSetupService extends BaseSetupService {
-  static const platform = MethodChannel('me.ahmetcetinkaya.whph/app_installer');
+  static final platform = MethodChannel(AndroidAppConstants.channels.appInstaller);
 
   @override
   Future<void> setupEnvironment() async {

@@ -10,12 +10,13 @@ object Constants {
     // Method Channel Names
     object Channels {
         const val APP_INFO = "$PACKAGE_NAME/app_info"
-        const val BACKGROUND_SERVICE = "whph/background_service"
+        const val BACKGROUND_SERVICE = "$PACKAGE_NAME/background_service"
         const val APP_INSTALLER = "$PACKAGE_NAME/app_installer"
         const val BATTERY_OPTIMIZATION = "$PACKAGE_NAME/battery_optimization"
         const val EXACT_ALARM = "$PACKAGE_NAME/exact_alarm"
         const val NOTIFICATION = "$PACKAGE_NAME/notification"
         const val APP_USAGE_STATS = "$PACKAGE_NAME/app_usage_stats"
+        const val POMODORO_TIMER = "$PACKAGE_NAME/pomodoro_timer"
     }
 
     // Notification Channels
@@ -36,6 +37,7 @@ object Constants {
     // Intent Actions
     object IntentActions {
         const val NOTIFICATION_CLICKED = "$PACKAGE_NAME.NOTIFICATION_CLICKED"
+        const val NOTIFICATION_CLICK = "$PACKAGE_NAME.NOTIFICATION_CLICK"
         const val ALARM_TRIGGERED = "$PACKAGE_NAME.ALARM_TRIGGERED"
     }
 

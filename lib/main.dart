@@ -228,7 +228,7 @@ Future<String?> _getInitialNotificationPayload() async {
   try {
     if (Platform.isAndroid) {
       // Get the initial notification payload from the platform channel
-      const platform = MethodChannel('me.ahmetcetinkaya.whph/notification');
+      final platform = MethodChannel(AndroidAppConstants.channels.notification);
       final payload = await platform.invokeMethod<String>('getInitialNotificationPayload');
       return payload;
     }

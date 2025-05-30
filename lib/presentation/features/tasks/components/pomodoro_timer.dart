@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/acore/services/platform/pomodoro_timer_service.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
@@ -45,6 +46,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   static const int _minTimerValue = 5;
   static const int _maxTimerValue = 120;
+
+  // Check if running on Android
+  bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
@@ -99,6 +103,11 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     // Stop any playing sounds
     _soundPlayer.stop();
+
+    // Stop Android timer service if running on Android
+    if (_isAndroid && _isRunning) {
+      PomodoroTimerService.stopTimer();
+    }
 
     // Remove timer menu items if they were added
     if (_isTimerMenuAdded) {
@@ -232,33 +241,43 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
       setState(() {
         _isRunning = true;
-        _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-          if (_remainingTime.inSeconds > 0) {
-            if (!mounted) return;
-            setState(() {
-              _remainingTime -= kDebugMode
-                  ? const Duration(minutes: 1) // Simulate 1 minute for testing
-                  : const Duration(seconds: 1);
-            });
-            widget.onTimeUpdate(_remainingTime);
-            _updateSystemTrayTimer();
-          } else {
-            _timer.cancel();
-            _isRunning = false;
-            _startAlarm();
 
-            // Auto-start next session if enabled
-            if (_isWorking && _autoStartBreak || !_isWorking && _autoStartWork) {
-              Future.delayed(const Duration(seconds: 3), () {
-                if (mounted && _isAlarmPlaying) {
-                  _toggleWorkBreak();
-                }
-              });
-            }
-          }
-        });
+        // Enable wake lock on Android to prevent sleep
+        if (_isAndroid) {
+          PomodoroTimerService.startTimer(_remainingTime.inSeconds);
+        }
+
+        _startRegularTimer();
       });
     }
+  }
+
+  void _startRegularTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingTime.inSeconds > 0) {
+        if (!mounted) return;
+        setState(() {
+          _remainingTime -= kDebugMode
+              ? const Duration(minutes: 1) // Simulate 1 minute for testing
+              : const Duration(seconds: 1);
+        });
+        widget.onTimeUpdate(_remainingTime);
+        _updateSystemTrayTimer();
+      } else {
+        _timer.cancel();
+        _isRunning = false;
+        _startAlarm();
+
+        // Auto-start next session if enabled
+        if (_isWorking && _autoStartBreak || !_isWorking && _autoStartWork) {
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted && _isAlarmPlaying) {
+              _toggleWorkBreak();
+            }
+          });
+        }
+      }
+    });
   }
 
   void _updateSystemTrayTimer() {
@@ -271,6 +290,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (mounted) {
       _soundPlayer.play(SharedSounds.button);
       _stopTicking();
+
       setState(() {
         _isRunning = false;
         _isAlarmPlaying = false; // Reset alarm state
@@ -283,7 +303,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         );
         _completedSessions = 0; // Reset completed sessions
         _isLongBreak = false; // Reset long break flag
+
+        // Stop timer and disable wake lock
         _timer.cancel();
+        if (_isAndroid) {
+          PomodoroTimerService.stopTimer();
+        }
+
         _soundPlayer.stop(); // Stop any playing sounds
       });
 
