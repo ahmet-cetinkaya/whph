@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:whph/presentation/shared/components/secondary_app_bar.dart';
@@ -35,10 +36,37 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
         context: context,
         title: Text(_translationService.translate(SyncTranslationKeys.scannerTitle)),
       ),
-      body: QRView(
-        key: qrKey,
-        onQRViewCreated: (controller) => _onQRViewCreated(context, controller),
-      ),
+      body: kDebugMode
+          ? Column(
+              children: [
+                // Debug Input Section
+                if (kDebugMode)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: '${_translationService.translate(SyncTranslationKeys.scannerTitle)} (Debug Input)',
+                      ),
+                      onSubmitted: (value) {
+                        if (context.mounted) Navigator.of(context).pop(value);
+                      },
+                    ),
+                  ),
+                // QR Scanner Section
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: _buildQRCamera(context),
+                ),
+              ],
+            )
+          : _buildQRCamera(context),
+    );
+  }
+
+  Widget _buildQRCamera(BuildContext context) {
+    return QRView(
+      key: qrKey,
+      onQRViewCreated: (controller) => _onQRViewCreated(context, controller),
     );
   }
 }
