@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
@@ -43,8 +44,19 @@ class MobileSystemTrayService implements ISystemTrayService {
 
   @override
   Future<void> destroy() async {
-    _menuItems.clear();
-    await _notifications.cancel(_notificationId);
+    try {
+      _menuItems.clear();
+      _isInitialized = false;
+      // Cancel the persistent notification with ID 888
+      await _notifications.cancel(_notificationId);
+      // Also try to cancel all notifications as a safety measure
+      await _notifications.cancelAll();
+    } catch (e) {
+      // Log the error but don't throw to prevent disposal issues
+      if (kDebugMode) {
+        debugPrint('Error during MobileSystemTrayService destroy: $e');
+      }
+    }
   }
 
   @override

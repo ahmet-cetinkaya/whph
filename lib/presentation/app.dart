@@ -12,6 +12,8 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/app_routes.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/shared/services/abstraction/i_system_tray_service.dart';
+import 'dart:io';
 
 class App extends StatefulWidget {
   const App({super.key, required this.navigatorKey});
@@ -22,18 +24,55 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with WidgetsBindingObserver {
   final _mediator = container.resolve<Mediator>();
   final _supportDialogService = container.resolve<ISupportDialogService>();
   final _setupService = container.resolve<ISetupService>();
+  final _systemTrayService = container.resolve<ISystemTrayService>();
   bool _isCheckedUpdate = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkAndShowOnboarding();
     _checkAndShowSupportDialog();
     _checkForUpdates();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    // Clean up persistent notifications when app is terminated
+    if (Platform.isAndroid || Platform.isIOS) {
+      _systemTrayService.destroy().catchError((error) {
+        debugPrint('Error cleaning up system tray on dispose: $error');
+      });
+    }
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // Clean up persistent notifications when app goes to background on mobile platforms
+    if (Platform.isAndroid || Platform.isIOS) {
+      if (state == AppLifecycleState.paused ||
+          state == AppLifecycleState.inactive ||
+          state == AppLifecycleState.detached) {
+        // Clear persistent notifications when app is backgrounded or closed
+        _systemTrayService.destroy().catchError((error) {
+          // Handle errors gracefully - notification cleanup is not critical
+          debugPrint('Error cleaning up system tray: $error');
+        });
+      } else if (state == AppLifecycleState.resumed) {
+        // Reinitialize system tray when app is resumed to ensure proper functionality
+        _systemTrayService.init().catchError((error) {
+          debugPrint('Error reinitializing system tray: $error');
+        });
+      }
+    }
   }
 
   Future<void> _checkForUpdates() async {
