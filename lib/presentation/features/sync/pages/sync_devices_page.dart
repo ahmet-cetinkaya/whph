@@ -15,6 +15,7 @@ import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
+import 'package:whph/presentation/shared/utils/overlay_notification_helper.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -66,25 +67,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   Future<void> _sync() async {
     if (_isSyncing) return;
 
-    // Show initial syncing snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Text(_translationService.translate(SyncTranslationKeys.syncInProgress)),
-          ],
-        ),
-        duration: const Duration(seconds: 30),
-      ),
+    // Show initial syncing notification
+    OverlayNotificationHelper.showLoading(
+      context: context,
+      message: _translationService.translate(SyncTranslationKeys.syncInProgress),
+      duration: const Duration(seconds: 30),
     );
 
     setState(() => _isSyncing = true);
@@ -102,27 +89,18 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         await refresh();
 
         if (mounted) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    const Icon(Icons.check_circle, color: Colors.white),
-                    const SizedBox(width: 16),
-                    Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
-                  ],
-                ),
-                backgroundColor: Colors.green,
-                duration: const Duration(seconds: 3),
-              ),
-            );
+          OverlayNotificationHelper.hideNotification();
+          OverlayNotificationHelper.showSuccess(
+            context: context,
+            message: _translationService.translate(SyncTranslationKeys.syncCompleted),
+            duration: const Duration(seconds: 3),
+          );
         }
       },
       onError: (_) {
         if (kDebugMode) debugPrint('Sync failed');
         if (mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
+          OverlayNotificationHelper.hideNotification();
         }
       },
       finallyAction: () {
@@ -182,15 +160,18 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
               icon: Icons.devices_other,
               message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
             )
-          : ListView.builder(
-              itemCount: list!.items.length,
-              itemBuilder: (context, index) {
-                return SyncDeviceListItemWidget(
-                  key: ValueKey(list!.items[index].id),
-                  item: list!.items[index],
-                  onRemove: _removeDevice,
-                );
-              },
+          : Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+              child: ListView.builder(
+                itemCount: list!.items.length,
+                itemBuilder: (context, index) {
+                  return SyncDeviceListItemWidget(
+                    key: ValueKey(list!.items[index].id),
+                    item: list!.items[index],
+                    onRemove: _removeDevice,
+                  );
+                },
+              ),
             ),
     );
   }

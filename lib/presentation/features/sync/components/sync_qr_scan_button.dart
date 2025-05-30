@@ -15,6 +15,7 @@ import 'package:whph/presentation/features/sync/models/sync_qr_code_message.dart
 import 'package:whph/presentation/features/sync/pages/qr_code_scanner_page.dart';
 import 'package:whph/presentation/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/presentation/shared/utils/overlay_notification_helper.dart';
 import 'dart:async';
 
 class SyncQrScanButton extends StatelessWidget {
@@ -69,25 +70,10 @@ class SyncQrScanButton extends StatelessWidget {
 
         // Show testing connection message
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(_translationService.translate(SyncTranslationKeys.testingConnection)),
-                ],
-              ),
-              duration: const Duration(seconds: 15),
-              behavior: SnackBarBehavior.fixed,
-            ),
+          OverlayNotificationHelper.showLoading(
+            context: context,
+            message: _translationService.translate(SyncTranslationKeys.testingConnection),
+            duration: const Duration(seconds: 15),
           );
         }
 
@@ -104,7 +90,7 @@ class SyncQrScanButton extends StatelessWidget {
         return localIp;
       },
       intermediateContextChecks: [
-        (context) => ScaffoldMessenger.of(context).clearSnackBars(),
+        (context) => OverlayNotificationHelper.hideNotification(),
       ],
       onSuccess: (toIP) async {
         final localDeviceId = await _deviceIdService.getDeviceId();
@@ -116,10 +102,9 @@ class SyncQrScanButton extends StatelessWidget {
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(_translationService.translate(SyncTranslationKeys.deviceAlreadyPaired)),
-              ),
+            OverlayNotificationHelper.showInfo(
+              context: context,
+              message: _translationService.translate(SyncTranslationKeys.deviceAlreadyPaired),
             );
           }
           return;
@@ -144,40 +129,24 @@ class SyncQrScanButton extends StatelessWidget {
               if (!context.mounted) return;
 
               // Show sync progress
-              ScaffoldMessenger.of(context)
-                ..clearSnackBars()
-                ..showSnackBar(SnackBar(
-                  content: Row(
-                    children: [
-                      const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(_translationService.translate(SyncTranslationKeys.syncInProgress)),
-                    ],
-                  ),
-                  duration: const Duration(seconds: 30),
-                ));
+              OverlayNotificationHelper.showLoading(
+                context: context,
+                message: _translationService.translate(SyncTranslationKeys.syncInProgress),
+                duration: const Duration(seconds: 30),
+              );
 
               onSyncComplete?.call();
               await _sync(context);
 
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).clearSnackBars();
+              OverlayNotificationHelper.hideNotification();
               await Future.delayed(const Duration(milliseconds: 100));
 
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(_translationService.translate(SyncTranslationKeys.syncCompleted)),
-                  duration: const Duration(seconds: 3),
-                  behavior: SnackBarBehavior.floating,
-                ),
+              OverlayNotificationHelper.showSuccess(
+                context: context,
+                message: _translationService.translate(SyncTranslationKeys.syncCompleted),
+                duration: const Duration(seconds: 3),
               );
 
               onSyncComplete?.call();
