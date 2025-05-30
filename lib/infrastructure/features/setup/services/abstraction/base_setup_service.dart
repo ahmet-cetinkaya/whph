@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/overlay_notification_helper.dart';
 
 abstract class BaseSetupService implements ISetupService {
   @override
@@ -88,8 +89,9 @@ abstract class BaseSetupService implements ISetupService {
       await downloadAndInstallUpdate(downloadUrl);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(translationService.translate(SharedTranslationKeys.updateFailedMessage))),
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: translationService.translate(SharedTranslationKeys.updateFailedMessage),
         );
       }
     }
