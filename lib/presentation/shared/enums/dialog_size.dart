@@ -7,23 +7,15 @@ enum DialogSize {
   min,
 
   /// Small dialog size
-  /// Desktop: 30% width, 40% height
-  /// Mobile: 50% initial height
   small,
 
   /// Medium dialog size (default)
-  /// Desktop: 60% width, 70% height
-  /// Mobile: 70% initial height
   medium,
 
   /// Large dialog size
-  /// Desktop: 80% width, 80% height
-  /// Mobile: 85% initial height
   large,
 
   /// Fullscreen dialog size
-  /// Desktop: 95% width, 95% height
-  /// Mobile: 95% initial height
   max;
 
   /// Returns the width ratio for desktop dialogs
@@ -86,7 +78,7 @@ enum DialogSize {
       case DialogSize.large:
         return 0.8;
       case DialogSize.max:
-        return 0.95;
+        return 0.9;
     }
   }
 
@@ -97,6 +89,6 @@ enum DialogSize {
 
   /// Returns the maximum child size for mobile bottom sheets
   double get mobileMaxSize {
-    return 0.95; // Maximum size for all mobile dialogs
+    return 0.9; // Maximum size for all mobile dialogs
   }
 }
