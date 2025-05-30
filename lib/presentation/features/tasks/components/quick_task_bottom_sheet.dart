@@ -514,8 +514,8 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
       ),
       // Use mainAxisSize.min to make the container fit its content
       child: Padding(
-        // Use same padding for both platforms
-        padding: EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeMedium),
+        // Use same padding for both platforms with slightly reduced bottom padding
+        padding: EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeSmall),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -574,15 +574,13 @@ class _QuickTaskBottomSheetState extends State<QuickTaskBottomSheet> {
             ),
 
             // Quick action buttons for all screen sizes
-            Padding(
-              padding: EdgeInsets.only(top: AppTheme.sizeSmall),
-              child: Column(
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: _buildQuickActionButtons(),
-                  ),
-                ],
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(top: AppTheme.sizeSmall),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: _buildQuickActionButtons(),
+                ),
               ),
             ),
           ],
