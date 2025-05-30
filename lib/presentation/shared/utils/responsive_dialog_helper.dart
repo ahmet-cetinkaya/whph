@@ -93,14 +93,12 @@ class ResponsiveDialogHelper {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(AppTheme.containerBorderRadius),
                   ),
-                  child: Expanded(
-                    child: _wrapWithConstrainedContent(
-                      context,
-                      child,
-                      scrollController: scrollController, // Pass controller for identification only
-                      isScrollable: isScrollable,
-                      bottomPadding: bottomPadding,
-                    ),
+                  child: _wrapWithConstrainedContent(
+                    context,
+                    child,
+                    scrollController: scrollController, // Pass controller for identification only
+                    isScrollable: isScrollable,
+                    bottomPadding: bottomPadding,
                   ),
                 );
               },
