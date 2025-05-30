@@ -18,7 +18,7 @@ class PermissionSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       title: _translationService.translate(SettingsTranslationKeys.permissionsTitle),
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: const PermissionsPage(),
     );
   }
