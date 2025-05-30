@@ -75,14 +75,11 @@ class ResponsiveDialogHelper {
         isScrollControlled: true,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
+        useSafeArea: false, // We'll handle safe area manually
         builder: (BuildContext context) {
           final mediaQuery = MediaQuery.of(context);
-          final bottomPadding = mediaQuery.padding.bottom;
           final bottomInset = mediaQuery.viewInsets.bottom;
-
-          // Calculate available height considering navigation bar and system UI
-          final safeAreaHeight = screenSize.height - bottomPadding;
-          final bottomSheetMaxHeight = safeAreaHeight * size.mobileMaxSize;
+          final bottomPadding = mediaQuery.padding.bottom;
 
           return Padding(
             padding: EdgeInsets.only(bottom: bottomInset),
@@ -93,21 +90,16 @@ class ResponsiveDialogHelper {
               expand: false,
               builder: (context, scrollController) {
                 return Material(
-                  child: SafeArea(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Content with constraints to prevent unbounded height
-                        Expanded(
-                          child: _wrapWithConstrainedContent(
-                            context,
-                            child,
-                            scrollController: isScrollable ? scrollController : null,
-                            isScrollable: isScrollable,
-                            maxHeight: bottomSheetMaxHeight,
-                          ),
-                        ),
-                      ],
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppTheme.containerBorderRadius),
+                  ),
+                  child: Expanded(
+                    child: _wrapWithConstrainedContent(
+                      context,
+                      child,
+                      scrollController: scrollController, // Pass controller for identification only
+                      isScrollable: isScrollable,
+                      bottomPadding: bottomPadding,
                     ),
                   ),
                 );
@@ -128,11 +120,37 @@ class ResponsiveDialogHelper {
     bool isScrollable = true,
     double? maxHeight,
     double? maxWidth,
+    double? bottomPadding,
   }) {
-    // Create a bounded container with optional scrolling
     Widget constrainedContent = child;
 
-    // Only apply constraints if maxHeight or maxWidth are specified
+    // For bottom sheets, we need to ensure the content has bounded height
+    // This prevents Scaffold and similar widgets from trying to expand infinitely
+    if (scrollController != null) {
+      // We're in a DraggableScrollableSheet context
+      // Don't use SingleChildScrollView as it conflicts with DraggableScrollableSheet
+      // Instead, let the DraggableScrollableSheet handle scrolling and just constrain the content
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final screenHeight = MediaQuery.of(context).size.height;
+          final availableHeight = constraints.maxHeight.isFinite ? constraints.maxHeight : screenHeight * 0.9;
+
+          // Use ClipRect to ensure content doesn't overflow and add bottom padding
+          return ClipRect(
+            child: Container(
+              height: availableHeight,
+              width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
+              padding: EdgeInsets.only(
+                bottom: (bottomPadding ?? MediaQuery.of(context).padding.bottom) + 16,
+              ),
+              child: child,
+            ),
+          );
+        },
+      );
+    }
+
+    // For desktop dialogs, use the original constraint-based approach
     if (maxHeight != null || maxWidth != null) {
       constrainedContent = ConstrainedBox(
         constraints: BoxConstraints(
@@ -143,10 +161,10 @@ class ResponsiveDialogHelper {
       );
     }
 
-    // If scrollable, wrap with SingleChildScrollView
+    // If scrollable for desktop dialogs
     if (isScrollable && maxHeight != null) {
       constrainedContent = SingleChildScrollView(
-        controller: scrollController,
+        physics: const BouncingScrollPhysics(),
         child: constrainedContent,
       );
     }
