@@ -273,13 +273,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       },
       child: Material(
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Pomodoro Timer
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Pomodoro Timer Section
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -303,79 +303,77 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     const SizedBox(width: AppTheme.sizeSmall),
                   ],
                 ),
-              ),
 
-              // Selected Task
-              if (_selectedTask != null)
-                Column(
-                  children: [
-                    Text(
-                      _translationService.translate(TaskTranslationKeys.marathonCurrentTask),
-                      style: AppTheme.headlineSmall,
-                    ),
-                    TaskCard(
-                      taskItem: _selectedTask!,
-                      onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                      onCompleted: () {
-                        Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
-                      },
-                      trailingButtons: [
-                        IconButton(
-                          icon: const Icon(Icons.push_pin),
-                          onPressed: _clearSelectedTask,
-                          tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
+                // Selected Task Section
+                if (_selectedTask != null)
+                  Column(
+                    children: [
+                      Text(
+                        _translationService.translate(TaskTranslationKeys.marathonCurrentTask),
+                        style: AppTheme.headlineSmall,
+                      ),
+                      TaskCard(
+                        taskItem: _selectedTask!,
+                        onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                        onCompleted: () {
+                          Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
+                        },
+                        trailingButtons: [
+                          IconButton(
+                            icon: const Icon(Icons.push_pin),
+                            onPressed: _clearSelectedTask,
+                            tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                // Filters Section
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TaskListOptions(
+                          selectedTagIds: _selectedTaskTagIds,
+                          showNoTagsFilter: false,
+                          onSearchChange: (query) {
+                            setState(() {
+                              _taskSearchQuery = query;
+                            });
+                          },
+                          showCompletedTasks: _showCompletedTasks,
+                          onCompletedTasksToggle: (showCompleted) {
+                            setState(() {
+                              _showCompletedTasks = showCompleted;
+                            });
+                          },
+                          hasItems: true,
+                          showDateFilter: false,
+                          showTagFilter: false,
+                          showSortButton: true,
+                          showSearchFilter: true,
+                          sortConfig: _sortConfig,
+                          onSortChange: _onSortConfigChange,
+                          settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      // Add task button
+                      if (!_showCompletedTasks)
+                        TaskAddButton(
+                          initialTagIds: _selectedTaskTagIds,
+                          initialPlannedDate: DateTime.now(),
+                          initialTitle: _taskSearchQuery,
+                          initialCompleted: _showCompletedTasks,
+                          onTaskCreated: (_, __) => _onTasksChanged(),
+                        ),
+                    ],
+                  ),
                 ),
 
-              // Filters
-              Padding(
-                padding: const EdgeInsets.only(left: 6, top: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TaskListOptions(
-                        selectedTagIds: _selectedTaskTagIds,
-                        showNoTagsFilter: false,
-                        onSearchChange: (query) {
-                          setState(() {
-                            _taskSearchQuery = query;
-                          });
-                        },
-                        showCompletedTasks: _showCompletedTasks,
-                        onCompletedTasksToggle: (showCompleted) {
-                          setState(() {
-                            _showCompletedTasks = showCompleted;
-                          });
-                        },
-                        hasItems: true,
-                        showDateFilter: false,
-                        showTagFilter: false,
-                        showSortButton: true,
-                        showSearchFilter: true,
-                        sortConfig: _sortConfig,
-                        onSortChange: _onSortConfigChange,
-                        settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                      ),
-                    ),
-                    // Add task button
-                    if (!_showCompletedTasks)
-                      TaskAddButton(
-                        initialTagIds: _selectedTaskTagIds,
-                        initialPlannedDate: DateTime.now(),
-                        initialTitle: _taskSearchQuery,
-                        initialCompleted: _showCompletedTasks,
-                        onTaskCreated: (_, __) => _onTasksChanged(),
-                      ),
-                  ],
-                ),
-              ),
-
-              // Update TaskList with today's date filter
-              Expanded(
-                child: TaskList(
+                // Task List Section
+                TaskList(
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _selectedTaskTagIds,
                   filterByPlannedEndDate: tomorrowForFilter,
@@ -393,8 +391,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   enableReordering: _sortConfig.useCustomOrder,
                   sortConfig: _sortConfig,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

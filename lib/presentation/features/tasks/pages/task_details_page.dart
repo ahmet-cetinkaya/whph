@@ -179,11 +179,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
           const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+      body: Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeSmall),
+        child: SingleChildScrollView(
           child: Column(
             children: [
+              // Task Details Section
               TaskDetailsContent(
                 taskId: widget.taskId,
                 onTaskUpdated: () {
@@ -195,7 +196,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               ),
               const SizedBox(height: AppTheme.sizeSmall),
 
-              // SUB TASKS
+              // Sub Tasks Header Section
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.sizeSmall,
@@ -281,43 +282,35 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                 ),
               ),
 
-              // SUB TASK LIST
-              Flexible(
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-                    child: TaskList(
-                      key: _listRebuildKey,
-                      onClickTask: (task) async {
-                        await ResponsiveDialogHelper.showResponsiveDialog(
-                          context: context,
-                          title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
-                          child: TaskDetailsPage(
-                            taskId: task.id,
-                            hideSidebar: true,
-                            showCompletedTasksToggle: widget.showCompletedTasksToggle,
-                            onTaskDeleted: () {
-                              _refreshEverything();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        );
+              // Sub Tasks List Section
+              TaskList(
+                key: _listRebuildKey,
+                onClickTask: (task) async {
+                  await ResponsiveDialogHelper.showResponsiveDialog(
+                    context: context,
+                    title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
+                    child: TaskDetailsPage(
+                      taskId: task.id,
+                      hideSidebar: true,
+                      showCompletedTasksToggle: widget.showCompletedTasksToggle,
+                      onTaskDeleted: () {
                         _refreshEverything();
+                        Navigator.of(context).pop();
                       },
-                      parentTaskId: widget.taskId,
-                      filterByCompleted: _showCompletedTasks,
-                      search: _searchQuery,
-                      onTaskCompleted: () {
-                        _hideCompletedTasks();
-                        _refreshEverything();
-                      },
-                      onScheduleTask: (_, __) => _refreshEverything(),
-                      enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
-                      sortConfig: _taskSortConfig,
                     ),
-                  ),
-                ),
+                  );
+                  _refreshEverything();
+                },
+                parentTaskId: widget.taskId,
+                filterByCompleted: _showCompletedTasks,
+                search: _searchQuery,
+                onTaskCompleted: () {
+                  _hideCompletedTasks();
+                  _refreshEverything();
+                },
+                onScheduleTask: (_, __) => _refreshEverything(),
+                enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
+                sortConfig: _taskSortConfig,
               ),
             ],
           ),
