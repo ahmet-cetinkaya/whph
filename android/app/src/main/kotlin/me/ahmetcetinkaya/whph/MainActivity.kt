@@ -147,6 +147,17 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy called - cleaning up persistent notifications")
+        
+        try {
+            // Cancel the persistent system tray notification (ID 888)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(888) // System tray notification ID
+            Log.d(TAG, "Cancelled persistent notification with ID 888")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error cancelling persistent notification on destroy: ${e.message}")
+        }
+        
         super.onDestroy()
     }
 

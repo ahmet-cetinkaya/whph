@@ -91,11 +91,31 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   @override
   void dispose() {
+    // Always cancel timers if they exist
     if (_isRunning) {
       _timer.cancel();
+    }
+    _tickingTimer?.cancel();
+
+    // Stop any playing sounds
+    _soundPlayer.stop();
+
+    // Remove timer menu items if they were added
+    if (_isTimerMenuAdded) {
       _removeTimerMenuItems();
     }
-    _soundPlayer.stop();
+
+    // Always clean up system tray to ensure persistent notifications are cleared
+    // This handles both timer running and non-running states
+    _systemTrayService.destroy().catchError((error) {
+      debugPrint('Error cleaning up system tray in dispose: $error');
+    }).then((_) {
+      // Reinitialize system tray to maintain functionality for other app features
+      _systemTrayService.init().catchError((error) {
+        debugPrint('Error reinitializing system tray in dispose: $error');
+      });
+    });
+
     super.dispose();
   }
 
