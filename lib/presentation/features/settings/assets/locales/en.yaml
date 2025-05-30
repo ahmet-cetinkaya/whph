@@ -83,6 +83,16 @@ settings:
           step3: Enable "Allow scheduling exact alarms"
         step2: Enable "Allow scheduling exact alarms"
       not_granted: Exact alarm permission is still not granted. Provide permission for the relevant function to work correctly.
+    startup:
+      title: Auto-start Permission
+      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
+      instructions: "Instructions:"
+      steps:
+        step1: In the settings screen that opens, find {appName}
+        step2: Enable "Auto-start" or "Autorun" permission
+        step3: Return to this app when done
+      importance: Without auto-start permission, the app may not function properly after device restarts.
+      not_granted: Auto-start permission is not granted yet. Provide permission for the relevant function to work correctly.
     app_usage:
       title: App Usage Permission
       description: This app needs permission to access app usage statistics to track your app usage patterns accurately.

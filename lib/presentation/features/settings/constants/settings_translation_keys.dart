@@ -15,7 +15,14 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
 
   // Startup Settings
   static const String startupTitle = 'settings.startup.title';
+  static const String startupPermissionTitle = 'settings.permissions.startup.title';
   static const String startupSubtitle = 'settings.startup.subtitle';
+  static const String startupDescription = 'settings.permissions.startup.description';
+  static const String startupStep1 = 'settings.permissions.startup.steps.step1';
+  static const String startupStep2 = 'settings.permissions.startup.steps.step2';
+  static const String startupStep3 = 'settings.permissions.startup.steps.step3';
+  static const String startupImportance = 'settings.permissions.startup.importance';
+  static const String startupNotGranted = 'settings.permissions.startup.not_granted';
   static const String enableStartupError = 'settings.startup.enable_error';
   static const String disableStartupError = 'settings.startup.disable_error';
 
