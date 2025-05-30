@@ -70,6 +70,16 @@ settings:
         step1: Açılan ayarlar ekranında {appName}'yi bulun
         step2: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
       title: Tam Alarm İzni
+    startup:
+      title: Otomatik Başlatma İzni
+      description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
+      instructions: "Talimatlar:"
+      steps:
+        step1: Açılan ayarlar ekranında {appName}'yi bulun
+        step2: '"Otomatik başlatma" veya "Otomatik çalıştır" iznini etkinleştirin'
+        step3: İşlem tamamlandığında bu uygulamaya geri dönün
+      importance: Otomatik başlatma izni olmadan, uygulama cihaz yeniden başlatıldıktan sonra düzgün çalışmayabilir.
+      not_granted: Otomatik başlatma izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
     fix_it: Düzelt
     instructions: İzinlerin verilmesi için talimatlar
     notification:
