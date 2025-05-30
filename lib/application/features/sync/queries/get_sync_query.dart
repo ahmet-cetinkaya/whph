@@ -71,7 +71,7 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
       if (where.query.isNotEmpty) {
         where.query += ' AND ';
       }
-      where.query += 'fromIp = ?';
+      where.query += 'from_ip = ?';
       where.variables.add(request.fromIP!);
     }
 
@@ -79,7 +79,7 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
       if (where.query.isNotEmpty) {
         where.query += ' AND ';
       }
-      where.query += 'toIp = ?';
+      where.query += 'to_ip = ?';
       where.variables.add(request.toIP!);
     }
 
@@ -87,7 +87,7 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
       if (where.query.isNotEmpty) {
         where.query += ' AND ';
       }
-      where.query += 'fromDeviceId = ?';
+      where.query += 'from_device_id = ?';
       where.variables.add(request.fromDeviceId!);
     }
 
@@ -95,7 +95,7 @@ class GetSyncDeviceQueryHandler implements IRequestHandler<GetSyncDeviceQuery, G
       if (where.query.isNotEmpty) {
         where.query += ' AND ';
       }
-      where.query += 'toDeviceId = ?';
+      where.query += 'to_device_id = ?';
       where.variables.add(request.toDeviceId!);
     }
 
