@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:whph/core/acore/utils/color_helper.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 /// A helper class for showing overlay notifications that appear above all content,
@@ -96,6 +97,34 @@ class OverlayNotificationHelper {
     );
   }
 
+  /// Shows a loading notification with a progress indicator
+  static void showLoading({
+    required BuildContext context,
+    required String message,
+    Duration duration = const Duration(seconds: 30),
+    VoidCallback? onTap,
+    Widget? actionWidget,
+  }) {
+    showNotification(
+      context: context,
+      message: message,
+      backgroundColor: AppTheme.primaryColor,
+      icon: null, // We'll add a custom loading widget
+      duration: duration,
+      onTap: onTap,
+      actionWidget: actionWidget ??
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(ColorHelper.getContrastingTextColor(AppTheme.primaryColor,
+                  darkColor: AppTheme.darkTextColor, lightColor: AppTheme.lightTextColor)),
+            ),
+          ),
+    );
+  }
+
   /// Hides the current overlay notification if one is showing
   static void hideNotification() {
     _currentOverlay?.remove();
@@ -132,16 +161,6 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
   late final Animation<double> _animation;
   Timer? _dismissTimer;
 
-  /// Returns a contrasting text color based on the brightness of the background color
-  Color _getContrastingTextColor(Color backgroundColor) {
-    // Calculate color brightness (0-255)
-    final brightness = ((backgroundColor.r * 299) + (backgroundColor.g * 587) + (backgroundColor.b * 114)) / 1000;
-
-    // If brightness is greater than 128 (light color), return black
-    // If less (dark color), return white
-    return brightness > 128 ? Colors.black : Colors.white;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -174,7 +193,8 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
 
   @override
   Widget build(BuildContext context) {
-    final contrastingTextColor = _getContrastingTextColor(widget.backgroundColor);
+    final contrastingTextColor = ColorHelper.getContrastingTextColor(widget.backgroundColor,
+        darkColor: AppTheme.darkTextColor, lightColor: AppTheme.lightTextColor);
 
     return Positioned(
       left: 0,
