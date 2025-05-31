@@ -26,7 +26,6 @@ class _Channels {
   String get exactAlarm => "${AndroidAppConstants.packageName}/exact_alarm";
   String get notification => "${AndroidAppConstants.packageName}/notification";
   String get appUsageStats => "${AndroidAppConstants.packageName}/app_usage_stats";
-  String get pomodoroTimer => "${AndroidAppConstants.packageName}/pomodoro_timer";
 }
 
 /// Notification channel constants

@@ -208,8 +208,15 @@ tasks:
     notifications:
       break_completed: Mola süresi tamamlandı!
       long_break_completed: Uzun mola tamamlandı!
+      time_remaining_prefix: "Kalan süre:"
+      timer_completed: Zamanlayıcı tamamlandı!
       title: Pomodoro Zamanlayıcı
       work_completed: Çalışma oturumu tamamlandı!
+    system_tray:
+      timer_running: Zamanlayıcı çalışıyor
+      complete_title: Pomodoro Tamamlandı
+      app_running: Uygulama Çalışıyor
+      tap_to_open: Açmak için dokunun
     settings:
       auto_start_break: Çalışmadan sonra molayı otomatik başlat
       auto_start_section: Otomatik Başlatma Seçenekleri

@@ -7,6 +7,12 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String pomodoroWorkSessionCompleted = 'tasks.pomodoro.notifications.work_completed';
   static const String pomodoroBreakSessionCompleted = 'tasks.pomodoro.notifications.break_completed';
   static const String pomodoroLongBreakSessionCompleted = 'tasks.pomodoro.notifications.long_break_completed';
+  static const String pomodoroTimeRemainingPrefix = 'tasks.pomodoro.notifications.time_remaining_prefix';
+  static const String pomodoroTimerCompleted = 'tasks.pomodoro.notifications.timer_completed';
+  static const String pomodoroSystemTrayTimerRunning = 'tasks.pomodoro.system_tray.timer_running';
+  static const String pomodoroSystemTrayCompleteTitle = 'tasks.pomodoro.system_tray.complete_title';
+  static const String pomodoroSystemTrayAppRunning = 'tasks.pomodoro.system_tray.app_running';
+  static const String pomodoroSystemTrayTapToOpen = 'tasks.pomodoro.system_tray.tap_to_open';
   static const String pomodoroSettingsLabel = 'tasks.pomodoro.settings.title';
   static const String pomodoroTimerSettingsLabel = 'tasks.pomodoro.settings.timer_label';
   static const String pomodoroWorkLabel = 'tasks.pomodoro.settings.work_duration';

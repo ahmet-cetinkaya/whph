@@ -12,8 +12,8 @@ class MobileSystemTrayService implements ISystemTrayService {
   // Private fields
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
-  String _currentTitle = 'App Running';
-  String _currentBody = 'Tap to open';
+  String _currentTitle = '';
+  String _currentBody = '';
 
   // Additional private fields for menu items
   List<TrayMenuItem> _menuItems = [];

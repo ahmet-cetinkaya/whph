@@ -16,7 +16,6 @@ object Constants {
         const val EXACT_ALARM = "$PACKAGE_NAME/exact_alarm"
         const val NOTIFICATION = "$PACKAGE_NAME/notification"
         const val APP_USAGE_STATS = "$PACKAGE_NAME/app_usage_stats"
-        const val POMODORO_TIMER = "$PACKAGE_NAME/pomodoro_timer"
     }
 
     // Notification Channels

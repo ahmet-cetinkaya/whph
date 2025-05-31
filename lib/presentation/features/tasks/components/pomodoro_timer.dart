@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/acore/services/platform/pomodoro_timer_service.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
@@ -48,9 +47,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   static const int _minTimerValue = 5;
   static const int _maxTimerValue = 120;
-
-  // Check if running on Android
-  bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
@@ -115,11 +111,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     // Stop any playing sounds
     _soundPlayer.stop();
 
-    // Stop Android timer service if running on Android
-    if (_isAndroid && _isRunning) {
-      PomodoroTimerService.stopTimer();
-    }
-
     // Remove timer menu items if they were added
     if (_isTimerMenuAdded) {
       _removeTimerMenuItems();
@@ -127,14 +118,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     // Always clean up system tray to ensure persistent notifications are cleared
     // This handles both timer running and non-running states
-    _systemTrayService.destroy().catchError((error) {
-      debugPrint('Error cleaning up system tray in dispose: $error');
-    }).then((_) {
-      // Reinitialize system tray to maintain functionality for other app features
-      _systemTrayService.init().catchError((error) {
-        debugPrint('Error reinitializing system tray in dispose: $error');
-      });
-    });
+    _resetSystemTrayToDefault();
 
     super.dispose();
   }
@@ -219,14 +203,36 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   void _sendNotification() {
+    final completionMessage = _isWorking
+        ? _translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
+        : _translationService.translate(_isLongBreak
+            ? TaskTranslationKeys.pomodoroLongBreakSessionCompleted
+            : TaskTranslationKeys.pomodoroBreakSessionCompleted);
+
+    // Set system tray for completion state
+    _setPomodoroCompletionNotification(completionMessage);
+
+    // Also send a regular notification for immediate user attention
     _notificationService.show(
       title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
-      body: _isWorking
-          ? _translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
-          : _translationService.translate(_isLongBreak
-              ? TaskTranslationKeys.pomodoroLongBreakSessionCompleted
-              : TaskTranslationKeys.pomodoroBreakSessionCompleted),
+      body: completionMessage,
     );
+  }
+
+  // Helper methods for Pomodoro notification management
+  void _setPomodoroTimerNotification(String status, String timeDisplay) {
+    _systemTrayService.setTitle('$status - $timeDisplay');
+    _systemTrayService.setBody(_translationService.translate(TaskTranslationKeys.pomodoroSystemTrayTimerRunning));
+  }
+
+  void _setPomodoroCompletionNotification(String completionMessage) {
+    _systemTrayService.setTitle(_translationService.translate(TaskTranslationKeys.pomodoroSystemTrayCompleteTitle));
+    _systemTrayService.setBody(completionMessage);
+  }
+
+  void _resetSystemTrayToDefault() {
+    _systemTrayService.setTitle(_translationService.translate(TaskTranslationKeys.pomodoroSystemTrayAppRunning));
+    _systemTrayService.setBody(_translationService.translate(TaskTranslationKeys.pomodoroSystemTrayTapToOpen));
   }
 
   void _stopAlarm() {
@@ -252,12 +258,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
       setState(() {
         _isRunning = true;
-
-        // Enable wake lock on Android to prevent sleep
-        if (_isAndroid) {
-          PomodoroTimerService.startTimer(_remainingTime.inSeconds);
-        }
-
         _startRegularTimer();
       });
     }
@@ -292,9 +292,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   void _updateSystemTrayTimer() {
-    final status = _isWorking ? 'Work' : (_isLongBreak ? 'Long Break' : 'Break');
-    _systemTrayService.setTitle('$status - ${_getDisplayTime()}');
-    _systemTrayService.setBody('Timer running');
+    final status = _isWorking
+        ? _translationService.translate(TaskTranslationKeys.pomodoroWorkLabel)
+        : (_isLongBreak
+            ? _translationService.translate(TaskTranslationKeys.pomodoroLongBreakLabel)
+            : _translationService.translate(TaskTranslationKeys.pomodoroBreakLabel));
+    final timeDisplay = _getDisplayTime();
+
+    // Use dedicated helper method for timer notifications
+    _setPomodoroTimerNotification(status, timeDisplay);
   }
 
   void _stopTimer() {
@@ -315,19 +321,16 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         _completedSessions = 0; // Reset completed sessions
         _isLongBreak = false; // Reset long break flag
 
-        // Stop timer and disable wake lock
+        // Stop timer
         _timer.cancel();
-        if (_isAndroid) {
-          PomodoroTimerService.stopTimer();
-        }
 
         _soundPlayer.stop(); // Stop any playing sounds
       });
 
       _resetSystemTrayIcon();
       _removeTimerMenuItems();
-      _systemTrayService.setTitle('App Running');
-      _systemTrayService.setBody('Tap to open');
+      // Reset system tray title/body when stopping timer
+      _resetSystemTrayToDefault();
 
       // Call the onTimerStop callback if provided
       widget.onTimerStop?.call();
