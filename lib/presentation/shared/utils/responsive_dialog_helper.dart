@@ -75,33 +75,21 @@ class ResponsiveDialogHelper {
         isScrollControlled: true,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
-        useSafeArea: false, // We'll handle safe area manually
+        useSafeArea: true, // Let Flutter handle safe area automatically
         builder: (BuildContext context) {
-          final mediaQuery = MediaQuery.of(context);
-          final bottomInset = mediaQuery.viewInsets.bottom;
-          final bottomPadding = mediaQuery.padding.bottom;
-
-          return Padding(
-            padding: EdgeInsets.only(bottom: bottomInset),
-            child: DraggableScrollableSheet(
-              initialChildSize: size.mobileInitialSize,
-              minChildSize: size.mobileMinSize,
-              maxChildSize: size.mobileMaxSize,
-              expand: false,
-              builder: (context, scrollController) {
-                return Material(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppTheme.containerBorderRadius),
-                  ),
-                  child: _wrapWithConstrainedContent(
-                    context,
-                    child,
-                    scrollController: scrollController, // Pass controller for identification only
-                    isScrollable: isScrollable,
-                    bottomPadding: bottomPadding,
-                  ),
-                );
-              },
+          // Use dialog size to determine the initial height
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * size.mobileMaxSizeRatio,
+            ),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * size.mobileInitialSizeRatio,
+              child: Material(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppTheme.containerBorderRadius),
+                ),
+                child: child,
+              ),
             ),
           );
         },
@@ -114,39 +102,14 @@ class ResponsiveDialogHelper {
   static Widget _wrapWithConstrainedContent(
     BuildContext context,
     Widget child, {
-    ScrollController? scrollController,
     bool isScrollable = true,
     double? maxHeight,
     double? maxWidth,
-    double? bottomPadding,
   }) {
     Widget constrainedContent = child;
 
-    // For bottom sheets, we need to ensure the content has bounded height
-    // This prevents Scaffold and similar widgets from trying to expand infinitely
-    if (scrollController != null) {
-      // We're in a DraggableScrollableSheet context
-      // Don't use SingleChildScrollView as it conflicts with DraggableScrollableSheet
-      // Instead, let the DraggableScrollableSheet handle scrolling and just constrain the content
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final screenHeight = MediaQuery.of(context).size.height;
-          final availableHeight = constraints.maxHeight.isFinite ? constraints.maxHeight : screenHeight * 0.9;
-
-          // Use ClipRect to ensure content doesn't overflow and add bottom padding
-          return ClipRect(
-            child: Container(
-              height: availableHeight,
-              width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
-              padding: EdgeInsets.only(
-                bottom: (bottomPadding ?? MediaQuery.of(context).padding.bottom) + 16,
-              ),
-              child: child,
-            ),
-          );
-        },
-      );
-    }
+    // For bottom sheets, we don't need special handling anymore since we're using Flexible
+    // Bottom sheet constraints are now handled by the parent Column/Flexible structure
 
     // For desktop dialogs, use the original constraint-based approach
     if (maxHeight != null || maxWidth != null) {
