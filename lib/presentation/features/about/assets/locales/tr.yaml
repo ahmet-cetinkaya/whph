@@ -37,8 +37,8 @@ about:
       description: "Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı etiketlerle düzenleyin ve gruplandırın. Etiketlere göre farklı aktivitelere harcadığınız zamanı takip ederek zamanınızı nerede harcadığınızı anlayın ve iş akışınızı optimize edin."
     step7:
       title: "Uygulama İzinleri"
-      description: "WHPH, alışkanlıklarınızı takip etmek, hatırlatıcılar göndermek ve uygulama kullanımını izlemek için belirli izinlere ihtiyaç duyar. Bu izinler, uygulamanın verimliliğinizi desteklemek için sorunsuz çalışmasını sağlar."
-      review_permissions: "Uygulama İzinlerini İncele"
+      description: "WHPH'nin düzgün çalışması için bazı izinlere ihtiyaç vardır. Bildirim, uygulama takibi gibi sistemsel özellikler için vermek istediğiniz izinleri inceleyebilirsiniz."
+      review_permissions: "İzinleri İncele"
     step8:
       title: "Hayatınızı Dönüştürmeye Hazır mısınız?"
       description: "Daha iyi alışkanlıklar edinmek, odaklı kalmak ve hedeflerinize ulaşmak için ihtiyacınız olan tüm araçlara sahipsiniz. Daha üretken ve tatmin edici bir yaşama doğru yolculuğunuza bugün başlayın!"
