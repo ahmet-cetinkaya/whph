@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
+import 'package:whph/presentation/features/tasks/components/quick_add_task_dialog.dart';
 import 'package:whph/presentation/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -86,7 +86,7 @@ class TaskAddFloatingButton extends StatelessWidget {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       size: DialogSize.small,
-      child: QuickTaskBottomSheet(
+      child: QuickAddTaskDialog(
         initialTagIds: initialTagIds,
         initialPlannedDate: initialPlannedDate,
         initialDeadlineDate: initialDeadlineDate,

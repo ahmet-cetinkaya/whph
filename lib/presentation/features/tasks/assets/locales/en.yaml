@@ -11,6 +11,9 @@ tasks:
       schedule: Schedule task
   complete:
     error: Unexpected error occurred while saving task completion.
+  date_selection:
+    deadline_date_title: Select deadline date
+    planned_date_title: Select planned date
   delete:
     error: Unexpected error occurred while deleting task.
     message: Are you sure you want to delete this task?
@@ -231,10 +234,13 @@ tasks:
       urgent_important: Urgent & Important
       urgent_not_important: Urgent but Not Important
   quick_task:
-    clear_all: Clear all fields
     create_error: Error creating task
     lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
     lock_settings: Lock Settings
+    reset_all: Reset all fields
+    reset_confirm:
+      message: Are you sure you want to reset all fields? This action cannot be undone.
+      title: Reset All Fields
     title: Quick Task
     title_hint: Task title
     tooltips:

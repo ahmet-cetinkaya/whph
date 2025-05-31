@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/tasks/components/quick_task_bottom_sheet.dart';
+import 'package:whph/presentation/features/tasks/components/quick_add_task_dialog.dart';
 import 'package:whph/presentation/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -49,7 +49,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       size: DialogSize.small,
-      child: QuickTaskBottomSheet(
+      child: QuickAddTaskDialog(
         initialTagIds: widget.initialTagIds,
         initialPlannedDate: widget.initialPlannedDate,
         initialDeadlineDate: widget.initialDeadlineDate,
