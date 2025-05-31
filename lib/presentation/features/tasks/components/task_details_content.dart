@@ -646,8 +646,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             if (!mounted) return;
             setState(() {
               _task!.priority = value;
-              _updateTask();
             });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
           },
         ),
       );
@@ -663,8 +666,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             if (!mounted) return;
             setState(() {
               _task!.estimatedTime = value;
-              _updateTask();
             });
+
+            // Force immediate update without debounce
+            if (_debounce?.isActive ?? false) _debounce!.cancel();
+            _saveTaskImmediately();
           },
           decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
           incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
