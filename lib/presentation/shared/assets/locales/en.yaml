@@ -193,6 +193,7 @@ shared:
     days: days
     hours: hr
     minutes: min
+    minutes_short: m
     seconds: sec
   update_dialog:
     buttons:

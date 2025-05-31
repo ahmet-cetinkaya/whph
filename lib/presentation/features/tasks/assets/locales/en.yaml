@@ -140,8 +140,6 @@ tasks:
         - 🏆 Celebrate achievements and milestone completions
       title: Task Management & Workflow Guide
   marathon:
-    current_task: "Currently Working On:"
-
     details:
       title: Task Details
     help:

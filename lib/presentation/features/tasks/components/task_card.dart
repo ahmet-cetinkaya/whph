@@ -28,6 +28,7 @@ class TaskCard extends StatelessWidget {
   final List<Widget>? trailingButtons;
   final bool transparent;
   final bool showSubTasks;
+  final bool showScheduleButton;
 
   final VoidCallback onOpenDetails;
   final VoidCallback? onCompleted;
@@ -42,6 +43,7 @@ class TaskCard extends StatelessWidget {
     required this.onOpenDetails,
     this.onScheduled,
     this.showSubTasks = false,
+    this.showScheduleButton = true,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -123,41 +125,42 @@ class TaskCard extends StatelessWidget {
           ),
 
         // Schedule button
-        StatefulBuilder(
-          builder: (context, setState) => IconButton(
-            icon: const Icon(Icons.schedule, color: Colors.grey),
-            tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
-            onPressed: () {
-              final now = DateTime.now();
-              final today = DateTime(now.year, now.month, now.day);
-              final tomorrow = today.add(const Duration(days: 1));
+        if (showScheduleButton)
+          StatefulBuilder(
+            builder: (context, setState) => IconButton(
+              icon: const Icon(Icons.schedule, color: Colors.grey),
+              tooltip: _translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
+              onPressed: () {
+                final now = DateTime.now();
+                final today = DateTime(now.year, now.month, now.day);
+                final tomorrow = today.add(const Duration(days: 1));
 
-              ResponsiveDialogHelper.showResponsiveDialog(
-                context: context,
-                size: DialogSize.small,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
-                      onTap: () {
-                        _handleSchedule(today);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    ListTile(
-                      title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
-                      onTap: () {
-                        _handleSchedule(tomorrow);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+                ResponsiveDialogHelper.showResponsiveDialog(
+                  context: context,
+                  size: DialogSize.small,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleToday)),
+                        onTap: () {
+                          _handleSchedule(today);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text(_translationService.translate(TaskTranslationKeys.taskScheduleTomorrow)),
+                        onTap: () {
+                          _handleSchedule(tomorrow);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
-        ),
         if (trailingButtons != null)
           ...trailingButtons!.map((widget) {
             if (widget is IconButton) {
@@ -303,7 +306,13 @@ class TaskCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: AppTheme.fontSizeMedium),
           const SizedBox(width: 2),
-          Text(text, style: AppTheme.bodySmall.copyWith(color: color)),
+          Flexible(
+            child: Text(
+              text,
+              style: AppTheme.bodySmall.copyWith(color: color),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       );
 

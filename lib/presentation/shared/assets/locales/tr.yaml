@@ -52,6 +52,7 @@ shared:
     report_error: Bildir
   units:
     minutes: dk
+    minutes_short: dk
     days: gün
     hours: sa
     seconds: sn

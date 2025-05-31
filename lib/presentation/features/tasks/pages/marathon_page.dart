@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
@@ -40,6 +41,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
+  // Dimming overlay state
+  bool _isTimerRunning = false;
+  bool _isDimmed = false;
+  Timer? _dimmingTimer;
+  static const Duration _dimmingDelay = Duration(seconds: 5); // Time before dimming starts
+  static const double _dimmingOpacity = 0.15; // Opacity value when dimmed
+
   void _closeDialog() {
     Navigator.pop(context);
   }
@@ -72,6 +80,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   void dispose() {
     final tasksService = container.resolve<TasksService>();
     tasksService.removeListener(_onTasksChanged);
+    _dimmingTimer?.cancel();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: SystemUiOverlay.values,
@@ -105,6 +114,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       );
       _onSelectTask(firstUncompletedTask);
     }
+
+    // Track timer state and start dimming countdown
+    setState(() {
+      _isTimerRunning = true;
+    });
+    _startDimmingTimer();
+  }
+
+  void _onTimerStop() {
+    _stopDimmingTimer();
   }
 
   void _onSelectTask(TaskListItem task) async {
@@ -255,6 +274,41 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     }
   }
 
+  // Dimming overlay methods
+  void _startDimmingTimer() {
+    _dimmingTimer?.cancel();
+    _dimmingTimer = Timer(_dimmingDelay, () {
+      if (_isTimerRunning && mounted) {
+        setState(() {
+          _isDimmed = true;
+        });
+      }
+    });
+  }
+
+  void _resetDimmingTimer() {
+    if (_isDimmed) {
+      setState(() {
+        _isDimmed = false;
+      });
+    }
+    if (_isTimerRunning) {
+      _startDimmingTimer();
+    }
+  }
+
+  void _stopDimmingTimer() {
+    _dimmingTimer?.cancel();
+    setState(() {
+      _isTimerRunning = false;
+      _isDimmed = false;
+    });
+  }
+
+  void _onUserInteraction() {
+    _resetDimmingTimer();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -272,124 +326,142 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         );
       },
       child: Material(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: SingleChildScrollView(
-            child: Column(
+        color: AppTheme.surface0,
+        child: GestureDetector(
+          onTap: _onUserInteraction,
+          onPanUpdate: (_) => _onUserInteraction(),
+          child: MouseRegion(
+            onHover: (_) => _onUserInteraction(),
+            child: Stack(
               children: [
-                // Pomodoro Timer Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: _closeDialog,
-                      tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: PomodoroTimer(
-                          onTimeUpdate: _handleTimerUpdate,
-                          onTimerStart: _onTimerStart,
+                // Main Content
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // Pomodoro Timer Section (always visible)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            AnimatedOpacity(
+                              opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                              duration: const Duration(milliseconds: 500),
+                              child: IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: _closeDialog,
+                                tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: PomodoroTimer(
+                                  onTimeUpdate: _handleTimerUpdate,
+                                  onTimerStart: _onTimerStart,
+                                  onTimerStop: _onTimerStop,
+                                ),
+                              ),
+                            ),
+                            AnimatedOpacity(
+                              opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                              duration: const Duration(milliseconds: 500),
+                              child: HelpMenu(
+                                titleKey: TaskTranslationKeys.marathonHelpTitle,
+                                markdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.sizeSmall),
+                          ],
                         ),
-                      ),
-                    ),
-                    HelpMenu(
-                      titleKey: TaskTranslationKeys.marathonHelpTitle,
-                      markdownContentKey: TaskTranslationKeys.marathonHelpContent,
-                    ),
-                    const SizedBox(width: AppTheme.sizeSmall),
-                  ],
-                ),
 
-                // Selected Task Section
-                if (_selectedTask != null)
-                  Column(
-                    children: [
-                      Text(
-                        _translationService.translate(TaskTranslationKeys.marathonCurrentTask),
-                        style: AppTheme.headlineSmall,
-                      ),
-                      TaskCard(
-                        taskItem: _selectedTask!,
-                        onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                        onCompleted: () {
-                          Future.delayed(const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
-                        },
-                        trailingButtons: [
-                          IconButton(
-                            icon: const Icon(Icons.push_pin),
-                            onPressed: _clearSelectedTask,
-                            tooltip: _translationService.translate(TaskTranslationKeys.marathonUnpinTaskTooltip),
+                        // Selected Task Section (always visible when task is selected)
+                        if (_selectedTask != null) ...[
+                          const SizedBox(height: AppTheme.sizeSmall),
+                          TaskCard(
+                            taskItem: _selectedTask!,
+                            onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                            onCompleted: () {
+                              Future.delayed(
+                                  const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
+                            },
+                            showScheduleButton: false,
                           ),
                         ],
-                      ),
-                    ],
-                  ),
 
-                // Filters Section
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TaskListOptions(
-                          selectedTagIds: _selectedTaskTagIds,
-                          showNoTagsFilter: false,
-                          onSearchChange: (query) {
-                            setState(() {
-                              _taskSearchQuery = query;
-                            });
-                          },
-                          showCompletedTasks: _showCompletedTasks,
-                          onCompletedTasksToggle: (showCompleted) {
-                            setState(() {
-                              _showCompletedTasks = showCompleted;
-                            });
-                          },
-                          hasItems: true,
-                          showDateFilter: false,
-                          showTagFilter: false,
-                          showSortButton: true,
-                          showSearchFilter: true,
-                          sortConfig: _sortConfig,
-                          onSortChange: _onSortConfigChange,
-                          settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                        // Filters Section (dimmed when timer is running)
+                        AnimatedOpacity(
+                          opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                          duration: const Duration(milliseconds: 500),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TaskListOptions(
+                                    selectedTagIds: _selectedTaskTagIds,
+                                    showNoTagsFilter: false,
+                                    onSearchChange: (query) {
+                                      setState(() {
+                                        _taskSearchQuery = query;
+                                      });
+                                    },
+                                    showCompletedTasks: _showCompletedTasks,
+                                    onCompletedTasksToggle: (showCompleted) {
+                                      setState(() {
+                                        _showCompletedTasks = showCompleted;
+                                      });
+                                    },
+                                    hasItems: true,
+                                    showDateFilter: false,
+                                    showTagFilter: false,
+                                    showSortButton: true,
+                                    showSearchFilter: true,
+                                    sortConfig: _sortConfig,
+                                    onSortChange: _onSortConfigChange,
+                                    settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                  ),
+                                ),
+                                // Add task button
+                                if (!_showCompletedTasks)
+                                  TaskAddButton(
+                                    initialTagIds: _selectedTaskTagIds,
+                                    initialPlannedDate: DateTime.now(),
+                                    initialTitle: _taskSearchQuery,
+                                    initialCompleted: _showCompletedTasks,
+                                    onTaskCreated: (_, __) => _onTasksChanged(),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      // Add task button
-                      if (!_showCompletedTasks)
-                        TaskAddButton(
-                          initialTagIds: _selectedTaskTagIds,
-                          initialPlannedDate: DateTime.now(),
-                          initialTitle: _taskSearchQuery,
-                          initialCompleted: _showCompletedTasks,
-                          onTaskCreated: (_, __) => _onTasksChanged(),
-                        ),
-                    ],
-                  ),
-                ),
 
-                // Task List Section
-                TaskList(
-                  filterByCompleted: _showCompletedTasks,
-                  filterByTags: _selectedTaskTagIds,
-                  filterByPlannedEndDate: tomorrowForFilter,
-                  filterByDeadlineEndDate: tomorrowForFilter,
-                  filterDateOr: true,
-                  search: _taskSearchQuery,
-                  onTaskCompleted: _onTasksChanged,
-                  onClickTask: (task) => _showTaskDetails(task.id),
-                  onSelectTask: _onSelectTask,
-                  onScheduleTask: (_, __) => _onTasksChanged(),
-                  onTasksLoaded: _onTasksLoaded,
-                  selectedTask: _selectedTask,
-                  showSelectButton: true,
-                  transparentCards: true,
-                  enableReordering: _sortConfig.useCustomOrder,
-                  sortConfig: _sortConfig,
+                        // Task List Section (dimmed when timer is running)
+                        AnimatedOpacity(
+                          opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                          duration: const Duration(milliseconds: 500),
+                          child: TaskList(
+                            filterByCompleted: _showCompletedTasks,
+                            filterByTags: _selectedTaskTagIds,
+                            filterByPlannedEndDate: tomorrowForFilter,
+                            filterByDeadlineEndDate: tomorrowForFilter,
+                            filterDateOr: true,
+                            search: _taskSearchQuery,
+                            onTaskCompleted: _onTasksChanged,
+                            onClickTask: (task) => _showTaskDetails(task.id),
+                            onSelectTask: _onSelectTask,
+                            onScheduleTask: (_, __) => _onTasksChanged(),
+                            onTasksLoaded: _onTasksLoaded,
+                            selectedTask: _selectedTask,
+                            showSelectButton: true,
+                            transparentCards: true,
+                            enableReordering: _sortConfig.useCustomOrder,
+                            sortConfig: _sortConfig,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
