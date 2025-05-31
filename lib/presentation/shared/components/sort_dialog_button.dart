@@ -49,7 +49,6 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
   Future<void> _showOrderDialog(BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
       child: _SortDialog<T>(
         availableOptions: widget.availableOptions,
         config: widget.config,
