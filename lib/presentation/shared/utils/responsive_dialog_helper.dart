@@ -75,20 +75,32 @@ class ResponsiveDialogHelper {
         isScrollControlled: true,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
-        useSafeArea: true, // Let Flutter handle safe area automatically
+        useSafeArea: true,
+        showDragHandle: false,
         builder: (BuildContext context) {
-          // Use dialog size to determine the initial height
+          final mediaQuery = MediaQuery.of(context);
+          final safeAreaBottom = mediaQuery.viewPadding.bottom;
+          final screenHeight = mediaQuery.size.height;
+
+          // Calculate available height considering safe area
+          final availableHeight = screenHeight - safeAreaBottom - AppTheme.sizeSmall;
+          final maxHeight = availableHeight * size.mobileMaxSizeRatio;
+          final initialHeight = availableHeight * size.mobileInitialSizeRatio;
+
           return ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * size.mobileMaxSizeRatio,
+              maxHeight: maxHeight,
             ),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height * size.mobileInitialSizeRatio,
+              height: initialHeight,
               child: Material(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(AppTheme.containerBorderRadius),
                 ),
-                child: child,
+                child: SafeArea(
+                  top: false,
+                  child: child,
+                ),
               ),
             ),
           );
