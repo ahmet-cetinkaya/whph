@@ -11,6 +11,9 @@ tasks:
       schedule: Görevi planla
   complete:
     error: Görev tamamlanırken beklenmedik bir hata oluştu.
+  date_selection:
+    deadline_date_title: Son tarihi seçin
+    planned_date_title: Planlanan tarihi seçin
   delete:
     error: Görev silinirken beklenmedik bir hata oluştu.
     message: Bu görevi silmek istediğinize emin misiniz?
@@ -244,10 +247,13 @@ tasks:
       urgent_important: Acil ve Önemli
       urgent_not_important: Acil ama Önemli Değil
   quick_task:
-    clear_all: Tüm alanları temizle
-    create_error: Görev oluşturulürken hata oluştu
+    create_error: Görev oluşturulurken hata oluştu
     lock_description: Benzer görevler oluştururken değerlerini korumak için özellikleri kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
     lock_settings: Kilit Ayarları
+    reset_all: Tüm alanları sıfırla
+    reset_confirm:
+      message: Tüm alanları sıfırlamak istediğinize emin misiniz?
+      title: Tüm Alanları Sıfırla
     title: Hızlı Görev
     title_hint: Görev başlığı
     tooltips:

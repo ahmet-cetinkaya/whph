@@ -41,7 +41,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String quickTaskTitle = 'tasks.quick_task.title';
   static const String quickTaskTitleHint = 'tasks.quick_task.title_hint';
   static const String quickTaskCreateError = 'tasks.quick_task.create_error';
-  static const String quickTaskClearAll = 'tasks.quick_task.clear_all';
+  static const String quickTaskResetAll = 'tasks.quick_task.reset_all';
   static const String quickTaskLockSettings = 'tasks.quick_task.lock_settings';
   static const String quickTaskLockDescription = 'tasks.quick_task.lock_description';
 
@@ -52,6 +52,14 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String quickTaskPlannedDateNotSet = 'tasks.quick_task.tooltips.planned_date_not_set';
   static const String quickTaskDeadlineDate = 'tasks.quick_task.tooltips.deadline_date';
   static const String quickTaskDeadlineDateNotSet = 'tasks.quick_task.tooltips.deadline_date_not_set';
+
+  // Quick Task Reset Confirmation
+  static const String quickTaskResetConfirmTitle = 'tasks.quick_task.reset_confirm.title';
+  static const String quickTaskResetConfirmMessage = 'tasks.quick_task.reset_confirm.message';
+
+  // Date Selection Titles
+  static const String selectPlannedDateTitle = 'tasks.date_selection.planned_date_title';
+  static const String selectDeadlineDateTitle = 'tasks.date_selection.deadline_date_title';
 
   // Task Add Button
   static const String addTaskButtonTooltip = 'tasks.add_button.tooltip';

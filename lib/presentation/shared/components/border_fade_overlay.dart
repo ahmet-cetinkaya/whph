@@ -38,7 +38,15 @@ class BorderFadeOverlay extends StatelessWidget {
 
     return Stack(
       children: [
-        child,
+        Padding(
+          padding: EdgeInsets.only(
+            left: fadeBorders.contains(FadeBorder.left) ? fadeWidth / 3 : 0,
+            right: fadeBorders.contains(FadeBorder.right) ? fadeWidth / 3 : 0,
+            top: fadeBorders.contains(FadeBorder.top) ? fadeWidth / 3 : 0,
+            bottom: fadeBorders.contains(FadeBorder.bottom) ? fadeWidth / 3 : 0,
+          ),
+          child: child,
+        ),
 
         // Left fade
         if (fadeBorders.contains(FadeBorder.left))
