@@ -139,6 +139,40 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     });
   }
 
+  void _selectNextTask() {
+    // Refresh available tasks to ensure we have the latest data
+    if (_availableTasks.isEmpty) {
+      _clearSelectedTask();
+      return;
+    }
+
+    // Filter out completed tasks and the current selected task
+    final availableUncompletedTasks = _availableTasks
+        .where(
+          (task) => !task.isCompleted && task.id != _selectedTask?.id,
+        )
+        .toList();
+
+    if (availableUncompletedTasks.isNotEmpty) {
+      // Select the first uncompleted task
+      _onSelectTask(availableUncompletedTasks.first);
+    } else {
+      // If no uncompleted tasks available, try to find any other task (completed ones)
+      final otherTasks = _availableTasks
+          .where(
+            (task) => task.id != _selectedTask?.id,
+          )
+          .toList();
+
+      if (otherTasks.isNotEmpty) {
+        _onSelectTask(otherTasks.first);
+      } else {
+        // No other tasks available, clear selection
+        _clearSelectedTask();
+      }
+    }
+  }
+
   Future<void> _showTaskDetails(String taskId) async {
     final wasDeleted = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
@@ -379,11 +413,14 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                         if (_selectedTask != null) ...[
                           const SizedBox(height: AppTheme.sizeSmall),
                           TaskCard(
+                            key: ValueKey(_selectedTask!.id),
                             taskItem: _selectedTask!,
                             onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
                             onCompleted: () {
-                              Future.delayed(
-                                  const Duration(seconds: 2), () => {_clearSelectedTask(), _onTasksChanged()});
+                              Future.delayed(const Duration(milliseconds: 500), () {
+                                _selectNextTask();
+                                _onTasksChanged();
+                              });
                             },
                             showScheduleButton: false,
                           ),
