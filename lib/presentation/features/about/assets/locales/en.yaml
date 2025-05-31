@@ -37,8 +37,8 @@ about:
       description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
     step7:
       title: "App Permissions"
-      description: "WHPH needs certain permissions to help you track habits, send reminders, and monitor app usage. These permissions ensure the app works seamlessly to support your productivity."
-      review_permissions: "Review App Permissions"
+      description: "WHPH needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
+      review_permissions: "Review Permissions"
     step8:
       title: "Ready to Transform Your Life?"
       description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
