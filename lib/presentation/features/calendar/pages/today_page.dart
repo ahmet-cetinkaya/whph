@@ -20,6 +20,7 @@ import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -115,6 +116,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     // Use ResponsiveDialogHelper to show task details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: TaskDetailsPage(
         taskId: taskId,
         hideSidebar: true,
@@ -126,6 +128,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     // Use ResponsiveDialogHelper to show habit details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: HabitDetailsPage(
         habitId: id,
       ),

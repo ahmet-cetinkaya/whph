@@ -13,6 +13,7 @@ import 'package:whph/presentation/features/tasks/components/task_details_content
 import 'package:whph/presentation/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
@@ -288,6 +289,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                 onClickTask: (task) async {
                   await ResponsiveDialogHelper.showResponsiveDialog(
                     context: context,
+                    size: DialogSize.max,
                     title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
                     child: TaskDetailsPage(
                       taskId: task.id,

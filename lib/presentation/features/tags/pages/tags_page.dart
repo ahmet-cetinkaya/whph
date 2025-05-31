@@ -10,6 +10,7 @@ import 'package:whph/presentation/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/features/tags/components/tag_list_options.dart';
 import 'package:whph/presentation/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/features/tags/components/tags_list.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
@@ -51,6 +52,7 @@ class _TagsPageState extends State<TagsPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: TagDetailsPage(
         tagId: id,
       ),

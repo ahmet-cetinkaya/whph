@@ -7,6 +7,7 @@ import 'package:whph/presentation/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/features/tags/services/tags_service.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/features/tasks/components/task_list_options.dart';
@@ -260,6 +261,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   onClickTask: (task) async {
                                     await ResponsiveDialogHelper.showResponsiveDialog(
                                       context: context,
+                                      size: DialogSize.max,
                                       title: _translationService.translate(TagTranslationKeys.detailsTasksLabel),
                                       child: TaskDetailsPage(
                                         taskId: task.id,

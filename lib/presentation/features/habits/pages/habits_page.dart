@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/habits/pages/habit_details_page.dart'
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
@@ -43,6 +44,7 @@ class _HabitsPageState extends State<HabitsPage> {
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: HabitDetailsPage(
         habitId: habitId,
       ),

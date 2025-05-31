@@ -12,6 +12,7 @@ import 'package:whph/presentation/features/tasks/components/task_list_options.da
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
@@ -176,6 +177,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   Future<void> _showTaskDetails(String taskId) async {
     final wasDeleted = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
+      size: DialogSize.large,
       child: TaskDetailsPage(
         taskId: taskId,
         hideSidebar: true,
