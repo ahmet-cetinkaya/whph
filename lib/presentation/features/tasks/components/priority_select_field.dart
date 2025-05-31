@@ -46,7 +46,14 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
                 style: AppTheme.headlineSmall,
               ),
             ),
-            ...widget.options.map((option) => _buildPriorityOption(context, option)),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: widget.options.map((option) => _buildPriorityOption(context, option)).toList(),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -114,7 +121,10 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
               Expanded(
                 child: Text(
                   selectedOption.label,
-                  style: AppTheme.bodySmall,
+                  style: AppTheme.bodySmall.copyWith(
+                    color:
+                        widget.value != null ? TaskUiConstants.getPriorityColor(widget.value) : AppTheme.lightTextColor,
+                  ),
                 ),
               ),
               const Icon(Icons.arrow_drop_down, size: AppTheme.fontSizeLarge),
