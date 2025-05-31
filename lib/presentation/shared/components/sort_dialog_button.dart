@@ -3,7 +3,6 @@ import 'package:whph/core/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
