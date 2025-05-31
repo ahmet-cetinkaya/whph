@@ -231,7 +231,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     }),
                     isMultiSelect: false,
                     limit: 1,
-                    icon: _selectedTagId == null ? Icons.add : Icons.edit,
+                    icon: _selectedTagId == null ? Icons.add : SharedUiConstants.editIcon,
                     iconSize: AppTheme.iconSizeSmall,
                     color: _selectedTagId != null ? Theme.of(context).primaryColor : null,
                   ),

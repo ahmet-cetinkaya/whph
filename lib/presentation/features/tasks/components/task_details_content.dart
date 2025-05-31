@@ -17,8 +17,10 @@ import 'package:whph/presentation/features/tasks/components/task_complete_button
 import 'package:whph/presentation/features/tasks/components/task_date_field.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
@@ -31,6 +33,7 @@ import 'package:whph/presentation/features/tasks/constants/task_translation_keys
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/acore/components/numeric_input.dart';
 
 class TaskDetailsContent extends StatefulWidget {
   final String taskId;
@@ -572,7 +575,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     suffixIcon: Tooltip(
                       message: _translationService.translate(TaskTranslationKeys.editTitleTooltip),
-                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
+                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
                     ),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -580,39 +583,36 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.sizeSmall),
-
-          // Only show elapsed time if greater than 0
-          if (showElapsedTime)
-            DetailTable(rowData: [
-              _buildElapsedTimeSection(),
-            ]),
+          const SizedBox(height: AppTheme.sizeXSmall),
 
           // Display optional fields section
           if (_visibleOptionalFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeXSmall),
             // Only fields that are manually set as visible (excluding description which is handled separately)
             DetailTable(
-                rowData: [
-              if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
-              if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
-              if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
-              if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
-              if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
-              if (_visibleOptionalFields.contains(keyRecurrence)) _buildRecurrenceSection(),
-              // Reminder sections are included in the planned and deadline date sections
-            ].toList()),
+              rowData: [
+                if (showElapsedTime) _buildElapsedTimeSection(),
+                if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
+                if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
+                if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
+                if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
+                if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
+                if (_visibleOptionalFields.contains(keyRecurrence)) _buildRecurrenceSection(),
+              ].toList(),
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+            ),
           ],
 
           // Description section if enabled (handled separately due to its different layout)
-          if (_visibleOptionalFields.contains(keyDescription)) _buildDescriptionSection(),
+          if (_visibleOptionalFields.contains(keyDescription)) ...[
+            _buildDescriptionSection(),
+            const SizedBox(height: AppTheme.sizeXSmall),
+          ],
 
           // Only show chip section if we have available fields to add
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 4,
+              runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
           ],
@@ -655,38 +655,31 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
         icon: TaskUiConstants.estimatedTimeIcon,
-        widget: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () => _adjustEstimatedTime(-1),
-              icon: const Icon(Icons.remove),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-            ),
-            Text(
-              SharedUiConstants.formatDurationHuman(_task!.estimatedTime, _translationService),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-              onPressed: () => _adjustEstimatedTime(1),
-              icon: const Icon(Icons.add),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-            ),
-          ],
+        widget: NumericInput(
+          initialValue: _task!.estimatedTime ?? TaskUiConstants.defaultEstimatedTimeOptions.first,
+          incrementValue: 5,
+          decrementValue: 5,
+          onValueChanged: (value) {
+            if (!mounted) return;
+            setState(() {
+              _task!.estimatedTime = value;
+              _updateTask();
+            });
+          },
+          decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
+          incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
+          iconColor: AppTheme.secondaryTextColor,
+          iconSize: AppTheme.iconSizeSmall,
+          valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
         ),
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
         icon: TaskUiConstants.timerIcon,
-        widget: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(
-            SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, _translationService),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+        widget: Text(
+          SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, _translationService),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       );
 
@@ -823,15 +816,27 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   DetailTableRowData _buildRecurrenceSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.recurrenceLabel),
         icon: Icons.repeat,
-        widget: ListTile(
-          contentPadding: EdgeInsets.zero,
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          title: Text(
-            _getRecurrenceSummaryText(),
-            style: AppTheme.bodyMedium,
-          ),
-          trailing: const Icon(Icons.edit_outlined, size: AppTheme.iconSizeSmall),
+        widget: InkWell(
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
           onTap: _openRecurrenceDialog,
+          child: Row(
+            children: [
+              // Main Content Section
+              Expanded(
+                child: Text(
+                  _getRecurrenceSummaryText(),
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: _task!.recurrenceType == RecurrenceType.none
+                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+                        : null,
+                  ),
+                ),
+              ),
+              // Edit Icon Section
+              const Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
+            ],
+          ),
         ),
       );
 
@@ -865,24 +870,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             ),
           ),
         ],
+        isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
       );
-
-  void _adjustEstimatedTime(int adjustment) {
-    if (!mounted) return;
-    setState(() {
-      final currentIndex = TaskUiConstants.defaultEstimatedTimeOptions.indexOf(_task!.estimatedTime ?? 0);
-      if (currentIndex == -1) {
-        _task!.estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions.first;
-      } else {
-        final newIndex = (currentIndex + adjustment).clamp(
-          0,
-          TaskUiConstants.defaultEstimatedTimeOptions.length - 1,
-        );
-        _task!.estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions[newIndex];
-      }
-      _updateTask();
-    });
-  }
 
   // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {

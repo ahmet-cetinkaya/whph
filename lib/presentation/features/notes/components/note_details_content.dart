@@ -17,6 +17,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/components/optional_field_chip.dart';
 
@@ -312,27 +313,32 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: AppTheme.sizeXSmall),
 
           // Optional fields (Tags)
-          if (_isFieldVisible(keyTags)) DetailTable(rowData: [_buildTagsSection()]),
+          if (_isFieldVisible(keyTags)) ...[
+            DetailTable(
+              rowData: [_buildTagsSection()],
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+            ),
+            const SizedBox(height: AppTheme.sizeXSmall),
+          ],
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 4,
+              runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: AppTheme.sizeXSmall),
           ],
 
           // Divider
           const Divider(thickness: 1, color: AppTheme.dividerColor),
 
           // Note Content (always visible)
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: AppTheme.sizeXSmall),
           MarkdownEditor(
             controller: _contentController,
             onChanged: (_) => _saveNote(),

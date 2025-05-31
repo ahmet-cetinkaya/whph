@@ -182,37 +182,42 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
     // Check if screen is wide enough for horizontal layout
     final isWideScreen = MediaQuery.of(context).size.width > 600;
 
-    // Build the switch without label but with tooltip
-    Widget reminderSwitch = Tooltip(
-      message: widget.translationService.translate(HabitTranslationKeys.enableReminders),
-      child: Opacity(
-        opacity: widget.enabled ? 1.0 : 0.5,
-        child: Switch(
-          value: _hasReminder,
-          onChanged: !widget.enabled
-              ? null
-              : (value) {
-                  // Update local state
-                  setState(() {
-                    _hasReminder = value;
+    // Build the switch with label, similar to goal dialog
+    Widget reminderSwitch = ListTile(
+      contentPadding: EdgeInsets.zero,
+      enabled: widget.enabled,
+      leading: Switch(
+        value: _hasReminder,
+        onChanged: !widget.enabled
+            ? null
+            : (value) {
+                // Update local state
+                setState(() {
+                  _hasReminder = value;
 
-                    // When enabling reminders, select all days by default if no days are currently selected
-                    if (_hasReminder && _selectedDays.isEmpty) {
-                      _selectedDays = List.generate(7, (index) => index + 1);
-                    }
-                  });
-
-                  // Notify parent about both changes if callbacks exist
-                  if (widget.onHasReminderChanged != null) {
-                    widget.onHasReminderChanged!(_hasReminder);
+                  // When enabling reminders, select all days by default if no days are currently selected
+                  if (_hasReminder && _selectedDays.isEmpty) {
+                    _selectedDays = List.generate(7, (index) => index + 1);
                   }
+                });
 
-                  // If enabling reminders, also notify about selected days
-                  if (_hasReminder && widget.onDaysChanged != null) {
-                    widget.onDaysChanged!(_selectedDays);
-                  }
-                },
-        ),
+                // Notify parent about both changes if callbacks exist
+                if (widget.onHasReminderChanged != null) {
+                  widget.onHasReminderChanged!(_hasReminder);
+                }
+
+                // If enabling reminders, also notify about selected days
+                if (_hasReminder && widget.onDaysChanged != null) {
+                  widget.onDaysChanged!(_selectedDays);
+                }
+              },
+      ),
+      title: Text(widget.translationService.translate(HabitTranslationKeys.enableReminders)),
+      subtitle: Text(
+        _hasReminder
+            ? widget.translationService.translate(HabitTranslationKeys.reminderSettings)
+            : widget.translationService.translate(HabitTranslationKeys.noReminder),
+        style: AppTheme.bodySmall,
       ),
     );
 

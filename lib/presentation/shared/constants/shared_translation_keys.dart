@@ -176,6 +176,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String errorReportTemplate = 'shared.errors.report_template';
   static const String errorReportSubject = 'shared.errors.report_subject';
 
+  static const String change = 'shared.change';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     final day = switch (weekday) {

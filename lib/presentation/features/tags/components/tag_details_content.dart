@@ -13,6 +13,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/extensions/color_extensions.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -307,7 +308,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           if (_visibleOptionalFields.isNotEmpty ||
               _tag!.isArchived ||
               (_tagTags != null && _tagTags!.items.isNotEmpty)) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: AppTheme.sizeXSmall),
             DetailTable(
               rowData: [
                 if (_visibleOptionalFields.contains(keyColor))
@@ -359,15 +360,17 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                     ),
                   ),
               ],
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
+            const SizedBox(height: AppTheme.sizeXSmall),
           ],
 
           // Only show chip section if we have available fields to add
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: AppTheme.sizeXSmall),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 4,
+              runSpacing: 4,
               children: availableChipFields.map((field) => _buildOptionalFieldChip(field)).toList(),
             ),
           ],

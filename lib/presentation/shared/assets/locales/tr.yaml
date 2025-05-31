@@ -1,34 +1,94 @@
 shared:
-  report_error: Hata Bildir
-  save_list_options: Liste Seçeneklerini Kaydet
   buttons:
+    add: Ekle
+    back: Geri
+    cancel: İptal
+    close: Kapat
+    confirm: Onayla
+    delete: Sil
+    done: Tamam
+    load_more: Daha Fazla
     save: Kaydet
     saved: Kaydedildi
-    add: Ekle
-    cancel: İptal
-    delete: Sil
-    close: Kapat
-    load_more: Daha Fazla
-    done: Tamam
-    confirm: Onayla
-    back: Geri
-  messages:
-    confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
-    no_items_found: Öğe yok
-  validation:
-    required: "{field} alanı zorunludur"
+  calendar:
+    months:
+      apr: Nisan
+      apr_short: Nis
+      aug: Ağustos
+      aug_short: Ağu
+      dec: Aralık
+      dec_short: Ara
+      feb: Şubat
+      feb_short: Şub
+      jan: Ocak
+      jan_short: Oca
+      jul: Temmuz
+      jul_short: Tem
+      jun: Haziran
+      jun_short: Haz
+      mar: Mart
+      mar_short: Mar
+      may: Mayıs
+      may_short: May
+      nov: Kasım
+      nov_short: Kas
+      oct: Ekim
+      oct_short: Eki
+      sep: Eylül
+      sep_short: Eyl
+    week_days:
+      fri: Cum
+      mon: Pzt
+      sat: Cmt
+      sun: Paz
+      thu: Per
+      tue: Sal
+      wed: Çar
+  change: Değiştir
+  color_picker:
+    confirm_selection: Seçimi Onayla
+    select_color_title: Renk Seç
+    tabs:
+      custom: Özel
+      palette: Renkler
+    title: Renk Seçici
+  data:
+    created_date_label: Oluşturulma Tarihi
+    modified_date_label: Değiştirilme Tarihi
+    name_label: İsim
+  date_filter:
+    title: Tarih Aralığı Seç
+    tooltips:
+      clear: Tarih filtresini temizle
+      filter: Tarihe göre filtrele
+  date_format:
+    hint: GG/AA/YYYY
+  days:
+    friday: Cuma
+    friday_short: Cum
+    monday: Pazartesi
+    monday_short: Pzt
+    saturday: Cumartesi
+    saturday_short: Cmt
+    sunday: Pazar
+    sunday_short: Paz
+    thursday: Perşembe
+    thursday_short: Per
+    tuesday: Salı
+    tuesday_short: Sal
+    wednesday: Çarşamba
+    wednesday_short: Çar
+  editor:
+    markdown:
+      hint: Markdown formatını kullanarak yazabilirsiniz...
   errors:
-    unexpected: Beklenmedik bir hata oluştu
-    loading: Veri yüklenirken hata oluştu
-    saving: Veri kaydedilirken hata oluştu
     deleting: Veri silinirken hata oluştu
-    file_pick: Dosya seçilirken hata oluştu
-    file_save: Dosya kaydedilirken hata oluştu
-    file_read: Dosya okunurken hata oluştu
-    file_write: Dosya yazılırken hata oluştu
     file_not_found: Dosya bulunamadı
-    storage_permission: Depolama izni gerekli
-    storage_permission_denied: Depolama izni reddedildi
+    file_pick: Dosya seçilirken hata oluştu
+    file_read: Dosya okunurken hata oluştu
+    file_save: Dosya kaydedilirken hata oluştu
+    file_write: Dosya yazılırken hata oluştu
+    loading: Veri yüklenirken hata oluştu
     report_subject: "WHPH: Beklenmeyen Hata Bildirimi"
     report_template: |
       Merhaba, WHPH uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
@@ -48,161 +108,102 @@ shared:
       Lütfen bu sorunu çözmeme yardımcı olun.
 
       Teşekkürler!
-  ui:
-    report_error: Bildir
-  units:
-    minutes: dk
-    minutes_short: dk
-    days: gün
-    hours: sa
-    seconds: sn
-  sort:
-    custom_order:
-      title: Özel Sıralama
-      description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
-    reset_to_default: Varsayılana Sıfırla
-    ascending: Artan
-    descending: Azalan
-    remove_criteria: Kriteri Kaldır
-    sort: Sırala
-  tooltips:
-    filter_by_tags: Etiketlere göre filtrele
-    refresh: Yenile
-    compare_with_previous: Önceki dönemle karşılaştır
-  sections:
-    habits: Alışkanlıklar
-    tasks: Görevler
-    time: Zaman
-    special_filters: Özel Filtreler
-    tags: Etiketler
-    statistics: İstatistikler
+    saving: Veri kaydedilirken hata oluştu
+    storage_permission: Depolama izni gerekli
+    storage_permission_denied: Depolama izni reddedildi
+    unexpected: Beklenmedik bir hata oluştu
+  filters:
+    search: Ara
+  help:
+    tooltip: Yardım
+  messages:
+    confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
+    no_items_found: Öğe yok
+  nav:
+    items:
+      app_usages: Uygulama Kullanımları
+      habits: Alışkanlıklar
+      more: Daha Fazla
+      notes: Notlar
+      settings: Ayarlar
+      tags: Etiketler
+      tasks: Görevler
+      today: Bugün
   none_option: "Hiçbir etiket yok"
-  calendar:
-    week_days:
-      mon: Pzt
-      tue: Sal
-      wed: Çar
-      thu: Per
-      fri: Cum
-      sat: Cmt
-      sun: Paz
-    months:
-      jan: Ocak
-      feb: Şubat
-      mar: Mart
-      apr: Nisan
-      may: Mayıs
-      jun: Haziran
-      jul: Temmuz
-      aug: Ağustos
-      sep: Eylül
-      oct: Ekim
-      nov: Kasım
-      dec: Aralık
-      jan_short: Oca
-      feb_short: Şub
-      mar_short: Mar
-      apr_short: Nis
-      may_short: May
-      jun_short: Haz
-      jul_short: Tem
-      aug_short: Ağu
-      sep_short: Eyl
-      oct_short: Eki
-      nov_short: Kas
-      dec_short: Ara
-  time_periods:
-    today: Bugün
-    this_week: Bu Hafta
-    this_month: Bu Ay
-    this_three_months: Bu 3 Ay
-    last_week: Son Hafta
-    last_month: Son Ay
-    last_three_months: Son 3 Ay
-    custom: Özel
-  days:
-    monday: Pazartesi
-    tuesday: Salı
-    wednesday: Çarşamba
-    thursday: Perşembe
-    friday: Cuma
-    saturday: Cumartesi
-    sunday: Pazar
-    monday_short: Pzt
-    tuesday_short: Sal
-    wednesday_short: Çar
-    thursday_short: Per
-    friday_short: Cum
-    saturday_short: Cmt
-    sunday_short: Paz
-  statistics:
-    daily_usage:
-      title: Günlük Kullanım
-      description: Haftanın günlerine göre toplam kullanım süresini gösterir
-    hourly_usage:
-      title: Saatlik Kullanım
-      description: Günün saatlerine göre toplam kullanım süresini gösterir
-  editor:
-    markdown:
-      hint: Markdown formatını kullanarak yazabilirsiniz...
-  color_picker:
-    title: Renk Seçici
-    select_color_title: Renk Seç
-    confirm_selection: Seçimi Onayla
-    tabs:
-      palette: Renkler
-      custom: Özel
-  date_filter:
-    title: Tarih Aralığı Seç
-    tooltips:
-      filter: Tarihe göre filtrele
-      clear: Tarih filtresini temizle
   regex_help:
-    title: Desen Örnekleri
-    tips_title: 💡 İpuçları
+    examples:
+      chat: \"Slack\" veya \"Discord\" ile eşleşir
+      chrome: \"Chrome\" içeren herhangi bir pencere başlığıyla eşleşir
+      exact_chrome: Tam olarak \"Chrome\" ile eşleşir
+      pdf: Herhangi bir PDF dosyasıyla eşleşir
+      vscode: Herhangi bir VS Code penceresiyle eşleşir
     tips:
       any_chars: Herhangi karakteri eşleştirmek için \".*\" kullanın
-      start: \"^\" metnin başlangıcını eşleştirir
+      dot: \"\\.\" nokta ile eşleşir
       end: \"$\" metnin sonunu eşleştirir
       or: \"|\" VEYA anlamına gelir
-      dot: \"\\.\" nokta ile eşleşir
-    examples:
-      chrome: \"Chrome\" içeren herhangi bir pencere başlığıyla eşleşir
-      vscode: Herhangi bir VS Code penceresiyle eşleşir
-      exact_chrome: Tam olarak \"Chrome\" ile eşleşir
-      chat: \"Slack\" veya \"Discord\" ile eşleşir
-      pdf: Herhangi bir PDF dosyasıyla eşleşir
+      start: \"^\" metnin başlangıcını eşleştirir
+    tips_title: 💡 İpuçları
+    title: Desen Örnekleri
+  report_error: Hata Bildir
+  save_list_options: Liste Seçeneklerini Kaydet
   search:
     placeholder: Ara
     tooltip: Öğe ara
-  nav:
-    items:
-      today: Bugün
-      tasks: Görevler
-      habits: Alışkanlıklar
-      notes: Notlar
-      app_usages: Uygulama Kullanımları
-      tags: Etiketler
-      settings: Ayarlar
-      more: Daha Fazla
-  update_dialog:
-    title: Güncelleme Mevcut!
-    message: Yeni bir sürüm ({version}) mevcut.
-    question: Şimdi güncellemek ister misiniz?
-    buttons:
-      later: Sonra
-      download_page: İndirme Sayfası
-      update_now: Şimdi Güncelle
-    failed: Güncelleme başarısız oldu.
-  help:
-    tooltip: Yardım
+  sections:
+    habits: Alışkanlıklar
+    special_filters: Özel Filtreler
+    statistics: İstatistikler
+    tags: Etiketler
+    tasks: Görevler
+    time: Zaman
+  sort:
+    ascending: Artan
+    custom_order:
+      description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
+      title: Özel Sıralama
+    descending: Azalan
+    remove_criteria: Kriteri Kaldır
+    reset_to_default: Varsayılana Sıfırla
+    sort: Sırala
+  statistics:
+    daily_usage:
+      description: Haftanın günlerine göre toplam kullanım süresini gösterir
+      title: Günlük Kullanım
+    hourly_usage:
+      description: Günün saatlerine göre toplam kullanım süresini gösterir
+      title: Saatlik Kullanım
   time:
     not_set: Ayarlanmadı
-  date_format:
-    hint: GG/AA/YYYY
-  data:
-    created_date_label: Oluşturulma Tarihi
-    modified_date_label: Değiştirilme Tarihi
-    name_label: İsim
-  filters:
-    search: Ara
+  time_periods:
+    custom: Özel
+    last_month: Son Ay
+    last_three_months: Son 3 Ay
+    last_week: Son Hafta
+    this_month: Bu Ay
+    this_three_months: Bu 3 Ay
+    this_week: Bu Hafta
+    today: Bugün
+  tooltips:
+    compare_with_previous: Önceki dönemle karşılaştır
+    filter_by_tags: Etiketlere göre filtrele
+    refresh: Yenile
+  ui:
+    report_error: Bildir
+  units:
+    days: gün
+    hours: sa
+    minutes: dk
+    minutes_short: dk
+    seconds: sn
+  update_dialog:
+    buttons:
+      download_page: İndirme Sayfası
+      later: Sonra
+      update_now: Şimdi Güncelle
+    failed: Güncelleme başarısız oldu.
+    message: Yeni bir sürüm ({version}) mevcut.
+    question: Şimdi güncellemek ister misiniz?
+    title: Güncelleme Mevcut!
+  validation:
+    required: "{field} alanı zorunludur"

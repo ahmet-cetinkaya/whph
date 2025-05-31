@@ -28,7 +28,7 @@ class DetailTable extends StatelessWidget {
   const DetailTable({
     super.key,
     required this.rowData,
-    this.isDense = true,
+    this.isDense = false,
     this.contentPadding,
     this.forceVertical = false,
   });
@@ -39,15 +39,23 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
+          padding: const EdgeInsets.only(bottom: AppTheme.sizeXSmall),
           child: Container(
             decoration: BoxDecoration(
               color: AppTheme.surface1,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
-              child: _buildRow(context, data),
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeXSmall),
+              // Ensure minimum height for each row
+              child: !forceVertical
+                  ? SizedBox(
+                      // You can adjust the minHeight value as needed
+                      // Use a constant or theme value for consistency
+                      height: isDense ? AppTheme.size3XLarge : AppTheme.size4XLarge,
+                      child: _buildRow(context, data),
+                    )
+                  : _buildRow(context, data),
             ),
           ),
         );
@@ -57,7 +65,7 @@ class DetailTable extends StatelessWidget {
 
   Widget _buildRow(BuildContext context, DetailTableRowData data) {
     final isSmallScreen = AppThemeHelper.isSmallScreen(context);
-    final labelWidth = isSmallScreen ? 120.0 : 200.0;
+    final labelWidth = isSmallScreen ? 110.0 : 160.0;
 
     if (forceVertical) {
       return Column(
@@ -69,12 +77,12 @@ class DetailTable extends StatelessWidget {
               padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.sizeXSmall, top: AppTheme.sizeXSmall),
               child: Text(
                 data.hintText!,
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
+                style: AppTheme.labelSmall.copyWith(
+                  color: AppTheme.lightTextColor.withValues(alpha: 0.6),
                 ),
               ),
             ),
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: AppTheme.sizeXSmall),
           Padding(
             padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.sizeXSmall),
             child: _buildContent(context, data),
@@ -104,10 +112,10 @@ class DetailTable extends StatelessWidget {
       children: [
         Icon(
           data.icon,
-          size: AppTheme.fontSizeLarge,
-          color: AppTheme.lightTextColor,
+          size: AppTheme.iconSizeSmall,
+          color: AppTheme.lightTextColor.withValues(alpha: 0.8),
         ),
-        const SizedBox(width: AppTheme.sizeSmall),
+        const SizedBox(width: AppTheme.sizeXSmall),
         Flexible(
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -115,9 +123,9 @@ class DetailTable extends StatelessWidget {
               Flexible(
                 child: Text(
                   data.label,
-                  style: AppTheme.bodySmall.copyWith(
+                  style: AppTheme.bodyMedium.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: AppTheme.lightTextColor,
+                    color: AppTheme.lightTextColor.withValues(alpha: 0.8),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -128,8 +136,8 @@ class DetailTable extends StatelessWidget {
                   message: data.tooltip!,
                   child: Icon(
                     SharedUiConstants.helpIcon,
-                    size: AppTheme.fontSizeLarge,
-                    color: AppTheme.lightTextColor.withAlpha((255 * 0.5).toInt()),
+                    size: AppTheme.iconSizeXSmall,
+                    color: AppTheme.lightTextColor.withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -144,10 +152,10 @@ class DetailTable extends StatelessWidget {
     return Container(
       padding: contentPadding ?? EdgeInsets.zero,
       clipBehavior: Clip.none,
-      constraints: const BoxConstraints(minHeight: 36),
+      constraints: const BoxConstraints(minHeight: 28),
       alignment: Alignment.centerLeft,
       child: DefaultTextStyle(
-        style: const TextStyle(overflow: TextOverflow.ellipsis),
+        style: AppTheme.bodyMedium.copyWith(overflow: TextOverflow.ellipsis),
         child: data.widget,
       ),
     );

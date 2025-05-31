@@ -4,6 +4,7 @@ import 'package:whph/presentation/shared/components/color_picker.dart';
 import 'package:whph/presentation/shared/components/color_preview.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
@@ -134,7 +135,7 @@ class _ColorFieldState extends State<ColorField> {
 
                       // Edit Icon
                       Icon(
-                        Icons.edit,
+                        SharedUiConstants.editIcon,
                         size: AppTheme.iconSizeSmall,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),

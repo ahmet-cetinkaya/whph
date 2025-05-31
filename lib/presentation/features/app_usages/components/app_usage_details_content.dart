@@ -15,6 +15,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/extensions/color_extensions.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_ui_constants.dart';
@@ -380,55 +381,58 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: AppTheme.sizeXSmall),
 
           // Details Table
-          DetailTable(rowData: [
-            // Device Label - Always visible as mandatory field
-            DetailTableRowData(
-              label: _translationService.translate(AppUsageTranslationKeys.deviceLabel),
-              icon: AppUsageUiConstants.deviceIcon,
-              widget: Text(
-                  _appUsage!.deviceName ?? _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
-            ),
-
-            // Tags - Optional field
-            if (_isFieldVisible(keyTags))
+          DetailTable(
+            rowData: [
+              // Device Label - Always visible as mandatory field
               DetailTableRowData(
-                label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
-                icon: AppUsageUiConstants.tagsIcon,
-                hintText: _translationService.translate(AppUsageTranslationKeys.tagsHint),
-                widget: TagSelectDropdown(
-                  key: ValueKey(_appUsageTags!.items.length),
-                  isMultiSelect: true,
-                  onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
-                  showSelectedInDropdown: true,
-                  initialSelectedTags: _appUsageTags!.items
-                      .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))
-                      .toList(),
-                  icon: SharedUiConstants.addIcon,
-                ),
+                label: _translationService.translate(AppUsageTranslationKeys.deviceLabel),
+                icon: AppUsageUiConstants.deviceIcon,
+                widget: Text(
+                    _appUsage!.deviceName ?? _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
               ),
 
-            // Color - Optional field
-            if (_isFieldVisible(keyColor))
-              DetailTableRowData(
-                label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
-                icon: AppUsageUiConstants.colorIcon,
-                hintText: _translationService.translate(AppUsageTranslationKeys.colorHint),
-                widget: ColorField(
-                  initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
-                  onColorChanged: _onChangeColor,
+              // Tags - Optional field
+              if (_isFieldVisible(keyTags))
+                DetailTableRowData(
+                  label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
+                  icon: AppUsageUiConstants.tagsIcon,
+                  hintText: _translationService.translate(AppUsageTranslationKeys.tagsHint),
+                  widget: TagSelectDropdown(
+                    key: ValueKey(_appUsageTags!.items.length),
+                    isMultiSelect: true,
+                    onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
+                    showSelectedInDropdown: true,
+                    initialSelectedTags: _appUsageTags!.items
+                        .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))
+                        .toList(),
+                    icon: SharedUiConstants.addIcon,
+                  ),
                 ),
-              ),
-          ]),
+
+              // Color - Optional field
+              if (_isFieldVisible(keyColor))
+                DetailTableRowData(
+                  label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
+                  icon: AppUsageUiConstants.colorIcon,
+                  hintText: _translationService.translate(AppUsageTranslationKeys.colorHint),
+                  widget: ColorField(
+                    initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
+                    onColorChanged: _onChangeColor,
+                  ),
+                ),
+            ],
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          ),
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: AppTheme.sizeXSmall),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 4,
+              runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
           ],

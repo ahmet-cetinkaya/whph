@@ -85,6 +85,8 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String filterByTagsTooltip = 'habits.overview.filter_by_tags_tooltip';
 
   static const String editNameTooltip = 'habits.tooltips.edit_name';
+  static const String decreaseEstimatedTime = 'habits.tooltips.decrease_estimated_time';
+  static const String increaseEstimatedTime = 'habits.tooltips.increase_estimated_time';
 
   static const String addHabit = 'habits.tooltips.add_habit';
 

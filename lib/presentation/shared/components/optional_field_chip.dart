@@ -34,6 +34,7 @@ class OptionalFieldChip extends StatelessWidget {
         icon,
         size: AppTheme.iconSizeSmall,
       ),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeXSmall),
       selected: selected,
       onSelected: onSelected,
       backgroundColor: backgroundColor,
