@@ -8,6 +8,7 @@ import 'package:whph/presentation/features/settings/components/sync_devices_tile
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/settings/components/startup_settings.dart';
 import 'package:whph/presentation/features/settings/components/notification_settings.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
@@ -27,32 +28,22 @@ class SettingsPage extends StatelessWidget {
       builder: (context) => ListView(
         children: [
           // Startup
-          if (StartupSettings.compatiblePlatform) ...[
-            const StartupSettings(),
-            const SizedBox(height: 8),
-          ],
+          if (StartupSettings.compatiblePlatform) const StartupSettings(),
 
           // Notification
           const NotificationSettings(),
-          const SizedBox(height: 8),
 
           // Permissions
-          if (Platform.isAndroid) ...[
-            PermissionSettings(),
-            const SizedBox(height: 8),
-          ],
+          if (Platform.isAndroid) PermissionSettings(),
 
           // Language
           LanguageSettings(),
-          const SizedBox(height: 8),
 
           // Sync Devices
           SyncDevicesTile(),
-          const SizedBox(height: 8),
 
           // Import/Export Settings
           const ImportExportSettings(),
-          const SizedBox(height: 8),
 
           // About
           AboutTile(),
