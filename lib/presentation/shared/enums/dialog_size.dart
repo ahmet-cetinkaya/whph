@@ -67,7 +67,7 @@ enum DialogSize {
   }
 
   /// Returns the initial child size for mobile bottom sheets
-  double get mobileInitialSize {
+  double get mobileInitialSizeRatio {
     switch (this) {
       case DialogSize.min:
         return 0; // No initial size for min size
@@ -83,12 +83,12 @@ enum DialogSize {
   }
 
   /// Returns the minimum child size for mobile bottom sheets
-  double get mobileMinSize {
-    return 0; // Minimum size for all mobile dialogs
+  double get mobileMinSizeRatio {
+    return 0.1; // Minimum size for all mobile dialogs
   }
 
   /// Returns the maximum child size for mobile bottom sheets
-  double get mobileMaxSize {
+  double get mobileMaxSizeRatio {
     return 0.9; // Maximum size for all mobile dialogs
   }
 }
