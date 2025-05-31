@@ -124,7 +124,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String marathonHelpContent = 'tasks.marathon.help.content';
   static const String marathonHelpTooltip = 'tasks.marathon.help.tooltip';
   static const String marathonDetailsTitle = 'tasks.marathon.details.title';
-  static const String marathonCurrentTask = 'tasks.marathon.current_task';
   static const String marathonUnpinTaskTooltip = 'tasks.marathon.unpin_task_tooltip';
 
   // Sub Tasks

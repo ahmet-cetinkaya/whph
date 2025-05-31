@@ -33,6 +33,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
 
   // Units
   static const String minutes = 'shared.units.minutes';
+  static const String minutesShort = 'shared.units.minutes_short';
   static const String days = 'shared.units.days';
   static const String hours = 'shared.units.hours';
   static const String seconds = 'shared.units.seconds';

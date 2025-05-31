@@ -26,11 +26,13 @@ import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 class PomodoroTimer extends StatefulWidget {
   final Function(Duration) onTimeUpdate;
   final VoidCallback? onTimerStart;
+  final VoidCallback? onTimerStop;
 
   const PomodoroTimer({
     super.key,
     required this.onTimeUpdate,
     this.onTimerStart,
+    this.onTimerStop,
   });
 
   @override
@@ -56,6 +58,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   String _getDisplayTime() {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // On very small screens (< 400px), show only minutes to save space
+    if (screenWidth < 400) {
+      final minutes = _remainingTime.inMinutes;
+      return '${minutes}m';
+    }
+
+    // On regular screens, show full time format
     return SharedUiConstants.formatDuration(_remainingTime);
   }
 
@@ -317,6 +328,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       _removeTimerMenuItems();
       _systemTrayService.setTitle('App Running');
       _systemTrayService.setBody('Tap to open');
+
+      // Call the onTimerStop callback if provided
+      widget.onTimerStop?.call();
     }
   }
 
@@ -441,11 +455,17 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               icon: Icon(SharedUiConstants.settingsIcon),
               onPressed: _showSettingsModal,
             ),
-          SizedBox(width: spacing),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 300),
-            style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
-            child: Text(_getDisplayTime()),
+          if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
+          Flexible(
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
+              child: Text(
+                _getDisplayTime(),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           SizedBox(width: spacing),
           IconButton(
@@ -642,23 +662,49 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }) {
     final min = minValue ?? _minTimerValue;
     final max = maxValue ?? _maxTimerValue;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Text(label),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              icon: const Icon(Icons.remove),
-              onPressed: value > min ? () => onAdjust(-step) : null,
+            Expanded(
+              flex: 2,
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            SizedBox(width: 80, child: Center(child: Text("$value${showMinutes ? ' min' : ''}"))),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: value < max ? () => onAdjust(step) : null,
+            const SizedBox(width: AppTheme.sizeSmall),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: value > min ? () => onAdjust(-step) : null,
+                  visualDensity: VisualDensity.compact,
+                ),
+                SizedBox(
+                  width: 40,
+                  child: Center(
+                    child: Text(
+                      "$value${showMinutes ? " ${_translationService.translate(SharedTranslationKeys.minutesShort)}" : ''}",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: value < max ? () => onAdjust(step) : null,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
             ),
           ],
         ),
+        const SizedBox(height: AppTheme.sizeXSmall),
       ],
     );
   }
@@ -668,14 +714,27 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     bool value,
     Function(bool) onChanged,
   ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Text(label),
-        Switch(
-          value: value,
-          onChanged: onChanged,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppTheme.sizeSmall),
+            Switch(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
         ),
+        const SizedBox(height: AppTheme.sizeXSmall),
       ],
     );
   }

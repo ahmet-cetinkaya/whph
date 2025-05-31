@@ -153,8 +153,6 @@ tasks:
         - Düzenli olarak gözden geçirin
       title: Görev Yönetimi ve İş Akışı Rehberi
   marathon:
-    current_task: "Şu Anda Çalışılan:"
-
     details:
       title: Görev Detayları
     help:
