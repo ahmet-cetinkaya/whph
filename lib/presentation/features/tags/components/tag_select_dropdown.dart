@@ -197,6 +197,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
               automaticallyImplyLeading: false,
@@ -219,135 +220,140 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                 const SizedBox(width: AppTheme.sizeSmall),
               ],
             ),
-            body: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Column(
-                children: [
-                  // Search Section
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: _searchController,
-                      focusNode: _searchFocusNode,
-                      decoration: InputDecoration(
-                        labelText: _translationService.translate(TagTranslationKeys.searchLabel),
-                        fillColor: Colors.transparent,
-                        labelStyle: AppTheme.bodySmall,
+            body: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Search Section
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: TextField(
+                        controller: _searchController,
+                        focusNode: _searchFocusNode,
+                        textInputAction: TextInputAction.search,
+                        decoration: InputDecoration(
+                          labelText: _translationService.translate(TagTranslationKeys.searchLabel),
+                          fillColor: Colors.transparent,
+                          labelStyle: AppTheme.bodySmall,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        onChanged: (value) {
+                          if (!mounted) return;
+
+                          setState(() {
+                            _tags = null;
+                          });
+
+                          if (value.isEmpty) {
+                            _getTags(pageIndex: 0);
+                            return;
+                          }
+
+                          _searchDebounce?.cancel();
+                          _searchDebounce = Timer(
+                              value.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 300),
+                              () {
+                            _getTags(pageIndex: 0, search: value);
+                          });
+                        },
                       ),
-                      onChanged: (value) {
-                        if (!mounted) return;
-
-                        setState(() {
-                          _tags = null;
-                        });
-
-                        if (value.isEmpty) {
-                          _getTags(pageIndex: 0);
-                          return;
-                        }
-
-                        _searchDebounce?.cancel();
-                        _searchDebounce = Timer(
-                            value.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 300),
-                            () {
-                          _getTags(pageIndex: 0, search: value);
-                        });
-                      },
                     ),
-                  ),
 
-                  // Tag List Section
-                  Expanded(
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
-                      itemBuilder: (context, index) {
-                        if (widget.showNoneOption && index == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    color: Colors.grey,
-                                  ),
-                            ),
-                          );
-                        }
+                    // Tag List Section
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
+                        itemBuilder: (context, index) {
+                          if (widget.showNoneOption && index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(
+                                _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                              ),
+                            );
+                          }
 
-                        if (widget.showNoneOption && index == 1) {
+                          if (widget.showNoneOption && index == 1) {
+                            return CheckboxListTile(
+                              title: Text(
+                                _translationService.translate(SharedTranslationKeys.noneOption),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              value: _hasExplicitlySelectedNone,
+                              onChanged: (bool? value) {
+                                if (!mounted) return;
+                                setState(() {
+                                  if (value == true) {
+                                    tempSelectedTags.clear();
+                                    _hasExplicitlySelectedNone = true;
+                                  } else {
+                                    _hasExplicitlySelectedNone = false;
+                                  }
+                                });
+                              },
+                            );
+                          }
+
+                          if (widget.showNoneOption ? index == 2 : index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Text(
+                                _translationService.translate(TagTranslationKeys.tagsLabel),
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                              ),
+                            );
+                          }
+
+                          final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
+
+                          if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final tag = _tags!.items[actualIndex];
                           return CheckboxListTile(
-                            title: Text(
-                              _translationService.translate(SharedTranslationKeys.noneOption),
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            value: _hasExplicitlySelectedNone,
+                            title: Text(tag.name),
+                            value: tempSelectedTags.contains(tag.id),
                             onChanged: (bool? value) {
                               if (!mounted) return;
                               setState(() {
-                                if (value == true) {
-                                  tempSelectedTags.clear();
-                                  _hasExplicitlySelectedNone = true;
-                                } else {
+                                if (value == true && _hasExplicitlySelectedNone) {
                                   _hasExplicitlySelectedNone = false;
+                                }
+
+                                if (widget.isMultiSelect) {
+                                  if (value == true) {
+                                    if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
+                                      tempSelectedTags.removeAt(0);
+                                    }
+                                    tempSelectedTags.add(tag.id);
+                                  } else {
+                                    tempSelectedTags.remove(tag.id);
+                                  }
+                                } else {
+                                  tempSelectedTags.clear();
+                                  if (value == true) {
+                                    tempSelectedTags.add(tag.id);
+                                  }
                                 }
                               });
                             },
                           );
-                        }
-
-                        if (widget.showNoneOption ? index == 2 : index == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              _translationService.translate(TagTranslationKeys.tagsLabel),
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    color: Colors.grey,
-                                  ),
-                            ),
-                          );
-                        }
-
-                        final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
-
-                        if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
-                          return const SizedBox.shrink();
-                        }
-
-                        final tag = _tags!.items[actualIndex];
-                        return CheckboxListTile(
-                          title: Text(tag.name),
-                          value: tempSelectedTags.contains(tag.id),
-                          onChanged: (bool? value) {
-                            if (!mounted) return;
-                            setState(() {
-                              if (value == true && _hasExplicitlySelectedNone) {
-                                _hasExplicitlySelectedNone = false;
-                              }
-
-                              if (widget.isMultiSelect) {
-                                if (value == true) {
-                                  if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
-                                    tempSelectedTags.removeAt(0);
-                                  }
-                                  tempSelectedTags.add(tag.id);
-                                } else {
-                                  tempSelectedTags.remove(tag.id);
-                                }
-                              } else {
-                                tempSelectedTags.clear();
-                                if (value == true) {
-                                  tempSelectedTags.add(tag.id);
-                                }
-                              }
-                            });
-                          },
-                        );
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
