@@ -728,48 +728,6 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
-
-        // Channel for Pomodoro Timer background service
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.POMODORO_TIMER).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "startTimer" -> {
-                    try {
-                        val durationSeconds = call.argument<Int>("durationSeconds") ?: 1500
-                        val serviceIntent = Intent(this, PomodoroTimerService::class.java).apply {
-                            action = PomodoroTimerService.ACTION_START_TIMER
-                            putExtra(PomodoroTimerService.EXTRA_DURATION_SECONDS, durationSeconds)
-                        }
-                        
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            startForegroundService(serviceIntent)
-                        } else {
-                            startService(serviceIntent)
-                        }
-                        
-                        result.success(true)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error starting timer service: ${e.message}", e)
-                        result.error("START_ERROR", e.message, null)
-                    }
-                }
-                "stopTimer" -> {
-                    try {
-                        val serviceIntent = Intent(this, PomodoroTimerService::class.java).apply {
-                            action = PomodoroTimerService.ACTION_STOP_TIMER
-                        }
-                        startService(serviceIntent)
-                        result.success(true)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error stopping timer service: ${e.message}", e)
-                        result.error("STOP_ERROR", e.message, null)
-                    }
-                }
-
-                else -> {
-                    result.notImplemented()
-                }
-            }
-        }
     }
 
     // Inner class to handle app information related operations

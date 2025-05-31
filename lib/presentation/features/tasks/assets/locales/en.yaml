@@ -195,8 +195,15 @@ tasks:
     notifications:
       break_completed: Break session completed!
       long_break_completed: Long break completed!
+      time_remaining_prefix: "Time remaining:"
+      timer_completed: Timer completed!
       title: Pomodoro Timer
       work_completed: Work session completed!
+    system_tray:
+      timer_running: Timer running
+      complete_title: Pomodoro Complete
+      app_running: App Running
+      tap_to_open: Tap to open
     settings:
       auto_start_break: Auto-start break after work
       auto_start_section: Auto-Start Options

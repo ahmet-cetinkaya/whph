@@ -89,16 +89,6 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
-        <service
-            android:name=".PomodoroTimerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" >
-            <property 
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="timer" />
-        </service>
-
         <!-- Receiver for handling notifications and alarms -->
         <receiver
             android:name=".NotificationReceiver"
