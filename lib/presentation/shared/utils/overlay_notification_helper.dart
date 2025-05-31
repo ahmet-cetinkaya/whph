@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/core/acore/utils/color_helper.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
@@ -23,7 +24,15 @@ class OverlayNotificationHelper {
     // Remove any existing overlay first
     hideNotification();
 
-    final overlay = Overlay.of(context);
+    // Check if overlay is available before proceeding
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) {
+      // Overlay not available, cannot show notification
+      if (kDebugMode) {
+        debugPrint('Cannot show overlay notification - no Overlay widget found in context');
+      }
+      return;
+    }
 
     _currentOverlay = OverlayEntry(
       builder: (context) => _NotificationOverlay(
