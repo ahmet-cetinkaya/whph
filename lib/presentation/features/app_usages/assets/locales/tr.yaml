@@ -117,6 +117,7 @@ app_usages:
           - 🔍 Etiket ve tarih aralığına göre filtreleyin
         title: Uygulama Kullanımı ve Zaman Yönetimi Rehberi
 
+      title: Uygulama Kullanımı
   rules:
     add_new_rule: Yeni Kural Ekle
     delete_confirm_message: Bu kuralı silmek istediğinize emin misiniz?

@@ -34,32 +34,40 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
 
   Future<void> _checkPermission() async {
     if (!Platform.isAndroid) {
-      setState(() {
-        _hasAppUsagePermission = true;
-        _isLoading = false;
-        _showError = false;
-      });
+      if (mounted) {
+        setState(() {
+          _hasAppUsagePermission = true;
+          _isLoading = false;
+          _showError = false;
+        });
+      }
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final hasPermission = await _appUsageService.checkUsageStatsPermission();
 
-      setState(() {
-        _hasAppUsagePermission = hasPermission;
-        _isLoading = false;
-        _showError = !hasPermission;
-      });
+      if (mounted) {
+        setState(() {
+          _hasAppUsagePermission = hasPermission;
+          _isLoading = false;
+          _showError = !hasPermission;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _hasAppUsagePermission = false;
-        _isLoading = false;
-        _showError = true;
-      });
+      if (mounted) {
+        setState(() {
+          _hasAppUsagePermission = false;
+          _isLoading = false;
+          _showError = true;
+        });
+      }
     }
 
     if (!_hasAppUsagePermission) {
@@ -74,10 +82,12 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
   Future<void> _requestPermission() async {
     if (!Platform.isAndroid) return;
 
-    setState(() {
-      _isLoading = true;
-      _showError = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _showError = false;
+      });
+    }
 
     try {
       await _appUsageService.requestUsageStatsPermission();
@@ -88,10 +98,12 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
         widget.onPermissionGranted?.call();
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _showError = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _showError = true;
+        });
+      }
     }
   }
 
