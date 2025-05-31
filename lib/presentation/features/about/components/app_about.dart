@@ -103,13 +103,11 @@ class AppAbout extends StatelessWidget {
   Widget _buildExternalLink({required String title, required String url, required IconData icon}) {
     return TextButton.icon(
       onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-      label: Flexible(
-        child: Text(
-          title,
-          style: AppTheme.bodyLarge,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-        ),
+      label: Text(
+        title,
+        style: AppTheme.bodyLarge,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
       icon: Icon(icon),
     );
