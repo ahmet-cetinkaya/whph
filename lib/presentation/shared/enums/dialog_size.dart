@@ -78,7 +78,7 @@ enum DialogSize {
       case DialogSize.large:
         return 0.85;
       case DialogSize.max:
-        return 0.9;
+        return 0.95;
     }
   }
 
@@ -89,6 +89,6 @@ enum DialogSize {
 
   /// Returns the maximum child size for mobile bottom sheets
   double get mobileMaxSizeRatio {
-    return 0.9; // Maximum size for all mobile dialogs
+    return 0.95; // Maximum size for all mobile dialogs
   }
 }

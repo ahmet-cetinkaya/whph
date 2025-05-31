@@ -11,6 +11,7 @@ import 'package:whph/presentation/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
@@ -245,6 +246,7 @@ class NotesListState extends State<NotesList> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(
         noteId: id,

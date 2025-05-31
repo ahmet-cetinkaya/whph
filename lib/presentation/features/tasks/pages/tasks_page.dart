@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/tasks/components/task_add_floating_bu
 import 'package:whph/presentation/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -44,9 +45,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> _openTaskDetails(String taskId) async {
+  Future<void> _openDetails(String taskId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: TaskDetailsPage(
         taskId: taskId,
         hideSidebar: true,
@@ -118,7 +120,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         // Schedule the dialog to open after the build is complete
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            _openTaskDetails(taskId);
+            _openDetails(taskId);
           }
         });
       }
@@ -134,7 +136,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
           // Schedule the dialog to open after the build is complete
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) _openTaskDetails(taskId);
+            if (mounted) _openDetails(taskId);
           });
         }
       }
@@ -220,7 +222,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                 filterByDeadlineEndDate: _filterEndDate,
                 filterDateOr: true,
                 search: _searchQuery,
-                onClickTask: (task) => _openTaskDetails(task.id),
+                onClickTask: (task) => _openDetails(task.id),
                 enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
                 sortConfig: _sortConfig,
               ),

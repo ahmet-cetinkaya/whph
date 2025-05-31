@@ -83,7 +83,7 @@ class ResponsiveDialogHelper {
           final screenHeight = mediaQuery.size.height;
 
           // Calculate available height considering safe area
-          final availableHeight = screenHeight - safeAreaBottom - AppTheme.sizeSmall;
+          final availableHeight = screenHeight - safeAreaBottom;
           final maxHeight = availableHeight * size.mobileMaxSizeRatio;
           final initialHeight = availableHeight * size.mobileInitialSizeRatio;
 

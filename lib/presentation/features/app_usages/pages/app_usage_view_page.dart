@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/app_usages/services/app_usages_servic
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -62,6 +63,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: AppUsageDetailsPage(
         appUsageId: id,
       ),

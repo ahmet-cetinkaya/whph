@@ -13,6 +13,7 @@ import 'package:whph/presentation/shared/components/bar_chart.dart';
 import 'package:whph/presentation/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
@@ -169,6 +170,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       case TagTimeCategory.tasks:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
+          size: DialogSize.max,
           title: _translationService.translate(TagTranslationKeys.categoryTasks),
           child: TaskDetailsPage(
             taskId: item.id,
@@ -179,6 +181,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       case TagTimeCategory.habits:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
+          size: DialogSize.max,
           title: _translationService.translate(TagTranslationKeys.categoryHabits),
           child: HabitDetailsPage(
             habitId: item.id,
@@ -188,6 +191,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       case TagTimeCategory.appUsage:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
+          size: DialogSize.max,
           title: _translationService.translate(TagTranslationKeys.categoryAppUsage),
           child: AppUsageDetailsPage(
             appUsageId: item.id,

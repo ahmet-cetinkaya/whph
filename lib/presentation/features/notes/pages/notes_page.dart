@@ -9,6 +9,7 @@ import 'package:whph/presentation/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/shared/components/help_menu.dart';
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
@@ -37,6 +38,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   Future<void> _openDetails(String noteId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.max,
       child: NoteDetailsPage(
         noteId: noteId,
       ),
@@ -49,6 +51,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
     if (mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
+        size: DialogSize.max,
         title: _translationService.translate(NoteTranslationKeys.noteDetails),
         child: NoteDetailsPage(
           noteId: noteId,
