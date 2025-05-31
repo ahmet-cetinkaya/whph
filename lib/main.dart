@@ -117,14 +117,42 @@ void main() async {
   }, (error, stack) {
     // Global error handling for uncaught exceptions
     if (navigatorKey.currentContext != null) {
-      if (error is BusinessException) {
-        ErrorHelper.showError(navigatorKey.currentContext!, error);
-      } else {
-        ErrorHelper.showUnexpectedError(
-          navigatorKey.currentContext!,
-          error,
-          stack,
-        );
+      try {
+        // Check if overlay is available before trying to show error notifications
+        final context = navigatorKey.currentContext!;
+        final overlay = Overlay.maybeOf(context);
+
+        if (overlay != null) {
+          // Overlay is available, show the error normally
+          if (error is BusinessException) {
+            ErrorHelper.showError(context, error);
+          } else {
+            ErrorHelper.showUnexpectedError(
+              context,
+              error,
+              stack,
+            );
+          }
+        } else {
+          // Overlay not available, log the error or show fallback
+          if (kDebugMode) {
+            debugPrint('Error occurred but overlay not available: $error');
+            debugPrint('Stack trace: $stack');
+          }
+        }
+      } catch (e) {
+        // If error handling itself fails, just log it
+        if (kDebugMode) {
+          debugPrint('Error in error handler: $e');
+          debugPrint('Original error: $error');
+          debugPrint('Original stack: $stack');
+        }
+      }
+    } else {
+      // No context available, just log the error
+      if (kDebugMode) {
+        debugPrint('Error occurred with no context available: $error');
+        debugPrint('Stack trace: $stack');
       }
     }
     // Error logging removed
