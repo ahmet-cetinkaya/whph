@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/acore/components/numeric_input.dart';
 import 'package:whph/presentation/shared/components/markdown_editor.dart';
 import 'package:whph/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/application/features/habits/commands/delete_habit_record_command.dart';
@@ -12,15 +13,17 @@ import 'package:whph/application/features/habits/commands/add_habit_tag_command.
 import 'package:whph/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/features/habits/components/habit_reminder_selector.dart';
+import 'package:whph/presentation/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/features/habits/components/habit_goal_dialog.dart';
 import 'package:whph/presentation/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/components/detail_table.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
@@ -630,24 +633,29 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             ],
           ),
 
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: AppTheme.sizeXSmall),
 
           // Tags, Estimated Time, and Reminder Table
           if (_isFieldVisible(keyTags) ||
               _isFieldVisible(keyEstimatedTime) ||
               _isFieldVisible(keyReminder) ||
               _isFieldVisible(keyGoal) ||
-              _habit!.archivedDate != null)
-            DetailTable(rowData: [
-              if (_isFieldVisible(keyTags)) _buildTagsSection(),
-              if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
-              if (_isFieldVisible(keyReminder)) _buildReminderSection(),
-              if (_isFieldVisible(keyGoal)) _buildGoalSection(),
-              if (_habit!.archivedDate != null) _buildArchivedDateSection(),
-            ]),
+              _habit!.archivedDate != null) ...[
+            DetailTable(
+              rowData: [
+                if (_isFieldVisible(keyTags)) _buildTagsSection(),
+                if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
+                if (_isFieldVisible(keyReminder)) _buildReminderSection(),
+                if (_isFieldVisible(keyGoal)) _buildGoalSection(),
+                if (_habit!.archivedDate != null) _buildArchivedDateSection(),
+              ],
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+            ),
+            const SizedBox(height: AppTheme.sizeXSmall),
+          ],
 
           // Description Table
-          if (_isFieldVisible(keyDescription))
+          if (_isFieldVisible(keyDescription)) ...[
             DetailTable(
               forceVertical: true,
               rowData: [
@@ -664,17 +672,19 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   ),
                 ),
               ],
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-          const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.sizeXSmall),
+          ],
 
           // Optional field chips moved to just above Records header
           if (availableChipFields.isNotEmpty) ...[
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 4,
+              runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: AppTheme.sizeXSmall),
           ],
 
           // Records and Statistics Section
@@ -736,114 +746,123 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
         label: _translationService.translate(HabitTranslationKeys.estimatedTimeLabel),
         icon: HabitUiConstants.estimatedTimeIcon,
-        widget: Row(
-          children: [
-            IconButton(
-              onPressed: () => _adjustEstimatedTime(-1),
-              icon: const Icon(Icons.remove),
-            ),
-            Text(
-              _habit!.estimatedTime == null
-                  ? _translationService.translate(HabitTranslationKeys.estimatedTimeNotSet)
-                  : SharedUiConstants.formatMinutes(_habit!.estimatedTime!),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-              onPressed: () => _adjustEstimatedTime(1),
-              icon: const Icon(Icons.add),
-            ),
-          ],
+        widget: NumericInput(
+          initialValue: _habit!.estimatedTime ?? HabitUiConstants.defaultEstimatedTimeOptions.first,
+          incrementValue: 5,
+          decrementValue: 5,
+          onValueChanged: (value) {
+            if (!mounted) return;
+            setState(() {
+              _habit!.estimatedTime = value;
+              _saveHabit();
+            });
+          },
+          decrementTooltip: _translationService.translate(HabitTranslationKeys.decreaseEstimatedTime),
+          incrementTooltip: _translationService.translate(HabitTranslationKeys.increaseEstimatedTime),
+          iconColor: AppTheme.secondaryTextColor,
+          iconSize: AppTheme.iconSizeSmall,
+          valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
         ),
       );
 
   DetailTableRowData _buildReminderSection() {
-    // Get the current reminder days list
-    final reminderDaysList = _habit!.getReminderDaysAsList();
+    return DetailTableRowData(
+      label: _translationService.translate(HabitTranslationKeys.reminderSettings),
+      icon: Icons.notifications,
+      widget: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        onTap: _openReminderDialog,
+        child: Row(
+          children: [
+            // Main Content Section
+            Expanded(
+              child: Text(
+                _getReminderSummaryText(),
+                style: AppTheme.bodyMedium.copyWith(
+                  color: !_habit!.hasReminder ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6) : null,
+                ),
+              ),
+            ),
+            // Edit Icon Section
+            const Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getReminderSummaryText() {
+    if (_habit == null || !_habit!.hasReminder) {
+      return _translationService.translate(HabitTranslationKeys.noReminder);
+    }
+
+    String summary = "";
+
+    // Add time if set
+    if (_habit!.reminderTime != null) {
+      final timeOfDay = _habit!.getReminderTimeOfDay();
+      if (timeOfDay != null) {
+        summary += '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}';
+      }
+    }
+
+    // Add days information
+    final reminderDays = _habit!.getReminderDaysAsList();
+    if (reminderDays.isNotEmpty && reminderDays.length < 7) {
+      final dayNames = reminderDays.map((dayNum) {
+        final weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        return _translationService.translate('datetime.weekday.${weekDays[dayNum - 1]}.short');
+      }).join(', ');
+      summary += ', $dayNames';
+    } else if (reminderDays.length == 7) {
+      summary += ', ${_translationService.translate(HabitTranslationKeys.everyDay)}';
+    }
+
+    return summary;
+  }
+
+  Future<void> _openReminderDialog() async {
+    if (_habit == null) return;
 
     // Check if habit is archived and archived date is in the past
     final now = DateTime.now();
     final bool isArchived =
         _habit!.archivedDate != null && DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(now);
 
-    return DetailTableRowData(
-      label: _translationService.translate(HabitTranslationKeys.reminderSettings),
-      icon: Icons.notifications,
-      // Use a Container with padding to make the widget more compact
-      widget: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: HabitReminderSelector(
-          key: ValueKey('reminder_selector_${_habit!.id}'),
-          hasReminder: _habit!.hasReminder,
-          reminderTime: _habit!.getReminderTimeOfDay(),
-          reminderDays: reminderDaysList,
-          enabled: !isArchived,
-          onHasReminderChanged: (value) {
-            // Use addPostFrameCallback to avoid setState during build
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {
-                  _habit!.hasReminder = value;
+    if (isArchived) return; // Don't open dialog for archived habits
 
-                  // If disabling reminders, clear the reminder time
-                  if (!value) {
-                    _habit!.reminderTime = null;
-                    // We don't clear reminderDays when disabling reminders to preserve the selection
-                    // This way, when reminders are re-enabled, the previously selected days will be restored
-                  } else {
-                    // When enabling reminders, select all days by default if no days are currently selected
-                    final currentDays = _habit!.getReminderDaysAsList();
-                    if (currentDays.isEmpty) {
-                      final allDays = List.generate(7, (index) => index + 1);
-                      _habit!.setReminderDaysFromList(allDays);
-                    }
-
-                    // Set default time if none is set
-                    if (_habit!.reminderTime == null) {
-                      _habit!.setReminderTimeOfDay(TimeOfDay.now());
-                    }
-                  }
-                });
-
-                // Save immediately without debounce
-                _saveHabitImmediately();
-              }
-            });
-          },
-          onTimeChanged: (value) {
-            // Use addPostFrameCallback to avoid setState during build
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {
-                  _habit!.setReminderTimeOfDay(value);
-                });
-
-                // Save immediately without debounce
-                _saveHabitImmediately();
-              }
-            });
-          },
-          onDaysChanged: (value) {
-            // Ensure we're working with a new list to avoid reference issues
-            final newDays = List<int>.from(value);
-
-            // Use addPostFrameCallback to avoid setState during build
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                // Directly update the habit object
-                _habit!.setReminderDaysFromList(newDays);
-
-                // Force UI update
-                setState(() {});
-
-                // Save the changes immediately without debounce
-                _saveHabitImmediately();
-              }
-            });
-          },
-          translationService: _translationService,
-        ),
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
+      context: context,
+      size: DialogSize.min,
+      child: HabitReminderSettingsDialog(
+        hasReminder: _habit!.hasReminder,
+        reminderTime: _habit!.getReminderTimeOfDay(),
+        reminderDays: _habit!.getReminderDaysAsList(),
+        translationService: _translationService,
       ),
     );
+
+    if (result != null) {
+      if (!mounted) return;
+
+      setState(() {
+        _habit!.hasReminder = result.hasReminder;
+
+        if (_habit!.hasReminder) {
+          if (result.reminderTime != null) {
+            _habit!.setReminderTimeOfDay(result.reminderTime!);
+          }
+          _habit!.setReminderDaysFromList(result.reminderDays);
+        } else {
+          // Clear reminder time when disabling reminders
+          _habit!.reminderTime = null;
+          // Keep reminderDays to preserve selection for when reminders are re-enabled
+        }
+      });
+
+      // Save changes immediately
+      await _saveHabitImmediately();
+    }
   }
 
   DetailTableRowData _buildArchivedDateSection() => DetailTableRowData(
@@ -881,20 +900,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       icon: Icons.track_changes,
       widget: Container(
         padding: const EdgeInsets.symmetric(vertical: 4),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          enabled: !isArchived,
-          title: Text(
-            _habit!.hasGoal
-                ? _translationService.translate(HabitTranslationKeys.goalFormat,
-                    namedArgs: {'count': _habit!.targetFrequency.toString(), 'dayCount': _habit!.periodDays.toString()})
-                : _translationService.translate(HabitTranslationKeys.enableGoals),
-            style: AppTheme.bodyMedium,
-          ),
-          trailing: Icon(
-            Icons.chevron_right,
-            color: isArchived ? Theme.of(context).disabledColor : null,
-          ),
+        child: GestureDetector(
           onTap: isArchived
               ? null
               : () async {
@@ -920,26 +926,33 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     await _saveHabitImmediately();
                   }
                 },
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            children: [
+              // Main Content Section
+              Expanded(
+                child: Text(
+                  _habit!.hasGoal
+                      ? _translationService.translate(HabitTranslationKeys.goalFormat, namedArgs: {
+                          'count': _habit!.targetFrequency.toString(),
+                          'dayCount': _habit!.periodDays.toString()
+                        })
+                      : _translationService.translate(HabitTranslationKeys.enableGoals),
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: isArchived ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
+                ),
+              ),
+              // Trailing Icon Section
+              Icon(
+                Icons.chevron_right,
+                color: isArchived ? Theme.of(context).disabledColor : null,
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  void _adjustEstimatedTime(int adjustment) {
-    if (!mounted) return;
-    setState(() {
-      final currentIndex = HabitUiConstants.defaultEstimatedTimeOptions.indexOf(_habit!.estimatedTime ?? 0);
-      if (currentIndex == -1) {
-        _habit!.estimatedTime = HabitUiConstants.defaultEstimatedTimeOptions.first;
-      } else {
-        final newIndex = (currentIndex + adjustment).clamp(
-          0,
-          HabitUiConstants.defaultEstimatedTimeOptions.length - 1,
-        );
-        _habit!.estimatedTime = HabitUiConstants.defaultEstimatedTimeOptions[newIndex];
-      }
-      _saveHabit();
-    });
   }
 
   Widget _buildRecordsHeader() {

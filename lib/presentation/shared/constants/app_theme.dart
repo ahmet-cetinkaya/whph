@@ -78,6 +78,11 @@ class AppTheme {
   static const double screenXLarge = 1440.0;
 
   // Text Styles
+  static const TextStyle label = TextStyle(
+    color: secondaryTextColor,
+    fontSize: fontSizeMedium,
+    height: 1.5,
+  );
   static const TextStyle bodySmall = TextStyle(
     color: secondaryTextColor,
     fontSize: fontSizeSmall,
@@ -130,6 +135,9 @@ class AppTheme {
   static const double sizeMedium = 12.0;
   static const double sizeLarge = 16.0;
   static const double sizeXLarge = 24.0;
+  static const double size2XLarge = 32.0;
+  static const double size3XLarge = 36.0;
+  static const double size4XLarge = 48.0;
 
   // Label Text Styles
   static const TextStyle labelLarge = TextStyle(

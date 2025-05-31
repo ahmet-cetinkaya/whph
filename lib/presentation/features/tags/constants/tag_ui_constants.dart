@@ -8,7 +8,6 @@ class TagUiConstants {
   static const IconData archiveIcon = Icons.archive;
   static const IconData unarchiveIcon = Icons.unarchive;
   static const IconData colorIcon = Icons.color_lens;
-  static const IconData editIcon = Icons.edit;
 
   // Colors
   static Color getTagColor(String? hexColor) {

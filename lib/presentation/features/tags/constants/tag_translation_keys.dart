@@ -58,6 +58,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String unarchiveTagTooltip = 'tags.tooltips.unarchive_tag';
   static const String addTaskTooltip = 'tags.tooltips.add_task';
   static const String editNameTooltip = 'tags.tooltips.edit_name';
+  static const String removeTagTooltip = 'tags.tooltips.remove_tag';
 
   // Search
   static const String searchLabel = 'tags.search.label';

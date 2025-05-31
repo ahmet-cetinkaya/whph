@@ -44,6 +44,7 @@ shared:
       thu: Thu
       tue: Tue
       wed: Wed
+  change: Change
   color_picker:
     confirm_selection: Confirm Selection
     select_color_title: Select Color

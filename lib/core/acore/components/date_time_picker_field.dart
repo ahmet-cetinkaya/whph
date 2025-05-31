@@ -150,11 +150,7 @@ class DateTimePickerField extends StatelessWidget {
                     message: clearButtonTooltip,
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-                      child: Icon(
-                        Icons.clear,
-                        size: AppTheme.iconSizeSmall,
-                        color: Colors.grey,
-                      ),
+                      child: Icon(Icons.clear, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
                     ),
                   ),
                 ),
@@ -171,6 +167,7 @@ class DateTimePickerField extends StatelessWidget {
                   child: Icon(
                     Icons.edit,
                     size: AppTheme.iconSizeSmall,
+                    color: AppTheme.secondaryTextColor,
                   ),
                 ),
               ),
@@ -178,7 +175,7 @@ class DateTimePickerField extends StatelessWidget {
           ],
         ),
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+        contentPadding: const EdgeInsets.all(0),
       ),
       onTap: () async {
         await _selectDateTime(context);

@@ -421,23 +421,28 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                 child: GestureDetector(
                   onTap: () => _navigateToTagDetails(tag.id),
                   child: Chip(
-                    visualDensity: VisualDensity.compact,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    label: Text(tag.name, style: AppTheme.bodySmall),
-                    onDeleted: () {
-                      final List<DropdownOption<String>> updatedTags =
-                          uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                        final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
-                        return DropdownOption(label: tagItem.name, value: tagItem.id);
-                      }).toList();
-                      widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                      setState(() {
-                        _selectedTags.removeWhere((tagId) => tagId == id);
-                      });
-                    },
-                  ),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: EdgeInsets.zero,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      label: Text(tag.name, style: AppTheme.labelSmall),
+                      onDeleted: () {
+                        final List<DropdownOption<String>> updatedTags =
+                            uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                          final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
+                          return DropdownOption(label: tagItem.name, value: tagItem.id);
+                        }).toList();
+                        widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                        setState(() {
+                          _selectedTags.removeWhere((tagId) => tagId == id);
+                        });
+                      },
+                      deleteIcon: Icon(
+                        Icons.close,
+                        size: AppTheme.iconSizeXSmall,
+                        color: widget.color ?? Theme.of(context).iconTheme.color,
+                      ),
+                      deleteButtonTooltipMessage: _translationService.translate(TagTranslationKeys.removeTagTooltip)),
                 ),
               );
             }).toList(),
@@ -518,14 +523,19 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                   ),
           ),
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
-          IconButton(
-            icon: Icon(
-              widget.icon,
-              color: widget.color ?? Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              icon: Icon(
+                widget.icon,
+                color: widget.color ?? Colors.white,
+              ),
+              iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+              onPressed: () => _showTagSelectionModal(context),
+              tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
             ),
-            iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
-            onPressed: () => _showTagSelectionModal(context),
-            tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
           ),
       ],
     );
