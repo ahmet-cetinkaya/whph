@@ -201,9 +201,11 @@ shared:
       download_page: Download Page
       later: Later
       update_now: Update Now
+    downloading: Downloading update...
     failed: Failed to update.
     message: A new version ({version}) is available.
     question: Would you like to update now?
+    success: Update downloaded successfully!
     title: Update Available!
   validation:
     required: "{field} is required"

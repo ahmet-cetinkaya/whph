@@ -201,9 +201,11 @@ shared:
       download_page: İndirme Sayfası
       later: Sonra
       update_now: Şimdi Güncelle
+    downloading: Güncelleme indiriliyor...
     failed: Güncelleme başarısız oldu.
     message: Yeni bir sürüm ({version}) mevcut.
     question: Şimdi güncellemek ister misiniz?
+    success: Güncelleme başarıyla indirildi!
     title: Güncelleme Mevcut!
   validation:
     required: "{field} alanı zorunludur"

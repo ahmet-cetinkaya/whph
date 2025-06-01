@@ -77,9 +77,16 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   Future<void> _checkForUpdates() async {
     if (!_isCheckedUpdate) {
-      await _setupService.checkForUpdates(context);
-      setState(() {
-        _isCheckedUpdate = true;
+      // Add a delay to ensure app is fully loaded, similar to other dialog services
+      Future.delayed(const Duration(milliseconds: 1000), () async {
+        if (mounted && widget.navigatorKey.currentContext != null) {
+          await _setupService.checkForUpdates(widget.navigatorKey.currentContext!);
+          if (mounted) {
+            setState(() {
+              _isCheckedUpdate = true;
+            });
+          }
+        }
       });
     }
   }

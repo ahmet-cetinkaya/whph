@@ -17,25 +17,57 @@ abstract class BaseSetupService implements ISetupService {
   @override
   Future<void> checkForUpdates(BuildContext context) async {
     try {
-      final response = await http.get(Uri.parse(AppInfo.updateCheckerUrl));
-      if (response.statusCode != 200) return;
+      if (kDebugMode) debugPrint('Checking for updates...');
+
+      final response = await http.get(
+        Uri.parse(AppInfo.updateCheckerUrl),
+        headers: {'User-Agent': 'WHPH/${AppInfo.version}'},
+      ).timeout(const Duration(seconds: 10));
+
+      if (kDebugMode) debugPrint('Update check response: ${response.statusCode}');
+
+      if (response.statusCode != 200) {
+        if (kDebugMode) debugPrint('Update check failed with status: ${response.statusCode}');
+        return;
+      }
 
       final data = json.decode(response.body);
       final updateInfo = UpdateInfo.fromGitHubRelease(data, AppInfo.version);
+
+      if (kDebugMode) {
+        debugPrint('Current version: ${AppInfo.version}');
+        debugPrint('Latest version: ${updateInfo.version}');
+        debugPrint('Has update: ${updateInfo.hasUpdate}');
+      }
 
       if (updateInfo.hasUpdate && context.mounted) {
         _showUpdateDialog(context, updateInfo);
       }
     } catch (e) {
       if (kDebugMode) debugPrint('Failed to check for updates: $e');
+      // In debug mode, also show a brief notification about the failure
+      if (kDebugMode && context.mounted) {
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: 'Update check failed: ${e.toString()}',
+          duration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 
   void _showUpdateDialog(BuildContext context, UpdateInfo updateInfo) {
+    // Ensure we have a valid context and the widget is still mounted
+    if (!context.mounted) {
+      if (kDebugMode) debugPrint('Context not mounted, skipping update dialog');
+      return;
+    }
+
     final translationService = container.resolve<ITranslationService>();
 
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
       builder: (context) => AlertDialog(
         title: Text(translationService.translate(SharedTranslationKeys.updateAvailableTitle)),
         content: Column(
@@ -84,10 +116,34 @@ abstract class BaseSetupService implements ISetupService {
 
   Future<void> _downloadAndInstallUpdate(BuildContext context, String downloadUrl) async {
     final translationService = container.resolve<ITranslationService>();
+
+    // Close the update dialog
+    Navigator.of(context).pop();
+
+    // Show loading overlay
+    if (context.mounted) {
+      OverlayNotificationHelper.showLoading(
+        context: context,
+        message: translationService.translate(SharedTranslationKeys.updateDownloadingMessage),
+        duration: const Duration(minutes: 10), // Long duration for download
+      );
+    }
+
     try {
-      Navigator.of(context).pop();
       await downloadAndInstallUpdate(downloadUrl);
+
+      // Hide loading overlay and show success (though this might not be seen if app exits)
+      OverlayNotificationHelper.hideNotification();
+      if (context.mounted) {
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: translationService.translate(SharedTranslationKeys.updateSuccessMessage),
+        );
+      }
     } catch (e) {
+      // Hide loading overlay
+      OverlayNotificationHelper.hideNotification();
+
       if (context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
@@ -120,7 +176,15 @@ abstract class BaseSetupService implements ISetupService {
 
   // Common update related operations
   Future<void> downloadFile(String url, String savePath) async {
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {'User-Agent': 'WHPH/${AppInfo.version}'},
+    ).timeout(const Duration(minutes: 5));
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to download file: HTTP ${response.statusCode}');
+    }
+
     await File(savePath).writeAsBytes(response.bodyBytes);
   }
 

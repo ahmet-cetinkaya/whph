@@ -14,9 +14,14 @@ class UpdateInfo {
   });
 
   factory UpdateInfo.fromGitHubRelease(Map<String, dynamic> data, String currentVersion) {
-    final version = (data['tag_name'] as String).substring(1);
+    String version = data['tag_name'] as String;
+    // Remove 'v' prefix if present
+    if (version.startsWith('v')) {
+      version = version.substring(1);
+    }
+
     final releaseUrl = data['html_url'] as String;
-    final hasUpdate = version != currentVersion;
+    final hasUpdate = _isNewerVersion(version, currentVersion);
 
     String? platformSpecificUrl;
     if (data['assets'] != null) {
@@ -35,6 +40,34 @@ class UpdateInfo {
       hasUpdate: hasUpdate,
       platformSpecificDownloadUrl: platformSpecificUrl,
     );
+  }
+
+  static bool _isNewerVersion(String latestVersion, String currentVersion) {
+    try {
+      final latestParts = latestVersion.split('.').map(int.parse).toList();
+      final currentParts = currentVersion.split('.').map(int.parse).toList();
+
+      // Pad with zeros if needed to ensure same length
+      while (latestParts.length < currentParts.length) {
+        latestParts.add(0);
+      }
+      while (currentParts.length < latestParts.length) {
+        currentParts.add(0);
+      }
+
+      for (int i = 0; i < latestParts.length; i++) {
+        if (latestParts[i] > currentParts[i]) {
+          return true;
+        } else if (latestParts[i] < currentParts[i]) {
+          return false;
+        }
+      }
+
+      return false; // Versions are equal
+    } catch (e) {
+      // Fallback to string comparison if semantic parsing fails
+      return latestVersion != currentVersion;
+    }
   }
 
   static String _getPlatformSuffix() {
