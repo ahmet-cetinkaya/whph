@@ -19,12 +19,28 @@ class AndroidSetupService extends BaseSetupService {
   @override
   Future<void> downloadAndInstallUpdate(String downloadUrl) async {
     try {
+      if (kDebugMode) debugPrint('Starting APK download from: $downloadUrl');
+
       final tempDir = await getTemporaryDirectory();
       final downloadPath = path.join(tempDir.path, '${AppInfo.shortName.toLowerCase()}_update.apk');
 
-      // Download APK
+      if (kDebugMode) debugPrint('Downloading APK to: $downloadPath');
+
+      // Download APK with timeout
       await downloadFile(downloadUrl, downloadPath);
+
+      // Verify the file was downloaded
+      final file = File(downloadPath);
+      if (!await file.exists()) {
+        throw Exception('Downloaded APK file not found');
+      }
+
+      final fileSize = await file.length();
+      if (kDebugMode) debugPrint('APK downloaded successfully, size: $fileSize bytes');
+
       await makeFileExecutable(downloadPath);
+
+      if (kDebugMode) debugPrint('Installing APK using platform channel');
 
       // Install APK using system package installer
       await platform.invokeMethod('installApk', {'filePath': downloadPath});
