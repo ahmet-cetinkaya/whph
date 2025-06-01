@@ -390,13 +390,12 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                               ),
                             ),
-                            Expanded(
-                              child: Center(
-                                child: PomodoroTimer(
-                                  onTimeUpdate: _handleTimerUpdate,
-                                  onTimerStart: _onTimerStart,
-                                  onTimerStop: _onTimerStop,
-                                ),
+                            // Removed Expanded widget here
+                            Center(
+                              child: PomodoroTimer(
+                                onTimeUpdate: _handleTimerUpdate,
+                                onTimerStart: _onTimerStart,
+                                onTimerStop: _onTimerStop,
                               ),
                             ),
                             AnimatedOpacity(
@@ -407,7 +406,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 markdownContentKey: TaskTranslationKeys.marathonHelpContent,
                               ),
                             ),
-                            const SizedBox(width: AppTheme.sizeSmall),
                           ],
                         ),
 
