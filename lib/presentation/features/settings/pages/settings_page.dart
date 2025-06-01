@@ -8,7 +8,6 @@ import 'package:whph/presentation/features/settings/components/sync_devices_tile
 import 'package:whph/presentation/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/features/settings/components/startup_settings.dart';
 import 'package:whph/presentation/features/settings/components/notification_settings.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';

@@ -1,5 +1,13 @@
 import 'package:whph/domain/shared/constants/app_assets.dart';
 
+/// Centralized app information constants.
+///
+/// These constants should be used throughout the application instead of hardcoded strings.
+/// When updating these values, also update corresponding platform-specific files:
+/// - Android: android/app/src/main/res/values/strings.xml
+/// - iOS: ios/Runner/Info.plist
+/// - Windows: windows/runner/app_constants.h
+/// - Linux: linux/app_constants.h, linux/whph.desktop
 class AppInfo {
   static const String name = "Work Hard Play Hard";
   static const String shortName = "WHPH";

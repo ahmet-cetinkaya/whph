@@ -5,6 +5,7 @@ import 'package:whph/application/features/settings/commands/save_setting_command
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/domain/shared/constants/app_assets.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/features/settings/pages/permissions_page.dart';
@@ -161,13 +162,22 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                         ),
                       const SizedBox(height: 24),
                       Text(
-                        _translationService.translate(step.titleKey),
+                        _translationService.translate(
+                          step.titleKey,
+                          namedArgs:
+                              step.titleKey == AboutTranslationKeys.onboardingTitle1 ? {'appName': AppInfo.name} : null,
+                        ),
                         style: AppTheme.headlineMedium,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        _translationService.translate(step.descriptionKey),
+                        _translationService.translate(
+                          step.descriptionKey,
+                          namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
+                              ? {'appName': AppInfo.name}
+                              : null,
+                        ),
                         style: AppTheme.bodyMedium,
                         textAlign: TextAlign.center,
                       ),

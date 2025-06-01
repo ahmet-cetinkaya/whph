@@ -89,9 +89,9 @@ shared:
     file_save: Dosya kaydedilirken hata oluştu
     file_write: Dosya yazılırken hata oluştu
     loading: Veri yüklenirken hata oluştu
-    report_subject: "WHPH: Beklenmeyen Hata Bildirimi"
+    report_subject: "{appName}: Beklenmeyen Hata Bildirimi"
     report_template: |
-      Merhaba, WHPH uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
+      Merhaba, {appName} uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
 
       Sorunu teşhis etmenize yardımcı olabilecek bilgiler:
       Uygulama Sürümü: {version}

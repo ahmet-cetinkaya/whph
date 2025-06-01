@@ -52,7 +52,10 @@ class AppAbout extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.sizeMedium),
         Text(
-          _translationService.translate(AboutTranslationKeys.description),
+          _translationService.translate(
+            AboutTranslationKeys.description,
+            namedArgs: {'appName': AppInfo.name},
+          ),
           style: AppTheme.bodyMedium,
         ),
         Center(
