@@ -92,6 +92,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   bool _isLongBreak = false;
   bool _isAlarmPlaying = false;
 
+  int _getTotalDurationInSeconds() {
+    if (_isWorking) return _getTimeInSeconds(_workDuration);
+    if (_isLongBreak) return _getTimeInSeconds(_longBreakDuration);
+    return _getTimeInSeconds(_breakDuration);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -439,40 +445,65 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     final double buttonSize = baseButtonSize * multiplier;
     final double spacing = baseSpacing * multiplier;
 
+    final double progress =
+        _isRunning || _isAlarmPlaying ? 1.0 - (_remainingTime.inSeconds / _getTotalDurationInSeconds()) : 0.0;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      padding: EdgeInsets.all(spacing),
+      padding: EdgeInsets.zero, // Padding will be handled by the inner content
       decoration: BoxDecoration(
         color: _getBackgroundColor(context),
         borderRadius: BorderRadius.circular(buttonSize),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          if (!_isRunning && !_isAlarmPlaying)
-            IconButton(
-              iconSize: buttonSize * 0.6,
-              icon: Icon(SharedUiConstants.settingsIcon),
-              onPressed: _showSettingsModal,
-            ),
-          if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
-          Flexible(
-            child: AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 300),
-              style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
-              child: Text(
-                _getDisplayTime(),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+          // Progress Bar
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(buttonSize),
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Colors.transparent, // Transparent to show container color
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  AppTheme.primaryColor.withOpacity(0.3),
+                ),
+                minHeight: buttonSize * 2, // Ensure progress bar has enough height
               ),
             ),
           ),
-          SizedBox(width: spacing),
-          IconButton(
-            iconSize: buttonSize * 0.7,
-            icon: Icon(_getButtonIcon()),
-            onPressed: _getButtonAction(),
+          // Timer Content
+          Padding(
+            padding: EdgeInsets.all(spacing),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!_isRunning && !_isAlarmPlaying)
+                  IconButton(
+                    iconSize: buttonSize * 0.6,
+                    icon: Icon(SharedUiConstants.settingsIcon),
+                    onPressed: _showSettingsModal,
+                  ),
+                if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
+                // Text area for the timer display
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 300),
+                  style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
+                  child: Text(
+                    _getDisplayTime(),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(width: spacing),
+                IconButton(
+                  iconSize: buttonSize * 0.7,
+                  icon: Icon(_getButtonIcon()),
+                  onPressed: _getButtonAction(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
