@@ -40,7 +40,6 @@ class AboutTranslationKeys extends application.AboutTranslationKeys {
   static const String onboardingButtonNext = 'about.onboarding.buttons.next';
   static const String onboardingButtonBack = 'about.onboarding.buttons.back';
   static const String onboardingButtonStart = 'about.onboarding.buttons.start';
-  static const String onboardingButtonSkip = 'about.onboarding.buttons.skip';
 
   static const String feedback = 'about.links.feedback';
   static const String contact = 'about.links.contact';
