@@ -20,6 +20,8 @@ import 'package:whph/application/features/notes/services/abstraction/i_note_tag_
 import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
 
 enum ExportDataFileOptions { json, csv }
 
@@ -76,50 +78,54 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
 
   @override
   Future<ExportDataCommandResponse> call(ExportDataCommand request) async {
-    final appUsages = await appUsageRepository.getAll();
-    final appUsageTags = await appUsageTagRepository.getAll();
-    final appUsageTimeRecords = await appUsageTimeRecordRepository.getAll();
-    final appUsageTagRules = await appUsageTagRuleRepository.getAll();
-    final habits = await habitRepository.getAll();
-    final habitRecords = await habitRecordRepository.getAll();
-    final habitTags = await habitTagRepository.getAll();
-    final tags = await tagRepository.getAll();
-    final tagTags = await tagTagRepository.getAll();
-    final tasks = await taskRepository.getAll();
-    final taskTags = await taskTagRepository.getAll();
-    final taskTimeRecords = await taskTimeRecordRepository.getAll();
-    final settings = await settingRepository.getAll();
-    final syncDevices = await syncDeviceRepository.getAll();
-    final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
-    final notes = await noteRepository.getAll();
-    final noteTags = await noteTagRepository.getAll();
+    try {
+      final appUsages = await appUsageRepository.getAll();
+      final appUsageTags = await appUsageTagRepository.getAll();
+      final appUsageTimeRecords = await appUsageTimeRecordRepository.getAll();
+      final appUsageTagRules = await appUsageTagRuleRepository.getAll();
+      final habits = await habitRepository.getAll();
+      final habitRecords = await habitRecordRepository.getAll();
+      final habitTags = await habitTagRepository.getAll();
+      final tags = await tagRepository.getAll();
+      final tagTags = await tagTagRepository.getAll();
+      final tasks = await taskRepository.getAll();
+      final taskTags = await taskTagRepository.getAll();
+      final taskTimeRecords = await taskTimeRecordRepository.getAll();
+      final settings = await settingRepository.getAll();
+      final syncDevices = await syncDeviceRepository.getAll();
+      final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
+      final notes = await noteRepository.getAll();
+      final noteTags = await noteTagRepository.getAll();
 
-    final data = {
-      'appInfo': {
-        'version': AppInfo.version,
-      },
-      'appUsages': appUsages,
-      'appUsageTags': appUsageTags,
-      'appUsageTimeRecords': appUsageTimeRecords,
-      'appUsageTagRules': appUsageTagRules,
-      'habits': habits,
-      'habitRecords': habitRecords,
-      'habitTags': habitTags,
-      'tags': tags,
-      'tagTags': tagTags,
-      'tasks': tasks,
-      'taskTags': taskTags,
-      'taskTimeRecords': taskTimeRecords,
-      'settings': settings,
-      'syncDevices': syncDevices,
-      'appUsageIgnoreRules': appUsageIgnoreRules,
-      'notes': notes,
-      'noteTags': noteTags,
-    };
+      final data = {
+        'appInfo': {
+          'version': AppInfo.version,
+        },
+        'appUsages': appUsages,
+        'appUsageTags': appUsageTags,
+        'appUsageTimeRecords': appUsageTimeRecords,
+        'appUsageTagRules': appUsageTagRules,
+        'habits': habits,
+        'habitRecords': habitRecords,
+        'habitTags': habitTags,
+        'tags': tags,
+        'tagTags': tagTags,
+        'tasks': tasks,
+        'taskTags': taskTags,
+        'taskTimeRecords': taskTimeRecords,
+        'settings': settings,
+        'syncDevices': syncDevices,
+        'appUsageIgnoreRules': appUsageIgnoreRules,
+        'notes': notes,
+        'noteTags': noteTags,
+      };
 
-    return ExportDataCommandResponse(
-      request.fileOption == ExportDataFileOptions.json ? JsonMapper.serialize(data) : _convertToCSV(data),
-    );
+      return ExportDataCommandResponse(
+        request.fileOption == ExportDataFileOptions.json ? JsonMapper.serialize(data) : _convertToCSV(data),
+      );
+    } catch (e) {
+      throw BusinessException('Export failed', SettingTranslationKeys.exportFailedError);
+    }
   }
 
   String _convertToCSV(Map<String, dynamic> data) {
