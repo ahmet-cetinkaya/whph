@@ -119,20 +119,60 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
     try {
       DateTime now = DateTime.now();
-      // Get data from the start of the current day to now for initial collection
-      DateTime startDate = DateTime(now.year, now.month, now.day);
-      DateTime endDate = now;
+      // Calculate start date as two weeks ago from the current hour
+      DateTime twoWeeksAgoStart = DateTime(now.year, now.month, now.day, now.hour).subtract(const Duration(days: 14));
 
-      if (kDebugMode) debugPrint('Getting initial app usages from $startDate to $endDate');
+      if (kDebugMode) debugPrint('Getting initial app usages from $twoWeeksAgoStart to $now (hourly breakdown)');
 
-      List<app_usage_package.AppUsageInfo> usageStats = await _appUsage.getAppUsage(startDate, endDate);
+      int totalHoursProcessed = 0;
+      int totalAppsProcessed = 0;
 
-      for (app_usage_package.AppUsageInfo usage in usageStats) {
-        // Don't overwrite existing records for initial collection
-        await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: false);
+      // Iterate through each hour for the past two weeks
+      DateTime currentHourStart = twoWeeksAgoStart;
+      while (currentHourStart.isBefore(now)) {
+        DateTime currentHourEnd = currentHourStart.add(const Duration(hours: 1));
+
+        // Ensure we don't go beyond current time
+        if (currentHourEnd.isAfter(now)) {
+          currentHourEnd = now;
+        }
+
+        try {
+          // Fetch app usage data for this specific hour
+          List<app_usage_package.AppUsageInfo> hourlyUsageStats =
+              await _appUsage.getAppUsage(currentHourStart, currentHourEnd);
+
+          // Process each app's usage for this hour
+          for (app_usage_package.AppUsageInfo usage in hourlyUsageStats) {
+            if (usage.usage.inSeconds > 0) {
+              // Save time record with the specific hour timestamp
+              await saveTimeRecord(
+                usage.appName,
+                usage.usage.inSeconds,
+                overwrite: false,
+                customDateTime: currentHourStart,
+              );
+              ++totalAppsProcessed;
+            }
+          }
+
+          ++totalHoursProcessed;
+
+          if (kDebugMode && hourlyUsageStats.isNotEmpty) {
+            debugPrint('Processed hour $currentHourStart: ${hourlyUsageStats.length} apps with usage data');
+          }
+        } catch (hourError) {
+          if (kDebugMode) debugPrint('Error processing hour $currentHourStart: $hourError');
+        }
+
+        // Move to next hour
+        currentHourStart = currentHourStart.add(const Duration(hours: 1));
       }
 
-      if (kDebugMode) debugPrint('Initial app usage collection completed. Processed ${usageStats.length} apps.');
+      if (kDebugMode) {
+        debugPrint(
+            'Initial app usage collection completed. Processed $totalHoursProcessed hours and $totalAppsProcessed app usage records.');
+      }
     } catch (e) {
       if (kDebugMode) debugPrint('Error getting initial app usages: $e');
     }
