@@ -1,48 +1,48 @@
-help:
-  content: |
-    Fikirlerinizi yakalar, bilgileri verimli bir şekilde organize eder ve önemli içgörüleri ihtiyaç duyduğunuzda kolayca erişilebilir hale getiren kapsamlı bir bilgi yönetim sistemi kurun.
-
-    ## ⚡ Neden Önemli?
-
-    Etkili not alma ve bilgi yönetimi, verimlilik ve öğrenme için hayati önemdedir. İyi organize edilmiş bir not sistemi, değerli içgörülerin kaybolmasını önler, karar vermeyi hızlandırır ve zaman içinde daha değerli hale gelen güvenilir bir dış hafıza oluşturur.
-
-    ## ✍️ Zahmetsiz Bilgi Yakalama
-
-    Mevcut iş akışınızı bozmadan önemli hiçbir şeyin gözden kaçmamasını sağlarken, odağınızı koruyarak bilgileri yakalamak ve işlemek için sorunsuz bir iş akışı oluşturun.
-
-    - 📝 Akışınızı bozmadan fikirleri hızla yakalayın
-    - ✏️ Anlayış geliştikçe bilgileri düzenleyin ve iyileştirin
-    - 🗑️ Güncel olmayan veya ilgisiz bilgileri sistematik olarak kaldırın
-    - 📌 Kritik bilgileri kolayca erişilebilir ve organize tutun
-
-    ## 🗂️ Stratejik Organizasyon
-
-    Bilgi tabanınızla ölçeklenen ve hacimden bağımsız olarak bilgi erişimini hızlı ve güvenilir hale getiren bir organizasyonel sistem geliştirin.
-
-    - 🏷️ Hızlı kategorizasyon için tutarlı etiketleme stratejileri uygulayın
-    - 🔍 Bilgileri anında bulmak için güçlü arama yeteneklerini kullanın
-    - 📚 Kapsamlı bilgi alanları oluşturmak için ilgili notları gruplayın
-    - 🎯 Organize bilgi mimarisi aracılığıyla odağı koruyun
-
-    ## 📄 Profesyonel İçerik Oluşturma
-
-    Etkili bir şekilde iletişim kuran ve zamanın testine dayanacak açık, iyi yapılandırılmış içerik oluşturmak için gelişmiş formatlama araçlarından yararlanın.
-
-    - 🎨 **Zengin Biçimlendirme:** Profesyonel belge yapısı için Markdown kullanın
-    - 📋 **Net Yapı:** İçeriği başlıklar, listeler ve vurgularla organize edin
-    - 🔗 **Bağlantılı Bilgi:** İlgili kavramları ve bilgileri birbirine bağlayın
-    - 📖 **Okunabilir Çıktı:** Kolay anlama ve paylaşım için içeriği formatlandırın
-
-    ## 🚀 Verimlilik Faydaları
-
-    Not alma pratiğinizi düşüncenizi geliştiren, öğrenmeyi hızlandıran ve karar verme kalitesini artıran bir verimlilik çarpanına dönüştürün.
-
-    - 🧠 **Gelişmiş Düşünme:** Dış hafıza yaratıcı çalışma için zihinsel kapasiteyi serbest bırakır
-    - ⚡ **Daha Hızlı Erişim:** Organize bilgi arama harcanan zamanı azaltır
-    - 🌐 **Evrensel Kullanılabilirlik:** Bilgi tabanınıza herhangi bir cihazdan erişin
-    - 📈 **Sürekli Gelişim:** İyileştirilen içerik zaman içinde daha değerli hale gelir
-  title: Bilgi Yönetimi ve Not Organizasyonu Rehberi
 notes:
+  help:
+    content: |
+      Fikirlerinizi yakalar, bilgileri verimli bir şekilde organize eder ve önemli içgörüleri ihtiyaç duyduğunuzda kolayca erişilebilir hale getiren kapsamlı bir bilgi yönetim sistemi kurun.
+
+      ## ⚡ Neden Önemli?
+
+      Etkili not alma ve bilgi yönetimi, verimlilik ve öğrenme için hayati önemdedir. İyi organize edilmiş bir not sistemi, değerli içgörülerin kaybolmasını önler, karar vermeyi hızlandırır ve zaman içinde daha değerli hale gelen güvenilir bir dış hafıza oluşturur.
+
+      ## ✍️ Zahmetsiz Bilgi Yakalama
+
+      Mevcut iş akışınızı bozmadan önemli hiçbir şeyin gözden kaçmamasını sağlarken, odağınızı koruyarak bilgileri yakalamak ve işlemek için sorunsuz bir iş akışı oluşturun.
+
+      - 📝 Akışınızı bozmadan fikirleri hızla yakalayın
+      - ✏️ Anlayış geliştikçe bilgileri düzenleyin ve iyileştirin
+      - 🗑️ Güncel olmayan veya ilgisiz bilgileri sistematik olarak kaldırın
+      - 📌 Kritik bilgileri kolayca erişilebilir ve organize tutun
+
+      ## 🗂️ Stratejik Organizasyon
+
+      Bilgi tabanınızla ölçeklenen ve hacimden bağımsız olarak bilgi erişimini hızlı ve güvenilir hale getiren bir organizasyonel sistem geliştirin.
+
+      - 🏷️ Hızlı kategorizasyon için tutarlı etiketleme stratejileri uygulayın
+      - 🔍 Bilgileri anında bulmak için güçlü arama yeteneklerini kullanın
+      - 📚 Kapsamlı bilgi alanları oluşturmak için ilgili notları gruplayın
+      - 🎯 Organize bilgi mimarisi aracılığıyla odağı koruyun
+
+      ## 📄 Profesyonel İçerik Oluşturma
+
+      Etkili bir şekilde iletişim kuran ve zamanın testine dayanacak açık, iyi yapılandırılmış içerik oluşturmak için gelişmiş formatlama araçlarından yararlanın.
+
+      - 🎨 **Zengin Biçimlendirme:** Profesyonel belge yapısı için Markdown kullanın
+      - 📋 **Net Yapı:** İçeriği başlıklar, listeler ve vurgularla organize edin
+      - 🔗 **Bağlantılı Bilgi:** İlgili kavramları ve bilgileri birbirine bağlayın
+      - 📖 **Okunabilir Çıktı:** Kolay anlama ve paylaşım için içeriği formatlandırın
+
+      ## 🚀 Verimlilik Faydaları
+
+      Not alma pratiğinizi düşüncenizi geliştiren, öğrenmeyi hızlandıran ve karar verme kalitesini artıran bir verimlilik çarpanına dönüştürün.
+
+      - 🧠 **Gelişmiş Düşünme:** Dış hafıza yaratıcı çalışma için zihinsel kapasiteyi serbest bırakır
+      - ⚡ **Daha Hızlı Erişim:** Organize bilgi arama harcanan zamanı azaltır
+      - 🌐 **Evrensel Kullanılabilirlik:** Bilgi tabanınıza herhangi bir cihazdan erişin
+      - 📈 **Sürekli Gelişim:** İyileştirilen içerik zaman içinde daha değerli hale gelir
+    title: Bilgi Yönetimi ve Not Organizasyonu Rehberi
   actions:
     add: Not Ekle
     delete: Notu Sil
