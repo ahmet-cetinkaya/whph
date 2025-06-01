@@ -178,23 +178,26 @@ class _TagsPageState extends State<TagsPage> {
             // Tag Time Title
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall),
-              child: Row(
-                children: [
-                  Text(
-                    _translationService.translate(TagTranslationKeys.timeDistribution),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  TagTimeChartOptions(
-                    selectedStartDate: _startDate,
-                    selectedEndDate: _endDate,
-                    onDateFilterChange: _onDateFilterChange,
-                    selectedCategories: _selectedCategories,
-                    onCategoriesChanged: _onTimeChartCategoryChanged,
-                    settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
-                    onSettingsLoaded: _onTagTimeChartOptionsLoaded,
-                  ),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Text(
+                      _translationService.translate(TagTranslationKeys.timeDistribution),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    TagTimeChartOptions(
+                      selectedStartDate: _startDate,
+                      selectedEndDate: _endDate,
+                      onDateFilterChange: _onDateFilterChange,
+                      selectedCategories: _selectedCategories,
+                      onCategoriesChanged: _onTimeChartCategoryChanged,
+                      settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
+                      onSettingsLoaded: _onTagTimeChartOptionsLoaded,
+                    ),
+                  ],
+                ),
               ),
             ),
 

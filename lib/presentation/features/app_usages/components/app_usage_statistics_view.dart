@@ -116,85 +116,177 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            DateRangeFilter(
-              selectedStartDate: _startDate,
-              selectedEndDate: _endDate,
-              onDateFilterChange: (startDate, endDate) {
-                setState(() {
-                  _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-                  _endDate = endDate ?? DateTime.now();
-                  _updateComparisonDates();
-                });
-                _fetchStatistics();
-              },
-            ),
-            Row(
-              children: [
-                Text(_translationService.translate(SharedTranslationKeys.compareWithPreviousLabel)),
-                const SizedBox(width: 8),
-                Switch(
-                  value: _showComparison,
-                  onChanged: (value) {
-                    setState(() {
-                      _showComparison = value;
-                      _updateComparisonDates();
-                      _fetchStatistics();
-                    });
-                  },
-                ),
-              ],
-            ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Section - Responsive layout
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrowScreen = constraints.maxWidth < 600;
+
+              if (isNarrowScreen) {
+                // Stack vertically on narrow screens
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DateRangeFilter(
+                      selectedStartDate: _startDate,
+                      selectedEndDate: _endDate,
+                      onDateFilterChange: (startDate, endDate) {
+                        setState(() {
+                          _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
+                          _endDate = endDate ?? DateTime.now();
+                          _updateComparisonDates();
+                        });
+                        _fetchStatistics();
+                      },
+                    ),
+                    _buildComparisonToggle(),
+                  ],
+                );
+              } else {
+                // Side by side on wider screens
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: DateRangeFilter(
+                        selectedStartDate: _startDate,
+                        selectedEndDate: _endDate,
+                        onDateFilterChange: (startDate, endDate) {
+                          setState(() {
+                            _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
+                            _endDate = endDate ?? DateTime.now();
+                            _updateComparisonDates();
+                          });
+                          _fetchStatistics();
+                        },
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: _buildComparisonToggle(),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+          if (_showComparison) _buildComparisonLegend(),
+          const SizedBox(height: AppTheme.sizeMedium),
+          if (_isLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (_errorMessage != null)
+            Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
+          else if (_statistics != null) ...[
+            _buildDailyUsageChart(),
+            const SizedBox(height: AppTheme.sizeLarge),
+            _buildHourlyUsageChart(),
           ],
-        ),
-        if (_showComparison) _buildComparisonLegend(),
-        const SizedBox(height: AppTheme.sizeMedium),
-        if (_isLoading)
-          const Center(child: CircularProgressIndicator())
-        else if (_errorMessage != null)
-          Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
-        else if (_statistics != null) ...[
-          _buildDailyUsageChart(),
-          const SizedBox(height: AppTheme.sizeLarge),
-          _buildHourlyUsageChart(),
         ],
-      ],
+      ),
+    );
+  }
+
+  Widget _buildComparisonToggle() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox.adaptive(
+            value: _showComparison,
+            onChanged: (value) {
+              setState(() {
+                _showComparison = value ?? false;
+                _updateComparisonDates();
+                _fetchStatistics();
+              });
+            },
+          ),
+          const SizedBox(width: AppTheme.sizeXSmall),
+          Text(
+            _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildComparisonLegend() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Row(
-        children: [
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: _appUsageColor,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(width: AppTheme.sizeSmall),
-          Text(_formatDateRange(_startDate, _endDate)),
-          const SizedBox(width: 16),
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: _appUsageColor.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(width: AppTheme.sizeSmall),
-          Text(_formatDateRange(_compareStartDate!, _compareEndDate!)),
-        ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrowScreen = constraints.maxWidth < 500;
+
+            if (isNarrowScreen) {
+              // Stack legend items vertically on narrow screens
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLegendItem(
+                    _appUsageColor,
+                    _formatDateRange(_startDate, _endDate),
+                  ),
+                  const SizedBox(height: AppTheme.sizeXSmall),
+                  _buildLegendItem(
+                    _appUsageColor.withOpacity(0.5),
+                    _formatDateRange(_compareStartDate!, _compareEndDate!),
+                  ),
+                ],
+              );
+            } else {
+              // Side by side layout for wider screens
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildLegendItem(
+                      _appUsageColor,
+                      _formatDateRange(_startDate, _endDate),
+                    ),
+                    const SizedBox(width: AppTheme.sizeMedium),
+                    _buildLegendItem(
+                      _appUsageColor.withOpacity(0.5),
+                      _formatDateRange(_compareStartDate!, _compareEndDate!),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
       ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        const SizedBox(width: AppTheme.sizeSmall),
+        Flexible(
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 
@@ -229,69 +321,82 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: AppTheme.sizeLarge),
-        SizedBox(
-          height: 200,
-          child: BarChart(
-            BarChartData(
-              alignment: BarChartAlignment.spaceAround,
-              maxY: maxY,
-              barTouchData: BarTouchData(
-                enabled: true,
-                touchTooltipData: BarTouchTooltipData(
-                  tooltipPadding: const EdgeInsets.all(AppTheme.sizeSmall),
-                  tooltipMargin: AppTheme.sizeSmall,
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    String dayName = _getDayNameFromIndex(group.x.toInt());
-                    return BarTooltipItem(
-                      '$dayName\n${_formatDuration(rod.toY.toInt())}',
-                      const TextStyle(color: Colors.white),
-                    );
-                  },
-                ),
-              ),
-              titlesData: FlTitlesData(
-                show: true,
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return SideTitleWidget(
-                        angle: 0,
-                        space: 4,
-                        meta: meta,
-                        child: Text(_getDayShortName(value.toInt())),
-                      );
-                    },
+        // Daily Usage Chart - Responsive Container
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final chartHeight = constraints.maxWidth < 400 ? 180.0 : 200.0;
+
+            return SizedBox(
+              height: chartHeight,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: constraints.maxWidth < 400 ? 400 : constraints.maxWidth,
+                  child: BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: maxY,
+                      barTouchData: BarTouchData(
+                        enabled: true,
+                        touchTooltipData: BarTouchTooltipData(
+                          tooltipPadding: const EdgeInsets.all(AppTheme.sizeSmall),
+                          tooltipMargin: AppTheme.sizeSmall,
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                            String dayName = _getDayNameFromIndex(group.x.toInt());
+                            return BarTooltipItem(
+                              '$dayName\n${_formatDuration(rod.toY.toInt())}',
+                              const TextStyle(color: Colors.white),
+                            );
+                          },
+                        ),
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              return SideTitleWidget(
+                                angle: 0,
+                                space: 4,
+                                meta: meta,
+                                child: Text(_getDayShortName(value.toInt())),
+                              );
+                            },
+                          ),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              return SideTitleWidget(
+                                angle: 0,
+                                space: 4,
+                                meta: meta,
+                                child: Text(_formatDurationShort(value.toInt())),
+                              );
+                            },
+                            reservedSize: 40,
+                          ),
+                        ),
+                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      ),
+                      gridData: FlGridData(show: false),
+                      borderData: FlBorderData(show: false),
+                      barGroups: _statistics!.dailyUsage
+                          .map((dayData) => _createBarGroup(
+                                dayData.dayOfWeek,
+                                dayData.totalDuration.toDouble(),
+                                _showComparison ? dayData.compareDuration?.toDouble() : null,
+                              ))
+                          .toList(),
+                    ),
                   ),
                 ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return SideTitleWidget(
-                        angle: 0,
-                        space: 4,
-                        meta: meta,
-                        child: Text(_formatDurationShort(value.toInt())),
-                      );
-                    },
-                    reservedSize: 40,
-                  ),
-                ),
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),
-              gridData: FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-              barGroups: _statistics!.dailyUsage
-                  .map((dayData) => _createBarGroup(
-                        dayData.dayOfWeek,
-                        dayData.totalDuration.toDouble(),
-                        _showComparison ? dayData.compareDuration?.toDouble() : null,
-                      ))
-                  .toList(),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
@@ -342,87 +447,100 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: AppTheme.sizeLarge),
-        SizedBox(
-          height: 200,
-          child: LineChart(
-            LineChartData(
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  tooltipPadding: const EdgeInsets.all(AppTheme.sizeSmall),
-                  tooltipMargin: AppTheme.sizeSmall,
-                  getTooltipItems: (touchedSpots) {
-                    return touchedSpots.map((spot) {
-                      final hour = spot.x.toInt();
-                      final formattedHour = _formatHour(hour);
-                      return LineTooltipItem(
-                        '$formattedHour\n${_formatDuration(spot.y.toInt())}',
-                        const TextStyle(color: Colors.white),
-                      );
-                    }).toList();
-                  },
-                ),
-              ),
-              titlesData: FlTitlesData(
-                show: true,
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      // Only show every 4 hours for better readability
-                      if (value.toInt() % 4 != 0) {
-                        return const SizedBox.shrink();
-                      }
-                      return SideTitleWidget(
-                        angle: 0,
-                        space: 4,
-                        meta: meta,
-                        child: Text(_formatHour(value.toInt())),
-                      );
-                    },
+        // Hourly Usage Chart - Responsive Container
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final chartHeight = constraints.maxWidth < 400 ? 180.0 : 200.0;
+
+            return SizedBox(
+              height: chartHeight,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: constraints.maxWidth < 400 ? 400 : constraints.maxWidth,
+                  child: LineChart(
+                    LineChartData(
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          tooltipPadding: const EdgeInsets.all(AppTheme.sizeSmall),
+                          tooltipMargin: AppTheme.sizeSmall,
+                          getTooltipItems: (touchedSpots) {
+                            return touchedSpots.map((spot) {
+                              final hour = spot.x.toInt();
+                              final formattedHour = _formatHour(hour);
+                              return LineTooltipItem(
+                                '$formattedHour\n${_formatDuration(spot.y.toInt())}',
+                                const TextStyle(color: Colors.white),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              // Only show every 4 hours for better readability
+                              if (value.toInt() % 4 != 0) {
+                                return const SizedBox.shrink();
+                              }
+                              return SideTitleWidget(
+                                angle: 0,
+                                space: 4,
+                                meta: meta,
+                                child: Text(_formatHour(value.toInt())),
+                              );
+                            },
+                          ),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              return SideTitleWidget(
+                                angle: 0,
+                                space: 4,
+                                meta: meta,
+                                child: Text(_formatDurationShort(value.toInt())),
+                              );
+                            },
+                            reservedSize: 40,
+                          ),
+                        ),
+                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      ),
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: true,
+                        drawHorizontalLine: true,
+                        getDrawingHorizontalLine: (value) => FlLine(
+                          color: Colors.grey.withOpacity(0.2),
+                          strokeWidth: 1,
+                        ),
+                        getDrawingVerticalLine: (value) => FlLine(
+                          color: Colors.grey.withOpacity(0.2),
+                          strokeWidth: 1,
+                        ),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      lineBarsData: [
+                        _createLineSeries(mainSpots, _appUsageColor),
+                        if (_showComparison && compareSpots.isNotEmpty)
+                          _createLineSeries(compareSpots, _appUsageColor.withOpacity(0.5)),
+                      ],
+                      minX: 0,
+                      maxX: 23,
+                      minY: 0,
+                      maxY: maxY,
+                    ),
                   ),
                 ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return SideTitleWidget(
-                        angle: 0,
-                        space: 4,
-                        meta: meta,
-                        child: Text(_formatDurationShort(value.toInt())),
-                      );
-                    },
-                    reservedSize: 40,
-                  ),
-                ),
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),
-              gridData: FlGridData(
-                show: true,
-                drawVerticalLine: true,
-                drawHorizontalLine: true,
-                getDrawingHorizontalLine: (value) => FlLine(
-                  color: Colors.grey.withValues(alpha: 0.2),
-                  strokeWidth: 1,
-                ),
-                getDrawingVerticalLine: (value) => FlLine(
-                  color: Colors.grey.withValues(alpha: 0.2),
-                  strokeWidth: 1,
-                ),
-              ),
-              borderData: FlBorderData(show: false),
-              lineBarsData: [
-                _createLineSeries(mainSpots, _appUsageColor),
-                if (_showComparison && compareSpots.isNotEmpty)
-                  _createLineSeries(compareSpots, _appUsageColor.withValues(alpha: 0.5)),
-              ],
-              minX: 0,
-              maxX: 23,
-              minY: 0,
-              maxY: maxY,
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
@@ -442,7 +560,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
         if (compareY != null)
           BarChartRodData(
             toY: compareY,
-            color: _appUsageColor.withValues(alpha: 0.5),
+            color: _appUsageColor.withOpacity(0.5),
             width: 15,
             borderRadius: BorderRadius.circular(2),
           ),
@@ -460,7 +578,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
       dotData: FlDotData(show: false),
       belowBarData: BarAreaData(
         show: true,
-        color: color.withValues(alpha: 0.2),
+        color: color.withOpacity(0.2),
       ),
     );
   }
