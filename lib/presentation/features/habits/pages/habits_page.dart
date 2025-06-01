@@ -215,20 +215,22 @@ class _HabitsPageState extends State<HabitsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Filters and sorting
-              HabitListOptions(
-                selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
-                showNoTagsFilter: _showNoTagsFilter,
-                filterByArchived: _filterByArchived,
-                sortConfig: _sortConfig,
-                onTagFilterChange: _onFilterTagsSelect,
-                onArchiveFilterChange: _onToggleArchived,
-                onSearchChange: _onSearchChange,
-                onSortChange: _onSortConfigChange,
-                showSearchFilter: true,
-                showSortButton: true,
-                showSaveButton: true,
-                settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
-                onSettingsLoaded: _onSettingsLoaded,
+              Expanded(
+                child: HabitListOptions(
+                  selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
+                  showNoTagsFilter: _showNoTagsFilter,
+                  filterByArchived: _filterByArchived,
+                  sortConfig: _sortConfig,
+                  onTagFilterChange: _onFilterTagsSelect,
+                  onArchiveFilterChange: _onToggleArchived,
+                  onSearchChange: _onSearchChange,
+                  onSortChange: _onSortConfigChange,
+                  showSearchFilter: true,
+                  showSortButton: true,
+                  showSaveButton: true,
+                  settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
+                  onSettingsLoaded: _onSettingsLoaded,
+                ),
               ),
 
               // Calendar
