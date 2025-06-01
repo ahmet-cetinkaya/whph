@@ -59,14 +59,10 @@ class AppAbout extends StatelessWidget {
           style: AppTheme.bodyMedium,
         ),
         Center(
-          child: GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 3,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            physics: const NeverScrollableScrollPhysics(),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
             children: [
               _buildExternalLink(
                 title: _translationService.translate(AboutTranslationKeys.websiteLink),
