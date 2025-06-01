@@ -273,19 +273,21 @@ class MainActivity : FlutterActivity() {
                         // Only check on Android 12 (API 31) and above
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                            // Check if the permission is actually granted
-                            val permissionStatus = context.checkCallingOrSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM)
-                            val hasPermission = permissionStatus == PackageManager.PERMISSION_GRANTED
-
-                            // Also check using the AlarmManager API
-                            val alarmManagerCheck = alarmManager.canScheduleExactAlarms()
-
-                            // Consider permission granted if either check passes
-                            val canSchedule = hasPermission || alarmManagerCheck
-
+                            
+                            // The SCHEDULE_EXACT_ALARM permission is a normal permission that's automatically
+                            // granted if declared in the manifest. The real permission we need to check is
+                            // whether the user has granted the "Alarms & reminders" permission in system settings.
+                            // Only AlarmManager.canScheduleExactAlarms() can reliably check this.
+                            val canSchedule = alarmManager.canScheduleExactAlarms()
+                            
+                            Log.d("ExactAlarm", "Android SDK: ${Build.VERSION.SDK_INT}")
+                            Log.d("ExactAlarm", "Package: ${context.packageName}")
+                            Log.d("ExactAlarm", "Target SDK: ${context.applicationInfo.targetSdkVersion}")
+                            Log.d("ExactAlarm", "canScheduleExactAlarms: $canSchedule")
+                            
                             result.success(canSchedule)
                         } else {
+                            Log.d("ExactAlarm", "Android SDK < 31, exact alarm permission not required")
                             result.success(true)
                         }
                     } catch (e: Exception) {
@@ -297,7 +299,13 @@ class MainActivity : FlutterActivity() {
                 "checkExactAlarmPermission" -> {
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            val permissionStatus = context.checkCallingOrSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM)
+                            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                            val canSchedule = alarmManager.canScheduleExactAlarms()
+                            
+                            // Return 0 (PERMISSION_GRANTED) if granted, -1 (PERMISSION_DENIED) if not
+                            val permissionStatus = if (canSchedule) PackageManager.PERMISSION_GRANTED else PackageManager.PERMISSION_DENIED
+                            
+                            Log.d("ExactAlarm", "checkExactAlarmPermission: $permissionStatus (canSchedule: $canSchedule)")
                             result.success(permissionStatus)
                         } else {
                             result.success(PackageManager.PERMISSION_GRANTED)
@@ -313,28 +321,24 @@ class MainActivity : FlutterActivity() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-                            // First check the permission directly
-                            val permissionStatus = context.checkCallingOrSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM)
-                            val hasDirectPermission = permissionStatus == PackageManager.PERMISSION_GRANTED
-
-                            // Also check using the AlarmManager API
+                            // Only check using the AlarmManager API - this is the reliable way
                             val canScheduleExactAlarms = alarmManager.canScheduleExactAlarms()
 
-                            // If we already know we don't have permission, don't try to set test alarm
-                            if (!hasDirectPermission && !canScheduleExactAlarms) {
-                                Log.d("ExactAlarm", "No exact alarm permission detected, skipping test alarm")
+                            // If we don't have permission, return false immediately
+                            if (!canScheduleExactAlarms) {
+                                Log.d("ExactAlarm", "No exact alarm permission detected via AlarmManager API")
                                 result.success(false)
                                 return@setMethodCallHandler
                             }
 
-                            // Try to create a test alarm to verify permission only if we think we have permission
-                            if (Build.VERSION.SDK_INT >= 31) {
+                            // Try to create a test alarm to verify permission
+                            try {
                                 // Create a test PendingIntent
                                 val intent = Intent(context, MainActivity::class.java)
                                 intent.action = "TEST_EXACT_ALARM_PERMISSION"
                                 val pendingIntent = PendingIntent.getBroadcast(
                                     context,
-                                    0,
+                                    999999, // Use a unique ID for test
                                     intent,
                                     PendingIntent.FLAG_IMMUTABLE
                                 )
@@ -342,29 +346,25 @@ class MainActivity : FlutterActivity() {
                                 // Get current time
                                 val currentTimeMillis = System.currentTimeMillis()
 
-                                try {
-                                    // Actually try to set the alarm - this is the most reliable test
-                                    alarmManager.setExactAndAllowWhileIdle(
-                                        AlarmManager.RTC_WAKEUP,
-                                        currentTimeMillis + 3600000, // 1 hour in the future
-                                        pendingIntent
-                                    )
+                                // Actually try to set the alarm - this is the most reliable test
+                                alarmManager.setExactAndAllowWhileIdle(
+                                    AlarmManager.RTC_WAKEUP,
+                                    currentTimeMillis + 3600000, // 1 hour in the future
+                                    pendingIntent
+                                )
 
-                                    // Immediately cancel the alarm
-                                    alarmManager.cancel(pendingIntent)
-                                    Log.d("ExactAlarm", "Test alarm successfully created and canceled")
-                                    result.success(true)
-                                } catch (e: SecurityException) {
-                                    // Handle security exception specifically to avoid scary logs
-                                    Log.d("ExactAlarm", "Test alarm failed due to security restriction (expected if permission not granted)")
-                                    result.success(false)
-                                } catch (e: Exception) {
-                                    Log.e("ExactAlarm", "Unexpected error setting test alarm: ${e.message}", e)
-                                    result.success(hasDirectPermission || canScheduleExactAlarms)
-                                }
-                            } else {
-                                val canSchedule = alarmManager.canScheduleExactAlarms()
-                                result.success(canSchedule)
+                                // Immediately cancel the alarm
+                                alarmManager.cancel(pendingIntent)
+                                Log.d("ExactAlarm", "Test alarm successfully created and canceled")
+                                result.success(true)
+                            } catch (e: SecurityException) {
+                                // Handle security exception specifically to avoid scary logs
+                                Log.d("ExactAlarm", "Test alarm failed due to security restriction (expected if permission not granted)")
+                                result.success(false)
+                            } catch (e: Exception) {
+                                Log.e("ExactAlarm", "Unexpected error setting test alarm: ${e.message}", e)
+                                // Fall back to the AlarmManager API check
+                                result.success(canScheduleExactAlarms)
                             }
                         } else {
                             result.success(true)
@@ -378,14 +378,22 @@ class MainActivity : FlutterActivity() {
                 "openExactAlarmsSettings" -> {
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            // First, check current permission status
+                            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                            val currentStatus = alarmManager.canScheduleExactAlarms()
+                            Log.d("ExactAlarm", "Current permission status before opening settings: $currentStatus")
+                            
                             // Open the exact alarm permission settings
                             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                             intent.data = Uri.parse("package:${context.packageName}")
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            
+                            Log.d("ExactAlarm", "Opening exact alarm settings for package: ${context.packageName}")
                             startActivity(intent)
 
                             result.success(true)
                         } else {
+                            Log.d("ExactAlarm", "Android version < 12, exact alarm permission not needed")
                             result.success(true)
                         }
                     } catch (e: Exception) {

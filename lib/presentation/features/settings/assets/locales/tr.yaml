@@ -40,63 +40,55 @@ settings:
     app_usage:
       description: Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.
       instructions: "Talimatlar:"
-      not_granted: Uygulama kullanım izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
-        step1: Cihaz Ayarlarınızı açın
-        step2: '"Gizlilik" veya "Güvenlik ve Gizlilik"e gidin'
-        step3: '"Kullanım Erişimi"ni bulun ve {appName} için etkinleştirin'
+        step1: '"Ayarı Aç" butonuna basın'
+        step2: Açılan kullanım erişimi ayarları ekranında listede "{appName}"'yi bulun
+        step3: '"{appName}"''ye dokunun'
+        step4: '"Kullanım erişimine izin ver"i etkinleştirin veya anahtarı AÇIK konumuna getirin'
       title: Uygulama Kullanım İzni
     battery_optimization:
       description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç teslim edilmeyebilir.
       instructions: "Talimatlar:"
-      location_note: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
+      importance: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
       not_disabled: Pil optimizasyonu hala etkin. İlgili işlevin doğru çalışabilmesi için izni verin.
-      not_granted: Pil optimizasyonu izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
-        step1: Cihaz Ayarlarınızı açın
-        step2: Pil > Pil optimizasyonu'na gidin
-        step3: Açılır menüden "Tüm uygulamalar"ı seçin
-        step4: Listede {appName}'yi bulun
-        step5: '"Optimize etme"yi seçin'
+        step1: '"Ayarı Aç" butonuna basın'
+        step2: Açılan ayarlar ekranında "{appName}"'yi bulun
+        step3: '"{appName}"''a tıklayın'
+        step4: Açılan sayfada "Arka Plan Kullanımına İzin Ver"in etkin olduğundan emin olun
+        step5: '"Arka Plan Kullanımına İzin Ver"e dokunun'
+        step6: '"Kısıtlanmamış"ı seçin'
       title: Pil Optimizasyonu
     exact_alarm:
+      title: Tam Alarm İzni
       description: Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
       instructions: "Talimatlar:"
-      not_granted: Tam alarm izni hala verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
-        android12plus:
-          step2: '"Alarmlar ve hatırlatıcılar"a dokunun'
-          step3: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
-        step1: Açılan ayarlar ekranında {appName}'yi bulun
-        step2: '"Tam alarmları planlamaya izin ver"i etkinleştirin'
-      title: Tam Alarm İzni
+        step1: '"Ayarı Aç" butonuna basın'
+        step2: 'Açılan {appName} uygulamasına ait Alarmlar ve hatırlatıcılar sayfasında "Alarm ve hatırlatıcı ayarlamaya izin ver" seçeneğini etkinleştirin'
     startup:
       title: Otomatik Başlatma İzni
       description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
       instructions: "Talimatlar:"
       steps:
-        step1: Açılan ayarlar ekranında {appName}'yi bulun
-        step2: '"Otomatik başlatma" veya "Otomatik çalıştır" iznini etkinleştirin'
-        step3: İşlem tamamlandığında bu uygulamaya geri dönün
-      importance: Otomatik başlatma izni olmadan, uygulama cihaz yeniden başlatıldıktan sonra düzgün çalışmayabilir.
-      not_granted: Otomatik başlatma izni henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
+        step1: '"Ayarı Aç" butonuna basın'
+        step2: 'Açılan ayarlar ekranında "{appName}" uygulamasını bulun'
+        step3: '"Otomatik başlatma", "Otomatik çalıştır", "Başlangıçta başlat" veya "Auto-start" seçeneğini etkinleştirin'
+      importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.
     fix_it: Düzelt
-    instructions: İzinlerin verilmesi için talimatlar
+    instructions: Talimatlar
     notification:
       description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
-      importance: Bildirim izni olmadan, hiçbir hatırlatıcı alamazsınız.
       instructions: "Talimatlar:"
-      not_granted: İzin henüz verilmedi. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
         android:
-          step1: Açılan ayarlar ekranında bu uygulamayı bulun
-          step2: '"Bildirimler"e dokunun ve etkinleştirin'
+          step1: '"Ayarı Aç" butonuna basın'
+          step2: İstendiğinde bildirimlere izin verin
         ios:
-          step1: Açılan ayarlar ekranında bu uygulamayı bulun
-          step2: '"Bildirimler"e dokunun ve "Bildirimlere İzin Ver"i etkinleştirin'
-        step3: İşlem tamamlandığında bu uygulamaya geri dönün
+          step1: '"Ayarı Aç" butonuna basın'
+          step2: İstendiğinde bildirimlere izin verin
       title: Bildirim İzni
-    open_settings: Ayarları Aç
+    open_settings: Ayarı Aç
     title: İzinler
   startup:
     disable_error: Başlangıç ayarı devre dışı bırakılamadı

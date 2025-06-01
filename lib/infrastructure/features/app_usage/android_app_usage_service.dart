@@ -109,4 +109,32 @@ class AndroidAppUsageService extends BaseAppUsageService {
       if (kDebugMode) debugPrint('Error getting app usages: $e');
     }
   }
+
+  @override
+  Future<void> getInitialAppUsages() async {
+    if (!(await checkUsageStatsPermission())) {
+      if (kDebugMode) debugPrint('Permission not granted. Cannot get initial app usages.');
+      return;
+    }
+
+    try {
+      DateTime now = DateTime.now();
+      // Get data from the start of the current day to now for initial collection
+      DateTime startDate = DateTime(now.year, now.month, now.day);
+      DateTime endDate = now;
+
+      if (kDebugMode) debugPrint('Getting initial app usages from $startDate to $endDate');
+
+      List<app_usage_package.AppUsageInfo> usageStats = await _appUsage.getAppUsage(startDate, endDate);
+
+      for (app_usage_package.AppUsageInfo usage in usageStats) {
+        // Don't overwrite existing records for initial collection
+        await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: false);
+      }
+
+      if (kDebugMode) debugPrint('Initial app usage collection completed. Processed ${usageStats.length} apps.');
+    } catch (e) {
+      if (kDebugMode) debugPrint('Error getting initial app usages: $e');
+    }
+  }
 }

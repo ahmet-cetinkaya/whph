@@ -43,65 +43,57 @@ settings:
   permissions:
     title: Permissions
     fix_it: Fix It
-    open_settings: Open Settings
-    instructions: Instructions for granting permissions
+    open_settings: Open Setting
+    instructions: Instructions
     battery_optimization:
       title: Battery Optimization
       description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
       instructions: "Instructions:"
       steps:
-        step1: Open your device Settings
-        step2: Go to Battery > Battery optimization
-        step3: Select "All apps" from the dropdown
-        step4: Find {appName} in the list
-        step5: Select "Don't optimize"
-      location_note: The location of this setting may vary depending on your device manufacturer.
+        step1: Press the "Open Setting" button
+        step2: In the settings screen that opens, find "{appName}"
+        step3: Tap on "{appName}"
+        step4: Ensure "Allow Background Usage" is enabled on the page that opens
+        step5: Tap on "Allow Background Usage"
+        step6: Select "Unrestricted"
+      importance: The location of this setting may vary depending on your device manufacturer.
       not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
-      not_granted: Battery optimization permission is not granted yet. Provide permission for the relevant function to work correctly.
     notification:
       title: Notification Permission
       description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
       instructions: "Instructions:"
       steps:
         android:
-          step1: In the settings screen that opens, find this app
-          step2: Tap on "Notifications" and enable them
+          step1: Press the "Open Setting" button
+          step2: Allow notifications when prompted
         ios:
-          step1: In the settings screen that opens, find this app
-          step2: Tap on "Notifications" and enable "Allow Notifications"
-        step3: Return to this app when done
-      not_granted: Permission not granted yet. Provide permission for the relevant function to work correctly.
-      importance: Without notification permission, you won't receive any reminders.
+          step1: Press the "Open Setting" button
+          step2: Allow notifications when prompted
     exact_alarm:
       title: Exact Alarm Permission
       description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
       instructions: "Instructions:"
       steps:
-        step1: In the settings screen that opens, find {appName}
-        android12plus:
-          step2: Tap on "Alarms & reminders"
-          step3: Enable "Allow scheduling exact alarms"
-        step2: Enable "Allow scheduling exact alarms"
-      not_granted: Exact alarm permission is still not granted. Provide permission for the relevant function to work correctly.
+        step1: Press the "Open Setting" button
+        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
     startup:
       title: Auto-start Permission
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       instructions: "Instructions:"
       steps:
-        step1: In the settings screen that opens, find {appName}
-        step2: Enable "Auto-start" or "Autorun" permission
-        step3: Return to this app when done
-      importance: Without auto-start permission, the app may not function properly after device restarts.
-      not_granted: Auto-start permission is not granted yet. Provide permission for the relevant function to work correctly.
+        step1: Press the "Open Setting" button
+        step2: 'In the settings screen that opens, find "{appName}" app'
+        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
+      importance: Auto-start setting location varies or may not be present by device manufacturer.
     app_usage:
       title: App Usage Permission
       description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
       instructions: "Instructions:"
       steps:
-        step1: Open your device Settings
-        step2: Go to "Privacy" or "Security & Privacy"
-        step3: Find and tap on "Usage Access" and enable it for {appName}
-      not_granted: App usage permission is not granted yet. Provide permission for the relevant function to work correctly.
+        step1: Press the "Open Setting" button
+        step2: In the usage access settings screen that opens, find "{appName}" in the list
+        step3: Tap on "{appName}"
+        step4: Enable "Allow usage access" or toggle the switch to ON
   errors:
     setting_not_found: Setting not found
     version_mismatch: Version mismatch
