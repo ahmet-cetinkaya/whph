@@ -51,7 +51,7 @@ class NoteCard extends StatelessWidget {
                     size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
                     color: Colors.white,
                   ),
-                  SizedBox(width: isDense ? 4 : AppTheme.sizeXSmall),
+                  SizedBox(width: isDense ? AppTheme.sizeXSmall : AppTheme.sizeXSmall),
                   // Note title
                   Expanded(
                     child: Text(
@@ -85,38 +85,36 @@ class NoteCard extends StatelessWidget {
                 SizedBox(height: isDense ? 2 : AppTheme.sizeXSmall),
                 DefaultTextStyle(
                   style: AppTheme.bodySmall,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  child: Wrap(
+                    spacing: AppTheme.sizeSmall,
+                    runSpacing: AppTheme.sizeXSmall,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       if (note.tags.isNotEmpty)
-                        Flexible(
-                          child: Label.multipleColored(
-                            icon: TagUiConstants.tagIcon,
-                            color: Colors.grey, // Default color for icon and commas
-                            values: note.tags.map((tag) => tag.tagName).toList(),
-                            colors: note.tags
-                                .map((tag) => tag.tagColor != null
-                                    ? Color(int.parse('FF${tag.tagColor}', radix: 16))
-                                    : Colors.grey)
-                                .toList(),
-                            mini: true,
-                          ),
+                        Label.multipleColored(
+                          icon: TagUiConstants.tagIcon,
+                          color: Colors.grey, // Default color for icon and commas
+                          values: note.tags.map((tag) => tag.tagName).toList(),
+                          colors: note.tags
+                              .map((tag) =>
+                                  tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+                              .toList(),
+                          mini: true,
                         ),
-                      if (note.tags.isNotEmpty && note.updatedAt != null) const SizedBox(width: 8),
                       if (note.updatedAt != null)
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 3),
+                              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
                               child: Icon(
                                 Icons.update,
                                 size: AppTheme.iconSizeXSmall,
                                 color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                               ),
                             ),
-                            const SizedBox(width: 2),
+                            const SizedBox(width: AppTheme.size2XSmall),
                             Text(
                               _formatDateTime(note.updatedAt!),
                               style: TextStyle(

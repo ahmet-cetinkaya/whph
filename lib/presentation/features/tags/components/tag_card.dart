@@ -22,7 +22,7 @@ class TagCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = isDense ? 4.0 : 8.0;
+    final spacing = isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall;
     final padding = isDense
         ? const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall)
         : const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: AppTheme.sizeSmall);
@@ -93,17 +93,24 @@ class TagCard extends StatelessWidget {
   }
 
   Widget _buildRelatedTags() {
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: AppTheme.secondaryTextColor,
-      values: tag.relatedTags.map((relatedTag) => relatedTag.name).toList(),
-      colors: tag.relatedTags
-          .map((relatedTag) => relatedTag.color != null
-              ? Color(int.parse('FF${relatedTag.color}', radix: 16))
-              : AppTheme.secondaryTextColor)
-          .toList(),
-      mini: isDense,
-      overflow: TextOverflow.ellipsis,
+    return Wrap(
+      spacing: AppTheme.sizeXSmall,
+      runSpacing: AppTheme.size2XSmall,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Label.multipleColored(
+          icon: TagUiConstants.tagIcon,
+          color: AppTheme.secondaryTextColor,
+          values: tag.relatedTags.map((relatedTag) => relatedTag.name).toList(),
+          colors: tag.relatedTags
+              .map((relatedTag) => relatedTag.color != null
+                  ? Color(int.parse('FF${relatedTag.color}', radix: 16))
+                  : AppTheme.secondaryTextColor)
+              .toList(),
+          mini: isDense,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }
