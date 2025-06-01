@@ -288,9 +288,8 @@ class HabitsListState extends State<HabitsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._habitList!.items.map((habit) => SizedBox(
+          ..._habitList!.items.map((habit) => Container(
                 key: ValueKey(habit.id), // Add this key
-                height: 64,
                 child: HabitCard(
                   habit: habit,
                   onOpenDetails: () => widget.onClickHabit(habit),

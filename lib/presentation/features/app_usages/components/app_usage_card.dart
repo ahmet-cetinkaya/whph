@@ -52,23 +52,22 @@ class AppUsageCard extends StatelessWidget {
         .toList();
 
     return Container(
-      constraints: const BoxConstraints(minHeight: 32),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      constraints: const BoxConstraints(minHeight: AppTheme.size2XLarge),
+      child: Wrap(
+        spacing: AppTheme.sizeXSmall,
+        runSpacing: AppTheme.size2XSmall,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(
             "•",
             style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
           ),
-          const SizedBox(width: 4),
-          Flexible(
-            child: Label.multipleColored(
-              icon: TagUiConstants.tagIcon,
-              color: Colors.grey, // Default color for icon and commas
-              values: appUsage.tags.map((tag) => tag.tagName).toList(),
-              colors: tagColors,
-              mini: true,
-            ),
+          Label.multipleColored(
+            icon: TagUiConstants.tagIcon,
+            color: Colors.grey, // Default color for icon and commas
+            values: appUsage.tags.map((tag) => tag.tagName).toList(),
+            colors: tagColors,
+            mini: true,
           ),
         ],
       ),

@@ -183,66 +183,54 @@ class _HabitCardState extends State<HabitCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.habit.name,
-                          style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                  // Habit title
+                  Text(
+                    widget.habit.name,
+                    style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
+
+                  // Tags and metadata section
+                  if (!widget.isMiniLayout && (widget.habit.tags.isNotEmpty || widget.habit.estimatedTime != null))
                     Padding(
                       padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeXSmall),
-                      child: Row(
+                      child: Wrap(
+                        spacing: AppTheme.sizeXSmall,
+                        runSpacing: AppTheme.sizeXSmall / 2,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: AppTheme.sizeXSmall,
-                                children: [
-                                  // Tags
-                                  Label.multipleColored(
-                                    icon: TagUiConstants.tagIcon,
-                                    color: Colors.grey, // Default color for icon and commas
-                                    values: widget.habit.tags.map((tag) => tag.name).toList(),
-                                    colors: widget.habit.tags
-                                        .map((tag) => tag.color != null
-                                            ? Color(int.parse('FF${tag.color}', radix: 16))
-                                            : Colors.grey)
-                                        .toList(),
-                                    mini: true,
-                                  ),
-
-                                  // Estimated time
-                                  if (widget.habit.estimatedTime != null && !widget.isMiniLayout)
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          HabitUiConstants.estimatedTimeIcon,
-                                          size: AppTheme.iconSizeSmall,
-                                          color: HabitUiConstants.estimatedTimeColor,
-                                        ),
-                                        Text(
-                                          SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
-                                          style: AppTheme.bodySmall.copyWith(
-                                            color: HabitUiConstants.estimatedTimeColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                ],
-                              ),
+                          // Tags
+                          if (widget.habit.tags.isNotEmpty)
+                            Label.multipleColored(
+                              icon: TagUiConstants.tagIcon,
+                              color: Colors.grey, // Default color for icon and commas
+                              values: widget.habit.tags.map((tag) => tag.name).toList(),
+                              colors: widget.habit.tags
+                                  .map((tag) =>
+                                      tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                                  .toList(),
+                              mini: true,
                             ),
-                          ),
+
+                          // Estimated time
+                          if (widget.habit.estimatedTime != null && !widget.isMiniLayout)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  HabitUiConstants.estimatedTimeIcon,
+                                  size: AppTheme.iconSizeSmall,
+                                  color: HabitUiConstants.estimatedTimeColor,
+                                ),
+                                Text(
+                                  SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
+                                  style: AppTheme.bodySmall.copyWith(
+                                    color: HabitUiConstants.estimatedTimeColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ),
