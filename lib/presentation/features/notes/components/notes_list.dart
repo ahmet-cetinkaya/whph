@@ -14,6 +14,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
@@ -220,6 +221,7 @@ class NotesListState extends State<NotesList> {
         ..._noteList!.items.map((note) => NoteCard(
               note: note,
               onOpenDetails: () => _onNoteSelected(note.id),
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             )),
         if (_noteList!.hasNext)
           Padding(

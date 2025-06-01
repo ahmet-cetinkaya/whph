@@ -236,7 +236,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                   ),
                   const SizedBox(height: AppTheme.sizeXSmall),
                   _buildLegendItem(
-                    _appUsageColor.withOpacity(0.5),
+                    _appUsageColor.withValues(alpha: 0.5),
                     _formatDateRange(_compareStartDate!, _compareEndDate!),
                   ),
                 ],
@@ -253,7 +253,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                     ),
                     const SizedBox(width: AppTheme.sizeMedium),
                     _buildLegendItem(
-                      _appUsageColor.withOpacity(0.5),
+                      _appUsageColor.withValues(alpha: 0.5),
                       _formatDateRange(_compareStartDate!, _compareEndDate!),
                     ),
                   ],
@@ -517,11 +517,11 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                         drawVerticalLine: true,
                         drawHorizontalLine: true,
                         getDrawingHorizontalLine: (value) => FlLine(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withValues(alpha: 0.2),
                           strokeWidth: 1,
                         ),
                         getDrawingVerticalLine: (value) => FlLine(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withValues(alpha: 0.2),
                           strokeWidth: 1,
                         ),
                       ),
@@ -529,7 +529,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                       lineBarsData: [
                         _createLineSeries(mainSpots, _appUsageColor),
                         if (_showComparison && compareSpots.isNotEmpty)
-                          _createLineSeries(compareSpots, _appUsageColor.withOpacity(0.5)),
+                          _createLineSeries(compareSpots, _appUsageColor.withValues(alpha: 0.5)),
                       ],
                       minX: 0,
                       maxX: 23,
@@ -560,7 +560,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
         if (compareY != null)
           BarChartRodData(
             toY: compareY,
-            color: _appUsageColor.withOpacity(0.5),
+            color: _appUsageColor.withValues(alpha: 0.5),
             width: 15,
             borderRadius: BorderRadius.circular(2),
           ),
@@ -578,7 +578,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
       dotData: FlDotData(show: false),
       belowBarData: BarAreaData(
         show: true,
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
       ),
     );
   }

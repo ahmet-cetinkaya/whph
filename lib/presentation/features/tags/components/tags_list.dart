@@ -12,6 +12,7 @@ import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/features/tags/constants/tag_translation_keys.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/utils/collection_utils.dart';
 
@@ -201,6 +202,7 @@ class TagsListState extends State<TagsList> {
           ..._tags!.items.map((tag) => TagCard(
                 tag: tag,
                 onOpenDetails: () => widget.onClickTag?.call(tag),
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
               )),
           if (_tags!.hasNext)
             Padding(

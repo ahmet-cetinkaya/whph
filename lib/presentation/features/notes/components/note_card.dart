@@ -12,28 +12,33 @@ class NoteCard extends StatelessWidget {
   final NoteListItem note;
   final VoidCallback? onOpenDetails;
   final bool transparentCard;
+  final bool isDense;
 
   const NoteCard({
     super.key,
     required this.note,
     this.onOpenDetails,
     this.transparentCard = false,
+    this.isDense = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final cardPadding = isDense ? const EdgeInsets.all(AppTheme.sizeSmall) : const EdgeInsets.all(AppTheme.sizeMedium);
+    final cardMargin = isDense
+        ? const EdgeInsets.symmetric(vertical: 2, horizontal: AppTheme.sizeXSmall)
+        : const EdgeInsets.symmetric(vertical: AppTheme.sizeXSmall, horizontal: AppTheme.sizeXSmall);
+    final previewHeight = isDense ? 60.0 : 80.0;
+
     return Card(
-      margin: const EdgeInsets.symmetric(
-        vertical: AppTheme.sizeXSmall,
-        horizontal: AppTheme.sizeXSmall,
-      ),
+      margin: cardMargin,
       elevation: 2,
       color: transparentCard ? Theme.of(context).cardColor.withValues(alpha: 0.8) : Theme.of(context).cardColor,
       child: InkWell(
         onTap: onOpenDetails,
         borderRadius: BorderRadius.circular(AppTheme.sizeXSmall),
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeMedium),
+          padding: cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,31 +48,31 @@ class NoteCard extends StatelessWidget {
                   // Note icon
                   Icon(
                     NoteUiConstants.noteIcon,
-                    size: AppTheme.iconSizeMedium,
+                    size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
                     color: Colors.white,
                   ),
-                  const SizedBox(width: AppTheme.sizeXSmall),
+                  SizedBox(width: isDense ? 4 : AppTheme.sizeXSmall),
                   // Note title
                   Expanded(
                     child: Text(
                       note.title,
-                      style: AppTheme.headlineSmall,
+                      style: isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                      maxLines: isDense ? 1 : 2,
                     ),
                   ),
                 ],
               ),
               // Note content preview
               if (note.content != null && note.content!.isNotEmpty) ...[
-                const SizedBox(height: AppTheme.sizeXSmall),
+                SizedBox(height: isDense ? 2 : AppTheme.sizeXSmall),
                 Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
+                  padding: EdgeInsets.only(left: isDense ? AppTheme.sizeSmall : AppTheme.sizeMedium),
                   child: BorderFadeOverlay(
                     fadeBorders: {FadeBorder.bottom},
                     backgroundColor: AppTheme.surface1,
                     child: SizedBox(
-                      height: 80,
+                      height: previewHeight,
                       child: MarkdownRenderer(
                         data: note.content!,
                       ),
@@ -77,7 +82,7 @@ class NoteCard extends StatelessWidget {
               ],
               // Tags and last updated time in the same row
               if (note.tags.isNotEmpty || note.updatedAt != null) ...[
-                const SizedBox(height: AppTheme.sizeXSmall),
+                SizedBox(height: isDense ? 2 : AppTheme.sizeXSmall),
                 DefaultTextStyle(
                   style: AppTheme.bodySmall,
                   child: Row(

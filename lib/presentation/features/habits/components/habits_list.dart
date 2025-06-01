@@ -7,6 +7,7 @@ import 'package:whph/presentation/features/habits/components/habit_card.dart';
 import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
@@ -267,6 +268,7 @@ class HabitsListState extends State<HabitsList> {
                     onOpenDetails: () => widget.onClickHabit(habit),
                     onRecordCreated: (_) => _onHabitRecordChanged(),
                     onRecordDeleted: (_) => _onHabitRecordChanged(),
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
                 ),
               ),
@@ -297,6 +299,7 @@ class HabitsListState extends State<HabitsList> {
                   isDateLabelShowing: false,
                   onRecordCreated: (_) => widget.onHabitCompleted?.call(),
                   onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
+                  isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                 ),
               )),
           if (_habitList!.hasNext)

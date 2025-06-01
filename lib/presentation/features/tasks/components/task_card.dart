@@ -8,7 +8,6 @@ import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dart';
-import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -29,6 +28,7 @@ class TaskCard extends StatelessWidget {
   final bool transparent;
   final bool showSubTasks;
   final bool showScheduleButton;
+  final bool isDense;
 
   final VoidCallback onOpenDetails;
   final VoidCallback? onCompleted;
@@ -44,6 +44,7 @@ class TaskCard extends StatelessWidget {
     this.onScheduled,
     this.showSubTasks = false,
     this.showScheduleButton = true,
+    this.isDense = false,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -69,13 +70,17 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final padding = isDense
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
+        : const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+
     return Card(
       color: transparent ? Colors.transparent : null,
       elevation: transparent ? 0 : null,
       child: InkWell(
         onTap: onOpenDetails,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: padding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -91,13 +96,15 @@ class TaskCard extends StatelessWidget {
   Widget _buildMainContent(BuildContext context) {
     // Re-check hasReminder state in case it changed during reordering
     final hasCurrentReminder = _hasReminder;
+    final buttonSize = isDense ? 24.0 : 32.0;
+    final spacing = isDense ? 4.0 : 8.0;
 
     return Row(
       children: [
         // Task completion button
         SizedBox(
-          width: 32,
-          height: 32,
+          width: buttonSize,
+          height: buttonSize,
           child: TaskCompleteButton(
             taskId: taskItem.id,
             isCompleted: taskItem.isCompleted,
@@ -105,7 +112,7 @@ class TaskCard extends StatelessWidget {
             color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: spacing),
 
         // Task title and metadata
         Expanded(child: _buildTitleAndMetadata(context)),
@@ -116,7 +123,7 @@ class TaskCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Icon(
               Icons.notifications,
-              size: AppTheme.iconSizeSmall,
+              size: isDense ? AppTheme.iconSizeXSmall : AppTheme.iconSizeSmall,
               color: Theme.of(context).colorScheme.primary,
             ).wrapWithTooltip(
               enabled: hasCurrentReminder,
@@ -182,103 +189,98 @@ class TaskCard extends StatelessWidget {
         children: [
           Text(
             taskItem.title,
-            style: AppTheme.bodyMedium.copyWith(
+            style: (isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
               fontWeight: FontWeight.bold,
             ),
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          SizedBox(height: isDense ? 1 : 2),
           _buildMetadataRow(),
         ],
       );
 
   Widget _buildMetadataRow() {
-    return Row(
+    final spacing = isDense ? 4.0 : 8.0;
+
+    return Wrap(
+      spacing: spacing,
+      runSpacing: spacing / 2,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         // Tags section
         if (taskItem.tags.isNotEmpty)
-          Flexible(
-            child: Label.multipleColored(
-              icon: TagUiConstants.tagIcon,
-              color: Colors.grey, // Default color for icon and commas
-              values: taskItem.tags.map((tag) => tag.name).toList(),
-              colors: taskItem.tags
-                  .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                  .toList(),
-              mini: true,
-            ),
+          Label.multipleColored(
+            icon: TagUiConstants.tagIcon,
+            color: Colors.grey,
+            values: taskItem.tags.map((tag) => tag.name).toList(),
+            colors: taskItem.tags
+                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                .toList(),
+            mini: isDense,
           ),
 
-        // Add a small spacer between tags and date/time elements
-        if (taskItem.tags.isNotEmpty && _hasDateOrTime) const SizedBox(width: 8),
-
-        // Date/time section (now in-line with tags)
-        if (_hasDateOrTime)
-          Expanded(
-            child: Wrap(
-              spacing: AppTheme.sizeXSmall,
-              runSpacing: 0,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: _buildDateTimeElements(),
-            ),
-          ),
+        // Date/Time elements
+        if (_hasDateTimeOrMetadata) ..._buildDateTimeElements(),
 
         // Completion percentage for subtasks
-        if (taskItem.subTasks.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: _buildInfoRow(
-              Icons.check_circle_outline,
-              '${taskItem.subTasksCompletionPercentage.toStringAsFixed(0)}%',
-              Colors.green,
-            ),
+        if (taskItem.subTasks.isNotEmpty && taskItem.subTasksCompletionPercentage > 0)
+          _buildInfoRow(
+            Icons.check_circle_outline,
+            '${taskItem.subTasksCompletionPercentage.toStringAsFixed(0)}%',
+            Colors.green,
+          ),
+
+        // Estimated time if available
+        if (taskItem.estimatedTime != null && taskItem.estimatedTime! > 0)
+          _buildInfoRow(
+            Icons.timer_outlined,
+            '${taskItem.estimatedTime}m',
+            TaskUiConstants.estimatedTimeColor,
           ),
       ],
     );
   }
 
+  String _formatDate(DateTime date) {
+    return DateTimeHelper.formatDateTime(date);
+  }
+
+  Color _getDateColor(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final dateOnly = DateTime(date.year, date.month, date.day);
+
+    if (dateOnly.isBefore(today)) {
+      return Colors.red;
+    } else if (dateOnly == today) {
+      return Colors.orange;
+    } else if (dateOnly == tomorrow) {
+      return Colors.green;
+    }
+    return Colors.grey;
+  }
+
   List<Widget> _buildDateTimeElements() {
-    final elements = <Widget>[];
-    void addElement(Widget element) {
-      if (elements.isNotEmpty) {
-        elements.add(const SizedBox(width: AppTheme.sizeSmall));
-      }
-      elements.add(element);
-    }
+    final List<Widget> elements = [];
 
-    if (taskItem.estimatedTime != null) {
-      addElement(_buildInfoRow(
-        TaskUiConstants.estimatedTimeIcon,
-        SharedUiConstants.formatMinutes(taskItem.estimatedTime),
-        TaskUiConstants.estimatedTimeColor,
-      ));
-    }
-
-    if (taskItem.totalElapsedTime > 0) {
-      addElement(_buildInfoRow(
-        TaskUiConstants.totalElapsedTimeIcon,
-        SharedUiConstants.formatMinutes(taskItem.totalElapsedTime ~/ 60),
-        TaskUiConstants.totalElapsedTimeColor,
-      ));
-    }
-
-    // Handle plannedDate with DateTimeHelper directly in presentation layer
+    // Planned date
     if (taskItem.plannedDate != null) {
-      final localFormattedDate = DateTimeHelper.formatDate(taskItem.plannedDate);
-      addElement(_buildInfoRow(
-        TaskUiConstants.plannedDateIcon,
-        localFormattedDate,
-        TaskUiConstants.plannedDateColor,
+      elements.add(Label.single(
+        icon: Icons.event,
+        text: _formatDate(taskItem.plannedDate!),
+        color: _getDateColor(taskItem.plannedDate!),
+        mini: isDense,
       ));
     }
 
-    // Handle deadlineDate with DateTimeHelper directly in presentation layer
+    // Deadline date
     if (taskItem.deadlineDate != null) {
-      final localFormattedDate = DateTimeHelper.formatDate(taskItem.deadlineDate);
-      addElement(_buildInfoRow(
-        TaskUiConstants.deadlineDateIcon,
-        localFormattedDate,
-        TaskUiConstants.deadlineDateColor,
+      elements.add(Label.single(
+        icon: Icons.event_available,
+        text: _formatDate(taskItem.deadlineDate!),
+        color: _getDateColor(taskItem.deadlineDate!),
+        mini: isDense,
       ));
     }
 
@@ -288,7 +290,7 @@ class TaskCard extends StatelessWidget {
   List<Widget> _buildSubTasks(BuildContext context) {
     return taskItem.subTasks.map((subTask) {
       return Padding(
-        padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+        padding: EdgeInsets.only(left: isDense ? 12.0 : 16.0, top: isDense ? 4.0 : 8.0),
         child: TaskCard(
           taskItem: subTask,
           onOpenDetails: () => onOpenDetails(),
@@ -296,6 +298,7 @@ class TaskCard extends StatelessWidget {
           trailingButtons: trailingButtons,
           transparent: true,
           showSubTasks: showSubTasks,
+          isDense: isDense, // Pass isDense to subtasks
         ),
       );
     }).toList();
@@ -316,8 +319,11 @@ class TaskCard extends StatelessWidget {
         ],
       );
 
-  bool get _hasDateOrTime =>
-      taskItem.estimatedTime != null || taskItem.plannedDate != null || taskItem.deadlineDate != null;
+  bool get _hasDateTimeOrMetadata =>
+      taskItem.plannedDate != null ||
+      taskItem.deadlineDate != null ||
+      (taskItem.estimatedTime != null && taskItem.estimatedTime! > 0) ||
+      (taskItem.subTasks.isNotEmpty && taskItem.subTasksCompletionPercentage > 0);
 
   /// Check if the task has any reminders enabled
   bool get _hasReminder =>
