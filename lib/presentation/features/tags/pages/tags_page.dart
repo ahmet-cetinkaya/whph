@@ -229,17 +229,19 @@ class _TagsPageState extends State<TagsPage> {
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(width: AppTheme.sizeSmall),
-                    TagListOptions(
-                      onSettingsLoaded: _onListOptionLoaded,
-                      showSearchFilter: true,
-                      search: _searchFilterQuery,
-                      onSearchChange: _onListSearchChange,
-                      showSortButton: true,
-                      sortConfig: _sortConfig,
-                      onSortChange: _onListSortConfigChange,
-                      showTagFilter: false,
-                      showArchivedToggle: false,
-                      settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
+                    Expanded(
+                      child: TagListOptions(
+                        onSettingsLoaded: _onListOptionLoaded,
+                        showSearchFilter: true,
+                        search: _searchFilterQuery,
+                        onSearchChange: _onListSearchChange,
+                        showSortButton: true,
+                        sortConfig: _sortConfig,
+                        onSortChange: _onListSortConfigChange,
+                        showTagFilter: false,
+                        showArchivedToggle: false,
+                        settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
+                      ),
                     ),
                   ],
                 ),
@@ -247,15 +249,12 @@ class _TagsPageState extends State<TagsPage> {
 
               // List
               if (_mainListOptionLoaded && _listOptionLoaded)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-                  child: TagsList(
-                    onClickTag: (tag) => _openDetails(tag.id),
-                    filterByTags: _selectedTagIds,
-                    search: _searchFilterQuery,
-                    showArchived: _showArchived,
-                    sortConfig: _sortConfig,
-                  ),
+                TagsList(
+                  onClickTag: (tag) => _openDetails(tag.id),
+                  filterByTags: _selectedTagIds,
+                  search: _searchFilterQuery,
+                  showArchived: _showArchived,
+                  sortConfig: _sortConfig,
                 ),
             ],
           ),
