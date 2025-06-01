@@ -10,6 +10,7 @@ import 'package:whph/presentation/shared/components/load_more_button.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/shared/constants/shared_translation_keys.dart';
@@ -417,6 +418,7 @@ class TaskListState extends State<TaskList> {
                 onScheduled: !task.isCompleted && widget.onScheduleTask != null
                     ? () => widget.onScheduleTask!(task, DateTime.now())
                     : null,
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
               ),
             ))
         .toList();

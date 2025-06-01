@@ -63,6 +63,7 @@ class AppTheme {
   static const double fontSizeXXLarge = 24.0;
 
   // Icon Sizes
+  static const double iconSize2XSmall = 8.0;
   static const double iconSizeXSmall = 12.0;
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 20.0;
@@ -79,12 +80,17 @@ class AppTheme {
 
   // Text Styles
   static const TextStyle label = TextStyle(
-    color: secondaryTextColor,
+    color: textColor,
     fontSize: fontSizeMedium,
     height: 1.5,
   );
+  static const TextStyle bodyXSmall = TextStyle(
+    color: textColor,
+    fontSize: fontSizeXSmall,
+    height: 1.5,
+  );
   static const TextStyle bodySmall = TextStyle(
-    color: secondaryTextColor,
+    color: textColor,
     fontSize: fontSizeSmall,
     height: 1.5,
   );
@@ -130,14 +136,27 @@ class AppTheme {
   );
 
   // Sizes
+  static const double size2XSmall = 2.0;
   static const double sizeXSmall = 4.0;
+  static const double size3XSmall = 6.0;
   static const double sizeSmall = 8.0;
+  static const double size2Small = 10.0;
   static const double sizeMedium = 12.0;
   static const double sizeLarge = 16.0;
   static const double sizeXLarge = 24.0;
   static const double size2XLarge = 32.0;
   static const double size3XLarge = 36.0;
   static const double size4XLarge = 48.0;
+
+  // Button Sizes
+  static const double buttonSizeSmall = 28.0;
+  static const double buttonSizeMedium = 36.0;
+  static const double buttonSizeLarge = 44.0;
+
+  // Calendar Element Sizes
+  static const double calendarDayWidth = 32.0;
+  static const double calendarDayHeight = 32.0;
+  static const double calendarIconSize = 24.0;
 
   // Label Text Styles
   static const TextStyle labelLarge = TextStyle(

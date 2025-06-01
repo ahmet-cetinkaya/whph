@@ -16,6 +16,7 @@ class HabitUiConstants {
   // Colors
   static const Color completedColor = Colors.green;
   static const Color inCompletedColor = Colors.red;
+  static const Color estimatedTimeColor = Colors.blue;
 
   // Dimensions
   static const double calendarDaySize = 46.0;

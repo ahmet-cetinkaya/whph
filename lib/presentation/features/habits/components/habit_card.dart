@@ -11,6 +11,7 @@ import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart'
 import 'package:whph/presentation/shared/components/label.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/time/date_time_helper.dart';
@@ -26,6 +27,7 @@ class HabitCard extends StatefulWidget {
   final bool isMiniLayout;
   final bool isDateLabelShowing;
   final int dateRange;
+  final bool isDense;
 
   const HabitCard({
     super.key,
@@ -36,6 +38,7 @@ class HabitCard extends StatefulWidget {
     this.isMiniLayout = false,
     this.isDateLabelShowing = true,
     this.dateRange = 7,
+    this.isDense = false,
   });
 
   @override
@@ -128,11 +131,15 @@ class _HabitCardState extends State<HabitCard> {
 
   @override
   Widget build(BuildContext context) {
+    final cardPadding = widget.isDense
+        ? const EdgeInsets.symmetric(horizontal: AppTheme.size3XSmall, vertical: AppTheme.sizeXSmall)
+        : const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall);
+
     return GestureDetector(
       onTap: widget.onOpenDetails,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall),
+          padding: cardPadding,
           child: widget.isMiniLayout ||
                   (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
               ? _buildCompactView()
@@ -153,21 +160,6 @@ class _HabitCardState extends State<HabitCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHabitInfo(),
-          // Show reminder icon if habit has reminders
-          if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
-            Tooltip(
-              message: _getReminderTooltip(),
-              child: Container(
-                padding: const EdgeInsets.only(left: 4.0),
-                height: 24, // Fixed height to match text line height
-                alignment: Alignment.center, // Center the icon vertically
-                child: Icon(
-                  Icons.notifications,
-                  size: AppTheme.iconSizeSmall,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
           if (!widget.habit.isArchived()) ...[
             const SizedBox(width: AppTheme.sizeSmall),
             Align(
@@ -184,8 +176,8 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildHabitInfo() => Expanded(
         child: Row(
           children: [
-            Icon(HabitUiConstants.habitIcon, size: AppTheme.fontSizeXLarge),
-            const SizedBox(width: AppTheme.sizeSmall),
+            Icon(HabitUiConstants.habitIcon, size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge),
+            SizedBox(width: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,11 +185,12 @@ class _HabitCardState extends State<HabitCard> {
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Text(
                           widget.habit.name,
-                          style: AppTheme.bodyMedium,
+                          style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -205,21 +198,48 @@ class _HabitCardState extends State<HabitCard> {
                   ),
                   if (!widget.isMiniLayout && widget.habit.tags.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: 2),
+                      padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeXSmall),
                       child: Row(
                         children: [
                           Expanded(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              child: Label.multipleColored(
-                                icon: TagUiConstants.tagIcon,
-                                color: Colors.grey, // Default color for icon and commas
-                                values: widget.habit.tags.map((tag) => tag.name).toList(),
-                                colors: widget.habit.tags
-                                    .map((tag) =>
-                                        tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                                    .toList(),
-                                mini: true,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: AppTheme.sizeXSmall,
+                                children: [
+                                  // Tags
+                                  Label.multipleColored(
+                                    icon: TagUiConstants.tagIcon,
+                                    color: Colors.grey, // Default color for icon and commas
+                                    values: widget.habit.tags.map((tag) => tag.name).toList(),
+                                    colors: widget.habit.tags
+                                        .map((tag) => tag.color != null
+                                            ? Color(int.parse('FF${tag.color}', radix: 16))
+                                            : Colors.grey)
+                                        .toList(),
+                                    mini: true,
+                                  ),
+
+                                  // Estimated time
+                                  if (widget.habit.estimatedTime != null && !widget.isMiniLayout)
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          HabitUiConstants.estimatedTimeIcon,
+                                          size: AppTheme.iconSizeSmall,
+                                          color: HabitUiConstants.estimatedTimeColor,
+                                        ),
+                                        Text(
+                                          SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
+                                          style: AppTheme.bodySmall.copyWith(
+                                            color: HabitUiConstants.estimatedTimeColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
                               ),
                             ),
                           ),
@@ -229,11 +249,30 @@ class _HabitCardState extends State<HabitCard> {
                 ],
               ),
             ),
+
+            // Estimated time and reminder icon
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
+                    child: Tooltip(
+                      message: _getReminderTooltip(),
+                      child: Icon(
+                        Icons.notifications,
+                        size: AppTheme.iconSizeSmall,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       );
 
-  // Helper method to get reminder tooltip text
   String _getReminderTooltip() {
     if (!widget.habit.hasReminder || widget.habit.reminderTime == null) {
       return _translationService.translate(HabitTranslationKeys.noReminder);
@@ -244,15 +283,10 @@ class _HabitCardState extends State<HabitCard> {
 
     final time = '${parts[0]}:${parts[1]}';
 
-    // Create a more detailed tooltip with formatted information
     final List<String> reminderInfo = [];
 
-    // Add reminder time
     reminderInfo.add('${_translationService.translate(HabitTranslationKeys.reminderTime)}: $time');
 
-    // Add reminder days
-    // For habits with reminders, we assume all days are selected by default
-    // This is consistent with the ReminderServiceInitializer behavior
     reminderInfo.add(
         '${_translationService.translate(HabitTranslationKeys.reminderDays)}: ${_translationService.translate(HabitTranslationKeys.everyDay)}');
 
@@ -262,8 +296,8 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildCalendar() {
     if (_habitRecords == null) {
       return const SizedBox(
-        width: 32,
-        height: 32,
+        width: AppTheme.calendarDayWidth,
+        height: AppTheme.calendarDayHeight,
         child: SizedBox.shrink(),
       );
     }
@@ -283,14 +317,12 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime referenceDate) {
-    // Don't allow interactions with future dates or dates after archive date
     final isDisabled = date.isAfter(DateTime.now()) ||
         (widget.habit.archivedDate != null && date.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
 
     final localDate = DateTimeHelper.toLocalDateTime(date);
     final isToday = DateTimeHelper.isSameDay(localDate, DateTime.now());
 
-    // Check for habit records
     bool hasRecord = _habitRecords!.items
         .any((record) => DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), localDate));
     HabitRecordListItem? recordForDay = hasRecord
@@ -318,7 +350,7 @@ class _HabitCardState extends State<HabitCard> {
           ],
           IconButton(
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            constraints: BoxConstraints(minWidth: AppTheme.calendarIconSize, minHeight: AppTheme.calendarIconSize),
             onPressed: isDisabled
                 ? null
                 : () async {
@@ -346,8 +378,8 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildCheckbox(BuildContext context) {
     if (_habitRecords == null) {
       return const SizedBox(
-        width: 28,
-        height: 28,
+        width: AppTheme.buttonSizeSmall,
+        height: AppTheme.buttonSizeSmall,
       );
     }
 
@@ -359,7 +391,7 @@ class _HabitCardState extends State<HabitCard> {
 
     return IconButton(
       padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+      constraints: const BoxConstraints(minWidth: AppTheme.buttonSizeSmall, minHeight: AppTheme.buttonSizeSmall),
       onPressed: isDisabled
           ? null
           : () async {
