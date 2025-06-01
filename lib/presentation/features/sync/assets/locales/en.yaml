@@ -32,6 +32,8 @@ sync:
     title: Sync Devices
     to_label: To
     unnamed_device: Unnamed Device
+  error:
+    scan: Failed to scan
   errors:
     connection_failed: |
       Connection failed. Please ensure:
@@ -45,7 +47,7 @@ sync:
     parse_message: Unable to parse scanned message
     process_failed: Sync process failed.
     save_device: Failed to save sync device
-    scan: Failed to scan QR code
+    scan: Failed to scan
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
     version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."

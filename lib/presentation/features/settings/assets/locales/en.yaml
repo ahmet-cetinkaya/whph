@@ -3,52 +3,60 @@ common:
     cancel: Cancel
 
 settings:
-  title: Settings
-  language:
-    title: Language
-    choose_title: Choose your language
-  notifications:
-    title: Notifications
-    enable_error: Failed to enable notifications
-    disable_error: Failed to disable notifications
-  startup:
-    title: Start at Startup
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    enable_error: Failed to enable startup setting
-    disable_error: Failed to disable startup setting
-  sync_devices:
-    title: Sync Devices
   about:
     title: About
-  import_export:
-    title: Import/Export
-    description: You can backup your data in JSON format or restore from a previously created backup
+  errors:
+    export_failed: Export failed
+    import_failed: Import failed
+    setting_not_found: Setting not found
+    version_mismatch: Version mismatch
+  export:
+    csv_description: You can use this to view in Excel and similar applications.
+    error: Export failed
+    json_description: You can use this file to import data back to the app.
+    select_directory: Select export directory
+    select_path: Select save location
+    select_type: Select export format
+    success: "Export successful. File location:"
+    title: Export
+  export_data:
+    title: Export Data
   import:
-    title: Import
-    strategy:
-      title: Import Strategy
-      replace: Delete Existing Data and Add New
-      merge: Merge with Existing Data
-    success: Import successful
     error: Import failed
     select_file: Select file
-  export:
-    title: Export
-    select_path: Select save location
-    success: "Export successful. File location:"
-    error: Export failed
-    select_type: Select export format
-    json_description: You can use this file to import data back to the app.
-    csv_description: You can use this to view in Excel and similar applications.
+    strategy:
+      merge: Merge with Existing Data
+      replace: Delete Existing Data and Add New
+      title: Import Strategy
+    success: Import successful
+    title: Import
+    version_mismatch: Version mismatch
+  import_export:
+    description: You can backup your data in JSON format or restore from a previously created backup
+    select_action: Select import/export action
+    title: Import/Export
+  language:
+    choose_title: Choose your language
+    title: Language
+  notifications:
+    disable_error: Failed to disable notifications
+    enable_error: Failed to enable notifications
+    title: Notifications
   permissions:
-    title: Permissions
-    fix_it: Fix It
-    open_settings: Open Setting
-    instructions: Instructions
-    battery_optimization:
-      title: Battery Optimization
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
+    app_usage:
+      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
       instructions: "Instructions:"
+      steps:
+        step1: Press the "Open Setting" button
+        step2: In the usage access settings screen that opens, find "{appName}" in the list
+        step3: Tap on "{appName}"
+        step4: Enable "Allow usage access" or toggle the switch to ON
+      title: App Usage Permission
+    battery_optimization:
+      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
+      importance: The location of this setting may vary depending on your device manufacturer.
+      instructions: "Instructions:"
+      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
       steps:
         step1: Press the "Open Setting" button
         step2: In the settings screen that opens, find "{appName}"
@@ -56,10 +64,21 @@ settings:
         step4: Ensure "Allow Background Usage" is enabled on the page that opens
         step5: Tap on "Allow Background Usage"
         step6: Select "Unrestricted"
-      importance: The location of this setting may vary depending on your device manufacturer.
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      title: Battery Optimization
+    exact_alarm:
+      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
+      instructions: "Instructions:"
+      steps:
+        android12plus:
+          step2: Go to Alarms & reminders and enable permission
+          step3: Confirm exact alarm permission
+        step1: Press the "Open Setting" button
+        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
+      title: Exact Alarm Permission
+    fix_it: Fix It
+    granted: Permission granted
+    instructions: Instructions
     notification:
-      title: Notification Permission
       description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
       instructions: "Instructions:"
       steps:
@@ -69,33 +88,23 @@ settings:
         ios:
           step1: Press the "Open Setting" button
           step2: Allow notifications when prompted
-    exact_alarm:
-      title: Exact Alarm Permission
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
-      steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
+      title: Notification Permission
+    open_settings: Open Setting
     startup:
-      title: Auto-start Permission
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
+      importance: Auto-start setting location varies or may not be present by device manufacturer.
       instructions: "Instructions:"
       steps:
         step1: Press the "Open Setting" button
         step2: 'In the settings screen that opens, find "{appName}" app'
         step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-    app_usage:
-      title: App Usage Permission
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
-      steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-  errors:
-    setting_not_found: Setting not found
-    version_mismatch: Version mismatch
-    import_failed: Import failed
-    export_failed: Export failed
+      title: Auto-start Permission
+    title: Permissions
+  startup:
+    disable_error: Failed to disable startup setting
+    enable_error: Failed to enable startup setting
+    subtitle: Tap to open system settings and enable auto-start permission for the app
+    title: Start at Startup
+  sync_devices:
+    title: Sync Devices
+  title: Settings

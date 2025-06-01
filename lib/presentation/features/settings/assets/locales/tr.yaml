@@ -13,10 +13,13 @@ settings:
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
     error: Dışa aktarma başarısız
     json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
+    select_directory: Dışa aktarma dizinini seç
     select_path: Kayıt konumu seçin
     select_type: Dışa aktarma formatını seçin
     success: "Dışa aktarma başarılı. Dosya konumu:"
     title: Dışa Aktar
+  export_data:
+    title: Verileri Dışa Aktar
   import:
     error: İçe aktarma başarısız
     select_file: Dosya seçin
@@ -26,8 +29,10 @@ settings:
       title: İçe Aktarma Stratejisi
     success: İçe aktarma başarılı
     title: İçe Aktar
+    version_mismatch: Sürüm uyumsuzluğu
   import_export:
     description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
+    select_action: İç/Dışa aktarma işlemi seçin
     title: İçe/Dışa Aktar
   language:
     choose_title: Dilini seç
@@ -48,8 +53,8 @@ settings:
       title: Uygulama Kullanım İzni
     battery_optimization:
       description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç teslim edilmeyebilir.
-      instructions: "Talimatlar:"
       importance: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
+      instructions: "Talimatlar:"
       not_disabled: Pil optimizasyonu hala etkin. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
         step1: '"Ayarı Aç" butonuna basın'
@@ -60,22 +65,17 @@ settings:
         step6: '"Kısıtlanmamış"ı seçin'
       title: Pil Optimizasyonu
     exact_alarm:
-      title: Tam Alarm İzni
       description: Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
       instructions: "Talimatlar:"
       steps:
+        android12plus:
+          step2: Alarmlar ve hatırlatıcılar bölümüne gidin ve izni etkinleştirin
+          step3: Tam alarm iznini onaylayın
         step1: '"Ayarı Aç" butonuna basın'
         step2: 'Açılan {appName} uygulamasına ait Alarmlar ve hatırlatıcılar sayfasında "Alarm ve hatırlatıcı ayarlamaya izin ver" seçeneğini etkinleştirin'
-    startup:
-      title: Otomatik Başlatma İzni
-      description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
-      instructions: "Talimatlar:"
-      steps:
-        step1: '"Ayarı Aç" butonuna basın'
-        step2: 'Açılan ayarlar ekranında "{appName}" uygulamasını bulun'
-        step3: '"Otomatik başlatma", "Otomatik çalıştır", "Başlangıçta başlat" veya "Auto-start" seçeneğini etkinleştirin'
-      importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.
+      title: Tam Alarm İzni
     fix_it: Düzelt
+    granted: İzin verildi
     instructions: Talimatlar
     notification:
       description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
@@ -89,6 +89,15 @@ settings:
           step2: İstendiğinde bildirimlere izin verin
       title: Bildirim İzni
     open_settings: Ayarı Aç
+    startup:
+      description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
+      importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.
+      instructions: "Talimatlar:"
+      steps:
+        step1: '"Ayarı Aç" butonuna basın'
+        step2: 'Açılan ayarlar ekranında "{appName}" uygulamasını bulun'
+        step3: '"Otomatik başlatma", "Otomatik çalıştır", "Başlangıçta başlat" veya "Auto-start" seçeneğini etkinleştirin'
+      title: Otomatik Başlatma İzni
     title: İzinler
   startup:
     disable_error: Başlangıç ayarı devre dışı bırakılamadı

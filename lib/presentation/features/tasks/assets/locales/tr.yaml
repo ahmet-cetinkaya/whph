@@ -39,7 +39,8 @@ tasks:
       hint: Etiket seç
       label: Etiketler
     tags_hint: Görev için etiket seçin
-    title: Başlık
+    title:
+      label: Başlık
     total_elapsed_time: Toplam Geçen Süre
   errors:
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu
@@ -190,6 +191,7 @@ tasks:
         - 🚫 Seans başlamadan önce dikkat dağıtıcıları ortadan kaldırın
         - 🚶 Fiziksel hareket ve zihinsel reset için molaları kullanın
       title: Odaklı Çalışma Seansları ve Zaman Yönetimi Rehberi
+      tooltip: Maraton yardım ipucu
     label: Maraton Modu
     unpin_task_tooltip: Mevcut görevi kaldır
   new_task: Yeni Görev
@@ -212,11 +214,6 @@ tasks:
       timer_completed: Zamanlayıcı tamamlandı!
       title: Pomodoro Zamanlayıcı
       work_completed: Çalışma oturumu tamamlandı!
-    system_tray:
-      timer_running: Zamanlayıcı çalışıyor
-      complete_title: Pomodoro Tamamlandı
-      app_running: Uygulama Çalışıyor
-      tap_to_open: Açmak için dokunun
     settings:
       auto_start_break: Çalışmadan sonra molayı otomatik başlat
       auto_start_section: Otomatik Başlatma Seçenekleri
@@ -231,6 +228,11 @@ tasks:
       timer_label: Oturum süreleri
       title: Zamanlayıcı Ayarları
       work_duration: Çalışma Süresi
+    system_tray:
+      app_running: Uygulama Çalışıyor
+      complete_title: Pomodoro Tamamlandı
+      tap_to_open: Açmak için dokunun
+      timer_running: Zamanlayıcı çalışıyor
   priorities:
     not_urgent_important: Acil Değil ama Önemli
     not_urgent_not_important: Acil ve Önemli Değil
@@ -314,6 +316,8 @@ tasks:
   title: Görevler
   tooltips:
     clear_date: Tarihi temizle
+    decrease_estimated_time: Tahmini süreyi azalt
     edit_title: Başlığı düzenle
+    increase_estimated_time: Tahmini süreyi artır
     set_reminder: Hatırlatıcı ayarla
     show_completed_tasks: Tamamlanan görevleri filtrele

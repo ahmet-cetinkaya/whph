@@ -16,6 +16,9 @@ tags:
   details:
     archived: Archived
     color: Color
+    help:
+      description: Details help description
+      title: Details Help Title
     name: Name
     related_tags: Related Tags
     select_tag: Select tag
@@ -37,6 +40,7 @@ tags:
     select_category: Select Category
   filter_tooltip: Filter by tags
   help:
+    content: Tag help content
     overview:
       content: |
         Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
@@ -75,6 +79,7 @@ tags:
         - 🗄️ Maintain system cleanliness by archiving completed work
         - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
       title: Tag-Based Organization & Time Management Guide
+    title: Tag Help
   labels:
     color: Color
     description: Description
@@ -101,6 +106,7 @@ tags:
     done: Done
   tag_details: Tag Details
   time_bar_chart:
+    by_element: By element
     no_data: No data
     title: Time Distribution
   time_chart:
@@ -116,6 +122,6 @@ tags:
     color: Click to assign color to tag
     delete_tag: Delete tag
     edit_name: Edit name
+    remove_tag: Remove tag
     select: Click to select tag
     unarchive_tag: Unarchive tag
-    remove_tag: Remove tag

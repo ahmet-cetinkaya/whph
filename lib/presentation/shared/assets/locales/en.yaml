@@ -1,3 +1,6 @@
+settings:
+  import:
+    version_mismatch: Version mismatch
 shared:
   buttons:
     add: Add
