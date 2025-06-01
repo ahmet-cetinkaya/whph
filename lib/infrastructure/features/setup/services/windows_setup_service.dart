@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'abstraction/base_setup_service.dart';
 
 class WindowsSetupService extends BaseSetupService {
@@ -9,7 +10,7 @@ class WindowsSetupService extends BaseSetupService {
 powershell -ExecutionPolicy Bypass -Command ^
 "Write-Host 'Starting update process...'; ^
 try { ^
-    \$updateZip = '{appDir}\\whph_update.zip'; ^
+    \$updateZip = '{appDir}\\{updateFileName}.zip'; ^
     \$extractPath = '{appDir}'; ^
     Write-Host 'Update file path: ' \$updateZip; ^
     Write-Host 'Extract path: ' \$extractPath; ^
@@ -47,12 +48,12 @@ exit
 
     try {
       final appDir = getApplicationDirectory();
-      final startMenuPath =
-          path.join(Platform.environment['APPDATA']!, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'WHPH');
+      final startMenuPath = path.join(
+          Platform.environment['APPDATA']!, 'Microsoft', 'Windows', 'Start Menu', 'Programs', AppInfo.shortName);
 
       await createDirectories([startMenuPath]);
 
-      final shortcutPath = path.join(startMenuPath, 'WHPH.lnk');
+      final shortcutPath = path.join(startMenuPath, '${AppInfo.shortName}.lnk');
       final iconPath =
           path.join(appDir, 'data', 'flutter_assets', 'lib', 'domain', 'shared', 'assets', 'whph_logo_adaptive_fg.ico');
 
@@ -60,7 +61,7 @@ exit
         target: getExecutablePath(),
         shortcutPath: shortcutPath,
         iconPath: iconPath,
-        description: 'Work Hard Play Hard - Time Tracking App',
+        description: '${AppInfo.name} - Time Tracking App',
       );
     } catch (e) {
       if (kDebugMode) debugPrint('Error setting up Windows environment: $e');
@@ -73,10 +74,14 @@ exit
       final appDir = getApplicationDirectory();
       final exePath = getExecutablePath();
       final updateScript = path.join(appDir, 'update.bat');
-      final downloadPath = path.join(appDir, 'whph_update.zip');
+      final updateFileName = '${AppInfo.shortName.toLowerCase()}_update';
+      final downloadPath = path.join(appDir, '$updateFileName.zip');
 
       await downloadFile(downloadUrl, downloadPath);
-      final scriptContent = _updateScriptTemplate.replaceAll('{appDir}', appDir).replaceAll('{exePath}', exePath);
+      final scriptContent = _updateScriptTemplate
+          .replaceAll('{appDir}', appDir)
+          .replaceAll('{exePath}', exePath)
+          .replaceAll('{updateFileName}', updateFileName);
       await writeFile(updateScript, scriptContent);
       await runDetachedProcess('cmd', ['/c', updateScript]);
       exit(0);

@@ -89,9 +89,9 @@ shared:
     file_save: Error while saving file
     file_write: Error while writing file
     loading: Error occurred while loading data
-    report_subject: "WHPH App: Unexpected Error Report"
+    report_subject: "{appName} App: Unexpected Error Report"
     report_template: |
-      Hi, I encountered an unexpected error while using the WHPH app.
+      Hi, I encountered an unexpected error while using the {appName} app.
 
       Here's information that might help you diagnose the issue:
       App Version: {version}

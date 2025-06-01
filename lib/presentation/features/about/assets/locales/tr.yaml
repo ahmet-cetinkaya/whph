@@ -2,23 +2,23 @@ about:
   about_title: "Hakkında"
   version: "Sürüm: {version}"
   description: >
-    WHPH, kişisel verimliliğinizi artırmak için tasarlanmış kapsamlı bir uygulamadır; görevlerinizi etkili bir şekilde yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı en iyi şekilde değerlendirmenize olanak tanır. Ayrıca, farklı uygulamalarda ne kadar zaman harcadığınızı takip ederek odaklanmanızı güçlendirir. İlerlemenizi analiz ederek başarılarınızı kutlayabilir ve daha üretken bir yaşam için gereken motivasyonu kazanabilirsiniz.
+    {appName}, kişisel verimliliğinizi artırmak için tasarlanmış kapsamlı bir uygulamadır; görevlerinizi etkili bir şekilde yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı en iyi şekilde değerlendirmenize olanak tanır. Ayrıca, farklı uygulamalarda ne kadar zaman harcadığınızı takip ederek odaklanmanızı güçlendirir. İlerlemenizi analiz ederek başarılarınızı kutlayabilir ve daha üretken bir yaşam için gereken motivasyonu kazanabilirsiniz.
   links:
     website: Web Sitesi
     source_code: Kaynak Kodu
     feedback: Geri Bildirim
     contact: İletişim
   support_me:
-    title: WHPH'ye Destek Ol
+    title: "{appName}'ye Destek Ol"
     description: >
-      WHPH, tamamen ücretsiz ve açık kaynak bir yazılımdır. Herkes özgürce kullanabilir, inceleyebilir, geliştirebilir ve paylaşabilir. 
+      {appName}, tamamen ücretsiz ve açık kaynak bir yazılımdır. Herkes özgürce kullanabilir, inceleyebilir, geliştirebilir ve paylaşabilir. 
 
 
-      Siz keyifle kullanmaya devam ederken, ben de onu daha iyi hale getirmek için çalışıyorum. Eğer bu emeğin sürmesine destek olmak isterseniz, bana bir fincan kahve ısmarlayabilirsiniz; böylece WHPH'nin gelişimine ve sürdürülebilirliğine doğrudan katkıda bulunmuş olursunuz. 😊
+      Siz keyifle kullanmaya devam ederken, ben de onu daha iyi hale getirmek için çalışıyorum. Eğer bu emeğin sürmesine destek olmak isterseniz, bana bir fincan kahve ısmarlayabilirsiniz; böylece {appName}'nin gelişimine ve sürdürülebilirliğine doğrudan katkıda bulunmuş olursunuz. 😊
     button_text: Kahve ısmarla
   onboarding:
     step1:
-      title: "WHPH'ye Hoş Geldiniz"
+      title: "{appName}'ye Hoş Geldiniz"
       description: "Alışkanlıklar oluşturma, görevleri yönetme ve zamanı etkili bir şekilde takip etme konusunda kişisel yardımcınız. Temel özellikleri birlikte keşfedelim!"
     step2:
       title: "Görev Yönetimi"
@@ -37,7 +37,7 @@ about:
       description: "Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı etiketlerle düzenleyin ve gruplandırın. Etiketlere göre farklı aktivitelere harcadığınız zamanı takip ederek zamanınızı nerede harcadığınızı anlayın ve iş akışınızı optimize edin."
     step7:
       title: "Uygulama İzinleri"
-      description: "WHPH'nin düzgün çalışması için bazı izinlere ihtiyaç vardır. Bildirim, uygulama takibi gibi sistemsel özellikler için vermek istediğiniz izinleri inceleyebilirsiniz."
+      description: "{appName}'nin düzgün çalışması için bazı izinlere ihtiyaç vardır. Bildirim, uygulama takibi gibi sistemsel özellikler için vermek istediğiniz izinleri inceleyebilirsiniz."
       review_permissions: "İzinleri İncele"
     step8:
       title: "Hayatınızı Dönüştürmeye Hazır mısınız?"

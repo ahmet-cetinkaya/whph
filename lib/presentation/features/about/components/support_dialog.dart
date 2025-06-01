@@ -77,7 +77,10 @@ class SupportDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    _translationService.translate(AboutTranslationKeys.supportMeTitle),
+                    _translationService.translate(
+                      AboutTranslationKeys.supportMeTitle,
+                      namedArgs: {'appName': AppInfo.name},
+                    ),
                     style: AppTheme.headlineSmall,
                   ),
                 ),
@@ -85,7 +88,10 @@ class SupportDialog extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.sizeMedium),
             Text(
-              _translationService.translate(AboutTranslationKeys.supportMeDescription),
+              _translationService.translate(
+                AboutTranslationKeys.supportMeDescription,
+                namedArgs: {'appName': AppInfo.name},
+              ),
               style: AppTheme.bodyMedium,
             ),
             const SizedBox(height: AppTheme.sizeLarge),

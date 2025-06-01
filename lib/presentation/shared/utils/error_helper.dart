@@ -29,7 +29,10 @@ class ErrorHelper {
 
   static void showUnexpectedError(BuildContext context, Object error, StackTrace stackTrace, {String? message}) {
     final errorMessage = message ?? _translationService.translate(SharedTranslationKeys.unexpectedError);
-    final reportText = _translationService.translate(SharedTranslationKeys.reportError);
+    final reportText = _translationService.translate(
+      SharedTranslationKeys.reportError,
+      namedArgs: {'appName': AppInfo.name},
+    );
 
     OverlayNotificationHelper.showError(
       context: context,
@@ -54,6 +57,7 @@ class ErrorHelper {
     final errorBody = _translationService.translate(
       SharedTranslationKeys.errorReportTemplate,
       namedArgs: {
+        'appName': AppInfo.name,
         'version': AppInfo.version,
         'device': Platform.localHostname,
         'os': Platform.operatingSystem,
@@ -63,7 +67,10 @@ class ErrorHelper {
       },
     );
 
-    final subject = Uri.encodeFull(_translationService.translate(SharedTranslationKeys.errorReportSubject));
+    final subject = Uri.encodeFull(_translationService.translate(
+      SharedTranslationKeys.errorReportSubject,
+      namedArgs: {'appName': AppInfo.name},
+    ));
     final body = Uri.encodeFull(errorBody).replaceAll('+', '%20');
 
     final emailUrl = 'mailto:${AppInfo.supportEmail}?subject=$subject&body=$body';
