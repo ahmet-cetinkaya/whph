@@ -40,9 +40,6 @@ class PermissionCard extends StatelessWidget {
   /// Optional - Additional info text for the "Fix Permission" dialog
   final String? learnMoreDialogInfoText;
 
-  /// Optional - Error text to display when permission is not granted
-  final String? notGrantedText;
-
   PermissionCard({
     super.key,
     required this.icon,
@@ -55,7 +52,6 @@ class PermissionCard extends StatelessWidget {
     required this.learnMoreDialogDescription,
     required this.learnMoreDialogSteps,
     this.learnMoreDialogInfoText,
-    this.notGrantedText,
   });
 
   @override
@@ -105,18 +101,6 @@ class PermissionCard extends StatelessWidget {
               description,
               style: theme.textTheme.bodyMedium,
             ),
-
-            // Not granted text
-            if (showError && notGrantedText != null) ...[
-              const SizedBox(height: AppTheme.sizeSmall),
-              Text(
-                notGrantedText!,
-                style: TextStyle(
-                  color: theme.colorScheme.error,
-                  fontSize: 13,
-                ),
-              ),
-            ],
 
             // Action button
             if (!isGranted && !isLoading) ...[

@@ -22,7 +22,6 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String startupStep2 = 'settings.permissions.startup.steps.step2';
   static const String startupStep3 = 'settings.permissions.startup.steps.step3';
   static const String startupImportance = 'settings.permissions.startup.importance';
-  static const String startupNotGranted = 'settings.permissions.startup.not_granted';
   static const String enableStartupError = 'settings.startup.enable_error';
   static const String disableStartupError = 'settings.startup.disable_error';
 
@@ -69,8 +68,8 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String batteryOptimizationStep3 = 'settings.permissions.battery_optimization.steps.step3';
   static const String batteryOptimizationStep4 = 'settings.permissions.battery_optimization.steps.step4';
   static const String batteryOptimizationStep5 = 'settings.permissions.battery_optimization.steps.step5';
-  static const String batteryOptimizationLocationNote = 'settings.permissions.battery_optimization.location_note';
-  static const String batteryOptimizationNotGranted = 'settings.permissions.battery_optimization.not_granted';
+  static const String batteryOptimizationStep6 = 'settings.permissions.battery_optimization.steps.step6';
+  static const String batteryOptimizationImportance = 'settings.permissions.battery_optimization.importance';
 
   // Notification Permission
   static const String notificationPermissionTitle = 'settings.permissions.notification.title';
@@ -79,9 +78,6 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String notificationPermissionStepAndroid2 = 'settings.permissions.notification.steps.android.step2';
   static const String notificationPermissionStepIOS1 = 'settings.permissions.notification.steps.ios.step1';
   static const String notificationPermissionStepIOS2 = 'settings.permissions.notification.steps.ios.step2';
-  static const String notificationPermissionStep3 = 'settings.permissions.notification.steps.step3';
-  static const String notificationPermissionNotGranted = 'settings.permissions.notification.not_granted';
-  static const String notificationPermissionImportance = 'settings.permissions.notification.importance';
 
   // Exact Alarm Permission
   static const String exactAlarmTitle = 'settings.permissions.exact_alarm.title';
@@ -90,7 +86,6 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String exactAlarmStepAndroid12Plus2 = 'settings.permissions.exact_alarm.steps.android12plus.step2';
   static const String exactAlarmStepAndroid12Plus3 = 'settings.permissions.exact_alarm.steps.android12plus.step3';
   static const String exactAlarmStep2 = 'settings.permissions.exact_alarm.steps.step2';
-  static const String exactAlarmNotGranted = 'settings.permissions.exact_alarm.not_granted';
 
   // App Usage Permission
   static const String appUsageTitle = 'settings.permissions.app_usage.title';
@@ -98,5 +93,5 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String appUsageStep1 = 'settings.permissions.app_usage.steps.step1';
   static const String appUsageStep2 = 'settings.permissions.app_usage.steps.step2';
   static const String appUsageStep3 = 'settings.permissions.app_usage.steps.step3';
-  static const String appUsageNotGranted = 'settings.permissions.app_usage.not_granted';
+  static const String appUsageStep4 = 'settings.permissions.app_usage.steps.step4';
 }

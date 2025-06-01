@@ -70,29 +70,51 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
 
   /// Try manufacturer-specific auto-start settings
   Future<void> _tryManufacturerSpecificSettings() async {
-    // List of common manufacturer auto-start intents
-    final List<String> autoStartActions = [
-      // MIUI (Xiaomi)
-      'miui.intent.action.APP_PERM_EDITOR',
-      // EMUI (Huawei)
-      'huawei.intent.action.HSM_BOOTAPP_MANAGER',
-      // ColorOS (OPPO)
-      'com.coloros.safecenter.permission.startup',
-      // FunTouch (Vivo)
-      'com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity',
-      // Samsung
-      'com.samsung.android.sm.ACTION_AUTO_START_APP_LIST',
-      // OnePlus
-      'com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity',
-      // Generic auto-start
-      'android.settings.AUTO_START_SETTINGS',
+    // List of common manufacturer auto-start intents with component names
+    final List<Map<String, String>> autoStartIntents = [
+      // MIUI (Xiaomi) - Auto-start permissions
+      {
+        'action': 'miui.intent.action.APP_PERM_EDITOR',
+        'component': 'com.miui.securitycenter/com.miui.permcenter.autostart.AutoStartManagementActivity',
+      },
+      // EMUI (Huawei) - Startup manager
+      {
+        'action': 'huawei.intent.action.HSM_BOOTAPP_MANAGER',
+        'component': 'com.huawei.systemmanager/.startupmgr.ui.StartupNormalAppListActivity',
+      },
+      // ColorOS (OPPO) - Auto-start management
+      {
+        'action': 'com.coloros.safecenter.permission.startup',
+        'component': 'com.coloros.safecenter/.permission.startup.StartupAppListActivity',
+      },
+      // FunTouch OS (Vivo) - Auto-start management
+      {
+        'action': 'com.vivo.permissionmanager.activity.BgStartUpManagerActivity',
+        'component': 'com.vivo.permissionmanager/.activity.BgStartUpManagerActivity',
+      },
+      // Samsung - Auto-start apps
+      {
+        'action': 'com.samsung.android.sm.ACTION_AUTO_START_APP_LIST',
+        'component': 'com.samsung.android.sm/.ui.battery.BatteryActivity',
+      },
+      // OnePlus - Auto-launch management
+      {
+        'action': 'com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity',
+        'component': 'com.oneplus.security/.chainlaunch.view.ChainLaunchAppListActivity',
+      },
+      // Realme - Auto-start management
+      {
+        'action': 'com.android.settings.APPLICATION_DETAILS_SETTINGS',
+        'component': 'com.android.settings/.applications.appinfo.AppInfoDashboardFragment',
+      },
     ];
 
-    // Try each auto-start action
-    for (final action in autoStartActions) {
+    // Try each manufacturer-specific intent with component
+    for (final intentData in autoStartIntents) {
       try {
         final intent = AndroidIntent(
-          action: action,
+          action: intentData['action']!,
+          componentName: intentData['component'],
           arguments: <String, dynamic>{
             'packageName': AndroidAppConstants.packageName,
           },
@@ -100,13 +122,20 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
         await intent.launch();
         return; // Success, exit the method
       } catch (e) {
-        // Continue to next action
+        if (kDebugMode) debugPrint('Failed intent: ${intentData['action']} - ${e.toString()}');
         continue;
       }
     }
 
-    // If all manufacturer-specific attempts failed, try with package data
-    for (final action in autoStartActions) {
+    // Try simple action intents without component names
+    final List<String> fallbackActions = [
+      'miui.intent.action.APP_PERM_EDITOR',
+      'huawei.intent.action.HSM_BOOTAPP_MANAGER',
+      'com.coloros.safecenter.permission.startup',
+      'android.settings.AUTO_START_SETTINGS',
+    ];
+
+    for (final action in fallbackActions) {
       try {
         final intent = AndroidIntent(
           action: action,
@@ -115,7 +144,6 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
         await intent.launch();
         return; // Success, exit the method
       } catch (e) {
-        // Continue to next action
         continue;
       }
     }
@@ -125,11 +153,28 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
 
   /// Fallback to general app settings
   Future<void> _openAppSettings() async {
-    final intent = AndroidIntent(
-      action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
-      data: 'package:${AndroidAppConstants.packageName}',
-    );
-    await intent.launch();
+    try {
+      // Try to open specific power/battery management settings first
+      final intent = AndroidIntent(
+        action: 'android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS',
+      );
+      await intent.launch();
+    } catch (e) {
+      try {
+        // Fallback to app details settings
+        final intent = AndroidIntent(
+          action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
+          data: 'package:${AndroidAppConstants.packageName}',
+        );
+        await intent.launch();
+      } catch (e2) {
+        // Final fallback to power usage summary
+        final intent = AndroidIntent(
+          action: 'android.settings.POWER_USAGE_SUMMARY',
+        );
+        await intent.launch();
+      }
+    }
   }
 
   /// Final fallback to device settings

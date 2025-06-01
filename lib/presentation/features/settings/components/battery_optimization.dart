@@ -23,6 +23,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
   bool _isIgnoringBatteryOptimizations = false;
   bool _isLoading = true;
   bool _showError = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
@@ -102,13 +103,20 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
       setState(() {
         _isIgnoringBatteryOptimizations = isIgnoring;
         _isLoading = false;
-        _showError = !isIgnoring;
+        _showError = !isIgnoring && !_isInitialCheck;
       });
     }
 
-    if (!_isIgnoringBatteryOptimizations) {
+    // Mark initial check as complete
+    if (mounted && _isInitialCheck) {
+      setState(() {
+        _isInitialCheck = false;
+      });
+    }
+
+    if (!_isIgnoringBatteryOptimizations && !_isInitialCheck) {
       Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_isIgnoringBatteryOptimizations) {
+        if (mounted && !_isIgnoringBatteryOptimizations && !_isInitialCheck) {
           _checkPermission();
         }
       });
@@ -121,6 +129,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
     setState(() {
       _isLoading = true;
       _showError = false;
+      _isInitialCheck = false; // No longer initial check after user interaction
     });
 
     await _openBatteryOptimizationSettings();
@@ -213,15 +222,15 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
       learnMoreDialogDescription: _translationService.translate(SettingsTranslationKeys.batteryOptimizationDescription),
       learnMoreDialogSteps: [
         _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep1),
-        _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep2),
-        _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep3),
         _translationService
-            .translate(SettingsTranslationKeys.batteryOptimizationStep4, namedArgs: {'appName': AppInfo.shortName}),
+            .translate(SettingsTranslationKeys.batteryOptimizationStep2, namedArgs: {'appName': AppInfo.name}),
+        _translationService
+            .translate(SettingsTranslationKeys.batteryOptimizationStep3, namedArgs: {'appName': AppInfo.name}),
+        _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep4),
         _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep5),
+        _translationService.translate(SettingsTranslationKeys.batteryOptimizationStep6),
       ],
-      learnMoreDialogInfoText: _translationService.translate(SettingsTranslationKeys.batteryOptimizationLocationNote),
-      notGrantedText:
-          _showError ? _translationService.translate(SettingsTranslationKeys.batteryOptimizationNotGranted) : null,
+      learnMoreDialogInfoText: _translationService.translate(SettingsTranslationKeys.batteryOptimizationImportance),
     );
   }
 }

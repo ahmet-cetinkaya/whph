@@ -25,6 +25,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   bool _isLoading = true;
   bool _showError = false;
   bool _isAndroid12OrHigher = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
@@ -41,6 +42,13 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       // Add a small delay to ensure everything is initialized
       await Future.delayed(const Duration(milliseconds: 500));
       await _performThoroughPermissionCheck();
+    }
+
+    // Mark initial check as complete
+    if (mounted) {
+      setState(() {
+        _isInitialCheck = false;
+      });
     }
   }
 
@@ -67,7 +75,8 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         if (mounted) {
           setState(() {
             _isAndroid12OrHigher = true;
-            _isLoading = false;
+            // Keep loading state until permission check is complete
+            _isLoading = true;
           });
         }
       } else {
@@ -84,6 +93,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       if (mounted) {
         setState(() {
           _isAndroid12OrHigher = true;
+          _isLoading = true;
         });
       }
     }
@@ -117,66 +127,53 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       return;
     }
 
+    // Ensure we're in loading state during permission check
+    if (mounted && _isInitialCheck) {
+      setState(() {
+        _isLoading = true;
+        _showError = false;
+      });
+    }
+
     try {
       // Get Android version
       final androidInfo = await container.resolve<DeviceInfoPlugin>().androidInfo;
       final sdkInt = androidInfo.version.sdkInt;
       final isAndroid12Plus = sdkInt >= 31; // Android 12 is API level 31
 
-      // For Android 12+, we need to perform a thorough check
+      // For Android 12+, only use the reliable AlarmManager API check
       if (isAndroid12Plus) {
-        // Try to check the actual permission status using multiple methods
-        bool actualPermissionStatus = false;
         try {
-          // Use the method channel directly for a more accurate check
+          // The only reliable way to check exact alarm permission is through AlarmManager API
           final bool canSchedule = await platform.invokeMethod('canScheduleExactAlarms');
 
-          // Also check the permission directly
-          final permissionStatus = await platform.invokeMethod<int>('checkExactAlarmPermission');
-          final hasDirectPermission = permissionStatus == 0; // PERMISSION_GRANTED = 0
-
-          // Try to create a test notification to verify permission only if other checks suggest we might have it
-          bool testResult = false;
-          if (canSchedule || hasDirectPermission) {
-            try {
-              testResult = await platform.invokeMethod('testExactAlarmPermission') ?? false;
-            } catch (e) {
-              // If test fails, rely on other permission checks
-              testResult = false;
-            }
-          }
-
-          // Consider permission granted if at least the API check or direct permission check passes
-          // The test result is used as additional confirmation when other checks are positive
-          actualPermissionStatus = canSchedule || hasDirectPermission || testResult;
-
-          // Update UI based on the actual permission status
+          // Update UI based on the permission status
           if (mounted) {
             setState(() {
-              _hasExactAlarmPermission = actualPermissionStatus;
+              _hasExactAlarmPermission = canSchedule;
               _isLoading = false;
-              _showError = !actualPermissionStatus;
+              _showError = !canSchedule && !_isInitialCheck;
             });
           }
         } catch (e) {
-          // If we can't check, assume permission is not granted and show error
+          // If we can't check, assume permission is not granted
           if (mounted) {
             setState(() {
               _hasExactAlarmPermission = false;
               _isLoading = false;
-              _showError = true;
+              _showError = !_isInitialCheck;
             });
           }
         }
       } else {
-        // For Android 12-14, use the standard permission check
+        // For older Android versions, use the standard permission check
         final bool hasPermission = await platform.invokeMethod('canScheduleExactAlarms');
 
         if (mounted) {
           setState(() {
             _hasExactAlarmPermission = hasPermission;
             _isLoading = false;
-            _showError = !hasPermission;
+            _showError = !hasPermission && !_isInitialCheck;
           });
         }
       }
@@ -186,15 +183,15 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
         setState(() {
           _hasExactAlarmPermission = false;
           _isLoading = false;
-          _showError = true;
+          _showError = !_isInitialCheck;
         });
       }
     }
 
-    if (!_hasExactAlarmPermission) {
-      // Check permission status again after a delay only if permission is not granted
+    if (!_hasExactAlarmPermission && !_isInitialCheck) {
+      // Check permission status again after a delay only if permission is not granted and not initial check
       Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_hasExactAlarmPermission) {
+        if (mounted && !_hasExactAlarmPermission && !_isInitialCheck) {
           _checkPermission();
         }
       });
@@ -208,6 +205,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
       setState(() {
         _isLoading = true;
         _showError = false;
+        _isInitialCheck = false; // No longer initial check after user interaction
       });
     }
 
@@ -239,38 +237,23 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
     final steps = <String>[];
     final appName = AppInfo.name;
 
-    // First step always includes the app name
     steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStep1, namedArgs: {'appName': appName}));
-
-    // Get device info to check Android version
-    final isAndroid12Plus = await _isDeviceAndroid12Plus();
-
-    // Add specific steps based on Android version
-    if (isAndroid12Plus) {
-      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus2));
-      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStepAndroid12Plus3));
-    } else {
-      steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStep2));
-    }
+    steps.add(_translationService.translate(SettingsTranslationKeys.exactAlarmStep2, namedArgs: {'appName': appName}));
 
     return steps;
   }
 
-  Future<bool> _isDeviceAndroid12Plus() async {
-    if (!Platform.isAndroid) return false;
-
-    try {
-      final androidInfo = await container.resolve<DeviceInfoPlugin>().androidInfo;
-      return androidInfo.version.sdkInt >= 31; // Android 12 is API level 31
-    } catch (_) {
-      return false;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Only show on Android 12+
-    if (!Platform.isAndroid || !_isAndroid12OrHigher) return const SizedBox.shrink();
+    // Only show on Android 12+ and only after version check is complete
+    if (!Platform.isAndroid || (!_isAndroid12OrHigher && !_isLoading)) {
+      return const SizedBox.shrink();
+    }
+
+    // If still checking Android version, don't show anything yet
+    if (_isInitialCheck && _isLoading && !_isAndroid12OrHigher) {
+      return const SizedBox.shrink();
+    }
 
     return FutureBuilder<List<String>>(
         future: _getInstructionSteps(),
@@ -279,7 +262,8 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
               [
                 _translationService
                     .translate(SettingsTranslationKeys.exactAlarmStep1, namedArgs: {'appName': AppInfo.name}),
-                _translationService.translate(SettingsTranslationKeys.exactAlarmStep2),
+                _translationService
+                    .translate(SettingsTranslationKeys.exactAlarmStep2, namedArgs: {'appName': AppInfo.name}),
               ];
 
           return PermissionCard(
@@ -292,8 +276,6 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
             onRequestPermission: _requestPermission,
             learnMoreDialogDescription: _translationService.translate(SettingsTranslationKeys.exactAlarmDescription),
             learnMoreDialogSteps: instructionSteps,
-            notGrantedText:
-                _showError ? _translationService.translate(SettingsTranslationKeys.exactAlarmNotGranted) : null,
           );
         });
   }

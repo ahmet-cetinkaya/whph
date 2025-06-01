@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
@@ -25,6 +26,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
   bool _hasAppUsagePermission = false;
   bool _isLoading = true;
   bool _showError = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
@@ -47,32 +49,52 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
     if (mounted) {
       setState(() {
         _isLoading = true;
+        _showError = false;
       });
     }
 
     try {
       final hasPermission = await _appUsageService.checkUsageStatsPermission();
+      final wasPermissionGranted = !_hasAppUsagePermission && hasPermission;
 
       if (mounted) {
         setState(() {
           _hasAppUsagePermission = hasPermission;
           _isLoading = false;
-          _showError = !hasPermission;
+          _showError = !hasPermission && !_isInitialCheck;
         });
+      }
+
+      // If permission was just granted, collect initial data and start tracking
+      if (wasPermissionGranted) {
+        try {
+          await _appUsageService.getInitialAppUsages();
+          await _appUsageService.startTracking();
+          widget.onPermissionGranted?.call();
+        } catch (e) {
+          if (kDebugMode) print('Error during initial setup after permission granted: $e');
+        }
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _hasAppUsagePermission = false;
           _isLoading = false;
-          _showError = true;
+          _showError = !_isInitialCheck;
         });
       }
     }
 
-    if (!_hasAppUsagePermission) {
+    // Mark initial check as complete
+    if (mounted && _isInitialCheck) {
+      setState(() {
+        _isInitialCheck = false;
+      });
+    }
+
+    if (!_hasAppUsagePermission && !_isInitialCheck) {
       Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_hasAppUsagePermission) {
+        if (mounted && !_hasAppUsagePermission && !_isInitialCheck) {
           _checkPermission();
         }
       });
@@ -86,6 +108,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       setState(() {
         _isLoading = true;
         _showError = false;
+        _isInitialCheck = false; // No longer initial check after user interaction
       });
     }
 
@@ -94,6 +117,8 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       await Future.delayed(const Duration(seconds: 3));
       await _checkPermission();
       if (_hasAppUsagePermission) {
+        // Collect initial app usage data before starting regular tracking
+        await _appUsageService.getInitialAppUsages();
         await _appUsageService.startTracking();
         widget.onPermissionGranted?.call();
       }
@@ -123,10 +148,10 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       learnMoreDialogDescription: _translationService.translate(SettingsTranslationKeys.appUsageDescription),
       learnMoreDialogSteps: [
         _translationService.translate(SettingsTranslationKeys.appUsageStep1),
-        _translationService.translate(SettingsTranslationKeys.appUsageStep2),
-        _translationService.translate(SettingsTranslationKeys.appUsageStep3, namedArgs: {'appName': AppInfo.shortName}),
+        _translationService.translate(SettingsTranslationKeys.appUsageStep2, namedArgs: {'appName': AppInfo.name}),
+        _translationService.translate(SettingsTranslationKeys.appUsageStep3, namedArgs: {'appName': AppInfo.name}),
+        _translationService.translate(SettingsTranslationKeys.appUsageStep4),
       ],
-      notGrantedText: _showError ? _translationService.translate(SettingsTranslationKeys.appUsageNotGranted) : null,
     );
   }
 }

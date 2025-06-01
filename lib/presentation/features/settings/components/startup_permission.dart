@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/settings/components/permission_card.dart';
 import 'package:whph/presentation/features/settings/constants/settings_translation_keys.dart';
@@ -21,6 +22,7 @@ class _StartupPermissionState extends State<StartupPermission> {
   bool _hasStartupPermission = false;
   bool _isLoading = true;
   bool _showError = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _StartupPermissionState extends State<StartupPermission> {
 
     setState(() {
       _isLoading = true;
+      _showError = false;
     });
 
     try {
@@ -48,20 +51,27 @@ class _StartupPermissionState extends State<StartupPermission> {
       setState(() {
         _hasStartupPermission = hasPermission;
         _isLoading = false;
-        _showError = !hasPermission;
+        _showError = !hasPermission && !_isInitialCheck;
       });
     } catch (e) {
       setState(() {
         _hasStartupPermission = false;
         _isLoading = false;
-        _showError = true;
+        _showError = !_isInitialCheck;
+      });
+    }
+
+    // Mark initial check as complete
+    if (_isInitialCheck) {
+      setState(() {
+        _isInitialCheck = false;
       });
     }
 
     // Periodic check for permission status updates
-    if (!_hasStartupPermission) {
+    if (!_hasStartupPermission && !_isInitialCheck) {
       Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_hasStartupPermission) {
+        if (mounted && !_hasStartupPermission && !_isInitialCheck) {
           _checkPermission();
         }
       });
@@ -74,6 +84,7 @@ class _StartupPermissionState extends State<StartupPermission> {
     setState(() {
       _isLoading = true;
       _showError = false;
+      _isInitialCheck = false; // No longer initial check after user interaction
     });
 
     try {
@@ -96,7 +107,8 @@ class _StartupPermissionState extends State<StartupPermission> {
 
     // Android-specific instructions
     steps.add(_translationService.translate(SettingsTranslationKeys.startupStep1));
-    steps.add(_translationService.translate(SettingsTranslationKeys.startupStep2));
+    steps
+        .add(_translationService.translate(SettingsTranslationKeys.startupStep2, namedArgs: {'appName': AppInfo.name}));
     steps.add(_translationService.translate(SettingsTranslationKeys.startupStep3));
 
     return steps;
@@ -121,7 +133,6 @@ class _StartupPermissionState extends State<StartupPermission> {
       learnMoreDialogDescription: _translationService.translate(SettingsTranslationKeys.startupDescription),
       learnMoreDialogSteps: instructionSteps,
       learnMoreDialogInfoText: _translationService.translate(SettingsTranslationKeys.startupImportance),
-      notGrantedText: _showError ? _translationService.translate(SettingsTranslationKeys.startupNotGranted) : null,
     );
   }
 }

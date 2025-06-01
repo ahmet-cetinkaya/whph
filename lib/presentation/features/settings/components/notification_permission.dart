@@ -20,6 +20,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
   bool _hasNotificationPermission = false;
   bool _isLoading = true;
   bool _showError = false;
+  bool _isInitialCheck = true;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
   Future<void> _checkPermission() async {
     setState(() {
       _isLoading = true;
+      _showError = false;
     });
 
     final hasPermission = await _notificationService.checkPermissionStatus();
@@ -37,12 +39,19 @@ class _NotificationPermissionState extends State<NotificationPermission> {
     setState(() {
       _hasNotificationPermission = hasPermission;
       _isLoading = false;
-      _showError = !hasPermission;
+      _showError = !hasPermission && !_isInitialCheck;
     });
 
-    if (!_hasNotificationPermission) {
+    // Mark initial check as complete
+    if (_isInitialCheck) {
+      setState(() {
+        _isInitialCheck = false;
+      });
+    }
+
+    if (!_hasNotificationPermission && !_isInitialCheck) {
       Future.delayed(const Duration(seconds: 5), () {
-        if (mounted && !_hasNotificationPermission) {
+        if (mounted && !_hasNotificationPermission && !_isInitialCheck) {
           _checkPermission();
         }
       });
@@ -60,14 +69,13 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       steps.add(_translationService.translate(SettingsTranslationKeys.notificationPermissionStepIOS2));
     }
 
-    steps.add(_translationService.translate(SettingsTranslationKeys.notificationPermissionStep3));
-
     return steps;
   }
 
   Future<void> _requestPermission() async {
     setState(() {
       _isLoading = true;
+      _isInitialCheck = false; // No longer initial check after user interaction
     });
 
     try {
@@ -109,9 +117,6 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       learnMoreDialogDescription:
           _translationService.translate(SettingsTranslationKeys.notificationPermissionDescription),
       learnMoreDialogSteps: instructionSteps,
-      learnMoreDialogInfoText: _translationService.translate(SettingsTranslationKeys.notificationPermissionImportance),
-      notGrantedText:
-          _showError ? _translationService.translate(SettingsTranslationKeys.notificationPermissionNotGranted) : null,
     );
   }
 }
