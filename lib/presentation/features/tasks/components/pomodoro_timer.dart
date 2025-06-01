@@ -20,6 +20,7 @@ import 'package:whph/presentation/features/tasks/constants/task_ui_constants.dar
 import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
 class PomodoroTimer extends StatefulWidget {
@@ -54,10 +55,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   String _getDisplayTime() {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    // On very small screens (< 400px), show only minutes to save space
-    if (screenWidth < 400) {
+    if (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall)) {
       final minutes = _remainingTime.inMinutes;
       return '${minutes}m';
     }
