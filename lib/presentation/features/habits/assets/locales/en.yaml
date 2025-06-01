@@ -71,16 +71,20 @@ habits:
         - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
         - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
         - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
+      description: Help description
       title: Habit Formation & Performance Tracking Guide
     records: Records
     remove_record_tooltip: Remove today's completion
     statistics:
       archived_note: "Archived on:"
+      archived_on: Archived on
       archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
+      from: From
       monthly: Monthly
       overall: Overall
       records: Records
       score_trends: Score Trends
+      to: To
       top_streaks: Top Streaks
       yearly: Yearly
     statistics_label: Statistics
@@ -113,6 +117,8 @@ habits:
     period_days: Period Days
     settings: Goal Settings
     target_frequency: Target Frequency
+  help:
+    description: Help description
   list:
     all_habits_done: All habits completed!
     no_habits_found: No habits
@@ -184,6 +190,15 @@ habits:
   reminders:
     enable: Enable reminders
     select_days_warning: Please select at least one day for reminders
+  statistics:
+    archived_on: Archived on
+    from: From
+    to: To
+  tags:
+    add_tooltip: Add tag
+    select_tooltip: Select tag
   tooltips:
     add_habit: Add Habit
+    decrease_estimated_time: Decrease estimated time
     edit_name: Edit Name
+    increase_estimated_time: Increase estimated time

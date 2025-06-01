@@ -157,6 +157,9 @@ shared:
     tags: Etiketler
     tasks: Görevler
     time: Zaman
+  settings:
+    import:
+      version_mismatch: Sürüm uyumsuzluğu
   sort:
     ascending: Artan
     custom_order:

@@ -1,3 +1,5 @@
+error:
+  scan: Tarama başarısız
 sync:
   devices:
     errors:
@@ -32,6 +34,8 @@ sync:
     title: Cihazları Senkronize Et
     to_label: Kime
     unnamed_device: İsimsiz Cihaz
+  error:
+    scan: Tarama başarısız
   errors:
     connection_failed: |
       Bağlantı başarısız oldu. Lütfen şunlardan emin olun:

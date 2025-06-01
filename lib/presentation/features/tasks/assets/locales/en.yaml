@@ -7,7 +7,6 @@ tasks:
       today: Schedule for today
       tomorrow: Schedule for tomorrow
     tooltips:
-      edit_title: Edit title
       schedule: Schedule task
   complete:
     error: Unexpected error occurred while saving task completion.
@@ -39,7 +38,8 @@ tasks:
       hint: Select tags to associate
       label: Tags
     tags_hint: Select tags for task
-    title: Title
+    title:
+      label: Title
     total_elapsed_time: Total Elapsed Time
   errors:
     add_tag: Unexpected error occurred while adding tag
@@ -177,6 +177,7 @@ tasks:
         - 🚫 Eliminate distractions before starting sessions
         - 🚶 Use breaks for physical movement and mental reset
       title: Focused Work Sessions & Time Management Guide
+      tooltip: Marathon help tooltip
     label: Marathon Mode
     unpin_task_tooltip: Unpin current task
   new_task: New Task
@@ -199,11 +200,6 @@ tasks:
       timer_completed: Timer completed!
       title: Pomodoro Timer
       work_completed: Work session completed!
-    system_tray:
-      timer_running: Timer running
-      complete_title: Pomodoro Complete
-      app_running: App Running
-      tap_to_open: Tap to open
     settings:
       auto_start_break: Auto-start break after work
       auto_start_section: Auto-Start Options
@@ -218,6 +214,11 @@ tasks:
       timer_label: Session durations
       title: Timer Settings
       work_duration: Work Duration
+    system_tray:
+      app_running: App Running
+      complete_title: Pomodoro Complete
+      tap_to_open: Tap to open
+      timer_running: Timer running
   priorities:
     not_urgent_important: Not Urgent but Important
     not_urgent_not_important: Not Urgent or Important
@@ -301,6 +302,8 @@ tasks:
   title: Tasks
   tooltips:
     clear_date: Clear date
+    decrease_estimated_time: Decrease estimated time
     edit_title: Edit title
+    increase_estimated_time: Increase estimated time
     set_reminder: Set reminder
     show_completed_tasks: Filter completed tasks

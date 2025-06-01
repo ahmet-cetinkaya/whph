@@ -16,6 +16,9 @@ tags:
   details:
     archived: Arşivlenmiş
     color: Renk
+    help:
+      description: Detaylar yardım açıklaması
+      title: Detaylar Yardım Başlığı
     name: İsim
     related_tags: İlgili Etiketler
     select_tag: Etiket seç
@@ -89,7 +92,6 @@ tags:
         - 🗄️ Tamamlanan işleri arşivleyerek sistem temizliğini koruyun
         - 🎯 Dikkat dağıtıcıları ortadan kaldırmak ve konsantrasyonu artırmak için odaklı filtreleme uygulayın
       title: Etiket Tabanlı Organizasyon ve Zaman Yönetimi Rehberi
-
     title: Etiket Yardım
   labels:
     color: Renk
@@ -117,6 +119,7 @@ tags:
     done: Tamam
   tag_details: Etiket Detayları
   time_bar_chart:
+    by_element: Öğeye göre
     no_data: Veri yok
     title: Zaman Dağılımı
   time_chart:
@@ -132,6 +135,6 @@ tags:
     color: Etikete renk ata
     delete_tag: Etiketi sil
     edit_name: İsmi düzenle
+    remove_tag: Etiketi kaldır
     select: Etiket seç
     unarchive_tag: Etiketi arşivden çıkar
-    remove_tag: Etiketi kaldır

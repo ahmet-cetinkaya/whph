@@ -23,6 +23,7 @@ habits:
     confirm_message: Bu alışkanlığı silmek istediğinize emin misiniz?
     confirm_title: Alışkanlığı Sil
   details:
+    add_tooltip: Etiket ekle
     archived_status: Arşivlendi
     create_record_tooltip: Bugün tamamlandı olarak işaretle
     description: Açıklama
@@ -72,16 +73,21 @@ habits:
         ———
 
         🔑 Bu özellikleri kullanarak alışkanlıklarınızı düzenli takip etmek, hedeflerinize ulaşmada size büyük kolaylık sağlar. Düzenli gözden geçirme ve ayarlamalar, sürdürülebilir başarı için çok önemlidir.
+      description: Yardım açıklaması
       title: Alışkanlık Takibi ve Yönetimi Rehberi
     records: Kayıtlar
     remove_record_tooltip: Bugünkü tamamlamayı kaldır
+    select_tooltip: Etiket seç
     statistics:
       archived_note: "Arşivlenme tarihi:"
+      archived_on: Arşivlenme tarihi
       archived_warning: "İstatistikler arşivlendiği tarihe kadar gösterilmektedir. {startDate} - {archivedDate}"
+      from: Başlangıç
       monthly: Aylık
       overall: Genel
       records: Kayıtlar
       score_trends: Puan Trendi
+      to: Bitiş
       top_streaks: En İyi Seriler
       yearly: Yıllık
     statistics_label: İstatistikler
@@ -169,6 +175,12 @@ habits:
   reminders:
     enable: Hatırlatıcıları etkinleştir
     select_days_warning: Lütfen hatırlatıcılar için en az bir gün seçin
+  tags:
+    add_tooltip: Etiket ekle
+    remove_tooltip: Etiketi kaldır
+    select_tooltip: Etiket seç
   tooltips:
     add_habit: Alışkanlık ekle
+    decrease_estimated_time: Tahmini süreyi azalt
     edit_name: İsmi düzenle
+    increase_estimated_time: Tahmini süreyi artır
