@@ -32,7 +32,7 @@ class HabitsList extends StatefulWidget {
 
   const HabitsList({
     super.key,
-    this.pageSize = 20,
+    this.pageSize = 10,
     this.mini = false,
     this.dateRange = 7,
     this.filterByTags,

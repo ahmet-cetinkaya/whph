@@ -34,7 +34,7 @@ class TagsList extends StatefulWidget {
     this.showArchived = false,
     this.sortConfig,
     this.search,
-    this.pageSize = 20,
+    this.pageSize = 10,
   });
 
   @override

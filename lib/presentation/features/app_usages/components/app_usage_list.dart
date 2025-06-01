@@ -44,7 +44,7 @@ class AppUsageList extends StatefulWidget {
 
   const AppUsageList({
     super.key,
-    this.pageSize = 20,
+    this.pageSize = 10,
     this.filterByTags,
     this.showNoTagsFilter = false,
     this.onOpenDetails,
