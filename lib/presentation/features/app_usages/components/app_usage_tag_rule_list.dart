@@ -27,7 +27,7 @@ class AppUsageTagRuleList extends StatefulWidget {
     required this.mediator,
     this.onRuleSelected,
     this.filterByTags,
-    this.pageSize = 20,
+    this.pageSize = 10,
   });
 
   @override

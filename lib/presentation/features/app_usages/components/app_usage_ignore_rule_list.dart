@@ -23,7 +23,7 @@ class AppUsageIgnoreRuleList extends StatefulWidget {
   const AppUsageIgnoreRuleList({
     super.key,
     this.onRuleDeleted,
-    this.pageSize = 20,
+    this.pageSize = 10,
   });
 
   @override

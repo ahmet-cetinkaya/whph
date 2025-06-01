@@ -53,7 +53,7 @@ class TaskList extends StatefulWidget {
 
   const TaskList({
     super.key,
-    this.pageSize = 20,
+    this.pageSize = 10,
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByPlannedStartDate,

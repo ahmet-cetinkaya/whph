@@ -33,7 +33,7 @@ class NotesList extends StatefulWidget {
     this.filterNoTags = false,
     this.onClickNote,
     this.sortConfig,
-    this.pageSize = 20,
+    this.pageSize = 10,
   });
 
   @override
