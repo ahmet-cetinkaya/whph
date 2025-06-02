@@ -90,7 +90,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
               titleKey: NoteTranslationKeys.helpTitle,
               markdownContentKey: NoteTranslationKeys.helpContent,
             ),
-            const SizedBox(width: 8),
           ],
         ),
       ],
@@ -126,7 +125,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             },
             settingKeyVariantSuffix: noteListSettingKeySuffix,
           ),
-          const SizedBox(height: AppTheme.sizeMedium),
 
           // Notes list
           if (_isListVisible)

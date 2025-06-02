@@ -59,6 +59,7 @@ class PermissionCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(

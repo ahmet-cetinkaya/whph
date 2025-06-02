@@ -152,7 +152,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: AppTheme.borderColor,
-                    width: 1.5,
+                    width: 2,
                   ),
                   color: _isCompleted ? primaryColor : Colors.transparent,
                 ),

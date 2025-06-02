@@ -170,7 +170,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               titleKey: TaskTranslationKeys.tasksHelpTitle,
               markdownContentKey: TaskTranslationKeys.tasksHelpContent,
             ),
-            const SizedBox(width: AppTheme.sizeSmall),
           ],
         ),
       ],
@@ -206,8 +205,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
             onSettingsLoaded: _onSettingsLoaded,
           ),
-
-          const SizedBox(height: AppTheme.sizeMedium),
 
           // Task List
           if (_isTaskListVisible)

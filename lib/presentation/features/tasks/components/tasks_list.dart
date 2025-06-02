@@ -397,28 +397,31 @@ class TaskListState extends State<TaskList> {
         .map((task) => Material(
               key: ValueKey(task.id),
               type: MaterialType.transparency,
-              child: TaskCard(
-                taskItem: task,
-                transparent: widget.transparentCards,
-                trailingButtons: [
-                  if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                  if (widget.showSelectButton)
-                    IconButton(
-                      icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                      onPressed: () => widget.onSelectTask?.call(task),
-                    ),
-                  if (widget.enableReordering && widget.filterByCompleted != true)
-                    ReorderableDragStartListener(
-                      index: items.indexOf(task),
-                      child: const Icon(Icons.drag_handle, color: Colors.grey),
-                    ),
-                ],
-                onCompleted: _onTaskCompleted,
-                onOpenDetails: () => widget.onClickTask(task),
-                onScheduled: !task.isCompleted && widget.onScheduleTask != null
-                    ? () => widget.onScheduleTask!(task, DateTime.now())
-                    : null,
-                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+                child: TaskCard(
+                  taskItem: task,
+                  transparent: widget.transparentCards,
+                  trailingButtons: [
+                    if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                    if (widget.showSelectButton)
+                      IconButton(
+                        icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                        onPressed: () => widget.onSelectTask?.call(task),
+                      ),
+                    if (widget.enableReordering && widget.filterByCompleted != true)
+                      ReorderableDragStartListener(
+                        index: items.indexOf(task),
+                        child: const Icon(Icons.drag_handle, color: Colors.grey),
+                      ),
+                  ],
+                  onCompleted: _onTaskCompleted,
+                  onOpenDetails: () => widget.onClickTask(task),
+                  onScheduled: !task.isCompleted && widget.onScheduleTask != null
+                      ? () => widget.onScheduleTask!(task, DateTime.now())
+                      : null,
+                  isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                ),
               ),
             ))
         .toList();
@@ -521,7 +524,7 @@ class TaskListState extends State<TaskList> {
           ...List<Widget>.from(_buildTaskCards()),
         if (_tasks!.hasNext)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
                 child: LoadMoreButton(
               onPressed: _onLoadMore,

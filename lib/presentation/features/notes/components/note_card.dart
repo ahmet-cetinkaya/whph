@@ -24,112 +24,89 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardPadding = isDense ? const EdgeInsets.all(AppTheme.sizeSmall) : const EdgeInsets.all(AppTheme.sizeMedium);
-    final cardMargin = isDense
-        ? const EdgeInsets.symmetric(vertical: 2, horizontal: AppTheme.size2XSmall)
-        : const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall, horizontal: AppTheme.size2XSmall);
     final previewHeight = isDense ? 60.0 : 80.0;
 
-    return Card(
-      margin: cardMargin,
-      elevation: 2,
-      color: transparentCard ? Theme.of(context).cardColor.withValues(alpha: 0.8) : Theme.of(context).cardColor,
-      child: InkWell(
-        onTap: onOpenDetails,
-        borderRadius: BorderRadius.circular(AppTheme.size2XSmall),
-        child: Padding(
-          padding: cardPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return ListTile(
+      tileColor: transparentCard ? Theme.of(context).cardColor.withValues(alpha: 0.8) : Theme.of(context).cardColor,
+      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+      ),
+      onTap: onOpenDetails,
+      leading: Icon(
+        NoteUiConstants.noteIcon,
+        size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+        color: Colors.white,
+      ),
+      title: Text(
+        note.title,
+        style: isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
+        overflow: TextOverflow.ellipsis,
+        maxLines: isDense ? 1 : 2,
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Note content preview
+          if (note.content != null && note.content!.isNotEmpty) ...[
+            SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
+            BorderFadeOverlay(
+              fadeBorders: {FadeBorder.bottom},
+              backgroundColor: AppTheme.surface1,
+              child: SizedBox(
+                height: previewHeight,
+                child: MarkdownRenderer(
+                  data: note.content!,
+                ),
+              ),
+            ),
+          ],
+          // Tags and last updated time
+          if (note.tags.isNotEmpty || note.updatedAt != null) ...[
+            SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
+            DefaultTextStyle(
+              style: AppTheme.bodySmall,
+              child: Wrap(
+                spacing: AppTheme.sizeSmall,
+                runSpacing: AppTheme.size2XSmall,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  // Note icon
-                  Icon(
-                    NoteUiConstants.noteIcon,
-                    size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: isDense ? AppTheme.size2XSmall : AppTheme.size2XSmall),
-                  // Note title
-                  Expanded(
-                    child: Text(
-                      note.title,
-                      style: isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: isDense ? 1 : 2,
+                  if (note.tags.isNotEmpty)
+                    Label.multipleColored(
+                      icon: TagUiConstants.tagIcon,
+                      color: Colors.grey,
+                      values: note.tags.map((tag) => tag.tagName).toList(),
+                      colors: note.tags
+                          .map((tag) =>
+                              tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+                          .toList(),
+                      mini: true,
                     ),
-                  ),
+                  if (note.updatedAt != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.update,
+                          size: AppTheme.iconSizeXSmall,
+                          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(width: AppTheme.size3XSmall),
+                        Text(
+                          _formatDateTime(note.updatedAt!),
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
-              // Note content preview
-              if (note.content != null && note.content!.isNotEmpty) ...[
-                SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
-                Padding(
-                  padding: EdgeInsets.only(left: isDense ? AppTheme.sizeSmall : AppTheme.sizeMedium),
-                  child: BorderFadeOverlay(
-                    fadeBorders: {FadeBorder.bottom},
-                    backgroundColor: AppTheme.surface1,
-                    child: SizedBox(
-                      height: previewHeight,
-                      child: MarkdownRenderer(
-                        data: note.content!,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              // Tags and last updated time in the same row
-              if (note.tags.isNotEmpty || note.updatedAt != null) ...[
-                SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
-                DefaultTextStyle(
-                  style: AppTheme.bodySmall,
-                  child: Wrap(
-                    spacing: AppTheme.sizeSmall,
-                    runSpacing: AppTheme.size2XSmall,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      if (note.tags.isNotEmpty)
-                        Label.multipleColored(
-                          icon: TagUiConstants.tagIcon,
-                          color: Colors.grey, // Default color for icon and commas
-                          values: note.tags.map((tag) => tag.tagName).toList(),
-                          colors: note.tags
-                              .map((tag) =>
-                                  tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-                              .toList(),
-                          mini: true,
-                        ),
-                      if (note.updatedAt != null)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: AppTheme.size3XSmall),
-                              child: Icon(
-                                Icons.update,
-                                size: AppTheme.iconSizeXSmall,
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                              ),
-                            ),
-                            const SizedBox(width: AppTheme.size3XSmall),
-                            Text(
-                              _formatDateTime(note.updatedAt!),
-                              style: TextStyle(
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
+            ),
+          ],
+        ],
       ),
     );
   }

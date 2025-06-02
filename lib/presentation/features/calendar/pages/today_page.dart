@@ -162,7 +162,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           titleKey: CalendarTranslationKeys.todayHelpTitle,
           markdownContentKey: CalendarTranslationKeys.todayHelpContent,
         ),
-        const SizedBox(width: 8),
       ],
       // Add floating action button for mobile devices
       floatingActionButton: TaskAddFloatingButton(
@@ -180,20 +179,16 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
             showNoTagsFilter: _showNoTagsFilter,
             onFilterChange: _onMainListOptionChange,
           ),
-          const SizedBox(height: AppTheme.sizeMedium),
 
           if (_mainListOptionSettingsLoaded) ...[
             // Habits Section
-            // Habits title and options
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppTheme.sizeSmall,
-                    bottom: AppTheme.size2XSmall,
-                  ),
-                  child: Row(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Habits title and options
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Habits title
@@ -201,19 +196,17 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         _translationService.translate(CalendarTranslationKeys.habitsTitle),
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      const SizedBox(width: 24),
-
                       // Habit filters
                       Expanded(
                         child: HabitListOptions(
                           settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
                           onSettingsLoaded: _onHabitListOptionSettingsLoaded,
                           selectedTagIds: _selectedTagFilter,
-                          showNoTagsFilter: _showNoTagsFilter, // Add this to pass the None filter option state
+                          showNoTagsFilter: _showNoTagsFilter,
                           onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
                             setState(() {
                               _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                              _showNoTagsFilter = isNoneSelected; // Update None filter state
+                              _showNoTagsFilter = isNoneSelected;
                             });
                           },
                           showTagFilter: false,
@@ -222,33 +215,31 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: AppTheme.sizeSmall),
 
-                // Habits list
-                if (_habitListOptionSettingsLoaded)
-                  HabitsList(
-                    pageSize: 5,
-                    mini: true,
-                    filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                    filterNoTags: _showNoTagsFilter,
-                    onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                    showDoneOverlayWhenEmpty: true,
-                  ),
-              ],
+                  // Habits list
+                  if (_habitListOptionSettingsLoaded)
+                    HabitsList(
+                      pageSize: 5,
+                      mini: true,
+                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                      filterNoTags: _showNoTagsFilter,
+                      onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                      showDoneOverlayWhenEmpty: true,
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(height: AppTheme.sizeLarge),
+            const SizedBox(height: AppTheme.sizeMedium),
 
             // Tasks Section
-            // Tasks title and options
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppTheme.sizeSmall,
-                    bottom: AppTheme.size2XSmall,
-                  ),
-                  child: Row(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Tasks title and options
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Task title
@@ -256,7 +247,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         _translationService.translate(CalendarTranslationKeys.tasksTitle),
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      const SizedBox(width: AppTheme.sizeLarge),
 
                       // Task filters and add button
                       Expanded(
@@ -288,53 +278,46 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             ),
 
                             // Add button
-                            Padding(
-                              padding: const EdgeInsets.only(right: AppTheme.sizeLarge),
-                              child: TaskAddButton(
-                                initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
-                                initialPlannedDate: DateTime.now(),
-                                initialTitle: _taskSearchQuery,
-                                initialCompleted: _showCompletedTasks,
-                              ),
+                            TaskAddButton(
+                              initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
+                              initialPlannedDate: DateTime.now(),
+                              initialTitle: _taskSearchQuery,
+                              initialCompleted: _showCompletedTasks,
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
 
-                // Tasks list
-                if (_taskListOptionSettingsLoaded)
-                  TaskList(
-                    filterByCompleted: _showCompletedTasks,
-                    filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                    filterNoTags: _showNoTagsFilter,
-                    filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
-                    filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
-                    filterDateOr: true,
-                    search: _taskSearchQuery,
-                    pageSize: 5,
-                    onClickTask: (task) => _openTaskDetails(context, task.id),
-                    enableReordering: _taskSortConfig.useCustomOrder,
-                    showDoneOverlayWhenEmpty: true,
-                    sortConfig: _taskSortConfig,
-                  ),
-              ],
+                  // Tasks list
+                  if (_taskListOptionSettingsLoaded)
+                    TaskList(
+                      filterByCompleted: _showCompletedTasks,
+                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                      filterNoTags: _showNoTagsFilter,
+                      filterByPlannedEndDate: DateTime.now().add(const Duration(days: 1)),
+                      filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
+                      filterDateOr: true,
+                      search: _taskSearchQuery,
+                      pageSize: 5,
+                      onClickTask: (task) => _openTaskDetails(context, task.id),
+                      enableReordering: _taskSortConfig.useCustomOrder,
+                      showDoneOverlayWhenEmpty: true,
+                      sortConfig: _taskSortConfig,
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(height: AppTheme.sizeLarge),
 
             // Times Section
-            // Times title and options
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppTheme.sizeSmall,
-                    bottom: AppTheme.size2XSmall,
-                  ),
-                  child: Row(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Times title and options
+                  Row(
                     children: [
                       // Times title
                       Text(
@@ -357,13 +340,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       ),
                     ],
                   ),
-                ),
 
-                // Time chart
-                if (_timeChartOptionsLoaded)
-                  Padding(
-                    padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                    child: Center(
+                  // Time chart
+                  if (_timeChartOptionsLoaded)
+                    Center(
                       child: TagTimeChart(
                         filterByTags: _selectedTagFilter,
                         startDate: DateTime(now.year, now.month, now.day),
@@ -371,8 +351,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         selectedCategories: _selectedCategories,
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         ],

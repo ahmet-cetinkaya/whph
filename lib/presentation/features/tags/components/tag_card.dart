@@ -23,72 +23,53 @@ class TagCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
-    final padding = isDense
-        ? const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall)
-        : const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: AppTheme.sizeSmall);
 
-    return Card(
-      color: transparent ? Colors.transparent : null,
-      elevation: transparent ? 0 : null,
-      // Card margin removed to match TaskCard
-      child: InkWell(
-        onTap: onOpenDetails,
-        borderRadius: BorderRadius.circular(AppTheme.size2XSmall),
-        child: Padding(
-          padding: padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMainContent(),
-              if (tag.relatedTags.isNotEmpty) ...[
-                SizedBox(height: spacing),
-                _buildRelatedTags(),
-              ],
-            ],
-          ),
-        ),
+    return ListTile(
+      tileColor: transparent ? Colors.transparent : AppTheme.surface1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
-    );
-  }
-
-  Widget _buildMainContent() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Tag icon and name
-        Icon(
-          TagUiConstants.tagIcon,
-          size: isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
-          color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : AppTheme.secondaryTextColor,
+      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      dense: isDense,
+      onTap: onOpenDetails,
+      leading: Icon(
+        TagUiConstants.tagIcon,
+        size: isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
+        color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : AppTheme.secondaryTextColor,
+      ),
+      title: Text(
+        tag.name,
+        style: (isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+          fontWeight: FontWeight.bold,
+          color: AppTheme.textColor,
         ),
-        SizedBox(width: isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
-        Expanded(
-          child: Text(
-            tag.name,
-            style: (isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: isDense ? 1 : 2,
-          ),
-        ),
-
-        // Trailing buttons
-        if (trailingButtons != null)
-          ...trailingButtons!.map((widget) {
-            if (widget is IconButton) {
-              return IconButton(
-                icon: widget.icon,
-                onPressed: widget.onPressed,
-                color: widget.color,
-                tooltip: widget.tooltip,
-                iconSize: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-              );
-            }
-            return widget;
-          }),
-      ],
+        overflow: TextOverflow.ellipsis,
+        maxLines: isDense ? 1 : 2,
+      ),
+      subtitle: tag.relatedTags.isNotEmpty
+          ? Padding(
+              padding: EdgeInsets.only(top: spacing),
+              child: _buildRelatedTags(),
+            )
+          : null,
+      trailing: trailingButtons != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: trailingButtons!.map((widget) {
+                if (widget is IconButton) {
+                  return IconButton(
+                    icon: widget.icon,
+                    onPressed: widget.onPressed,
+                    color: widget.color,
+                    tooltip: widget.tooltip,
+                    iconSize: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+                  );
+                }
+                return widget;
+              }).toList(),
+            )
+          : null,
     );
   }
 

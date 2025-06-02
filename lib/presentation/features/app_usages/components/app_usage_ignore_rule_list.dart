@@ -272,7 +272,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
         // Load more button
         if (_ruleList?.hasNext == true)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
                 onPressed: _onLoadMore,

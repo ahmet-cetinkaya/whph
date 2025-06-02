@@ -62,20 +62,16 @@ class _HabitsPageState extends State<HabitsPage> {
 
   void _onToggleArchived(bool showArchived) {
     if (!mounted) return;
-
     setState(() {
       _filterByArchived = showArchived;
     });
-
-    // HabitsList will detect filter changes via didUpdateWidget
   }
 
   void _onSearchChange(String? query) {
-    if (mounted) {
-      setState(() {
-        _searchQuery = query;
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _searchQuery = query;
+    });
   }
 
   // Handle sort configuration changes
@@ -233,20 +229,15 @@ class _HabitsPageState extends State<HabitsPage> {
               if (_isHabitListVisible &&
                   AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                   !_filterByArchived)
-                Padding(
-                  padding: const EdgeInsets.only(right: AppTheme.sizeMedium),
-                  child: SizedBox(
-                    width: daysToShow * 46.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
-                    ),
+                SizedBox(
+                  width: daysToShow * 46.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
                   ),
                 ),
             ],
           ),
-
-          const SizedBox(height: AppTheme.sizeMedium),
 
           // List
           if (_isHabitListVisible)

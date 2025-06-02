@@ -214,21 +214,29 @@ class NotesListState extends State<NotesList> {
       );
     }
 
-    return ListView(
+    return ListView.separated(
       controller: _scrollController,
       shrinkWrap: true,
-      children: [
-        ..._noteList!.items.map((note) => NoteCard(
-              note: note,
-              onOpenDetails: () => _onNoteSelected(note.id),
-              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-            )),
-        if (_noteList!.hasNext)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+      itemCount: _noteList!.items.length + (_noteList!.hasNext ? 1 : 0),
+      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
+      itemBuilder: (context, index) {
+        if (index == _noteList!.items.length) {
+          return Padding(
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+          );
+        }
+
+        final note = _noteList!.items[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+          child: NoteCard(
+            note: note,
+            onOpenDetails: () => _onNoteSelected(note.id),
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           ),
-      ],
+        );
+      },
     );
   }
 

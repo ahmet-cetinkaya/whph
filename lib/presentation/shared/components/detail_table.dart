@@ -39,14 +39,14 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
+          padding: const EdgeInsets.only(bottom: AppTheme.size3XSmall),
           child: Container(
             decoration: BoxDecoration(
               color: AppTheme.surface1,
               borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size2XSmall),
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size3XSmall),
               // Ensure minimum height for each row
               child: !forceVertical
                   ? SizedBox(
@@ -83,7 +83,7 @@ class DetailTable extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: AppTheme.size2XSmall),
+          const SizedBox(height: AppTheme.size3XSmall),
           Padding(
             padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall),
             child: _buildContent(context, data),

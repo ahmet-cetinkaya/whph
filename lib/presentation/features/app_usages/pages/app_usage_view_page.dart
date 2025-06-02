@@ -118,7 +118,6 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           titleKey: AppUsageTranslationKeys.viewHelpTitle,
           markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
-        const SizedBox(width: 8),
       ],
       builder: (context) => ListView(
         children: [
