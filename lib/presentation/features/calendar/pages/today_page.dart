@@ -116,11 +116,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     // Use ResponsiveDialogHelper to show task details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: TaskDetailsPage(
         taskId: taskId,
         hideSidebar: true,
       ),
+      size: DialogSize.large,
     );
   }
 
@@ -128,10 +128,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     // Use ResponsiveDialogHelper to show habit details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: HabitDetailsPage(
         habitId: id,
       ),
+      size: DialogSize.large,
     );
   }
 

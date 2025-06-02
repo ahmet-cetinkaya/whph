@@ -15,9 +15,8 @@ class AboutTile extends StatelessWidget {
   void _showAboutModal(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(SettingsTranslationKeys.aboutTitle),
-      size: DialogSize.medium,
       child: AboutPage(),
+      size: DialogSize.medium,
     );
   }
 

@@ -248,11 +248,10 @@ class NotesListState extends State<NotesList> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
-      title: _translationService.translate(NoteTranslationKeys.noteDetails),
       child: NoteDetailsPage(
         noteId: id,
       ),
+      size: DialogSize.large,
     );
     _refresh();
   }

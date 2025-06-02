@@ -32,7 +32,6 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   void _showPrioritySelection(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
@@ -57,6 +56,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           ],
         ),
       ),
+      size: DialogSize.small,
     );
   }
 

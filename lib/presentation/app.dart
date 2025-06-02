@@ -117,9 +117,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         if (mounted && widget.navigatorKey.currentContext != null) {
           ResponsiveDialogHelper.showResponsiveDialog(
             context: widget.navigatorKey.currentContext!,
-            size: DialogSize.min,
-            isDismissible: false,
             child: const OnboardingDialog(),
+            isDismissible: false,
+            size: DialogSize.min,
           );
         }
       });

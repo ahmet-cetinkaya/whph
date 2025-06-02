@@ -72,11 +72,11 @@ enum DialogSize {
       case DialogSize.min:
         return 0; // No initial size for min size
       case DialogSize.small:
-        return 0.7;
+        return 0.6;
       case DialogSize.medium:
-        return 0.8;
-      case DialogSize.large:
         return 0.85;
+      case DialogSize.large:
+        return 0.9;
       case DialogSize.max:
         return 0.95;
     }

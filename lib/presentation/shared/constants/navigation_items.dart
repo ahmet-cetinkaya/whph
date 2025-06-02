@@ -33,8 +33,8 @@ class NavigationItems {
         onTap: (context) {
           ResponsiveDialogHelper.showResponsiveDialog(
             context: context,
-            size: DialogSize.min,
             child: SupportDialog(),
+            size: DialogSize.min,
           );
         }),
   ];

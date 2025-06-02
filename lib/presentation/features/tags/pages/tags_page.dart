@@ -52,10 +52,10 @@ class _TagsPageState extends State<TagsPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: TagDetailsPage(
         tagId: id,
       ),
+      size: DialogSize.large,
     );
   }
 

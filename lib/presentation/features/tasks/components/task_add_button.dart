@@ -48,7 +48,6 @@ class _TaskAddButtonState extends State<TaskAddButton> {
   Future<void> _createTask(BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
       child: QuickAddTaskDialog(
         initialTagIds: widget.initialTagIds,
         initialPlannedDate: widget.initialPlannedDate,
@@ -64,6 +63,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
           }
         },
       ),
+      size: DialogSize.small,
     );
   }
 

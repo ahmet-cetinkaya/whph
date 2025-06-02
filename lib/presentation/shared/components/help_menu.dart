@@ -23,7 +23,7 @@ class HelpMenu extends StatelessWidget {
   void _showHelpModal(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.medium,
       child: Scaffold(
         appBar: AppBar(
           title: Text(_translationService.translate(titleKey)),

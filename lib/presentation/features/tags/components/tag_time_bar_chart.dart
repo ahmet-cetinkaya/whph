@@ -170,32 +170,29 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       case TagTimeCategory.tasks:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
-          size: DialogSize.max,
-          title: _translationService.translate(TagTranslationKeys.categoryTasks),
           child: TaskDetailsPage(
             taskId: item.id,
             hideSidebar: true,
           ),
+          size: DialogSize.large,
         );
         break;
       case TagTimeCategory.habits:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
-          size: DialogSize.max,
-          title: _translationService.translate(TagTranslationKeys.categoryHabits),
           child: HabitDetailsPage(
             habitId: item.id,
           ),
+          size: DialogSize.large,
         );
         break;
       case TagTimeCategory.appUsage:
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
-          size: DialogSize.max,
-          title: _translationService.translate(TagTranslationKeys.categoryAppUsage),
           child: AppUsageDetailsPage(
             appUsageId: item.id,
           ),
+          size: DialogSize.large,
         );
         break;
       default:

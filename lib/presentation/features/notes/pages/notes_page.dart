@@ -38,10 +38,10 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   Future<void> _openDetails(String noteId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: NoteDetailsPage(
         noteId: noteId,
       ),
+      size: DialogSize.large,
     );
   }
 
@@ -51,11 +51,10 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
     if (mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        size: DialogSize.max,
-        title: _translationService.translate(NoteTranslationKeys.noteDetails),
         child: NoteDetailsPage(
           noteId: noteId,
         ),
+        size: DialogSize.large,
       );
     }
   }

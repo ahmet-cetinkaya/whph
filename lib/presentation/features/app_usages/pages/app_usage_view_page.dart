@@ -63,10 +63,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: AppUsageDetailsPage(
         appUsageId: id,
       ),
+      size: DialogSize.large,
     );
   }
 
@@ -91,8 +91,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   Future<void> _showTagRulesSettings() async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
       child: const AppUsageRulesPage(),
+      size: DialogSize.large,
     );
     setState(() {}); // Trigger rebuild to refresh list
   }

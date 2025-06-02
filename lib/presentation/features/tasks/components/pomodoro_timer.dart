@@ -394,7 +394,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.medium,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Scaffold(
@@ -412,6 +411,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
           );
         },
       ),
+      size: DialogSize.medium,
     );
 
     // Save settings
