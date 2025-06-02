@@ -51,26 +51,23 @@ class AppUsageCard extends StatelessWidget {
         .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
         .toList();
 
-    return Container(
-      constraints: const BoxConstraints(minHeight: AppTheme.size2XLarge),
-      child: Wrap(
-        spacing: AppTheme.size2XSmall,
-        runSpacing: AppTheme.size3XSmall,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(
-            "•",
-            style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
-          ),
-          Label.multipleColored(
-            icon: TagUiConstants.tagIcon,
-            color: Colors.grey, // Default color for icon and commas
-            values: appUsage.tags.map((tag) => tag.tagName).toList(),
-            colors: tagColors,
-            mini: true,
-          ),
-        ],
-      ),
+    return Wrap(
+      spacing: AppTheme.size2XSmall,
+      runSpacing: AppTheme.size3XSmall,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          "•",
+          style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
+        ),
+        Label.multipleColored(
+          icon: TagUiConstants.tagIcon,
+          color: Colors.grey, // Default color for icon and commas
+          values: appUsage.tags.map((tag) => tag.tagName).toList(),
+          colors: tagColors,
+          mini: true,
+        ),
+      ],
     );
   }
 }
