@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/application/features/settings/commands/import_data_command.dart';
@@ -13,6 +14,8 @@ import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/core/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/core/acore/errors/business_exception.dart';
+import 'package:whph/presentation/shared/utils/error_helper.dart';
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
@@ -57,6 +60,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   final PageController _pageController = PageController();
   String? _selectedFilePath;
   ExportDataFileOptions? _selectedExportOption;
+  bool _isImporting = false;
 
   void _navigateToPage(int page) {
     _pageController.animateToPage(
@@ -113,12 +117,14 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               icon: Icons.download,
               titleKey: SettingsTranslationKeys.importTitle,
               onTap: () => _handleImport(context),
+              isDisabled: _isImporting,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
             _ImportExportActionTile(
               icon: Icons.upload,
               titleKey: SettingsTranslationKeys.exportTitle,
               onTap: () => _navigateToPage(2),
+              isDisabled: _isImporting,
             ),
           ],
         ),
@@ -145,6 +151,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               translationKey: SettingsTranslationKeys.importStrategyReplace,
               strategy: ImportStrategy.replace,
               onSelect: () => _handleStrategySelect(ImportStrategy.replace, context),
+              isDisabled: _isImporting,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
             _ImportStrategyOption(
@@ -152,6 +159,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               translationKey: SettingsTranslationKeys.importStrategyMerge,
               strategy: ImportStrategy.merge,
               onSelect: () => _handleStrategySelect(ImportStrategy.merge, context),
+              isDisabled: _isImporting,
             ),
           ],
         ),
@@ -163,12 +171,14 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton(
-              onPressed: () {
-                setState(() {
-                  _selectedFilePath = null;
-                });
-                _navigateToPage(0);
-              },
+              onPressed: _isImporting
+                  ? null
+                  : () {
+                      setState(() {
+                        _selectedFilePath = null;
+                      });
+                      _navigateToPage(0);
+                    },
               child: Text(
                 _translationService.translate(SharedTranslationKeys.backButton),
               ),
@@ -251,7 +261,18 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   Future<void> _handleStrategySelect(ImportStrategy strategy, BuildContext context) async {
-    if (_selectedFilePath == null) return;
+    if (_selectedFilePath == null || _isImporting) return;
+
+    // Set importing state and show loading overlay
+    setState(() {
+      _isImporting = true;
+    });
+
+    OverlayNotificationHelper.showLoading(
+      context: context,
+      message: _translationService.translate(SettingsTranslationKeys.importInProgress),
+      duration: const Duration(minutes: 5), // Long duration for import operation
+    );
 
     await AsyncErrorHandler.execute<ImportDataCommandResponse>(
       context: context,
@@ -267,23 +288,59 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         );
       },
       onSuccess: (_) {
-        // Show success message
+        // Hide loading overlay
+        OverlayNotificationHelper.hideNotification();
+
+        // Show success overlay notification
         OverlayNotificationHelper.showSuccess(
           context: context,
           message: _translationService.translate(SettingsTranslationKeys.importSuccess),
+          duration: const Duration(seconds: 4),
         );
 
         // Close dialog
         Navigator.of(context).pop();
       },
-      onError: (_) {
-        // Navigate back to main page
+      onError: (e) {
+        if (kDebugMode) {
+          debugPrint('Import error: $e');
+          if (e is BusinessException) {
+            debugPrint('Args: ${e.args}');
+          }
+        }
+
+        // Hide loading overlay
+        OverlayNotificationHelper.hideNotification();
+
+        // Show error overlay notification
+        if (e is BusinessException) {
+          ErrorHelper.showError(context, e);
+        } else {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e,
+            StackTrace.current,
+            message: _translationService.translate(SettingsTranslationKeys.importError),
+          );
+        }
+
+        // Reset importing state to allow retry
         setState(() {
+          _isImporting = false;
           _selectedFilePath = null;
         });
+
+        // Navigate back to main page instead of closing modal
         _navigateToPage(0);
       },
     );
+
+    // Reset importing state in case of unexpected completion
+    if (mounted) {
+      setState(() {
+        _isImporting = false;
+      });
+    }
   }
 
   Future<void> _handleExportOptionSelect(ExportDataFileOptions option, BuildContext context) async {
@@ -321,19 +378,36 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
         if (!mounted) return;
 
-        // Show success message with the actual saved path
+        // Show success overlay notification with file path
         if (context.mounted) {
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n$savePath',
-            duration: const Duration(seconds: 5),
+            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n📁 $savePath',
+            duration: const Duration(seconds: 6),
           );
         }
 
-        // Close dialog
+        // Close dialog on success
         if (context.mounted) {
           Navigator.of(context).pop();
         }
+      },
+      onError: (e) {
+        // Show error overlay notification
+        if (context.mounted) {
+          if (e is BusinessException) {
+            ErrorHelper.showError(context, e);
+          } else {
+            ErrorHelper.showUnexpectedError(
+              context,
+              e,
+              StackTrace.current,
+              message: _translationService.translate(SettingsTranslationKeys.exportError),
+            );
+          }
+        }
+
+        // Stay in modal - let user manually close or retry
       },
     );
   }
@@ -344,24 +418,35 @@ class _ImportExportActionTile extends StatelessWidget {
     required this.icon,
     required this.titleKey,
     required this.onTap,
+    this.isDisabled = false,
   });
 
   final IconData icon;
   final String titleKey;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     return Card(
       child: ListTile(
-        leading: Icon(icon),
+        leading: Icon(
+          icon,
+          color: isDisabled ? Theme.of(context).disabledColor : null,
+        ),
         title: Text(
           translationService.translate(titleKey),
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: isDisabled ? Theme.of(context).disabledColor : null,
+          ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: onTap,
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: isDisabled ? Theme.of(context).disabledColor : null,
+        ),
+        onTap: isDisabled ? null : onTap,
+        enabled: !isDisabled,
       ),
     );
   }
@@ -373,25 +458,36 @@ class _ImportStrategyOption extends StatelessWidget {
     required this.translationKey,
     required this.strategy,
     required this.onSelect,
+    this.isDisabled = false,
   });
 
   final IconData icon;
   final String translationKey;
   final ImportStrategy strategy;
-  final VoidCallback onSelect;
+  final VoidCallback? onSelect;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     return Card(
       child: ListTile(
-        leading: Icon(icon),
+        leading: Icon(
+          icon,
+          color: isDisabled ? Theme.of(context).disabledColor : null,
+        ),
         title: Text(
           translationService.translate(translationKey),
-          style: AppTheme.bodyMedium,
+          style: AppTheme.bodyMedium.copyWith(
+            color: isDisabled ? Theme.of(context).disabledColor : null,
+          ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: onSelect,
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: isDisabled ? Theme.of(context).disabledColor : null,
+        ),
+        onTap: isDisabled ? null : onSelect,
+        enabled: !isDisabled,
       ),
     );
   }

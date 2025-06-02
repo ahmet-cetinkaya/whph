@@ -467,7 +467,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 value: progress,
                 backgroundColor: Colors.transparent, // Transparent to show container color
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  AppTheme.primaryColor.withOpacity(0.3),
+                  AppTheme.primaryColor.withValues(alpha: 0.3),
                 ),
                 minHeight: buttonSize * 2, // Ensure progress bar has enough height
               ),

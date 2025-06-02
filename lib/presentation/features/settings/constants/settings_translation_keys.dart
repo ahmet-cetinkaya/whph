@@ -44,6 +44,7 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String exportJsonDescription = 'settings.export.json_description';
   static const String exportTitle = 'settings.export.title';
   static const String importError = 'settings.import.error';
+  static const String importErrorEntity = 'settings.import.error.entity';
   static const String importExportDescription = 'settings.import_export.description';
   static const String importExportSelectAction = 'settings.import_export.select_action';
   static const String importExportTitle = 'settings.import_export.title';
@@ -53,6 +54,7 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String importStrategyTitle = 'settings.import.strategy.title';
   static const String importSuccess = 'settings.import.success';
   static const String importTitle = 'settings.import.title';
+  static const String importInProgress = 'settings.import.in_progress';
 
   // Permissions
   static const String permissionFixIt = 'settings.permissions.fix_it';

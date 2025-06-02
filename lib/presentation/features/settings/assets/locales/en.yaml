@@ -9,7 +9,7 @@ settings:
     export_failed: Export failed
     import_failed: Import failed
     setting_not_found: Setting not found
-    version_mismatch: Version mismatch
+    version_mismatch: Version not found
   export:
     csv_description: You can use this to view in Excel and similar applications.
     error: Export failed
@@ -23,6 +23,8 @@ settings:
     title: Export Data
   import:
     error: Import failed
+    error.entity: Error in type
+    in_progress: Importing data, please wait...
     select_file: Select file
     strategy:
       merge: Merge with Existing Data
@@ -30,7 +32,9 @@ settings:
       title: Import Strategy
     success: Import successful
     title: Import
-    version_mismatch: Version mismatch
+    version_mismatch: Version not found
+    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
+    unsupported_version: Unsupported version
   import_export:
     description: You can backup your data in JSON format or restore from a previously created backup
     select_action: Select import/export action
