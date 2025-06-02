@@ -94,10 +94,10 @@ abstract class BaseAppUsageService implements IAppUsageService {
   Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false, DateTime? customDateTime}) async {
     if (await _shouldIgnoreApp(appName)) return;
 
-    final appUsage = await _getOrCreateAppUsage(appName);
+    final recordDateTime = customDateTime ?? DateTime.now();
+    final appUsage = await _getOrCreateAppUsage(appName, createdDate: recordDateTime);
     await _applyTagRules(appUsage);
 
-    final recordDateTime = customDateTime ?? DateTime.now();
     final recordHourStart =
         DateTime(recordDateTime.year, recordDateTime.month, recordDateTime.day, recordDateTime.hour);
     final recordHourEnd = recordHourStart.add(const Duration(hours: 1));
@@ -158,7 +158,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     }
   }
 
-  Future<AppUsage> _getOrCreateAppUsage(String appName) async {
+  Future<AppUsage> _getOrCreateAppUsage(String appName, {DateTime? createdDate}) async {
     var appUsage = await _appUsageRepository.getFirst(
       CustomWhereFilter(
         'name = ? AND deleted_date IS NULL',
@@ -175,7 +175,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
         name: appName,
         color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
         deviceName: deviceName,
-        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+        createdDate: DateTimeHelper.toUtcDateTime(createdDate ?? DateTime.now()),
       );
       await _appUsageRepository.add(appUsage);
     }
