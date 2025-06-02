@@ -211,6 +211,8 @@ tasks:
       ticking_sound_section: Ticking Sound
       ticking_speed: Speed
       ticking_volume: Volume
+      keep_screen_awake_section: Keep Screen Awake
+      keep_screen_awake: Keep screen awake during sessions
       timer_label: Session durations
       title: Timer Settings
       work_duration: Work Duration
