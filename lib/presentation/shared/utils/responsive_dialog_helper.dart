@@ -14,7 +14,6 @@ class ResponsiveDialogHelper {
   static Future<T?> showResponsiveDialog<T>({
     required BuildContext context,
     required Widget child,
-    String? title,
     DialogSize size = DialogSize.medium,
     bool isScrollable = true,
     bool isDismissible = true,

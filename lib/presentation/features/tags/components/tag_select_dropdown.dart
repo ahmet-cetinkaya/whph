@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
@@ -388,6 +389,14 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     });
   }
 
+  void _navigateToTagDetails(String tagId) {
+    ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: TagDetailsPage(tagId: tagId),
+      size: DialogSize.large,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget displayWidget;
@@ -544,13 +553,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             ),
           ),
       ],
-    );
-  }
-
-  void _navigateToTagDetails(String tagId) {
-    ResponsiveDialogHelper.showResponsiveDialog(
-      context: context,
-      child: TagDetailsPage(tagId: tagId),
     );
   }
 }

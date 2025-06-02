@@ -174,8 +174,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       return widget.builder(context);
     }
 
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).viewPadding.bottom;
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

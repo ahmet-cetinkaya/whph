@@ -44,24 +44,20 @@ class _HabitsPageState extends State<HabitsPage> {
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.max,
       child: HabitDetailsPage(
         habitId: habitId,
       ),
+      size: DialogSize.large,
     );
-    // No need to manually refresh - HabitsList will automatically refresh via event listeners
   }
 
   void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
     if (!mounted) return;
 
-    // Update state with new filter values
     setState(() {
       _selectedFilterTags = tagOptions.isEmpty ? [] : tagOptions.map((option) => option.value).toList();
       _showNoTagsFilter = isNoneSelected;
     });
-
-    // HabitsList will detect filter changes via didUpdateWidget
   }
 
   void _onToggleArchived(bool showArchived) {

@@ -15,9 +15,8 @@ class SyncDevicesTile extends StatelessWidget {
   void _showSyncDevicesModal(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      title: _translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
-      size: DialogSize.medium,
       child: const SyncDevicesPage(),
+      size: DialogSize.large,
     );
   }
 

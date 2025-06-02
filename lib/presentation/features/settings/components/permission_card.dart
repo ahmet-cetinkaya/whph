@@ -130,7 +130,6 @@ class PermissionCard extends StatelessWidget {
     final theme = Theme.of(context);
     return ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.min,
       child: AlertDialog(
         title: Text(title),
         content: SingleChildScrollView(
@@ -214,6 +213,7 @@ class PermissionCard extends StatelessWidget {
           ),
         ],
       ),
+      size: DialogSize.min,
     );
   }
 

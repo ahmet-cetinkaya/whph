@@ -11,6 +11,7 @@ import 'package:whph/presentation/features/about/constants/about_translation_key
 import 'package:whph/presentation/features/settings/pages/permissions_page.dart';
 import 'package:whph/presentation/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
+import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/responsive_dialog_helper.dart';
 
@@ -123,6 +124,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const PermissionsPage(),
+      size: DialogSize.large,
     );
   }
 

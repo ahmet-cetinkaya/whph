@@ -289,8 +289,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                 onClickTask: (task) async {
                   await ResponsiveDialogHelper.showResponsiveDialog(
                     context: context,
-                    size: DialogSize.max,
-                    title: _translationService.translate(TaskTranslationKeys.detailsHelpTitle),
                     child: TaskDetailsPage(
                       taskId: task.id,
                       hideSidebar: true,
@@ -300,6 +298,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                         Navigator.of(context).pop();
                       },
                     ),
+                    size: DialogSize.large,
                   );
                   _refreshEverything();
                 },

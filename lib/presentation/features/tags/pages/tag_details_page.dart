@@ -70,6 +70,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: NoteDetailsPage(noteId: noteId),
+      size: DialogSize.large,
     );
     setState(() {}); // Refresh the list after dialog closes
   }
@@ -261,12 +262,11 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   onClickTask: (task) async {
                                     await ResponsiveDialogHelper.showResponsiveDialog(
                                       context: context,
-                                      size: DialogSize.max,
-                                      title: _translationService.translate(TagTranslationKeys.detailsTasksLabel),
                                       child: TaskDetailsPage(
                                         taskId: task.id,
                                         hideSidebar: true,
                                       ),
+                                      size: DialogSize.large,
                                     );
                                     setState(() {}); // Refresh the list after dialog closes
                                   },

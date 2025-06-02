@@ -53,8 +53,8 @@ class SupportDialogService implements ISupportDialogService {
     if (context.mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        size: DialogSize.min,
         child: SupportDialog(),
+        size: DialogSize.min,
       );
 
       // Mark as shown

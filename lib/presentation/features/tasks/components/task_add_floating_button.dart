@@ -85,7 +85,6 @@ class TaskAddFloatingButton extends StatelessWidget {
   Future<void> _showTaskCreationDialog(BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.small,
       child: QuickAddTaskDialog(
         initialTagIds: initialTagIds,
         initialPlannedDate: initialPlannedDate,
@@ -97,6 +96,7 @@ class TaskAddFloatingButton extends StatelessWidget {
         initialCompleted: initialCompleted,
         onTaskCreated: onTaskCreated,
       ),
+      size: DialogSize.small,
     );
   }
 }

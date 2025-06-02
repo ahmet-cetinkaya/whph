@@ -50,7 +50,6 @@ class SyncQrCodeButton extends StatelessWidget {
     if (context.mounted) {
       ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        size: DialogSize.min,
         child: AlertDialog(
           title: Text(_translationService.translate(SyncTranslationKeys.qrDialogTitle)),
           content: SizedBox(
@@ -79,6 +78,7 @@ class SyncQrCodeButton extends StatelessWidget {
             ),
           ],
         ),
+        size: DialogSize.min,
       );
     }
   }

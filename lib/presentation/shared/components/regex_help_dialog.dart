@@ -12,8 +12,8 @@ class RegexHelpDialog extends StatelessWidget {
   static void show(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.min,
       child: const RegexHelpDialog(),
+      size: DialogSize.min,
     );
   }
 
