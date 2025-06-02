@@ -221,18 +221,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               !widget.showBackButton)
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: AppTheme.sizeSmall,
-                top: AppTheme.sizeSmall,
-                right: AppTheme.sizeSmall,
-                // Add bottom padding to account for system navigation bar
-                bottom: widget.respectBottomInset
-                    ? AppTheme.sizeSmall + (bottomInset > 0 && !_shouldShowBottomNavBar() ? bottomInset : 0)
-                    : AppTheme.sizeSmall,
-              ),
-              child: widget.builder(context),
-            ),
+            child: widget.builder(context),
           ),
         ],
       ),
