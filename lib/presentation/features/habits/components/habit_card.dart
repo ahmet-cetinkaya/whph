@@ -84,6 +84,73 @@ class _HabitCardState extends State<HabitCard> {
     );
   }
 
+  // Helper method to refresh habit records state
+  void _refreshHabitRecords() {
+    if (mounted) {
+      setState(() {
+        _habitRecords = null;
+        _getHabitRecords();
+      });
+    }
+  }
+
+  // Helper method to check if a date is disabled for habit recording
+  bool _isDateDisabled(DateTime date) {
+    return date.isAfter(DateTime.now()) ||
+        (widget.habit.archivedDate != null && date.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
+  }
+
+  // Helper method to check if there's a record for a specific date
+  bool _hasRecordForDate(DateTime date) {
+    if (_habitRecords == null) return false;
+    return _habitRecords!.items.any((record) =>
+        DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), DateTimeHelper.toLocalDateTime(date)));
+  }
+
+  // Helper method to get a record for a specific date
+  HabitRecordListItem? _getRecordForDate(DateTime date) {
+    if (_habitRecords == null || !_hasRecordForDate(date)) return null;
+    return _habitRecords!.items.firstWhere((record) =>
+        DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), DateTimeHelper.toLocalDateTime(date)));
+  }
+
+  // Helper method to get the appropriate color for record state
+  Color _getRecordStateColor(bool hasRecord, bool isDisabled) {
+    if (isDisabled) {
+      return AppTheme.textColor.withValues(alpha: 0.3);
+    }
+    return hasRecord ? HabitUiConstants.completedColor : HabitUiConstants.inCompletedColor;
+  }
+
+  // Event handler for calendar day tap
+  Future<void> _onCalendarDayTap(DateTime date) async {
+    final hasRecord = _hasRecordForDate(date);
+    if (hasRecord) {
+      final record = _getRecordForDate(date);
+      if (record != null) {
+        await _deleteHabitRecord(record.id);
+      }
+    } else {
+      await _createHabitRecord(widget.habit.id, date);
+    }
+  }
+
+  // Event handler for checkbox tap
+  Future<void> _onCheckboxTap() async {
+    final today = DateTime.now();
+    final hasRecordToday = _hasRecordForDate(today);
+
+    if (hasRecordToday) {
+      final recordToday = _getRecordForDate(today);
+      if (recordToday != null) {
+        await _deleteHabitRecord(recordToday.id);
+      }
+    } else {
+      await _createHabitRecord(widget.habit.id, today);
+      _soundPlayer.play(SharedSounds.done);
+    }
+  }
+
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
@@ -92,12 +159,7 @@ class _HabitCardState extends State<HabitCard> {
         final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
         final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
-        if (mounted) {
-          setState(() {
-            _habitRecords = null;
-            _getHabitRecords();
-          });
-        }
+        _refreshHabitRecords();
 
         // Notify service that a record was added
         _habitsService.notifyHabitRecordAdded(habitId);
@@ -115,12 +177,7 @@ class _HabitCardState extends State<HabitCard> {
         final command = DeleteHabitRecordCommand(id: id);
         final response = await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
 
-        if (mounted) {
-          setState(() {
-            _habitRecords = null;
-            _getHabitRecords();
-          });
-        }
+        _refreshHabitRecords();
 
         // Notify service that a record was removed
         _habitsService.notifyHabitRecordRemoved(widget.habit.id);
@@ -132,7 +189,7 @@ class _HabitCardState extends State<HabitCard> {
   @override
   Widget build(BuildContext context) {
     final cardPadding = widget.isDense
-        ? const EdgeInsets.symmetric(horizontal: AppTheme.size3XSmall, vertical: 0)
+        ? const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 0)
         : const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall);
 
     return GestureDetector(
@@ -149,117 +206,129 @@ class _HabitCardState extends State<HabitCard> {
     );
   }
 
-  Widget _buildCompactView() => Row(
-        children: [
-          _buildHabitInfo(),
-          _buildCheckbox(context),
-        ],
-      );
+  Widget _buildCompactView() {
+    return Row(
+      children: [
+        _buildHabitInfo(),
+        _buildCheckbox(context),
+      ],
+    );
+  }
 
-  Widget _buildFullView() => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildHabitInfo(),
-          if (!widget.habit.isArchived()) ...[
-            const SizedBox(width: AppTheme.sizeSmall),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: _buildCalendar(),
-              ),
+  Widget _buildFullView() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildHabitInfo(),
+        if (!widget.habit.isArchived()) ...[
+          const SizedBox(width: AppTheme.sizeSmall),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: _buildCalendar(),
             ),
-          ]
-        ],
-      );
+          ),
+        ]
+      ],
+    );
+  }
 
-  Widget _buildHabitInfo() => Expanded(
-        child: Row(
-          children: [
-            Icon(HabitUiConstants.habitIcon, size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge),
-            SizedBox(width: widget.isDense ? AppTheme.sizeSmall : AppTheme.sizeSmall),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Habit title
-                  Text(
-                    widget.habit.name,
-                    style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
+  // Helper method to build estimated time widget
+  Widget _buildEstimatedTimeWidget() {
+    if (widget.habit.estimatedTime == null || widget.isMiniLayout) {
+      return const SizedBox.shrink();
+    }
 
-                  // Tags and metadata section
-                  if (!widget.isMiniLayout && (widget.habit.tags.isNotEmpty || widget.habit.estimatedTime != null))
-                    Padding(
-                      padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
-                      child: Wrap(
-                        spacing: AppTheme.sizeSmall,
-                        runSpacing: AppTheme.sizeSmall / 2,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          // Tags
-                          if (widget.habit.tags.isNotEmpty)
-                            Label.multipleColored(
-                              icon: TagUiConstants.tagIcon,
-                              color: Colors.grey, // Default color for icon and commas
-                              values: widget.habit.tags.map((tag) => tag.name).toList(),
-                              colors: widget.habit.tags
-                                  .map((tag) =>
-                                      tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                                  .toList(),
-                              mini: true,
-                            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          HabitUiConstants.estimatedTimeIcon,
+          size: AppTheme.iconSizeSmall,
+          color: HabitUiConstants.estimatedTimeColor,
+        ),
+        Text(
+          SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
+          style: AppTheme.bodySmall.copyWith(
+            color: HabitUiConstants.estimatedTimeColor,
+          ),
+        ),
+      ],
+    );
+  }
 
-                          // Estimated time
-                          if (widget.habit.estimatedTime != null && !widget.isMiniLayout)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  HabitUiConstants.estimatedTimeIcon,
-                                  size: AppTheme.iconSizeSmall,
-                                  color: HabitUiConstants.estimatedTimeColor,
-                                ),
-                                Text(
-                                  SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
-                                  style: AppTheme.bodySmall.copyWith(
-                                    color: HabitUiConstants.estimatedTimeColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
+  // Helper method to build tags widget
+  Widget _buildTagsWidget() {
+    if (widget.habit.tags.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-            // Estimated time and reminder icon
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Label.multipleColored(
+      icon: TagUiConstants.tagIcon,
+      color: Colors.grey, // Default color for icon and commas
+      values: widget.habit.tags.map((tag) => tag.name).toList(),
+      colors: widget.habit.tags
+          .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+          .toList(),
+      mini: true,
+    );
+  }
+
+  Widget _buildHabitInfo() {
+    return Expanded(
+      child: Row(
+        children: [
+          Icon(HabitUiConstants.habitIcon, size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge),
+          SizedBox(width: widget.isDense ? AppTheme.sizeSmall : AppTheme.sizeSmall),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
+                // Habit title
+                Text(
+                  widget.habit.name,
+                  style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+
+                // Tags and metadata section
+                if (!widget.isMiniLayout && (widget.habit.tags.isNotEmpty || widget.habit.estimatedTime != null))
                   Padding(
-                    padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
-                    child: Tooltip(
-                      message: _getReminderTooltip(),
-                      child: Icon(
-                        Icons.notifications,
-                        size: AppTheme.iconSizeSmall,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                    padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
+                    child: Wrap(
+                      spacing: AppTheme.sizeSmall,
+                      runSpacing: AppTheme.sizeSmall / 2,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _buildTagsWidget(),
+                        _buildEstimatedTimeWidget(),
+                      ],
                     ),
                   ),
               ],
             ),
-          ],
-        ),
-      );
+          ),
+
+          // Reminder icon section
+          if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
+            Padding(
+              padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+              child: Tooltip(
+                message: _getReminderTooltip(),
+                child: Icon(
+                  Icons.notifications,
+                  size: AppTheme.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 
   String _getReminderTooltip() {
     if (!widget.habit.hasReminder || widget.habit.reminderTime == null) {
@@ -305,17 +374,10 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime referenceDate) {
-    final isDisabled = date.isAfter(DateTime.now()) ||
-        (widget.habit.archivedDate != null && date.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
-
+    final isDisabled = _isDateDisabled(date);
     final localDate = DateTimeHelper.toLocalDateTime(date);
     final isToday = DateTimeHelper.isSameDay(localDate, DateTime.now());
-
-    bool hasRecord = _habitRecords!.items
-        .any((record) => DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), localDate));
-    HabitRecordListItem? recordForDay = hasRecord
-        ? _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, localDate))
-        : null;
+    final hasRecord = _hasRecordForDate(date);
 
     return SizedBox(
       width: HabitUiConstants.calendarDaySize,
@@ -339,23 +401,11 @@ class _HabitCardState extends State<HabitCard> {
           IconButton(
             padding: EdgeInsets.zero,
             constraints: BoxConstraints(minWidth: AppTheme.calendarIconSize, minHeight: AppTheme.calendarIconSize),
-            onPressed: isDisabled
-                ? null
-                : () async {
-                    if (hasRecord) {
-                      await _deleteHabitRecord(recordForDay!.id);
-                    } else {
-                      await _createHabitRecord(widget.habit.id, date);
-                    }
-                  },
+            onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
             icon: Icon(
               hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
               size: HabitUiConstants.calendarIconSize,
-              color: isDisabled
-                  ? AppTheme.textColor.withValues(alpha: 0.3)
-                  : hasRecord
-                      ? HabitUiConstants.completedColor
-                      : HabitUiConstants.inCompletedColor,
+              color: _getRecordStateColor(hasRecord, isDisabled),
             ),
           ),
         ],
@@ -372,26 +422,13 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     final today = DateTime.now();
-    final isDisabled =
-        widget.habit.archivedDate != null && today.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!));
-
-    bool hasRecordToday = _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, today));
+    final isDisabled = _isDateDisabled(today);
+    final hasRecordToday = _hasRecordForDate(today);
 
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(minWidth: AppTheme.buttonSizeSmall, minHeight: AppTheme.buttonSizeSmall),
-      onPressed: isDisabled
-          ? null
-          : () async {
-              if (hasRecordToday) {
-                HabitRecordListItem? recordToday =
-                    _habitRecords!.items.firstWhere((record) => DateTimeHelper.isSameDay(record.date, today));
-                await _deleteHabitRecord(recordToday.id);
-              } else {
-                await _createHabitRecord(widget.habit.id, today);
-                _soundPlayer.play(SharedSounds.done);
-              }
-            },
+      onPressed: isDisabled ? null : _onCheckboxTap,
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,
         size: AppTheme.fontSizeLarge,
