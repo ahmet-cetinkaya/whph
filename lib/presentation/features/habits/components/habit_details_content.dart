@@ -633,7 +633,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             ],
           ),
 
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
 
           // Tags, Estimated Time, and Reminder Table
           if (_isFieldVisible(keyTags) ||
@@ -651,7 +651,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Description Table
@@ -674,7 +674,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Optional field chips moved to just above Records header
@@ -684,7 +684,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Records and Statistics Section

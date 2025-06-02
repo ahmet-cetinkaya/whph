@@ -132,8 +132,8 @@ class _HabitCardState extends State<HabitCard> {
   @override
   Widget build(BuildContext context) {
     final cardPadding = widget.isDense
-        ? const EdgeInsets.symmetric(horizontal: AppTheme.size3XSmall, vertical: AppTheme.sizeXSmall)
-        : const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall);
+        ? const EdgeInsets.symmetric(horizontal: AppTheme.size3XSmall, vertical: 0)
+        : const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall);
 
     return GestureDetector(
       onTap: widget.onOpenDetails,
@@ -177,7 +177,7 @@ class _HabitCardState extends State<HabitCard> {
         child: Row(
           children: [
             Icon(HabitUiConstants.habitIcon, size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge),
-            SizedBox(width: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall),
+            SizedBox(width: widget.isDense ? AppTheme.sizeSmall : AppTheme.sizeSmall),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,10 +194,10 @@ class _HabitCardState extends State<HabitCard> {
                   // Tags and metadata section
                   if (!widget.isMiniLayout && (widget.habit.tags.isNotEmpty || widget.habit.estimatedTime != null))
                     Padding(
-                      padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeXSmall),
+                      padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
                       child: Wrap(
-                        spacing: AppTheme.sizeXSmall,
-                        runSpacing: AppTheme.sizeXSmall / 2,
+                        spacing: AppTheme.sizeSmall,
+                        runSpacing: AppTheme.sizeSmall / 2,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           // Tags
@@ -245,7 +245,7 @@ class _HabitCardState extends State<HabitCard> {
               children: [
                 if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
                   Padding(
-                    padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
+                    padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
                     child: Tooltip(
                       message: _getReminderTooltip(),
                       child: Icon(

@@ -381,7 +381,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
 
           // Details Table
           DetailTable(
@@ -429,7 +429,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
             Wrap(
               spacing: 4,
               runSpacing: 4,

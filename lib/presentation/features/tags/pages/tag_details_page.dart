@@ -171,7 +171,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.sizeXSmall,
+                                  vertical: AppTheme.size2XSmall,
                                 ),
                                 child: Row(
                                   children: [
@@ -214,7 +214,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.sizeXSmall,
+                                  vertical: AppTheme.size2XSmall,
                                 ),
                                 child: Row(
                                   children: [
@@ -281,7 +281,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.sizeXSmall,
+                                  vertical: AppTheme.size2XSmall,
                                 ),
                                 child: Row(
                                   children: [

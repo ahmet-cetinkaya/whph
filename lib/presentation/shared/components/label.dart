@@ -84,14 +84,14 @@ class Label extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: AppTheme.sizeXSmall / 1.6),
+          padding: const EdgeInsets.only(top: AppTheme.size2XSmall / 1.6),
           child: Icon(
             icon,
             size: iconSize,
             color: defaultColor,
           ),
         ),
-        const SizedBox(width: AppTheme.sizeXSmall),
+        const SizedBox(width: AppTheme.size2XSmall),
         Flexible(
           child: texts != null && valueColors != null
               ? _buildRichText(context, baseTextStyle, defaultColor)

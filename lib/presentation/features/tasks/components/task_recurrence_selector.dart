@@ -294,7 +294,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                 return FilterChip(
                   label: Text(_getWeekDayLabel(day)),
                   labelStyle: TextStyle(fontSize: 13),
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
                   selected: isSelected,
                   onSelected: (selected) {
                     setState(() {

@@ -207,7 +207,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                                   "${_translationService.translate(AppUsageTranslationKeys.patternLabel)}:",
                                   style: AppTheme.bodySmall.copyWith(color: Colors.grey),
                                 ),
-                                const SizedBox(width: AppTheme.sizeXSmall),
+                                const SizedBox(width: AppTheme.size2XSmall),
                                 Expanded(
                                   child: Text(
                                     rule.pattern,

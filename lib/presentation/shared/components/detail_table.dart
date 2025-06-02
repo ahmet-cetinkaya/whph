@@ -39,14 +39,14 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.sizeXSmall),
+          padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
           child: Container(
             decoration: BoxDecoration(
               color: AppTheme.surface1,
               borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeXSmall),
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size2XSmall),
               // Ensure minimum height for each row
               child: !forceVertical
                   ? SizedBox(
@@ -74,7 +74,8 @@ class DetailTable extends StatelessWidget {
           _buildLabel(context, data),
           if (data.hintText != null)
             Padding(
-              padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.sizeXSmall, top: AppTheme.sizeXSmall),
+              padding:
+                  const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall, top: AppTheme.size2XSmall),
               child: Text(
                 data.hintText!,
                 style: AppTheme.labelSmall.copyWith(
@@ -82,9 +83,9 @@ class DetailTable extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
           Padding(
-            padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.sizeXSmall),
+            padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall),
             child: _buildContent(context, data),
           ),
         ],
@@ -115,7 +116,7 @@ class DetailTable extends StatelessWidget {
           size: AppTheme.iconSizeSmall,
           color: AppTheme.lightTextColor.withValues(alpha: 0.8),
         ),
-        const SizedBox(width: AppTheme.sizeXSmall),
+        const SizedBox(width: AppTheme.size2XSmall),
         Flexible(
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -131,7 +132,7 @@ class DetailTable extends StatelessWidget {
                 ),
               ),
               if (data.tooltip != null) ...[
-                const SizedBox(width: AppTheme.sizeXSmall),
+                const SizedBox(width: AppTheme.size2XSmall),
                 Tooltip(
                   message: data.tooltip!,
                   child: Icon(

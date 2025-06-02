@@ -191,7 +191,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 Padding(
                   padding: const EdgeInsets.only(
                     left: AppTheme.sizeSmall,
-                    bottom: AppTheme.sizeXSmall,
+                    bottom: AppTheme.size2XSmall,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,7 +246,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 Padding(
                   padding: const EdgeInsets.only(
                     left: AppTheme.sizeSmall,
-                    bottom: AppTheme.sizeXSmall,
+                    bottom: AppTheme.size2XSmall,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -332,7 +332,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 Padding(
                   padding: const EdgeInsets.only(
                     left: AppTheme.sizeSmall,
-                    bottom: AppTheme.sizeXSmall,
+                    bottom: AppTheme.size2XSmall,
                   ),
                   child: Row(
                     children: [

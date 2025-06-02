@@ -107,7 +107,7 @@ class _SearchFilterState extends State<SearchFilter> {
                 isDense: widget.isDense,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: AppTheme.sizeSmall,
-                  vertical: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
+                  vertical: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall,
                 ),
                 hintText: widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
                 hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),

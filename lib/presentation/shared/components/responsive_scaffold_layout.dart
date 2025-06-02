@@ -195,7 +195,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                   // Existing spacing for larger screens
                   if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeLarge),
                   const AppLogo(width: 32, height: 32),
-                  const SizedBox(width: AppTheme.sizeXSmall),
+                  const SizedBox(width: AppTheme.size2XSmall),
                 ],
                 Flexible(
                   child: Text(
@@ -261,7 +261,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
                 children: [
                   ...topNavItems.map((navItem) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
+                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
                         child: _buildNavItem(navItem),
                       )),
                 ],
@@ -272,7 +272,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               const Divider(height: 1),
               const SizedBox(height: AppTheme.sizeSmall),
               ...bottomNavItems.map((navItem) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall),
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
                     child: _buildNavItem(navItem),
                   )),
               const SizedBox(height: AppTheme.sizeLarge),
@@ -434,7 +434,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             if (bottomItems.isNotEmpty) ...[
               const SizedBox(height: AppTheme.sizeSmall),
               const Divider(),
-              const SizedBox(height: AppTheme.sizeXSmall),
+              const SizedBox(height: AppTheme.size2XSmall),
             ],
 
             // Bottom navigation items
