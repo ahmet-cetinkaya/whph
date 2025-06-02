@@ -314,7 +314,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     filterByDeadlineEndDate: DateTime.now().add(const Duration(days: 1)),
                     filterDateOr: true,
                     search: _taskSearchQuery,
-                    pageSize: 10,
+                    pageSize: 5,
                     onClickTask: (task) => _openTaskDetails(context, task.id),
                     enableReordering: _taskSortConfig.useCustomOrder,
                     showDoneOverlayWhenEmpty: true,
