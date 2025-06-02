@@ -188,12 +188,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       ),
     );
 
-    // If task was deleted, clear selection and refresh
+    // If task was deleted, select next task and refresh
     if (wasDeleted == true && _selectedTask?.id == taskId) {
       setState(() {
         _selectedTask = null;
       });
       _onTasksChanged();
+      _selectNextTask();
       return;
     }
 
