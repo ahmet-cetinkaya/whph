@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:whph/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
@@ -326,6 +327,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                     iconSize: AppTheme.iconSizeMedium,
                     iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
                     expandedWidth: 200,
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
 
                 // Sort button
