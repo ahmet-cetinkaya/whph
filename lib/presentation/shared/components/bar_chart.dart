@@ -65,10 +65,10 @@ class BarChart extends StatelessWidget {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+                      padding: const EdgeInsets.all(AppTheme.size2XSmall),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall / 2),
+                            horizontal: AppTheme.sizeSmall, vertical: AppTheme.size2XSmall / 2),
                         decoration: BoxDecoration(
                           color: AppTheme.surface2,
                           borderRadius: BorderRadius.circular(6),
@@ -96,7 +96,7 @@ class BarChart extends StatelessWidget {
                                   _buildTitle(Colors.white),
                                   if (additionalWidget != null)
                                     Padding(
-                                      padding: const EdgeInsets.only(left: AppTheme.sizeXSmall),
+                                      padding: const EdgeInsets.only(left: AppTheme.size2XSmall),
                                       child: additionalWidget!,
                                     ),
                                 ],

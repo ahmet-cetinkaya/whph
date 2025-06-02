@@ -22,7 +22,7 @@ class TagCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall;
+    final spacing = isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
     final padding = isDense
         ? const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall)
         : const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: AppTheme.sizeSmall);
@@ -33,7 +33,7 @@ class TagCard extends StatelessWidget {
       // Card margin removed to match TaskCard
       child: InkWell(
         onTap: onOpenDetails,
-        borderRadius: BorderRadius.circular(AppTheme.sizeXSmall),
+        borderRadius: BorderRadius.circular(AppTheme.size2XSmall),
         child: Padding(
           padding: padding,
           child: Column(
@@ -61,7 +61,7 @@ class TagCard extends StatelessWidget {
           size: isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
           color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : AppTheme.secondaryTextColor,
         ),
-        SizedBox(width: isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall),
+        SizedBox(width: isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
         Expanded(
           child: Text(
             tag.name,
@@ -94,8 +94,8 @@ class TagCard extends StatelessWidget {
 
   Widget _buildRelatedTags() {
     return Wrap(
-      spacing: AppTheme.sizeXSmall,
-      runSpacing: AppTheme.size2XSmall,
+      spacing: AppTheme.size2XSmall,
+      runSpacing: AppTheme.size3XSmall,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Label.multipleColored(

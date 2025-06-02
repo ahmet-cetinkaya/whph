@@ -227,7 +227,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     style: AppTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppTheme.sizeXSmall),
+                  const SizedBox(height: AppTheme.size2XSmall),
                   Text(
                     isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
                     style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),

@@ -59,7 +59,7 @@ class SupportDialog extends StatelessWidget {
                           color: AppTheme.primaryColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+                        padding: const EdgeInsets.all(AppTheme.size2XSmall),
                         child: const Icon(
                           Icons.favorite,
                           size: AppTheme.iconSizeMedium,

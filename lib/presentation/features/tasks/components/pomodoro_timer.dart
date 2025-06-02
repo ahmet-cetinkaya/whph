@@ -736,7 +736,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             ),
           ],
         ),
-        const SizedBox(height: AppTheme.sizeXSmall),
+        const SizedBox(height: AppTheme.size2XSmall),
       ],
     );
   }
@@ -766,7 +766,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             ),
           ],
         ),
-        const SizedBox(height: AppTheme.sizeXSmall),
+        const SizedBox(height: AppTheme.size2XSmall),
       ],
     );
   }

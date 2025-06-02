@@ -313,7 +313,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
 
           // Optional fields (Tags)
           if (_isFieldVisible(keyTags)) ...[
@@ -321,7 +321,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
               rowData: [_buildTagsSection()],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Optional field chips at the bottom
@@ -331,14 +331,14 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
               runSpacing: 4,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Divider
           const Divider(thickness: 1, color: AppTheme.dividerColor),
 
           // Note Content (always visible)
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
           MarkdownEditor(
             controller: _contentController,
             onChanged: (_) => _saveNote(),

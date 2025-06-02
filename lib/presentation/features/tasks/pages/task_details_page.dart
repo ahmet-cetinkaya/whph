@@ -201,7 +201,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppTheme.sizeSmall,
-                  vertical: AppTheme.sizeXSmall,
+                  vertical: AppTheme.size2XSmall,
                 ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,

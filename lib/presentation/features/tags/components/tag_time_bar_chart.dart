@@ -141,7 +141,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.sizeXSmall),
+      padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
       child: BarChart(
         title: item.name,
         value: item.duration.toDouble(),

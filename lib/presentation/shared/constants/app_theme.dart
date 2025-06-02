@@ -136,9 +136,9 @@ class AppTheme {
   );
 
   // Sizes
-  static const double size2XSmall = 2.0;
-  static const double sizeXSmall = 4.0;
-  static const double size3XSmall = 6.0;
+  static const double size3XSmall = 2.0;
+  static const double size2XSmall = 4.0;
+  static const double sizeXSmall = 6.0;
   static const double sizeSmall = 8.0;
   static const double size2Small = 10.0;
   static const double sizeMedium = 12.0;
@@ -242,7 +242,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: sizeSmall, vertical: sizeXSmall),
+        contentPadding: EdgeInsets.symmetric(horizontal: sizeSmall, vertical: size2XSmall),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(containerBorderRadius),
           borderSide: BorderSide.none,
@@ -268,7 +268,7 @@ class AppTheme {
       thickness: 1,
     ),
     chipTheme: ChipThemeData(
-      labelPadding: EdgeInsets.all(sizeXSmall),
+      labelPadding: EdgeInsets.all(size2XSmall),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       side: BorderSide.none,
     ),

@@ -206,7 +206,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
               });
             },
           ),
-          const SizedBox(width: AppTheme.sizeXSmall),
+          const SizedBox(width: AppTheme.size2XSmall),
           Text(
             _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
             style: Theme.of(context).textTheme.bodyMedium,
@@ -234,7 +234,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                     _appUsageColor,
                     _formatDateRange(_startDate, _endDate),
                   ),
-                  const SizedBox(height: AppTheme.sizeXSmall),
+                  const SizedBox(height: AppTheme.size2XSmall),
                   _buildLegendItem(
                     _appUsageColor.withValues(alpha: 0.5),
                     _formatDateRange(_compareStartDate!, _compareEndDate!),
@@ -315,7 +315,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
           _translationService.translate(SharedTranslationKeys.dailyUsage),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: AppTheme.sizeXSmall),
+        const SizedBox(height: AppTheme.size2XSmall),
         Text(
           _translationService.translate(SharedTranslationKeys.dailyUsageDescription),
           style: Theme.of(context).textTheme.bodySmall,
@@ -441,7 +441,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
           _translationService.translate(SharedTranslationKeys.hourlyUsage),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: AppTheme.sizeXSmall),
+        const SizedBox(height: AppTheme.size2XSmall),
         Text(
           _translationService.translate(SharedTranslationKeys.hourlyUsageDescription),
           style: Theme.of(context).textTheme.bodySmall,

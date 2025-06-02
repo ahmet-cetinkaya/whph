@@ -583,7 +583,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.sizeXSmall),
+          const SizedBox(height: AppTheme.size2XSmall),
 
           // Display optional fields section
           if (_visibleOptionalFields.isNotEmpty) ...[
@@ -605,7 +605,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           // Description section if enabled (handled separately due to its different layout)
           if (_visibleOptionalFields.contains(keyDescription)) ...[
             _buildDescriptionSection(),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Only show chip section if we have available fields to add

@@ -308,7 +308,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           if (_visibleOptionalFields.isNotEmpty ||
               _tag!.isArchived ||
               (_tagTags != null && _tagTags!.items.isNotEmpty)) ...[
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
             DetailTable(
               rowData: [
                 if (_visibleOptionalFields.contains(keyColor))
@@ -362,12 +362,12 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
               ],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Only show chip section if we have available fields to add
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeXSmall),
+            const SizedBox(height: AppTheme.size2XSmall),
             Wrap(
               spacing: 4,
               runSpacing: 4,

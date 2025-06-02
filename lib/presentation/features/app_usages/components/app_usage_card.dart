@@ -54,8 +54,8 @@ class AppUsageCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minHeight: AppTheme.size2XLarge),
       child: Wrap(
-        spacing: AppTheme.sizeXSmall,
-        runSpacing: AppTheme.size2XSmall,
+        spacing: AppTheme.size2XSmall,
+        runSpacing: AppTheme.size3XSmall,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(

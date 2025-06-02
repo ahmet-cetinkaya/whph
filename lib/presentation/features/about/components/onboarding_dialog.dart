@@ -70,7 +70,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
           titleKey: AboutTranslationKeys.onboardingTitle7,
           descriptionKey: AboutTranslationKeys.onboardingDescription7,
           extraWidget: (context) => Padding(
-            padding: const EdgeInsets.only(top: AppTheme.sizeXSmall),
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: OutlinedButton.icon(
               onPressed: () => _showPermissionsPage(context),
               icon: const Icon(Icons.lock_open),

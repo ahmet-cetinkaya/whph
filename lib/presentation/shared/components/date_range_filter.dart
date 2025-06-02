@@ -208,8 +208,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           hintText: _translationService.translate(SharedTranslationKeys.dateFormatHint),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeSmall),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.size2XSmall, vertical: AppTheme.sizeSmall),
                           isDense: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -245,8 +245,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           hintText: _translationService.translate(SharedTranslationKeys.dateFormatHint),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeSmall),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.size2XSmall, vertical: AppTheme.sizeSmall),
                           isDense: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -282,8 +282,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
                   margin: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
                   child: Wrap(
                     alignment: WrapAlignment.center,
-                    spacing: AppTheme.sizeXSmall,
-                    runSpacing: AppTheme.sizeXSmall,
+                    spacing: AppTheme.size2XSmall,
+                    runSpacing: AppTheme.size2XSmall,
                     children: [
                       _buildSimpleQuickOption(
                         context,
@@ -409,7 +409,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(
             horizontal: AppTheme.sizeSmall,
-            vertical: AppTheme.sizeXSmall,
+            vertical: AppTheme.size2XSmall,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -523,14 +523,14 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           onPressed: () => _showDatePicker(context),
         ),
         if (hasDateFilter) ...[
-          const SizedBox(width: AppTheme.sizeXSmall),
+          const SizedBox(width: AppTheme.size2XSmall),
           Text(
             _getDateRangeText(),
             style: AppTheme.bodySmall.copyWith(
               color: primaryColor,
             ),
           ),
-          const SizedBox(width: AppTheme.sizeXSmall),
+          const SizedBox(width: AppTheme.size2XSmall),
           FilterIconButton(
             icon: Icons.close,
             iconSize: AppTheme.iconSizeSmall,

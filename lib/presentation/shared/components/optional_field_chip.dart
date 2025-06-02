@@ -26,7 +26,7 @@ class OptionalFieldChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(label),
-          const SizedBox(width: AppTheme.sizeXSmall),
+          const SizedBox(width: AppTheme.size2XSmall),
           Icon(Icons.add, size: AppTheme.iconSizeSmall),
         ],
       ),
@@ -34,7 +34,7 @@ class OptionalFieldChip extends StatelessWidget {
         icon,
         size: AppTheme.iconSizeSmall,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeXSmall, vertical: AppTheme.sizeXSmall),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall, vertical: AppTheme.size2XSmall),
       selected: selected,
       onSelected: onSelected,
       backgroundColor: backgroundColor,
