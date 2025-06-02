@@ -46,4 +46,8 @@ class SharedUiConstants {
     }
     return '$hoursCount${translationService.translate(SharedTranslationKeys.hours)} $remainingMinutes${translationService.translate(SharedTranslationKeys.minutes)}';
   }
+
+  // Debounce durations
+  static const Duration contentSaveDebounceTime = Duration(milliseconds: 300);
+  static const Duration searchDebounceTime = Duration(milliseconds: 300);
 }

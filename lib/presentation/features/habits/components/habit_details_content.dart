@@ -95,6 +95,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChanged);
     _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChanged);
 
+    // Notify parent about name changes before disposing
+    if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
+      widget.onNameUpdated!(_nameController.text);
+    }
+
     _nameController.dispose();
     _descriptionController.dispose();
     _debounce?.cancel();
@@ -375,21 +380,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     return false;
   }
 
-  // Save habit with debounce for text inputs
-  Future<void> _saveHabit() async {
+  // Helper methods for repeated patterns
+  void _forceImmediateUpdate() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      await _saveHabitImmediately();
-    });
   }
 
-  // Save habit immediately without debounce
-  Future<void> _saveHabitImmediately() async {
-    if (!mounted) return;
-
+  SaveHabitCommand _buildSaveCommand() {
     // Force update the reminderDays list from the current string value
-    // This ensures we're using the latest value
     final reminderDaysList = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
 
     // If reminder is enabled but no days are selected, select all days by default
@@ -415,7 +412,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     // Get the final reminder days list to send in the command
     final List<int> reminderDaysToSend = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
 
-    final command = SaveHabitCommand(
+    return SaveHabitCommand(
       id: widget.habitId,
       name: _nameController.text,
       description: _descriptionController.text,
@@ -427,13 +424,40 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       targetFrequency: _habit!.targetFrequency,
       periodDays: _habit!.periodDays,
     );
+  }
+
+  Future<void> _executeSaveCommand() async {
+    await _mediator.send(_buildSaveCommand());
+  }
+
+  void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
+    _forceImmediateUpdate();
+    _saveHabit();
+    onUpdate?.call();
+  }
+
+  // Event handler methods
+  void _onNameChanged(String value) {
+    _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
+  }
+
+  // Save habit with debounce for text inputs
+  Future<void> _saveHabit() async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () async {
+      await _saveHabitImmediately();
+    });
+  }
+
+  // Save habit immediately without debounce
+  Future<void> _saveHabitImmediately() async {
+    if (!mounted) return;
 
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.savingDetailsError),
-      operation: () async {
-        await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
-      },
+      operation: _executeSaveCommand,
       onSuccess: () {
         // Notify that habit was updated
         _habitsService.notifyHabitUpdated(widget.habitId);
@@ -615,10 +639,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 child: TextFormField(
                   controller: _nameController,
                   maxLines: null,
-                  onChanged: (value) {
-                    _saveHabit();
-                    widget.onNameUpdated?.call(value);
-                  },
+                  onChanged: _onNameChanged,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

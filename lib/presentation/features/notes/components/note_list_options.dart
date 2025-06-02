@@ -19,6 +19,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'dart:async';
 
 class NoteListOptions extends PersistentListOptionsBase {
@@ -198,8 +199,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
       return;
     }
 
-    final debounceTime = query.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500);
-    searchDebounce = Timer(debounceTime, () {
+    searchDebounce = Timer(SharedUiConstants.searchDebounceTime, () {
       widget.onSearchChange?.call(query);
       handleFilterChange();
     });

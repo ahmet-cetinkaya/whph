@@ -67,6 +67,12 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   @override
   void dispose() {
     _appUsagesService.onAppUsageUpdated.removeListener(_handleAppUsageUpdate);
+
+    // Notify parent about name changes before disposing
+    if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
+      widget.onNameUpdated!(_nameController.text);
+    }
+
     _nameController.dispose();
     _debounce?.cancel();
     super.dispose();
@@ -110,26 +116,46 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     );
   }
 
+  // Helper methods for repeated patterns
+  void _forceImmediateUpdate() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  }
+
+  SaveAppUsageCommand _buildSaveCommand() {
+    return SaveAppUsageCommand(
+      id: widget.id,
+      name: _appUsage!.name,
+      displayName: _nameController.text,
+      color: _appUsage!.color,
+      deviceName: _appUsage!.deviceName,
+    );
+  }
+
+  Future<void> _executeSaveCommand() async {
+    await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(_buildSaveCommand());
+  }
+
+  void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
+    _forceImmediateUpdate();
+    _saveAppUsage();
+    onUpdate?.call();
+  }
+
+  // Event handler methods
+  void _onNameChanged(String value) {
+    _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
+  }
+
   Future<void> _saveAppUsage() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+    _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () async {
       if (!mounted) return;
-
-      final command = SaveAppUsageCommand(
-        id: widget.id,
-        name: _appUsage!.name,
-        displayName: _nameController.text,
-        color: _appUsage!.color,
-        deviceName: _appUsage!.deviceName,
-      );
 
       await AsyncErrorHandler.executeVoid(
         context: context,
         errorMessage: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
-        operation: () async {
-          await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(command);
-        },
+        operation: _executeSaveCommand,
         onSuccess: () {
           _appUsagesService.notifyAppUsageUpdated(widget.id);
           widget.onAppUsageUpdated?.call();
@@ -366,11 +392,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           TextFormField(
             controller: _nameController,
             maxLines: null,
-            onChanged: (value) {
-              // Simply trigger the update and notify listeners
-              _saveAppUsage();
-              widget.onNameUpdated?.call(value);
-            },
+            onChanged: _onNameChanged,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -22,6 +22,7 @@ import 'package:whph/presentation/shared/models/sort_option_with_translation_key
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 
 class TaskListOptions extends PersistentListOptionsBase {
   /// Selected tag IDs for filtering
@@ -283,7 +284,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
 
       // Keep monitoring for state changes to update the UI when parent updates
       searchStateCheckTimer?.cancel();
-      searchStateCheckTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      searchStateCheckTimer = Timer.periodic(SharedUiConstants.searchDebounceTime, (timer) {
         if (!mounted) {
           timer.cancel();
           return;
