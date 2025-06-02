@@ -62,6 +62,11 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   @override
   void dispose() {
+    // Notify parent about name changes before disposing
+    if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
+      widget.onNameUpdated!(_nameController.text);
+    }
+
     _nameController.dispose();
     _debounce?.cancel();
     super.dispose();
@@ -229,25 +234,46 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     );
   }
 
+  // Helper methods for repeated patterns
+  void _forceImmediateUpdate() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  }
+
+  SaveTagCommand _buildSaveCommand() {
+    return SaveTagCommand(
+      id: widget.tagId,
+      name: _nameController.text,
+      color: _tag!.color,
+      isArchived: _tag!.isArchived,
+    );
+  }
+
+  Future<void> _executeSaveCommand() async {
+    await _mediator.send(_buildSaveCommand());
+  }
+
+  void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
+    _forceImmediateUpdate();
+    _saveTag();
+    onUpdate?.call();
+  }
+
+  // Event handler methods
+  void _onNameChanged(String value) {
+    _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
+  }
+
   Future<void> _saveTag() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     // Increase debounce time to give user more time to type
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+    _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () async {
       if (!mounted) return;
 
       await AsyncErrorHandler.executeVoid(
         context: context,
         errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
-        operation: () async {
-          final command = SaveTagCommand(
-            id: widget.tagId,
-            name: _nameController.text,
-            color: _tag!.color,
-            isArchived: _tag!.isArchived,
-          );
-          await _mediator.send(command);
-        },
+        operation: _executeSaveCommand,
         onSuccess: () {
           widget.onTagUpdated?.call();
           _tagsService.notifyTagUpdated(widget.tagId);
@@ -289,10 +315,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           TextFormField(
             controller: _nameController,
             maxLines: null,
-            onChanged: (value) {
-              _saveTag();
-              widget.onNameUpdated?.call(value);
-            },
+            onChanged: _onNameChanged,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

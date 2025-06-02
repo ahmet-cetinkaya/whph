@@ -21,6 +21,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/constants/shared_ui_constants.dart';
 import 'dart:async';
 
 class TagListOptions extends PersistentListOptionsBase {
@@ -227,10 +228,7 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
       return;
     }
 
-    // For single character searches, use a shorter debounce time
-    final debounceTime = query.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500);
-
-    searchDebounce = Timer(debounceTime, () {
+    searchDebounce = Timer(SharedUiConstants.searchDebounceTime, () {
       widget.onSearchChange?.call(query);
       handleFilterChange();
     });

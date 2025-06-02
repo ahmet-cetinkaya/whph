@@ -64,6 +64,12 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   @override
   void dispose() {
     _notesService.onNoteUpdated.removeListener(_handleNoteUpdated);
+
+    // Notify parent about title changes before disposing
+    if (widget.onTitleUpdated != null && _titleController.text.isNotEmpty) {
+      widget.onTitleUpdated!(_titleController.text);
+    }
+
     _titleController.dispose();
     _contentController.dispose();
     _debounce?.cancel();
@@ -178,24 +184,48 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     processTags();
   }
 
+  // Helper methods for repeated patterns
+  void _forceImmediateUpdate() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  }
+
+  SaveNoteCommand _buildSaveCommand() {
+    return SaveNoteCommand(
+      id: widget.noteId,
+      title: _titleController.text,
+      content: _contentController.text,
+    );
+  }
+
+  Future<void> _executeSaveCommand() async {
+    await _mediator.send(_buildSaveCommand());
+  }
+
+  void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
+    _forceImmediateUpdate();
+    _saveNote();
+    onUpdate?.call();
+  }
+
+  // Event handler methods
+  void _onTitleChanged(String value) {
+    _handleFieldChange(value, () => widget.onTitleUpdated?.call(value));
+  }
+
+  void _onContentChanged(String value) {
+    _handleFieldChange<String>(value, null);
+  }
+
   Future<void> _saveNote() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () async {
       if (!mounted) return;
 
       await AsyncErrorHandler.executeVoid(
         context: context,
         errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
-        operation: () async {
-          final command = SaveNoteCommand(
-            id: widget.noteId,
-            title: _titleController.text,
-            content: _contentController.text,
-          );
-
-          await _mediator.send(command);
-        },
+        operation: _executeSaveCommand,
         onSuccess: () {
           // Notify the app that a note was updated
           _notesService.notifyNoteUpdated(widget.noteId);
@@ -299,10 +329,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           TextFormField(
             controller: _titleController,
             maxLines: null,
-            onChanged: (value) {
-              _saveNote();
-              widget.onTitleUpdated?.call(value);
-            },
+            onChanged: _onTitleChanged,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -341,7 +368,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           const SizedBox(height: AppTheme.size2XSmall),
           MarkdownEditor(
             controller: _contentController,
-            onChanged: (_) => _saveNote(),
+            onChanged: _onContentChanged,
             style: AppTheme.bodyMedium,
           ),
         ],

@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/shared/components/markdown_editor.dart';
 import 'package:whph/application/features/tasks/commands/add_task_tag_command.dart';
@@ -175,10 +177,50 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     await _getInitialData();
   }
 
+  /// Check if there are any unsaved changes by comparing form values with task data
+  bool _hasUnsavedChanges() {
+    if (_task == null) return false;
+
+    // Check if title has changed
+    if (_titleController.text != _task!.title) return true;
+
+    // Check if description has changed
+    final currentDescription = _task!.description ?? '';
+    if (_descriptionController.text != currentDescription) return true;
+
+    // Check if planned date has changed
+    final currentPlannedDate = _task!.plannedDate != null ? DateTimeHelper.formatDateTime(_task!.plannedDate) : '';
+    if (_plannedDateController.text != currentPlannedDate) return true;
+
+    // Check if deadline date has changed
+    final currentDeadlineDate = _task!.deadlineDate != null ? DateTimeHelper.formatDateTime(_task!.deadlineDate) : '';
+    if (_deadlineDateController.text != currentDeadlineDate) return true;
+
+    return false;
+  }
+
   @override
   void dispose() {
+    // If there's a pending debounced update, save immediately before disposing
+    if (_debounce?.isActive ?? false) {
+      _debounce!.cancel();
+      // Save immediately without debounce when disposing
+      // We can't await in dispose, but we can start the save operation
+      _saveTaskImmediately();
+    } else if (_hasUnsavedChanges()) {
+      // Check if there are any unsaved changes and save them
+      _saveTaskImmediately();
+    }
+
+    // Ensure title changes are notified even on dispose
+    if (_task != null && _titleController.text != _task!.title) {
+      widget.onTitleUpdated?.call(_titleController.text);
+    }
+
     _titleController.dispose();
-    _debounce?.cancel();
+    _plannedDateController.dispose();
+    _deadlineDateController.dispose();
+    _descriptionController.dispose();
     _tasksService.onTaskUpdated.removeListener(_getTask);
     super.dispose();
   }
@@ -306,18 +348,49 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _saveTaskImmediately() async {
     if (!mounted || _task == null) return;
 
-    // Make sure dates are properly converted to UTC using DateTimeHelper
-    DateTime? plannedDate = _task!.plannedDate != null ? DateTimeHelper.toUtcDateTime(_task!.plannedDate!) : null;
+    final saveCommand = _buildSaveCommand();
+    await _executeSaveCommand(saveCommand);
+  }
 
-    DateTime? deadlineDate = _task!.deadlineDate != null ? DateTimeHelper.toUtcDateTime(_task!.deadlineDate!) : null;
+  /// Helper method to force immediate update without debounce
+  void _forceImmediateUpdate() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _saveTaskImmediately();
+  }
 
-    DateTime? recurrenceStartDate =
+  /// Helper method to parse dates from controllers with error handling
+  DateTime? _parseDateFromController(TextEditingController controller) {
+    if (controller.text.isEmpty) return null;
+
+    try {
+      try {
+        return DateTimeHelper.toUtcDateTime(DateTime.parse(controller.text));
+      } catch (e) {
+        final parsedDate = _parseAlternativeDateTime(controller.text);
+        if (parsedDate != null) {
+          return DateTimeHelper.toUtcDateTime(parsedDate);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error parsing date: ${controller.text}, Error: $e');
+      }
+    }
+    return null;
+  }
+
+  /// Helper method to build save command with current form data
+  SaveTaskCommand _buildSaveCommand() {
+    final plannedDate = _parseDateFromController(_plannedDateController);
+    final deadlineDate = _parseDateFromController(_deadlineDateController);
+
+    final recurrenceStartDate =
         _task!.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceStartDate!) : null;
 
-    DateTime? recurrenceEndDate =
+    final recurrenceEndDate =
         _task!.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceEndDate!) : null;
 
-    final saveCommand = SaveTaskCommand(
+    return SaveTaskCommand(
       id: _task!.id,
       title: _titleController.text,
       description: _descriptionController.text,
@@ -337,7 +410,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       recurrenceEndDate: recurrenceEndDate,
       recurrenceCount: _task!.recurrenceCount,
     );
+  }
 
+  /// Helper method to execute save command
+  Future<void> _executeSaveCommand(SaveTaskCommand saveCommand) async {
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
@@ -345,9 +421,86 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       onSuccess: (result) {
         _tasksService.notifyTaskUpdated(result.id);
         widget.onTaskUpdated?.call();
-        _getTask(); // Reload the task to verify the changes were saved
+        // Removed _getTask() call to prevent race condition with title editing
+        // The task will be reloaded automatically via the onTaskUpdated listener
       },
     );
+  }
+
+  /// Generic event handler for field changes that require immediate save
+  void _handleFieldChange<T>(T value, void Function(T) updateField) {
+    if (!mounted) return;
+    setState(() {
+      updateField(value);
+    });
+    _forceImmediateUpdate();
+  }
+
+  /// Event handler for priority changes
+  void _onPriorityChanged(EisenhowerPriority? value) {
+    _handleFieldChange(value, (val) => _task!.priority = val);
+  }
+
+  /// Event handler for estimated time changes
+  void _onEstimatedTimeChanged(int value) {
+    _handleFieldChange(value, (val) => _task!.estimatedTime = val);
+  }
+
+  /// Event handler for planned date changes
+  void _onPlannedDateChanged(DateTime? date) {
+    _handleFieldChange(date, (val) {
+      _task?.plannedDate = val;
+      // If date is set and reminder is not, set default reminder
+      if (val != null && _task!.plannedDateReminderTime == ReminderTime.none) {
+        _task!.plannedDateReminderTime = ReminderTime.atTime;
+      }
+    });
+  }
+
+  /// Event handler for planned date reminder changes
+  void _onPlannedReminderChanged(ReminderTime value) {
+    _handleFieldChange(value, (val) => _task!.plannedDateReminderTime = val);
+  }
+
+  /// Event handler for deadline date changes
+  void _onDeadlineDateChanged(DateTime? date) {
+    _handleFieldChange(date, (val) {
+      _task?.deadlineDate = val;
+      // If date is set and reminder is not, set default reminder
+      if (val != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
+        _task!.deadlineDateReminderTime = ReminderTime.atTime;
+      }
+    });
+  }
+
+  /// Event handler for deadline date reminder changes
+  void _onDeadlineReminderChanged(ReminderTime value) {
+    _handleFieldChange(value, (val) => _task!.deadlineDateReminderTime = val);
+  }
+
+  /// Event handler for description changes
+  void _onDescriptionChanged(String value) {
+    // Handle empty whitespace
+    final isEmptyWhitespace = value.trim().isEmpty;
+    if (isEmptyWhitespace) {
+      _descriptionController.clear();
+
+      // Set cursor at beginning after clearing
+      if (mounted) {
+        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
+      }
+    }
+
+    // Simply trigger the update
+    _updateTask();
+  }
+
+  /// Event handler for title changes
+  void _onTitleChanged(String value) {
+    // Notify title change immediately
+    widget.onTitleUpdated?.call(value);
+    // Trigger debounced save
+    _updateTask();
   }
 
   String _getRecurrenceSummaryText() {
@@ -414,55 +567,87 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _updateTask() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
       if (!mounted) return;
 
-      // Parse dates from controllers and properly convert to UTC using DateTimeHelper
-      DateTime? plannedDate = _plannedDateController.text.isNotEmpty
-          ? DateTimeHelper.toUtcDateTime(DateTime.parse(_plannedDateController.text))
-          : null;
-
-      DateTime? deadlineDate = _deadlineDateController.text.isNotEmpty
-          ? DateTimeHelper.toUtcDateTime(DateTime.parse(_deadlineDateController.text))
-          : null;
-
-      DateTime? recurrenceStartDate =
-          _task!.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceStartDate!) : null;
-
-      DateTime? recurrenceEndDate =
-          _task!.recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceEndDate!) : null;
-
-      final saveCommand = SaveTaskCommand(
-        id: _task!.id,
-        title: _titleController.text,
-        description: _descriptionController.text,
-        plannedDate: plannedDate,
-        deadlineDate: deadlineDate,
-        priority: _task!.priority,
-        estimatedTime: _task!.estimatedTime,
-        isCompleted: _task!.isCompleted,
-        // Always pass the current reminder values
-        plannedDateReminderTime: _task!.plannedDateReminderTime,
-        deadlineDateReminderTime: _task!.deadlineDateReminderTime,
-        // Pass all recurrence settings
-        recurrenceType: _task!.recurrenceType,
-        recurrenceInterval: _task!.recurrenceInterval,
-        recurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
-        recurrenceStartDate: recurrenceStartDate,
-        recurrenceEndDate: recurrenceEndDate,
-        recurrenceCount: _task!.recurrenceCount,
-      );
-
-      await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
-        context: context,
-        errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
-        operation: () => _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand),
-        onSuccess: (result) {
-          _tasksService.notifyTaskUpdated(result.id);
-          widget.onTaskUpdated?.call();
-        },
-      );
+      final saveCommand = _buildSaveCommand();
+      await _executeSaveCommand(saveCommand);
     });
+  }
+
+  // Helper method to parse alternative date formats
+  DateTime? _parseAlternativeDateTime(String dateStr) {
+    if (dateStr.isEmpty) return null;
+
+    try {
+      // Handle formats like "6/3/2025 03:11", "6/3/2025", "2025-06-03 15:11", etc.
+
+      // Try common US format: M/d/yyyy H:mm or M/d/yyyy
+      final usDateTimeRegex = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
+      final usMatch = usDateTimeRegex.firstMatch(dateStr);
+      if (usMatch != null) {
+        final month = int.parse(usMatch.group(1)!);
+        final day = int.parse(usMatch.group(2)!);
+        final year = int.parse(usMatch.group(3)!);
+        final hour = usMatch.group(4) != null ? int.parse(usMatch.group(4)!) : 0;
+        final minute = usMatch.group(5) != null ? int.parse(usMatch.group(5)!) : 0;
+
+        return DateTime(year, month, day, hour, minute);
+      }
+
+      // Try European format: d/M/yyyy H:mm or d/M/yyyy
+      final euDateTimeRegex = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
+      final euMatch = euDateTimeRegex.firstMatch(dateStr);
+      if (euMatch != null) {
+        final day = int.parse(euMatch.group(1)!);
+        final month = int.parse(euMatch.group(2)!);
+        final year = int.parse(euMatch.group(3)!);
+        final hour = euMatch.group(4) != null ? int.parse(euMatch.group(4)!) : 0;
+        final minute = euMatch.group(5) != null ? int.parse(euMatch.group(5)!) : 0;
+
+        // Validate date to determine which format (US vs EU)
+        if (month <= 12 && day <= 12) {
+          // Ambiguous - use US format by default (month/day/year)
+          return DateTime(year, day, month, hour, minute);
+        } else if (day <= 12 && month <= 31) {
+          // European format (day/month/year)
+          return DateTime(year, month, day, hour, minute);
+        } else if (month <= 12 && day <= 31) {
+          // US format (month/day/year)
+          return DateTime(year, month, day, hour, minute);
+        }
+      }
+
+      // Fallback: try to use DateFormat to parse
+      try {
+        // Try different date formats
+        final formats = [
+          'M/d/yyyy H:mm',
+          'd/M/yyyy H:mm',
+          'M/d/yyyy',
+          'd/M/yyyy',
+          'yyyy-MM-dd H:mm',
+          'yyyy-MM-dd HH:mm',
+          'yyyy-MM-dd',
+        ];
+
+        for (final format in formats) {
+          try {
+            return DateFormat(format).parse(dateStr);
+          } catch (e) {
+            // Continue to next format
+          }
+        }
+      } catch (e) {
+        // Continue to fallback
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error parsing alternative date format: $dateStr, Error: $e');
+      }
+    }
+
+    return null;
   }
 
   Future<bool> _addTag(String tagId) async {
@@ -567,10 +752,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 child: TextFormField(
                   controller: _titleController,
                   maxLines: null,
-                  onChanged: (value) {
-                    _updateTask();
-                    widget.onTitleUpdated?.call(value);
-                  },
+                  onChanged: _onTitleChanged,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -643,16 +825,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         widget: PrioritySelectField(
           value: _task!.priority,
           options: _priorityOptions,
-          onChanged: (value) {
-            if (!mounted) return;
-            setState(() {
-              _task!.priority = value;
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
+          onChanged: _onPriorityChanged,
         ),
       );
 
@@ -663,16 +836,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           initialValue: _task!.estimatedTime ?? TaskUiConstants.defaultEstimatedTimeOptions.first,
           incrementValue: 5,
           decrementValue: 5,
-          onValueChanged: (value) {
-            if (!mounted) return;
-            setState(() {
-              _task!.estimatedTime = value;
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
+          onValueChanged: _onEstimatedTimeChanged,
           decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
           incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
           iconColor: AppTheme.secondaryTextColor,
@@ -697,29 +861,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           controller: _plannedDateController,
           hintText: '',
           minDateTime: DateTime.now(),
-          onDateChanged: (date) {
-            setState(() {
-              _task?.plannedDate = date;
-
-              // If date is set and reminder is not, set default reminder
-              if (date != null && _task!.plannedDateReminderTime == ReminderTime.none) {
-                _task!.plannedDateReminderTime = ReminderTime.atTime;
-              }
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
-          onReminderChanged: (value) {
-            setState(() {
-              _task!.plannedDateReminderTime = value;
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
+          onDateChanged: _onPlannedDateChanged,
+          onReminderChanged: _onPlannedReminderChanged,
           reminderValue: _task!.plannedDateReminderTime,
           translationService: _translationService,
           reminderLabelPrefix: 'tasks.reminder.planned',
@@ -734,29 +877,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           controller: _deadlineDateController,
           hintText: '',
           minDateTime: DateTime.now(),
-          onDateChanged: (date) {
-            setState(() {
-              _task?.deadlineDate = date;
-
-              // If date is set and reminder is not, set default reminder
-              if (date != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
-                _task!.deadlineDateReminderTime = ReminderTime.atTime;
-              }
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
-          onReminderChanged: (value) {
-            setState(() {
-              _task!.deadlineDateReminderTime = value;
-            });
-
-            // Force immediate update without debounce
-            if (_debounce?.isActive ?? false) _debounce!.cancel();
-            _saveTaskImmediately();
-          },
+          onDateChanged: _onDeadlineDateChanged,
+          onReminderChanged: _onDeadlineReminderChanged,
           reminderValue: _task!.deadlineDateReminderTime,
           translationService: _translationService,
           reminderLabelPrefix: 'tasks.reminder.deadline',
@@ -857,21 +979,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               padding: const EdgeInsets.only(top: 8),
               child: MarkdownEditor(
                 controller: _descriptionController,
-                onChanged: (value) {
-                  // Handle empty whitespace
-                  final isEmptyWhitespace = value.trim().isEmpty;
-                  if (isEmptyWhitespace) {
-                    _descriptionController.clear();
-
-                    // Set cursor at beginning after clearing
-                    if (mounted) {
-                      _descriptionController.selection = const TextSelection.collapsed(offset: 0);
-                    }
-                  }
-
-                  // Simply trigger the update
-                  _updateTask();
-                },
+                onChanged: _onDescriptionChanged,
                 toolbarBackground: AppTheme.surface1,
               ),
             ),
