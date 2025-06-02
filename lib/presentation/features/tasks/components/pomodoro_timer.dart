@@ -467,7 +467,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 value: progress,
                 backgroundColor: Colors.transparent, // Transparent to show container color
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  AppTheme.primaryColor.withValues(alpha: 0.3),
+                  _getProgressBarColor(context),
                 ),
                 minHeight: buttonSize * 2, // Ensure progress bar has enough height
               ),
@@ -822,5 +822,19 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _tickingTimer?.cancel();
     _tickingTimer = null;
     _isTickSound = true; // Reset to start with tick sound next time
+  }
+
+  Color _getProgressBarColor(BuildContext context) {
+    if (_isRunning || _isAlarmPlaying) {
+      if (_isWorking) {
+        return AppTheme.successColor.withValues(alpha: 0.3);
+      } else if (_isLongBreak) {
+        return AppTheme.infoColor.withValues(alpha: 0.3);
+      } else {
+        return AppTheme.errorColor.withValues(alpha: 0.6);
+      }
+    }
+
+    return Colors.transparent;
   }
 }
