@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
@@ -273,6 +274,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                     iconSize: iconSize,
                     iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? primaryColor : Colors.grey,
                     expandedWidth: 200,
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
 
                 // Sort button

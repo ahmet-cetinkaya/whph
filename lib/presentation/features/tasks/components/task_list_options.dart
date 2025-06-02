@@ -20,6 +20,7 @@ import 'package:whph/presentation/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/shared/models/sort_config.dart';
 import 'package:whph/presentation/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 
 class TaskListOptions extends PersistentListOptionsBase {
@@ -367,6 +368,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     iconColor:
                         (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? AppTheme.primaryColor : Colors.grey,
                     expandedWidth: 200,
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
 
                 // Completed tasks toggle button

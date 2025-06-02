@@ -12,6 +12,7 @@ class SearchFilter extends StatefulWidget {
   final double iconSize;
   final Color? iconColor;
   final double expandedWidth;
+  final bool isDense;
 
   const SearchFilter({
     super.key,
@@ -21,6 +22,7 @@ class SearchFilter extends StatefulWidget {
     this.iconSize = 20,
     this.iconColor,
     this.expandedWidth = 200,
+    this.isDense = false,
   });
 
   @override
@@ -102,15 +104,15 @@ class _SearchFilterState extends State<SearchFilter> {
               controller: _controller,
               autofocus: true,
               decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
+                isDense: widget.isDense,
+                contentPadding: EdgeInsets.symmetric(
                   horizontal: AppTheme.sizeSmall,
-                  vertical: AppTheme.sizeSmall,
+                  vertical: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
                 ),
                 hintText: widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
                 hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.close, size: AppTheme.fontSizeMedium),
+                  icon: const Icon(Icons.close, size: AppTheme.fontSizeSmall),
                   onPressed: _toggleSearch,
                   padding: EdgeInsets.zero,
                 ),

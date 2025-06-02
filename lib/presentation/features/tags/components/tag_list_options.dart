@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/acore/repository/models/sort_direction.dart';
+import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
@@ -296,10 +297,11 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                 // Search filter
                 if (widget.showSearchFilter && widget.onSearchChange != null)
                   SearchFilter(
-                    expandedWidth: 200,
                     initialValue: widget.search,
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(SharedTranslationKeys.searchPlaceholder),
+                    expandedWidth: 200,
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
 
                 // Sort button
