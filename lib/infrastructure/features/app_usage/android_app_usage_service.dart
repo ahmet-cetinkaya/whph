@@ -2,13 +2,19 @@ import 'dart:async';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph/application/features/settings/commands/save_setting_command.dart';
+import 'package:whph/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
+import 'package:whph/presentation/shared/constants/setting_keys.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
   static final platform = MethodChannel(AndroidAppConstants.channels.backgroundService);
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
   final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
+  final Mediator _mediator;
 
   AndroidAppUsageService(
     super.appUsageRepository,
@@ -16,6 +22,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageIgnoreRuleRepository,
+    this._mediator,
   );
 
   @override
@@ -112,6 +119,19 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
   @override
   Future<void> getInitialAppUsages() async {
+    // Check if initial data collection has already been performed using persistent settings
+    try {
+      final settingResponse =
+          await _mediator.send(GetSettingQuery(key: SettingKeys.initialAppUsageCollected)) as GetSettingQueryResponse?;
+      if (settingResponse?.value == 'true') {
+        if (kDebugMode) debugPrint('Initial app usage data has already been collected (from settings). Skipping...');
+        return;
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('Error checking initial data collection setting: $e');
+      // Continue with the process if there's an error reading the setting
+    }
+
     if (!(await checkUsageStatsPermission())) {
       if (kDebugMode) debugPrint('Permission not granted. Cannot get initial app usages.');
       return;
@@ -149,7 +169,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
               await saveTimeRecord(
                 usage.appName,
                 usage.usage.inSeconds,
-                overwrite: false,
+                overwrite: true,
                 customDateTime: currentHourStart,
               );
               ++totalAppsProcessed;
@@ -173,8 +193,35 @@ class AndroidAppUsageService extends BaseAppUsageService {
         debugPrint(
             'Initial app usage collection completed. Processed $totalHoursProcessed hours and $totalAppsProcessed app usage records.');
       }
+
+      // Mark that initial data collection has been completed using persistent settings
+      try {
+        await _mediator.send(SaveSettingCommand(
+          key: SettingKeys.initialAppUsageCollected,
+          value: 'true',
+          valueType: SettingValueType.string,
+        ));
+        if (kDebugMode) debugPrint('Initial data collection flag saved to persistent settings');
+      } catch (e) {
+        if (kDebugMode) debugPrint('Error saving initial data collection setting: $e');
+      }
     } catch (e) {
       if (kDebugMode) debugPrint('Error getting initial app usages: $e');
+    }
+  }
+
+  /// Resets the initial data collection flag, allowing getInitialAppUsages() to run again
+  /// This can be useful when permissions are revoked and re-granted
+  Future<void> resetInitialDataCollectionFlag() async {
+    try {
+      await _mediator.send(SaveSettingCommand(
+        key: SettingKeys.initialAppUsageCollected,
+        value: 'false',
+        valueType: SettingValueType.string,
+      ));
+      if (kDebugMode) debugPrint('Initial data collection flag has been reset in persistent settings');
+    } catch (e) {
+      if (kDebugMode) debugPrint('Error resetting initial data collection flag: $e');
     }
   }
 }
