@@ -95,21 +95,17 @@ class TaskCard extends StatelessWidget {
   Widget _buildMainContent(BuildContext context) {
     // Re-check hasReminder state in case it changed during reordering
     final hasCurrentReminder = _hasReminder;
-    final buttonSize = isDense ? 24.0 : 32.0;
     final spacing = isDense ? 4.0 : 8.0;
 
     return Row(
       children: [
         // Task completion button
-        SizedBox(
-          width: buttonSize,
-          height: buttonSize,
-          child: TaskCompleteButton(
-            taskId: taskItem.id,
-            isCompleted: taskItem.isCompleted,
-            onToggleCompleted: onCompleted,
-            color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
-          ),
+        TaskCompleteButton(
+          taskId: taskItem.id,
+          isCompleted: taskItem.isCompleted,
+          onToggleCompleted: onCompleted,
+          color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
+          subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
         ),
         SizedBox(width: spacing),
 

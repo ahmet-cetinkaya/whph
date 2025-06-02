@@ -560,6 +560,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     _task!.isCompleted = !_task!.isCompleted;
                     widget.onCompletedChanged?.call(_task!.isCompleted);
                   },
+                  subTasksCompletionPercentage: _task!.subTasksCompletionPercentage,
                 ),
               const SizedBox(width: AppTheme.sizeSmall),
               Expanded(

@@ -5,6 +5,7 @@ import 'package:whph/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/features/tasks/constants/task_translation_keys.dart';
@@ -16,6 +17,8 @@ class TaskCompleteButton extends StatefulWidget {
   final bool isCompleted;
   final VoidCallback? onToggleCompleted;
   final Color? color;
+  final double subTasksCompletionPercentage;
+  final double size;
 
   const TaskCompleteButton({
     super.key,
@@ -23,6 +26,8 @@ class TaskCompleteButton extends StatefulWidget {
     required this.isCompleted,
     this.onToggleCompleted,
     this.color,
+    this.subTasksCompletionPercentage = 0.0,
+    this.size = AppTheme.buttonSize2XSmall,
   });
 
   @override
@@ -128,12 +133,59 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Checkbox(
-      value: _isCompleted,
-      onChanged: (_) => _toggleCompleteTask(context),
-      activeColor: widget.color,
-      shape: const CircleBorder(),
-      side: BorderSide(color: widget.color ?? Colors.white, width: 2),
+    final primaryColor = widget.color ?? Theme.of(context).colorScheme.primary;
+
+    return GestureDetector(
+      onTap: () => _toggleCompleteTask(context),
+      child: Padding(
+        padding: const EdgeInsets.all(2),
+        child: SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: Stack(
+            children: [
+              // Background circle
+              Container(
+                width: widget.size,
+                height: widget.size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppTheme.borderColor,
+                    width: 1.5,
+                  ),
+                  color: _isCompleted ? primaryColor : Colors.transparent,
+                ),
+              ),
+
+              // Progress ring for subtasks (only show if not completed and has subtask progress)
+              if (!_isCompleted && widget.subTasksCompletionPercentage > 0)
+                SizedBox(
+                  width: widget.size,
+                  height: widget.size,
+                  child: CircularProgressIndicator(
+                    value: widget.subTasksCompletionPercentage / 100,
+                    strokeWidth: 3,
+                    backgroundColor: Colors.transparent,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      primaryColor.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+
+              // Checkmark icon when completed
+              if (_isCompleted)
+                Center(
+                  child: Icon(
+                    Icons.check,
+                    size: widget.size * 0.7,
+                    color: AppTheme.surface1,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
