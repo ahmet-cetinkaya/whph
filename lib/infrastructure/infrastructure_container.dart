@@ -26,6 +26,8 @@ import 'package:whph/infrastructure/features/system_tray/mobile_system_tray_serv
 import 'package:whph/infrastructure/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/features/window/linux_window_manager.dart';
 import 'package:whph/infrastructure/features/window/window_manager.dart';
+import 'package:whph/infrastructure/features/wakelock/abstractions/i_wakelock_service.dart';
+import 'package:whph/infrastructure/features/wakelock/wakelock_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/shared/services/abstraction/i_startup_settings_service.dart';
@@ -110,7 +112,6 @@ void registerInfrastructure(IContainer container) {
     if (Platform.isAndroid) return AndroidSetupService();
     throw Exception('Unsupported platform for setup service.');
   });
-
   container.registerSingleton<IFileService>((_) {
     if (Platform.isAndroid) {
       return AndroidFileService();
@@ -122,6 +123,8 @@ void registerInfrastructure(IContainer container) {
 
     throw Exception('Unsupported platform for file service');
   });
+
+  container.registerSingleton<IWakelockService>((_) => WakelockService());
 
   container.registerSingleton<IReminderService>((_) {
     final windowManager = container.resolve<IWindowManager>();

@@ -27,6 +27,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String pomodoroTickingSoundLabel = 'tasks.pomodoro.settings.ticking_sound';
   static const String pomodoroTickingVolumeLabel = 'tasks.pomodoro.settings.ticking_volume';
   static const String pomodoroTickingSpeedLabel = 'tasks.pomodoro.settings.ticking_speed';
+  static const String pomodoroKeepScreenAwakeSectionLabel = 'tasks.pomodoro.settings.keep_screen_awake_section';
+  static const String pomodoroKeepScreenAwakeLabel = 'tasks.pomodoro.settings.keep_screen_awake';
 
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';

@@ -5,6 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:whph/infrastructure/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/presentation/shared/constants/setting_keys.dart';
 import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
@@ -45,6 +46,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   final _notificationService = container.resolve<INotificationService>();
   final _systemTrayService = container.resolve<ISystemTrayService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _wakelockService = container.resolve<IWakelockService>();
 
   static const int _minTimerValue = 5;
   static const int _maxTimerValue = 120;
@@ -75,6 +77,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   bool _defaultAutoStartBreak = false;
   bool _defaultAutoStartWork = false;
   bool _defaultTickingEnabled = false;
+  bool _defaultKeepScreenAwake = false;
   bool _isTickSound = true; // Track which sound to play
   int _defaultTickingVolume = 50;
   int _defaultTickingSpeed = 1;
@@ -85,6 +88,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   late bool _autoStartBreak = _defaultAutoStartBreak;
   late bool _autoStartWork = _defaultAutoStartWork;
   late bool _tickingEnabled = _defaultTickingEnabled;
+  late bool _keepScreenAwake = _defaultKeepScreenAwake;
   late int _tickingVolume = _defaultTickingVolume;
   late int _tickingSpeed = _defaultTickingSpeed;
   Timer? _tickingTimer;
@@ -115,6 +119,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     // Stop any playing sounds
     _soundPlayer.stop();
 
+    // Disable wakelock when disposing
+    _wakelockService.disable();
+
     // Remove timer menu items if they were added
     if (_isTimerMenuAdded) {
       _removeTimerMenuItems();
@@ -135,6 +142,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _defaultAutoStartBreak = await _getBoolSetting(SettingKeys.autoStartBreak, false);
     _defaultAutoStartWork = await _getBoolSetting(SettingKeys.autoStartWork, false);
     _defaultTickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, false);
+    _defaultKeepScreenAwake = await _getBoolSetting(SettingKeys.keepScreenAwake, false);
     _defaultTickingVolume = await _getSetting(SettingKeys.tickingVolume, 50);
     _defaultTickingSpeed = await _getSetting(SettingKeys.tickingSpeed, 1);
     if (mounted) {
@@ -146,6 +154,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         _autoStartBreak = _defaultAutoStartBreak;
         _autoStartWork = _defaultAutoStartWork;
         _tickingEnabled = _defaultTickingEnabled;
+        _keepScreenAwake = _defaultKeepScreenAwake;
         _tickingVolume = _defaultTickingVolume;
         _tickingSpeed = _defaultTickingSpeed;
         _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
@@ -260,6 +269,11 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       _updateSystemTrayTimer();
       if (_tickingEnabled) _startTicking();
 
+      // Enable wakelock if the setting is enabled
+      if (_keepScreenAwake) {
+        _wakelockService.enable();
+      }
+
       setState(() {
         _isRunning = true;
         _startRegularTimer();
@@ -311,6 +325,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     if (mounted) {
       _soundPlayer.play(SharedSounds.button);
       _stopTicking();
+
+      // Disable wakelock when stopping timer
+      _wakelockService.disable();
 
       setState(() {
         _isRunning = false;
@@ -677,6 +694,23 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 showMinutes: false,
               ),
             ],
+            const SizedBox(height: 24),
+            Text(
+              _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeSectionLabel),
+              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+            ),
+            const SizedBox(height: 8),
+            _buildSwitchSettingRow(
+              _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeLabel),
+              _keepScreenAwake,
+              (value) {
+                if (!mounted) return;
+                setState(() {
+                  _keepScreenAwake = value;
+                });
+                _saveBoolSetting(SettingKeys.keepScreenAwake, value);
+              },
+            ),
           ],
         ),
       ),
@@ -750,7 +784,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Text(

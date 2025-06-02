@@ -225,6 +225,8 @@ tasks:
       ticking_sound_section: Tik Tak Sesi
       ticking_speed: Hız
       ticking_volume: Ses Seviyesi
+      keep_screen_awake_section: Ekranı Uyanık Tut
+      keep_screen_awake: Oturum sırasında ekranı uyanık tut
       timer_label: Oturum süreleri
       title: Zamanlayıcı Ayarları
       work_duration: Çalışma Süresi
