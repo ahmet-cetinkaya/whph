@@ -23,6 +23,8 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_repo
 import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:whph/application/features/settings/services/import_data_migration_service.dart';
 
 void registerSettingsFeature(
   IContainer container,
@@ -45,6 +47,9 @@ void registerSettingsFeature(
   INoteRepository noteRepository,
   INoteTagRepository noteTagRepository,
 ) {
+  // Register the import data migration service
+  container.registerSingleton<IImportDataMigrationService>((_) => ImportDataMigrationService());
+
   mediator
     ..registerHandler<SaveSettingCommand, SaveSettingCommandResponse, SaveSettingCommandHandler>(
       () => SaveSettingCommandHandler(settingRepository: settingRepository),
@@ -98,6 +103,7 @@ void registerSettingsFeature(
         taskTimeRecordRepository: taskTimeRecordRepository,
         noteRepository: noteRepository,
         noteTagRepository: noteTagRepository,
+        migrationService: container.resolve<IImportDataMigrationService>(),
       ),
     );
 }

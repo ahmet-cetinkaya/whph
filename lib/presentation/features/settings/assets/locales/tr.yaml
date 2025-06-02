@@ -8,7 +8,7 @@ settings:
     export_failed: Dışa aktarma başarısız
     import_failed: İçe aktarma başarısız
     setting_not_found: Ayar bulunamadı
-    version_mismatch: Sürüm uyumsuzluğu
+    version_mismatch: Sürüm bulunamadı
   export:
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
     error: Dışa aktarma başarısız
@@ -22,6 +22,8 @@ settings:
     title: Verileri Dışa Aktar
   import:
     error: İçe aktarma başarısız
+    error.entity: Hata oluşan veri türü
+    in_progress: Veriler içe aktarılıyor, lütfen bekleyin...
     select_file: Dosya seçin
     strategy:
       merge: Mevcut Verilerle Birleştir
@@ -29,7 +31,9 @@ settings:
       title: İçe Aktarma Stratejisi
     success: İçe aktarma başarılı
     title: İçe Aktar
-    version_mismatch: Sürüm uyumsuzluğu
+    version_mismatch: Sürüm bulunamadı
+    migration_failed: İçeri aktarma başarısız oldu. Lütfen uygulamanın en son sürümünü yüklediğinizden emin olun.
+    unsupported_version: Desteklenmeyen sürüm
   import_export:
     description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
     select_action: İç/Dışa aktarma işlemi seçin

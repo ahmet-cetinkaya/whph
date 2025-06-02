@@ -40,6 +40,8 @@ import 'package:whph/domain/features/notes/note_tag.dart';
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:flutter/foundation.dart';
 
 enum ImportStrategy { replace, merge }
 
@@ -82,6 +84,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
   final INoteRepository noteRepository;
   final INoteTagRepository noteTagRepository;
+  final IImportDataMigrationService migrationService;
 
   late final List<ImportConfig> _importConfigs;
 
@@ -103,6 +106,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.appUsageIgnoreRuleRepository,
     required this.noteRepository,
     required this.noteTagRepository,
+    required this.migrationService,
   }) {
     _importConfigs = [
       ImportConfig<Tag>(
@@ -195,16 +199,43 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
   @override
   Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
-    final Map<String, dynamic> data = json.decode(request.fileContent);
+    Map<String, dynamic> data = json.decode(request.fileContent);
 
-    // Check version compatibility
-    final importedVersion = data['appInfo']?['version'];
-    if (importedVersion != AppInfo.version) {
+    // Get the imported version
+    final importedVersion = data['appInfo']?['version'] as String?;
+    if (importedVersion == null) {
       throw BusinessException(
-        'Version mismatch in imported data',
+        'No version information found in imported data',
         SettingTranslationKeys.versionMismatchError,
         args: {
-          'importedVersion': importedVersion ?? 'unknown',
+          'importedVersion': 'unknown',
+          'currentVersion': AppInfo.version,
+        },
+      );
+    }
+
+    // Check if migration is needed and apply it
+    if (migrationService.isMigrationNeeded(importedVersion)) {
+      try {
+        data = await migrationService.migrateData(data, importedVersion);
+      } catch (e) {
+        throw BusinessException(
+          'Failed to migrate data from version $importedVersion',
+          SettingTranslationKeys.migrationFailedError,
+          args: {
+            'importedVersion': importedVersion,
+            'currentVersion': AppInfo.version,
+            'error': e.toString(),
+          },
+        );
+      }
+    } else if (importedVersion != AppInfo.version) {
+      // Version is not supported for migration
+      throw BusinessException(
+        'Unsupported version in imported data',
+        SettingTranslationKeys.versionMismatchError,
+        args: {
+          'importedVersion': importedVersion,
           'currentVersion': AppInfo.version,
         },
       );
@@ -251,30 +282,75 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       List<Map<String, dynamic>> items, ImportConfig config, ImportStrategy strategy) async {
     try {
       for (var item in items) {
-        // Convert CSV data to correct types
-        if (config.name == 'tasks') {
-          if (item['priority'] != null) {
-            item['priority'] = EisenhowerPriority.values[item['priority'] as int];
+        try {
+          // Convert CSV data to correct types
+          if (config.name == 'tasks') {
+            if (item['priority'] != null) {
+              // Handle both string and int priority values
+              if (item['priority'] is String) {
+                final priorityStr = item['priority'] as String;
+                switch (priorityStr.toLowerCase()) {
+                  case 'urgentimportant':
+                    item['priority'] = 0;
+                    break;
+                  case 'urgent':
+                    item['priority'] = 1;
+                    break;
+                  case 'important':
+                    item['priority'] = 2;
+                    break;
+                  case 'neither':
+                    item['priority'] = 3;
+                    break;
+                  default:
+                    item['priority'] = 3; // Default to neither if unknown
+                }
+              } else if (item['priority'] is int) {
+                // Already an int, keep as is
+                continue;
+              } else {
+                item['priority'] = EisenhowerPriority.values[item['priority'] as int];
+              }
+            }
+            if (item['isCompleted'] is String) {
+              item['isCompleted'] = item['isCompleted'].toString().toLowerCase() == 'true';
+            }
           }
-          if (item['isCompleted'] is String) {
-            item['isCompleted'] = item['isCompleted'].toString().toLowerCase() == 'true';
+
+          final entity = config.fromJson(item);
+
+          if (strategy == ImportStrategy.merge) {
+            final existing = await config.repository.getById(entity.id);
+            if (existing != null) {
+              await config.repository.update(entity);
+              continue;
+            }
           }
+
+          await config.repository.add(entity);
+        } catch (itemError, itemStack) {
+          if (kDebugMode) {
+            print('Failed to import item in ${config.name}:');
+            print('Item data: $item');
+            print('Error: $itemError');
+            print('Stack trace: $itemStack');
+          }
+          rethrow;
         }
-
-        final entity = config.fromJson(item);
-
-        if (strategy == ImportStrategy.merge) {
-          final existing = await config.repository.getById(entity.id);
-          if (existing != null) {
-            await config.repository.update(entity);
-            continue;
-          }
-        }
-
-        await config.repository.add(entity);
       }
-    } catch (e) {
-      throw BusinessException('Import failed', SettingTranslationKeys.importFailedError);
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Import error in ${config.name}: $e');
+        print('Stack trace: $stackTrace');
+      }
+      throw BusinessException(
+        'Import error while processing ${config.name}: ${e.toString()}',
+        SettingTranslationKeys.importFailedError,
+        args: {
+          'entity': config.name,
+          'error': e.toString(),
+        },
+      );
     }
   }
 }
