@@ -69,83 +69,66 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = isDense
-        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
-        : const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
-
-    return Card(
-      color: transparent ? Colors.transparent : null,
-      elevation: transparent ? 0 : null,
-      child: InkWell(
-        onTap: onOpenDetails,
-        child: Padding(
-          padding: padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMainContent(context),
-              if (showSubTasks && taskItem.subTasks.isNotEmpty) ..._buildSubTasks(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMainContent(BuildContext context) {
-    // Re-check hasReminder state in case it changed during reordering
     final hasCurrentReminder = _hasReminder;
-    final spacing = isDense ? 4.0 : 8.0;
 
-    return Row(
-      children: [
-        // Task completion button
-        TaskCompleteButton(
-          taskId: taskItem.id,
-          isCompleted: taskItem.isCompleted,
-          onToggleCompleted: onCompleted,
-          color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
-          subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
-        ),
-        SizedBox(width: spacing),
-
-        // Task title and metadata
-        Expanded(child: _buildTitleAndMetadata(context)),
-
-        // Reminder icon
-        if (hasCurrentReminder)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Icon(
+    return ListTile(
+      tileColor: transparent ? Colors.transparent : AppTheme.surface1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+      ),
+      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+      dense: isDense,
+      onTap: onOpenDetails,
+      leading: TaskCompleteButton(
+        taskId: taskItem.id,
+        isCompleted: taskItem.isCompleted,
+        onToggleCompleted: onCompleted,
+        color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
+        subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
+        size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+      ),
+      title: _buildTitleAndMetadata(context),
+      subtitle: showSubTasks && taskItem.subTasks.isNotEmpty
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _buildSubTasks(context),
+            )
+          : null,
+      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Reminder icon
+          if (hasCurrentReminder)
+            Icon(
               Icons.notifications,
-              size: isDense ? AppTheme.iconSizeXSmall : AppTheme.iconSizeSmall,
+              size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
               color: Theme.of(context).colorScheme.primary,
             ).wrapWithTooltip(
               enabled: hasCurrentReminder,
               message: _getReminderTooltip(),
             ),
-          ),
-
-        // Schedule button
-        if (showScheduleButton)
-          ScheduleButton(
-            translationService: _translationService,
-            onScheduleSelected: _handleSchedule,
-            isDense: isDense,
-          ),
-        if (trailingButtons != null)
-          ...trailingButtons!.map((widget) {
-            if (widget is IconButton) {
-              return IconButton(
-                icon: widget.icon,
-                onPressed: widget.onPressed,
-                color: widget.color,
-                tooltip: widget.tooltip,
-              );
-            }
-            return widget;
-          }),
-      ],
+          // Schedule button
+          if (showScheduleButton)
+            ScheduleButton(
+              translationService: _translationService,
+              onScheduleSelected: _handleSchedule,
+              isDense: isDense,
+            ),
+          if (trailingButtons != null)
+            ...trailingButtons!.map((widget) {
+              if (widget is IconButton) {
+                return IconButton(
+                  icon: widget.icon,
+                  onPressed: widget.onPressed,
+                  color: widget.color,
+                  tooltip: widget.tooltip,
+                );
+              }
+              return widget;
+            }),
+        ],
+      ),
     );
   }
 

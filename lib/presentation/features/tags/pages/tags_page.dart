@@ -156,14 +156,13 @@ class _TagsPageState extends State<TagsPage> {
           titleKey: TagTranslationKeys.overviewHelpTitle,
           markdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 8),
       ],
       builder: (context) => Align(
-        alignment: Alignment.topCenter, // Sayfa içeriğini en üstte başlatır
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // İçeriğin yukarıdan başlamasını sağlar
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Main List Options
               TagListOptions(
@@ -180,7 +179,7 @@ class _TagsPageState extends State<TagsPage> {
 
               // Tag Time Title
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall),
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(

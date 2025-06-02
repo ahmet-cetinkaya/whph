@@ -136,6 +136,7 @@ class AppTheme {
   );
 
   // Sizes
+  static const double size4XSmall = 1.0;
   static const double size3XSmall = 2.0;
   static const double size2XSmall = 4.0;
   static const double sizeXSmall = 6.0;
@@ -201,6 +202,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
       clipBehavior: Clip.antiAlias,
       elevation: 0,
+      margin: EdgeInsets.zero,
     ),
     textTheme: TextTheme(
       bodySmall: bodySmall,

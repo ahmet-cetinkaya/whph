@@ -245,7 +245,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
           ),
           if (_ruleList!.hasNext)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
             ),
         ],

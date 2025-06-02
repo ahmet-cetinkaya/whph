@@ -251,63 +251,84 @@ class HabitsListState extends State<HabitsList> {
   }
 
   Widget _buildMiniCardList() {
-    return Wrap(
-      children: [
-        ..._habitList!.items.map((habit) => SizedBox(
-              key: ValueKey(habit.id), // Add this key
-              width: 200,
-              child: IgnorePointer(
-                ignoring: false,
-                child: AnimatedOpacity(
-                  opacity: 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  child: HabitCard(
-                    habit: habit,
-                    isMiniLayout: true,
-                    dateRange: widget.dateRange,
-                    onOpenDetails: () => widget.onClickHabit(habit),
-                    onRecordCreated: (_) => _onHabitRecordChanged(),
-                    onRecordDeleted: (_) => _onHabitRecordChanged(),
-                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                  ),
-                ),
-              ),
-            )),
-        if (_habitList!.hasNext)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+    // Calculate the total item count including load more button
+    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
+
+    return GridView.builder(
+      controller: _scrollController,
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 300.0,
+        crossAxisSpacing: AppTheme.size3XSmall,
+        mainAxisSpacing: AppTheme.size3XSmall,
+        mainAxisExtent: 40.0,
+      ),
+      itemCount: totalItemCount,
+      itemBuilder: (context, index) {
+        // Load more button at the end
+        if (index == _habitList!.items.length) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+              child: LoadMoreButton(onPressed: _onLoadMore),
+            ),
+          );
+        }
+
+        final habit = _habitList!.items[index];
+        return AnimatedOpacity(
+          opacity: 1.0,
+          duration: const Duration(milliseconds: 300),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.size4XSmall),
+            child: HabitCard(
+              key: ValueKey(habit.id),
+              habit: habit,
+              isMiniLayout: true,
+              dateRange: widget.dateRange,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              onRecordCreated: (_) => _onHabitRecordChanged(),
+              onRecordDeleted: (_) => _onHabitRecordChanged(),
+              isDense: true,
+            ),
           ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildColumnList() {
-    return SingleChildScrollView(
+    return ListView.separated(
       controller: _scrollController,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ..._habitList!.items.map((habit) => Container(
-                key: ValueKey(habit.id), // Add this key
-                child: HabitCard(
-                  habit: habit,
-                  onOpenDetails: () => widget.onClickHabit(habit),
-                  isMiniLayout: false,
-                  dateRange: widget.dateRange,
-                  isDateLabelShowing: false,
-                  onRecordCreated: (_) => widget.onHabitCompleted?.call(),
-                  onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
-                  isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                ),
-              )),
-          if (_habitList!.hasNext)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
-            ),
-        ],
-      ),
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      itemCount: _habitList!.items.length + (_habitList!.hasNext ? 1 : 0),
+      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
+      itemBuilder: (context, index) {
+        if (index == _habitList!.items.length) {
+          return Padding(
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+          );
+        }
+
+        final habit = _habitList!.items[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+          child: HabitCard(
+            key: ValueKey(habit.id),
+            habit: habit,
+            onOpenDetails: () => widget.onClickHabit(habit),
+            isMiniLayout: false,
+            dateRange: widget.dateRange,
+            isDateLabelShowing: false,
+            onRecordCreated: (_) => widget.onHabitCompleted?.call(),
+            onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          ),
+        );
+      },
     );
   }
 

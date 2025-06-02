@@ -219,7 +219,15 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               !widget.showBackButton)
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
-            child: widget.builder(context),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: AppTheme.sizeXSmall,
+                right: AppTheme.sizeXSmall,
+                top: AppTheme.size3XSmall,
+                bottom: 0,
+              ),
+              child: widget.builder(context),
+            ),
           ),
         ],
       ),

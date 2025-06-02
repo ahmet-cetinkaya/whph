@@ -102,7 +102,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
             titleKey: TagTranslationKeys.detailsHelpTitle,
             markdownContentKey: TagTranslationKeys.helpContent,
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(
@@ -168,33 +167,23 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                           // Time Bar Chart Tab
                           Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.size2XSmall,
-                                ),
-                                child: Row(
-                                  children: [
-                                    TagTimeChartOptions(
-                                      selectedStartDate: _startDate,
-                                      selectedEndDate: _endDate,
-                                      selectedCategories: _selectedCategories,
-                                      onDateFilterChange: (start, end) {
-                                        setState(() {
-                                          _startDate = start;
-                                          _endDate = end;
-                                          _barChartKey.currentState?.refresh();
-                                        });
-                                      },
-                                      onCategoriesChanged: (categories) {
-                                        setState(() {
-                                          _selectedCategories = categories;
-                                          _barChartKey.currentState?.refresh();
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
+                              TagTimeChartOptions(
+                                selectedStartDate: _startDate,
+                                selectedEndDate: _endDate,
+                                selectedCategories: _selectedCategories,
+                                onDateFilterChange: (start, end) {
+                                  setState(() {
+                                    _startDate = start;
+                                    _endDate = end;
+                                    _barChartKey.currentState?.refresh();
+                                  });
+                                },
+                                onCategoriesChanged: (categories) {
+                                  setState(() {
+                                    _selectedCategories = categories;
+                                    _barChartKey.currentState?.refresh();
+                                  });
+                                },
                               ),
                               Expanded(
                                 child: TagTimeBarChart(
@@ -211,46 +200,40 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                           // Tasks Tab
                           Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.size2XSmall,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: TaskListOptions(
-                                        onSearchChange: (query) {
-                                          setState(() {
-                                            _taskSearchQuery = query;
-                                          });
-                                        },
-                                        showCompletedTasks: _showCompletedTasks,
-                                        onCompletedTasksToggle: (showCompleted) {
-                                          setState(() {
-                                            _showCompletedTasks = showCompleted;
-                                          });
-                                        },
-                                        showDateFilter: false,
-                                        showTagFilter: false,
-                                        hasItems: true,
-                                        sortConfig: _taskSortConfig,
-                                        onSortChange: (newConfig) {
-                                          setState(() {
-                                            _taskSortConfig = newConfig;
-                                          });
-                                        },
-                                        settingKeyVariantSuffix: _listOptionSettingKey,
-                                      ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TaskListOptions(
+                                      onSearchChange: (query) {
+                                        setState(() {
+                                          _taskSearchQuery = query;
+                                        });
+                                      },
+                                      showCompletedTasks: _showCompletedTasks,
+                                      onCompletedTasksToggle: (showCompleted) {
+                                        setState(() {
+                                          _showCompletedTasks = showCompleted;
+                                        });
+                                      },
+                                      showDateFilter: false,
+                                      showTagFilter: false,
+                                      hasItems: true,
+                                      sortConfig: _taskSortConfig,
+                                      onSortChange: (newConfig) {
+                                        setState(() {
+                                          _taskSortConfig = newConfig;
+                                        });
+                                      },
+                                      settingKeyVariantSuffix: _listOptionSettingKey,
                                     ),
-                                    if (!_showCompletedTasks)
-                                      TaskAddButton(
-                                        initialTagIds: [widget.tagId],
-                                        initialTitle: _taskSearchQuery,
-                                        initialCompleted: _showCompletedTasks,
-                                      ),
-                                  ],
-                                ),
+                                  ),
+                                  if (!_showCompletedTasks)
+                                    TaskAddButton(
+                                      initialTagIds: [widget.tagId],
+                                      initialTitle: _taskSearchQuery,
+                                      initialCompleted: _showCompletedTasks,
+                                    ),
+                                ],
                               ),
                               Expanded(
                                 child: TaskList(
@@ -278,52 +261,46 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                           // Notes Tab
                           Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.sizeSmall,
-                                  vertical: AppTheme.size2XSmall,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: NoteListOptions(
-                                        search: _noteSearchQuery,
-                                        sortConfig: _sortConfig,
-                                        onSearchChange: (query) {
-                                          setState(() {
-                                            _noteSearchQuery = query;
-                                          });
-                                        },
-                                        onSortChange: (sortConfig) {
-                                          setState(() {
-                                            _sortConfig = sortConfig;
-                                          });
-                                        },
-                                        showTagFilter: false,
-                                        onSettingsLoaded: () {
-                                          setState(() {
-                                            _isNoteListVisible = true;
-                                          });
-                                        },
-                                        onSaveSettings: () {
-                                          setState(() {});
-                                        },
-                                        settingKeyVariantSuffix: _listOptionSettingKey,
-                                      ),
-                                    ),
-                                    NoteAddButton(
-                                      mini: true,
-                                      initialTagIds: [widget.tagId],
-                                      initialTitle: _noteSearchQuery,
-                                      onNoteCreated: (noteId) async {
-                                        // Open note details dialog
-                                        await _openNoteDetails(noteId);
-                                        // Refresh the list after dialog closes
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NoteListOptions(
+                                      search: _noteSearchQuery,
+                                      sortConfig: _sortConfig,
+                                      onSearchChange: (query) {
+                                        setState(() {
+                                          _noteSearchQuery = query;
+                                        });
+                                      },
+                                      onSortChange: (sortConfig) {
+                                        setState(() {
+                                          _sortConfig = sortConfig;
+                                        });
+                                      },
+                                      showTagFilter: false,
+                                      onSettingsLoaded: () {
+                                        setState(() {
+                                          _isNoteListVisible = true;
+                                        });
+                                      },
+                                      onSaveSettings: () {
                                         setState(() {});
                                       },
+                                      settingKeyVariantSuffix: _listOptionSettingKey,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  NoteAddButton(
+                                    mini: true,
+                                    initialTagIds: [widget.tagId],
+                                    initialTitle: _noteSearchQuery,
+                                    onNoteCreated: (noteId) async {
+                                      // Open note details dialog
+                                      await _openNoteDetails(noteId);
+                                      // Refresh the list after dialog closes
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
                               ),
                               if (_isNoteListVisible)
                                 Expanded(

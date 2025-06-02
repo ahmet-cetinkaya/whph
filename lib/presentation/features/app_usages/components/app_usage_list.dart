@@ -225,32 +225,31 @@ class AppUsageListState extends State<AppUsageList> {
 
     final maxDuration = _appUsageList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
-    return ListView(
+    return ListView.separated(
       controller: _scrollController,
       shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      children: [
-        ...?_appUsageList?.items.map((appUsage) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: AppUsageCard(
-                appUsage: appUsage,
-                maxDurationInListing: maxDuration!,
-                onTap: () => widget.onOpenDetails?.call(appUsage.id),
-              ),
-            )),
-
-        // Load more button
-        if (_appUsageList?.hasNext == true)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+      itemCount: _appUsageList!.items.length + (_appUsageList!.hasNext ? 1 : 0),
+      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
+      itemBuilder: (context, index) {
+        if (index == _appUsageList!.items.length) {
+          return Padding(
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
                 onPressed: _onLoadMore,
               ),
             ),
-          ),
-      ],
+          );
+        }
+
+        final appUsage = _appUsageList!.items[index];
+        return AppUsageCard(
+          appUsage: appUsage,
+          maxDurationInListing: maxDuration!,
+          onTap: () => widget.onOpenDetails?.call(appUsage.id),
+        );
+      },
     );
   }
 }

@@ -152,7 +152,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             titleKey: SyncTranslationKeys.helpTitle,
             markdownContentKey: SyncTranslationKeys.helpContent,
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: list == null || list!.items.isEmpty

@@ -188,50 +188,106 @@ class _HabitCardState extends State<HabitCard> {
 
   @override
   Widget build(BuildContext context) {
-    final cardPadding = widget.isDense
-        ? const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 0)
-        : const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeSmall);
+    final isCompactView = widget.isMiniLayout ||
+        (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
 
-    return GestureDetector(
+    return ListTile(
+      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+      tileColor: AppTheme.surface1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+      ),
+      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
       onTap: widget.onOpenDetails,
-      child: Card(
-        child: Padding(
-          padding: cardPadding,
-          child: widget.isMiniLayout ||
-                  (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall))
-              ? _buildCompactView()
-              : _buildFullView(),
-        ),
+      dense: widget.isDense,
+      leading: _buildLeading(),
+      title: _buildTitle(),
+      subtitle: _buildSubtitle(),
+      trailing: _buildTrailing(isCompactView),
+    );
+  }
+
+  // Helper method to build the leading widget (habit icon)
+  Widget _buildLeading() {
+    return Icon(
+      HabitUiConstants.habitIcon,
+      size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
+    );
+  }
+
+  // Helper method to build the title widget (habit name)
+  Widget _buildTitle() {
+    return Text(
+      widget.habit.name,
+      style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+    );
+  }
+
+  // Helper method to build the subtitle widget (tags and metadata)
+  Widget? _buildSubtitle() {
+    if (widget.isMiniLayout || (widget.habit.tags.isEmpty && widget.habit.estimatedTime == null)) {
+      return null;
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
+      child: Wrap(
+        spacing: AppTheme.sizeSmall,
+        runSpacing: AppTheme.sizeSmall / 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          _buildTagsWidget(),
+          _buildEstimatedTimeWidget(),
+        ],
       ),
     );
   }
 
-  Widget _buildCompactView() {
-    return Row(
-      children: [
-        _buildHabitInfo(),
-        _buildCheckbox(context),
-      ],
-    );
-  }
+  // Helper method to build the trailing widget (reminder icon, calendar, or checkbox)
+  Widget? _buildTrailing(bool isCompactView) {
+    if (isCompactView) {
+      // For compact view, show only checkbox
+      return _buildCheckbox(context);
+    } else {
+      // For full view, show reminder icon and calendar
+      final List<Widget> trailingWidgets = [];
 
-  Widget _buildFullView() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _buildHabitInfo(),
-        if (!widget.habit.isArchived()) ...[
-          const SizedBox(width: AppTheme.sizeSmall),
-          Align(
-            alignment: Alignment.centerRight,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: _buildCalendar(),
+      // Add reminder icon if applicable
+      if (widget.habit.hasReminder && !widget.habit.isArchived()) {
+        trailingWidgets.add(
+          Tooltip(
+            message: _getReminderTooltip(),
+            child: Icon(
+              Icons.notifications,
+              size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
-        ]
-      ],
-    );
+        );
+      }
+
+      // Add calendar if not archived
+      if (!widget.habit.isArchived()) {
+        if (trailingWidgets.isNotEmpty) {
+          trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
+        }
+        trailingWidgets.add(
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: _buildCalendar(),
+          ),
+        );
+      }
+
+      return trailingWidgets.isEmpty
+          ? null
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: trailingWidgets,
+            );
+    }
   }
 
   // Helper method to build estimated time widget
@@ -272,61 +328,6 @@ class _HabitCardState extends State<HabitCard> {
           .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
           .toList(),
       mini: true,
-    );
-  }
-
-  Widget _buildHabitInfo() {
-    return Expanded(
-      child: Row(
-        children: [
-          Icon(HabitUiConstants.habitIcon, size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge),
-          SizedBox(width: widget.isDense ? AppTheme.sizeSmall : AppTheme.sizeSmall),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Habit title
-                Text(
-                  widget.habit.name,
-                  style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-
-                // Tags and metadata section
-                if (!widget.isMiniLayout && (widget.habit.tags.isNotEmpty || widget.habit.estimatedTime != null))
-                  Padding(
-                    padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
-                    child: Wrap(
-                      spacing: AppTheme.sizeSmall,
-                      runSpacing: AppTheme.sizeSmall / 2,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        _buildTagsWidget(),
-                        _buildEstimatedTimeWidget(),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-          ),
-
-          // Reminder icon section
-          if (widget.habit.hasReminder && !widget.isMiniLayout && !widget.habit.isArchived())
-            Padding(
-              padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
-              child: Tooltip(
-                message: _getReminderTooltip(),
-                child: Icon(
-                  Icons.notifications,
-                  size: AppTheme.iconSizeSmall,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 
@@ -381,30 +382,44 @@ class _HabitCardState extends State<HabitCard> {
 
     return SizedBox(
       width: HabitUiConstants.calendarDaySize,
+      height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (widget.isDateLabelShowing) ...[
-            Text(
-              DateTimeHelper.getWeekday(localDate.weekday),
-              style: AppTheme.bodySmall.copyWith(
-                color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                DateTimeHelper.getWeekday(localDate.weekday),
+                style: AppTheme.bodySmall.copyWith(
+                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                ),
               ),
             ),
-            Text(
-              localDate.day.toString(),
-              style: AppTheme.bodySmall.copyWith(
-                color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            SizedBox(height: widget.isDense ? 1 : 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                localDate.day.toString(),
+                style: AppTheme.bodySmall.copyWith(
+                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                ),
               ),
             ),
           ],
+          const Spacer(),
           IconButton(
             padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: AppTheme.calendarIconSize, minHeight: AppTheme.calendarIconSize),
+            visualDensity: VisualDensity.compact,
+            constraints: BoxConstraints(
+              minWidth: widget.isDense ? 24 : 32,
+              minHeight: widget.isDense ? 24 : 32,
+            ),
             onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
             icon: Icon(
               hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
-              size: HabitUiConstants.calendarIconSize,
+              size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
               color: _getRecordStateColor(hasRecord, isDisabled),
             ),
           ),

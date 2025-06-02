@@ -199,14 +199,22 @@ class TagsListState extends State<TagsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._tags!.items.map((tag) => TagCard(
+          ...List.generate(_tags!.items.length, (index) {
+            final tag = _tags!.items[index];
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: index < _tags!.items.length - 1 ? AppTheme.size2XSmall : 0,
+              ),
+              child: TagCard(
                 tag: tag,
                 onOpenDetails: () => widget.onClickTag?.call(tag),
                 isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-              )),
+              ),
+            );
+          }),
           if (_tags!.hasNext)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
             ),
         ],
