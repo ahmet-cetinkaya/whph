@@ -1,6 +1,5 @@
 import 'package:whph/domain/features/tasks/task.dart';
 import 'package:whph/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/acore/time/date_time_helper.dart';
 
 /// Model class for task data used when creating or updating tasks
 class TaskData {

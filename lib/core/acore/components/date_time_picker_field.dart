@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:whph/presentation/shared/constants/app_theme.dart';
 
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
@@ -10,6 +9,11 @@ class DateTimePickerField extends StatelessWidget {
   final DateTime? maxDateTime;
   final bool showClearButton;
   final String? clearButtonTooltip;
+  final TextStyle? textStyle;
+  final TextStyle? hintStyle;
+  final InputDecoration? decoration;
+  final double? iconSize;
+  final Color? iconColor;
 
   const DateTimePickerField({
     super.key,
@@ -20,6 +24,11 @@ class DateTimePickerField extends StatelessWidget {
     this.maxDateTime,
     this.showClearButton = true,
     this.clearButtonTooltip,
+    this.textStyle,
+    this.hintStyle,
+    this.decoration,
+    this.iconSize,
+    this.iconColor,
   });
 
   // Helper method to normalize DateTime to minute precision (ignoring seconds and milliseconds)
@@ -126,60 +135,82 @@ class DateTimePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final effectiveTextStyle = textStyle ?? theme.textTheme.bodyMedium;
+    final effectiveHintStyle = hintStyle ??
+        theme.textTheme.bodyMedium?.copyWith(
+          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+        );
+    final effectiveIconSize = iconSize ?? 16.0;
+    final effectiveIconColor = iconColor ?? theme.iconTheme.color?.withValues(alpha: 0.7);
+
     return TextFormField(
       controller: controller,
       readOnly: true,
-      style: AppTheme.bodySmall.copyWith(color: AppTheme.textColor),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: AppTheme.bodySmall,
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            // Clear button
-            if (showClearButton && controller.text.isNotEmpty)
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    controller.clear();
-                    onConfirm(null);
-                  },
-                  child: Tooltip(
-                    message: clearButtonTooltip,
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.size2XSmall),
-                      child: Icon(Icons.clear, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
-                    ),
-                  ),
-                ),
-              ),
-            // Edit button
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () async {
-                  await _selectDateTime(context);
-                },
+      style: effectiveTextStyle,
+      decoration: decoration?.copyWith(
+            hintText: hintText,
+            hintStyle: effectiveHintStyle,
+            suffixIcon: _buildSuffixIcons(context, effectiveIconSize, effectiveIconColor),
+          ) ??
+          InputDecoration(
+            hintText: hintText,
+            hintStyle: effectiveHintStyle,
+            suffixIcon: _buildSuffixIcons(context, effectiveIconSize, effectiveIconColor),
+            isDense: true,
+            contentPadding: const EdgeInsets.all(0),
+          ),
+      onTap: () async {
+        await _selectDateTime(context);
+      },
+    );
+  }
+
+  Widget _buildSuffixIcons(BuildContext context, double iconSize, Color? iconColor) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // Clear button
+        if (showClearButton && controller.text.isNotEmpty)
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                controller.clear();
+                onConfirm(null);
+              },
+              child: Tooltip(
+                message: clearButtonTooltip,
                 child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.size2XSmall),
+                  padding: const EdgeInsets.all(4.0),
                   child: Icon(
-                    Icons.edit,
-                    size: AppTheme.iconSizeSmall,
-                    color: AppTheme.secondaryTextColor,
+                    Icons.clear,
+                    size: iconSize,
+                    color: iconColor,
                   ),
                 ),
               ),
             ),
-          ],
+          ),
+        // Edit button
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () async {
+              await _selectDateTime(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.edit,
+                size: iconSize,
+                color: iconColor,
+              ),
+            ),
+          ),
         ),
-        isDense: true,
-        contentPadding: const EdgeInsets.all(0),
-      ),
-      onTap: () async {
-        await _selectDateTime(context);
-      },
+      ],
     );
   }
 }
