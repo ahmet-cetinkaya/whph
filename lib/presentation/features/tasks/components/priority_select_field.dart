@@ -56,7 +56,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           ],
         ),
       ),
-      size: DialogSize.small,
+      size: DialogSize.medium,
     );
   }
 
