@@ -100,39 +100,49 @@ class _SearchFilterState extends State<SearchFilter> {
       duration: const Duration(milliseconds: 200),
       width: _isExpanded ? widget.expandedWidth : widget.iconSize * 2,
       child: _isExpanded
-          ? TextField(
-              controller: _controller,
-              autofocus: true,
-              decoration: InputDecoration(
-                isDense: widget.isDense,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: AppTheme.sizeSmall,
-                  vertical: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall,
+          ? SizedBox(
+              height: widget.isDense ? AppTheme.size2XLarge : AppTheme.size3XLarge,
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
+                style: widget.isDense ? AppTheme.bodyXSmall : null,
+                decoration: InputDecoration(
+                  isDense: widget.isDense,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: AppTheme.sizeSmall,
+                    vertical: AppTheme.sizeSmall,
+                  ),
+                  hintText:
+                      widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
+                  hintStyle: widget.isDense
+                      ? AppTheme.bodyXSmall.copyWith(color: Colors.white70)
+                      : AppTheme.bodySmall.copyWith(color: Colors.white70),
+                  suffixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.close,
+                      size: AppTheme.fontSizeSmall,
+                    ),
+                    onPressed: _toggleSearch,
+                    padding: EdgeInsets.zero,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(widget.isDense ? 12 : 20),
+                  ),
+                  fillColor: AppTheme.surface1,
                 ),
-                hintText: widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
-                hintStyle: AppTheme.bodySmall.copyWith(color: Colors.white70),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.close, size: AppTheme.fontSizeSmall),
-                  onPressed: _toggleSearch,
-                  padding: EdgeInsets.zero,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                fillColor: AppTheme.surface1,
+                onChanged: (value) {
+                  // Always call onSearch with the current value, even if it's empty
+                  widget.onSearch(value.isEmpty ? null : value);
+                },
+                // Prevent text selection on focus
+                onTap: () {
+                  if (_controller.selection.start == 0 &&
+                      _controller.selection.end == _controller.text.length &&
+                      _controller.text.isNotEmpty) {
+                    _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+                  }
+                },
               ),
-              onChanged: (value) {
-                // Always call onSearch with the current value, even if it's empty
-                widget.onSearch(value.isEmpty ? null : value);
-              },
-              // Prevent text selection on focus
-              onTap: () {
-                if (_controller.selection.start == 0 &&
-                    _controller.selection.end == _controller.text.length &&
-                    _controller.text.isNotEmpty) {
-                  _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
-                }
-              },
             )
           : FilterIconButton(
               icon: Icons.search,
