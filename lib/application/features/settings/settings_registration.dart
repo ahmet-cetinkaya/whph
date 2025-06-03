@@ -3,6 +3,7 @@ import 'package:whph/application/features/notes/services/abstraction/i_note_repo
 import 'package:whph/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/application/features/settings/commands/import_data_command.dart';
+import 'package:whph/application/features/settings/services/import_data_migration_service.dart';
 import 'package:whph/core/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/application/features/settings/commands/save_setting_command.dart';
@@ -24,7 +25,6 @@ import 'package:whph/application/features/tasks/services/abstraction/i_task_tag_
 import 'package:whph/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
-import 'package:whph/application/features/settings/services/import_data_migration_service.dart';
 
 void registerSettingsFeature(
   IContainer container,

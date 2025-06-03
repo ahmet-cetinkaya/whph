@@ -2,45 +2,79 @@ import 'package:whph/application/features/settings/services/abstraction/i_import
 import 'package:whph/domain/shared/constants/app_info.dart';
 import 'package:whph/core/acore/errors/business_exception.dart';
 import 'package:whph/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/domain/shared/utilities/semantic_version.dart';
+import 'package:whph/domain/shared/utilities/migration_registry.dart';
 
 /// Concrete implementation of import data migration service.
 ///
-/// This service handles version-specific transformations for imported data,
-/// applying migrations sequentially from the source version to the current version.
+/// This service handles version-specific transformations for imported data using semantic versioning.
+/// Migrations are defined only when needed between specific versions and applied incrementally.
 class ImportDataMigrationService implements IImportDataMigrationService {
-  // Define migration versions in chronological order
-  static const List<String> _migrationVersions = [
-    '0.6.4',
-    // Add future versions here as needed
-    // '0.6.5',
-    // '0.7.0',
-    // etc.
-  ];
+  final MigrationRegistry _migrationRegistry = MigrationRegistry();
+
+  ImportDataMigrationService() {
+    _registerMigrations();
+  }
+
+  /// Registers all available migrations.
+  ///
+  /// Add new migrations here when they are needed for future versions.
+  void _registerMigrations() {
+    // Example migration for future version 1.1.0
+    // _migrationRegistry.registerMigration(
+    //   fromVersion: '1.0.0',
+    //   toVersion: '1.1.0',
+    //   description: 'Add new task fields and update priority system',
+    //   migrationFunction: _migrateFrom100To110,
+    // );
+
+    // Currently no migrations are defined between 0.6.4 and 1.0.0
+    // This means if imported data version is 0.6.4 and current app version is 1.0.0,
+    // no processing will be done and data will be returned as-is.
+  }
 
   @override
   Future<Map<String, dynamic>> migrateData(Map<String, dynamic> data, String sourceVersion) async {
-    // Check if the source version is the same as current version
-    if (sourceVersion == AppInfo.version) {
-      return data;
-    }
+    final currentVersion = SemanticVersion.parse(AppInfo.version);
 
-    // Check if the source version is supported
-    final sourceIndex = _migrationVersions.indexOf(sourceVersion);
-    if (sourceIndex == -1) {
+    SemanticVersion sourceSemanticVersion;
+    try {
+      sourceSemanticVersion = SemanticVersion.parse(sourceVersion);
+    } catch (e) {
       throw BusinessException(
-        'Unsupported source version: $sourceVersion',
+        'Invalid source version format: $sourceVersion',
         SettingTranslationKeys.unsupportedVersionError,
         args: {'version': sourceVersion},
       );
     }
 
-    // Apply migrations sequentially from source version to current version
+    // Check if migration is needed
+    if (sourceSemanticVersion >= currentVersion) {
+      // Source version is same or newer than current version, no migration needed
+      return data;
+    }
+
+    // Get migration path from source to current version
+    final migrationSteps = _migrationRegistry.getMigrationPath(sourceSemanticVersion, currentVersion);
+
+    // If no specific migrations are defined, return data as-is
+    // This covers the case where imported data is 0.6.4 and current app is 1.0.0
+    // with no specific migrations defined between these versions
+    if (migrationSteps.isEmpty) {
+      // Update the app version in the data to reflect current version
+      final migratedData = Map<String, dynamic>.from(data);
+      migratedData['appInfo'] = {
+        ...migratedData['appInfo'] ?? {},
+        'version': AppInfo.version,
+      };
+      return migratedData;
+    }
+
+    // Apply migrations sequentially
     Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
 
-    for (int i = sourceIndex; i < _migrationVersions.length - 1; i++) {
-      final fromVersion = _migrationVersions[i];
-      final toVersion = _migrationVersions[i + 1];
-      migratedData = await _applyMigration(migratedData, fromVersion, toVersion);
+    for (final step in migrationSteps) {
+      migratedData = await step.migrationFunction(migratedData);
     }
 
     // Update the app version in the migrated data
@@ -54,75 +88,69 @@ class ImportDataMigrationService implements IImportDataMigrationService {
 
   @override
   bool isMigrationNeeded(String sourceVersion) {
-    // Check if the source version is different from current version
-    if (sourceVersion == AppInfo.version) {
+    final currentVersion = SemanticVersion.parse(AppInfo.version);
+
+    try {
+      final sourceSemanticVersion = SemanticVersion.parse(sourceVersion);
+
+      // Migration is needed if source version is older than current version
+      // and there are specific migration steps defined
+      if (sourceSemanticVersion >= currentVersion) {
+        return false;
+      }
+
+      final migrationSteps = _migrationRegistry.getMigrationPath(sourceSemanticVersion, currentVersion);
+      return migrationSteps.isNotEmpty;
+    } catch (e) {
+      // Invalid version format
       return false;
     }
-
-    // Check if the source version is supported
-    return _migrationVersions.contains(sourceVersion);
   }
 
   @override
   List<String> getAvailableMigrationVersions() {
-    return List<String>.from(_migrationVersions);
-  }
+    // Return all versions that have migrations defined
+    final versions = <String>{};
 
-  /// Applies a specific migration from one version to another.
-  ///
-  /// [data] - The data to migrate
-  /// [fromVersion] - The source version
-  /// [toVersion] - The target version
-  ///
-  /// Returns the migrated data
-  Future<Map<String, dynamic>> _applyMigration(
-    Map<String, dynamic> data,
-    String fromVersion,
-    String toVersion,
-  ) async {
-    // Apply version-specific migrations
-    switch ('${fromVersion}_to_$toVersion') {
-      // Example migration from 0.6.4 to 0.6.5 (future version)
-      // case '0.6.4_to_0.6.5':
-      //   return await _migrateFrom064To065(data);
-
-      default:
-        // If no specific migration is needed, return data as-is
-        return data;
+    for (final step in _migrationRegistry.registeredMigrations) {
+      versions.add(step.fromVersion.toString());
+      versions.add(step.toVersion.toString());
     }
+
+    // Also include current app version
+    versions.add(AppInfo.version);
+
+    final sortedVersions = versions.toList();
+    sortedVersions.sort((a, b) => SemanticVersion.parse(a).compareTo(SemanticVersion.parse(b)));
+
+    return sortedVersions;
   }
 
-  // Example migration method (for future use)
-  // Future<Map<String, dynamic>> _migrateFrom064To065(Map<String, dynamic> data) async {
-  //   // Perform specific transformations for this version change
-  //   // For example:
-  //   // - Rename fields
-  //   // - Transform data structures
-  //   // - Add default values for new fields
-  //   // - Convert enum values
-  //
+  // Example migration method for future use
+  // Future<Map<String, dynamic>> _migrateFrom100To110(Map<String, dynamic> data) async {
   //   Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
   //
-  //   // Example transformation:
-  //   // if (migratedData['tasks'] != null) {
-  //   //   final tasks = migratedData['tasks'] as List;
-  //   //   for (var task in tasks) {
-  //   //     if (task is Map<String, dynamic>) {
-  //   //       // Add new field with default value
-  //   //       task['newField'] = 'defaultValue';
-  //   //
-  //   //       // Transform priority enum values if needed
-  //   //       if (task['priority'] != null) {
-  //   //         task['priority'] = _transformPriorityValue(task['priority']);
-  //   //       }
-  //   //     }
-  //   //   }
-  //   // }
+  //   // Example: Add new task fields
+  //   if (migratedData['tasks'] != null) {
+  //     final tasks = migratedData['tasks'] as List;
+  //     for (var task in tasks) {
+  //       if (task is Map<String, dynamic>) {
+  //         // Add new field with default value
+  //         task['estimatedDuration'] = task['estimatedDuration'] ?? 0;
+  //         task['actualDuration'] = task['actualDuration'] ?? 0;
+  //
+  //         // Transform priority system if needed
+  //         if (task['priority'] != null) {
+  //           task['priority'] = _transformPriorityValue(task['priority']);
+  //         }
+  //       }
+  //     }
+  //   }
   //
   //   return migratedData;
   // }
 
-  // Helper methods for common transformations can be added here
+  // Helper methods for common transformations
 
   /// Transforms priority enum values between versions if needed.
   /// This is useful when enum order changes between versions.
