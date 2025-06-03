@@ -195,92 +195,82 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                   _refreshEverything();
                 },
               ),
-              const SizedBox(height: AppTheme.sizeSmall),
+              const SizedBox(height: AppTheme.sizeMedium),
 
               // Sub Tasks Header Section
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.sizeSmall,
-                  vertical: AppTheme.size2XSmall,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // TITLE
-                          const Icon(Icons.list),
-                          const SizedBox(width: AppTheme.sizeSmall),
-                          Flexible(
-                            child: Text(
-                              _translationService.translate(TaskTranslationKeys.subTasksLabel),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: AppTheme.sizeSmall),
-                          if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
-                            Text(
-                              '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-
-                          // FILTERS
-                          const SizedBox(width: AppTheme.sizeMedium),
-                          TaskListOptions(
-                            showCompletedTasks: _showCompletedTasks,
-                            onCompletedTasksToggle: (showCompleted) {
-                              setState(() {
-                                _showCompletedTasks = showCompleted;
-                                _listRebuildKey = UniqueKey();
-                              });
-                              Future.delayed(const Duration(milliseconds: 50), () {
-                                if (mounted) {
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    _refreshTasksList();
-                                  });
-                                }
-                              });
-                            },
-                            onSearchChange: (query) {
-                              setState(() {
-                                _searchQuery = query;
-                              });
-                              _refreshTasksList();
-                            },
-                            onSortChange: (newConfig) {
-                              setState(() {
-                                _taskSortConfig = newConfig;
-                              });
-                              _refreshTasksList();
-                            },
-                            hasItems: true,
-                            showDateFilter: false,
-                            showTagFilter: false,
-                            showSortButton: true,
-                            sortConfig: _taskSortConfig,
-                            settingKeyVariantSuffix: subTaskFilterOptionsSettingKeySuffix,
-                          )
-                        ],
-                      ),
+              Row(
+                children: [
+                  const Icon(Icons.list),
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  Flexible(
+                    child: Text(
+                      _translationService.translate(TaskTranslationKeys.subTasksLabel),
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                    Text(
+                      '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                ],
+              ),
 
-                    // ADD BUTTON
-                    if (!_showCompletedTasks)
-                      TaskAddButton(
-                        onTaskCreated: (_, __) {
-                          _refreshEverything();
-                        },
-                        initialParentTaskId: widget.taskId,
-                        initialCompleted: _showCompletedTasks,
-                      ),
+              // Sub Tasks Filter and Add Button Section
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // FILTERS - wrapped with Expanded for proper space allocation
+                  Expanded(
+                    child: TaskListOptions(
+                      showCompletedTasks: _showCompletedTasks,
+                      onCompletedTasksToggle: (showCompleted) {
+                        setState(() {
+                          _showCompletedTasks = showCompleted;
+                          _listRebuildKey = UniqueKey();
+                        });
+                        Future.delayed(const Duration(milliseconds: 50), () {
+                          if (mounted) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _refreshTasksList();
+                            });
+                          }
+                        });
+                      },
+                      onSearchChange: (query) {
+                        setState(() {
+                          _searchQuery = query;
+                        });
+                        _refreshTasksList();
+                      },
+                      onSortChange: (newConfig) {
+                        setState(() {
+                          _taskSortConfig = newConfig;
+                        });
+                        _refreshTasksList();
+                      },
+                      hasItems: true,
+                      showDateFilter: false,
+                      showTagFilter: false,
+                      showSortButton: true,
+                      sortConfig: _taskSortConfig,
+                      settingKeyVariantSuffix: subTaskFilterOptionsSettingKeySuffix,
+                    ),
+                  ),
+
+                  // ADD BUTTON
+                  if (!_showCompletedTasks) ...[
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    TaskAddButton(
+                      onTaskCreated: (_, __) {
+                        _refreshEverything();
+                      },
+                      initialParentTaskId: widget.taskId,
+                      initialCompleted: _showCompletedTasks,
+                    ),
                   ],
-                ),
+                ],
               ),
 
               // Sub Tasks List Section
