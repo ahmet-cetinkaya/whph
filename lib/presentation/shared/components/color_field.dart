@@ -54,7 +54,7 @@ class _ColorFieldState extends State<ColorField> {
 
     final selectedColor = await ResponsiveDialogHelper.showResponsiveDialog<Color>(
       context: context,
-      size: DialogSize.small,
+      size: DialogSize.medium,
       child: Scaffold(
         appBar: AppBar(
           title: Text(_translationService.translate(SharedTranslationKeys.selectColorTitle)),
