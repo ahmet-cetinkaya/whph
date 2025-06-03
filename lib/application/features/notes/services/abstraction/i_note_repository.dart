@@ -19,5 +19,5 @@ abstract class INoteRepository extends IRepository<Note, String> {
 
   /// Gets a note by ID with its associated tags included
   @override
-  Future<Note?> getById(String id);
+  Future<Note?> getById(String id, {bool includeDeleted = false});
 }

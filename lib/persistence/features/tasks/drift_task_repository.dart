@@ -52,9 +52,15 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   @override
-  Future<Task?> getById(String id) async {
+  Future<Task?> getById(String id, {bool includeDeleted = false}) async {
+    List<String> whereClauses = [
+      'id = ?',
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String whereClause = whereClauses.join(' AND ');
+
     final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE id = ?',
+      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
       variables: [Variable.withString(id.toString())],
       readsFrom: {table},
     ).getSingleOrNull();
