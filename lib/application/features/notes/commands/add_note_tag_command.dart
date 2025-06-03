@@ -36,7 +36,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
     }
 
     final id = KeyHelper.generateStringId();
-    final now = DateTimeHelper.toUtcDateTime(DateTime.now());
+    final now = DateTime.now().toUtc();
 
     final noteTag = NoteTag(
       id: id,

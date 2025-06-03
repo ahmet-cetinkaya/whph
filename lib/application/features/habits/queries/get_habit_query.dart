@@ -133,7 +133,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       final result = await _habitRecordRepository.getListByHabitIdAndRangeDate(
         habitId,
         DateTime(0).toUtc(),
-        DateTimeHelper.toUtcDateTime(DateTime.now()),
+        DateTime.now().toUtc(),
         pageIndex,
         pageSize,
       );

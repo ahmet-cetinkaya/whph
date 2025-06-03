@@ -56,7 +56,7 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
         key: SettingKeys.startAtStartup,
         value: isActive.toString(),
         valueType: SettingValueType.bool,
-        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+        createdDate: DateTime.now().toUtc(),
       ));
     }
   }

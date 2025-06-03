@@ -144,14 +144,14 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<void> add(TEntity item) async {
-    item.createdDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+    item.createdDate = DateTime.now().toUtc();
     TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
     item.id = insertedItem.id;
   }
 
   @override
   Future<void> update(TEntity item) async {
-    item.modifiedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+    item.modifiedDate = DateTime.now().toUtc();
 
     final companion = toCompanion(item);
 
@@ -160,7 +160,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<void> delete(TEntity item) async {
-    item.deletedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+    item.deletedDate = DateTime.now().toUtc();
     await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(toCompanion(item));
   }
 

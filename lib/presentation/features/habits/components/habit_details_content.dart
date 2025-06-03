@@ -1046,7 +1046,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     await _deleteHabitRecord(recordToday.id);
                   }
                 } else {
-                  await _createHabitRecord(widget.habitId, DateTimeHelper.toUtcDateTime(DateTime.now()));
+                  await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
                 }
               },
         tooltip: tooltipText,

@@ -180,7 +180,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       for (var task in tasks.items) {
         if (task.order == 0) {
           task.order = orderCounter.toDouble();
-          task.modifiedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+          task.modifiedDate = DateTime.now().toUtc();
           await _taskRepository.update(task);
           orderCounter += orderStep;
         }

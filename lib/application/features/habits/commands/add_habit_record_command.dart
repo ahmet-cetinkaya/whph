@@ -26,7 +26,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
     HabitRecord habitRecord = HabitRecord(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: DateTime.now().toUtc(),
       habitId: request.habitId,
       date: request.date,
     );

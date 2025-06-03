@@ -69,7 +69,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
       }
 
       task.order = newOrder;
-      task.modifiedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+      task.modifiedDate = DateTime.now().toUtc();
       await _taskRepository.update(task);
 
       return UpdateTaskOrderResponse(task.id, newOrder);
@@ -82,7 +82,7 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
 
       for (var t in allTasks) {
         t.order = orderStep;
-        t.modifiedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+        t.modifiedDate = DateTime.now().toUtc();
         await _taskRepository.update(t);
         orderStep += OrderRank.initialStep;
       }

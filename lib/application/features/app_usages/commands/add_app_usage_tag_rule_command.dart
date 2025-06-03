@@ -32,7 +32,7 @@ class AddAppUsageTagRuleCommandHandler
   Future<AddAppUsageTagRuleCommandResponse> call(AddAppUsageTagRuleCommand request) async {
     final rule = AppUsageTagRule(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: DateTime.now().toUtc(),
       pattern: request.pattern,
       tagId: request.tagId,
       description: request.description,

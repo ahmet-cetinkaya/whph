@@ -30,7 +30,7 @@ class SaveNoteCommandHandler implements IRequestHandler<SaveNoteCommand, SaveNot
   @override
   Future<SaveNoteCommandResponse> call(SaveNoteCommand request) async {
     final id = request.id ?? KeyHelper.generateStringId();
-    final now = DateTimeHelper.toUtcDateTime(DateTime.now());
+    final now = DateTime.now().toUtc();
 
     final existingNote = await _noteRepository.getById(id).catchError((_) => null);
 

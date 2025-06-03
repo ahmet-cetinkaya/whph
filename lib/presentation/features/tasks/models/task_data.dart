@@ -26,7 +26,7 @@ class TaskData {
       this.parentTaskId,
       this.order = 0.0,
       DateTime? createdDate})
-      : createdDate = createdDate ?? DateTimeHelper.toUtcDateTime(DateTime.now());
+      : createdDate = createdDate ?? DateTime.now().toUtc();
 
   factory TaskData.fromMap(Map<String, dynamic> map) => TaskData(
         title: map['title'] as String,
@@ -40,7 +40,7 @@ class TaskData {
         isCompleted: map['isCompleted'] as bool? ?? false,
         parentTaskId: map['parentTaskId'] as String?,
         order: (map['order'] as num?)?.toDouble() ?? 0.0,
-        createdDate: map['createdDate'] as DateTime? ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
+        createdDate: map['createdDate'] as DateTime? ?? DateTime.now().toUtc(),
       );
 
   Map<String, dynamic> toMap() => {

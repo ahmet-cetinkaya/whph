@@ -457,8 +457,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                         context: context,
                         initialDate: _recurrenceEndDate ??
                             (_recurrenceStartDate?.add(const Duration(days: 30)) ??
-                                DateTimeHelper.toUtcDateTime(DateTime.now()).add(const Duration(days: 30))),
-                        firstDate: _recurrenceStartDate ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
+                                DateTime.now().toUtc().add(const Duration(days: 30))),
+                        firstDate: _recurrenceStartDate ?? DateTime.now().toUtc(),
                         lastDate: DateTime(2100),
                       );
 
