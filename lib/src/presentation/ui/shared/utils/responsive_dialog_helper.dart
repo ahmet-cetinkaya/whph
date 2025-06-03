@@ -64,8 +64,7 @@ class ResponsiveDialogHelper {
           context: context,
           barrierDismissible: isDismissible,
           builder: (BuildContext context) {
-            return Padding(
-              padding: MediaQuery.of(context).viewInsets,
+            return Center(
               child: SingleChildScrollView(
                 child: child,
               ),
