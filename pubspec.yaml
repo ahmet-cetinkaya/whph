@@ -7,8 +7,8 @@ publish_to: "none"
 # - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
 # - Windows: product/file version components = version, build suffix = build
 #
-# Update /lib/domain/shared/constants/app_info.dart file too.
-version: 0.6.6+21
+# Update /lib/src/core/domain/shared/constants/app_info.dart file too.
+version: 0.6.7+22
 environment:
   sdk: ^3.5.3
 # https://pub.dev/packages/rps: dart pub global activate rps
@@ -109,22 +109,22 @@ flutter:
   assets:
     - linux/getActiveWindow.bash
     - windows/getActiveWindow.ps1
-    - lib/domain/shared/assets/images/
-    - lib/domain/shared/assets/images/whph_logo_adaptive_fg.png
-    - lib/domain/shared/assets/images/whph_logo_adaptive_fg.ico
-    - lib/domain/shared/assets/images/whph_logo_fg_pause.png
-    - lib/domain/shared/assets/images/whph_logo_fg_pause.ico
-    - lib/domain/shared/assets/images/whph_logo_fg_play.png
-    - lib/domain/shared/assets/images/whph_logo_fg_play.ico
-    - lib/presentation/shared/assets/sounds/
-    - lib/presentation/shared/assets/locales/
-    - lib/presentation/features/about/assets/locales/
-    - lib/presentation/features/app_usages/assets/locales/
-    - lib/presentation/features/calendar/assets/locales/
-    - lib/presentation/features/habits/assets/locales/
-    - lib/presentation/features/settings/assets/locales/
-    - lib/presentation/features/tags/assets/locales/
-    - lib/presentation/features/sync/assets/locales/
-    - lib/presentation/features/tasks/assets/locales/
-    - lib/presentation/features/tasks/assets/sounds/
-    - lib/presentation/features/notes/assets/locales/
+    - lib/src/core/domain/shared/assets/images/
+    - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.png
+    - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.ico
+    - lib/src/core/domain/shared/assets/images/whph_logo_fg_pause.png
+    - lib/src/core/domain/shared/assets/images/whph_logo_fg_pause.ico
+    - lib/src/core/domain/shared/assets/images/whph_logo_fg_play.png
+    - lib/src/core/domain/shared/assets/images/whph_logo_fg_play.ico
+    - lib/src/presentation/ui/shared/assets/sounds/
+    - lib/src/presentation/ui/shared/assets/locales/
+    - lib/src/presentation/ui/features/about/assets/locales/
+    - lib/src/presentation/ui/features/app_usages/assets/locales/
+    - lib/src/presentation/ui/features/calendar/assets/locales/
+    - lib/src/presentation/ui/features/habits/assets/locales/
+    - lib/src/presentation/ui/features/settings/assets/locales/
+    - lib/src/presentation/ui/features/tags/assets/locales/
+    - lib/src/presentation/ui/features/sync/assets/locales/
+    - lib/src/presentation/ui/features/tasks/assets/locales/
+    - lib/src/presentation/ui/features/tasks/assets/sounds/
+    - lib/src/presentation/ui/features/notes/assets/locales/
