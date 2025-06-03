@@ -314,7 +314,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   Future<void> _showLockSettingsDialog() async {
     await ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.small,
+      size: DialogSize.medium,
       child: StatefulBuilder(
         builder: (context, setDialogState) {
           return Padding(
