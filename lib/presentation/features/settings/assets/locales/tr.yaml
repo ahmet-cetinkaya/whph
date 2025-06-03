@@ -12,6 +12,7 @@ settings:
   export:
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
     error: Dışa aktarma başarısız
+    in_progress: Veriler dışa aktarılıyor, lütfen bekleyin...
     json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
     select_directory: Dışa aktarma dizinini seç
     select_path: Kayıt konumu seçin
@@ -24,6 +25,7 @@ settings:
     error: İçe aktarma başarısız
     error.entity: Hata oluşan veri türü
     in_progress: Veriler içe aktarılıyor, lütfen bekleyin...
+    migration_failed: İçeri aktarma başarısız oldu. Lütfen uygulamanın en son sürümünü yüklediğinizden emin olun.
     select_file: Dosya seçin
     strategy:
       merge: Mevcut Verilerle Birleştir
@@ -31,9 +33,8 @@ settings:
       title: İçe Aktarma Stratejisi
     success: İçe aktarma başarılı
     title: İçe Aktar
-    version_mismatch: Sürüm bulunamadı
-    migration_failed: İçeri aktarma başarısız oldu. Lütfen uygulamanın en son sürümünü yüklediğinizden emin olun.
     unsupported_version: Desteklenmeyen sürüm
+    version_mismatch: Sürüm bulunamadı
   import_export:
     description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
     select_action: İç/Dışa aktarma işlemi seçin

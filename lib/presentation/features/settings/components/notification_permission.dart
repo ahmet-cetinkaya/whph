@@ -81,10 +81,12 @@ class _NotificationPermissionState extends State<NotificationPermission> {
     try {
       final permissionGranted = await _notificationService.requestPermission();
 
-      setState(() {
-        _hasNotificationPermission = permissionGranted;
-        _showError = !permissionGranted && (Platform.isAndroid || Platform.isIOS);
-      });
+      if (mounted) {
+        setState(() {
+          _hasNotificationPermission = permissionGranted;
+          _showError = !permissionGranted && (Platform.isAndroid || Platform.isIOS);
+        });
+      }
 
       // Allow time for the system to process the permission change
       await Future.delayed(const Duration(seconds: 3));
@@ -92,9 +94,11 @@ class _NotificationPermissionState extends State<NotificationPermission> {
     } catch (e) {
       debugPrint('Error requesting notification permission: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

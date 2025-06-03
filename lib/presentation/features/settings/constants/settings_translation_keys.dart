@@ -54,6 +54,7 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String importSuccess = 'settings.import.success';
   static const String importTitle = 'settings.import.title';
   static const String importInProgress = 'settings.import.in_progress';
+  static const String exportInProgress = 'settings.export.in_progress';
 
   // Permissions
   static const String permissionFixIt = 'settings.permissions.fix_it';
