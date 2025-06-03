@@ -255,25 +255,28 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           children: [
                             // Task filters
                             Expanded(
-                              child: TaskListOptions(
-                                settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                                onSettingsLoaded: _onTaskListOptionSettingsLoaded,
-                                onSearchChange: (query) {
-                                  setState(() {
-                                    _taskSearchQuery = query;
-                                  });
-                                },
-                                showCompletedTasks: _showCompletedTasks,
-                                onCompletedTasksToggle: (showCompleted) {
-                                  setState(() {
-                                    _showCompletedTasks = showCompleted;
-                                  });
-                                },
-                                sortConfig: _taskSortConfig,
-                                onSortChange: _onSortConfigChange,
-                                hasItems: true,
-                                showDateFilter: false,
-                                showTagFilter: false,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                                child: TaskListOptions(
+                                  settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                  onSettingsLoaded: _onTaskListOptionSettingsLoaded,
+                                  onSearchChange: (query) {
+                                    setState(() {
+                                      _taskSearchQuery = query;
+                                    });
+                                  },
+                                  showCompletedTasks: _showCompletedTasks,
+                                  onCompletedTasksToggle: (showCompleted) {
+                                    setState(() {
+                                      _showCompletedTasks = showCompleted;
+                                    });
+                                  },
+                                  sortConfig: _taskSortConfig,
+                                  onSortChange: _onSortConfigChange,
+                                  hasItems: true,
+                                  showDateFilter: false,
+                                  showTagFilter: false,
+                                ),
                               ),
                             ),
 
