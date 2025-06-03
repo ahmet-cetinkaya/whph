@@ -68,11 +68,6 @@ abstract class BaseAppUsageService implements IAppUsageService {
     // Does nothing by default, platform-specific implementations can override
   }
 
-  @override
-  Future<void> getInitialAppUsages() async {
-    // Default implementation does nothing, platform-specific implementations should override
-  }
-
   Future<bool> _shouldIgnoreApp(String appName) async {
     final rules = await _appUsageIgnoreRuleRepository.getAll();
 

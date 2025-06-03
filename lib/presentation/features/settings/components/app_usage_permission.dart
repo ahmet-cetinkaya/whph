@@ -68,7 +68,6 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       // If permission was just granted, collect initial data and start tracking
       if (wasPermissionGranted) {
         try {
-          await _appUsageService.getInitialAppUsages();
           await _appUsageService.startTracking();
           widget.onPermissionGranted?.call();
         } catch (e) {
@@ -108,7 +107,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       setState(() {
         _isLoading = true;
         _showError = false;
-        _isInitialCheck = false; // No longer initial check after user interaction
+        _isInitialCheck = false;
       });
     }
 
@@ -117,8 +116,6 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
       await Future.delayed(const Duration(seconds: 3));
       await _checkPermission();
       if (_hasAppUsagePermission) {
-        // Collect initial app usage data before starting regular tracking
-        await _appUsageService.getInitialAppUsages();
         await _appUsageService.startTracking();
         widget.onPermissionGranted?.call();
       }
