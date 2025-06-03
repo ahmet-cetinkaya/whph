@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:whph/presentation/shared/constants/app_theme.dart';
 import 'package:whph/presentation/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/shared/utils/app_theme_helper.dart';
@@ -57,25 +58,28 @@ class ResponsiveDialogHelper {
       );
     } else {
       // Show as bottom sheet on mobile
-      // For minimum size, use simple modal dialog instead of bottom sheet
+      // For minimum size, use keyboard-aware modal dialog instead of bottom sheet
       if (size == DialogSize.min) {
         return showDialog<T>(
           context: context,
           barrierDismissible: isDismissible,
           builder: (BuildContext context) {
-            return child; // Completely default behavior - no Dialog wrapper, no constraints
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: SingleChildScrollView(
+                child: child,
+              ),
+            );
           },
         );
       }
 
-      // For other sizes, use bottom sheet
-      return showModalBottomSheet<T>(
+      // For other sizes, use modal bottom sheet with keyboard awareness
+      return showMaterialModalBottomSheet<T>(
         context: context,
-        isScrollControlled: true,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
-        useSafeArea: true,
-        showDragHandle: false,
+        useRootNavigator: false,
         builder: (BuildContext context) {
           final mediaQuery = MediaQuery.of(context);
           final safeAreaBottom = mediaQuery.viewPadding.bottom;
@@ -86,19 +90,22 @@ class ResponsiveDialogHelper {
           final maxHeight = availableHeight * size.mobileMaxSizeRatio;
           final initialHeight = availableHeight * size.mobileInitialSizeRatio;
 
-          return ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: maxHeight,
-            ),
-            child: SizedBox(
-              height: initialHeight,
-              child: Material(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.containerBorderRadius),
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: child,
+          return Padding(
+            padding: size == DialogSize.small ? MediaQuery.of(context).viewInsets : EdgeInsets.zero,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: maxHeight,
+              ),
+              child: SizedBox(
+                height: initialHeight,
+                child: Material(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppTheme.containerBorderRadius),
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: child,
+                  ),
                 ),
               ),
             ),

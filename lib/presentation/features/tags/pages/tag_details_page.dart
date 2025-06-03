@@ -104,9 +104,10 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.sizeMedium),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TagDetailsContent(
               tagId: widget.tagId,
@@ -116,7 +117,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
               },
             ),
             const SizedBox(height: AppTheme.sizeSmall),
-            Expanded(
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 200, // Fixed height to prevent overflow
               child: DefaultTabController(
                 length: 3,
                 child: Column(
@@ -165,153 +167,172 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                       child: TabBarView(
                         children: [
                           // Time Bar Chart Tab
-                          Column(
-                            children: [
-                              TagTimeChartOptions(
-                                selectedStartDate: _startDate,
-                                selectedEndDate: _endDate,
-                                selectedCategories: _selectedCategories,
-                                onDateFilterChange: (start, end) {
-                                  setState(() {
-                                    _startDate = start;
-                                    _endDate = end;
-                                    _barChartKey.currentState?.refresh();
-                                  });
-                                },
-                                onCategoriesChanged: (categories) {
-                                  setState(() {
-                                    _selectedCategories = categories;
-                                    _barChartKey.currentState?.refresh();
-                                  });
-                                },
-                              ),
-                              Expanded(
-                                child: TagTimeBarChart(
-                                  key: _barChartKey,
-                                  filterByTags: [widget.tagId],
-                                  startDate: _startDate,
-                                  endDate: _endDate,
+                          Padding(
+                            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TagTimeChartOptions(
+                                  selectedStartDate: _startDate,
+                                  selectedEndDate: _endDate,
                                   selectedCategories: _selectedCategories,
+                                  onDateFilterChange: (start, end) {
+                                    setState(() {
+                                      _startDate = start;
+                                      _endDate = end;
+                                      _barChartKey.currentState?.refresh();
+                                    });
+                                  },
+                                  onCategoriesChanged: (categories) {
+                                    setState(() {
+                                      _selectedCategories = categories;
+                                      _barChartKey.currentState?.refresh();
+                                    });
+                                  },
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: AppTheme.sizeSmall),
+                                Expanded(
+                                  child: TagTimeBarChart(
+                                    key: _barChartKey,
+                                    filterByTags: [widget.tagId],
+                                    startDate: _startDate,
+                                    endDate: _endDate,
+                                    selectedCategories: _selectedCategories,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
 
                           // Tasks Tab
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: TaskListOptions(
-                                      onSearchChange: (query) {
-                                        setState(() {
-                                          _taskSearchQuery = query;
-                                        });
-                                      },
-                                      showCompletedTasks: _showCompletedTasks,
-                                      onCompletedTasksToggle: (showCompleted) {
-                                        setState(() {
-                                          _showCompletedTasks = showCompleted;
-                                        });
-                                      },
-                                      showDateFilter: false,
-                                      showTagFilter: false,
-                                      hasItems: true,
-                                      sortConfig: _taskSortConfig,
-                                      onSortChange: (newConfig) {
-                                        setState(() {
-                                          _taskSortConfig = newConfig;
-                                        });
-                                      },
-                                      settingKeyVariantSuffix: _listOptionSettingKey,
-                                    ),
-                                  ),
-                                  if (!_showCompletedTasks)
-                                    TaskAddButton(
-                                      initialTagIds: [widget.tagId],
-                                      initialTitle: _taskSearchQuery,
-                                      initialCompleted: _showCompletedTasks,
-                                    ),
-                                ],
-                              ),
-                              Expanded(
-                                child: TaskList(
-                                  filterByTags: [widget.tagId],
-                                  filterByCompleted: _showCompletedTasks,
-                                  search: _taskSearchQuery,
-                                  sortConfig: _taskSortConfig,
-                                  enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
-                                  onClickTask: (task) async {
-                                    await ResponsiveDialogHelper.showResponsiveDialog(
-                                      context: context,
-                                      child: TaskDetailsPage(
-                                        taskId: task.id,
-                                        hideSidebar: true,
+                          Padding(
+                            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TaskListOptions(
+                                        onSearchChange: (query) {
+                                          setState(() {
+                                            _taskSearchQuery = query;
+                                          });
+                                        },
+                                        showCompletedTasks: _showCompletedTasks,
+                                        onCompletedTasksToggle: (showCompleted) {
+                                          setState(() {
+                                            _showCompletedTasks = showCompleted;
+                                          });
+                                        },
+                                        showDateFilter: false,
+                                        showTagFilter: false,
+                                        hasItems: true,
+                                        sortConfig: _taskSortConfig,
+                                        onSortChange: (newConfig) {
+                                          setState(() {
+                                            _taskSortConfig = newConfig;
+                                          });
+                                        },
+                                        settingKeyVariantSuffix: _listOptionSettingKey,
                                       ),
-                                      size: DialogSize.large,
-                                    );
-                                    setState(() {}); // Refresh the list after dialog closes
-                                  },
+                                    ),
+                                    if (!_showCompletedTasks) ...[
+                                      const SizedBox(width: AppTheme.sizeSmall),
+                                      TaskAddButton(
+                                        initialTagIds: [widget.tagId],
+                                        initialTitle: _taskSearchQuery,
+                                        initialCompleted: _showCompletedTasks,
+                                      ),
+                                    ],
+                                  ],
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: AppTheme.sizeSmall),
+                                Expanded(
+                                  child: TaskList(
+                                    filterByTags: [widget.tagId],
+                                    filterByCompleted: _showCompletedTasks,
+                                    search: _taskSearchQuery,
+                                    sortConfig: _taskSortConfig,
+                                    enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
+                                    onClickTask: (task) async {
+                                      await ResponsiveDialogHelper.showResponsiveDialog(
+                                        context: context,
+                                        child: TaskDetailsPage(
+                                          taskId: task.id,
+                                          hideSidebar: true,
+                                        ),
+                                        size: DialogSize.large,
+                                      );
+                                      setState(() {}); // Refresh the list after dialog closes
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
 
                           // Notes Tab
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: NoteListOptions(
-                                      search: _noteSearchQuery,
-                                      sortConfig: _sortConfig,
-                                      onSearchChange: (query) {
-                                        setState(() {
-                                          _noteSearchQuery = query;
-                                        });
-                                      },
-                                      onSortChange: (sortConfig) {
-                                        setState(() {
-                                          _sortConfig = sortConfig;
-                                        });
-                                      },
-                                      showTagFilter: false,
-                                      onSettingsLoaded: () {
-                                        setState(() {
-                                          _isNoteListVisible = true;
-                                        });
-                                      },
-                                      onSaveSettings: () {
+                          Padding(
+                            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: NoteListOptions(
+                                        search: _noteSearchQuery,
+                                        sortConfig: _sortConfig,
+                                        onSearchChange: (query) {
+                                          setState(() {
+                                            _noteSearchQuery = query;
+                                          });
+                                        },
+                                        onSortChange: (sortConfig) {
+                                          setState(() {
+                                            _sortConfig = sortConfig;
+                                          });
+                                        },
+                                        showTagFilter: false,
+                                        onSettingsLoaded: () {
+                                          setState(() {
+                                            _isNoteListVisible = true;
+                                          });
+                                        },
+                                        onSaveSettings: () {
+                                          setState(() {});
+                                        },
+                                        settingKeyVariantSuffix: _listOptionSettingKey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppTheme.sizeSmall),
+                                    NoteAddButton(
+                                      mini: true,
+                                      initialTagIds: [widget.tagId],
+                                      initialTitle: _noteSearchQuery,
+                                      onNoteCreated: (noteId) async {
+                                        // Open note details dialog
+                                        await _openNoteDetails(noteId);
+                                        // Refresh the list after dialog closes
                                         setState(() {});
                                       },
-                                      settingKeyVariantSuffix: _listOptionSettingKey,
                                     ),
-                                  ),
-                                  NoteAddButton(
-                                    mini: true,
-                                    initialTagIds: [widget.tagId],
-                                    initialTitle: _noteSearchQuery,
-                                    onNoteCreated: (noteId) async {
-                                      // Open note details dialog
-                                      await _openNoteDetails(noteId);
-                                      // Refresh the list after dialog closes
-                                      setState(() {});
-                                    },
-                                  ),
-                                ],
-                              ),
-                              if (_isNoteListVisible)
-                                Expanded(
-                                  child: NotesList(
-                                    filterByTags: [widget.tagId],
-                                    search: _noteSearchQuery,
-                                    sortConfig: _sortConfig,
-                                    onClickNote: _openNoteDetails,
-                                  ),
+                                  ],
                                 ),
-                            ],
+                                const SizedBox(height: AppTheme.sizeSmall),
+                                Expanded(
+                                  child: _isNoteListVisible
+                                      ? NotesList(
+                                          filterByTags: [widget.tagId],
+                                          search: _noteSearchQuery,
+                                          sortConfig: _sortConfig,
+                                          onClickNote: _openNoteDetails,
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
