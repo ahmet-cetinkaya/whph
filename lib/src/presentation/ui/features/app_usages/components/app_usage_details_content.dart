@@ -205,21 +205,31 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
         .toList();
 
-    // Batch process all tag operations
+    // Process tag operations sequentially
     Future<void> processTags() async {
-      // Add all tags
-      for (final tagOption in tagOptionsToAdd) {
-        await _addTagToAppUsage(tagOption.value);
-      }
+      bool hasChanges = false;
 
-      // Remove all tags
-      for (final appUsageTag in appUsageTagsToRemove) {
-        await _removeTagFromAppUsage(appUsageTag.id);
-      }
+      try {
+        // First remove tags to prevent conflicts
+        for (final appUsageTag in appUsageTagsToRemove) {
+          final success = await _removeTagFromAppUsage(appUsageTag.id);
+          if (success) hasChanges = true;
+        }
 
-      // Notify only once after all tag operations are complete
-      if (tagOptionsToAdd.isNotEmpty || appUsageTagsToRemove.isNotEmpty) {
-        _appUsagesService.notifyAppUsageUpdated(widget.id);
+        // Then add new tags
+        for (final tagOption in tagOptionsToAdd) {
+          final success = await _addTagToAppUsage(tagOption.value);
+          if (success) hasChanges = true;
+        }
+
+        // Only notify once after all operations complete successfully
+        if (hasChanges) {
+          await _getAppUsageTags(); // Refresh tags list
+          _appUsagesService.notifyAppUsageUpdated(widget.id);
+        }
+      } catch (e) {
+        // Silently refresh the tags list to ensure UI is in sync
+        await _getAppUsageTags();
       }
     }
 
@@ -338,36 +348,28 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Add the method to handle adding a tag to an app usage
   Future<bool> _addTagToAppUsage(String tagId) async {
-    final result = await AsyncErrorHandler.execute<AddAppUsageTagCommandResponse>(
-      context: context,
-      errorMessage: _translationService.translate(AppUsageTranslationKeys.addTagError),
-      operation: () async {
-        final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
-        return await _mediator.send(command);
-      },
-    );
-
-    if (result != null) {
-      await _getAppUsageTags();
-      return true;
+    try {
+      final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
+      final result = await _mediator.send(command);
+      if (result != null) {
+        return true;
+      }
+    } catch (_) {
+      // Silently handle the error
     }
     return false;
   }
 
   // Add the method to handle removing a tag from an app usage
   Future<bool> _removeTagFromAppUsage(String id) async {
-    final result = await AsyncErrorHandler.execute<RemoveAppUsageTagCommandResponse>(
-      context: context,
-      errorMessage: _translationService.translate(AppUsageTranslationKeys.removeTagError),
-      operation: () async {
-        final command = RemoveAppUsageTagCommand(id: id);
-        return await _mediator.send(command);
-      },
-    );
-
-    if (result != null) {
-      await _getAppUsageTags();
-      return true;
+    try {
+      final command = RemoveAppUsageTagCommand(id: id);
+      final result = await _mediator.send(command);
+      if (result != null) {
+        return true;
+      }
+    } catch (_) {
+      // Silently handle the error
     }
     return false;
   }
