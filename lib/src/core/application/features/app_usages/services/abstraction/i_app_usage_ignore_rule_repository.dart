@@ -1,0 +1,4 @@
+import 'package:whph/src/core/domain/features/app_usages/app_usage_ignore_rule.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
+
+abstract class IAppUsageIgnoreRuleRepository extends IRepository<AppUsageIgnoreRule, String> {}

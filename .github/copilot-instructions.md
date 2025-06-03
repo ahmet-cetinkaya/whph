@@ -27,7 +27,7 @@
 - Use `Theme.of(context)` to access theme values.
 - Avoid hardcoding styles or colors.
 - Use `.withValues()` instead of `.withOpacity()` etc. for colors to maintain consistency with the theme.
-- Use `lib/presentation/shared/constants/app_theme.dart` for theme constants.
+- Use `lib/src/presentation/ui/shared/constants/app_theme.dart` for theme constants.
 
 ## Naming Conventions
 
