@@ -139,7 +139,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
           if (existingTag == null) {
             final appUsageTag = AppUsageTag(
               id: KeyHelper.generateStringId(),
-              createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+              createdDate: DateTime.now().toUtc(),
               appUsageId: appUsage.id,
               tagId: rule.tagId,
             );

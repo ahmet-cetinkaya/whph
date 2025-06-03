@@ -33,7 +33,7 @@ class SaveTaskTimeRecordCommandHandler
 
   @override
   Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
-    final now = DateTimeHelper.toUtcDateTime(DateTime.now());
+    final now = DateTime.now().toUtc();
     final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
 

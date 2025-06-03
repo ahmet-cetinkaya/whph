@@ -67,7 +67,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
   Future<Setting> _add(Setting? setting, SaveSettingCommand request) async {
     setting = Setting(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: DateTime.now().toUtc(),
       key: request.key,
       value: request.value,
       valueType: request.valueType,

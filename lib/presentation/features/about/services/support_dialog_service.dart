@@ -41,7 +41,7 @@ class SupportDialogService implements ISupportDialogService {
       GetAppUsageStatisticsQuery(
         appUsageId: appUsage.id,
         startDate: DateTime(0).toUtc(),
-        endDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+        endDate: DateTime.now().toUtc(),
       ),
     );
 

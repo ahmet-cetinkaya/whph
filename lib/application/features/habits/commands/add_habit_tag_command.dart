@@ -38,7 +38,7 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
 
     final habitTag = HabitTag(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: DateTime.now().toUtc(),
       habitId: request.habitId,
       tagId: request.tagId,
     );

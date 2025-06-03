@@ -54,7 +54,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
     } else {
       tag = Tag(
         id: KeyHelper.generateStringId(),
-        createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+        createdDate: DateTime.now().toUtc(),
         name: request.name,
         isArchived: request.isArchived,
         color: request.color,

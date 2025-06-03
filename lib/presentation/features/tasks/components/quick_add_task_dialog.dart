@@ -187,7 +187,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             isCompleted: false,
             parentTaskId: widget.initialParentTaskId,
             order: 0.0, // Default order
-            createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+            createdDate: DateTime.now().toUtc(),
           );
 
           widget.onTaskCreated!(response.id, taskData);

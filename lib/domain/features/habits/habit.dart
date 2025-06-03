@@ -143,7 +143,7 @@ class Habit extends BaseEntity<String> {
 
   /// Archives the habit by setting archivedDate to current DateTime
   void setArchived() {
-    archivedDate = DateTimeHelper.toUtcDateTime(DateTime.now());
+    archivedDate = DateTime.now().toUtc();
   }
 
   /// Unarchives the habit by setting archivedDate to null

@@ -38,7 +38,7 @@ class AddAppUsageTagCommandHandler implements IRequestHandler<AddAppUsageTagComm
 
     final appUsageTag = AppUsageTag(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: DateTime.now().toUtc(),
       appUsageId: request.appUsageId,
       tagId: request.tagId,
     );

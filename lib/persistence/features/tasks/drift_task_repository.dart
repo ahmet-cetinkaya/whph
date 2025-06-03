@@ -174,7 +174,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Create a task with the base data
     final task = Task(
       id: data['id'] as String,
-      createdDate: convertToDateTime(data['created_date']) ?? DateTimeHelper.toUtcDateTime(DateTime.now()),
+      createdDate: convertToDateTime(data['created_date']) ?? DateTime.now().toUtc(),
       modifiedDate: convertToDateTime(data['modified_date']),
       deletedDate: convertToDateTime(data['deleted_date']),
       title: data['title'] as String,
