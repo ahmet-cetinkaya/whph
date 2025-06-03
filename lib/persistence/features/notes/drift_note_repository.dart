@@ -86,25 +86,21 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       );
     }
 
-    // Get all note_tags and their associated tags for these notes in a single query
-    final query = '''
-      WITH ValidNoteTags AS (
-        SELECT nt.*
-        FROM note_tag_table nt
-        WHERE nt.deleted_date IS NULL
-          AND nt.note_id IN (${paginatedNotes.items.map((_) => '?').join(',')})
-      )
-      SELECT vnt.*, t.name as tag_name, t.color as tag_color
-      FROM ValidNoteTags vnt
-      LEFT JOIN tag_table t ON t.id = vnt.tag_id AND t.deleted_date IS NULL
+    // Get note_tags with their associated tags for this page of notes
+    final noteIds = paginatedNotes.items.map((n) => n.id).join("','");
+    final tagQuery = '''
+      SELECT nt.*, t.name as tag_name, t.color as tag_color, t.created_date as tag_created_date
+      FROM note_tag_table nt
+      LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
+      WHERE nt.deleted_date IS NULL 
+      AND nt.note_id IN ('$noteIds')
     ''';
 
-    final variables = paginatedNotes.items.map((note) => Variable<String>(note.id)).toList();
-    final rows = await database.customSelect(query, variables: variables).get();
+    final tagRows = await database.customSelect(tagQuery).get();
 
-    // Group note_tags by note ID
+    // Group note_tags by note_id
     final noteTagsMap = <String, List<NoteTag>>{};
-    for (final row in rows) {
+    for (final row in tagRows) {
       final noteTag = NoteTag(
         id: row.read<String>('id'),
         noteId: row.read<String>('note_id'),
@@ -119,7 +115,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
         id: row.read<String>('tag_id'),
         name: row.read<String>('tag_name'),
         color: row.readNullable<String>('tag_color'),
-        createdDate: row.read<DateTime>('created_date'),
+        createdDate: row.read<DateTime>('tag_created_date'),
       );
 
       noteTagsMap.putIfAbsent(noteTag.noteId, () => []).add(noteTag);
@@ -140,8 +136,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
   }
 
   @override
-  Future<Note?> getById(String id) async {
-    final note = await super.getById(id);
+  Future<Note?> getById(String id, {bool includeDeleted = false}) async {
+    final note = await super.getById(id, includeDeleted: includeDeleted);
     if (note == null) return null;
 
     // Get note_tags and their associated tags for this note

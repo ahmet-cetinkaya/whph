@@ -38,7 +38,8 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
 
   @override
   Future<bool> anyByTaskIdAndTagId(String taskId, String tagId) async {
-    final query = database.select(table)..where((t) => t.taskId.equals(taskId) & t.tagId.equals(tagId));
+    final query = database.select(table)
+      ..where((t) => t.taskId.equals(taskId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;

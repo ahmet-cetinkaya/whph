@@ -108,9 +108,15 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   }
 
   @override
-  Future<TEntity?> getById(TEntityId id) async {
+  Future<TEntity?> getById(TEntityId id, {bool includeDeleted = false}) async {
+    List<String> whereClauses = [
+      'id = ?',
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String whereClause = whereClauses.join(' AND ');
+
     final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE id = ?',
+      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
       variables: [Variable.withString(id.toString())],
       readsFrom: {table},
     ).getSingleOrNull();
@@ -119,10 +125,16 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   }
 
   @override
-  Future<TEntity?> getFirst(CustomWhereFilter customWhereFilter) {
+  Future<TEntity?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
+    List<String> whereClauses = [
+      customWhereFilter.query,
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String whereClause = whereClauses.join(' AND ');
+
     return database
         .customSelect(
-          'SELECT * FROM ${table.actualTableName} WHERE ${customWhereFilter.query} LIMIT 1',
+          'SELECT * FROM ${table.actualTableName} WHERE $whereClause LIMIT 1',
           variables: customWhereFilter.variables.map((e) => _convertToQueryVariable(e)).toList(),
           readsFrom: {table},
         )
@@ -169,9 +181,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
     Future<List<TEntity>> queryForCreateSync() async {
       final query = 'SELECT * FROM ${table.actualTableName} WHERE created_date > ?';
-      if (kDebugMode) {
-        debugPrint('📝 CreateSync Query: $query with lastSyncDate: $lastSyncDate');
-      }
+
       final a = database.customSelect(
         query,
         variables: [Variable.withDateTime(lastSyncDate)],
@@ -182,9 +192,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
         (entity) async => entity is Future<TEntity> ? await entity : entity,
       );
       final d = await c.get();
-      if (kDebugMode) {
-        debugPrint('✅ CreateSync results: ${d.length} records');
-      }
+
       return d;
     }
 
@@ -194,9 +202,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
       // 2. modified_date IS NULL AND created_date > lastSyncDate (created after sync but never modified)
       final query =
           'SELECT * FROM ${table.actualTableName} WHERE (modified_date > ? OR (modified_date IS NULL AND created_date > ?))';
-      if (kDebugMode) {
-        debugPrint('📝 UpdateSync Query: $query with lastSyncDate: $lastSyncDate');
-      }
+
       final a = database.customSelect(
         query,
         variables: [Variable.withDateTime(lastSyncDate), Variable.withDateTime(lastSyncDate)],
@@ -207,9 +213,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
         (entity) async => entity is Future<TEntity> ? await entity : entity,
       );
       final d = await c.get();
-      if (kDebugMode) {
-        debugPrint('✅ UpdateSync results: ${d.length} records');
-      }
+
       return d;
     }
 
@@ -217,9 +221,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
       // Include only records that were actually deleted after the last sync
       // deleted_date > lastSyncDate AND deleted_date IS NOT NULL
       final query = 'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?';
-      if (kDebugMode) {
-        debugPrint('📝 DeleteSync Query: $query with lastSyncDate: $lastSyncDate');
-      }
+
       final a = database.customSelect(
         query,
         variables: [Variable.withDateTime(lastSyncDate)],
@@ -230,9 +232,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
         (entity) async => entity is Future<TEntity> ? await entity : entity,
       );
       final d = await c.get();
-      if (kDebugMode) {
-        debugPrint('✅ DeleteSync results: ${d.length} records');
-      }
+
       return d;
     }
 
