@@ -74,7 +74,6 @@ void registerInfrastructure(IContainer container) {
     final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
     final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
     final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
-    final mediator = container.resolve<Mediator>();
 
     if (Platform.isLinux) {
       return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
@@ -88,7 +87,7 @@ void registerInfrastructure(IContainer container) {
 
     if (Platform.isAndroid) {
       return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, appUsageIgnoreRuleRepository, mediator);
+          appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
 
     throw Exception('Unsupported platform for app usage service.');

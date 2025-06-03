@@ -2,19 +2,13 @@ import 'dart:async';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
-import 'package:whph/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/domain/features/settings/setting.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/presentation/shared/constants/setting_keys.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
   static final platform = MethodChannel(AndroidAppConstants.channels.backgroundService);
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
   final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
-  final Mediator _mediator;
 
   AndroidAppUsageService(
     super.appUsageRepository,
@@ -22,7 +16,6 @@ class AndroidAppUsageService extends BaseAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageIgnoreRuleRepository,
-    this._mediator,
   );
 
   @override
