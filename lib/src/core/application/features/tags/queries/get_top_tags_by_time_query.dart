@@ -65,6 +65,7 @@ class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQu
       allTagTimes.addAll(appUsageTagTimes.map((tag) => TagTimeData(
             tagId: tag.tagId,
             tagName: tag.tagName,
+            tagColor: tag.tagColor,
             duration: tag.duration,
             category: TagTimeCategory.appUsage,
           )));
@@ -81,6 +82,7 @@ class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQu
       allTagTimes.addAll(taskTagTimes.map((tag) => TagTimeData(
             tagId: tag.tagId,
             tagName: tag.tagName,
+            tagColor: tag.tagColor,
             duration: tag.duration,
             category: TagTimeCategory.tasks,
           )));
@@ -97,6 +99,7 @@ class GetTopTagsByTimeQueryHandler implements IRequestHandler<GetTopTagsByTimeQu
       allTagTimes.addAll(habitTagTimes.map((tag) => TagTimeData(
             tagId: tag.tagId,
             tagName: tag.tagName,
+            tagColor: tag.tagColor,
             duration: tag.duration,
             category: TagTimeCategory.habits,
           )));

@@ -150,7 +150,7 @@ class TagTimeChartState extends State<TagTimeChart> {
 
       sections.add(PieChartSectionData(
         color: item.tagColor != null
-            ? Color(int.parse('FF${item.tagColor}', radix: 16))
+            ? Color(int.parse('FF${item.tagColor!}', radix: 16))
             : Colors.primaries[i % Colors.primaries.length],
         value: item.duration.toDouble(),
         title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',

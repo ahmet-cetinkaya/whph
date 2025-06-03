@@ -285,7 +285,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   void _onChangeColor(Color color) {
     if (mounted) {
       setState(() {
-        _tag!.color = color.toHexString();
+        // Remove the FF prefix from the hex string if it exists
+        final hexString = color.toHexString();
+        _tag!.color = hexString.startsWith('FF') ? hexString.substring(2) : hexString;
       });
     }
     _saveTag();
