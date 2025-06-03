@@ -47,16 +47,16 @@ class TranslationKeysAnalyzer {
 
   // TranslationKey file paths
   static const translationKeyPaths = [
-    'lib/presentation/features/about/constants/about_translation_keys.dart',
-    'lib/presentation/features/app_usages/constants/app_usage_translation_keys.dart',
-    'lib/presentation/features/calendar/constants/calendar_translation_keys.dart',
-    'lib/presentation/features/habits/constants/habit_translation_keys.dart',
-    'lib/presentation/features/notes/constants/note_translation_keys.dart',
-    'lib/presentation/features/settings/constants/settings_translation_keys.dart',
-    'lib/presentation/features/sync/constants/sync_translation_keys.dart',
-    'lib/presentation/features/tags/constants/tag_translation_keys.dart',
-    'lib/presentation/features/tasks/constants/task_translation_keys.dart',
-    'lib/presentation/shared/constants/shared_translation_keys.dart',
+    'lib/src/presentation/ui/features/about/constants/about_translation_keys.dart',
+    'lib/src/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart',
+    'lib/src/presentation/ui/features/calendar/constants/calendar_translation_keys.dart',
+    'lib/src/presentation/ui/features/habits/constants/habit_translation_keys.dart',
+    'lib/src/presentation/ui/features/notes/constants/note_translation_keys.dart',
+    'lib/src/presentation/ui/features/settings/constants/settings_translation_keys.dart',
+    'lib/src/presentation/ui/features/sync/constants/sync_translation_keys.dart',
+    'lib/src/presentation/ui/features/tags/constants/tag_translation_keys.dart',
+    'lib/src/presentation/ui/features/tasks/constants/task_translation_keys.dart',
+    'lib/src/presentation/ui/shared/constants/shared_translation_keys.dart',
     'lib/application/features/about/constants/about_translation_keys.dart',
     'lib/application/features/app_usages/constants/app_usage_translation_keys.dart',
     'lib/application/features/calendar/constants/calendar_translation_keys.dart',
@@ -169,9 +169,9 @@ class TranslationKeysAnalyzer {
   /// Creates YAML file path for feature and language
   String _getYamlPathForFeature(String featureName, String language) {
     if (featureName == 'shared') {
-      return 'lib/presentation/shared/assets/locales/$language.yaml';
+      return 'lib/src/presentation/ui/shared/assets/locales/$language.yaml';
     }
-    return 'lib/presentation/features/$featureName/assets/locales/$language.yaml';
+    return 'lib/src/presentation/ui/features/$featureName/assets/locales/$language.yaml';
   }
 
   /// Checks if a specific translation key exists in YAML data
