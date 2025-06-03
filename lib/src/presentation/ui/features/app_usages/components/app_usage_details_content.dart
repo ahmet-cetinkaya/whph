@@ -240,15 +240,14 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   void _onChangeColor(Color color) {
     if (mounted) {
       setState(() {
-        _appUsage!.color = color.toHexString();
+        // Remove the FF prefix from the hex string if it exists
+        final hexString = color.toHexString();
+        _appUsage!.color = hexString.startsWith('FF') ? hexString.substring(2) : hexString;
       });
     }
 
     // Save the app usage with the new color
     _saveAppUsage();
-
-    // Notify that app usage has been updated with the color change
-    _appUsagesService.notifyAppUsageUpdated(widget.id);
   }
 
   // Process field content and update UI after app usage data is loaded
