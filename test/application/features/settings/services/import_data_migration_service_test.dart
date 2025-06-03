@@ -12,46 +12,68 @@ void main() {
 
     group('isMigrationNeeded', () {
       test('should return false when versions are equal', () {
-        // Act
-        final result = migrationService.isMigrationNeeded('0.6.4');
+        // Act - Current app version is 1.0.0
+        final result = migrationService.isMigrationNeeded('1.0.0');
 
         // Assert
         expect(result, false);
       });
 
-      test('should return true when imported version is supported and different', () {
-        // Note: This test would pass when we have an older supported version
-        // For now, testing with the current version infrastructure
-
-        // Act
+      test('should return false when no specific migrations are defined', () {
+        // Act - Testing migration from 0.6.4 to current version 1.0.0
+        // No migrations are defined between these versions, so should return false
         final result = migrationService.isMigrationNeeded('0.6.4');
 
         // Assert
-        expect(result, false); // Since 0.6.4 is the current version
+        expect(result, false); // No specific migrations defined, so no migration needed
       });
 
-      test('should return false for unsupported versions', () {
+      test('should return false when source version is newer than current', () {
         // Act
-        final result = migrationService.isMigrationNeeded('0.5.0');
+        final result = migrationService.isMigrationNeeded('1.1.0');
 
         // Assert
-        expect(result, false); // Unsupported versions return false
+        expect(result, false); // Newer versions don't need migration
+      });
+
+      test('should return false for invalid version formats', () {
+        // Act
+        final result = migrationService.isMigrationNeeded('invalid-version');
+
+        // Assert
+        expect(result, false); // Invalid versions return false
       });
     });
 
     group('getAvailableMigrationVersions', () {
-      test('should return list of available migration versions', () {
+      test('should return list containing current app version when no migrations are defined', () {
         // Act
         final versions = migrationService.getAvailableMigrationVersions();
 
         // Assert
         expect(versions, isNotEmpty);
-        expect(versions, contains('0.6.4'));
+        expect(versions, contains('1.0.0')); // Should contain current app version
       });
     });
 
     group('migrateData', () {
-      test('should return same data when no migration is needed', () async {
+      test('should return same data when versions are equal', () async {
+        // Arrange
+        final testData = {
+          'version': '1.0.0',
+          'tags': [
+            {'id': '1', 'name': 'Test Tag'}
+          ]
+        };
+
+        // Act
+        final result = await migrationService.migrateData(testData, '1.0.0');
+
+        // Assert
+        expect(result, equals(testData));
+      });
+
+      test('should update app version when no specific migrations are defined', () async {
         // Arrange
         final testData = {
           'version': '0.6.4',
@@ -64,33 +86,35 @@ void main() {
         final result = await migrationService.migrateData(testData, '0.6.4');
 
         // Assert
-        expect(result, equals(testData));
+        // Data should be preserved as-is, but app version should be updated
+        expect(result['version'], equals('0.6.4')); // Original version should be preserved
+        expect(result['tags'], equals(testData['tags'])); // Tags should be preserved
+        expect(result['appInfo']['version'], equals('1.0.0')); // App version should be updated to current
       });
 
-      test('should migrate data when migration is available', () async {
+      test('should return data as-is when source version is newer', () async {
         // Arrange
         final testData = {
-          'version': '0.6.4',
+          'version': '1.1.0',
           'tags': [
             {'id': '1', 'name': 'Test Tag'}
           ]
         };
 
         // Act
-        final result = await migrationService.migrateData(testData, '0.6.4');
+        final result = await migrationService.migrateData(testData, '1.1.0');
 
         // Assert
-        // Since no actual migration exists yet, data should remain the same
-        expect(result, equals(testData));
+        expect(result, equals(testData)); // No migration needed for newer versions
       });
 
-      test('should throw exception for unsupported version migration', () async {
+      test('should throw exception for invalid version format', () async {
         // Arrange
-        final testData = {'version': '0.5.0', 'tags': []};
+        final testData = {'version': 'invalid-version', 'tags': []};
 
         // Act & Assert
         expect(
-          () => migrationService.migrateData(testData, '0.5.0'),
+          () => migrationService.migrateData(testData, 'invalid-version'),
           throwsA(isA<BusinessException>()),
         );
       });
@@ -99,28 +123,62 @@ void main() {
         // Arrange
         final testData = <String, dynamic>{};
 
-        // Act & Assert
-        expect(
-          () => migrationService.migrateData(testData, '0.6.3'),
-          throwsA(isA<BusinessException>()),
-        );
+        // Act
+        final result = await migrationService.migrateData(testData, '0.6.4');
+
+        // Assert
+        // Should not throw and should add appInfo
+        expect(result['appInfo']['version'], equals('1.0.0'));
+      });
+    });
+
+    group('Semantic Versioning', () {
+      test('should handle different semantic version formats', () async {
+        // Arrange
+        final testData = {'version': '0.6.4', 'tags': []};
+
+        // Test various version formats
+        final versions = ['0.6.4', '0.6.4-alpha', '0.6.4+build.1', 'v0.6.4'];
+
+        for (final version in versions) {
+          // Act
+          final result = await migrationService.migrateData(testData, version);
+
+          // Assert
+          expect(result['appInfo']['version'], equals('1.0.0'));
+        }
+      });
+
+      test('should correctly compare semantic versions', () {
+        // Test version comparison logic
+        final olderVersions = ['0.5.0', '0.6.3', '0.6.4-beta', '0.9.9'];
+        final newerVersions = ['1.0.1', '1.1.0', '2.0.0'];
+
+        for (final version in olderVersions) {
+          expect(migrationService.isMigrationNeeded(version), false); // No migrations defined
+        }
+
+        for (final version in newerVersions) {
+          expect(migrationService.isMigrationNeeded(version), false); // Newer versions don't need migration
+        }
       });
     });
 
     group('Migration Infrastructure', () {
-      test('should handle sequential migration versions correctly', () {
+      test('should support future migration registration', () {
+        // This test demonstrates the extensibility of the system
+        // Future migrations would be registered in the _registerMigrations method
+
         // Arrange
         final versions = migrationService.getAvailableMigrationVersions();
 
         // Act & Assert
         expect(versions, isA<List<String>>());
-        expect(versions.isNotEmpty, true);
+        expect(versions.contains('1.0.0'), true); // Current version should be included
 
-        // Verify the versions can be used for migration logic
-        for (String version in versions) {
-          expect(version, isNotEmpty);
-          expect(migrationService.isMigrationNeeded(version), false); // Same version shouldn't need migration
-        }
+        // The system is ready to handle future migrations when they are defined
+        // For example, when a migration from 1.0.0 to 1.1.0 is added,
+        // the system will automatically detect and apply it
       });
     });
   });
