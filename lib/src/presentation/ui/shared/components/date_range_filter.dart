@@ -36,18 +36,25 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   late TextEditingController _startDateController;
   late TextEditingController _endDateController;
   final _translationService = container.resolve<ITranslationService>();
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _selectedStartDate = widget.selectedStartDate;
     _selectedEndDate = widget.selectedEndDate;
-    _startDateController = TextEditingController(
-      text: _formatDateForDisplay(_selectedStartDate),
-    );
-    _endDateController = TextEditingController(
-      text: _formatDateForDisplay(_selectedEndDate),
-    );
+    _startDateController = TextEditingController();
+    _endDateController = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _startDateController.text = _formatDateForDisplay(_selectedStartDate);
+      _endDateController.text = _formatDateForDisplay(_selectedEndDate);
+      _isInitialized = true;
+    }
   }
 
   @override
@@ -72,7 +79,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   String _formatDateForDisplay(DateTime? date) {
     if (date == null) return '';
-    return DateTimeHelper.formatDate(date);
+    final locale = Localizations.localeOf(context);
+    return DateTimeHelper.formatDate(date, locale: locale);
   }
 
   void _updateDateInput(String value, bool isStartDate) {

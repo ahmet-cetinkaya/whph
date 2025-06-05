@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/corePackages/acore/time/week_days.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -111,13 +111,15 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
   void _updateControllers() {
     // Format dates for controllers
     if (_recurrenceStartDate != null) {
-      _startDateController.text = DateTimeHelper.formatDateTime(_recurrenceStartDate);
+      _startDateController.text =
+          DateFormatService.formatForDisplay(_recurrenceStartDate!, context, type: DateFormatType.dateTime);
     } else {
       _startDateController.clear();
     }
 
     if (_recurrenceEndDate != null) {
-      _endDateController.text = DateTimeHelper.formatDateTime(_recurrenceEndDate);
+      _endDateController.text =
+          DateFormatService.formatForDisplay(_recurrenceEndDate!, context, type: DateFormatType.dateTime);
     } else {
       _endDateController.clear();
     }
@@ -343,11 +345,11 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
                     );
-
                     if (pickedDate != null) {
                       setState(() {
                         _recurrenceStartDate = pickedDate;
-                        _startDateController.text = DateTimeHelper.formatDateTime(_recurrenceStartDate);
+                        _startDateController.text = DateFormatService.formatForDisplay(_recurrenceStartDate!, context,
+                            type: DateFormatType.dateTime);
                       });
                       widget.onRecurrenceStartDateChanged(pickedDate);
                     }
@@ -465,7 +467,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                       if (pickedDate != null) {
                         setState(() {
                           _recurrenceEndDate = pickedDate;
-                          _endDateController.text = DateTimeHelper.formatDateTime(_recurrenceEndDate);
+                          _endDateController.text = DateFormatService.formatForDisplay(_recurrenceEndDate!, context,
+                              type: DateFormatType.dateTime);
                         });
                         widget.onRecurrenceEndDateChanged(pickedDate);
                       }
