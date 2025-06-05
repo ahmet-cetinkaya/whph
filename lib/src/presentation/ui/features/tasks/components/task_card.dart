@@ -14,6 +14,7 @@ import 'package:whph/src/presentation/ui/features/tasks/constants/task_translati
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/src/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/schedule_button.dart';
 
@@ -143,11 +144,11 @@ class TaskCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: isDense ? 1 : 2),
-          _buildMetadataRow(),
+          _buildMetadataRow(context),
         ],
       );
 
-  Widget _buildMetadataRow() {
+  Widget _buildMetadataRow(BuildContext context) {
     final spacing = isDense ? 4.0 : 8.0;
 
     return Wrap(
@@ -168,7 +169,7 @@ class TaskCard extends StatelessWidget {
           ),
 
         // Date/Time elements
-        if (_hasDateTimeOrMetadata) ..._buildDateTimeElements(),
+        if (_hasDateTimeOrMetadata) ..._buildDateTimeElements(context),
 
         // Completion percentage for subtasks
         if (taskItem.subTasks.isNotEmpty && taskItem.subTasksCompletionPercentage > 0)
@@ -189,8 +190,8 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return DateTimeHelper.formatDateTime(date);
+  String _formatDate(DateTime date, BuildContext context) {
+    return DateFormatService.formatForDisplay(date, context, type: DateFormatType.dateTime);
   }
 
   Color _getDateColor(DateTime date) {
@@ -209,14 +210,14 @@ class TaskCard extends StatelessWidget {
     return Colors.grey;
   }
 
-  List<Widget> _buildDateTimeElements() {
+  List<Widget> _buildDateTimeElements(BuildContext context) {
     final List<Widget> elements = [];
 
     // Planned date
     if (taskItem.plannedDate != null) {
       elements.add(Label.single(
         icon: Icons.event,
-        text: _formatDate(taskItem.plannedDate!),
+        text: _formatDate(taskItem.plannedDate!, context),
         color: _getDateColor(taskItem.plannedDate!),
         mini: isDense,
       ));
@@ -226,7 +227,7 @@ class TaskCard extends StatelessWidget {
     if (taskItem.deadlineDate != null) {
       elements.add(Label.single(
         icon: Icons.event_available,
-        text: _formatDate(taskItem.deadlineDate!),
+        text: _formatDate(taskItem.deadlineDate!, context),
         color: _getDateColor(taskItem.deadlineDate!),
         mini: isDense,
       ));

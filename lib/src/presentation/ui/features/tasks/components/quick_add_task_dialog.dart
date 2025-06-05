@@ -18,6 +18,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 
@@ -91,10 +92,18 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     // Initialize date controllers with format matching DateTimePickerField
     if (_plannedDate != null) {
-      _plannedDateController.text = DateTimeHelper.formatDateTime(_plannedDate!, format: 'yyyy-MM-dd HH:mm');
+      _plannedDateController.text = DateFormatService.formatForInput(
+        _plannedDate!,
+        context,
+        type: DateFormatType.dateTime,
+      );
     }
     if (_deadlineDate != null) {
-      _deadlineDateController.text = DateTimeHelper.formatDateTime(_deadlineDate!, format: 'yyyy-MM-dd HH:mm');
+      _deadlineDateController.text = DateFormatService.formatForInput(
+        _deadlineDate!,
+        context,
+        type: DateFormatType.dateTime,
+      );
     }
   }
 
@@ -125,7 +134,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       if (!_lockPlannedDate) {
         _plannedDate = widget.initialPlannedDate;
         if (_plannedDate != null) {
-          _plannedDateController.text = DateTimeHelper.formatDateTime(_plannedDate!, format: 'yyyy-MM-dd HH:mm');
+          _plannedDateController.text = DateFormatService.formatForInput(
+            _plannedDate!,
+            context,
+            type: DateFormatType.dateTime,
+          );
         } else {
           _plannedDateController.clear();
         }
@@ -133,7 +146,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       if (!_lockDeadlineDate) {
         _deadlineDate = widget.initialDeadlineDate;
         if (_deadlineDate != null) {
-          _deadlineDateController.text = DateTimeHelper.formatDateTime(_deadlineDate!, format: 'yyyy-MM-dd HH:mm');
+          _deadlineDateController.text = DateFormatService.formatForInput(
+            _deadlineDate!,
+            context,
+            type: DateFormatType.dateTime,
+          );
         } else {
           _deadlineDateController.clear();
         }
@@ -215,7 +232,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (selectedDateTime != null) {
       setState(() {
         _plannedDate = selectedDateTime;
-        _plannedDateController.text = DateTimeHelper.formatDateTime(selectedDateTime, format: 'yyyy-MM-dd HH:mm');
+        _plannedDateController.text = DateFormatService.formatForInput(
+          selectedDateTime,
+          context,
+          type: DateFormatType.dateTime,
+        );
       });
     }
   }
@@ -229,7 +250,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (selectedDateTime != null) {
       setState(() {
         _deadlineDate = selectedDateTime;
-        _deadlineDateController.text = DateTimeHelper.formatDateTime(selectedDateTime, format: 'yyyy-MM-dd HH:mm');
+        _deadlineDateController.text = DateFormatService.formatForInput(
+          selectedDateTime,
+          context,
+          type: DateFormatType.dateTime,
+        );
       });
     }
   }

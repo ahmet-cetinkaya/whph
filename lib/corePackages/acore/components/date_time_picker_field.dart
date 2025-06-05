@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../time/date_format_service.dart';
 
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
@@ -123,8 +123,12 @@ class DateTimePickerField extends StatelessWidget {
           return;
         }
 
-        // Format the date for display
-        final String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDateTime);
+        // Format the date for display using centralized service
+        final String formattedDateTime = DateFormatService.formatForInput(
+          pickedDateTime,
+          context,
+          type: DateFormatType.dateTime,
+        );
         controller.text = formattedDateTime;
 
         // Call the callback with the selected date in local timezone

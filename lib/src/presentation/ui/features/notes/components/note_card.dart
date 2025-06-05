@@ -95,7 +95,7 @@ class NoteCard extends StatelessWidget {
                         ),
                         const SizedBox(width: AppTheme.size3XSmall),
                         Text(
-                          _formatDateTime(note.updatedAt!),
+                          _formatDateTime(note.updatedAt!, context),
                           style: TextStyle(
                             color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                           ),
@@ -111,45 +111,24 @@ class NoteCard extends StatelessWidget {
     );
   }
 
-  String _formatDateTime(DateTime dateTime) {
+  String _formatDateTime(DateTime dateTime, BuildContext context) {
     final now = DateTime.now();
     final localDateTime = DateTimeHelper.toLocalDateTime(dateTime);
     final difference = now.difference(localDateTime);
+    final locale = Localizations.localeOf(context);
 
     if (difference.inDays == 0) {
       // Today, show time
-      return 'Today ${DateTimeHelper.formatTime(localDateTime)}';
+      return 'Today ${DateTimeHelper.formatTime(localDateTime, locale: locale)}';
     } else if (difference.inDays == 1) {
       // Yesterday
       return 'Yesterday';
     } else if (difference.inDays < 7) {
-      // This week
-      final weekday = _getWeekdayName(localDateTime.weekday);
-      return weekday;
+      // This week - use localized weekday name
+      return DateTimeHelper.getWeekday(localDateTime.weekday, locale);
     } else {
       // Older than a week
-      return DateTimeHelper.formatDate(localDateTime);
-    }
-  }
-
-  String _getWeekdayName(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Monday';
-      case 2:
-        return 'Tuesday';
-      case 3:
-        return 'Wednesday';
-      case 4:
-        return 'Thursday';
-      case 5:
-        return 'Friday';
-      case 6:
-        return 'Saturday';
-      case 7:
-        return 'Sunday';
-      default:
-        return '';
+      return DateTimeHelper.formatDate(localDateTime, locale: locale);
     }
   }
 }

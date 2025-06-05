@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/src/core/application/features/tasks/commands/add_task_tag_command.dart';
@@ -34,6 +33,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.da
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/optional_field_chip.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/corePackages/acore/components/numeric_input.dart';
 
@@ -177,28 +177,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     await _getInitialData();
   }
 
-  /// Check if there are any unsaved changes by comparing form values with task data
-  bool _hasUnsavedChanges() {
-    if (_task == null) return false;
-
-    // Check if title has changed
-    if (_titleController.text != _task!.title) return true;
-
-    // Check if description has changed
-    final currentDescription = _task!.description ?? '';
-    if (_descriptionController.text != currentDescription) return true;
-
-    // Check if planned date has changed
-    final currentPlannedDate = _task!.plannedDate != null ? DateTimeHelper.formatDateTime(_task!.plannedDate) : '';
-    if (_plannedDateController.text != currentPlannedDate) return true;
-
-    // Check if deadline date has changed
-    final currentDeadlineDate = _task!.deadlineDate != null ? DateTimeHelper.formatDateTime(_task!.deadlineDate) : '';
-    if (_deadlineDateController.text != currentDeadlineDate) return true;
-
-    return false;
-  }
-
   @override
   void dispose() {
     // If there's a pending debounced update, save immediately before disposing
@@ -207,8 +185,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Save immediately without debounce when disposing
       // We can't await in dispose, but we can start the save operation
       _saveTaskImmediately();
-    } else if (_hasUnsavedChanges()) {
-      // Check if there are any unsaved changes and save them
+    } else {
+      // Always save on dispose to ensure no data loss, avoid context access in dispose
       _saveTaskImmediately();
     }
 
@@ -230,6 +208,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   Future<void> _getTask() async {
+    if (kDebugMode) {
+      print('Refreshing task data for task ${widget.taskId}');
+    }
+
     await AsyncErrorHandler.execute<GetTaskQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
@@ -239,6 +221,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       },
       onSuccess: (response) {
         if (!mounted) return;
+
+        if (kDebugMode) {
+          print('Task refresh successful: planned=${response.plannedDate}, deadline=${response.deadlineDate}');
+        }
 
         // Store current selections before updating
         final titleSelection = _titleController.selection;
@@ -277,9 +263,28 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ];
 
           // Only update planned date if it's different - handle conversion in presentation layer
-          final plannedDateText = _task!.plannedDate != null ? DateTimeHelper.formatDateTime(_task!.plannedDate) : '';
+          final plannedDateText = _task!.plannedDate != null
+              ? DateFormatService.formatForDisplay(_task!.plannedDate, context, type: DateFormatType.dateTime)
+              : '';
+
+          if (kDebugMode) {
+            print(
+                'Updating planned date: server=${_task!.plannedDate}, formatted="$plannedDateText", current="${_plannedDateController.text}"');
+          }
+
+          // Only update if different and preserve user input if server returned null unexpectedly
           if (_plannedDateController.text != plannedDateText) {
-            _plannedDateController.text = plannedDateText;
+            // Check if we're clearing a user-entered date due to server issue
+            if (plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty) {
+              if (kDebugMode) {
+                print(
+                    'Warning: Server returned null planned date, preserving user input: "${_plannedDateController.text}"');
+              }
+              // Don't clear the field if user had entered a date but server returned null
+              // This could happen if save failed or there was a parsing issue
+            } else {
+              _plannedDateController.text = plannedDateText;
+            }
             // Don't restore selection if text changed
           } else if (plannedDateSelection.isValid) {
             // Restore selection if text didn't change
@@ -287,10 +292,27 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           }
 
           // Only update deadline date if it's different - handle conversion in presentation layer
-          final deadlineDateText =
-              _task!.deadlineDate != null ? DateTimeHelper.formatDateTime(_task!.deadlineDate) : '';
+          final deadlineDateText = _task!.deadlineDate != null
+              ? DateFormatService.formatForDisplay(_task!.deadlineDate, context, type: DateFormatType.dateTime)
+              : '';
+
+          if (kDebugMode) {
+            print(
+                'Updating deadline date: server=${_task!.deadlineDate}, formatted="$deadlineDateText", current="${_deadlineDateController.text}"');
+          }
+
+          // Only update if different and preserve user input if server returned null unexpectedly
           if (_deadlineDateController.text != deadlineDateText) {
-            _deadlineDateController.text = deadlineDateText;
+            // Check if we're clearing a user-entered date due to server issue
+            if (deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty) {
+              if (kDebugMode) {
+                print(
+                    'Warning: Server returned null deadline date, preserving user input: "${_deadlineDateController.text}"');
+              }
+              // Don't clear the field if user had entered a date but server returned null
+            } else {
+              _deadlineDateController.text = deadlineDateText;
+            }
             // Don't restore selection if text changed
           } else if (deadlineDateSelection.isValid) {
             // Restore selection if text didn't change
@@ -363,26 +385,52 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     if (controller.text.isEmpty) return null;
 
     try {
-      try {
-        return DateTimeHelper.toUtcDateTime(DateTime.parse(controller.text));
-      } catch (e) {
-        final parsedDate = _parseAlternativeDateTime(controller.text);
-        if (parsedDate != null) {
-          return DateTimeHelper.toUtcDateTime(parsedDate);
-        }
+      // Use DateFormatService.parseFromInput to match the format used in formatForDisplay
+      final parsedDate = DateFormatService.parseFromInput(controller.text, context);
+      final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
+
+      if (kDebugMode) {
+        print('Parsing date controller: "${controller.text}" -> $result');
       }
+
+      return result;
     } catch (e) {
       if (kDebugMode) {
-        print('Error parsing date: ${controller.text}, Error: $e');
+        print('Error parsing date: "${controller.text}", Error: $e');
       }
+      // Return null on parse error to avoid corrupting data
+      return null;
     }
-    return null;
   }
 
   /// Helper method to build save command with current form data
   SaveTaskCommand _buildSaveCommand() {
     final plannedDate = _parseDateFromController(_plannedDateController);
     final deadlineDate = _parseDateFromController(_deadlineDateController);
+
+    if (kDebugMode) {
+      print('Building save command with dates:');
+      print('  Planned date text: "${_plannedDateController.text}" -> $plannedDate');
+      print('  Deadline date text: "${_deadlineDateController.text}" -> $deadlineDate');
+    }
+
+    // Validate that if user entered date text, it was successfully parsed
+    if (_plannedDateController.text.isNotEmpty && plannedDate == null) {
+      if (kDebugMode) {
+        print('ERROR: Failed to parse planned date: "${_plannedDateController.text}"');
+        print('This should not happen with the improved parsing. Please report this format.');
+      }
+      // Clear the invalid text to prevent user confusion
+      _plannedDateController.clear();
+    }
+    if (_deadlineDateController.text.isNotEmpty && deadlineDate == null) {
+      if (kDebugMode) {
+        print('ERROR: Failed to parse deadline date: "${_deadlineDateController.text}"');
+        print('This should not happen with the improved parsing. Please report this format.');
+      }
+      // Clear the invalid text to prevent user confusion
+      _deadlineDateController.clear();
+    }
 
     final recurrenceStartDate =
         _task!.recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(_task!.recurrenceStartDate!) : null;
@@ -414,11 +462,20 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   /// Helper method to execute save command
   Future<void> _executeSaveCommand(SaveTaskCommand saveCommand) async {
+    if (kDebugMode) {
+      print('Executing save command for task ${saveCommand.id}');
+      print('  Planned date: ${saveCommand.plannedDate}');
+      print('  Deadline date: ${saveCommand.deadlineDate}');
+    }
+
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
       operation: () => _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand),
       onSuccess: (result) {
+        if (kDebugMode) {
+          print('Save command succeeded for task ${result.id}');
+        }
         _tasksService.notifyTaskUpdated(result.id);
         widget.onTaskUpdated?.call();
         // Removed _getTask() call to prevent race condition with title editing
@@ -573,81 +630,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       final saveCommand = _buildSaveCommand();
       await _executeSaveCommand(saveCommand);
     });
-  }
-
-  // Helper method to parse alternative date formats
-  DateTime? _parseAlternativeDateTime(String dateStr) {
-    if (dateStr.isEmpty) return null;
-
-    try {
-      // Handle formats like "6/3/2025 03:11", "6/3/2025", "2025-06-03 15:11", etc.
-
-      // Try common US format: M/d/yyyy H:mm or M/d/yyyy
-      final usDateTimeRegex = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
-      final usMatch = usDateTimeRegex.firstMatch(dateStr);
-      if (usMatch != null) {
-        final month = int.parse(usMatch.group(1)!);
-        final day = int.parse(usMatch.group(2)!);
-        final year = int.parse(usMatch.group(3)!);
-        final hour = usMatch.group(4) != null ? int.parse(usMatch.group(4)!) : 0;
-        final minute = usMatch.group(5) != null ? int.parse(usMatch.group(5)!) : 0;
-
-        return DateTime(year, month, day, hour, minute);
-      }
-
-      // Try European format: d/M/yyyy H:mm or d/M/yyyy
-      final euDateTimeRegex = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
-      final euMatch = euDateTimeRegex.firstMatch(dateStr);
-      if (euMatch != null) {
-        final day = int.parse(euMatch.group(1)!);
-        final month = int.parse(euMatch.group(2)!);
-        final year = int.parse(euMatch.group(3)!);
-        final hour = euMatch.group(4) != null ? int.parse(euMatch.group(4)!) : 0;
-        final minute = euMatch.group(5) != null ? int.parse(euMatch.group(5)!) : 0;
-
-        // Validate date to determine which format (US vs EU)
-        if (month <= 12 && day <= 12) {
-          // Ambiguous - use US format by default (month/day/year)
-          return DateTime(year, day, month, hour, minute);
-        } else if (day <= 12 && month <= 31) {
-          // European format (day/month/year)
-          return DateTime(year, month, day, hour, minute);
-        } else if (month <= 12 && day <= 31) {
-          // US format (month/day/year)
-          return DateTime(year, month, day, hour, minute);
-        }
-      }
-
-      // Fallback: try to use DateFormat to parse
-      try {
-        // Try different date formats
-        final formats = [
-          'M/d/yyyy H:mm',
-          'd/M/yyyy H:mm',
-          'M/d/yyyy',
-          'd/M/yyyy',
-          'yyyy-MM-dd H:mm',
-          'yyyy-MM-dd HH:mm',
-          'yyyy-MM-dd',
-        ];
-
-        for (final format in formats) {
-          try {
-            return DateFormat(format).parse(dateStr);
-          } catch (e) {
-            // Continue to next format
-          }
-        }
-      } catch (e) {
-        // Continue to fallback
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error parsing alternative date format: $dateStr, Error: $e');
-      }
-    }
-
-    return null;
   }
 
   Future<bool> _addTag(String tagId) async {
