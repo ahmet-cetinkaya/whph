@@ -223,8 +223,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               padding: EdgeInsets.only(
                 left: AppTheme.sizeXSmall,
                 right: AppTheme.sizeXSmall,
-                top: AppTheme.size3XSmall,
-                bottom: 0,
+                top: AppTheme.size2XSmall,
+                bottom: AppTheme.size2XSmall,
               ),
               child: widget.builder(context),
             ),
