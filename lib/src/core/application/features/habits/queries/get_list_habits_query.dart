@@ -27,6 +27,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   List<SortOption<HabitSortFields>>? sortBy;
   bool sortByCustomSort;
   String? search;
+  bool ignoreArchivedTagVisibility;
 
   GetListHabitsQuery({
     required this.pageIndex,
@@ -38,6 +39,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
     this.sortBy,
     this.sortByCustomSort = false,
     this.search,
+    this.ignoreArchivedTagVisibility = false,
   });
 }
 
@@ -166,6 +168,25 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       conditions.add(
           "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.tag_id IN ($placeholders) AND habit_tag_table.deleted_date IS NULL) > 0");
       variables.addAll(request.filterByTags!);
+    }
+
+    // Exclude habits only if ALL their tags are archived (show if at least one tag is not archived)
+    if (!request.ignoreArchivedTagVisibility) {
+      conditions.add('''
+        habit_table.id NOT IN (
+          SELECT DISTINCT ht1.habit_id 
+          FROM habit_tag_table ht1
+          WHERE ht1.deleted_date IS NULL
+          AND NOT EXISTS (
+            SELECT 1 
+            FROM habit_tag_table ht2
+            INNER JOIN tag_table t ON ht2.tag_id = t.id
+            WHERE ht2.habit_id = ht1.habit_id 
+            AND ht2.deleted_date IS NULL
+            AND (t.is_archived = 0 OR t.is_archived IS NULL)
+          )
+        )
+      ''');
     }
 
     if (conditions.isEmpty) return null;
