@@ -183,7 +183,6 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
     // Calculate the next recurrence date
     final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
-    final nextDeadlineDate = calculateNextRecurrenceDate(task, task.deadlineDate ?? DateTime.now().toUtc());
 
     final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
       GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: double.maxFinite.toInt()),
@@ -195,7 +194,6 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       description: task.description,
       priority: task.priority,
       plannedDate: nextPlannedDate,
-      deadlineDate: nextDeadlineDate,
       estimatedTime: task.estimatedTime,
       parentTaskId: task.parentTaskId,
       plannedDateReminderTime: task.plannedDateReminderTime,
