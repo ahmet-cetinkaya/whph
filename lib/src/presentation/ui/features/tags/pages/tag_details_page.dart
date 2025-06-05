@@ -172,23 +172,29 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TagTimeChartOptions(
-                                  selectedStartDate: _startDate,
-                                  selectedEndDate: _endDate,
-                                  selectedCategories: _selectedCategories,
-                                  onDateFilterChange: (start, end) {
-                                    setState(() {
-                                      _startDate = start;
-                                      _endDate = end;
-                                      _barChartKey.currentState?.refresh();
-                                    });
-                                  },
-                                  onCategoriesChanged: (categories) {
-                                    setState(() {
-                                      _selectedCategories = categories;
-                                      _barChartKey.currentState?.refresh();
-                                    });
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TagTimeChartOptions(
+                                        selectedStartDate: _startDate,
+                                        selectedEndDate: _endDate,
+                                        selectedCategories: _selectedCategories,
+                                        onDateFilterChange: (start, end) {
+                                          setState(() {
+                                            _startDate = start;
+                                            _endDate = end;
+                                            _barChartKey.currentState?.refresh();
+                                          });
+                                        },
+                                        onCategoriesChanged: (categories) {
+                                          setState(() {
+                                            _selectedCategories = categories;
+                                            _barChartKey.currentState?.refresh();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: AppTheme.sizeSmall),
                                 Expanded(
@@ -255,6 +261,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     search: _taskSearchQuery,
                                     sortConfig: _taskSortConfig,
                                     enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
+                                    ignoreArchivedTagVisibility: true,
                                     onClickTask: (task) async {
                                       await ResponsiveDialogHelper.showResponsiveDialog(
                                         context: context,
@@ -327,6 +334,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                           filterByTags: [widget.tagId],
                                           search: _noteSearchQuery,
                                           sortConfig: _sortConfig,
+                                          ignoreArchivedTagVisibility: true,
                                           onClickNote: _openNoteDetails,
                                         )
                                       : const SizedBox.shrink(),

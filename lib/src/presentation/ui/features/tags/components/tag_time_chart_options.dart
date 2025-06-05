@@ -255,11 +255,11 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
     if (!isSettingLoaded || !showAnyFilters) return const SizedBox.shrink();
 
     return Container(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.centerLeft,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Date Range Filter
             if (widget.showDateFilter && widget.onDateFilterChange != null)

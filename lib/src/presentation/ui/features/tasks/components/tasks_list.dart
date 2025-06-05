@@ -35,6 +35,7 @@ class TaskList extends StatefulWidget {
   final String? search;
   final String? parentTaskId;
   final bool showDoneOverlayWhenEmpty;
+  final bool ignoreArchivedTagVisibility;
 
   final TaskListItem? selectedTask;
   final bool showSelectButton;
@@ -70,6 +71,7 @@ class TaskList extends StatefulWidget {
     this.transparentCards = false,
     this.enableReordering = false,
     this.showDoneOverlayWhenEmpty = false,
+    this.ignoreArchivedTagVisibility = false,
     required this.onClickTask,
     this.onList,
     this.onTaskCompleted,
@@ -227,6 +229,7 @@ class TaskListState extends State<TaskList> {
           filterByParentTaskId: widget.parentTaskId,
           sortBy: widget.sortConfig?.orderOptions,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
+          ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
 
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);

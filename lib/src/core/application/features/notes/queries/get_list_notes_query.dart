@@ -20,6 +20,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final String? search;
   final List<SortOption<NoteSortFields>>? sortBy;
   final bool sortByCustomOrder;
+  final bool ignoreArchivedTagVisibility;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -29,6 +30,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.search,
     this.sortBy,
     this.sortByCustomOrder = false,
+    this.ignoreArchivedTagVisibility = false,
   });
 }
 
@@ -111,6 +113,25 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
           SELECT note_id 
           FROM note_tag_table 
           WHERE deleted_date IS NULL
+        )
+      ''');
+    }
+
+    // Exclude notes only if ALL their tags are archived (show if at least one tag is not archived)
+    if (!request.ignoreArchivedTagVisibility) {
+      conditions.add('''
+        id NOT IN (
+          SELECT DISTINCT nt1.note_id 
+          FROM note_tag_table nt1
+          WHERE nt1.deleted_date IS NULL
+          AND NOT EXISTS (
+            SELECT 1 
+            FROM note_tag_table nt2
+            INNER JOIN tag_table t ON nt2.tag_id = t.id
+            WHERE nt2.note_id = nt1.note_id 
+            AND nt2.deleted_date IS NULL
+            AND (t.is_archived = 0 OR t.is_archived IS NULL)
+          )
         )
       ''');
     }

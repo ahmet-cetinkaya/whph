@@ -44,6 +44,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
 
   final List<SortOption<TaskSortFields>>? sortBy;
   final bool sortByCustomSort;
+  final bool ignoreArchivedTagVisibility;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -61,6 +62,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.areParentAndSubTasksIncluded = false,
     this.sortBy,
     this.sortByCustomSort = false,
+    this.ignoreArchivedTagVisibility = false,
   })  : filterByPlannedStartDate =
             filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
         filterByPlannedEndDate =
@@ -281,6 +283,25 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     if (request.filterNoTags) {
       conditions
           .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
+    }
+
+    // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
+    if (!request.ignoreArchivedTagVisibility) {
+      conditions.add('''
+        task_table.id NOT IN (
+          SELECT DISTINCT tt1.task_id 
+          FROM task_tag_table tt1
+          WHERE tt1.deleted_date IS NULL
+          AND NOT EXISTS (
+            SELECT 1 
+            FROM task_tag_table tt2
+            INNER JOIN tag_table t ON tt2.tag_id = t.id
+            WHERE tt2.task_id = tt1.task_id 
+            AND tt2.deleted_date IS NULL
+            AND (t.is_archived = 0 OR t.is_archived IS NULL)
+          )
+        )
+      ''');
     }
 
     // Completed filter

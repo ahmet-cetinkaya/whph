@@ -23,6 +23,7 @@ class NotesList extends StatefulWidget {
   final String? search;
   final List<String>? filterByTags;
   final bool filterNoTags;
+  final bool ignoreArchivedTagVisibility;
   final Function(String)? onClickNote;
   final SortConfig<NoteSortFields>? sortConfig;
   final int pageSize;
@@ -32,6 +33,7 @@ class NotesList extends StatefulWidget {
     this.search,
     this.filterByTags,
     this.filterNoTags = false,
+    this.ignoreArchivedTagVisibility = false,
     this.onClickNote,
     this.sortConfig,
     this.pageSize = 10,
@@ -81,6 +83,7 @@ class NotesListState extends State<NotesList> {
         search: widget.search,
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
+        ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         sortConfig: widget.sortConfig,
       );
 
@@ -88,6 +91,7 @@ class NotesListState extends State<NotesList> {
     final oldMap = {
       'search': oldFilters.search,
       'filterNoTags': oldFilters.filterNoTags,
+      'ignoreArchivedTagVisibility': oldFilters.ignoreArchivedTagVisibility,
       'tags': oldFilters.filterByTags,
       'sortConfig': oldFilters.sortConfig,
     };
@@ -95,6 +99,7 @@ class NotesListState extends State<NotesList> {
     final newMap = {
       'search': newFilters.search,
       'filterNoTags': newFilters.filterNoTags,
+      'ignoreArchivedTagVisibility': newFilters.ignoreArchivedTagVisibility,
       'tags': newFilters.filterByTags,
       'sortConfig': newFilters.sortConfig,
     };
@@ -176,6 +181,7 @@ class NotesListState extends State<NotesList> {
           search: _currentFilters.search,
           filterByTags: _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
+          ignoreArchivedTagVisibility: _currentFilters.ignoreArchivedTagVisibility,
           sortBy: _currentFilters.sortConfig?.orderOptions,
           sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false,
         );
@@ -281,12 +287,14 @@ class FilterContext {
   final String? search;
   final List<String>? filterByTags;
   final bool filterNoTags;
+  final bool ignoreArchivedTagVisibility;
   final SortConfig<NoteSortFields>? sortConfig;
 
   const FilterContext({
     this.search,
     this.filterByTags,
     this.filterNoTags = false,
+    this.ignoreArchivedTagVisibility = false,
     this.sortConfig,
   });
 
@@ -295,5 +303,5 @@ class FilterContext {
 
   @override
   String toString() =>
-      'FilterContext(search: $search, tags: $filterByTags, noTags: $filterNoTags, sortConfig: $sortConfig)';
+      'FilterContext(search: $search, tags: $filterByTags, noTags: $filterNoTags, ignoreArchivedTagVisibility: $ignoreArchivedTagVisibility, sortConfig: $sortConfig)';
 }
