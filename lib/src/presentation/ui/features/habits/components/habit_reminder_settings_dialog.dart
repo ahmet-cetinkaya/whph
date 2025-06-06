@@ -97,24 +97,7 @@ class _HabitReminderSettingsDialogState extends State<HabitReminderSettingsDialo
   }
 
   String _getDayName(int day) {
-    switch (day) {
-      case 1:
-        return widget.translationService.translate('datetime.weekday.monday.short');
-      case 2:
-        return widget.translationService.translate('datetime.weekday.tuesday.short');
-      case 3:
-        return widget.translationService.translate('datetime.weekday.wednesday.short');
-      case 4:
-        return widget.translationService.translate('datetime.weekday.thursday.short');
-      case 5:
-        return widget.translationService.translate('datetime.weekday.friday.short');
-      case 6:
-        return widget.translationService.translate('datetime.weekday.saturday.short');
-      case 7:
-        return widget.translationService.translate('datetime.weekday.sunday.short');
-      default:
-        return '';
-    }
+    return widget.translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(day, short: true));
   }
 
   String _getReminderDescription() {

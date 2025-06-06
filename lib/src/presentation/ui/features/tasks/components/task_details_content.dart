@@ -600,7 +600,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         final days = _taskRecurrenceService.getRecurrenceDays(_task!);
         if (days != null && days.isNotEmpty) {
           final dayNames = days
-              .map((day) => _translationService.translate('datetime.weekday.${day.name.toLowerCase()}.short'))
+              .map((day) => _translationService
+                  .translate(SharedTranslationKeys.getWeekDayNameTranslationKey(day.name, short: true)))
               .join(', ');
           summary += ' ${_translationService.translate(TaskTranslationKeys.on)} $dayNames';
         }
