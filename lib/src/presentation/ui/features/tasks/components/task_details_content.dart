@@ -385,15 +385,28 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     if (controller.text.isEmpty) return null;
 
     try {
-      // Use DateFormatService.parseFromInput to match the format used in formatForDisplay
-      final parsedDate = DateFormatService.parseFromInput(controller.text, context);
-      final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
+      // Check if context is mounted and safe to use
+      if (mounted && context.mounted) {
+        // Use DateFormatService.parseFromInput to match the format used in formatForDisplay
+        final parsedDate = DateFormatService.parseFromInput(controller.text, context);
+        final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
 
-      if (kDebugMode) {
-        print('Parsing date controller: "${controller.text}" -> $result');
+        if (kDebugMode) {
+          print('Parsing date controller: "${controller.text}" -> $result');
+        }
+
+        return result;
+      } else {
+        // Fallback to direct parsing without context when context is not safe
+        final parsedDate = DateFormatService.parseDateTime(controller.text, assumeLocal: true);
+        final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
+
+        if (kDebugMode) {
+          print('Parsing date controller (fallback): "${controller.text}" -> $result');
+        }
+
+        return result;
       }
-
-      return result;
     } catch (e) {
       if (kDebugMode) {
         print('Error parsing date: "${controller.text}", Error: $e');
@@ -466,6 +479,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       print('Executing save command for task ${saveCommand.id}');
       print('  Planned date: ${saveCommand.plannedDate}');
       print('  Deadline date: ${saveCommand.deadlineDate}');
+    }
+
+    // Check if context is still mounted and safe to use before executing async operations
+    if (!mounted || !context.mounted) {
+      if (kDebugMode) {
+        print('Skipping save command execution - context not mounted');
+      }
+      return;
     }
 
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
