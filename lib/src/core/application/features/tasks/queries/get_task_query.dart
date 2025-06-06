@@ -13,9 +13,9 @@ class GetTaskQuery implements IRequest<GetTaskQueryResponse> {
 }
 
 class GetTaskQueryResponse extends Task {
-  int totalDuration = 0;
-  double subTasksCompletionPercentage = 0;
-  List<Task> subTasks = [];
+  int totalDuration;
+  double subTasksCompletionPercentage;
+  List<Task> subTasks;
 
   GetTaskQueryResponse(
       {required super.id,
@@ -74,28 +74,30 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
     }
 
     return GetTaskQueryResponse(
-        id: task.id,
-        createdDate: task.createdDate,
-        modifiedDate: task.modifiedDate,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate,
-        deadlineDate: task.deadlineDate,
-        estimatedTime: task.estimatedTime,
-        totalDuration: totalDuration,
-        isCompleted: task.isCompleted,
-        parentTaskId: task.parentTaskId,
-        subTasksCompletionPercentage: subTasksCompletionPercentage,
-        subTasks: subTasks,
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDaysString: task.recurrenceDaysString,
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: task.recurrenceCount,
-        recurrenceParentId: task.recurrenceParentId);
+      id: task.id,
+      createdDate: task.createdDate,
+      modifiedDate: task.modifiedDate,
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      plannedDate: task.plannedDate,
+      deadlineDate: task.deadlineDate,
+      estimatedTime: task.estimatedTime,
+      totalDuration: totalDuration,
+      isCompleted: task.isCompleted,
+      parentTaskId: task.parentTaskId,
+      subTasksCompletionPercentage: subTasksCompletionPercentage,
+      subTasks: subTasks,
+      plannedDateReminderTime: task.plannedDateReminderTime,
+      deadlineDateReminderTime: task.deadlineDateReminderTime,
+      recurrenceType: task.recurrenceType,
+      recurrenceInterval: task.recurrenceInterval,
+      recurrenceDaysString: task.recurrenceDaysString,
+      recurrenceStartDate: task.recurrenceStartDate,
+      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceCount: task.recurrenceCount,
+      recurrenceParentId: task.recurrenceParentId,
+      deletedDate: task.deletedDate,
+    );
   }
 }

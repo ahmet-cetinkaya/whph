@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/add_task_tag_command.dart';
+import 'package:whph/src/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/src/core/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
@@ -64,5 +65,8 @@ void registerTasksFeature(
     )
     ..registerHandler<UpdateTaskOrderCommand, void, UpdateTaskOrderCommandHandler>(
       () => UpdateTaskOrderCommandHandler(taskRepository),
+    )
+    ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
+      () => AddTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
     );
 }
