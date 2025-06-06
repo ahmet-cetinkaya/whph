@@ -40,13 +40,20 @@ shared:
       sep: September
       sep_short: Sep
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      friday: Friday
+      friday_short: Fri
+      monday: Monday
+      monday_short: Mon
+      saturday: Saturday
+      saturday_short: Sat
+      sunday: Sunday
+      sunday_short: Sun
+      thursday: Thursday
+      thursday_short: Thu
+      tuesday: Tuesday
+      tuesday_short: Tue
+      wednesday: Wednesday
+      wednesday_short: Wed
   change: Change
   color_picker:
     confirm_selection: Confirm Selection

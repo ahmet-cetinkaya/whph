@@ -37,13 +37,20 @@ shared:
       sep: Eylül
       sep_short: Eyl
     week_days:
-      fri: Cum
-      mon: Pzt
-      sat: Cmt
-      sun: Paz
-      thu: Per
-      tue: Sal
-      wed: Çar
+      friday: Cuma
+      friday_short: Cum
+      monday: Pazartesi
+      monday_short: Pzt
+      saturday: Cumartesi
+      saturday_short: Cmt
+      sunday: Pazar
+      sunday_short: Paz
+      thursday: Perşembe
+      thursday_short: Per
+      tuesday: Salı
+      tuesday_short: Sal
+      wednesday: Çarşamba
+      wednesday_short: Çar
   change: Değiştir
   color_picker:
     confirm_selection: Seçimi Onayla

@@ -46,13 +46,20 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String compareWithPreviousLabel = 'shared.tooltips.compare_with_previous';
 
   // Calendar
-  static const String weekDayMon = 'shared.calendar.week_days.mon';
-  static const String weekDayTue = 'shared.calendar.week_days.tue';
-  static const String weekDayWed = 'shared.calendar.week_days.wed';
-  static const String weekDayThu = 'shared.calendar.week_days.thu';
-  static const String weekDayFri = 'shared.calendar.week_days.fri';
-  static const String weekDaySat = 'shared.calendar.week_days.sat';
-  static const String weekDaySun = 'shared.calendar.week_days.sun';
+  static const String weekDayMon = 'shared.calendar.week_days.monday';
+  static const String weekDayTue = 'shared.calendar.week_days.tuesday';
+  static const String weekDayWed = 'shared.calendar.week_days.wednesday';
+  static const String weekDayThu = 'shared.calendar.week_days.thursday';
+  static const String weekDayFri = 'shared.calendar.week_days.friday';
+  static const String weekDaySat = 'shared.calendar.week_days.saturday';
+  static const String weekDaySun = 'shared.calendar.week_days.sunday';
+  static const String weekDayMonShort = 'shared.calendar.week_days.monday_short';
+  static const String weekDayTueShort = 'shared.calendar.week_days.tuesday_short';
+  static const String weekDayWedShort = 'shared.calendar.week_days.wednesday_short';
+  static const String weekDayThuShort = 'shared.calendar.week_days.thursday_short';
+  static const String weekDayFriShort = 'shared.calendar.week_days.friday_short';
+  static const String weekDaySatShort = 'shared.calendar.week_days.saturday_short';
+  static const String weekDaySunShort = 'shared.calendar.week_days.sunday_short';
 
   // Time periods
   static const String today = 'shared.time_periods.today';
@@ -183,13 +190,13 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     final day = switch (weekday) {
-      1 => 'mon',
-      2 => 'tue',
-      3 => 'wed',
-      4 => 'thu',
-      5 => 'fri',
-      6 => 'sat',
-      7 => 'sun',
+      1 => 'monday',
+      2 => 'tuesday',
+      3 => 'wednesday',
+      4 => 'thursday',
+      5 => 'friday',
+      6 => 'saturday',
+      7 => 'sunday',
       _ => throw Exception('Invalid weekday'),
     };
     return 'shared.calendar.week_days.$day';
@@ -232,5 +239,29 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
       _ => throw Exception('Invalid month'),
     };
     return 'shared.calendar.months.$monthName';
+  }
+
+  // Helper methods for getting translation keys
+  static String getWeekDayNameTranslationKey(String weekDayName, {bool short = false}) {
+    final prefix = 'shared.calendar.week_days';
+    final suffix = short ? '_short' : '';
+    return '$prefix.${weekDayName.toLowerCase()}$suffix';
+  }
+
+  static String getWeekDayTranslationKey(int weekDay, {bool short = false}) {
+    final weekDayMap = {
+      1: 'monday',
+      2: 'tuesday',
+      3: 'wednesday',
+      4: 'thursday',
+      5: 'friday',
+      6: 'saturday',
+      7: 'sunday',
+    };
+
+    final weekDayName = weekDayMap[weekDay];
+    if (weekDayName == null) return '';
+
+    return getWeekDayNameTranslationKey(weekDayName, short: short);
   }
 }

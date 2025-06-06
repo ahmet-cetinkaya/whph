@@ -101,7 +101,7 @@ class _HabitsPageState extends State<HabitsPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            _translationService.translate(SharedTranslationKeys.getWeekDayKey(date.weekday)),
+            _translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(date.weekday, short: true)),
             style: AppTheme.bodySmall.copyWith(color: color),
           ),
           Text(

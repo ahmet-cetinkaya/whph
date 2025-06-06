@@ -831,8 +831,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final reminderDays = _habit!.getReminderDaysAsList();
     if (reminderDays.isNotEmpty && reminderDays.length < 7) {
       final dayNames = reminderDays.map((dayNum) {
-        final weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-        return _translationService.translate('datetime.weekday.${weekDays[dayNum - 1]}.short');
+        return _translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(dayNum, short: true));
       }).join(', ');
       summary += ', $dayNames';
     } else if (reminderDays.length == 7) {
