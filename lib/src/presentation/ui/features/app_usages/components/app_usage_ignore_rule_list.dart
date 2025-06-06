@@ -199,10 +199,13 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     }
 
     if (_ruleList?.items.isEmpty ?? true) {
-      return IconOverlay(
-        icon: Icons.rule_folder,
-        iconSize: AppTheme.iconSizeXLarge,
-        message: _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.rule_folder,
+          iconSize: AppTheme.iconSizeXLarge,
+          message: _translationService.translate(AppUsageTranslationKeys.noIgnoreRules),
+        ),
       );
     }
 

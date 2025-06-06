@@ -188,9 +188,12 @@ class TagsListState extends State<TagsList> {
     }
 
     if (_tags == null || _tags!.items.isEmpty) {
-      return IconOverlay(
-        icon: Icons.label_off,
-        message: _translationService.translate(TagTranslationKeys.noTags),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.label_off,
+          message: _translationService.translate(TagTranslationKeys.noTags),
+        ),
       );
     }
 

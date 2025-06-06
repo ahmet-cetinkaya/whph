@@ -86,10 +86,13 @@ class TagTimeChartState extends State<TagTimeChart> {
   @override
   Widget build(BuildContext context) {
     if (_tagTimes?.items.isEmpty ?? true) {
-      return IconOverlay(
-        icon: Icons.pie_chart,
-        message: _translationService.translate(TagTranslationKeys.timeChartNoData),
-        iconSize: AppTheme.iconSizeXLarge,
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.pie_chart,
+          message: _translationService.translate(TagTranslationKeys.timeChartNoData),
+          iconSize: AppTheme.iconSizeXLarge,
+        ),
       );
     }
 

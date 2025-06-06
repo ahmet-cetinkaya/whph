@@ -217,9 +217,12 @@ class AppUsageListState extends State<AppUsageList> {
   @override
   Widget build(BuildContext context) {
     if (_appUsageList?.items.isEmpty ?? true) {
-      return IconOverlay(
-        icon: Icons.bar_chart,
-        message: _translationService.translate(AppUsageTranslationKeys.noUsage),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.bar_chart,
+          message: _translationService.translate(AppUsageTranslationKeys.noUsage),
+        ),
       );
     }
 

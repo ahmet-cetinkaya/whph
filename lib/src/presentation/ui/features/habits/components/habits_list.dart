@@ -232,18 +232,21 @@ class HabitsListState extends State<HabitsList> {
     }
 
     if (_habitList!.items.isEmpty) {
-      return SizedBox(
-        width: double.infinity,
-        child: widget.showDoneOverlayWhenEmpty
-            ? IconOverlay(
-                icon: Icons.done_all_rounded,
-                iconSize: AppTheme.iconSize2XLarge,
-                message: _translationService.translate(HabitTranslationKeys.allHabitsDone),
-              )
-            : IconOverlay(
-                icon: Icons.check_circle_outline,
-                message: _translationService.translate(HabitTranslationKeys.noHabitsFound),
-              ),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: SizedBox(
+          width: double.infinity,
+          child: widget.showDoneOverlayWhenEmpty
+              ? IconOverlay(
+                  icon: Icons.done_all_rounded,
+                  iconSize: AppTheme.iconSize2XLarge,
+                  message: _translationService.translate(HabitTranslationKeys.allHabitsDone),
+                )
+              : IconOverlay(
+                  icon: Icons.check_circle_outline,
+                  message: _translationService.translate(HabitTranslationKeys.noHabitsFound),
+                ),
+        ),
       );
     }
 
