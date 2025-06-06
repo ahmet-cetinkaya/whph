@@ -213,10 +213,13 @@ class NotesListState extends State<NotesList> {
     }
 
     if (_noteList == null || _noteList!.items.isEmpty) {
-      return IconOverlay(
-        icon: Icons.note_alt_outlined,
-        iconSize: AppTheme.iconSizeXLarge,
-        message: _translationService.translate(NoteTranslationKeys.noNotes),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.note_alt_outlined,
+          iconSize: AppTheme.iconSizeXLarge,
+          message: _translationService.translate(NoteTranslationKeys.noNotes),
+        ),
       );
     }
 

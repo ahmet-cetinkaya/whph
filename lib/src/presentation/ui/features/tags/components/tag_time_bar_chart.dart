@@ -110,10 +110,13 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
 
   Widget _buildContent() {
     if (_elementTimeData == null || _elementTimeData!.items.isEmpty) {
-      return IconOverlay(
-        icon: Icons.bar_chart,
-        message: _translationService.translate(TagTranslationKeys.timeChartNoData),
-        iconSize: AppTheme.iconSizeXLarge,
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.bar_chart,
+          message: _translationService.translate(TagTranslationKeys.timeChartNoData),
+          iconSize: AppTheme.iconSizeXLarge,
+        ),
       );
     }
 

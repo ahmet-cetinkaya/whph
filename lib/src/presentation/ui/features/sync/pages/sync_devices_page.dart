@@ -155,9 +155,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         ],
       ),
       body: list == null || list!.items.isEmpty
-          ? IconOverlay(
-              icon: Icons.devices_other,
-              message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+          ? Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeMedium),
+              child: IconOverlay(
+                icon: Icons.devices_other,
+                message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+              ),
             )
           : Padding(
               padding: const EdgeInsets.all(AppTheme.sizeSmall),

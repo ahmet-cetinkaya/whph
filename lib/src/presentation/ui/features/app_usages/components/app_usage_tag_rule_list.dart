@@ -154,10 +154,13 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
     }
 
     if (_ruleList == null || _ruleList!.items.isEmpty) {
-      return IconOverlay(
-        icon: Icons.rule_folder,
-        iconSize: AppTheme.iconSizeXLarge,
-        message: _translationService.translate(AppUsageTranslationKeys.noRules),
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: IconOverlay(
+          icon: Icons.rule_folder,
+          iconSize: AppTheme.iconSizeXLarge,
+          message: _translationService.translate(AppUsageTranslationKeys.noRules),
+        ),
       );
     }
 

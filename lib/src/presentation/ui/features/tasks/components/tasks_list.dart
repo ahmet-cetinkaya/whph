@@ -482,16 +482,19 @@ class TaskListState extends State<TaskList> {
     }
 
     if (_tasks!.items.isEmpty || (_tasks!.items.length == 1 && widget.selectedTask != null)) {
-      return widget.showDoneOverlayWhenEmpty
-          ? IconOverlay(
-              icon: Icons.done_all_rounded,
-              iconSize: AppTheme.iconSize2XLarge,
-              message: _translationService.translate(TaskTranslationKeys.allTasksDone),
-            )
-          : IconOverlay(
-              icon: Icons.check_circle_outline,
-              message: _translationService.translate(TaskTranslationKeys.noTasks),
-            );
+      return Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: widget.showDoneOverlayWhenEmpty
+            ? IconOverlay(
+                icon: Icons.done_all_rounded,
+                iconSize: AppTheme.iconSize2XLarge,
+                message: _translationService.translate(TaskTranslationKeys.allTasksDone),
+              )
+            : IconOverlay(
+                icon: Icons.check_circle_outline,
+                message: _translationService.translate(TaskTranslationKeys.noTasks),
+              ),
+      );
     }
 
     return ListView(
