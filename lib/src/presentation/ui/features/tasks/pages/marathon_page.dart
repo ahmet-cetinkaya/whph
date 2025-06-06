@@ -17,7 +17,7 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/pomodoro_timer.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_card.dart';
-import 'package:whph/src/core/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:whph/src/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -252,11 +252,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   void _handleTimerUpdate(Duration _) async {
     if (_selectedTask == null) return;
 
-    final nextDuration = _selectedTask!.totalElapsedTime + 1;
-
-    final command = SaveTaskTimeRecordCommand(
+    // Add 1 second to the task's time record
+    final command = AddTaskTimeRecordCommand(
       taskId: _selectedTask!.id,
-      duration: nextDuration,
+      duration: 1, // Add 1 second each time
     );
 
     await AsyncErrorHandler.executeVoid(
@@ -264,7 +263,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
       operation: () async {
         await _mediator.send(command);
-        _selectedTask!.totalElapsedTime = nextDuration;
+        // Update local state for UI display
+        _selectedTask!.totalElapsedTime += 1;
       },
     );
   }

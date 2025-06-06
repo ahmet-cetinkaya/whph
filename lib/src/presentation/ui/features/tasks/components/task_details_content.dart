@@ -853,7 +853,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         label: _translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Text(
-          SharedUiConstants.formatDurationHuman(_task!.totalDuration ~/ 60, _translationService),
+          SharedUiConstants.formatDurationHuman(_task!.totalDuration, _translationService),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       );

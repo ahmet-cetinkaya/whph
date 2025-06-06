@@ -4,47 +4,47 @@ import 'package:whph/src/core/application/features/tasks/services/abstraction/i_
 import 'package:whph/src/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
 
-class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
+class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandResponse> {
   final String taskId;
   final int duration;
 
-  SaveTaskTimeRecordCommand({
+  AddTaskTimeRecordCommand({
     required this.taskId,
     required this.duration,
   });
 }
 
-class SaveTaskTimeRecordCommandResponse {
+class AddTaskTimeRecordCommandResponse {
   final String id;
 
-  SaveTaskTimeRecordCommandResponse({
+  AddTaskTimeRecordCommandResponse({
     required this.id,
   });
 }
 
-class SaveTaskTimeRecordCommandHandler
-    implements IRequestHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse> {
+class AddTaskTimeRecordCommandHandler
+    implements IRequestHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse> {
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
-  SaveTaskTimeRecordCommandHandler({
+  AddTaskTimeRecordCommandHandler({
     required ITaskTimeRecordRepository taskTimeRecordRepository,
   }) : _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
-  Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
+  Future<AddTaskTimeRecordCommandResponse> call(AddTaskTimeRecordCommand request) async {
     final now = DateTime.now().toUtc();
     final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
 
     final filter = CustomWhereFilter(
-        'taskId = ? AND createdDate >= ? AND createdDate < ?', [request.taskId, startOfHour, endOfHour]);
+        'task_id = ? AND created_date >= ? AND created_date < ?', [request.taskId, startOfHour, endOfHour]);
 
     final existingRecord = await _taskTimeRecordRepository.getFirst(filter);
 
     if (existingRecord != null) {
       existingRecord.duration += request.duration;
       await _taskTimeRecordRepository.update(existingRecord);
-      return SaveTaskTimeRecordCommandResponse(id: existingRecord.id);
+      return AddTaskTimeRecordCommandResponse(id: existingRecord.id);
     }
 
     final taskTimeRecord = TaskTimeRecord(
@@ -55,6 +55,6 @@ class SaveTaskTimeRecordCommandHandler
     );
 
     await _taskTimeRecordRepository.add(taskTimeRecord);
-    return SaveTaskTimeRecordCommandResponse(id: taskTimeRecord.id);
+    return AddTaskTimeRecordCommandResponse(id: taskTimeRecord.id);
   }
 }
