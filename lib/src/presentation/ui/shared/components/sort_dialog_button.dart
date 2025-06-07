@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
 import 'package:whph/main.dart';
@@ -170,6 +172,15 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
   void _reorderCriteria(int oldIndex, int newIndex) {
     setState(() {
       final newOptions = List<SortOptionWithTranslationKey<T>>.from(_currentConfig.orderOptions);
+
+      // Adjust newIndex for ReorderableListView behavior
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+
+      // Safety check: newIndex must be within valid range
+      newIndex = newIndex.clamp(0, newOptions.length - 1);
+
       final option = newOptions.removeAt(oldIndex);
       newOptions.insert(newIndex, option);
       _currentConfig = _currentConfig.copyWith(orderOptions: newOptions);
@@ -344,7 +355,18 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                 minHeight: 36,
               ),
             ),
-          const SizedBox(width: AppTheme.sizeSmall),
+          // Drag handle for reordering
+          if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+            const SizedBox(width: AppTheme.sizeMedium), // Spacer for better alignment
+          if (_currentConfig.orderOptions.length > 1 && Platform.isAndroid) ...[
+            ReorderableDragStartListener(
+              index: index,
+              child: IconButton(
+                  icon: const Icon(Icons.drag_handle, size: 20),
+                  tooltip: widget.translationService.translate(SharedTranslationKeys.sort),
+                  onPressed: () {}),
+            ),
+          ],
         ],
       ),
     );
