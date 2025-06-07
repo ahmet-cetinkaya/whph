@@ -40,7 +40,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
   bool _isCompleted = false;
-  bool _isProcessing = false; // Flag to prevent multiple rapid taps
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -134,6 +134,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.color ?? Theme.of(context).colorScheme.primary;
+    final borderColor = widget.color ?? AppTheme.borderColor;
 
     return GestureDetector(
       onTap: () => _toggleCompleteTask(context),
@@ -151,7 +152,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppTheme.borderColor,
+                    color: borderColor,
                     width: 2,
                   ),
                   color: _isCompleted ? primaryColor : Colors.transparent,
@@ -165,7 +166,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
                   height: widget.size,
                   child: CircularProgressIndicator(
                     value: widget.subTasksCompletionPercentage / 100,
-                    strokeWidth: 3,
+                    strokeWidth: AppTheme.sizeXSmall,
                     backgroundColor: Colors.transparent,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       primaryColor.withValues(alpha: 0.7),

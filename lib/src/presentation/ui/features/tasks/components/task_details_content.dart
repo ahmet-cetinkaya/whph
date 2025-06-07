@@ -749,6 +749,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     _task!.isCompleted = !_task!.isCompleted;
                     widget.onCompletedChanged?.call(_task!.isCompleted);
                   },
+                  color: _task!.priority != null ? TaskUiConstants.getPriorityColor(_task!.priority) : null,
                   subTasksCompletionPercentage: _task!.subTasksCompletionPercentage,
                 ),
               const SizedBox(width: AppTheme.sizeSmall),
