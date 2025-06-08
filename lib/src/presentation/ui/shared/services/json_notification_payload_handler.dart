@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 
 /// Implementation of the notification payload handler that uses JSON payloads
@@ -15,7 +15,7 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
   @override
   Future<void> handlePayload(String? payload) async {
     if (payload == null || payload.isEmpty) {
-      if (kDebugMode) debugPrint('Payload is null or empty');
+      Logger.debug('Payload is null or empty');
       return;
     }
 
@@ -51,10 +51,10 @@ class JsonNotificationPayloadHandler implements INotificationPayloadHandler {
           _schedulePayloadCleanup(payloadHash);
         });
       } else {
-        if (kDebugMode) debugPrint('Navigation payload missing route parameter');
+        Logger.warning('Navigation payload missing route parameter');
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error parsing payload: $e');
+      Logger.error('Error parsing payload: $e');
 
       // Still mark this payload as handled
       _handledPayloadHashes.add(payloadHash);

@@ -12,6 +12,7 @@ import 'package:whph/src/core/domain/features/app_usages/app_usage_time_record.d
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/domain/shared/constants/app_theme.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'i_app_usage_service.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
@@ -77,7 +78,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
           return true;
         }
       } catch (e) {
-        if (kDebugMode) debugPrint('Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
+        Logger.error('Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
       }
     }
 
@@ -148,7 +149,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
         }
       } catch (e) {
         // Log or handle invalid regex patterns
-        if (kDebugMode) debugPrint('Invalid pattern in rule ${rule.id}: ${e.toString()}');
+        Logger.error('Invalid pattern in rule ${rule.id}: ${e.toString()}');
       }
     }
   }

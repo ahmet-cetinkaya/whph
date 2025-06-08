@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 import 'abstraction/i_sync_service.dart';
 
@@ -34,13 +34,13 @@ class SyncService implements ISyncService {
 
     // In case of force close, do not attempt to reconnect
     if (_lastSyncTime != null && DateTime.now().difference(_lastSyncTime!) < const Duration(seconds: 5)) {
-      if (kDebugMode) debugPrint('Recent sync completed, skipping reconnection');
+      Logger.debug('Recent sync completed, skipping reconnection');
       return;
     }
 
     // If maximum attempts reached or initialization is in progress
     if (_reconnectAttempts >= _maxReconnectAttempts) {
-      if (kDebugMode) debugPrint('Max reconnection attempts reached or initialization in progress, resetting counter');
+      Logger.debug('Max reconnection attempts reached or initialization in progress, resetting counter');
 
       _reconnectAttempts = 0;
       return;
@@ -52,7 +52,7 @@ class SyncService implements ISyncService {
   }
 
   void _forceCloseConnection() {
-    if (kDebugMode) debugPrint('Force closing WebSocket connection');
+    Logger.debug('Force closing WebSocket connection');
     if (_isConnected) {
       // Mark last sync time before closing
       _lastSyncTime = DateTime.now();
@@ -82,20 +82,20 @@ class SyncService implements ISyncService {
     // Start periodic sync
     _periodicTimer = Timer.periodic(_syncInterval, (timer) async {
       try {
-        if (kDebugMode) debugPrint('Running periodic sync at ${DateTime.now()}');
+        Logger.debug('Running periodic sync at ${DateTime.now()}');
         await runSync();
       } catch (e) {
-        if (kDebugMode) debugPrint('Periodic sync failed: $e');
+        Logger.error('Periodic sync failed: $e');
       }
     });
 
-    if (kDebugMode) debugPrint('Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
+    Logger.debug('Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
   }
 
   @override
   Future<void> runSync() async {
     try {
-      if (kDebugMode) debugPrint('Starting sync process at ${DateTime.now()}...');
+      Logger.debug('Starting sync process at ${DateTime.now()}...');
       await _mediator.send(SyncCommand());
 
       // Reset the attempt count on successful sync
@@ -104,12 +104,12 @@ class SyncService implements ISyncService {
       // After a successful sync, wait for a sufficient time and close the connection
       Timer(const Duration(seconds: 1), () {
         if (_isConnected) {
-          if (kDebugMode) debugPrint('Sync completed, closing connection');
+          Logger.debug('Sync completed, closing connection');
           _forceCloseConnection();
         }
       });
     } catch (e) {
-      if (kDebugMode) debugPrint('Sync failed: $e');
+      Logger.error('Sync failed: $e');
       _handleDisconnection();
     }
   }
@@ -117,14 +117,14 @@ class SyncService implements ISyncService {
   @override
   void stopSync() {
     if (_periodicTimer != null) {
-      if (kDebugMode) debugPrint('Stopping periodic sync');
+      Logger.debug('Stopping periodic sync');
       _periodicTimer!.cancel();
       _periodicTimer = null;
     }
   }
 
   void notifySyncComplete() {
-    if (kDebugMode) debugPrint('Notifying sync completion at ${DateTime.now()}');
+    Logger.debug('Notifying sync completion at ${DateTime.now()}');
     _syncCompleteController.add(true);
   }
 

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:whph/src/presentation/api/controllers/sync_controller.dart';
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
 import 'package:whph/src/core/application/features/sync/models/sync_data_dto.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 const int webSocketPort = 44040;
 
@@ -19,7 +19,7 @@ void startWebSocketServer() async {
       webSocketPort,
     );
 
-    if (kDebugMode) debugPrint('WebSocket Server starting on port $webSocketPort');
+    Logger.info('WebSocket Server starting on port $webSocketPort');
 
     // Handle incoming connections
     await for (HttpRequest req in server) {
@@ -29,15 +29,15 @@ void startWebSocketServer() async {
 
           ws.listen(
             (data) async {
-              if (kDebugMode) debugPrint('Received message: $data');
+              Logger.debug('Received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              if (kDebugMode) debugPrint('Connection error: $e');
+              Logger.error('Connection error: $e');
               ws.close();
             },
             onDone: () {
-              if (kDebugMode) debugPrint('Connection closed normally');
+              Logger.debug('Connection closed normally');
             },
             cancelOnError: true,
           );
@@ -50,20 +50,20 @@ void startWebSocketServer() async {
             ..close();
         }
       } catch (e) {
-        if (kDebugMode) debugPrint('Request handling error: $e');
+        Logger.error('Request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
     }
   } catch (e) {
-    if (kDebugMode) debugPrint('WebSocket server failed to start on port $webSocketPort: $e');
+    Logger.error('WebSocket server failed to start on port $webSocketPort: $e');
     rethrow;
   }
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   try {
-    if (kDebugMode) debugPrint('Received message: $message');
+    Logger.debug('Received message: $message');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -116,7 +116,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
     }
   } catch (e) {
-    if (kDebugMode) debugPrint('Error processing WebSocket message: $e');
+    Logger.error('Error processing WebSocket message: $e');
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
     rethrow;

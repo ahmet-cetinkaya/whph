@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/core/domain/shared/constants/app_assets.dart';
@@ -53,9 +53,7 @@ class MobileSystemTrayService implements ISystemTrayService {
       await _notifications.cancelAll();
     } catch (e) {
       // Log the error but don't throw to prevent disposal issues
-      if (kDebugMode) {
-        debugPrint('Error during MobileSystemTrayService destroy: $e');
-      }
+      Logger.error('Error during MobileSystemTrayService destroy: $e');
     }
   }
 

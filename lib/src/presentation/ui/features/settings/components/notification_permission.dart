@@ -5,6 +5,7 @@ import 'package:whph/src/presentation/ui/features/settings/components/permission
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Component to display and manage notification permission settings
 class NotificationPermission extends StatefulWidget {
@@ -92,7 +93,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       await Future.delayed(const Duration(seconds: 3));
       await _checkPermission();
     } catch (e) {
-      debugPrint('Error requesting notification permission: $e');
+      Logger.error('Error requesting notification permission: $e');
     } finally {
       if (mounted) {
         setState(() {

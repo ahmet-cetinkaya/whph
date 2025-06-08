@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/application/features/habits/services/i_habit_record_repository.dart';
@@ -132,7 +132,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
         totalDuration: totalDuration,
       );
     } catch (e) {
-      debugPrint('Error getting element times: $e');
+      Logger.error('Error getting element times: $e');
       return GetElementsByTimeQueryResponse(
         items: [],
         totalDuration: 0,
@@ -210,7 +210,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
 
       return elementTimes;
     } catch (e) {
-      debugPrint('Error getting app usage times: $e');
+      Logger.error('Error getting app usage times: $e');
       return [];
     }
   }
@@ -292,7 +292,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
 
       return elementTimes;
     } catch (e) {
-      debugPrint('Error getting task times: $e');
+      Logger.error('Error getting task times: $e');
       return [];
     }
   }
@@ -381,7 +381,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
 
       return elementTimes;
     } catch (e) {
-      debugPrint('Error getting habit times: $e');
+      Logger.error('Error getting habit times: $e');
       return [];
     }
   }

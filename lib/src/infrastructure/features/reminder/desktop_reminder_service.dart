@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Configuration for a recurring reminder
 class _RecurringReminderConfig {
@@ -61,7 +61,7 @@ class DesktopReminderService implements IReminderService {
     String? payload,
   }) async {
     if (!(await _notificationService.isEnabled())) {
-      if (kDebugMode) debugPrint('Notifications are disabled');
+      Logger.debug('Notifications are disabled');
       return;
     }
 
@@ -74,7 +74,7 @@ class DesktopReminderService implements IReminderService {
 
     // Only schedule if the time is in the future
     if (delay.isNegative) {
-      if (kDebugMode) debugPrint('Scheduled date is in the past');
+      Logger.debug('Scheduled date is in the past');
       return;
     }
 
@@ -150,7 +150,7 @@ class DesktopReminderService implements IReminderService {
           });
         }
       } catch (e) {
-        if (kDebugMode) debugPrint('Error scheduling recurring reminder: $e');
+        Logger.error('Error scheduling recurring reminder: $e');
       }
     }
   }
@@ -225,7 +225,7 @@ class DesktopReminderService implements IReminderService {
 
   /// Refresh all recurring reminders for the new week
   void _refreshAllRecurringReminders() {
-    if (kDebugMode) debugPrint('🔄 DesktopReminderService: Refreshing all recurring reminders for new week');
+    Logger.debug('🔄 DesktopReminderService: Refreshing all recurring reminders for new week');
 
     for (final config in _recurringReminders.values) {
       _scheduleReminderForCurrentWeek(
@@ -242,7 +242,7 @@ class DesktopReminderService implements IReminderService {
   /// Show a notification using the notification service
   Future<void> _showNotification(String id, String title, String body, String? payload) async {
     if (!(await _notificationService.isEnabled())) {
-      if (kDebugMode) debugPrint('Notifications are disabled, not showing notification');
+      Logger.debug('Notifications are disabled, not showing notification');
       return;
     }
 
@@ -259,7 +259,7 @@ class DesktopReminderService implements IReminderService {
       // Ensure the window is visible for desktop platforms
       await _ensureWindowVisible();
     } catch (e) {
-      if (kDebugMode) debugPrint('Error showing notification: $e');
+      Logger.error('Error showing notification: $e');
     }
   }
 
@@ -373,10 +373,8 @@ class DesktopReminderService implements IReminderService {
       _recurringReminders.remove(configKey);
     }
 
-    if (kDebugMode) {
-      debugPrint(
-          '🔔 DesktopReminderService: Cancelled ${keysToRemove.length} scheduled reminders and ${configKeysToRemove.length} recurring configurations');
-    }
+    Logger.debug(
+        '🔔 DesktopReminderService: Cancelled ${keysToRemove.length} scheduled reminders and ${configKeysToRemove.length} recurring configurations');
   }
 
   @override
@@ -397,8 +395,6 @@ class DesktopReminderService implements IReminderService {
     _weeklyRefreshTimer?.cancel();
     _weeklyRefreshTimer = null;
 
-    if (kDebugMode) {
-      debugPrint('🔔 DesktopReminderService: Cancelled all reminders and cleared all configurations');
-    }
+    Logger.debug('🔔 DesktopReminderService: Cancelled all reminders and cleared all configurations');
   }
 }

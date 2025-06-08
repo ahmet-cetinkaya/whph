@@ -3,6 +3,7 @@ import 'package:easy_localization_multi/easy_localization_multi.dart';
 import 'package:easy_localization_yaml/easy_localization_yaml.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/features/settings/pages/settings_page.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -22,7 +23,7 @@ class TranslationService implements ITranslationService {
     String translation = key.tr(namedArgs: namedArgs);
 
     if (translation == key && kDebugMode) {
-      debugPrint('[Error] [TranslationService] Translation not found for key: $key');
+      Logger.error('[Error] [TranslationService] Translation not found for key: $key');
     }
 
     return translation;

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:app_usage/app_usage.dart' as app_usage_package;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
   static final platform = MethodChannel(AndroidAppConstants.channels.backgroundService);
@@ -23,7 +23,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     // Check permission before starting tracking
     final hasPermission = await checkUsageStatsPermission();
     if (!hasPermission) {
-      if (kDebugMode) debugPrint('Usage stats permission not granted. Cannot start tracking.');
+      Logger.warning('Usage stats permission not granted. Cannot start tracking.');
       return;
     }
 
@@ -35,7 +35,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       if (permissionCheck) {
         await _getAppUsages();
       } else {
-        if (kDebugMode) debugPrint('Permission lost. Pausing app usage tracking.');
+        Logger.warning('Permission lost. Pausing app usage tracking.');
         // Optionally notify the user that tracking has been paused
       }
     });
@@ -50,7 +50,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       final hasPermission = await appUsageStatsChannel.invokeMethod<bool>('checkUsageStatsPermission');
       return hasPermission ?? false;
     } catch (e) {
-      if (kDebugMode) debugPrint('Error checking usage stats permission: $e');
+      Logger.error('Error checking usage stats permission: $e');
 
       // Use backup check in case of method channel error
       try {
@@ -61,7 +61,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
         );
         return true;
       } catch (backupError) {
-        if (kDebugMode) debugPrint('Backup permission check failed: $backupError');
+        Logger.error('Backup permission check failed: $backupError');
         return false;
       }
     }
@@ -75,7 +75,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       // Open usage access settings page
       await appUsageStatsChannel.invokeMethod('openUsageAccessSettings');
     } catch (e) {
-      if (kDebugMode) debugPrint('Error requesting usage stats permission: $e');
+      Logger.error('Error requesting usage stats permission: $e');
     }
   }
 
@@ -83,13 +83,13 @@ class AndroidAppUsageService extends BaseAppUsageService {
     try {
       await platform.invokeMethod('startBackgroundService');
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to start background service: $e');
+      Logger.error('Failed to start background service: $e');
     }
   }
 
   Future<void> _getAppUsages() async {
     if (!(await checkUsageStatsPermission())) {
-      if (kDebugMode) debugPrint('Permission not granted. Cannot get app usages.');
+      Logger.warning('Permission not granted. Cannot get app usages.');
       return;
     }
 
@@ -106,7 +106,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
         await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: true);
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error getting app usages: $e');
+      Logger.error('Error getting app usages: $e');
     }
   }
 }

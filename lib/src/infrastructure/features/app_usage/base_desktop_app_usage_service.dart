@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   String _activeDesktopWindowOutput = '';
@@ -37,7 +38,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
               : _extractAppNameFromTitle(windowTitle);
 
           await saveTimeRecord(appName, _activeDesktopWindowTime);
-          if (kDebugMode) debugPrint('Saving time record for $appName: $_activeDesktopWindowTime seconds');
+          Logger.debug('Saving time record for $appName: $_activeDesktopWindowTime seconds');
         }
 
         _activeDesktopWindowOutput = currentWindow;

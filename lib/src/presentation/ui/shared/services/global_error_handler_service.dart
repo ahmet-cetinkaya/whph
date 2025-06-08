@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/corePackages/acore/errors/business_exception.dart';
 
 /// Service responsible for global error handling and error widget configuration
@@ -10,23 +10,17 @@ class GlobalErrorHandlerService {
   ///
   /// Configures custom error widgets and zone error handling
   static void setupErrorHandling(GlobalKey<NavigatorState> navigatorKey) {
-    if (kDebugMode) {
-      debugPrint('GlobalErrorHandlerService: Setting up global error handling...');
-    }
+    Logger.debug('GlobalErrorHandlerService: Setting up global error handling...');
 
     // Configure custom error widget for Flutter rendering errors
     ErrorWidget.builder = _buildErrorWidget;
 
-    if (kDebugMode) {
-      debugPrint('GlobalErrorHandlerService: Error handling setup completed');
-    }
+    Logger.debug('GlobalErrorHandlerService: Error handling setup completed');
   }
 
   /// Handles uncaught exceptions in the application zone
   static void handleZoneError(Object error, StackTrace stack, GlobalKey<NavigatorState> navigatorKey) {
-    if (kDebugMode) {
-      debugPrint('GlobalErrorHandlerService: Handling zone error: $error');
-    }
+    Logger.error('GlobalErrorHandlerService: Handling zone error: $error');
 
     if (navigatorKey.currentContext != null) {
       try {
@@ -76,13 +70,11 @@ class GlobalErrorHandlerService {
     );
   }
 
-  /// Logs errors in debug mode only
+  /// Logs errors for debugging purposes
   static void _logError(String message, Object error, StackTrace? stack) {
-    if (kDebugMode) {
-      debugPrint('GlobalErrorHandlerService: $message: $error');
-      if (stack != null) {
-        debugPrint('Stack trace: $stack');
-      }
+    Logger.error('GlobalErrorHandlerService: $message: $error');
+    if (stack != null) {
+      Logger.error('Stack trace: $stack');
     }
   }
 }

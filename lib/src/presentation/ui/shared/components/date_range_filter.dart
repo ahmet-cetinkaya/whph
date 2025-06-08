@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
@@ -8,6 +7,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import '../constants/shared_translation_keys.dart';
 
 class DateRangeFilter extends StatefulWidget {
@@ -500,7 +500,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         return DateTime(year, month, day);
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error parsing date: $e');
+      Logger.error('Error parsing date: $e');
     }
     return null;
   }

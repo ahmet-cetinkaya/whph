@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
@@ -7,8 +7,8 @@ import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
-import 'dart:io';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
@@ -181,7 +181,7 @@ class MobileNotificationService implements INotificationService {
 
       return permissionGranted;
     } catch (e) {
-      if (kDebugMode) debugPrint('Error requesting notification permission: $e');
+      Logger.error('Error requesting notification permission: $e');
       return false;
     }
   }

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class DeviceInfoHelper {
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
@@ -31,7 +31,7 @@ class DeviceInfoHelper {
 
       return Platform.localHostname;
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to get device name: $e');
+      Logger.error('Failed to get device name: $e');
       return 'Unknown Device';
     }
   }

@@ -16,6 +16,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.da
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class TagTimeBarChart extends StatefulWidget {
   final List<String>? filterByTags;
@@ -91,7 +92,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
         });
       }
     } catch (e) {
-      debugPrint('Error loading element time data: $e');
+      Logger.error('Error loading element time data: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;

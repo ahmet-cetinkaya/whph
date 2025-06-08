@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:whph/corePackages/acore/file/abstraction/i_file_service.dart';
 import 'package:whph/corePackages/acore/errors/business_exception.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class AndroidFileService implements IFileService {
   @override
@@ -15,7 +15,7 @@ class AndroidFileService implements IFileService {
     String? dialogTitle,
   }) async {
     try {
-      if (kDebugMode) debugPrint('Starting file pick with extensions: $allowedExtensions');
+      Logger.debug('Starting file pick with extensions: $allowedExtensions');
 
       final result = await FilePicker.platform.pickFiles(
         type: allowedExtensions != null ? FileType.custom : FileType.any,
@@ -27,7 +27,7 @@ class AndroidFileService implements IFileService {
       // ...existing code for pickFile...
       return result?.files.firstOrNull?.path;
     } catch (e) {
-      if (kDebugMode) debugPrint('File pick error: $e');
+      Logger.error('File pick error: $e');
       throw BusinessException('Failed to pick file: $e', SharedTranslationKeys.filePickError);
     }
   }
@@ -53,17 +53,17 @@ class AndroidFileService implements IFileService {
       );
 
       if (directoryPath == null) {
-        if (kDebugMode) debugPrint('User cancelled directory selection');
+        Logger.debug('User cancelled directory selection');
         return null;
       }
 
       // Construct full file path
       final fullPath = path.join(directoryPath, fileName);
 
-      if (kDebugMode) debugPrint('Selected save path: $fullPath');
+      Logger.debug('Selected save path: $fullPath');
       return fullPath;
     } catch (e) {
-      if (kDebugMode) debugPrint('Save path error: $e');
+      Logger.error('Save path error: $e');
       throw BusinessException('Failed to get save path: $e', SharedTranslationKeys.fileSaveError);
     }
   }
@@ -122,18 +122,12 @@ class AndroidFileService implements IFileService {
       try {
         await file.setLastModified(DateTime.now());
       } catch (e) {
-        if (kDebugMode) {
-          debugPrint('[AndroidFileService]: Failed to update file timestamp: $e');
-        }
+        Logger.error('[AndroidFileService]: Failed to update file timestamp: $e');
       }
 
-      if (kDebugMode) {
-        debugPrint('[AndroidFileService]: Successfully saved file to: $filePath');
-      }
+      Logger.debug('[AndroidFileService]: Successfully saved file to: $filePath');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('[AndroidFileService]: Failed to write file: $e');
-      }
+      Logger.error('[AndroidFileService]: Failed to write file: $e');
       throw BusinessException('Failed to write file: $e', SharedTranslationKeys.fileWriteError);
     }
   }
@@ -180,9 +174,7 @@ class AndroidFileService implements IFileService {
       // Non-Android platforms don't need this permission
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('[AndroidFileService]: Error checking storage permission: $e');
-      }
+      Logger.error('[AndroidFileService]: Error checking storage permission: $e');
       return false;
     }
   }

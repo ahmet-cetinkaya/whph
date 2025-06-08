@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/errors/business_exception.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// A utility class that provides methods to handle asynchronous operations with error handling.
 ///
@@ -45,10 +45,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('$e');
-        debugPrint('Stack trace: $stackTrace');
-      }
+      Logger.error('$e');
+      Logger.error('Stack trace: $stackTrace');
 
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
@@ -106,10 +104,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('$e');
-        debugPrint('Stack trace: $stackTrace');
-      }
+      Logger.error('$e');
+      Logger.error('Stack trace: $stackTrace');
 
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
@@ -172,10 +168,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('$e');
-        debugPrint('Stack trace: $stackTrace');
-      }
+      Logger.error('$e');
+      Logger.error('Stack trace: $stackTrace');
 
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(

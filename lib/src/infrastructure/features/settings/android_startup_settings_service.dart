@@ -1,11 +1,11 @@
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:flutter/foundation.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class AndroidStartupSettingsService implements IStartupSettingsService {
   final ISettingRepository _settingRepository;
@@ -49,19 +49,19 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
       // Try manufacturer-specific auto-start settings first
       await _tryManufacturerSpecificSettings();
     } catch (e) {
-      if (kDebugMode) debugPrint('Manufacturer-specific auto-start settings failed: $e');
+      Logger.error('Manufacturer-specific auto-start settings failed: $e');
 
       try {
         // Fallback to general app settings
         await _openAppSettings();
       } catch (e2) {
-        if (kDebugMode) debugPrint('App settings fallback failed: $e2');
+        Logger.error('App settings fallback failed: $e2');
 
         try {
           // Final fallback to device settings
           await _openDeviceSettings();
         } catch (e3) {
-          if (kDebugMode) debugPrint('All auto-start settings attempts failed: $e3');
+          Logger.error('All auto-start settings attempts failed: $e3');
         }
       }
     }
@@ -121,7 +121,7 @@ class AndroidStartupSettingsService implements IStartupSettingsService {
         await intent.launch();
         return; // Success, exit the method
       } catch (e) {
-        if (kDebugMode) debugPrint('Failed intent: ${intentData['action']} - ${e.toString()}');
+        Logger.error('Failed intent: ${intentData['action']} - ${e.toString()}');
         continue;
       }
     }

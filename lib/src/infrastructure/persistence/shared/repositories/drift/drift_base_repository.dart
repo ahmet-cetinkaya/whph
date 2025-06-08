@@ -8,6 +8,7 @@ import 'package:whph/corePackages/acore/repository/models/custom_where_filter.da
 import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
 import 'package:whph/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
@@ -174,9 +175,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<SyncData<TEntity>> getSyncData(DateTime lastSyncDate) async {
-    if (kDebugMode) {
-      debugPrint('🔍 getSyncData called for table: ${table.actualTableName}, lastSyncDate: $lastSyncDate');
-    }
+    Logger.debug('🔍 getSyncData called for table: ${table.actualTableName}, lastSyncDate: $lastSyncDate');
 
     Future<List<TEntity>> queryForCreateSync() async {
       final query = 'SELECT * FROM ${table.actualTableName} WHERE created_date > ?';

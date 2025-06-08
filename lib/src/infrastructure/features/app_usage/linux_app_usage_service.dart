@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'base_desktop_app_usage_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class LinuxAppUsageService extends BaseDesktopAppUsageService {
   LinuxAppUsageService(
@@ -23,7 +23,7 @@ class LinuxAppUsageService extends BaseDesktopAppUsageService {
   Future<String?> getActiveWindow() async {
     try {
       if (!File(_scriptPath).existsSync()) {
-        if (kDebugMode) debugPrint('Script not found at: $_scriptPath');
+        Logger.warning('Script not found at: $_scriptPath');
         return null;
       }
 
@@ -32,13 +32,13 @@ class LinuxAppUsageService extends BaseDesktopAppUsageService {
       final result = await Process.run('bash', [_scriptPath]);
 
       if (result.exitCode != 0) {
-        if (kDebugMode) debugPrint('Bash script error: ${result.stderr}');
+        Logger.error('Bash script error: ${result.stderr}');
         return null;
       }
 
       return result.stdout.trim();
     } catch (e) {
-      if (kDebugMode) debugPrint('Error running Bash script: $e');
+      Logger.error('Error running Bash script: $e');
       return null;
     }
   }

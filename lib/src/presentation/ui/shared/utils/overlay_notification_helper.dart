@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/utils/color_helper.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// A helper class for showing overlay notifications that appear above all content,
 /// independent of Scaffold widgets. These notifications appear at the top of the screen
@@ -28,9 +28,7 @@ class OverlayNotificationHelper {
     final overlay = Overlay.maybeOf(context);
     if (overlay == null) {
       // Overlay not available, cannot show notification
-      if (kDebugMode) {
-        debugPrint('Cannot show overlay notification - no Overlay widget found in context');
-      }
+      Logger.warning('Cannot show overlay notification - no Overlay widget found in context');
       return;
     }
 

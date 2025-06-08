@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,34 +18,32 @@ abstract class BaseSetupService implements ISetupService {
   @override
   Future<void> checkForUpdates(BuildContext context) async {
     try {
-      if (kDebugMode) debugPrint('Checking for updates...');
+      Logger.debug('Checking for updates...');
 
       final response = await http.get(
         Uri.parse(AppInfo.updateCheckerUrl),
         headers: {'User-Agent': 'WHPH/${AppInfo.version}'},
       ).timeout(const Duration(seconds: 10));
 
-      if (kDebugMode) debugPrint('Update check response: ${response.statusCode}');
+      Logger.debug('Update check response: ${response.statusCode}');
 
       if (response.statusCode != 200) {
-        if (kDebugMode) debugPrint('Update check failed with status: ${response.statusCode}');
+        Logger.error('Update check failed with status: ${response.statusCode}');
         return;
       }
 
       final data = json.decode(response.body);
       final updateInfo = UpdateInfo.fromGitHubRelease(data, AppInfo.version);
 
-      if (kDebugMode) {
-        debugPrint('Current version: ${AppInfo.version}');
-        debugPrint('Latest version: ${updateInfo.version}');
-        debugPrint('Has update: ${updateInfo.hasUpdate}');
-      }
+      Logger.debug('Current version: ${AppInfo.version}');
+      Logger.debug('Latest version: ${updateInfo.version}');
+      Logger.debug('Has update: ${updateInfo.hasUpdate}');
 
       if (updateInfo.hasUpdate && context.mounted) {
         _showUpdateDialog(context, updateInfo);
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to check for updates: $e');
+      Logger.error('Failed to check for updates: $e');
       // In debug mode, also show a brief notification about the failure
       if (kDebugMode && context.mounted) {
         OverlayNotificationHelper.showError(
@@ -59,7 +58,7 @@ abstract class BaseSetupService implements ISetupService {
   void _showUpdateDialog(BuildContext context, UpdateInfo updateInfo) {
     // Ensure we have a valid context and the widget is still mounted
     if (!context.mounted) {
-      if (kDebugMode) debugPrint('Context not mounted, skipping update dialog');
+      Logger.debug('Context not mounted, skipping update dialog');
       return;
     }
 

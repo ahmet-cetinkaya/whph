@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/corePackages/acore/logging/i_logger.dart';
 import 'package:mediatr/mediatr.dart';
 
 class TasksService extends ChangeNotifier {
   final ITaskRecurrenceService _taskRecurrenceService;
   final Mediator _mediator;
+  final ILogger _logger;
 
-  TasksService(this._taskRecurrenceService, this._mediator);
+  TasksService(this._taskRecurrenceService, this._mediator, this._logger);
 
   // Event listeners for task-related events - keeping nullable for the value
   final ValueNotifier<String?> onTaskCreated = ValueNotifier<String?>(null);
@@ -36,7 +38,7 @@ class TasksService extends ChangeNotifier {
   }
 
   void notifyTaskCompleted(String taskId) async {
-    if (kDebugMode) debugPrint('🔔 TasksService: notifyTaskCompleted called for task: $taskId');
+    _logger.debug('TasksService: notifyTaskCompleted called for task: $taskId');
 
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();

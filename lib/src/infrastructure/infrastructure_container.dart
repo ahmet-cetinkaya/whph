@@ -12,6 +12,8 @@ import 'package:whph/src/core/application/features/settings/services/abstraction
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/corePackages/acore/file/abstraction/i_file_service.dart';
+import 'package:whph/corePackages/acore/logging/i_logger.dart';
+import 'package:whph/corePackages/acore/logging/console_logger.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/infrastructure/features/setup/services/linux_setup_service.dart';
 import 'package:whph/src/infrastructure/features/app_usage/android_app_usage_service.dart';
@@ -40,6 +42,9 @@ import 'package:whph/src/infrastructure/features/file/android_file_service.dart'
 import 'package:whph/src/infrastructure/features/file/desktop_file_service.dart';
 
 void registerInfrastructure(IContainer container) {
+  // Register Logger Service
+  container.registerSingleton<ILogger>((_) => const ConsoleLogger());
+
   final settingRepository = container.resolve<ISettingRepository>();
   final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
 
@@ -123,7 +128,7 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for file service');
   });
 
-  container.registerSingleton<IWakelockService>((_) => WakelockService());
+  container.registerSingleton<IWakelockService>((_) => WakelockService(container.resolve<ILogger>()));
 
   container.registerSingleton<IReminderService>((_) {
     final windowManager = container.resolve<IWindowManager>();

@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/src/infrastructure/features/setup/services/abstraction/base_setup_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class LinuxSetupService extends BaseSetupService {
   static const _updateScriptTemplate = '''
@@ -50,7 +50,7 @@ exit 0
 
       await _installSystemIcon(sourceIcon);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error setting up Linux environment: $e');
+      Logger.error('Error setting up Linux environment: $e');
     }
   }
 
@@ -67,7 +67,7 @@ exit 0
       await runDetachedProcess('bash', [updateScript]);
       exit(0);
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to download and install update: $e');
+      Logger.error('Failed to download and install update: $e');
       rethrow;
     }
   }
@@ -88,7 +88,7 @@ exit 0
       await Process.run('gtk-update-icon-cache', ['-f', '-t', path.join(sharePath, 'icons', 'hicolor')]);
       await Process.run('update-desktop-database', [path.join(sharePath, 'applications')]);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error updating icon cache: $e');
+      Logger.error('Error updating icon cache: $e');
     }
   }
 
@@ -109,7 +109,7 @@ exit 0
         await Process.run('gtk-update-icon-cache', ['-f', '-t', path.join(userIconDir, '..')]);
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Could not install icon: $e');
+      Logger.error('Could not install icon: $e');
     }
   }
 }
