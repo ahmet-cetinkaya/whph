@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/corePackages/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
@@ -22,7 +23,10 @@ void registerUIPresentation(IContainer container) {
   container.registerSingleton<AppUsagesService>((_) => AppUsagesService());
   container.registerSingleton<HabitsService>((_) => HabitsService());
   container.registerSingleton<NotesService>((_) => NotesService());
-  container.registerSingleton<TasksService>((_) => TasksService());
+  container.registerSingleton<TasksService>((_) => TasksService(
+        container.resolve<ITaskRecurrenceService>(),
+        container.resolve<Mediator>(),
+      ));
   container.registerSingleton<TagsService>((_) => TagsService());
   container.registerSingleton<ISoundPlayer>((_) => AudioPlayerSoundPlayer());
   container.registerSingleton<ITranslationService>((_) => TranslationService());
