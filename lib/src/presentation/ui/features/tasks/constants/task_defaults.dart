@@ -8,14 +8,19 @@ class TaskDefaults {
   static const SortConfig<TaskSortFields> sorting = SortConfig<TaskSortFields>(
     orderOptions: [
       SortOptionWithTranslationKey(
-        field: TaskSortFields.priority,
-        direction: SortDirection.desc,
-        translationKey: TaskTranslationKeys.priorityLabel,
-      ),
-      SortOptionWithTranslationKey(
         field: TaskSortFields.plannedDate,
         direction: SortDirection.asc,
         translationKey: TaskTranslationKeys.plannedDateLabel,
+      ),
+      SortOptionWithTranslationKey(
+        field: TaskSortFields.deadlineDate,
+        direction: SortDirection.asc,
+        translationKey: TaskTranslationKeys.deadlineDateLabel,
+      ),
+      SortOptionWithTranslationKey(
+        field: TaskSortFields.priority,
+        direction: SortDirection.desc,
+        translationKey: TaskTranslationKeys.priorityLabel,
       ),
     ],
     useCustomOrder: false,
