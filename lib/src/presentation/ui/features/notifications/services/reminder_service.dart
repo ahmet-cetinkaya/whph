@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habits_query.dart';
@@ -213,12 +213,12 @@ class ReminderService {
     final taskId = _tasksService.onTaskCompleted.value;
     if (taskId == null) return;
 
-    if (kDebugMode) debugPrint('🔔 ReminderService: Task completed event received for task: $taskId');
+    Logger.debug('🔔 ReminderService: Task completed event received for task: $taskId');
 
     // Immediately cancel all reminders for the completed task
     await cancelRemindersForCompletedTask(taskId);
 
-    if (kDebugMode) debugPrint('✅ ReminderService: Completed task reminder cancellation for task: $taskId');
+    Logger.debug('✅ ReminderService: Completed task reminder cancellation for task: $taskId');
   }
 
   /// Schedule a reminder for a task based on its reminder settings
@@ -378,7 +378,7 @@ class ReminderService {
 
   /// Cancel all reminders for a task
   Future<void> cancelTaskReminders(String taskId) async {
-    if (kDebugMode) debugPrint('🔔 ReminderService: Cancelling task reminders for task: $taskId');
+    Logger.debug('🔔 ReminderService: Cancelling task reminders for task: $taskId');
 
     // Cancel reminders using the contains pattern to catch all variations
     await cancelEntityReminders(contains: taskId);
@@ -387,7 +387,7 @@ class ReminderService {
     await cancelEntityReminders(equals: 'task_planned_$taskId');
     await cancelEntityReminders(equals: 'task_deadline_$taskId');
 
-    if (kDebugMode) debugPrint('🔔 ReminderService: Task reminder cancellation completed for task: $taskId');
+    Logger.debug('🔔 ReminderService: Task reminder cancellation completed for task: $taskId');
   }
 
   /// Cancel all reminders for a habit
@@ -397,7 +397,7 @@ class ReminderService {
 
   /// Cancel reminders for a completed task (explicit method for task completion)
   Future<void> cancelRemindersForCompletedTask(String taskId) async {
-    if (kDebugMode) debugPrint('🔔 ReminderService: Starting reminder cancellation for completed task: $taskId');
+    Logger.debug('🔔 ReminderService: Starting reminder cancellation for completed task: $taskId');
 
     // Multiple approaches to ensure reminders are cancelled
     await cancelTaskReminders(taskId);
@@ -409,7 +409,7 @@ class ReminderService {
     // Use pattern matching as backup
     await _reminderService.cancelReminders(startsWith: 'task_', contains: taskId);
 
-    if (kDebugMode) debugPrint('🔔 ReminderService: Finished reminder cancellation for completed task: $taskId');
+    Logger.debug('🔔 ReminderService: Finished reminder cancellation for completed task: $taskId');
   }
 
   /// Calculate the reminder time based on the task date and reminder setting

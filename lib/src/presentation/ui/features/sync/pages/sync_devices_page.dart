@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/commands/delete_sync_command.dart';
@@ -98,7 +98,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         }
       },
       onError: (_) {
-        if (kDebugMode) debugPrint('Sync failed');
+        Logger.error('Sync failed');
         if (mounted) {
           OverlayNotificationHelper.hideNotification();
         }

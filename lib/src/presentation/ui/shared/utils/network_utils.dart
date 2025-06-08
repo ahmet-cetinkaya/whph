@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class NetworkUtils {
   static const int webSocketPort = 44040;
@@ -47,7 +47,7 @@ class NetworkUtils {
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to get local IP: $e');
+      Logger.error('Failed to get local IP: $e');
     }
     return null;
   }
@@ -91,13 +91,13 @@ class NetworkUtils {
             )
             .first;
       } catch (e) {
-        if (kDebugMode) debugPrint('Test message failed: $e');
+        Logger.debug('Test message failed: $e');
       }
 
       await ws.close();
       return true;
     } catch (e) {
-      if (kDebugMode) debugPrint('WebSocket connection failed: $e');
+      Logger.debug('WebSocket connection failed: $e');
       return false;
     }
   }

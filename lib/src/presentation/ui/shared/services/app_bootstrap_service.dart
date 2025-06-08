@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/application_container.dart';
 import 'package:whph/src/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
@@ -11,6 +10,7 @@ import 'package:whph/src/presentation/ui/features/notifications/services/reminde
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/ui_presentation_container.dart';
 import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
 import 'package:whph/corePackages/acore/dependency_injection/container.dart' as acore;
@@ -23,20 +23,18 @@ class AppBootstrapService {
   ///
   /// Returns the configured [IContainer] instance
   static Future<IContainer> initializeApp() async {
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Starting app initialization...');
-    }
-
     // Initialize dependency injection container and register modules
     final container = acore.Container();
     initializeJsonMapper();
 
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Registering dependency modules...');
-    }
-
     registerPersistence(container);
-    registerInfrastructure(container);
+    registerInfrastructure(container); // ILogger gets registered here
+
+    // Initialize Logger after infrastructure registration
+    Logger.initialize(container);
+    Logger.info('AppBootstrapService: Starting app initialization...');
+    Logger.debug('AppBootstrapService: Registering dependency modules...');
+
     registerApplication(container);
     registerUIPresentation(container);
 
@@ -46,18 +44,14 @@ class AppBootstrapService {
     // Start background workers
     await _startBackgroundWorkers(container);
 
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: App initialization completed successfully');
-    }
+    Logger.info('AppBootstrapService: App initialization completed successfully');
 
     return container;
   }
 
   /// Initializes essential core services required for app functionality
   static Future<void> _initializeCoreServices(IContainer container) async {
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Initializing core services...');
-    }
+    Logger.debug('AppBootstrapService: Initializing core services...');
 
     // Initialize translation service
     final translationService = container.resolve<ITranslationService>();
@@ -72,16 +66,12 @@ class AppBootstrapService {
     final reminderService = container.resolve<ReminderService>();
     await reminderService.initialize();
 
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Core services initialized successfully');
-    }
+    Logger.debug('AppBootstrapService: Core services initialized successfully');
   }
 
   /// Starts background workers and processes for all platforms
   static Future<void> _startBackgroundWorkers(IContainer container) async {
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Starting background workers...');
-    }
+    Logger.debug('AppBootstrapService: Starting background workers...');
 
     final mediator = container.resolve<Mediator>();
 
@@ -93,8 +83,6 @@ class AppBootstrapService {
     // Start app usage tracking for activity monitoring
     await mediator.send(StartTrackAppUsagesCommand());
 
-    if (kDebugMode) {
-      debugPrint('AppBootstrapService: Background workers started successfully');
-    }
+    Logger.debug('AppBootstrapService: Background workers started successfully');
   }
 }

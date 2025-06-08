@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
@@ -8,6 +7,7 @@ import 'package:whph/src/presentation/ui/features/about/services/abstraction/i_s
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Service responsible for handling app initialization tasks
 class AppInitializationService {
@@ -50,7 +50,7 @@ class AppInitializationService {
         );
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error checking onboarding status: $e');
+      Logger.error('Error checking onboarding status: $e');
     }
   }
 
@@ -75,7 +75,7 @@ class AppInitializationService {
           await _setupService.checkForUpdates(context);
           _hasCheckedForUpdates = true;
         } catch (e) {
-          if (kDebugMode) debugPrint('Error checking for updates: $e');
+          Logger.error('Error checking for updates: $e');
         }
       }
     });

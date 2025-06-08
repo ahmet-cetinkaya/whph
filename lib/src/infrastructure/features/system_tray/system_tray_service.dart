@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
@@ -28,7 +28,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
 
       trayManager.addListener(this);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error initializing tray: $e');
+      Logger.error('Error initializing tray: $e');
     }
   }
 
@@ -45,7 +45,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
       final iconPath = AppAssets.getTrayIcon(type, isWindows: Platform.isWindows);
       await trayManager.setIcon(iconPath);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error setting tray icon: $e');
+      Logger.error('Error setting tray icon: $e');
     }
   }
 
@@ -54,7 +54,7 @@ class SystemTrayService extends TrayListener with WindowListener implements ISys
     try {
       await trayManager.setTitle(title);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error setting tray title: $e');
+      Logger.error('Error setting tray title: $e');
     }
   }
 

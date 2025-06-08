@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -178,7 +179,7 @@ class AppAbout extends StatelessWidget {
         };
       }
     } catch (e) {
-      debugPrint('Error getting device info: $e');
+      Logger.error('Error getting device info: $e');
     }
 
     return {

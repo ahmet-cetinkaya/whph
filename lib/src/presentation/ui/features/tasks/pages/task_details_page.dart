@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
@@ -18,6 +17,7 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -101,7 +101,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         });
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error loading task details: $e');
+      Logger.error('Error loading task details: $e');
     }
   }
 

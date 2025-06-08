@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'base_desktop_app_usage_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class WindowsAppUsageService extends BaseDesktopAppUsageService {
   WindowsAppUsageService(
@@ -23,20 +23,20 @@ class WindowsAppUsageService extends BaseDesktopAppUsageService {
   Future<String?> getActiveWindow() async {
     try {
       if (!File(_scriptPath).existsSync()) {
-        if (kDebugMode) debugPrint('Script not found at: $_scriptPath');
+        Logger.warning('Script not found at: $_scriptPath');
         return null;
       }
 
       final result = await Process.run('powershell', ["-ExecutionPolicy", "Bypass", "-File", _scriptPath]);
 
       if (result.exitCode != 0) {
-        if (kDebugMode) debugPrint('PowerShell error: ${result.stderr}');
+        Logger.error('PowerShell error: ${result.stderr}');
         return null;
       }
 
       return result.stdout.trim();
     } catch (e) {
-      if (kDebugMode) debugPrint('Error running PowerShell script: $e');
+      Logger.error('Error running PowerShell script: $e');
       return null;
     }
   }

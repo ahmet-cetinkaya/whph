@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Service responsible for handling notification payloads and platform channel communication
 class NotificationPayloadService {
@@ -15,15 +15,11 @@ class NotificationPayloadService {
   /// Sets up notification click listener for Android platform
   static void setupNotificationListener(INotificationPayloadHandler payloadHandler) {
     if (!Platform.isAndroid) {
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Not Android platform, skipping notification listener setup');
-      }
+      Logger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
       return;
     }
 
-    if (kDebugMode) {
-      debugPrint('NotificationPayloadService: Setting up Android notification listener...');
-    }
+    Logger.debug('NotificationPayloadService: Setting up Android notification listener...');
 
     final platform = MethodChannel(AndroidAppConstants.channels.notification);
     platform.setMethodCallHandler((call) async {
@@ -36,16 +32,12 @@ class NotificationPayloadService {
       return null;
     });
 
-    if (kDebugMode) {
-      debugPrint('NotificationPayloadService: Android notification listener setup completed');
-    }
+    Logger.debug('NotificationPayloadService: Android notification listener setup completed');
   }
 
   /// Handles the initial notification payload when the app is launched from a notification
   static Future<void> handleInitialNotificationPayload(INotificationPayloadHandler payloadHandler) async {
-    if (kDebugMode) {
-      debugPrint('NotificationPayloadService: Checking for initial notification payload...');
-    }
+    Logger.debug('NotificationPayloadService: Checking for initial notification payload...');
 
     // Track if we've already handled a notification payload
     bool hasHandledPayload = false;
@@ -73,25 +65,19 @@ class NotificationPayloadService {
           await _acknowledgePayload(notificationPayload);
 
           hasHandledPayload = true;
-          if (kDebugMode) {
-            debugPrint('NotificationPayloadService: Initial notification payload handled successfully');
-          }
+          Logger.debug('NotificationPayloadService: Initial notification payload handled successfully');
           break; // Exit the retry loop if successful
         }
 
         // If no payload found, wait before trying again
         await Future.delayed(_retryDelay);
       } catch (e) {
-        if (kDebugMode) {
-          debugPrint('NotificationPayloadService: Error handling initial notification payload: $e');
-        }
+        Logger.error('NotificationPayloadService: Error handling initial notification payload: $e');
         await Future.delayed(_retryDelay);
       }
     }
 
-    if (kDebugMode) {
-      debugPrint('NotificationPayloadService: Initial notification payload check completed');
-    }
+    Logger.debug('NotificationPayloadService: Initial notification payload check completed');
   }
 
   /// Handles a notification payload from the platform channel
@@ -101,9 +87,7 @@ class NotificationPayloadService {
     MethodChannel platform,
   ) async {
     try {
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Handling notification payload: $payload');
-      }
+      Logger.debug('NotificationPayloadService: Handling notification payload: $payload');
 
       // Delay to ensure the app is fully initialized before handling the payload
       await Future.delayed(_platformHandlerDelay);
@@ -112,13 +96,9 @@ class NotificationPayloadService {
       // Acknowledge receipt of payload to native side
       await platform.invokeMethod('acknowledgePayload', payload);
 
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Notification payload handled and acknowledged');
-      }
+      Logger.debug('NotificationPayloadService: Notification payload handled and acknowledged');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Error handling notification payload: $e');
-      }
+      Logger.error('NotificationPayloadService: Error handling notification payload: $e');
     }
   }
 
@@ -132,9 +112,7 @@ class NotificationPayloadService {
         return payload;
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Error getting initial notification payload: $e');
-      }
+      Logger.error('NotificationPayloadService: Error getting initial notification payload: $e');
     }
     return null;
   }
@@ -147,9 +125,7 @@ class NotificationPayloadService {
         await platform.invokeMethod('acknowledgePayload', payload);
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('NotificationPayloadService: Error acknowledging payload: $e');
-      }
+      Logger.error('NotificationPayloadService: Error acknowledging payload: $e');
     }
   }
 }

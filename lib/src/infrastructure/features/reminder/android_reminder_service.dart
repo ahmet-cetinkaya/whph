@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -10,6 +9,7 @@ import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Implementation of the reminder service for Android platforms using native APIs
 class AndroidReminderService implements IReminderService {
@@ -30,7 +30,7 @@ class AndroidReminderService implements IReminderService {
       final String timeZoneName = DateTime.now().timeZoneName;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } catch (e) {
-      if (kDebugMode) debugPrint('Error setting timezone: $e');
+      Logger.error('Error setting timezone: $e');
       // Even if we can't determine the timezone name, we'll use local time
     }
   }
@@ -44,14 +44,14 @@ class AndroidReminderService implements IReminderService {
     String? payload,
   }) async {
     if (!(await _notificationService.isEnabled())) {
-      if (kDebugMode) debugPrint('Notifications are disabled');
+      Logger.debug('Notifications are disabled');
       return;
     }
 
     // Check for exact alarm permission on Android 12+
     final hasPermission = await _checkExactAlarmPermission();
     if (!hasPermission) {
-      if (kDebugMode) debugPrint('No exact alarm permission on Android 12+');
+      Logger.debug('No exact alarm permission on Android 12+');
       return;
     }
 
@@ -61,17 +61,15 @@ class AndroidReminderService implements IReminderService {
     // Compare with local time
     final now = DateTime.now();
     if (localScheduledDate.isBefore(now)) {
-      if (kDebugMode) debugPrint('Scheduled date is in the past');
+      Logger.debug('Scheduled date is in the past');
       return;
     }
 
     // Convert string ID to numeric ID using consistent method
     final notificationId = _getNotificationIdFromReminderId(id);
 
-    if (kDebugMode) {
-      debugPrint(
-          '🔔 AndroidReminderService: Scheduling notification: $id (numeric: $notificationId) for ${localScheduledDate.toString()}');
-    }
+    Logger.debug(
+        '🔔 AndroidReminderService: Scheduling notification: $id (numeric: $notificationId) for ${localScheduledDate.toString()}');
 
     // Calculate seconds until the notification should be shown using local time
     final int delaySeconds = localScheduledDate.difference(DateTime.now()).inSeconds;
@@ -87,12 +85,12 @@ class AndroidReminderService implements IReminderService {
       );
 
       if (!success) {
-        if (kDebugMode) debugPrint('❌ AndroidReminderService: Failed to schedule notification: $id');
+        Logger.debug('❌ AndroidReminderService: Failed to schedule notification: $id');
       } else {
-        if (kDebugMode) debugPrint('✅ AndroidReminderService: Successfully scheduled notification: $id');
+        Logger.debug('✅ AndroidReminderService: Successfully scheduled notification: $id');
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('❌ AndroidReminderService: Error scheduling reminder $id: $e');
+      Logger.debug('❌ AndroidReminderService: Error scheduling reminder $id: $e');
     }
   }
 
@@ -130,9 +128,9 @@ class AndroidReminderService implements IReminderService {
           payloadData['reminderId'] = reminderId;
           enhancedPayload = jsonEncode(payloadData);
 
-          if (kDebugMode) debugPrint('🔗 AndroidReminderService: Enhanced payload with reminderId: $reminderId');
+          Logger.debug('🔗 AndroidReminderService: Enhanced payload with reminderId: $reminderId');
         } catch (e) {
-          if (kDebugMode) debugPrint('⚠️ AndroidReminderService: Failed to enhance payload: $e');
+          Logger.debug('⚠️ AndroidReminderService: Failed to enhance payload: $e');
         }
       }
 
@@ -146,7 +144,7 @@ class AndroidReminderService implements IReminderService {
 
       return result ?? false;
     } catch (e) {
-      if (kDebugMode) debugPrint('Error scheduling notification: $e');
+      Logger.debug('Error scheduling notification: $e');
       return false;
     }
   }
@@ -186,9 +184,7 @@ class AndroidReminderService implements IReminderService {
       final weekFromNow = now.add(const Duration(days: 7));
 
       if (scheduledDate.isAfter(weekFromNow)) {
-        if (kDebugMode) {
-          debugPrint('📅 AndroidReminderService: Skipping reminder $daySpecificId - beyond current week period');
-        }
+        Logger.debug('📅 AndroidReminderService: Skipping reminder $daySpecificId - beyond current week period');
         continue; // Don't schedule beyond current week period
       }
 
@@ -206,13 +202,9 @@ class AndroidReminderService implements IReminderService {
           reminderId: daySpecificId, // Pass the day-specific ID for pattern matching
         );
 
-        if (kDebugMode) {
-          debugPrint('📅 AndroidReminderService: Scheduled reminder $daySpecificId for ${scheduledDate.toString()}');
-        }
+        Logger.debug('📅 AndroidReminderService: Scheduled reminder $daySpecificId for ${scheduledDate.toString()}');
       } catch (e) {
-        if (kDebugMode) {
-          debugPrint('Error scheduling recurring reminder: $e');
-        }
+        Logger.debug('Error scheduling recurring reminder: $e');
       }
     }
   }
@@ -254,7 +246,7 @@ class AndroidReminderService implements IReminderService {
       // Convert the string ID to a numeric ID if needed
       final int notificationId = _getNotificationIdFromReminderId(id);
 
-      if (kDebugMode) debugPrint('🔔 AndroidReminderService: Cancelling notification: $id (numeric: $notificationId)');
+      Logger.debug('🔔 AndroidReminderService: Cancelling notification: $id (numeric: $notificationId)');
 
       // Call the native method to cancel the notification with the given ID
       final result = await _notificationChannel.invokeMethod<bool>('cancelNotification', {
@@ -262,18 +254,12 @@ class AndroidReminderService implements IReminderService {
       });
 
       if (result == false) {
-        if (kDebugMode) {
-          debugPrint('❌ AndroidReminderService: Failed to cancel notification with ID: $id (numeric: $notificationId)');
-        }
+        Logger.debug('❌ AndroidReminderService: Failed to cancel notification with ID: $id (numeric: $notificationId)');
       } else {
-        if (kDebugMode) {
-          debugPrint('✅ AndroidReminderService: Successfully cancelled notification: $id (numeric: $notificationId)');
-        }
+        Logger.debug('✅ AndroidReminderService: Successfully cancelled notification: $id (numeric: $notificationId)');
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('❌ AndroidReminderService: Error canceling reminder $id: $e');
-      }
+      Logger.debug('❌ AndroidReminderService: Error canceling reminder $id: $e');
     }
   }
 
@@ -283,13 +269,13 @@ class AndroidReminderService implements IReminderService {
   int _getNotificationIdFromReminderId(String id) {
     try {
       final numericId = int.parse(id);
-      if (kDebugMode) debugPrint('🔔 AndroidReminderService: ID already numeric: $id -> $numericId');
+      Logger.debug('🔔 AndroidReminderService: ID already numeric: $id -> $numericId');
       return numericId;
     } catch (e) {
       // If the ID is not a number, use a consistent hash code
       // This ensures the same string ID always maps to the same numeric ID
       final hashId = id.hashCode.abs() % 2147483647; // Keep within int32 range
-      if (kDebugMode) debugPrint('🔔 AndroidReminderService: Converting string ID to hash: $id -> $hashId');
+      Logger.debug('🔔 AndroidReminderService: Converting string ID to hash: $id -> $hashId');
       return hashId;
     }
   }
@@ -325,7 +311,7 @@ class AndroidReminderService implements IReminderService {
         } catch (e) {
           // Native method not implemented or failed
           nativeHandled = false;
-          if (kDebugMode) debugPrint('Error using native pattern cancellation: $e');
+          Logger.debug('Error using native pattern cancellation: $e');
         }
 
         // If native handling worked, we're done
@@ -357,11 +343,11 @@ class AndroidReminderService implements IReminderService {
             }
           }
         } catch (e) {
-          if (kDebugMode) debugPrint('Error in fallback pattern cancellation: $e');
+          Logger.debug('Error in fallback pattern cancellation: $e');
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error canceling reminders by filter: $e');
+      Logger.debug('Error canceling reminders by filter: $e');
     }
   }
 
@@ -374,7 +360,7 @@ class AndroidReminderService implements IReminderService {
         return result.map((id) => id.toString()).toList();
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error retrieving active notification IDs: $e');
+      Logger.debug('Error retrieving active notification IDs: $e');
       // If we can't get the active IDs from the native side,
       // return an empty list as fallback
     }
@@ -390,10 +376,10 @@ class AndroidReminderService implements IReminderService {
       final result = await _notificationChannel.invokeMethod<bool>('cancelAllNotifications');
 
       if (result == false) {
-        if (kDebugMode) debugPrint('Failed to cancel all notifications');
+        Logger.debug('Failed to cancel all notifications');
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Error canceling all reminders: $e');
+      Logger.debug('Error canceling all reminders: $e');
     }
   }
 
@@ -408,7 +394,7 @@ class AndroidReminderService implements IReminderService {
         final sdkInt = androidInfo.version.sdkInt;
         isAndroid12Plus = sdkInt >= 31; // Android 12 is API level 31
       } catch (e) {
-        if (kDebugMode) debugPrint('Error checking Android version: $e');
+        Logger.debug('Error checking Android version: $e');
       }
 
       // If not Android 12+, we don't need this permission
@@ -422,7 +408,7 @@ class AndroidReminderService implements IReminderService {
 
       return hasPermission;
     } catch (e) {
-      if (kDebugMode) debugPrint('Error checking exact alarm permission: $e');
+      Logger.debug('Error checking exact alarm permission: $e');
       // If we can't check, assume we have permission to avoid blocking functionality
       return true;
     }

@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'abstraction/base_setup_service.dart';
 
 class AndroidSetupService extends BaseSetupService {
@@ -19,12 +19,12 @@ class AndroidSetupService extends BaseSetupService {
   @override
   Future<void> downloadAndInstallUpdate(String downloadUrl) async {
     try {
-      if (kDebugMode) debugPrint('Starting APK download from: $downloadUrl');
+      Logger.info('Starting APK download from: $downloadUrl');
 
       final tempDir = await getTemporaryDirectory();
       final downloadPath = path.join(tempDir.path, '${AppInfo.shortName.toLowerCase()}_update.apk');
 
-      if (kDebugMode) debugPrint('Downloading APK to: $downloadPath');
+      Logger.debug('Downloading APK to: $downloadPath');
 
       // Download APK with timeout
       await downloadFile(downloadUrl, downloadPath);
@@ -36,11 +36,11 @@ class AndroidSetupService extends BaseSetupService {
       }
 
       final fileSize = await file.length();
-      if (kDebugMode) debugPrint('APK downloaded successfully, size: $fileSize bytes');
+      Logger.info('APK downloaded successfully, size: $fileSize bytes');
 
       await makeFileExecutable(downloadPath);
 
-      if (kDebugMode) debugPrint('Installing APK using platform channel');
+      Logger.info('Installing APK using platform channel');
 
       // Install APK using system package installer
       await platform.invokeMethod('installApk', {'filePath': downloadPath});
@@ -48,7 +48,7 @@ class AndroidSetupService extends BaseSetupService {
       // Android system will handle the installation process
       exit(0);
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to download and install update: $e');
+      Logger.error('Failed to download and install update: $e');
       rethrow;
     }
   }

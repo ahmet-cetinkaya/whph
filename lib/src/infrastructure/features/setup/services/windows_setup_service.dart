@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'abstraction/base_setup_service.dart';
 
 class WindowsSetupService extends BaseSetupService {
@@ -64,7 +64,7 @@ exit
         description: '${AppInfo.name} - Time Tracking App',
       );
     } catch (e) {
-      if (kDebugMode) debugPrint('Error setting up Windows environment: $e');
+      Logger.error('Error setting up Windows environment: $e');
     }
   }
 
@@ -86,7 +86,7 @@ exit
       await runDetachedProcess('cmd', ['/c', updateScript]);
       exit(0);
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to download and install update: $e');
+      Logger.error('Failed to download and install update: $e');
       rethrow;
     }
   }
@@ -113,7 +113,7 @@ exit
         throw Exception('Failed to create shortcut: ${result.stderr}');
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to create shortcut: $e');
+      Logger.error('Failed to create shortcut: $e');
       rethrow;
     }
   }

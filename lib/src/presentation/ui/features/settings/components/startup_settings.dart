@@ -6,6 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class StartupSettings extends StatefulWidget {
   static bool get compatiblePlatform =>
@@ -49,7 +50,7 @@ class _StartupSettingsState extends State<StartupSettings> {
         return true;
       },
       onError: (e) {
-        debugPrint('Error loading startup setting: $e');
+        Logger.error('Error loading startup setting: $e');
       },
     );
   }

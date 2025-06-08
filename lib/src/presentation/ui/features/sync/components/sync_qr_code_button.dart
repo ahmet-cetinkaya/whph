@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/device_info_helper.dart';
@@ -31,9 +31,7 @@ class SyncQrCodeButton extends StatelessWidget {
       deviceId: deviceId,
     );
 
-    if (kDebugMode) {
-      debugPrint('Sync QR Code Message: ${JsonMapper.serialize(syncQrCodeMessage)}');
-    }
+    Logger.debug('Sync QR Code Message: ${JsonMapper.serialize(syncQrCodeMessage)}');
 
     final qrData = JsonMapper.serialize(syncQrCodeMessage);
 

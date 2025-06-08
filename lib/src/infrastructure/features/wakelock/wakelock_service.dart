@@ -1,20 +1,20 @@
-import 'package:flutter/foundation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:whph/corePackages/acore/logging/i_logger.dart';
 import 'abstractions/i_wakelock_service.dart';
 
 /// Implementation of IWakelockService using wakelock_plus package
 class WakelockService implements IWakelockService {
+  final ILogger _logger;
+
+  /// Creates a new instance of WakelockService
+  const WakelockService(this._logger);
   @override
   Future<void> enable() async {
     try {
       await WakelockPlus.enable();
-      if (kDebugMode) {
-        debugPrint('Wakelock enabled successfully');
-      }
+      _logger.info('Wakelock enabled successfully');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Failed to enable wakelock: $e');
-      }
+      _logger.error('Failed to enable wakelock', e);
       rethrow;
     }
   }
@@ -23,13 +23,9 @@ class WakelockService implements IWakelockService {
   Future<void> disable() async {
     try {
       await WakelockPlus.disable();
-      if (kDebugMode) {
-        debugPrint('Wakelock disabled successfully');
-      }
+      _logger.info('Wakelock disabled successfully');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Failed to disable wakelock: $e');
-      }
+      _logger.error('Failed to disable wakelock', e);
       rethrow;
     }
   }
@@ -39,9 +35,7 @@ class WakelockService implements IWakelockService {
     try {
       return await WakelockPlus.enabled;
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Failed to check wakelock status: $e');
-      }
+      _logger.error('Failed to check wakelock status', e);
       return false;
     }
   }

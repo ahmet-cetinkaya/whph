@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class OrderRank {
   static const double minOrder = 0;
   static const double maxOrder = 1000000;
@@ -35,14 +33,12 @@ class OrderRank {
       return currentOrder / 2;
     }
     final result = currentOrder - initialStep;
-    debugPrint('Calculated previous order: $result');
     return result;
   }
 
   // Find target order for moving an item to a specific position
   static double getTargetOrder(List<double> existingOrders, int targetPosition) {
     if (existingOrders.isEmpty) {
-      debugPrint('No existing orders, returning initialStep');
       return initialStep;
     }
 

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
@@ -12,7 +12,7 @@ import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
-import 'dart:io';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class DesktopNotificationService implements INotificationService {
   final Mediator _mediatr;
@@ -111,7 +111,7 @@ class DesktopNotificationService implements INotificationService {
         payload: payload,
       );
     } catch (e) {
-      if (kDebugMode) debugPrint('Error showing notification: $e');
+      Logger.error('Error showing notification: $e');
     }
   }
 
@@ -133,7 +133,7 @@ class DesktopNotificationService implements INotificationService {
       final isEnabled = setting.value == 'false' ? false : true; // Default to true if no setting
       return isEnabled;
     } catch (e) {
-      if (kDebugMode) debugPrint('Error checking if notifications are enabled: $e');
+      Logger.error('Error checking if notifications are enabled: $e');
       return true; // Default to true if there's an error
     }
   }
@@ -163,7 +163,7 @@ class DesktopNotificationService implements INotificationService {
         final settings = await macOSImplementation?.checkPermissions();
         return settings?.isAlertEnabled == true || settings?.isBadgeEnabled == true || settings?.isSoundEnabled == true;
       } catch (e) {
-        if (kDebugMode) debugPrint('Error checking macOS permission: $e');
+        Logger.error('Error checking macOS permission: $e');
       }
     }
 
@@ -190,7 +190,7 @@ class DesktopNotificationService implements INotificationService {
 
         permissionGranted = settings ?? false;
       } catch (e) {
-        if (kDebugMode) debugPrint('Error requesting macOS permission: $e');
+        Logger.error('Error requesting macOS permission: $e');
         permissionGranted = false;
       }
     } else {

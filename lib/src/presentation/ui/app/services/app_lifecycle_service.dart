@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Service responsible for managing app lifecycle events
 class AppLifecycleService with WidgetsBindingObserver {
@@ -45,9 +45,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!_isMobilePlatform) return;
 
     _systemTrayService.destroy().catchError((error) {
-      if (kDebugMode) {
-        debugPrint('Error cleaning up system tray: $error');
-      }
+      Logger.error('Error cleaning up system tray: $error');
     });
   }
 
@@ -56,9 +54,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!_isMobilePlatform) return;
 
     _systemTrayService.init().catchError((error) {
-      if (kDebugMode) {
-        debugPrint('Error initializing system tray: $error');
-      }
+      Logger.error('Error initializing system tray: $error');
     });
   }
 

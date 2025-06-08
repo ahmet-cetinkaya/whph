@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/corePackages/acore/errors/business_exception.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 
@@ -42,8 +43,8 @@ class GlobalErrorHandler {
   /// Handle error when context is not available
   static void _handleErrorWithoutContext(Object error, StackTrace stack) {
     if (kDebugMode) {
-      debugPrint('Error occurred with no context available: $error');
-      debugPrint('Stack trace: $stack');
+      Logger.error('Error occurred with no context available: $error');
+      Logger.error('Stack trace: $stack');
     }
   }
 
@@ -67,8 +68,8 @@ class GlobalErrorHandler {
   /// Log error without showing notification
   static void _logErrorOnly(Object error, StackTrace stack) {
     if (kDebugMode) {
-      debugPrint('Error displaying error notification: $error');
-      debugPrint('Stack trace: $stack');
+      Logger.error('Error displaying error notification: $error');
+      Logger.error('Stack trace: $stack');
     }
   }
 }
