@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
@@ -392,36 +393,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   SortDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sort),
-                    config: widget.sortConfig ??
-                        SortConfig<TaskSortFields>(
-                          orderOptions: [
-                            SortOptionWithTranslationKey(
-                              field: TaskSortFields.priority,
-                              direction: SortDirection.desc,
-                              translationKey: TaskTranslationKeys.priorityLabel,
-                            ),
-                            SortOptionWithTranslationKey(
-                              field: TaskSortFields.plannedDate,
-                              direction: SortDirection.asc,
-                              translationKey: TaskTranslationKeys.plannedDateLabel,
-                            ),
-                          ],
-                        ),
-                    defaultConfig: SortConfig<TaskSortFields>(
-                      orderOptions: [
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.priority,
-                          direction: SortDirection.desc,
-                          translationKey: TaskTranslationKeys.priorityLabel,
-                        ),
-                        SortOptionWithTranslationKey(
-                          field: TaskSortFields.plannedDate,
-                          direction: SortDirection.asc,
-                          translationKey: TaskTranslationKeys.plannedDateLabel,
-                        ),
-                      ],
-                      useCustomOrder: true,
-                    ),
+                    config: widget.sortConfig ?? TaskDefaults.sorting,
+                    defaultConfig: TaskDefaults.sorting,
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
                       SortOptionWithTranslationKey(
