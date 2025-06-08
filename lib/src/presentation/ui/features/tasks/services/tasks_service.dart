@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/main.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:mediatr/mediatr.dart';
 
 class TasksService extends ChangeNotifier {
-  final ITaskRecurrenceService _taskRecurrenceService = container.resolve<ITaskRecurrenceService>();
-  final Mediator _mediator = container.resolve<Mediator>();
+  final ITaskRecurrenceService _taskRecurrenceService;
+  final Mediator _mediator;
+
+  TasksService(this._taskRecurrenceService, this._mediator);
 
   // Event listeners for task-related events - keeping nullable for the value
   final ValueNotifier<String?> onTaskCreated = ValueNotifier<String?>(null);
