@@ -1,18 +1,21 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
+
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
-import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/src/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
-import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
-import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
-import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
+import 'package:whph/src/infrastructure/windows/constants/windows_app_constants.dart';
+import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 
 class DesktopNotificationService implements INotificationService {
   final Mediator _mediatr;
@@ -38,8 +41,8 @@ class DesktopNotificationService implements INotificationService {
       // For Windows
       windows: WindowsInitializationSettings(
         appName: AppInfo.name,
-        appUserModelId: AppInfo.name,
-        guid: AppInfo.name,
+        appUserModelId: WindowsAppConstants.config.appUserModelId,
+        guid: WindowsAppConstants.notificationGuid,
         iconPath: AppAssets.logoAdaptiveFgIco,
       ),
       // For macOS
