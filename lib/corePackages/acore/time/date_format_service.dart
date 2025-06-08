@@ -188,7 +188,44 @@ class DateFormatService {
     if (input.trim().isEmpty) return null;
 
     final locale = Localizations.localeOf(context);
+
+    // Handle time-only inputs separately to avoid format conflicts
+    if (type == DateFormatType.time) {
+      return _parseTimeOnly(input.trim(), locale: locale);
+    }
+
     return parseDateTime(input, locale: locale, assumeLocal: true);
+  }
+
+  /// Parse time-only string (e.g., "14:51", "2:51 PM")
+  static DateTime? _parseTimeOnly(String timeStr, {Locale? locale}) {
+    if (timeStr.trim().isEmpty) return null;
+
+    final trimmedStr = timeStr.trim();
+    final now = DateTime.now();
+
+    // Time-only formats to try
+    final timeFormats = [
+      'HH:mm:ss',
+      'HH:mm',
+      'H:mm',
+      'h:mm a',
+      'h:mm:ss a',
+      'h:mm A',
+      'h:mm:ss A',
+    ];
+
+    for (final format in timeFormats) {
+      try {
+        final parsed = DateFormat(format).parse(trimmedStr);
+        // Create DateTime with today's date and parsed time
+        return DateTime(now.year, now.month, now.day, parsed.hour, parsed.minute, parsed.second);
+      } catch (e) {
+        // Continue to next format
+      }
+    }
+
+    return null;
   }
 
   // ==============================================================================
@@ -231,17 +268,19 @@ class DateFormatService {
     final localeName = locale?.toString() ?? 'en_US';
 
     final formats = <String>[
-      // Internal/storage formats (always try first)
-      internalDateTimeFormat,
-      internalDateFormat,
-      internalTimeShortFormat,
+      // User input formats (try formats without seconds first for better UX)
+      'yyyy-MM-dd HH:mm', // User input typically doesn't include seconds
 
-      // ISO formats
+      // Internal/storage formats
+      internalDateTimeFormat, // 'yyyy-MM-dd HH:mm:ss'
+      internalDateFormat, // 'yyyy-MM-dd'
+      // Note: internalTimeShortFormat removed - it should only be used for time-only parsing
+
+      // ISO formats (ordered by specificity - more specific first)
       'yyyy-MM-ddTHH:mm:ss.SSSZ',
       'yyyy-MM-ddTHH:mm:ssZ',
       'yyyy-MM-ddTHH:mm:ss',
-      'yyyy-MM-dd HH:mm:ss',
-      'yyyy-MM-dd HH:mm',
+      'yyyy-MM-dd HH:mm:ss', // Moved after the no-seconds version
       'yyyy-MM-dd',
 
       // Locale-specific formats
@@ -261,12 +300,8 @@ class DateFormatService {
       'd.M.yyyy H:mm',
       'd.M.yyyy',
 
-      // Time-only formats
-      'HH:mm:ss',
-      'HH:mm',
-      'H:mm',
-      'h:mm a',
-      'h:mm:ss a',
+      // Note: Time-only formats removed from general parsing to avoid conflicts
+      // They are handled separately in _parseTimeOnly method
     ];
 
     return formats;
