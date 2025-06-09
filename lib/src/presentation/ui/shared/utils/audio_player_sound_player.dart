@@ -7,12 +7,21 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   final Map<String, Uint8List> _soundCache = {};
   bool _isInitialized = false;
 
-  Future<void> _ensureInitialized(String path) async {
+  Future<void> _ensureInitialized(String path, {bool requestAudioFocus = true}) async {
     if (!_soundCache.containsKey(path)) {
       _soundCache[path] = (await rootBundle.load(path)).buffer.asUint8List();
     }
 
     if (!_isInitialized) {
+      // Configure audio context based on whether we want audio focus
+      await _audioPlayer.setAudioContext(
+        AudioContext(
+          android: AudioContextAndroid(
+            audioFocus: requestAudioFocus ? AndroidAudioFocus.gainTransientMayDuck : AndroidAudioFocus.none,
+          ),
+        ),
+      );
+
       await _audioPlayer.setSourceBytes(_soundCache[path]!);
       await _audioPlayer.setVolume(0);
       await _audioPlayer.stop();
@@ -21,8 +30,8 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   }
 
   @override
-  Future<void> play(String path) async {
-    await _ensureInitialized(path);
+  void play(String path, {bool requestAudioFocus = true}) async {
+    await _ensureInitialized(path, requestAudioFocus: requestAudioFocus);
     await _audioPlayer.stop();
     await _audioPlayer.setSourceBytes(_soundCache[path]!);
     await _audioPlayer.setVolume(1);
