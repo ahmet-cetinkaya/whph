@@ -46,6 +46,8 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
   @override
   Future<AppUsage?> getByDateAndHour(
       {required String name, required int year, required int month, required int day, required int hour}) async {
+    // Note: This method correctly uses created_date as it's finding when the app usage entity was first created,
+    // not when the actual usage occurred (which would use usage_date from app_usage_time_record_table)
     return await (database.select(table)
           ..where((t) =>
               t.name.equals(name) &
@@ -67,12 +69,14 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     final query = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
-        SELECT t.id, t.name, SUM(t.duration) as total_duration
-        FROM app_usage_table t
-        WHERE t.deleted_date IS NULL
-        ${startDate != null ? 'AND t.created_date >= ?' : ''}
-        ${endDate != null ? 'AND t.created_date < ?' : ''}
-        GROUP BY t.name
+        SELECT au.id, au.name, COALESCE(SUM(autr.duration), 0) as total_duration
+        FROM app_usage_table au
+        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
+          AND autr.deleted_date IS NULL
+          ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+          ${endDate != null ? 'AND autr.usage_date < ?' : ''}
+        WHERE au.deleted_date IS NULL
+        GROUP BY au.id, au.name
       ),
       FirstAppUsage AS (
         SELECT 
@@ -135,11 +139,13 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     final totalCountQuery = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
-        SELECT DISTINCT t.name
-        FROM app_usage_table t
-        WHERE t.deleted_date IS NULL
-        ${startDate != null ? 'AND t.created_date >= ?' : ''}
-        ${endDate != null ? 'AND t.created_date < ?' : ''}
+        SELECT DISTINCT au.name
+        FROM app_usage_table au
+        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
+          AND autr.deleted_date IS NULL
+          ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+          ${endDate != null ? 'AND autr.usage_date < ?' : ''}
+        WHERE au.deleted_date IS NULL
       )
       SELECT COUNT(*) as count 
       FROM FilteredPeriodAppUsages fp

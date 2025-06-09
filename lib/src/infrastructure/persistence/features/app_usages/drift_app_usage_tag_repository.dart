@@ -90,7 +90,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
             JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
             WHERE aut.tag_id = t.id
             AND aut.deleted_date IS NULL
-            AND aur.created_date BETWEEN ? AND ?
+            AND aur.usage_date BETWEEN ? AND ?
             AND aur.deleted_date IS NULL
           ), 0) as total_duration
         FROM tag_table t

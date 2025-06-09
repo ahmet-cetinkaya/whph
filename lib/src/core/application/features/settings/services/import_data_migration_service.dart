@@ -20,6 +20,14 @@ class ImportDataMigrationService implements IImportDataMigrationService {
   ///
   /// Add new migrations here when they are needed for future versions.
   void _registerMigrations() {
+    // Migration from 0.6.9 to 0.6.10: Add usageDate field to AppUsageTimeRecord entities
+    _migrationRegistry.registerMigration(
+      fromVersion: '0.6.9',
+      toVersion: '0.6.10',
+      description: 'Add usageDate field to AppUsageTimeRecord entities',
+      migrationFunction: _migrate0_6_9to0_6_10,
+    );
+
     // Example migration for future version 1.1.0
     // _migrationRegistry.registerMigration(
     //   fromVersion: '1.0.0',
@@ -27,10 +35,6 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     //   description: 'Add new task fields and update priority system',
     //   migrationFunction: _migrateFrom100To110,
     // );
-
-    // Currently no migrations are defined between 0.6.4 and 1.0.0
-    // This means if imported data version is 0.6.4 and current app version is 1.0.0,
-    // no processing will be done and data will be returned as-is.
   }
 
   @override
@@ -124,6 +128,28 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     sortedVersions.sort((a, b) => SemanticVersion.parse(a).compareTo(SemanticVersion.parse(b)));
 
     return sortedVersions;
+  }
+
+  // Migration method for adding usageDate field to AppUsageTimeRecord entities
+  // This handles all versions that don't have the usageDate field
+  Future<Map<String, dynamic>> _migrate0_6_9to0_6_10(Map<String, dynamic> data) async {
+    Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
+
+    // Migrate AppUsageTimeRecord entities to add usageDate field
+    if (migratedData['appUsageTimeRecords'] != null) {
+      final appUsageTimeRecords = migratedData['appUsageTimeRecords'] as List;
+      for (var record in appUsageTimeRecords) {
+        if (record is Map<String, dynamic>) {
+          // Add usageDate field if it doesn't exist
+          // Use createdDate as the initial value for usageDate to maintain compatibility
+          if (!record.containsKey('usageDate') && record.containsKey('createdDate')) {
+            record['usageDate'] = record['createdDate'];
+          }
+        }
+      }
+    }
+
+    return migratedData;
   }
 
   // Example migration method for future use

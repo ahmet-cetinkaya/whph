@@ -875,6 +875,10 @@ class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
   @override
   late final GeneratedColumn<int> duration =
       GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _usageDateMeta = const VerificationMeta('usageDate');
+  @override
+  late final GeneratedColumn<DateTime> usageDate = GeneratedColumn<DateTime>('usage_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
@@ -888,7 +892,7 @@ class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, appUsageId, duration, createdDate, modifiedDate, deletedDate];
+  List<GeneratedColumn> get $columns => [id, appUsageId, duration, usageDate, createdDate, modifiedDate, deletedDate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -912,6 +916,11 @@ class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
       context.handle(_durationMeta, duration.isAcceptableOrUnknown(data['duration']!, _durationMeta));
     } else if (isInserting) {
       context.missing(_durationMeta);
+    }
+    if (data.containsKey('usage_date')) {
+      context.handle(_usageDateMeta, usageDate.isAcceptableOrUnknown(data['usage_date']!, _usageDateMeta));
+    } else if (isInserting) {
+      context.missing(_usageDateMeta);
     }
     if (data.containsKey('created_date')) {
       context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
@@ -939,6 +948,7 @@ class $AppUsageTimeRecordTableTable extends AppUsageTimeRecordTable
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
       duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+      usageDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}usage_date'])!,
     );
   }
 
@@ -952,6 +962,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
   final Value<String> id;
   final Value<String> appUsageId;
   final Value<int> duration;
+  final Value<DateTime> usageDate;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
@@ -960,6 +971,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     this.id = const Value.absent(),
     this.appUsageId = const Value.absent(),
     this.duration = const Value.absent(),
+    this.usageDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -969,6 +981,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     required String id,
     required String appUsageId,
     required int duration,
+    required DateTime usageDate,
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -976,11 +989,13 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
   })  : id = Value(id),
         appUsageId = Value(appUsageId),
         duration = Value(duration),
+        usageDate = Value(usageDate),
         createdDate = Value(createdDate);
   static Insertable<AppUsageTimeRecord> custom({
     Expression<String>? id,
     Expression<String>? appUsageId,
     Expression<int>? duration,
+    Expression<DateTime>? usageDate,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
@@ -990,6 +1005,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       if (id != null) 'id': id,
       if (appUsageId != null) 'app_usage_id': appUsageId,
       if (duration != null) 'duration': duration,
+      if (usageDate != null) 'usage_date': usageDate,
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
@@ -1001,6 +1017,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       {Value<String>? id,
       Value<String>? appUsageId,
       Value<int>? duration,
+      Value<DateTime>? usageDate,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
@@ -1009,6 +1026,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       id: id ?? this.id,
       appUsageId: appUsageId ?? this.appUsageId,
       duration: duration ?? this.duration,
+      usageDate: usageDate ?? this.usageDate,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
@@ -1027,6 +1045,9 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     }
     if (duration.present) {
       map['duration'] = Variable<int>(duration.value);
+    }
+    if (usageDate.present) {
+      map['usage_date'] = Variable<DateTime>(usageDate.value);
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
@@ -1049,6 +1070,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
           ..write('id: $id, ')
           ..write('appUsageId: $appUsageId, ')
           ..write('duration: $duration, ')
+          ..write('usageDate: $usageDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
@@ -4885,6 +4907,7 @@ typedef $$AppUsageTimeRecordTableTableCreateCompanionBuilder = AppUsageTimeRecor
   required String id,
   required String appUsageId,
   required int duration,
+  required DateTime usageDate,
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
@@ -4894,6 +4917,7 @@ typedef $$AppUsageTimeRecordTableTableUpdateCompanionBuilder = AppUsageTimeRecor
   Value<String> id,
   Value<String> appUsageId,
   Value<int> duration,
+  Value<DateTime> usageDate,
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
@@ -4915,6 +4939,9 @@ class $$AppUsageTimeRecordTableTableFilterComposer extends Composer<_$AppDatabas
 
   ColumnFilters<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get usageDate =>
+      $composableBuilder(column: $table.usageDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
@@ -4942,6 +4969,9 @@ class $$AppUsageTimeRecordTableTableOrderingComposer extends Composer<_$AppDatab
   ColumnOrderings<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get usageDate =>
+      $composableBuilder(column: $table.usageDate, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
 
@@ -4965,6 +4995,8 @@ class $$AppUsageTimeRecordTableTableAnnotationComposer extends Composer<_$AppDat
   GeneratedColumn<String> get appUsageId => $composableBuilder(column: $table.appUsageId, builder: (column) => column);
 
   GeneratedColumn<int> get duration => $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get usageDate => $composableBuilder(column: $table.usageDate, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => column);
@@ -4999,6 +5031,7 @@ class $$AppUsageTimeRecordTableTableTableManager extends RootTableManager<
             Value<String> id = const Value.absent(),
             Value<String> appUsageId = const Value.absent(),
             Value<int> duration = const Value.absent(),
+            Value<DateTime> usageDate = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
@@ -5008,6 +5041,7 @@ class $$AppUsageTimeRecordTableTableTableManager extends RootTableManager<
             id: id,
             appUsageId: appUsageId,
             duration: duration,
+            usageDate: usageDate,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
@@ -5017,6 +5051,7 @@ class $$AppUsageTimeRecordTableTableTableManager extends RootTableManager<
             required String id,
             required String appUsageId,
             required int duration,
+            required DateTime usageDate,
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
@@ -5026,6 +5061,7 @@ class $$AppUsageTimeRecordTableTableTableManager extends RootTableManager<
             id: id,
             appUsageId: appUsageId,
             duration: duration,
+            usageDate: usageDate,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,

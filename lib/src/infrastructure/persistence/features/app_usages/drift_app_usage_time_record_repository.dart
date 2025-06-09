@@ -12,6 +12,7 @@ class AppUsageTimeRecordTable extends Table {
   TextColumn get id => text()();
   TextColumn get appUsageId => text()();
   IntColumn get duration => integer()();
+  DateTimeColumn get usageDate => dateTime()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
@@ -35,6 +36,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       id: entity.id,
       appUsageId: entity.appUsageId,
       duration: entity.duration,
+      usageDate: entity.usageDate,
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
@@ -57,8 +59,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       FROM app_usage_time_record_table
       WHERE app_usage_id IN (${appUsageIds.map((_) => '?').join(', ')})
         AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date < ?' : ''}
+        ${startDate != null ? 'AND usage_date >= ?' : ''}
+        ${endDate != null ? 'AND usage_date < ?' : ''}
       GROUP BY app_usage_id
       ''',
       variables: [
@@ -96,8 +98,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           COALESCE(SUM(autr.duration), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
-        ${startDate != null ? 'AND autr.created_date >= ?' : ''}
-        ${endDate != null ? 'AND autr.created_date <= ?' : ''}
+        ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+        ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
         WHERE au.deleted_date IS NULL
         ${searchByProcessName != null ? 'AND au.name = ?' : ''}
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
@@ -147,8 +149,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           COALESCE(SUM(autr.duration), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
-        ${startDate != null ? 'AND autr.created_date >= ?' : ''}
-        ${endDate != null ? 'AND autr.created_date <= ?' : ''}
+        ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+        ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
         WHERE au.deleted_date IS NULL
         ${searchByProcessName != null ? 'AND au.name = ?' : ''}
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
