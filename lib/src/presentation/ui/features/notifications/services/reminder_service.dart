@@ -261,7 +261,7 @@ class ReminderService {
           scheduledDate: reminderTime,
           payload: _notificationPayloadHandler.createNavigationPayload(
             route: TasksPage.route,
-            arguments: {'showTaskDetails': task.id},
+            arguments: {'taskId': task.id},
           ),
         );
       }
@@ -288,7 +288,7 @@ class ReminderService {
           scheduledDate: reminderTime,
           payload: _notificationPayloadHandler.createNavigationPayload(
             route: TasksPage.route,
-            arguments: {'showTaskDetails': task.id},
+            arguments: {'taskId': task.id},
           ),
         );
       }
@@ -332,7 +332,7 @@ class ReminderService {
             days: reminderDaysList,
             payload: _notificationPayloadHandler.createNavigationPayload(
               route: HabitsPage.route,
-              arguments: {'showHabitDetails': habit.id},
+              arguments: {'habitId': habit.id},
             ),
           );
         } catch (e) {
