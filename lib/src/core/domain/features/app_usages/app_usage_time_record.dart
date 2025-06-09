@@ -5,6 +5,7 @@ import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
 class AppUsageTimeRecord extends BaseEntity<String> {
   String appUsageId;
   int duration;
+  DateTime usageDate;
 
   AppUsageTimeRecord({
     required super.id,
@@ -13,5 +14,6 @@ class AppUsageTimeRecord extends BaseEntity<String> {
     super.deletedDate,
     required this.appUsageId,
     required this.duration,
+    required this.usageDate,
   });
 }

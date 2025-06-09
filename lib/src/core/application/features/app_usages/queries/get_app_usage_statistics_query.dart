@@ -143,7 +143,7 @@ class GetAppUsageStatisticsQueryHandler
     // we'll need to get all records in the date range and group them in code
     final timeRecords = await _appUsageTimeRecordRepository.getAll(
       customWhereFilter: CustomWhereFilter(
-        'app_usage_id = ? AND created_date >= ? AND created_date <= ? AND deleted_date IS NULL',
+        'app_usage_id = ? AND usage_date >= ? AND usage_date <= ? AND deleted_date IS NULL',
         [appUsageId, startDate, endDate],
       ),
     );
@@ -162,7 +162,7 @@ class GetAppUsageStatisticsQueryHandler
     // Aggregate durations by day of week
     for (final record in timeRecords) {
       // DateTime weekday is 1-7 where 1 is Monday and 7 is Sunday
-      final dayOfWeek = record.createdDate.weekday;
+      final dayOfWeek = record.usageDate.weekday;
       dailyUsage[dayOfWeek] = dailyUsage[dayOfWeek]! + record.duration;
     }
 
@@ -183,7 +183,7 @@ class GetAppUsageStatisticsQueryHandler
     // Get all records in the date range
     final timeRecords = await _appUsageTimeRecordRepository.getAll(
       customWhereFilter: CustomWhereFilter(
-        'app_usage_id = ? AND created_date >= ? AND created_date <= ? AND deleted_date IS NULL',
+        'app_usage_id = ? AND usage_date >= ? AND usage_date <= ? AND deleted_date IS NULL',
         [appUsageId, startDate, endDate],
       ),
     );
@@ -196,7 +196,7 @@ class GetAppUsageStatisticsQueryHandler
 
     // Aggregate durations by hour of day
     for (final record in timeRecords) {
-      final hour = record.createdDate.hour;
+      final hour = record.usageDate.hour;
       hourlyUsage[hour] = hourlyUsage[hour]! + record.duration;
     }
 
