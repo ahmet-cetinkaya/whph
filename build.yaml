@@ -15,6 +15,6 @@ targets:
       drift_dev:
         options:
           databases:
-            app_database: lib/persistence/shared/contexts/drift/drift_app_context.dart
+            app_database: lib/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart
           test_dir: test/drift/
-          schema_dir: lib/persistence/shared/contexts/drift/schemas/
+          schema_dir: lib/src/infrastructure/persistence/shared/contexts/drift/schemas/
