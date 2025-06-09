@@ -846,8 +846,11 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       // Set volume based on user preference
       _soundPlayer.setVolume(_tickingVolume / 100);
 
-      // Play alternating tick and tock sounds
-      _soundPlayer.play(_isTickSound ? TaskSounds.clockTick : TaskSounds.clockTock);
+      // Play alternating tick and tock sounds without requesting audio focus
+      _soundPlayer.play(
+        _isTickSound ? TaskSounds.clockTick : TaskSounds.clockTock,
+        requestAudioFocus: false,
+      );
       _isTickSound = !_isTickSound; // Toggle for next sound
     });
   }

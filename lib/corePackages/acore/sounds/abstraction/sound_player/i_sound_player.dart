@@ -1,5 +1,5 @@
 abstract class ISoundPlayer {
-  void play(String path);
+  void play(String path, {bool requestAudioFocus = true});
   void stop();
   void pause();
   void resume();
