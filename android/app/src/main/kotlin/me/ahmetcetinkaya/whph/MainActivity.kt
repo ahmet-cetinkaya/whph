@@ -91,6 +91,12 @@ class MainActivity : FlutterActivity() {
                 Log.d(TAG, "Processing SELECT_NOTIFICATION intent")
                 intent.getStringExtra("payload")
             }
+            // Handle boot completed notification from NotificationReceiver
+            "BOOT_COMPLETED_NOTIFICATION" -> {
+                Log.d(TAG, "Processing boot completed notification")
+                handleBootCompletedNotification()
+                null // No payload for boot completed
+            }
             // For any other intent, check if it has our payload extra
             else -> {
                 if (intent.hasExtra(Constants.IntentExtras.NOTIFICATION_PAYLOAD)) {
@@ -159,6 +165,45 @@ class MainActivity : FlutterActivity() {
         }
         
         super.onDestroy()
+    }
+
+    /**
+     * Handle boot completed notification from NotificationReceiver
+     */
+    private fun handleBootCompletedNotification() {
+        try {
+            Log.d(TAG, "Handling boot completed notification")
+            
+            // Delay to ensure Flutter is ready before sending the notification
+            Handler(Looper.getMainLooper()).postDelayed({
+                try {
+                    // Send boot completed event to Flutter via method channel
+                    val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+                    if (binaryMessenger != null) {
+                        val channel = MethodChannel(binaryMessenger, Constants.Channels.BOOT_COMPLETED)
+                        channel.invokeMethod("onBootCompleted", null, object : MethodChannel.Result {
+                            override fun success(result: Any?) {
+                                Log.d(TAG, "Successfully notified Flutter about boot completed")
+                            }
+
+                        override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                            Log.e(TAG, "Error notifying Flutter about boot completed: $errorCode - $errorMessage")
+                        }
+
+                        override fun notImplemented() {
+                            Log.w(TAG, "Boot completed method not implemented in Flutter")
+                        }
+                    })
+                    } else {
+                        Log.w(TAG, "BinaryMessenger is null, cannot send boot completed notification to Flutter")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error sending boot completed notification to Flutter: ${e.message}", e)
+                }
+            }, NOTIFICATION_HANDLER_DELAY_MS)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in handleBootCompletedNotification: ${e.message}", e)
+        }
     }
 
     // Configure Flutter engine and set up method channels
@@ -407,6 +452,19 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        // Channel for boot completed event notification
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.BOOT_COMPLETED).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "onBootCompleted" -> {
+                    Log.d(TAG, "Flutter notified of boot completed event")
+                    result.success(true)
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
         // Channel for direct notification handling
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.NOTIFICATION).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -506,8 +564,16 @@ class MainActivity : FlutterActivity() {
                             Log.d("MainActivity", "Non-JSON payload or error parsing: ${e.message}")
                         }
                         
-                        // Use the ReminderTracker to store this reminder
-                        reminderTracker.trackReminder(id, reminderId, metadata)
+                        // Use the enhanced notification tracking method
+                        reminderTracker.trackNotification(
+                            id = id,
+                            title = title,
+                            body = body,
+                            payload = payload,
+                            triggerTime = triggerTimeMillis,
+                            reminderId = reminderId,
+                            metadata = metadata
+                        )
 
                         result.success(true)
                     } catch (e: Exception) {

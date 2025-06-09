@@ -397,4 +397,10 @@ class DesktopReminderService implements IReminderService {
 
     Logger.debug('🔔 DesktopReminderService: Cancelled all reminders and cleared all configurations');
   }
+
+  @override
+  Future<void> onBootCompleted() async {
+    Logger.debug('🔄 DesktopReminderService: Boot completed event received (not applicable for desktop)');
+    // Desktop platforms don't need special boot handling since timers are recreated on app start
+  }
 }

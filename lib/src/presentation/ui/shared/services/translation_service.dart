@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/features/settings/pages/settings_page.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/background_translation_service.dart';
 
 class TranslationService implements ITranslationService {
   static const _supportedLocales = [
@@ -16,14 +17,25 @@ class TranslationService implements ITranslationService {
   @override
   Future<void> init() async {
     await EasyLocalization.ensureInitialized();
+
+    // Initialize background translation service
+    await BackgroundTranslationService().initialize();
   }
 
   @override
   String translate(String key, {Map<String, String>? namedArgs}) {
     String translation = key.tr(namedArgs: namedArgs);
 
-    if (translation == key && kDebugMode) {
-      Logger.error('[Error] [TranslationService] Translation not found for key: $key');
+    // If EasyLocalization failed (translation equals key), try background service
+    if (translation == key) {
+      final backgroundTranslation = BackgroundTranslationService().translate(key, namedArgs: namedArgs);
+      if (backgroundTranslation != key) {
+        return backgroundTranslation;
+      }
+
+      if (kDebugMode) {
+        Logger.error('[Error] [TranslationService] Translation not found for key: $key');
+      }
     }
 
     return translation;
@@ -32,6 +44,10 @@ class TranslationService implements ITranslationService {
   @override
   Future<void> changeLanguage(BuildContext context, String languageCode) async {
     await context.setLocale(Locale(languageCode));
+
+    // Save locale for background translation service
+    await BackgroundTranslationService().saveCurrentLocale(languageCode);
+
     if (context.mounted) Navigator.of(context).pushReplacementNamed(SettingsPage.route);
   }
 

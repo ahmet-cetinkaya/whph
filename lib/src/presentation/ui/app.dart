@@ -10,6 +10,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/src/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/background_translation_service.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -57,6 +58,19 @@ class _AppState extends State<App> {
   /// Initialize app-level services and dialogs
   Future<void> _initializeApp() async {
     await _initializationService.initializeApp(widget.navigatorKey);
+
+    // Save current locale for background notifications
+    await _saveCurrentLocaleForNotifications();
+  }
+
+  /// Save the current locale to ensure notifications work in background
+  Future<void> _saveCurrentLocaleForNotifications() async {
+    try {
+      final currentLocale = context.locale.languageCode;
+      await BackgroundTranslationService().saveCurrentLocale(currentLocale);
+    } catch (e) {
+      // Error handled silently to not block app initialization
+    }
   }
 
   @override

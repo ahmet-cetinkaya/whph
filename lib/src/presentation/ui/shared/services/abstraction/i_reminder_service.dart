@@ -59,4 +59,7 @@ abstract class IReminderService {
 
   /// Cancel all scheduled notifications
   Future<void> cancelAllReminders();
+
+  /// Handle boot completed event - reschedule or refresh reminders if needed
+  Future<void> onBootCompleted();
 }
