@@ -13,9 +13,17 @@ class NotificationReceiver : BroadcastReceiver() {
         
         when (intent.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
-                // Here we would reschedule all notifications after device reboot
-                Log.d(TAG, "Received BOOT_COMPLETED event")
-                // This requires storing scheduled notifications in a database
+                Log.d(TAG, "Received BOOT_COMPLETED event - rescheduling notifications")
+                try {
+                    // Initialize ReminderTracker and reschedule all notifications
+                    val reminderTracker = ReminderTracker(context)
+                    rescheduleAllNotifications(context, reminderTracker)
+
+                    // Notify Flutter about boot completed event if app is running
+                    notifyFlutterBootCompleted(context)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error rescheduling notifications after boot: ${e.message}", e)
+                }
             }
             Constants.IntentActions.NOTIFICATION_CLICKED -> {
                 val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
@@ -78,6 +86,103 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Reschedule all stored notifications after device reboot
+     */
+    private fun rescheduleAllNotifications(context: Context, reminderTracker: ReminderTracker) {
+        try {
+            val allStoredNotifications = reminderTracker.getAllNotificationData()
+            Log.d(TAG, "Found ${allStoredNotifications.size} notifications to reschedule")
+
+            if (allStoredNotifications.isEmpty()) {
+                Log.d(TAG, "No notifications to reschedule")
+                return
+            }
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? android.app.AlarmManager
+            if (alarmManager == null) {
+                Log.e(TAG, "AlarmManager not available")
+                return
+            }
+
+            var rescheduledCount = 0
+            val currentTime = System.currentTimeMillis()
+
+            for (notificationData in allStoredNotifications) {
+                try {
+                    // Skip notifications that are in the past
+                    if (notificationData.triggerTime <= currentTime) {
+                        Log.d(TAG, "Skipping past notification: ID=${notificationData.id}")
+                        // Remove expired notification from tracking
+                        reminderTracker.untrackReminder(notificationData.id)
+                        continue
+                    }
+
+                    // Create the intent for this notification
+                    val intent = android.content.Intent(context, NotificationReceiver::class.java).apply {
+                        action = Constants.IntentActions.ALARM_TRIGGERED
+                        putExtra(Constants.IntentExtras.NOTIFICATION_ID, notificationData.id)
+                        putExtra(Constants.IntentExtras.TITLE, notificationData.title)
+                        putExtra(Constants.IntentExtras.BODY, notificationData.body)
+                        putExtra(Constants.IntentExtras.PAYLOAD, notificationData.payload)
+                    }
+
+                    val pendingIntent = android.app.PendingIntent.getBroadcast(
+                        context,
+                        notificationData.id,
+                        intent,
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                    )
+
+                    // Reschedule the alarm
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            android.app.AlarmManager.RTC_WAKEUP,
+                            notificationData.triggerTime,
+                            pendingIntent
+                        )
+                    } else {
+                        alarmManager.setExact(
+                            android.app.AlarmManager.RTC_WAKEUP,
+                            notificationData.triggerTime,
+                            pendingIntent
+                        )
+                    }
+
+                    rescheduledCount++
+                    Log.d(TAG, "Rescheduled notification: ID=${notificationData.id}, time=${java.util.Date(notificationData.triggerTime)}")
+
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error rescheduling notification ID=${notificationData.id}: ${e.message}")
+                }
+            }
+
+            Log.d(TAG, "Successfully rescheduled $rescheduledCount notifications")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in rescheduleAllNotifications: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Notify Flutter about boot completed event
+     */
+    private fun notifyFlutterBootCompleted(context: Context) {
+        try {
+            // Start MainActivity with a special flag to notify Flutter about boot completed
+            val intent = android.content.Intent(context, MainActivity::class.java).apply {
+                action = "BOOT_COMPLETED_NOTIFICATION"
+                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra("boot_completed", true)
+            }
+            
+            Log.d(TAG, "Sending boot completed notification to Flutter")
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error notifying Flutter about boot completed: ${e.message}")
         }
     }
 }

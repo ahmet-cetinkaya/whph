@@ -17,6 +17,7 @@ import 'package:whph/src/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/notification_translation_service.dart';
 
 /// Service to handle scheduling reminders for various entities
 class ReminderService {
@@ -26,6 +27,7 @@ class ReminderService {
   final HabitsService _habitsService;
   final ITranslationService _translationService;
   final INotificationPayloadHandler _notificationPayloadHandler;
+  late final NotificationTranslationService _notificationTranslationService;
 
   ReminderService(
     this._reminderService,
@@ -34,12 +36,17 @@ class ReminderService {
     this._habitsService,
     this._translationService,
     this._notificationPayloadHandler,
-  );
+  ) {
+    _notificationTranslationService = NotificationTranslationService(_translationService);
+  }
 
   /// Initialize the reminder service and set up event listeners
   Future<void> initialize() async {
     // Initialize the reminder service
     await _reminderService.init();
+
+    // Initialize notification translation service
+    await _notificationTranslationService.initialize();
 
     // Set up event listeners for tasks
     _tasksService.onTaskCreated.addListener(_handleTaskCreated);
@@ -239,12 +246,18 @@ class ReminderService {
 
       // Only schedule if the reminder time is in the future
       if (reminderTime.isAfter(DateTime.now())) {
+        // Pre-translate notification strings to ensure they work in background
+        final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
+          titleKey: TaskTranslationKeys.notificationReminderTitle,
+          bodyKey: TaskTranslationKeys.notificationPlannedMessage,
+          titleArgs: {'title': task.title},
+          bodyArgs: {'time': _formatTime(task.plannedDate!)},
+        );
+
         await scheduleReminder(
           id: 'task_planned_${task.id}',
-          title: _translationService
-              .translate(TaskTranslationKeys.notificationReminderTitle, namedArgs: {'title': task.title}),
-          body: _translationService.translate(TaskTranslationKeys.notificationPlannedMessage,
-              namedArgs: {'time': _formatTime(task.plannedDate!)}),
+          title: notificationStrings.title,
+          body: notificationStrings.body,
           scheduledDate: reminderTime,
           payload: _notificationPayloadHandler.createNavigationPayload(
             route: TasksPage.route,
@@ -260,12 +273,18 @@ class ReminderService {
 
       // Only schedule if the reminder time is in the future
       if (reminderTime.isAfter(DateTime.now())) {
+        // Pre-translate notification strings to ensure they work in background
+        final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
+          titleKey: TaskTranslationKeys.notificationDeadlineTitle,
+          bodyKey: TaskTranslationKeys.notificationDeadlineMessage,
+          titleArgs: {'title': task.title},
+          bodyArgs: {'time': _formatTime(task.deadlineDate!)},
+        );
+
         await scheduleReminder(
           id: 'task_deadline_${task.id}',
-          title: _translationService
-              .translate(TaskTranslationKeys.notificationDeadlineTitle, namedArgs: {'title': task.title}),
-          body: _translationService.translate(TaskTranslationKeys.notificationDeadlineMessage,
-              namedArgs: {'time': _formatTime(task.deadlineDate!)}),
+          title: notificationStrings.title,
+          body: notificationStrings.body,
           scheduledDate: reminderTime,
           payload: _notificationPayloadHandler.createNavigationPayload(
             route: TasksPage.route,
@@ -297,12 +316,18 @@ class ReminderService {
       final timeOfDay = habit.getReminderTimeOfDay();
       if (timeOfDay != null) {
         try {
+          // Pre-translate notification strings to ensure they work in background
+          final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
+            titleKey: HabitTranslationKeys.notificationReminderTitle,
+            bodyKey: HabitTranslationKeys.notificationReminderMessage,
+            titleArgs: {'name': habit.name},
+            bodyArgs: {'name': habit.name},
+          );
+
           await scheduleRecurringReminder(
             id: 'habit_${habit.id}',
-            title: _translationService
-                .translate(HabitTranslationKeys.notificationReminderTitle, namedArgs: {'name': habit.name}),
-            body: _translationService
-                .translate(HabitTranslationKeys.notificationReminderMessage, namedArgs: {'name': habit.name}),
+            title: notificationStrings.title,
+            body: notificationStrings.body,
             time: timeOfDay,
             days: reminderDaysList,
             payload: _notificationPayloadHandler.createNavigationPayload(

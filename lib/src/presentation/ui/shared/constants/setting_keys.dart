@@ -31,4 +31,7 @@ class SettingKeys {
 
   // Support State
   static const String supportDialogShown = 'SUPPORT_DIALOG_SHOWN';
+
+  // Locale Persistence for Notifications
+  static const String currentLocale = 'CURRENT_LOCALE';
 }

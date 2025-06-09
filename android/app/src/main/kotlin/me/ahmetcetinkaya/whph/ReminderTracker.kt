@@ -3,6 +3,21 @@ package me.ahmetcetinkaya.whph
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import org.json.JSONException
+import org.json.JSONObject
+
+/**
+ * Data class to hold notification information for rescheduling
+ */
+data class NotificationData(
+    val id: Int,
+    val title: String,
+    val body: String,
+    val payload: String?,
+    val triggerTime: Long,
+    val reminderId: String?,
+    val metadata: String?
+)
 
 /**
  * Helper class to track scheduled reminder IDs and their metadata
@@ -12,6 +27,7 @@ class ReminderTracker(context: Context) {
     private val TAG = "ReminderTracker"
     private val PREFS_NAME = "whph_reminder_tracker"
     private val KEY_PREFIX = "reminder_"
+    private val KEY_NOTIFICATION_DATA_PREFIX = "notif_data_"
     private val KEY_REMINDER_COUNT = "reminder_count"
     private val KEY_REMINDER_IDS = "reminder_ids"
     
@@ -45,6 +61,59 @@ class ReminderTracker(context: Context) {
             Log.e(TAG, "Error tracking reminder: ${e.message}")
         }
     }
+
+    /**
+     * Track a notification with complete data for rescheduling after reboot
+     * @param id The notification ID
+     * @param title The notification title
+     * @param body The notification body
+     * @param payload The notification payload
+     * @param triggerTime The time when notification should trigger (in milliseconds)
+     * @param reminderId The optional string reminder ID (can be used for pattern matching)
+     * @param metadata Additional information about the reminder (task ID, habit ID, etc.)
+     */
+    fun trackNotification(
+        id: Int,
+        title: String,
+        body: String,
+        payload: String?,
+        triggerTime: Long,
+        reminderId: String? = null,
+        metadata: String? = null
+    ) {
+        try {
+            val editor = prefs.edit()
+            val storageId = reminderId ?: id.toString()
+
+            // Store basic reminder data (for pattern matching)
+            editor.putString("$KEY_PREFIX$id", "$storageId|${metadata ?: ""}")
+
+            // Store complete notification data (for rescheduling)
+            val notificationJson = JSONObject().apply {
+                put("id", id)
+                put("title", title)
+                put("body", body)
+                put("payload", payload ?: "")
+                put("triggerTime", triggerTime)
+                put("reminderId", reminderId ?: "")
+                put("metadata", metadata ?: "")
+            }
+            editor.putString("$KEY_NOTIFICATION_DATA_PREFIX$id", notificationJson.toString())
+
+            // Update the set of all reminder IDs for easy retrieval
+            val reminderIds = getReminderIds().toMutableSet()
+            reminderIds.add(id.toString())
+            editor.putStringSet(KEY_REMINDER_IDS, reminderIds)
+
+            // Update the count
+            editor.putInt(KEY_REMINDER_COUNT, reminderIds.size)
+
+            editor.apply()
+            Log.d(TAG, "Tracked notification: ID=$id, reminderID=$reminderId, triggerTime=${java.util.Date(triggerTime)}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error tracking notification: ${e.message}")
+        }
+    }
     
     /**
      * Remove a tracked reminder
@@ -56,6 +125,9 @@ class ReminderTracker(context: Context) {
             
             // Remove individual reminder data
             editor.remove("$KEY_PREFIX$id")
+            
+            // Remove notification data
+            editor.remove("$KEY_NOTIFICATION_DATA_PREFIX$id")
             
             // Update the set of all reminder IDs
             val reminderIds = getReminderIds().toMutableSet()
@@ -141,5 +213,70 @@ class ReminderTracker(context: Context) {
     fun clearAll() {
         prefs.edit().clear().apply()
         Log.d(TAG, "Cleared all tracked reminders")
+    }
+
+    /**
+     * Get all stored notification data for rescheduling
+     * @return List of NotificationData objects
+     */
+    fun getAllNotificationData(): List<NotificationData> {
+        val notificationDataList = mutableListOf<NotificationData>()
+        val reminderIds = getReminderIds()
+
+        for (idStr in reminderIds) {
+            try {
+                val id = idStr.toInt()
+                val notificationDataJson = prefs.getString("$KEY_NOTIFICATION_DATA_PREFIX$id", null)
+
+                if (notificationDataJson != null) {
+                    val jsonObject = JSONObject(notificationDataJson)
+                    val notificationData = NotificationData(
+                        id = jsonObject.getInt("id"),
+                        title = jsonObject.getString("title"),
+                        body = jsonObject.getString("body"),
+                        payload = jsonObject.getString("payload").takeIf { it.isNotEmpty() },
+                        triggerTime = jsonObject.getLong("triggerTime"),
+                        reminderId = jsonObject.getString("reminderId").takeIf { it.isNotEmpty() },
+                        metadata = jsonObject.getString("metadata").takeIf { it.isNotEmpty() }
+                    )
+                    notificationDataList.add(notificationData)
+                } else {
+                    Log.d(TAG, "No notification data found for ID: $id")
+                }
+            } catch (e: JSONException) {
+                Log.e(TAG, "Error parsing notification data for ID $idStr: ${e.message}")
+            } catch (e: NumberFormatException) {
+                Log.e(TAG, "Invalid ID format: $idStr")
+            }
+        }
+
+        Log.d(TAG, "Retrieved ${notificationDataList.size} notification data entries")
+        return notificationDataList
+    }
+
+    /**
+     * Get specific notification data by ID
+     * @param id The notification ID
+     * @return NotificationData object or null if not found
+     */
+    fun getNotificationData(id: Int): NotificationData? {
+        try {
+            val notificationDataJson = prefs.getString("$KEY_NOTIFICATION_DATA_PREFIX$id", null)
+            if (notificationDataJson != null) {
+                val jsonObject = JSONObject(notificationDataJson)
+                return NotificationData(
+                    id = jsonObject.getInt("id"),
+                    title = jsonObject.getString("title"),
+                    body = jsonObject.getString("body"),
+                    payload = jsonObject.getString("payload").takeIf { it.isNotEmpty() },
+                    triggerTime = jsonObject.getLong("triggerTime"),
+                    reminderId = jsonObject.getString("reminderId").takeIf { it.isNotEmpty() },
+                    metadata = jsonObject.getString("metadata").takeIf { it.isNotEmpty() }
+                )
+            }
+        } catch (e: JSONException) {
+            Log.e(TAG, "Error parsing notification data for ID $id: ${e.message}")
+        }
+        return null
     }
 }

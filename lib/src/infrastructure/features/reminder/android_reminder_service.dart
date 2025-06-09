@@ -17,6 +17,7 @@ class AndroidReminderService implements IReminderService {
 
   // Method channel for native communication
   static final MethodChannel _notificationChannel = MethodChannel(AndroidAppConstants.channels.notification);
+  static final MethodChannel _bootCompletedChannel = MethodChannel(AndroidAppConstants.channels.bootCompleted);
 
   AndroidReminderService(this._notificationService);
 
@@ -33,6 +34,9 @@ class AndroidReminderService implements IReminderService {
       Logger.error('Error setting timezone: $e');
       // Even if we can't determine the timezone name, we'll use local time
     }
+
+    // Set up boot completed event listener
+    _bootCompletedChannel.setMethodCallHandler(_handleBootCompletedEvent);
   }
 
   @override
@@ -380,6 +384,43 @@ class AndroidReminderService implements IReminderService {
       }
     } catch (e) {
       Logger.debug('Error canceling all reminders: $e');
+    }
+  }
+
+  /// Method to handle boot completed event and potentially refresh reminders
+  @override
+  Future<void> onBootCompleted() async {
+    Logger.debug('🔄 AndroidReminderService: Boot completed event received');
+
+    try {
+      // Check if notifications are enabled
+      if (!(await _notificationService.isEnabled())) {
+        Logger.debug('Notifications are disabled, skipping boot completed handling');
+        return;
+      }
+
+      // Check for exact alarm permission on Android 12+
+      final hasPermission = await _checkExactAlarmPermission();
+      if (!hasPermission) {
+        Logger.debug('No exact alarm permission on Android 12+, cannot reschedule');
+        return;
+      }
+
+      Logger.debug('✅ AndroidReminderService: Boot completed handling successful');
+    } catch (e) {
+      Logger.error('Error handling boot completed event: $e');
+    }
+  }
+
+  /// Handle boot completed events from native Android code
+  Future<void> _handleBootCompletedEvent(MethodCall call) async {
+    switch (call.method) {
+      case 'onBootCompleted':
+        Logger.debug('📱 AndroidReminderService: Received boot completed event from native');
+        await onBootCompleted();
+        break;
+      default:
+        Logger.debug('Unknown boot completed method: ${call.method}');
     }
   }
 

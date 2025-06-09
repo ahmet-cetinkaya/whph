@@ -26,6 +26,7 @@ class _Channels {
   String get exactAlarm => "${AndroidAppConstants.packageName}/exact_alarm";
   String get notification => "${AndroidAppConstants.packageName}/notification";
   String get appUsageStats => "${AndroidAppConstants.packageName}/app_usage_stats";
+  String get bootCompleted => "${AndroidAppConstants.packageName}/boot_completed";
 }
 
 /// Notification channel constants
