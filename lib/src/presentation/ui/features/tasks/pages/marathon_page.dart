@@ -349,10 +349,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // Add today's date for filtering
     final now = DateTime.now();
-    final todayForFilter = DateTime(now.year, now.month, now.day);
-    final tomorrowForFilter = todayForFilter.add(const Duration(days: 1));
 
     return PopScope(
       canPop: true,
@@ -481,8 +478,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           child: TaskList(
                             filterByCompleted: _showCompletedTasks,
                             filterByTags: _selectedTaskTagIds,
-                            filterByPlannedEndDate: tomorrowForFilter,
-                            filterByDeadlineEndDate: tomorrowForFilter,
+                            filterByPlannedStartDate: DateTime(0),
+                            filterByPlannedEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                            filterByDeadlineStartDate: DateTime(0),
+                            filterByDeadlineEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                             filterDateOr: true,
                             search: _taskSearchQuery,
                             onTaskCompleted: _onTasksChanged,
