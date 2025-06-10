@@ -111,6 +111,13 @@ class BackgroundTranslationService {
       }
 
       _translationCache![locale]!.addAll(flatMap);
+      Logger.debug('BackgroundTranslationService: Loaded ${flatMap.length} translations from $path/$locale.yaml');
+
+      // Log notification-specific keys for debugging
+      final notificationKeys = flatMap.keys.where((key) => key.contains('notification')).toList();
+      if (notificationKeys.isNotEmpty) {
+        Logger.debug('BackgroundTranslationService: Found notification keys: $notificationKeys');
+      }
     } catch (e) {
       // File might not exist for this locale, continue silently
       if (kDebugMode) {
@@ -119,32 +126,58 @@ class BackgroundTranslationService {
     }
   }
 
-  /// Parse simple YAML content (basic implementation for key-value pairs)
+  /// Parse simple YAML content (improved implementation for nested structures)
   Map<String, dynamic> _parseSimpleYaml(String yamlContent) {
     final Map<String, dynamic> result = {};
     final lines = yamlContent.split('\n');
-    String currentPrefix = '';
+    final List<String> indentStack = [];
+    String currentPath = '';
 
     for (final line in lines) {
+      if (line.trim().isEmpty || line.trim().startsWith('#')) continue;
+
+      // Get indentation level
+      final indentLevel = line.length - line.trimLeft().length;
       final trimmed = line.trim();
-      if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
 
       final colonIndex = trimmed.indexOf(':');
-      if (colonIndex == -1) continue;
+      if (colonIndex == -1) {
+        // Skip malformed lines without colons, but log for debugging
+        if (kDebugMode) {
+          Logger.debug('BackgroundTranslationService: Skipping malformed line: $trimmed');
+        }
+        continue;
+      }
 
       final key = trimmed.substring(0, colonIndex).trim();
       final value = trimmed.substring(colonIndex + 1).trim();
 
-      // Handle nested structure (simplified)
-      final indentLevel = line.indexOf(line.trim());
+      // Update path based on indentation
       if (indentLevel == 0) {
-        currentPrefix = key;
-        if (value.isNotEmpty && !value.startsWith('|') && !value.startsWith('>')) {
-          result[key] = value.replaceAll('"', '').replaceAll("'", '');
+        indentStack.clear();
+        indentStack.add(key);
+        currentPath = key;
+      } else {
+        // Find correct level in stack
+        final targetLevel = indentLevel ~/ 2; // Assuming 2-space indentation
+
+        if (targetLevel < indentStack.length) {
+          // Go back to appropriate level
+          indentStack.removeRange(targetLevel, indentStack.length);
         }
-      } else if (value.isNotEmpty && !value.startsWith('|') && !value.startsWith('>')) {
-        final fullKey = currentPrefix.isEmpty ? key : '$currentPrefix.$key';
-        result[fullKey] = value.replaceAll('"', '').replaceAll("'", '');
+
+        // Add current key
+        indentStack.add(key);
+        currentPath = indentStack.join('.');
+      }
+
+      // Store value if it's not empty and doesn't look like multiline content
+      if (value.isNotEmpty && !value.startsWith('|') && !value.startsWith('>')) {
+        result[currentPath] = value.replaceAll('"', '').replaceAll("'", '');
+      } else if (value.isEmpty) {
+        // For keys without values (like section headers), still add them to result
+        // This ensures that 'tasks:' gets added even if it has no immediate value
+        result[currentPath] = '';
       }
     }
 
@@ -185,6 +218,8 @@ class BackgroundTranslationService {
 
       if (translation == null) {
         Logger.debug('BackgroundTranslationService: Translation not found for key: $key');
+        Logger.debug(
+            'BackgroundTranslationService: Available keys for locale $_currentLocale: ${_translationCache![_currentLocale]?.keys.take(10)}');
         return key;
       }
     }
@@ -196,9 +231,37 @@ class BackgroundTranslationService {
       });
     }
 
+    Logger.debug('BackgroundTranslationService: Successfully translated key: $key -> $translation');
     return translation!;
   }
 
   /// Get the current locale
   String get currentLocale => _currentLocale ?? 'en';
+
+  // Test helper methods - only available in test mode
+  @visibleForTesting
+  Map<String, dynamic> parseSimpleYamlForTest(String yamlContent) {
+    return _parseSimpleYaml(yamlContent);
+  }
+
+  @visibleForTesting
+  void setTranslationCacheForTest(Map<String, Map<String, String>> cache) {
+    _translationCache = cache;
+  }
+
+  @visibleForTesting
+  void setCurrentLocaleForTest(String locale) {
+    _currentLocale = locale;
+  }
+
+  @visibleForTesting
+  Future<void> loadCurrentLocaleForTest() async {
+    await _loadCurrentLocale();
+  }
+
+  @visibleForTesting
+  void clearCacheForTest() {
+    _translationCache = null;
+    _currentLocale = null;
+  }
 }
