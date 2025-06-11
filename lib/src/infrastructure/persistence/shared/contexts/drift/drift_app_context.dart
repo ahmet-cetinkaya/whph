@@ -126,7 +126,7 @@ class AppDatabase extends _$AppDatabase {
         },
         from3To4: (m, schema) async {
           // Create AppUsageTimeRecord table
-          await m.createTable(appUsageTimeRecordTable);
+          await m.createTable(schema.appUsageTimeRecordTable);
 
           // Copy existing durations to new time records
           await customStatement('''
@@ -340,9 +340,9 @@ class AppDatabase extends _$AppDatabase {
 
           // Convert task_table planned_date column to UTC
           await customStatement('''
-            UPDATE task_table 
+            UPDATE task_table
             SET planned_date = datetime(planned_date)
-            WHERE planned_date IS NOT NULL 
+            WHERE planned_date IS NOT NULL
             AND (planned_date LIKE '%+%' OR planned_date LIKE '%-0%' OR planned_date LIKE '%-1%' OR planned_date LIKE '%-2%')
           ''');
 
@@ -390,44 +390,14 @@ class AppDatabase extends _$AppDatabase {
           final usageDateExists = tableInfo.any((row) => row.data['name'] == 'usage_date');
 
           if (!usageDateExists) {
-            // Drop the temp table if it exists from previous failed migration
-            await customStatement('DROP TABLE IF EXISTS app_usage_time_record_table_new');
+            // Add usage_date column
+            await m.addColumn(appUsageTimeRecordTable, appUsageTimeRecordTable.usageDate);
 
-            // Add usageDate column as nullable first
-            await customStatement('''
-              ALTER TABLE app_usage_time_record_table
-              ADD COLUMN usage_date INTEGER
-            ''');
-
-            // Set usageDate to createdDate for all existing records
+            // Set usage_date to created_date for all existing records
             await customStatement('''
               UPDATE app_usage_time_record_table
               SET usage_date = created_date
             ''');
-
-            // Create new table with the correct schema based on repository definition
-            await customStatement('''
-              CREATE TABLE app_usage_time_record_table_new (
-                id TEXT NOT NULL PRIMARY KEY,
-                app_usage_id TEXT NOT NULL,
-                duration INTEGER NOT NULL,
-                usage_date INTEGER NOT NULL,
-                created_date INTEGER NOT NULL,
-                modified_date INTEGER,
-                deleted_date INTEGER
-              )
-            ''');
-
-            // Copy data from old table to new table
-            await customStatement('''
-              INSERT INTO app_usage_time_record_table_new
-              SELECT id, app_usage_id, duration, usage_date, created_date, modified_date, deleted_date
-              FROM app_usage_time_record_table
-            ''');
-
-            // Drop old table and rename new table
-            await customStatement('DROP TABLE app_usage_time_record_table');
-            await customStatement('ALTER TABLE app_usage_time_record_table_new RENAME TO app_usage_time_record_table');
           }
         },
       ),
