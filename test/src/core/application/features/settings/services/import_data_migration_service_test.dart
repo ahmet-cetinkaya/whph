@@ -12,15 +12,15 @@ void main() {
 
     group('isMigrationNeeded', () {
       test('should return false when versions are equal', () {
-        // Act - Current app version is 0.6.7
-        final result = migrationService.isMigrationNeeded('0.6.7');
+        // Act - Current app version is 0.6.10
+        final result = migrationService.isMigrationNeeded('0.6.10');
 
         // Assert
         expect(result, false);
       });
 
       test('should return false when no specific migrations are defined', () {
-        // Act - Testing migration from 0.6.4 to current version 0.6.7
+        // Act - Testing migration from 0.6.4 to current version 0.6.10
         // No migrations are defined between these versions, so should return false
         final result = migrationService.isMigrationNeeded('0.6.4');
 
@@ -52,7 +52,7 @@ void main() {
 
         // Assert
         expect(versions, isNotEmpty);
-        expect(versions, contains('0.6.7')); // Should contain current app version
+        expect(versions, contains('0.6.10')); // Should contain current app version
       });
     });
 
@@ -60,14 +60,14 @@ void main() {
       test('should return same data when versions are equal', () async {
         // Arrange
         final testData = {
-          'version': '0.6.7',
+          'version': '0.6.10',
           'tags': [
             {'id': '1', 'name': 'Test Tag'}
           ]
         };
 
         // Act
-        final result = await migrationService.migrateData(testData, '0.6.7');
+        final result = await migrationService.migrateData(testData, '0.6.10');
 
         // Assert
         expect(result, equals(testData));
@@ -89,7 +89,7 @@ void main() {
         // Data should be preserved as-is, but app version should be updated
         expect(result['version'], equals('0.6.4')); // Original version should be preserved
         expect(result['tags'], equals(testData['tags'])); // Tags should be preserved
-        expect(result['appInfo']['version'], equals('0.6.7')); // App version should be updated to current
+        expect(result['appInfo']['version'], equals('0.6.10')); // App version should be updated to current
       });
 
       test('should return data as-is when source version is newer', () async {
@@ -128,7 +128,7 @@ void main() {
 
         // Assert
         // Should not throw and should add appInfo
-        expect(result['appInfo']['version'], equals('0.6.7'));
+        expect(result['appInfo']['version'], equals('0.6.10'));
       });
     });
 
@@ -145,7 +145,7 @@ void main() {
           final result = await migrationService.migrateData(testData, version);
 
           // Assert
-          expect(result['appInfo']['version'], equals('0.6.7'));
+          expect(result['appInfo']['version'], equals('0.6.10'));
         }
       });
 
@@ -174,10 +174,10 @@ void main() {
 
         // Act & Assert
         expect(versions, isA<List<String>>());
-        expect(versions.contains('0.6.7'), true); // Current version should be included
+        expect(versions.contains('0.6.10'), true); // Current version should be included
 
         // The system is ready to handle future migrations when they are defined
-        // For example, when a migration from 0.6.7 to 0.7.0 is added,
+        // For example, when a migration from 0.6.10 to 0.7.0 is added,
         // the system will automatically detect and apply it
       });
     });
