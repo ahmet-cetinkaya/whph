@@ -285,12 +285,18 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingTime.inSeconds > 0) {
         if (!mounted) return;
+
+        // Calculate the actual elapsed time increment for debug vs production
+        final elapsedIncrement = kDebugMode
+            ? const Duration(minutes: 1) // In debug mode, 1 minute of progress per second
+            : const Duration(seconds: 1); // In production, 1 second of progress per second
+
         setState(() {
-          _remainingTime -= kDebugMode
-              ? const Duration(minutes: 1) // Simulate 1 minute for testing
-              : const Duration(seconds: 1);
+          _remainingTime -= elapsedIncrement;
         });
-        widget.onTimeUpdate(_remainingTime);
+
+        // Pass the actual elapsed time increment to the callback
+        widget.onTimeUpdate(elapsedIncrement);
         _updateSystemTrayTimer();
       } else {
         _timer.cancel();

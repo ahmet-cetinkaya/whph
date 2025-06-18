@@ -249,13 +249,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _onTasksChanged();
   }
 
-  void _handleTimerUpdate(Duration _) async {
+  void _handleTimerUpdate(Duration elapsedIncrement) async {
     if (_selectedTask == null) return;
 
-    // Add 1 second to the task's time record
+    // Add the actual elapsed time increment to the task's time record
     final command = AddTaskTimeRecordCommand(
       taskId: _selectedTask!.id,
-      duration: 1, // Add 1 second each time
+      duration: elapsedIncrement.inSeconds, // Use the actual elapsed time increment
     );
 
     await AsyncErrorHandler.executeVoid(
@@ -264,7 +264,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       operation: () async {
         await _mediator.send(command);
         // Update local state for UI display
-        _selectedTask!.totalElapsedTime += 1;
+        _selectedTask!.totalElapsedTime += elapsedIncrement.inSeconds;
       },
     );
   }
