@@ -23,6 +23,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_confetti_animation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
@@ -38,6 +39,7 @@ class TodayPage extends StatefulWidget {
 
 class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
+  final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
 
   // Main list options state
   List<String>? _selectedTagFilter;
@@ -62,8 +64,28 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _taskListOptionSettingsLoaded = false;
   bool _timeChartOptionsLoaded = false;
 
+  // Completion tracking for confetti
+  bool _confettiShownToday = false;
+  int _remainingHabits = 0;
+  int _remainingTasks = 0;
+  bool _habitsLoaded = false;
+  bool _tasksLoaded = false;
+
   @override
   bool get wantKeepAlive => true; // Keep the state alive when navigating away for marathon page
+
+  @override
+  void initState() {
+    super.initState();
+    // Reset confetti flag daily by checking if it's a new day
+    _resetConfettiIfNewDay();
+  }
+
+  void _resetConfettiIfNewDay() {
+    // This could be enhanced to check actual date change
+    // For now, reset when page initializes
+    _confettiShownToday = false;
+  }
 
   void _onMainListOptionSettingsLoaded() {
     if (mounted) {
@@ -141,6 +163,39 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       MarathonPage.route,
       arguments: {'fullScreen': true},
     );
+  }
+
+  void _onHabitCompleted() {
+    // When a habit is completed, check if this was the last remaining item
+    _checkIfLastItemCompleted();
+  }
+
+  void _onTaskCompleted() {
+    // When a task is completed, check if this was the last remaining item
+    _checkIfLastItemCompleted();
+  }
+
+  void _onHabitsListed(int incompleteHabitCount) {
+    _remainingHabits = incompleteHabitCount;
+    _habitsLoaded = true;
+  }
+
+  void _onTasksListed(int incompleteTaskCount) {
+    _remainingTasks = incompleteTaskCount;
+    _tasksLoaded = true;
+  }
+
+  void _checkIfLastItemCompleted() {
+    // Use a delay to allow the lists to refresh after completion
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (!mounted || _confettiShownToday) return;
+
+      // Check if both lists are loaded and both have 0 remaining items
+      if (_habitsLoaded && _tasksLoaded && _remainingHabits == 0 && _remainingTasks == 0) {
+        _confettiShownToday = true;
+        _confettiAnimationService.showConfettiFromBottomOfScreen(context);
+      }
+    });
   }
 
   @override
@@ -225,6 +280,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
                       onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                      onHabitCompleted: _onHabitCompleted,
+                      onListing: _onHabitsListed,
                       showDoneOverlayWhenEmpty: true,
                     ),
                 ],
@@ -307,6 +364,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       search: _taskSearchQuery,
                       pageSize: 5,
                       onClickTask: (task) => _openTaskDetails(context, task.id),
+                      onTaskCompleted: _onTaskCompleted,
+                      onList: _onTasksListed,
                       enableReordering: _taskSortConfig.useCustomOrder,
                       showDoneOverlayWhenEmpty: true,
                       sortConfig: _taskSortConfig,

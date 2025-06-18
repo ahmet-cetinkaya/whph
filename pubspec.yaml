@@ -74,6 +74,7 @@ dependencies:
   easy_localization_yaml: ^0.1.2
   fl_chart: ^1.0.0
   flutter_colorpicker: ^1.1.0
+  flutter_confetti: ^0.5.1
   markdown_editor_plus: ^0.2.15
   # Desktop
   launch_at_startup: ^0.5.1

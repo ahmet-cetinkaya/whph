@@ -251,6 +251,10 @@ class TaskListState extends State<TaskList> {
         // Notify about loaded tasks
         widget.onTasksLoaded?.call(_tasks?.items ?? []);
 
+        // Notify about incomplete task count (for confetti logic)
+        final incompleteTasks = _tasks?.items.where((task) => !task.isCompleted).length ?? 0;
+        widget.onList?.call(incompleteTasks);
+
         // Check if we need to normalize very small orders
         if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
