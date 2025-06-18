@@ -10,6 +10,8 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/corePackages/acore/utils/collection_utils.dart';
+import 'package:whph/corePackages/acore/utils/color_helper.dart';
+import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
 
 class TagTimeChart extends StatefulWidget {
   final List<String>? filterByTags;
@@ -38,6 +40,7 @@ class TagTimeChart extends StatefulWidget {
 class TagTimeChartState extends State<TagTimeChart> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tagsService = container.resolve<TagsService>();
   GetTopTagsByTimeQueryResponse? _tagTimes;
   final bool _isLoading = false;
   int? _touchedIndex;
@@ -46,6 +49,13 @@ class TagTimeChartState extends State<TagTimeChart> {
   void initState() {
     super.initState();
     refresh();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
   }
 
   @override
@@ -58,6 +68,52 @@ class TagTimeChartState extends State<TagTimeChart> {
         !CollectionUtils.areSetsEqual(oldWidget.selectedCategories, widget.selectedCategories)) {
       refresh();
     }
+  }
+
+  void _setupEventListeners() {
+    _tagsService.onTagCreated.addListener(_onTagUpdated);
+    _tagsService.onTagUpdated.addListener(_onTagUpdated);
+    _tagsService.onTagDeleted.addListener(_onTagUpdated);
+  }
+
+  void _removeEventListeners() {
+    _tagsService.onTagCreated.removeListener(_onTagUpdated);
+    _tagsService.onTagUpdated.removeListener(_onTagUpdated);
+    _tagsService.onTagDeleted.removeListener(_onTagUpdated);
+  }
+
+  void _onTagUpdated() {
+    if (!mounted) return;
+    
+    // Check which event was triggered and get the relevant tag ID
+    String? updatedTagId;
+    if (_tagsService.onTagUpdated.value != null) {
+      updatedTagId = _tagsService.onTagUpdated.value;
+    } else if (_tagsService.onTagCreated.value != null) {
+      updatedTagId = _tagsService.onTagCreated.value;
+    } else if (_tagsService.onTagDeleted.value != null) {
+      updatedTagId = _tagsService.onTagDeleted.value;
+    }
+    
+    // Only refresh if the updated tag is relevant to this chart
+    if (updatedTagId != null && _shouldRefreshForTag(updatedTagId)) {
+      refresh();
+    }
+  }
+
+  bool _shouldRefreshForTag(String updatedTagId) {
+    // If we're filtering by specific tags, only refresh if the updated tag is in our filter
+    if (widget.filterByTags != null && widget.filterByTags!.isNotEmpty) {
+      return widget.filterByTags!.contains(updatedTagId);
+    }
+    
+    // If we're showing all tags, check if the updated tag is in our current chart data
+    if (_tagTimes?.items != null) {
+      return _tagTimes!.items.any((item) => item.tagId == updatedTagId);
+    }
+    
+    // If we don't have data yet or no specific filters, refresh to be safe
+    return true;
   }
 
   Future<void> refresh() async {
@@ -151,16 +207,20 @@ class TagTimeChartState extends State<TagTimeChart> {
       final percent = regularTags[i].$2;
       final isTouched = i == _touchedIndex;
 
+      final sectionColor = item.tagColor != null
+          ? Color(int.parse('FF${item.tagColor!}', radix: 16))
+          : Colors.primaries[i % Colors.primaries.length];
+
+      final titleColor = ColorHelper.getContrastingTextColor(sectionColor);
+
       sections.add(PieChartSectionData(
-        color: item.tagColor != null
-            ? Color(int.parse('FF${item.tagColor!}', radix: 16))
-            : Colors.primaries[i % Colors.primaries.length],
+        color: sectionColor,
         value: item.duration.toDouble(),
         title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: titleColor,
         ),
       ));
     }
@@ -174,15 +234,18 @@ class TagTimeChartState extends State<TagTimeChart> {
       final otherDuration = smallTags.fold<double>(0, (sum, item) => sum + item.$1.duration);
       final otherPercent = smallTags.fold<double>(0, (sum, item) => sum + item.$2);
 
+      const otherSectionColor = Colors.grey;
+      final otherTitleColor = ColorHelper.getContrastingTextColor(otherSectionColor);
+
       sections.add(PieChartSectionData(
-        color: Colors.grey,
+        color: otherSectionColor,
         value: otherDuration,
         title:
             '${_translationService.translate(TagTranslationKeys.otherCategory)}\n${otherPercent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: otherTitleColor,
         ),
       ));
     }
