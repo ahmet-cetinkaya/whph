@@ -89,6 +89,8 @@ habits:
       score_trends: Puan Trendi
       to: Bitiş
       top_streaks: En İyi Seriler
+      no_streaks_yet: Henüz seri yok. Tutarlılık oluşturmaya başlayın!
+      completions: tamamlama
       yearly: Yıllık
     statistics_label: İstatistikler
     tags: Etiketler

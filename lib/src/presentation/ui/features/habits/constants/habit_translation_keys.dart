@@ -57,6 +57,8 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String records = 'habits.details.statistics.records';
   static const String scoreTrends = 'habits.details.statistics.score_trends';
   static const String topStreaks = 'habits.details.statistics.top_streaks';
+  static const String noStreaksYet = 'habits.details.statistics.no_streaks_yet';
+  static const String completions = 'habits.details.statistics.completions';
   static const String archivedOn = 'habits.details.statistics.archived_on';
   static const String statisticsFrom = 'habits.details.statistics.from';
   static const String statisticsTo = 'habits.details.statistics.to';

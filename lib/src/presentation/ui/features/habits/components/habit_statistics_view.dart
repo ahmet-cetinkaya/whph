@@ -135,10 +135,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
         _buildStatisticsRow(),
         const SizedBox(height: 24),
         _buildScoreChart(),
-        if (widget.statistics.topStreaks.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          _buildStreaksSection(),
-        ],
+        const SizedBox(height: 24),
+        _buildStreaksSection(),
       ],
     );
   }
@@ -327,8 +325,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   }
 
   Widget _buildStreaksSection() {
-    int maxDays = widget.statistics.topStreaks.first.days;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -339,17 +335,57 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
             style: AppTheme.bodyLarge,
           ),
         ),
-        ...widget.statistics.topStreaks.take(5).map(
-              (streak) => Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: _buildStreakBar(streak, maxDays),
-              ),
-            ),
+        if (widget.statistics.topStreaks.isNotEmpty) ...[
+          ..._buildStreakBars(),
+        ] else ...[
+          _buildNoStreaksMessage(),
+        ],
       ],
     );
   }
 
-  Widget _buildStreakBar(HabitStreak streak, int maxDays) {
+  List<Widget> _buildStreakBars() {
+    int maxDays = widget.statistics.topStreaks.first.days;
+    return widget.statistics.topStreaks
+        .take(5)
+        .map(
+          (streak) => Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: _buildStreakBar(streak, maxDays, widget.hasGoal),
+          ),
+        )
+        .toList();
+  }
+
+  Widget _buildNoStreaksMessage() {
+    return Card(
+      color: AppTheme.surface1,
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(
+                Icons.timeline,
+                size: 48,
+                color: AppTheme.primaryColor.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: AppTheme.sizeSmall),
+              Text(
+                _translationService.translate(HabitTranslationKeys.noStreaksYet),
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStreakBar(HabitStreak streak, int maxDays, bool hasGoal) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -405,9 +441,11 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                         ),
                       ],
                     ),
-                    // Days text
+                    // Display text with appropriate unit
                     Text(
-                      '${streak.days} ${_translationService.translate(SharedTranslationKeys.days)}',
+                      hasGoal && streak.completions != null
+                          ? '${streak.completions} ${_translationService.translate(HabitTranslationKeys.completions)}'
+                          : '${streak.days} ${_translationService.translate(SharedTranslationKeys.days)}',
                       style: AppTheme.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.surface1,
