@@ -81,4 +81,19 @@ echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
 echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
 echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
 echo ""
-echo "Don't forget to commit these changes!"
+
+# Git operations
+echo "Committing changes..."
+git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE"
+git commit -m "chore: update app version to $NEW_VERSION"
+
+echo "Creating git tag..."
+git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION" HEAD
+
+echo ""
+echo "Git operations completed:"
+echo "  - Committed with message: 'chore: update app version to $NEW_VERSION'"
+echo "  - Created tag: v$NEW_VERSION"
+echo ""
+echo "To push changes and tags to remote:"
+echo "  rps version:push"
