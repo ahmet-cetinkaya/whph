@@ -19,6 +19,7 @@ settings:
     select_type: Dışa aktarma formatını seçin
     success: "Dışa aktarma başarılı. Dosya konumu:"
     title: Dışa Aktar
+    canceled: Dışa aktarma kullanıcı tarafından iptal edildi
   export_data:
     title: Verileri Dışa Aktar
   import:

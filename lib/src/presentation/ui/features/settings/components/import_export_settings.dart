@@ -378,7 +378,17 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
         );
 
-        if (savePath == null) return;
+        // Check if user canceled the save dialog
+        if (savePath == null) {
+          OverlayNotificationHelper.hideNotification();
+          if (context.mounted) {
+            OverlayNotificationHelper.showInfo(
+              context: context,
+              message: _translationService.translate(SettingsTranslationKeys.exportCanceled),
+            );
+          }
+          return;
+        }
 
         // Write file
         await _fileService.writeFile(
