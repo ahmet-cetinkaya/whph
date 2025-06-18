@@ -28,7 +28,6 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_calendar_view.dart';
-import 'package:whph/src/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -725,22 +724,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               periodDays: _habit!.periodDays,
             ),
           ],
-
-          // Statistics
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: HabitStatisticsView(
-              statistics: _habit!.statistics,
-              habitId: widget.habitId,
-              archivedDate: _habit!.archivedDate != null ? DateTimeHelper.toLocalDateTime(_habit!.archivedDate!) : null,
-              firstRecordDate: _habitRecords!.items.isNotEmpty
-                  ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
-                  : _habit!.createdDate,
-              hasGoal: _habit!.hasGoal,
-              targetFrequency: _habit!.targetFrequency,
-              periodDays: _habit!.periodDays,
-            ),
-          ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph/src/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
@@ -8,26 +10,15 @@ import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_cons
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class HabitStatisticsView extends StatefulWidget {
-  final HabitStatistics statistics;
   final String habitId;
-  final DateTime? archivedDate;
-  final DateTime firstRecordDate;
-  final bool hasGoal;
-  final int targetFrequency;
-  final int periodDays;
 
   const HabitStatisticsView({
     super.key,
-    required this.statistics,
     required this.habitId,
-    required this.firstRecordDate,
-    this.archivedDate,
-    this.hasGoal = false,
-    this.targetFrequency = 1,
-    this.periodDays = 7,
   });
 
   @override
@@ -37,11 +28,16 @@ class HabitStatisticsView extends StatefulWidget {
 class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
+  final _mediator = container.resolve<Mediator>();
+
+  GetHabitQueryResponse? _habit;
+  GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
   void initState() {
     super.initState();
     _setupEventListeners();
+    _loadData();
   }
 
   @override
@@ -64,14 +60,65 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
 
   void _handleHabitChanged() {
     if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
-    setState(() {});
+    _loadData();
   }
 
   void _handleHabitRecordChanged() {
     if (!mounted) return;
     String? habitId = _habitsService.onHabitRecordAdded.value ?? _habitsService.onHabitRecordRemoved.value;
     if (habitId != widget.habitId) return;
-    setState(() {});
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await _getHabit();
+    await _getHabitRecords();
+  }
+
+  Future<void> _getHabit() async {
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            _habit = result;
+          });
+        }
+      },
+    );
+  }
+
+  Future<void> _getHabitRecords() async {
+    await AsyncErrorHandler.execute<GetListHabitRecordsQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
+      operation: () async {
+        // Get all records by using a wide date range
+        final now = DateTime.now();
+        final startDate = DateTime(2020, 1, 1); // Far past date
+        final endDate = DateTime(now.year + 1, 12, 31); // Far future date
+        final query = GetListHabitRecordsQuery(
+          habitId: widget.habitId,
+          startDate: startDate,
+          endDate: endDate,
+          pageIndex: 0,
+          pageSize: 1000,
+        );
+        return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            _habitRecords = result;
+          });
+        }
+      },
+    );
   }
 
   Widget _buildSectionHeader() {
@@ -87,6 +134,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   }
 
   Widget _buildStatusBanner() {
+    final firstRecordDate = _habitRecords!.items.isNotEmpty
+        ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
+        : _habit!.createdDate;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -108,8 +159,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           Expanded(
             child: Text(
               _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
-                'startDate': DateTimeHelper.formatDate(widget.firstRecordDate),
-                'archivedDate': DateTimeHelper.formatDate(widget.archivedDate!)
+                'startDate': DateTimeHelper.formatDate(firstRecordDate),
+                'archivedDate': DateTimeHelper.formatDate(DateTimeHelper.toLocalDateTime(_habit!.archivedDate!))
               }),
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.blue[700],
@@ -123,12 +174,16 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_habit == null || _habitRecords == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader(),
         const SizedBox(height: 16),
-        if (widget.archivedDate != null) ...[
+        if (_habit!.archivedDate != null) ...[
           _buildStatusBanner(),
           const SizedBox(height: 16),
         ],
@@ -150,29 +205,29 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
               Row(
                 children: [
                   Expanded(
-                      child: _buildStatCard(
-                          _translationService.translate(HabitTranslationKeys.overall), widget.statistics.overallScore)),
+                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.overall),
+                          _habit!.statistics.overallScore)),
                   const SizedBox(width: 8),
-                  if (widget.hasGoal && widget.statistics.goalSuccessRate != null) ...[
+                  if (_habit!.hasGoal && _habit!.statistics.goalSuccessRate != null) ...[
                     Expanded(
                       child: _buildStatCard(
-                        "${_translationService.translate(HabitTranslationKeys.currentGoal)} (${widget.statistics.daysGoalMet}/${widget.statistics.totalDaysWithGoal})",
-                        widget.statistics.goalSuccessRate!,
+                        "${_translationService.translate(HabitTranslationKeys.currentGoal)} (${_habit!.statistics.daysGoalMet}/${_habit!.statistics.totalDaysWithGoal})",
+                        _habit!.statistics.goalSuccessRate!,
                       ),
                     ),
                     const SizedBox(width: 8),
                   ],
                   Expanded(
-                      child: _buildStatCard(
-                          _translationService.translate(HabitTranslationKeys.monthly), widget.statistics.monthlyScore)),
+                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.monthly),
+                          _habit!.statistics.monthlyScore)),
                   const SizedBox(width: 8),
                   Expanded(
                       child: _buildStatCard(
-                          _translationService.translate(HabitTranslationKeys.yearly), widget.statistics.yearlyScore)),
+                          _translationService.translate(HabitTranslationKeys.yearly), _habit!.statistics.yearlyScore)),
                   const SizedBox(width: 8),
                   Expanded(
                       child: _buildStatCard(_translationService.translate(HabitTranslationKeys.records),
-                          widget.statistics.totalRecords.toDouble(),
+                          _habit!.statistics.totalRecords.toDouble(),
                           isCount: true)),
                 ],
               ),
@@ -280,8 +335,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < widget.statistics.monthlyScores.length) {
-                          final date = widget.statistics.monthlyScores[value.toInt()].key;
+                        if (value.toInt() >= 0 && value.toInt() < _habit!.statistics.monthlyScores.length) {
+                          final date = _habit!.statistics.monthlyScores[value.toInt()].key;
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
@@ -298,7 +353,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
-                    spots: widget.statistics.monthlyScores
+                    spots: _habit!.statistics.monthlyScores
                         .asMap()
                         .entries
                         .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
@@ -335,7 +390,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
             style: AppTheme.bodyLarge,
           ),
         ),
-        if (widget.statistics.topStreaks.isNotEmpty) ...[
+        if (_habit!.statistics.topStreaks.isNotEmpty) ...[
           ..._buildStreakBars(),
         ] else ...[
           _buildNoStreaksMessage(),
@@ -345,13 +400,13 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   }
 
   List<Widget> _buildStreakBars() {
-    int maxDays = widget.statistics.topStreaks.first.days;
-    return widget.statistics.topStreaks
+    int maxDays = _habit!.statistics.topStreaks.first.days;
+    return _habit!.statistics.topStreaks
         .take(5)
         .map(
           (streak) => Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildStreakBar(streak, maxDays, widget.hasGoal),
+            child: _buildStreakBar(streak, maxDays, _habit!.hasGoal),
           ),
         )
         .toList();
