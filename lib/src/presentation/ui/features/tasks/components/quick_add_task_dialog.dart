@@ -89,16 +89,22 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (widget.initialTitle != null) {
       _titleController.text = widget.initialTitle!;
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     // Initialize date controllers with format matching DateTimePickerField
-    if (_plannedDate != null) {
+    // This is done here instead of initState to ensure Localizations is available
+    if (_plannedDate != null && _plannedDateController.text.isEmpty) {
       _plannedDateController.text = DateFormatService.formatForInput(
         _plannedDate!,
         context,
         type: DateFormatType.dateTime,
       );
     }
-    if (_deadlineDate != null) {
+    if (_deadlineDate != null && _deadlineDateController.text.isEmpty) {
       _deadlineDateController.text = DateFormatService.formatForInput(
         _deadlineDate!,
         context,
