@@ -84,7 +84,7 @@ class TagTimeChartState extends State<TagTimeChart> {
 
   void _onTagUpdated() {
     if (!mounted) return;
-    
+
     // Check which event was triggered and get the relevant tag ID
     String? updatedTagId;
     if (_tagsService.onTagUpdated.value != null) {
@@ -94,7 +94,7 @@ class TagTimeChartState extends State<TagTimeChart> {
     } else if (_tagsService.onTagDeleted.value != null) {
       updatedTagId = _tagsService.onTagDeleted.value;
     }
-    
+
     // Only refresh if the updated tag is relevant to this chart
     if (updatedTagId != null && _shouldRefreshForTag(updatedTagId)) {
       refresh();
@@ -106,12 +106,12 @@ class TagTimeChartState extends State<TagTimeChart> {
     if (widget.filterByTags != null && widget.filterByTags!.isNotEmpty) {
       return widget.filterByTags!.contains(updatedTagId);
     }
-    
+
     // If we're showing all tags, check if the updated tag is in our current chart data
     if (_tagTimes?.items != null) {
       return _tagTimes!.items.any((item) => item.tagId == updatedTagId);
     }
-    
+
     // If we don't have data yet or no specific filters, refresh to be safe
     return true;
   }

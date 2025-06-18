@@ -78,18 +78,17 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   void _handleNoteUpdated() {
     if (!mounted || _notesService.onNoteUpdated.value != widget.noteId) return;
-    
+
     // Store current cursor position before updating
     final contentSelection = _contentController.selection;
-    
+
     _getNote().then((_) {
       // Only restore selection if it was from this widget's update (not external)
       // This prevents cursor jumping when user is actively editing
-      if (mounted && 
-          contentSelection.isValid && 
-          contentSelection.baseOffset <= _contentController.text.length && 
+      if (mounted &&
+          contentSelection.isValid &&
+          contentSelection.baseOffset <= _contentController.text.length &&
           contentSelection.extentOffset <= _contentController.text.length) {
-        
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _contentController.selection = contentSelection;
@@ -128,8 +127,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           if (_contentController.text != content) {
             _contentController.text = content;
             // Only restore selection if content controller had focus and selection was valid
-            if (contentSelection.isValid && 
-                contentSelection.baseOffset <= content.length && 
+            if (contentSelection.isValid &&
+                contentSelection.baseOffset <= content.length &&
                 contentSelection.extentOffset <= content.length) {
               // Use a post-frame callback to ensure the text is updated before setting selection
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -260,8 +259,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         operation: _executeSaveCommand,
         onSuccess: () {
           // Restore cursor position after successful save
-          if (contentSelection.isValid && 
-              contentSelection.baseOffset <= _contentController.text.length && 
+          if (contentSelection.isValid &&
+              contentSelection.baseOffset <= _contentController.text.length &&
               contentSelection.extentOffset <= _contentController.text.length) {
             // Use a post-frame callback to ensure the UI is updated before setting selection
             WidgetsBinding.instance.addPostFrameCallback((_) {
