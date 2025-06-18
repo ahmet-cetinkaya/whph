@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/extensions/widget_extensions.dart';
 
 /// Options for scheduling a task
 enum ScheduleOption {
@@ -70,7 +71,6 @@ class ScheduleButton extends StatelessWidget {
         color: Colors.grey,
         size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
       ),
-      tooltip: translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
       onSelected: (ScheduleOption option) {
         final date = _getDateForOption(option);
         onScheduleSelected(date);
@@ -90,6 +90,9 @@ class ScheduleButton extends StatelessWidget {
           ),
         );
       }).toList(),
+    ).wrapWithTooltip(
+      enabled: true,
+      message: translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
     );
   }
 }
