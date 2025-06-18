@@ -3,6 +3,7 @@ import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_archive_button.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_delete_button.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_details_content.dart';
+import 'package:whph/src/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 
@@ -38,30 +39,16 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
 
   void _setupEventListeners() {
     _habitsService.onHabitDeleted.addListener(_handleHabitDeleted);
-    _habitsService.onHabitUpdated.addListener(_handleHabitUpdated);
-    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChanged);
-    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChanged);
   }
 
   void _removeEventListeners() {
     _habitsService.onHabitDeleted.removeListener(_handleHabitDeleted);
-    _habitsService.onHabitUpdated.removeListener(_handleHabitUpdated);
-    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChanged);
-    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChanged);
   }
 
   void _handleHabitDeleted() {
     if (!mounted || _habitsService.onHabitDeleted.value != widget.habitId || _isDeleted) return;
     _isDeleted = true;
     Navigator.of(context).pop();
-  }
-
-  void _handleHabitUpdated() {
-    if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
-  }
-
-  void _handleHabitRecordChanged() {
-    if (!mounted) return;
   }
 
   @override
@@ -92,12 +79,25 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: HabitDetailsContent(
-          habitId: widget.habitId,
-          onHabitUpdated: () {
-            _habitsService.notifyHabitUpdated(widget.habitId);
-          },
-          onNameUpdated: (_) {},
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Main Content
+              HabitDetailsContent(
+                habitId: widget.habitId,
+                onHabitUpdated: () {
+                  _habitsService.notifyHabitUpdated(widget.habitId);
+                },
+                onNameUpdated: (_) {},
+              ),
+
+              // Statistics Section
+              const SizedBox(height: 16),
+              HabitStatisticsView(
+                habitId: widget.habitId,
+              ),
+            ],
+          ),
         ),
       ),
     );
