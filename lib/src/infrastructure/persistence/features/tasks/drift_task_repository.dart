@@ -102,7 +102,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     if (customOrder != null && customOrder.isNotEmpty) {
       query += ' ORDER BY ';
       query += customOrder
-          .map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
+          .map((order) =>
+              '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
           .join(', ');
     }
 
@@ -235,7 +236,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     final baseQuery = '''
