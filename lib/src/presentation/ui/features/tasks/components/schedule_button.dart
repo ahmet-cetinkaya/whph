@@ -14,12 +14,14 @@ class ScheduleButton extends StatelessWidget {
   final ITranslationService translationService;
   final Function(DateTime date) onScheduleSelected;
   final bool isDense;
+  final DateTime? currentPlannedDate;
 
   const ScheduleButton({
     super.key,
     required this.translationService,
     required this.onScheduleSelected,
     this.isDense = false,
+    this.currentPlannedDate,
   });
 
   String _getScheduleOptionLabel(ScheduleOption option) {
@@ -35,12 +37,29 @@ class ScheduleButton extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
+    // Determine the time to use - convert to local if needed
+    final timeToUse = _getTimeToUse();
+
     switch (option) {
       case ScheduleOption.today:
-        return today;
+        return DateTime(today.year, today.month, today.day, timeToUse.hour, timeToUse.minute);
       case ScheduleOption.tomorrow:
-        return today.add(const Duration(days: 1));
+        final tomorrow = today.add(const Duration(days: 1));
+        return DateTime(tomorrow.year, tomorrow.month, tomorrow.day, timeToUse.hour, timeToUse.minute);
     }
+  }
+
+  /// Gets the time to use for scheduling
+  /// If currentPlannedDate exists, use its time (convert from UTC to local)
+  /// Otherwise, use 9:00 AM as default
+  DateTime _getTimeToUse() {
+    if (currentPlannedDate != null) {
+      // Convert UTC to local time to preserve the user's intended time
+      final localPlannedDate = currentPlannedDate!.toLocal();
+      return localPlannedDate;
+    }
+    // Default to 9:00 AM
+    return DateTime(0, 1, 1, 9, 0);
   }
 
   @override

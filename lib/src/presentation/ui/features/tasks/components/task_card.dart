@@ -51,6 +51,8 @@ class TaskCard extends StatelessWidget {
     final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
     final taskService = container.resolve<TasksService>();
 
+    // The date parameter comes from ScheduleButton in local time
+    // toUtcDateTime will properly convert it to UTC for storage
     final command = SaveTaskCommand(
       id: task.id,
       title: task.title,
@@ -115,6 +117,7 @@ class TaskCard extends StatelessWidget {
               translationService: _translationService,
               onScheduleSelected: _handleSchedule,
               isDense: isDense,
+              currentPlannedDate: taskItem.plannedDate,
             ),
           if (trailingButtons != null)
             ...trailingButtons!.map((widget) {
