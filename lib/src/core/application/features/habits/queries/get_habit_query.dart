@@ -16,11 +16,13 @@ class HabitStreak {
   final DateTime startDate;
   final DateTime endDate;
   final int days;
+  final int? completions; // For goal-based streaks, this represents the number of completed periods
 
   HabitStreak({
     required this.startDate,
     required this.endDate,
     required this.days,
+    this.completions,
   });
 }
 
@@ -188,7 +190,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // Calculate top streaks up to archive date if archived
-    final streaks = _calculateStreaks(records, endDate: habit.archivedDate);
+    final streaks = _calculateStreaks(records, habit: habit, endDate: habit.archivedDate);
     final topStreaks = streaks.take(5).toList();
 
     // Calculate yearly frequency
@@ -238,9 +240,17 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  List<HabitStreak> _calculateStreaks(List<HabitRecord> records, {DateTime? endDate}) {
+  List<HabitStreak> _calculateStreaks(List<HabitRecord> records, {required Habit habit, DateTime? endDate}) {
     if (records.isEmpty) return [];
 
+    if (habit.hasGoal) {
+      return _calculateGoalBasedStreaks(records, habit, endDate);
+    } else {
+      return _calculateConsecutiveDayStreaks(records, endDate, minDays: 2);
+    }
+  }
+
+  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate, {int minDays = 2}) {
     final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
 
     final streaks = <HabitStreak>[];
@@ -252,7 +262,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       if (record.date.difference(lastDate).inDays > 1) {
         // Only add streaks that ended before or on the archive date
         if (endDate == null || !lastDate.isAfter(endDate)) {
-          if (lastDate.difference(streakStart).inDays >= 2) {
+          if (lastDate.difference(streakStart).inDays >= minDays - 1) {
             streaks.add(HabitStreak(
               startDate: streakStart,
               endDate: lastDate,
@@ -266,11 +276,72 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // Add the last streak if it exists and respects the end date
-    if (lastDate.difference(streakStart).inDays >= 2 && (endDate == null || !lastDate.isAfter(endDate))) {
+    if (lastDate.difference(streakStart).inDays >= minDays - 1 && (endDate == null || !lastDate.isAfter(endDate))) {
       streaks.add(HabitStreak(
         startDate: streakStart,
         endDate: lastDate,
         days: lastDate.difference(streakStart).inDays + 1,
+      ));
+    }
+
+    // Sort by streak length
+    streaks.sort((a, b) => b.days.compareTo(a.days));
+    return streaks;
+  }
+
+  List<HabitStreak> _calculateGoalBasedStreaks(List<HabitRecord> records, Habit habit, DateTime? endDate) {
+    if (records.isEmpty) return [];
+
+    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+    final streaks = <HabitStreak>[];
+
+    // Calculate streaks based on goal periods
+    var currentPeriodStart = sortedRecords.first.date;
+    var streakStart = currentPeriodStart;
+    var consecutiveSuccessfulPeriods = 0;
+
+    while (currentPeriodStart.isBefore(endDate ?? DateTime.now())) {
+      final currentPeriodEnd = currentPeriodStart.add(Duration(days: habit.periodDays - 1));
+
+      // Count records in current period
+      final recordsInPeriod = sortedRecords
+          .where((record) =>
+              (record.date.isAfter(currentPeriodStart.subtract(const Duration(days: 1))) ||
+                  _isSameDay(record.date, currentPeriodStart)) &&
+              (record.date.isBefore(currentPeriodEnd.add(const Duration(days: 1))) ||
+                  _isSameDay(record.date, currentPeriodEnd)))
+          .length;
+
+      final goalMet = recordsInPeriod >= habit.targetFrequency;
+
+      if (goalMet) {
+        if (consecutiveSuccessfulPeriods == 0) {
+          streakStart = currentPeriodStart;
+        }
+        consecutiveSuccessfulPeriods++;
+      } else {
+        if (consecutiveSuccessfulPeriods >= 2) {
+          // At least 2 successful periods to count as streak
+          streaks.add(HabitStreak(
+            startDate: streakStart,
+            endDate: currentPeriodStart.subtract(const Duration(days: 1)),
+            days: consecutiveSuccessfulPeriods * habit.periodDays,
+            completions: consecutiveSuccessfulPeriods,
+          ));
+        }
+        consecutiveSuccessfulPeriods = 0;
+      }
+
+      currentPeriodStart = currentPeriodStart.add(Duration(days: habit.periodDays));
+    }
+
+    // Add the last streak if it exists
+    if (consecutiveSuccessfulPeriods >= 2) {
+      streaks.add(HabitStreak(
+        startDate: streakStart,
+        endDate: currentPeriodStart.subtract(const Duration(days: 1)),
+        days: consecutiveSuccessfulPeriods * habit.periodDays,
+        completions: consecutiveSuccessfulPeriods,
       ));
     }
 

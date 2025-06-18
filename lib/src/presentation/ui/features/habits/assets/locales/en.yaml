@@ -86,6 +86,8 @@ habits:
       score_trends: Score Trends
       to: To
       top_streaks: Top Streaks
+      no_streaks_yet: No streaks yet. Start building consistency!
+      completions: completions
       yearly: Yearly
     statistics_label: Statistics
     tags: Tags
