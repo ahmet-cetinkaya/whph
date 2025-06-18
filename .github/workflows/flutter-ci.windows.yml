@@ -24,6 +24,14 @@ jobs:
       - name: Setup Visual Studio tools
         uses: microsoft/setup-msbuild@v2
 
+      - name: Install Inno Setup
+        run: |
+          $url = "https://jrsoftware.org/download.php/is.exe"
+          $output = "$env:TEMP\innosetup.exe"
+          Invoke-WebRequest -Uri $url -OutFile $output
+          Start-Process -FilePath $output -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
+
       - name: Install Flutter dependencies
         run: |
           flutter config --enable-windows-desktop
@@ -149,6 +157,51 @@ jobs:
             exit 1
           }
 
+      - name: Create Windows Installer
+        run: |
+          Write-Host "Creating Windows installer with Inno Setup..."
+          
+          # Get app version for the installer
+          $content = Get-Content 'pubspec.yaml'
+          $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value.Split('+')[0] }
+          Write-Host "App version: $version"
+          
+          # Update the Inno Setup script with the current version
+          $issContent = Get-Content 'windows\installer.iss' -Raw
+          $issContent = $issContent -replace 'AppVersion=.*', "AppVersion=$version"
+          $issContent | Set-Content 'windows\installer.iss'
+          
+          # Create installer directory
+          New-Item -ItemType Directory -Force -Path "build\windows\installer"
+          
+          # Check if Inno Setup is available
+          $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $innoSetupPath)) {
+            Write-Host "Inno Setup not found at expected location. Searching for ISCC.exe..."
+            $innoSetupPath = Get-Command "ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+            if (-not $innoSetupPath) {
+              Write-Host "ERROR: Inno Setup (ISCC.exe) not found"
+              exit 1
+            }
+          }
+          
+          Write-Host "Using Inno Setup at: $innoSetupPath"
+          
+          # Compile the installer
+          & "$innoSetupPath" "windows\installer.iss"
+          
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Installer created successfully!"
+            $installerPath = "build\windows\installer\whph-setup.exe"
+            if (Test-Path $installerPath) {
+              $installerSize = (Get-Item $installerPath).Length
+              Write-Host "Installer size: $($installerSize / 1MB) MB"
+            }
+          } else {
+            Write-Host "ERROR: Installer creation failed with exit code: $LASTEXITCODE"
+            exit 1
+          }
+
       - name: Get application version
         id: app_version
         run: |
@@ -156,15 +209,24 @@ jobs:
           $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value }
           echo "APP_VERSION=$version" >> $env:GITHUB_ENV
 
-      - name: Upload Windows build artifact
+      - name: Upload Windows build artifact (Portable)
         uses: actions/upload-artifact@v4
         with:
-          name: whph-v${{ env.APP_VERSION }}-windows
+          name: whph-v${{ env.APP_VERSION }}-windows-portable
           path: build\windows\x64\runner\${{ env.BUILD_TYPE }}\
           if-no-files-found: error
           compression-level: 6
           overwrite: false
           include-hidden-files: false
+
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: whph-v${{ env.APP_VERSION }}-windows-installer
+          path: build\windows\installer\whph-setup.exe
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: false
 
   release:
     needs: build
@@ -196,12 +258,19 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: whph-v${{ env.APP_VERSION }}-windows
-          path: windows-build
+          pattern: whph-v${{ env.APP_VERSION }}-windows-*
+          path: artifacts
+          merge-multiple: false
 
-      # Create a zip archive from the build output
-      - name: Create zip archive
-        run: cd windows-build && zip -r ../whph-v${TAG_VERSION}-windows.zip .
+      # Create a zip archive from the portable build output
+      - name: Create portable zip archive
+        run: |
+          cd artifacts/whph-v${{ env.APP_VERSION }}-windows-portable
+          zip -r ../../whph-v${{ env.TAG_VERSION }}-windows-portable.zip .
+
+      - name: Prepare installer for release  
+        run: |
+          cp artifacts/whph-v${{ env.APP_VERSION }}-windows-installer/whph-setup.exe whph-v${{ env.TAG_VERSION }}-windows-setup.exe
 
       - name: Check existing release
         id: check_release
@@ -220,7 +289,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: whph-v${{ env.TAG_VERSION }}-windows.zip
+          files: |
+            whph-v${{ env.TAG_VERSION }}-windows-portable.zip
+            whph-v${{ env.TAG_VERSION }}-windows-setup.exe
           name: ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           draft: false

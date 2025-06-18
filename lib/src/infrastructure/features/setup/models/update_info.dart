@@ -27,10 +27,29 @@ class UpdateInfo {
     if (data['assets'] != null) {
       final assets = data['assets'] as List;
       final platformSuffix = _getPlatformSuffix();
-      final asset = assets.cast<Map<String, dynamic>>().firstWhere(
-            (asset) => asset['name'].toString().contains(platformSuffix),
-            orElse: () => {},
+
+      // For Windows, prefer portable version over installer for updates
+      String targetFileName;
+      if (Platform.isWindows) {
+        targetFileName = '$platformSuffix-portable.zip';
+      } else {
+        targetFileName = platformSuffix;
+      }
+
+      // First try to find the preferred file type
+      Map<String, dynamic> asset = assets.cast<Map<String, dynamic>>().firstWhere(
+            (asset) => asset['name'].toString().contains(targetFileName),
+            orElse: () => <String, dynamic>{},
           );
+
+      // If preferred not found and it's Windows, fallback to any Windows file
+      if (asset.isEmpty && Platform.isWindows) {
+        asset = assets.cast<Map<String, dynamic>>().firstWhere(
+              (asset) => asset['name'].toString().contains(platformSuffix),
+              orElse: () => <String, dynamic>{},
+            );
+      }
+
       platformSpecificUrl = asset['browser_download_url'] as String?;
     }
 
