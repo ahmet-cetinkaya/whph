@@ -185,6 +185,11 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
           // Only close the dialog here, don't pop twice
           Navigator.of(context).pop(true);
         },
+        onTaskCompleted: () {
+          // Select next task when current task is completed
+          _selectNextTask();
+          _onTasksChanged();
+        },
       ),
     );
 
