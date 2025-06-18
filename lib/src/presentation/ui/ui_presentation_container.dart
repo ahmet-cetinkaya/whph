@@ -9,8 +9,10 @@ import 'package:whph/src/presentation/ui/features/habits/services/habits_service
 import 'package:whph/src/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/src/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_confetti_animation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/confetti_animation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/json_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/shared/services/translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/audio_player_sound_player.dart';
@@ -32,6 +34,7 @@ void registerUIPresentation(IContainer container) {
   container.registerSingleton<TagsService>((_) => TagsService());
   container.registerSingleton<ISoundPlayer>((_) => AudioPlayerSoundPlayer());
   container.registerSingleton<ITranslationService>((_) => TranslationService());
+  container.registerSingleton<IConfettiAnimationService>((_) => ConfettiAnimationService());
   container.registerSingleton<ISupportDialogService>(
     (_) {
       final mediator = container.resolve<Mediator>();
