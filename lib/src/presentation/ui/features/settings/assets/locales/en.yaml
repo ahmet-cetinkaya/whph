@@ -20,6 +20,7 @@ settings:
     select_type: Select export format
     success: "Export successful. File location:"
     title: Export
+    canceled: Export canceled by user
   export_data:
     title: Export Data
   import:

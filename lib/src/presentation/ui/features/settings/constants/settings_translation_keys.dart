@@ -38,6 +38,7 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String exportError = 'settings.export.error';
   static const String exportSelectType = 'settings.export.select_type';
   static const String exportSelectDirectory = 'settings.export.select_directory';
+  static const String exportCanceled = 'settings.export.canceled';
 
   // Import/Export
   static const String exportCsvDescription = 'settings.export.csv_description';
