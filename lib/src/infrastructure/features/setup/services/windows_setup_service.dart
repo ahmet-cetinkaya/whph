@@ -10,22 +10,38 @@ class WindowsSetupService extends BaseSetupService {
 powershell -ExecutionPolicy Bypass -Command ^
 "Write-Host 'Starting update process...'; ^
 try { ^
-    \$updateZip = '{appDir}\\{updateFileName}.zip'; ^
+    \$updateZip = '{appDir}\\{updateFileName}'; ^
     \$extractPath = '{appDir}'; ^
     Write-Host 'Update file path: ' \$updateZip; ^
     Write-Host 'Extract path: ' \$extractPath; ^
     if (-not (Test-Path \$updateZip)) { ^
         throw 'Update file not found: ' + \$updateZip; ^
     } ^
+    Write-Host 'Creating backup of current version...'; ^
+    \$backupDir = '{appDir}\\backup'; ^
+    if (Test-Path \$backupDir) { ^
+        Remove-Item -Recurse -Force \$backupDir; ^
+    } ^
+    New-Item -ItemType Directory -Path \$backupDir; ^
+    Get-ChildItem -Path '{appDir}' -Exclude 'backup', '{updateFileName}', 'update.bat' | Move-Item -Destination \$backupDir; ^
     Write-Host 'Extracting update...'; ^
     Expand-Archive -Force -Path \$updateZip -DestinationPath \$extractPath; ^
+    Write-Host 'Cleaning up...'; ^
     Remove-Item -Force \$updateZip; ^
+    Remove-Item -Recurse -Force \$backupDir; ^
     Remove-Item -Force '{appDir}\\update.bat'; ^
     Write-Host 'Starting application...'; ^
     Start-Process -FilePath '{exePath}' -WorkingDirectory '{appDir}' -NoNewWindow; ^
-    Write-Host 'Application started successfully'; ^
+    Write-Host 'Application updated and started successfully'; ^
 } catch { ^
-    Write-Host ' ' \$_.Exception.Message -ForegroundColor Red; ^
+    Write-Host 'Update failed: ' \$_.Exception.Message -ForegroundColor Red; ^
+    Write-Host 'Restoring backup...'; ^
+    \$backupDir = '{appDir}\\backup'; ^
+    if (Test-Path \$backupDir) { ^
+        Get-ChildItem -Path \$backupDir | Move-Item -Destination '{appDir}'; ^
+        Remove-Item -Recurse -Force \$backupDir; ^
+        Write-Host 'Backup restored successfully' -ForegroundColor Yellow; ^
+    } ^
     Write-Host 'Stack: ' \$_.ScriptStackTrace -ForegroundColor Red; ^
     pause; ^
     exit 1; ^
@@ -54,8 +70,25 @@ exit
       await createDirectories([startMenuPath]);
 
       final shortcutPath = path.join(startMenuPath, '${AppInfo.shortName}.lnk');
-      final iconPath =
-          path.join(appDir, 'data', 'flutter_assets', 'lib', 'domain', 'shared', 'assets', 'whph_logo_adaptive_fg.ico');
+
+      // Try different possible icon locations
+      List<String> possibleIconPaths = [
+        path.join(appDir, 'data', 'flutter_assets', 'lib', 'src', 'core', 'domain', 'shared', 'assets', 'images',
+            'whph_logo_adaptive_fg.ico'),
+        path.join(appDir, 'data', 'flutter_assets', 'lib', 'domain', 'shared', 'assets', 'whph_logo_adaptive_fg.ico'),
+        path.join(appDir, 'data', 'flutter_assets', 'assets', 'images', 'whph_logo_adaptive_fg.ico'),
+        getExecutablePath(), // Fallback to exe icon
+      ];
+
+      String iconPath = getExecutablePath(); // Default fallback
+      for (final possiblePath in possibleIconPaths) {
+        if (await File(possiblePath).exists()) {
+          iconPath = possiblePath;
+          break;
+        }
+      }
+
+      Logger.debug('Using icon path: $iconPath');
 
       await _createShortcut(
         target: getExecutablePath(),
@@ -74,17 +107,52 @@ exit
       final appDir = getApplicationDirectory();
       final exePath = getExecutablePath();
       final updateScript = path.join(appDir, 'update.bat');
-      final updateFileName = '${AppInfo.shortName.toLowerCase()}_update';
-      final downloadPath = path.join(appDir, '$updateFileName.zip');
+
+      // Extract filename from URL (handles both portable.zip and setup.exe)
+      final uri = Uri.parse(downloadUrl);
+      final downloadFileName = path.basename(uri.path);
+      final downloadPath = path.join(appDir, downloadFileName);
+
+      Logger.debug('Downloading update from: $downloadUrl');
+      Logger.debug('Saving to: $downloadPath');
+
+      // Check if it's a portable version (ZIP) or installer (EXE)
+      final isPortableUpdate =
+          downloadFileName.toLowerCase().contains('portable') && downloadFileName.toLowerCase().endsWith('.zip');
+      final isInstallerUpdate =
+          downloadFileName.toLowerCase().contains('setup') && downloadFileName.toLowerCase().endsWith('.exe');
 
       await downloadFile(downloadUrl, downloadPath);
-      final scriptContent = _updateScriptTemplate
-          .replaceAll('{appDir}', appDir)
-          .replaceAll('{exePath}', exePath)
-          .replaceAll('{updateFileName}', updateFileName);
-      await writeFile(updateScript, scriptContent);
-      await runDetachedProcess('cmd', ['/c', updateScript]);
-      exit(0);
+
+      if (isInstallerUpdate) {
+        // For installer updates, just run the installer
+        Logger.debug('Running installer update: $downloadPath');
+        await runDetachedProcess(downloadPath, ['/SILENT']);
+        // The installer will handle the update process
+        exit(0);
+      } else if (isPortableUpdate) {
+        // For portable updates, use the extraction script
+        Logger.debug('Preparing portable update script');
+        final scriptContent = _updateScriptTemplate
+            .replaceAll('{appDir}', appDir)
+            .replaceAll('{exePath}', exePath)
+            .replaceAll('{updateFileName}', downloadFileName);
+
+        await writeFile(updateScript, scriptContent);
+        await runDetachedProcess('cmd', ['/c', updateScript]);
+        exit(0);
+      } else {
+        // Fallback: assume it's a zip file
+        Logger.debug('Unknown update file type, treating as portable zip');
+        final scriptContent = _updateScriptTemplate
+            .replaceAll('{appDir}', appDir)
+            .replaceAll('{exePath}', exePath)
+            .replaceAll('{updateFileName}', downloadFileName);
+
+        await writeFile(updateScript, scriptContent);
+        await runDetachedProcess('cmd', ['/c', updateScript]);
+        exit(0);
+      }
     } catch (e) {
       Logger.error('Failed to download and install update: $e');
       rethrow;
