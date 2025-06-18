@@ -187,12 +187,12 @@ class TagTimeChartState extends State<TagTimeChart> {
       return (item, percent);
     }).toList();
 
-    // Separate items into regular tags (>=1%) and small tags (<1%)
+    // Separate items into regular tags (>=5%) and small tags (<5%)
     final regularTags = <(TagTimeData, double)>[];
     final smallTags = <(TagTimeData, double)>[];
 
     for (final itemWithPercent in itemsWithPercentage) {
-      if (itemWithPercent.$2 < 1.0) {
+      if (itemWithPercent.$2 < 5.0) {
         smallTags.add(itemWithPercent);
       } else {
         regularTags.add(itemWithPercent);
