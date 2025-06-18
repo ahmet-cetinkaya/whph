@@ -24,6 +24,7 @@ class TaskDetailsPage extends StatefulWidget {
   final String taskId;
   final bool hideSidebar;
   final VoidCallback? onTaskDeleted;
+  final VoidCallback? onTaskCompleted;
   final bool showCompletedTasksToggle;
 
   const TaskDetailsPage({
@@ -31,6 +32,7 @@ class TaskDetailsPage extends StatefulWidget {
     required this.taskId,
     this.hideSidebar = false,
     this.onTaskDeleted,
+    this.onTaskCompleted,
     this.showCompletedTasksToggle = true,
   });
 
@@ -118,6 +120,86 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     Navigator.of(context).pop();
   }
 
+  // Event handler methods
+  void _onTaskDeleteSuccess() {
+    if (widget.onTaskDeleted != null) {
+      widget.onTaskDeleted!();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _onTaskUpdated() {
+    _refreshEverything();
+  }
+
+  void _onTaskCompletedChanged(bool isCompleted) {
+    _refreshEverything();
+    if (isCompleted && widget.onTaskCompleted != null) {
+      widget.onTaskCompleted!();
+    }
+  }
+
+  void _onCompletedTasksToggle(bool showCompleted) {
+    setState(() {
+      _showCompletedTasks = showCompleted;
+      _listRebuildKey = UniqueKey();
+    });
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _refreshTasksList();
+        });
+      }
+    });
+  }
+
+  void _onSearchChange(String? query) {
+    setState(() {
+      _searchQuery = query;
+    });
+    _refreshTasksList();
+  }
+
+  void _onSortChange(SortConfig<TaskSortFields> newConfig) {
+    setState(() {
+      _taskSortConfig = newConfig;
+    });
+    _refreshTasksList();
+  }
+
+  void _onTaskCreated(String taskId, dynamic taskData) {
+    _refreshEverything();
+  }
+
+  Future<void> _onClickSubTask(TaskListItem task) async {
+    await ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: TaskDetailsPage(
+        taskId: task.id,
+        hideSidebar: true,
+        showCompletedTasksToggle: widget.showCompletedTasksToggle,
+        onTaskDeleted: _onSubTaskDeleted,
+      ),
+      size: DialogSize.large,
+    );
+    _refreshEverything();
+  }
+
+  void _onSubTaskDeleted() {
+    _refreshEverything();
+    Navigator.of(context).pop();
+  }
+
+  void _onSubTaskCompleted() {
+    _hideCompletedTasks();
+    _refreshEverything();
+  }
+
+  void _onScheduleTask(TaskListItem task, DateTime date) {
+    _refreshEverything();
+  }
+
   @override
   void didUpdateWidget(TaskDetailsPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -163,13 +245,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
             padding: const EdgeInsets.all(8.0),
             child: TaskDeleteButton(
               taskId: widget.taskId,
-              onDeleteSuccess: () {
-                if (widget.onTaskDeleted != null) {
-                  widget.onTaskDeleted!();
-                } else {
-                  Navigator.of(context).pop();
-                }
-              },
+              onDeleteSuccess: _onTaskDeleteSuccess,
               buttonColor: AppTheme.primaryColor,
             ),
           ),
@@ -188,12 +264,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               // Task Details Section
               TaskDetailsContent(
                 taskId: widget.taskId,
-                onTaskUpdated: () {
-                  _refreshEverything();
-                },
-                onCompletedChanged: (isCompleted) {
-                  _refreshEverything();
-                },
+                onTaskUpdated: _onTaskUpdated,
+                onCompletedChanged: _onTaskCompletedChanged,
               ),
               const SizedBox(height: AppTheme.sizeMedium),
 
@@ -225,31 +297,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                   Expanded(
                     child: TaskListOptions(
                       showCompletedTasks: _showCompletedTasks,
-                      onCompletedTasksToggle: (showCompleted) {
-                        setState(() {
-                          _showCompletedTasks = showCompleted;
-                          _listRebuildKey = UniqueKey();
-                        });
-                        Future.delayed(const Duration(milliseconds: 50), () {
-                          if (mounted) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _refreshTasksList();
-                            });
-                          }
-                        });
-                      },
-                      onSearchChange: (query) {
-                        setState(() {
-                          _searchQuery = query;
-                        });
-                        _refreshTasksList();
-                      },
-                      onSortChange: (newConfig) {
-                        setState(() {
-                          _taskSortConfig = newConfig;
-                        });
-                        _refreshTasksList();
-                      },
+                      onCompletedTasksToggle: _onCompletedTasksToggle,
+                      onSearchChange: _onSearchChange,
+                      onSortChange: _onSortChange,
                       hasItems: true,
                       showDateFilter: false,
                       showTagFilter: false,
@@ -263,9 +313,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                   if (!_showCompletedTasks) ...[
                     const SizedBox(width: AppTheme.sizeSmall),
                     TaskAddButton(
-                      onTaskCreated: (_, __) {
-                        _refreshEverything();
-                      },
+                      onTaskCreated: _onTaskCreated,
                       initialParentTaskId: widget.taskId,
                       initialCompleted: _showCompletedTasks,
                     ),
@@ -276,30 +324,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               // Sub Tasks List Section
               TaskList(
                 key: _listRebuildKey,
-                onClickTask: (task) async {
-                  await ResponsiveDialogHelper.showResponsiveDialog(
-                    context: context,
-                    child: TaskDetailsPage(
-                      taskId: task.id,
-                      hideSidebar: true,
-                      showCompletedTasksToggle: widget.showCompletedTasksToggle,
-                      onTaskDeleted: () {
-                        _refreshEverything();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    size: DialogSize.large,
-                  );
-                  _refreshEverything();
-                },
+                onClickTask: _onClickSubTask,
                 parentTaskId: widget.taskId,
                 filterByCompleted: _showCompletedTasks,
                 search: _searchQuery,
-                onTaskCompleted: () {
-                  _hideCompletedTasks();
-                  _refreshEverything();
-                },
-                onScheduleTask: (_, __) => _refreshEverything(),
+                onTaskCompleted: _onSubTaskCompleted,
+                onScheduleTask: _onScheduleTask,
                 enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
                 sortConfig: _taskSortConfig,
               ),
