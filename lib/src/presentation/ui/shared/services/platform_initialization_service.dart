@@ -53,9 +53,6 @@ class PlatformInitializationService {
     await windowManager.setPreventClose(true);
     await windowManager.setTitle(AppInfo.name);
 
-    // Set default window size for release builds
-    await windowManager.setSize(const Size(800, 600));
-
     Logger.debug('PlatformInitializationService: Window manager initialized');
   }
 
