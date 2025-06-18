@@ -28,6 +28,9 @@ scripts:
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
   test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
   test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
+  version:major: bash scripts/version_bump.sh major
+  version:minor: bash scripts/version_bump.sh minor
+  version:patch: bash scripts/version_bump.sh patch
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
