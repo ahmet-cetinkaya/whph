@@ -32,7 +32,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     final query = database.customSelect(
@@ -71,7 +71,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     const int chunkSize = 1000;
