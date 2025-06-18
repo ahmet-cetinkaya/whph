@@ -78,7 +78,25 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   void _handleNoteUpdated() {
     if (!mounted || _notesService.onNoteUpdated.value != widget.noteId) return;
-    _getNote();
+    
+    // Store current cursor position before updating
+    final contentSelection = _contentController.selection;
+    
+    _getNote().then((_) {
+      // Only restore selection if it was from this widget's update (not external)
+      // This prevents cursor jumping when user is actively editing
+      if (mounted && 
+          contentSelection.isValid && 
+          contentSelection.baseOffset <= _contentController.text.length && 
+          contentSelection.extentOffset <= _contentController.text.length) {
+        
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _contentController.selection = contentSelection;
+          }
+        });
+      }
+    });
   }
 
   Future<void> _getNote() async {
@@ -109,6 +127,17 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           final content = response.content ?? '';
           if (_contentController.text != content) {
             _contentController.text = content;
+            // Only restore selection if content controller had focus and selection was valid
+            if (contentSelection.isValid && 
+                contentSelection.baseOffset <= content.length && 
+                contentSelection.extentOffset <= content.length) {
+              // Use a post-frame callback to ensure the text is updated before setting selection
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && _contentController.text == content) {
+                  _contentController.selection = contentSelection;
+                }
+              });
+            }
           } else if (contentSelection.isValid) {
             // Restore selection if content didn't change
             _contentController.selection = contentSelection;
@@ -219,6 +248,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   Future<void> _saveNote() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
+    // Store cursor position before saving
+    final contentSelection = _contentController.selection;
+
     _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () async {
       if (!mounted) return;
 
@@ -227,6 +259,18 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
         operation: _executeSaveCommand,
         onSuccess: () {
+          // Restore cursor position after successful save
+          if (contentSelection.isValid && 
+              contentSelection.baseOffset <= _contentController.text.length && 
+              contentSelection.extentOffset <= _contentController.text.length) {
+            // Use a post-frame callback to ensure the UI is updated before setting selection
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                _contentController.selection = contentSelection;
+              }
+            });
+          }
+
           // Notify the app that a note was updated
           _notesService.notifyNoteUpdated(widget.noteId);
 
