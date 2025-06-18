@@ -257,12 +257,17 @@ class _HabitCardState extends State<HabitCard> {
       // Add reminder icon if applicable
       if (widget.habit.hasReminder && !widget.habit.isArchived()) {
         trailingWidgets.add(
-          Tooltip(
-            message: _getReminderTooltip(),
-            child: Icon(
-              Icons.notifications,
-              size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-              color: Theme.of(context).colorScheme.primary,
+          SizedBox(
+            height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+            child: Center(
+              child: Tooltip(
+                message: _getReminderTooltip(),
+                child: Icon(
+                  Icons.notifications,
+                  size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
           ),
         );
@@ -285,6 +290,7 @@ class _HabitCardState extends State<HabitCard> {
           ? null
           : Row(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: trailingWidgets,
             );
     }
@@ -407,8 +413,8 @@ class _HabitCardState extends State<HabitCard> {
                 ),
               ),
             ),
+            SizedBox(height: widget.isDense ? 2 : 4),
           ],
-          const Spacer(),
           IconButton(
             padding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
