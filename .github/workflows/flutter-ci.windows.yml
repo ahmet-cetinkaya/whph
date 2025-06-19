@@ -122,22 +122,6 @@ jobs:
           }
           
           Write-Host "Final BUILD_TYPE: $env:BUILD_TYPE"
-              echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
-            } else {
-              Write-Host "Release build with --no-tree-shake-icons failed with exit code: $LASTEXITCODE"
-              
-              # Strategy 3: Profile build as fallback
-              Write-Host "Attempt 3: Profile build as fallback"
-              flutter build windows --profile --verbose
-              if ($LASTEXITCODE -eq 0) {
-                Write-Host "Profile build succeeded as fallback!"
-                echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
-              } else {
-                Write-Host "All build attempts failed! Profile build exit code: $LASTEXITCODE"
-                exit 1
-              }
-            }
-          }
         env:
           FLUTTER_BUILD_DIR: build
 
