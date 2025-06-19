@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
