@@ -33,7 +33,7 @@ class BackgroundTranslationService {
       _currentLocale = response.value.isNotEmpty ? response.value : 'en'; // Default to English
     } catch (e) {
       _currentLocale = 'en'; // Fallback to English
-      Logger.debug('BackgroundTranslationService: Failed to load locale, using default: $e');
+      Logger.error('BackgroundTranslationService: Failed to load locale, using default: $e');
     }
   }
 
@@ -111,13 +111,6 @@ class BackgroundTranslationService {
       }
 
       _translationCache![locale]!.addAll(flatMap);
-      Logger.debug('BackgroundTranslationService: Loaded ${flatMap.length} translations from $path/$locale.yaml');
-
-      // Log notification-specific keys for debugging
-      final notificationKeys = flatMap.keys.where((key) => key.contains('notification')).toList();
-      if (notificationKeys.isNotEmpty) {
-        Logger.debug('BackgroundTranslationService: Found notification keys: $notificationKeys');
-      }
     } catch (e) {
       // File might not exist for this locale, continue silently
       if (kDebugMode) {
@@ -130,54 +123,39 @@ class BackgroundTranslationService {
   Map<String, dynamic> _parseSimpleYaml(String yamlContent) {
     final Map<String, dynamic> result = {};
     final lines = yamlContent.split('\n');
-    final List<String> indentStack = [];
-    String currentPath = '';
+    final List<MapEntry<int, String>> indentStack = []; // Track indent level and key
 
-    for (final line in lines) {
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i];
       if (line.trim().isEmpty || line.trim().startsWith('#')) continue;
 
-      // Get indentation level
+      // Get indentation level (count leading spaces)
       final indentLevel = line.length - line.trimLeft().length;
       final trimmed = line.trim();
 
       final colonIndex = trimmed.indexOf(':');
       if (colonIndex == -1) {
-        // Skip malformed lines without colons, but log for debugging
-        if (kDebugMode) {
-          Logger.debug('BackgroundTranslationService: Skipping malformed line: $trimmed');
-        }
+        // Skip malformed lines without colons
         continue;
       }
 
       final key = trimmed.substring(0, colonIndex).trim();
       final value = trimmed.substring(colonIndex + 1).trim();
 
-      // Update path based on indentation
-      if (indentLevel == 0) {
-        indentStack.clear();
-        indentStack.add(key);
-        currentPath = key;
-      } else {
-        // Find correct level in stack
-        final targetLevel = indentLevel ~/ 2; // Assuming 2-space indentation
+      // Clean the indent stack - remove entries with higher or equal indent levels
+      indentStack.removeWhere((entry) => entry.key >= indentLevel);
 
-        if (targetLevel < indentStack.length) {
-          // Go back to appropriate level
-          indentStack.removeRange(targetLevel, indentStack.length);
-        }
+      // Add current key to stack
+      indentStack.add(MapEntry(indentLevel, key));
 
-        // Add current key
-        indentStack.add(key);
-        currentPath = indentStack.join('.');
-      }
+      // Build the full path
+      final pathParts = indentStack.map((entry) => entry.value).toList();
+      final currentPath = pathParts.join('.');
 
       // Store value if it's not empty and doesn't look like multiline content
       if (value.isNotEmpty && !value.startsWith('|') && !value.startsWith('>')) {
-        result[currentPath] = value.replaceAll('"', '').replaceAll("'", '');
-      } else if (value.isEmpty) {
-        // For keys without values (like section headers), still add them to result
-        // This ensures that 'tasks:' gets added even if it has no immediate value
-        result[currentPath] = '';
+        final cleanValue = value.replaceAll('"', '').replaceAll("'", '');
+        result[currentPath] = cleanValue;
       }
     }
 
@@ -204,7 +182,6 @@ class BackgroundTranslationService {
   /// Translate a key using cached translations with named arguments support
   String translate(String key, {Map<String, String>? namedArgs}) {
     if (_translationCache == null || _currentLocale == null) {
-      Logger.debug('BackgroundTranslationService: Translation cache not initialized, returning key: $key');
       return key;
     }
 
@@ -217,21 +194,47 @@ class BackgroundTranslationService {
       }
 
       if (translation == null) {
-        Logger.debug('BackgroundTranslationService: Translation not found for key: $key');
-        Logger.debug(
-            'BackgroundTranslationService: Available keys for locale $_currentLocale: ${_translationCache![_currentLocale]?.keys.take(10)}');
+        Logger.warning('BackgroundTranslationService: Translation not found for key: $key');
         return key;
       }
     }
 
     // Handle named arguments
-    if (namedArgs != null) {
+    if (namedArgs != null && namedArgs.isNotEmpty) {
       namedArgs.forEach((argKey, argValue) {
         translation = translation!.replaceAll('{$argKey}', argValue);
       });
     }
 
-    Logger.debug('BackgroundTranslationService: Successfully translated key: $key -> $translation');
+    return translation!;
+  }
+
+  /// Translate with fallback - if key is not found, return the fallback text
+  String translateWithFallback(String key, String fallback, {Map<String, String>? namedArgs}) {
+    if (_translationCache == null || _currentLocale == null) {
+      return fallback;
+    }
+
+    String? translation = _translationCache![_currentLocale]?[key];
+
+    if (translation == null) {
+      // Try fallback to English if current locale fails
+      if (_currentLocale != 'en') {
+        translation = _translationCache!['en']?[key];
+      }
+
+      if (translation == null) {
+        return fallback;
+      }
+    }
+
+    // Handle named arguments
+    if (namedArgs != null && namedArgs.isNotEmpty) {
+      namedArgs.forEach((argKey, argValue) {
+        translation = translation!.replaceAll('{$argKey}', argValue);
+      });
+    }
+
     return translation!;
   }
 
