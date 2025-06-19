@@ -114,6 +114,30 @@ jobs:
               }
             }
           }
+          
+          # Verify BUILD_TYPE was set
+          if (-not $env:BUILD_TYPE) {
+            Write-Host "WARNING: BUILD_TYPE not set, defaulting to Release"
+            echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
+          }
+          
+          Write-Host "Final BUILD_TYPE: $env:BUILD_TYPE"
+              echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
+            } else {
+              Write-Host "Release build with --no-tree-shake-icons failed with exit code: $LASTEXITCODE"
+              
+              # Strategy 3: Profile build as fallback
+              Write-Host "Attempt 3: Profile build as fallback"
+              flutter build windows --profile --verbose
+              if ($LASTEXITCODE -eq 0) {
+                Write-Host "Profile build succeeded as fallback!"
+                echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
+              } else {
+                Write-Host "All build attempts failed! Profile build exit code: $LASTEXITCODE"
+                exit 1
+              }
+            }
+          }
         env:
           FLUTTER_BUILD_DIR: build
 
@@ -143,6 +167,26 @@ jobs:
           }
 
       # Publish the build artifacts
+      - name: Debug build directory structure
+        run: |
+          Write-Host "=== Build Environment Info ==="
+          Write-Host "BUILD_TYPE: ${{ env.BUILD_TYPE }}"
+          Write-Host "Current directory: $(Get-Location)"
+          Write-Host "=== Build Directory Structure ==="
+          if (Test-Path "build") {
+            Write-Host "build/ directory contents:"
+            Get-ChildItem "build" -Recurse | ForEach-Object {
+              if ($_.PSIsContainer) {
+                Write-Host "  DIR:  $($_.FullName.Replace((Get-Location).Path, ''))"
+              } else {
+                Write-Host "  FILE: $($_.FullName.Replace((Get-Location).Path, '')) ($($_.Length) bytes)"
+              }
+            }
+          } else {
+            Write-Host "❌ build/ directory does not exist"
+          }
+          Write-Host "=== End Build Directory Structure ==="
+
       - name: Verify build output
         run: |
           Write-Host "Verifying build output in ${{ env.BUILD_TYPE }} folder..."
@@ -166,13 +210,30 @@ jobs:
           $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value.Split('+')[0] }
           Write-Host "App version: $version"
           
-          # Update the Inno Setup script with the current version
-          $issContent = Get-Content 'windows\installer.iss' -Raw
-          $issContent = $issContent -replace 'AppVersion=.*', "AppVersion=$version"
-          $issContent | Set-Content 'windows\installer.iss'
+          # Verify the build output exists
+          $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
+          Write-Host "Checking build output at: $buildPath"
+          if (-not (Test-Path $buildPath)) {
+            Write-Host "ERROR: Build output not found at $buildPath"
+            Write-Host "Available build directories:"
+            if (Test-Path "build\windows\x64\runner") {
+              Get-ChildItem "build\windows\x64\runner" | ForEach-Object { Write-Host "  - $($_.Name)" }
+            }
+            exit 1
+          }
           
           # Create installer directory
           New-Item -ItemType Directory -Force -Path "build\windows\installer"
+          
+          # Create a copy of the installer script with dynamic paths
+          $issTemplate = Get-Content 'windows\installer.iss' -Raw
+          $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
+          $issTemplate = $issTemplate -replace 'Source: "\.\.\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
+          $issTemplate = $issTemplate -replace 'OutputDir=build\\windows\\installer', "OutputDir=build\windows\installer"
+          
+          # Write the modified script to a temporary file
+          $tempIssFile = "windows\installer_temp.iss"
+          $issTemplate | Set-Content $tempIssFile
           
           # Check if Inno Setup is available
           $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
@@ -186,9 +247,10 @@ jobs:
           }
           
           Write-Host "Using Inno Setup at: $innoSetupPath"
+          Write-Host "Compiling installer with build type: ${{ env.BUILD_TYPE }}"
           
           # Compile the installer
-          & "$innoSetupPath" "windows\installer.iss"
+          & "$innoSetupPath" $tempIssFile
           
           if ($LASTEXITCODE -eq 0) {
             Write-Host "Installer created successfully!"
@@ -196,10 +258,23 @@ jobs:
             if (Test-Path $installerPath) {
               $installerSize = (Get-Item $installerPath).Length
               Write-Host "Installer size: $($installerSize / 1MB) MB"
+              Write-Host "Installer path verified: $installerPath"
+            } else {
+              Write-Host "ERROR: Installer file not found at expected location: $installerPath"
+              Write-Host "Contents of installer directory:"
+              if (Test-Path "build\windows\installer") {
+                Get-ChildItem "build\windows\installer" | ForEach-Object { Write-Host "  - $($_.Name)" }
+              }
+              exit 1
             }
           } else {
             Write-Host "ERROR: Installer creation failed with exit code: $LASTEXITCODE"
             exit 1
+          }
+          
+          # Clean up temporary file
+          if (Test-Path $tempIssFile) {
+            Remove-Item $tempIssFile
           }
 
       - name: Get application version
@@ -227,6 +302,39 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           overwrite: false
+
+      - name: Verify installer artifact exists
+        run: |
+          $installerPath = "build\windows\installer\whph-setup.exe"
+          Write-Host "Verifying installer artifact exists at: $installerPath"
+          if (Test-Path $installerPath) {
+            $fileInfo = Get-Item $installerPath
+            Write-Host "✅ Installer found: $($fileInfo.FullName)"
+            Write-Host "   Size: $($fileInfo.Length / 1MB) MB"
+            Write-Host "   Created: $($fileInfo.CreationTime)"
+            Write-Host "   Modified: $($fileInfo.LastWriteTime)"
+          } else {
+            Write-Host "❌ ERROR: Installer not found at expected location"
+            Write-Host "Contents of build\windows\installer directory:"
+            if (Test-Path "build\windows\installer") {
+              Get-ChildItem "build\windows\installer" | ForEach-Object { 
+                Write-Host "  - $($_.Name) ($($_.Length) bytes)" 
+              }
+            } else {
+              Write-Host "  Directory does not exist"
+            }
+            Write-Host "Contents of build\windows directory:"
+            if (Test-Path "build\windows") {
+              Get-ChildItem "build\windows" -Recurse | ForEach-Object { 
+                if (-not $_.PSIsContainer) {
+                  Write-Host "  File: $($_.FullName.Replace((Get-Location).Path, ''))"
+                }
+              }
+            } else {
+              Write-Host "  Directory does not exist"
+            }
+            exit 1
+          }
 
   release:
     needs: build
