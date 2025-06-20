@@ -139,6 +139,10 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Sub Tasks
   static const String subTasksLabel = 'tasks.details.sub_tasks.label';
 
+  // Parent Task
+  static const String parentTaskLabel = 'tasks.details.parent_task.label';
+  static const String parentTaskTooltip = 'tasks.details.parent_task.tooltip';
+
   // Notification Messages
   static const String notificationReminderTitle = 'tasks.notifications.reminder_title';
   static const String notificationDeadlineTitle = 'tasks.notifications.deadline_title';

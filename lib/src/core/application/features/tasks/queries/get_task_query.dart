@@ -16,6 +16,7 @@ class GetTaskQueryResponse extends Task {
   int totalDuration;
   double subTasksCompletionPercentage;
   List<Task> subTasks;
+  Task? parentTask;
 
   GetTaskQueryResponse(
       {required super.id,
@@ -33,6 +34,7 @@ class GetTaskQueryResponse extends Task {
       required super.parentTaskId,
       required this.subTasksCompletionPercentage,
       required this.subTasks,
+      this.parentTask,
       super.plannedDateReminderTime = ReminderTime.none,
       super.deadlineDateReminderTime = ReminderTime.none,
       super.recurrenceType = RecurrenceType.none,
@@ -73,6 +75,11 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
     }
 
+    Task? fetchedParentTask;
+    if (task.parentTaskId != null) {
+      fetchedParentTask = await _taskRepository.getById(task.parentTaskId!);
+    }
+
     return GetTaskQueryResponse(
       id: task.id,
       createdDate: task.createdDate,
@@ -88,6 +95,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       parentTaskId: task.parentTaskId,
       subTasksCompletionPercentage: subTasksCompletionPercentage,
       subTasks: subTasks,
+      parentTask: fetchedParentTask,
       plannedDateReminderTime: task.plannedDateReminderTime,
       deadlineDateReminderTime: task.deadlineDateReminderTime,
       recurrenceType: task.recurrenceType,

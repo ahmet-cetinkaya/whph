@@ -34,6 +34,9 @@ tasks:
       label: Priority
     sub_tasks:
       label: Sub-tasks
+    parent_task:
+      label: Parent Task
+      tooltip: Click to navigate to parent task
     tags:
       hint: Select tags to associate
       label: Tags

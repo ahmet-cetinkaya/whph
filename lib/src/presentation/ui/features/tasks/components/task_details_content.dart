@@ -16,6 +16,7 @@ import 'package:whph/src/presentation/ui/features/tasks/components/priority_sele
 import 'package:whph/src/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_complete_button.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_date_field.dart';
+import 'package:whph/src/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/src/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -82,6 +83,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyPlannedDateReminder = 'plannedDateReminder';
   static const String keyDeadlineDateReminder = 'deadlineDateReminder';
   static const String keyRecurrence = 'recurrence';
+  static const String keyParentTask = 'parentTask';
 
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
@@ -113,6 +115,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
       if (_hasFieldContent(keyRecurrence)) _visibleOptionalFields.add(keyRecurrence);
+      if (_hasFieldContent(keyParentTask)) _visibleOptionalFields.add(keyParentTask);
 
       // Make reminder fields visible if their corresponding date fields are visible
       if (_visibleOptionalFields.contains(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDateReminder);
@@ -168,6 +171,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _task!.deadlineDateReminderTime != ReminderTime.none;
       case keyRecurrence:
         return _task!.recurrenceType != RecurrenceType.none;
+      case keyParentTask:
+        return _task!.parentTask != null;
       default:
         return false;
     }
@@ -729,6 +734,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyDeadlineDate,
       keyDescription,
       keyRecurrence,
+      keyParentTask,
       // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
 
@@ -779,6 +785,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             DetailTable(
               rowData: [
                 if (showElapsedTime) _buildElapsedTimeSection(),
+                if (_visibleOptionalFields.contains(keyParentTask)) _buildParentTaskSection(),
                 if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
                 if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
                 if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
@@ -1025,6 +1032,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _translationService.translate(TaskTranslationKeys.reminderDeadlineLabel);
       case keyRecurrence:
         return _translationService.translate(TaskTranslationKeys.recurrenceLabel);
+      case keyParentTask:
+        return _translationService.translate(TaskTranslationKeys.parentTaskLabel);
       default:
         return '';
     }
@@ -1051,8 +1060,60 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return Icons.notifications;
       case keyRecurrence:
         return Icons.repeat;
+      case keyParentTask:
+        return TaskUiConstants.parentTaskIcon;
       default:
         return Icons.add;
     }
+  }
+
+  DetailTableRowData _buildParentTaskSection() => DetailTableRowData(
+        label: _translationService.translate(TaskTranslationKeys.parentTaskLabel),
+        icon: TaskUiConstants.parentTaskIcon,
+        widget: InkWell(
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          onTap: () => _navigateToParentTask(),
+          child: Row(
+            children: [
+              // Main Content Section
+              Expanded(
+                child: Text(
+                  _task!.parentTask?.title ?? '',
+                  style: AppTheme.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // Navigate Icon Section
+              const Icon(
+                Icons.open_in_new,
+                size: AppTheme.iconSizeSmall,
+                color: AppTheme.secondaryTextColor,
+              ),
+            ],
+          ),
+        ),
+      );
+
+  void _navigateToParentTask() {
+    if (_task?.parentTask == null) return;
+
+    ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      size: DialogSize.large,
+      child: TaskDetailsPage(
+        taskId: _task!.parentTask!.id,
+        hideSidebar: true,
+        onTaskDeleted: () {
+          // Refresh current task when parent is deleted
+          _getTask();
+          Navigator.of(context).pop();
+        },
+        onTaskCompleted: () {
+          // Refresh current task when parent is completed
+          _getTask();
+        },
+      ),
+    );
   }
 }
