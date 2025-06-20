@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
@@ -55,6 +56,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   final _plannedDateController = TextEditingController();
   final _deadlineDateController = TextEditingController();
   final _mediator = container.resolve<Mediator>();
+  final _tagRepository = container.resolve<ITagRepository>();
   final _tasksService = container.resolve<TasksService>();
   final _translationService = container.resolve<ITranslationService>();
   final _focusNode = FocusNode();
@@ -85,9 +87,41 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     _deadlineDate = widget.initialDeadlineDate;
     _selectedPriority = widget.initialPriority;
     _estimatedTime = widget.initialEstimatedTime;
-    _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
+
     if (widget.initialTitle != null) {
       _titleController.text = widget.initialTitle!;
+    }
+
+    // Load initial tags with names
+    _loadInitialTags();
+  }
+
+  /// Loads initial tags and gets their names for display
+  Future<void> _loadInitialTags() async {
+    if (widget.initialTagIds == null || widget.initialTagIds!.isEmpty) {
+      return;
+    }
+
+    try {
+      List<DropdownOption<String>> tagOptions = [];
+
+      for (String tagId in widget.initialTagIds!) {
+        final tag = await _tagRepository.getById(tagId);
+        if (tag != null) {
+          tagOptions.add(DropdownOption(label: tag.name, value: tagId));
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          _selectedTags = tagOptions;
+        });
+      }
+    } catch (e) {
+      // If we can't load tag names, fallback to tag IDs with empty labels
+      setState(() {
+        _selectedTags = widget.initialTagIds!.map((id) => DropdownOption(label: '', value: id)).toList();
+      });
     }
   }
 
@@ -162,7 +196,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         }
       }
       if (!_lockTags) {
-        _selectedTags = widget.initialTagIds?.map((id) => DropdownOption(label: '', value: id)).toList() ?? [];
+        // Reset tags and reload them with proper names
+        _selectedTags = [];
+        _loadInitialTags();
       }
     });
   }
