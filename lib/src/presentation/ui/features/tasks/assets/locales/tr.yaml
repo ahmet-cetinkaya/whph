@@ -35,6 +35,9 @@ tasks:
       label: Öncelik
     sub_tasks:
       label: Alt görevler
+    parent_task:
+      label: Üst Görev
+      tooltip: Üst görevi görüntülemek için tıklayın
     tags:
       hint: Etiket seç
       label: Etiketler

@@ -17,6 +17,7 @@ class TaskUiConstants {
   static const IconData descriptionIcon = Icons.description;
   static const IconData timerIcon = Icons.timelapse_outlined;
   static const IconData totalElapsedTimeIcon = Icons.timer;
+  static const IconData parentTaskIcon = Icons.account_tree;
 
   // Pomodoro Icons
   static const IconData pomodoroPlayIcon = Icons.play_arrow;
