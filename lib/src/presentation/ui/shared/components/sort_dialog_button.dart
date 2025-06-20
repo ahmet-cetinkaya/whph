@@ -204,6 +204,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDisabled = _currentConfig.useCustomOrder;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.translationService.translate(SharedTranslationKeys.sort)),
@@ -249,16 +250,24 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             ],
             Flexible(
               fit: FlexFit.loose,
-              child: ReorderableListView.builder(
-                shrinkWrap: true,
-                itemCount: _currentConfig.orderOptions.length,
-                onReorder: _reorderCriteria,
-                itemBuilder: (context, index) {
-                  return _buildCriteriaRow(index);
-                },
-              ),
+              child: isDisabled
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _currentConfig.orderOptions.length,
+                      itemBuilder: (context, index) {
+                        return _buildCriteriaRow(index);
+                      },
+                    )
+                  : ReorderableListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _currentConfig.orderOptions.length,
+                      onReorder: _reorderCriteria,
+                      itemBuilder: (context, index) {
+                        return _buildCriteriaRow(index);
+                      },
+                    ),
             ),
-            if (!_currentConfig.useCustomOrder) ...[
+            if (!isDisabled) ...[
               const SizedBox(height: AppTheme.sizeSmall),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -303,26 +312,39 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             availableOption.field == option.field ||
             !_currentConfig.orderOptions.any((existing) => existing.field == availableOption.field))
         .toList();
+    final bool isDisabled = _currentConfig.useCustomOrder;
 
     return ListTile(
       key: Key('criteria_$index'),
       dense: true,
-      title: DropdownButton<T>(
-        value: option.field,
-        isExpanded: true,
-        isDense: true,
-        underline: Container(),
-        onChanged: (newValue) {
-          if (newValue != null) {
-            _changeField(index, newValue);
-          }
-        },
-        items: availableFields
-            .map((o) => DropdownMenuItem<T>(
-                  value: o.field,
-                  child: Text(widget.translationService.translate(o.translationKey), style: AppTheme.bodyMedium),
-                ))
-            .toList(),
+      title: AbsorbPointer(
+        absorbing: isDisabled,
+        child: DropdownButton<T>(
+          value: option.field,
+          isExpanded: true,
+          isDense: true,
+          underline: Container(),
+          onChanged: isDisabled
+              ? null
+              : (newValue) {
+                  if (newValue != null) {
+                    _changeField(index, newValue);
+                  }
+                },
+          items: availableFields
+              .map((o) => DropdownMenuItem<T>(
+                    value: o.field,
+                    child: Text(
+                      widget.translationService.translate(o.translationKey),
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: isDisabled
+                            ? Theme.of(context).disabledColor
+                            : Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                    ),
+                  ))
+              .toList(),
+        ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -331,13 +353,14 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             icon: Icon(
               option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
               size: 20,
+              color: isDisabled ? Theme.of(context).disabledColor : null,
             ),
             tooltip: widget.translationService.translate(
               option.direction == SortDirection.asc
                   ? SharedTranslationKeys.sortAscending
                   : SharedTranslationKeys.sortDescending,
             ),
-            onPressed: () => _toggleDirection(index),
+            onPressed: isDisabled ? null : () => _toggleDirection(index),
             padding: const EdgeInsets.all(AppTheme.sizeSmall),
             constraints: const BoxConstraints(
               minWidth: 36,
@@ -346,9 +369,9 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
           ),
           if (_currentConfig.orderOptions.length > 1)
             IconButton(
-              icon: const Icon(Icons.close, size: 20),
+              icon: Icon(Icons.close, size: 20, color: isDisabled ? Theme.of(context).disabledColor : null),
               tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
-              onPressed: () => _removeCriteria(index),
+              onPressed: isDisabled ? null : () => _removeCriteria(index),
               padding: const EdgeInsets.all(AppTheme.sizeSmall),
               constraints: const BoxConstraints(
                 minWidth: 36,
@@ -362,9 +385,9 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             ReorderableDragStartListener(
               index: index,
               child: IconButton(
-                  icon: const Icon(Icons.drag_handle, size: 20),
+                  icon: Icon(Icons.drag_handle, size: 20, color: isDisabled ? Theme.of(context).disabledColor : null),
                   tooltip: widget.translationService.translate(SharedTranslationKeys.sort),
-                  onPressed: () {}),
+                  onPressed: isDisabled ? null : () {}),
             ),
           ],
         ],
