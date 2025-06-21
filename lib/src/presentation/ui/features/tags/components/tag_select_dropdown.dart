@@ -14,6 +14,8 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'dart:async';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/tags/pages/tag_details_page.dart';
+import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
+import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -155,6 +157,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           pageSize: 10,
           search: search,
           showArchived: widget.showArchived,
+          sortBy: [
+            SortOption(
+              field: TagSortFields.name,
+              direction: SortDirection.asc,
+            ),
+          ],
         );
         return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
       },
