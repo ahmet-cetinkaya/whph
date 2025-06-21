@@ -269,7 +269,10 @@ tasks:
 ''';
         final result = service.parseSimpleYamlForTest(yamlContent);
         // Should not crash and should skip malformed lines
-        expect(result.containsKey('tasks'), isTrue);
+        // The malformed "notifications" line should be skipped,
+        // but "reminder_title" should still be parsed with the "tasks" prefix
+        expect(result.containsKey('tasks.reminder_title'), isTrue);
+        expect(result['tasks.reminder_title'], equals('Task Reminder: {title}'));
       });
 
       test('should handle translation when cache is not initialized', () {
