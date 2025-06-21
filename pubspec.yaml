@@ -21,7 +21,7 @@ scripts:
   fix:android: bash scripts/fix_app_usage.sh && bash scripts/fix_flutter_local_notifications.sh && bash scripts/fix_auto_start_flutter.sh
   release:linux: flutter build linux --release
   release:windows: flutter build windows --release
-  release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\installer.iss
+  release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
   release:android: flutter build apk --release
   test: flutter test
   test:ci: act -j build

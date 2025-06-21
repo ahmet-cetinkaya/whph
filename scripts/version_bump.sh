@@ -25,7 +25,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # File paths
 PUBSPEC_FILE="$PROJECT_ROOT/pubspec.yaml"
 APP_INFO_FILE="$PROJECT_ROOT/lib/src/core/domain/shared/constants/app_info.dart"
-INSTALLER_FILE="$PROJECT_ROOT/windows/installer.iss"
+INSTALLER_FILE="$PROJECT_ROOT/windows/setup-wizard/installer.iss"
 
 # Extract current version from pubspec.yaml
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')

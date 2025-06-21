@@ -230,14 +230,14 @@ jobs:
           Write-Host "Absolute installer directory: $absoluteInstallerDir"
           
           # Create a copy of the installer script with dynamic paths
-          $issTemplate = Get-Content 'windows\installer.iss' -Raw
+          $issTemplate = Get-Content 'windows\setup-wizard\installer.iss' -Raw
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
           $issTemplate = $issTemplate -replace 'Source: "\.\.\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
           # Use absolute path for output directory to avoid confusion
           $issTemplate = $issTemplate -replace 'OutputDir=build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
           
           # Write the modified script to a temporary file
-          $tempIssFile = "windows\installer_temp.iss"
+          $tempIssFile = "windows\setup-wizard\installer_temp.iss"
           $issTemplate | Set-Content $tempIssFile
           
           Write-Host "=== Generated Installer Script Content ==="
