@@ -37,6 +37,7 @@ import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/corePackages/acore/components/numeric_input.dart';
+import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
 
 class TaskDetailsContent extends StatefulWidget {
   final String taskId;
@@ -61,6 +62,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final _tasksService = container.resolve<TasksService>();
   final _translationService = container.resolve<ITranslationService>();
   final _taskRecurrenceService = container.resolve<ITaskRecurrenceService>();
+  final _tagsService = container.resolve<TagsService>();
 
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
@@ -91,7 +93,23 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void initState() {
     super.initState();
     refresh();
+    _setupEventListeners();
+  }
+
+  void _setupEventListeners() {
     _tasksService.onTaskUpdated.addListener(_getTask);
+    _tagsService.onTagUpdated.addListener(_handleTagUpdated);
+  }
+
+  void _removeEventListeners() {
+    _tasksService.onTaskUpdated.removeListener(_getTask);
+    _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
+  }
+
+  void _handleTagUpdated() {
+    if (!mounted) return;
+    // Refresh task tags when any tag is updated to get the latest tag names/colors
+    _getTaskTags();
   }
 
   @override
@@ -204,7 +222,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _plannedDateController.dispose();
     _deadlineDateController.dispose();
     _descriptionController.dispose();
-    _tasksService.onTaskUpdated.removeListener(_getTask);
+    _removeEventListeners();
     super.dispose();
   }
 
