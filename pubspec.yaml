@@ -8,7 +8,7 @@ publish_to: "none"
 # - Windows: product/file version components = version, build suffix = build
 #
 # Update /lib/src/core/domain/shared/constants/app_info.dart file too.
-version: 0.7.1+28
+version: 0.8.0+29
 environment:
   sdk: ^3.5.3
 # https://pub.dev/packages/rps: dart pub global activate rps
