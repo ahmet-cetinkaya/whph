@@ -34,7 +34,7 @@ To build the installer manually on Windows:
 
 1. Install [Inno Setup](https://jrsoftware.org/isinfo.php)
 2. Build the Flutter app: `flutter build windows --release`
-3. Compile the installer: `"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\installer.iss`
+3. Compile the installer: `"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss`
 
 The installer will be created at `build\windows\installer\whph-setup.exe`.
 
