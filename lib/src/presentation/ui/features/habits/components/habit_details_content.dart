@@ -217,6 +217,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             _getHabitRecordsForMonth(currentMonth);
             _getHabit();
           });
+
+          // Notify service that a record was added to trigger statistics refresh
+          _habitsService.notifyHabitRecordAdded(habitId);
         }
       },
     );
@@ -236,6 +239,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             _getHabitRecordsForMonth(currentMonth);
             _getHabit();
           });
+
+          // Notify service that a record was removed to trigger statistics refresh
+          _habitsService.notifyHabitRecordRemoved(widget.habitId);
         }
       },
     );

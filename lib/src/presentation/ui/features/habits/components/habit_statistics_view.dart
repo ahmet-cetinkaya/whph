@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'dart:async';
 import 'package:whph/src/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/main.dart';
@@ -32,6 +33,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
 
   GetHabitQueryResponse? _habit;
   GetListHabitRecordsQueryResponse? _habitRecords;
+  Timer? _refreshDebounce;
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   @override
   void dispose() {
     _removeEventListeners();
+    _refreshDebounce?.cancel();
     super.dispose();
   }
 
@@ -60,14 +63,23 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
 
   void _handleHabitChanged() {
     if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
-    _loadData();
+    _debouncedLoadData();
   }
 
   void _handleHabitRecordChanged() {
     if (!mounted) return;
     String? habitId = _habitsService.onHabitRecordAdded.value ?? _habitsService.onHabitRecordRemoved.value;
     if (habitId != widget.habitId) return;
-    _loadData();
+    _debouncedLoadData();
+  }
+
+  void _debouncedLoadData() {
+    _refreshDebounce?.cancel();
+    _refreshDebounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _loadData();
+      }
+    });
   }
 
   Future<void> _loadData() async {
