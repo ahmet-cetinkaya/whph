@@ -419,6 +419,15 @@ class AndroidReminderService implements IReminderService {
 
   /// Helper method to translate text with payload arguments
   String _translateText(String text, String? payload) {
+    // Check if the text is already translated (i.e., doesn't look like a translation key)
+    // If it doesn't contain dots and doesn't start with common key prefixes, it's likely already translated
+    if (!text.contains('.') &&
+        !text.startsWith('tasks.') &&
+        !text.startsWith('habits.') &&
+        !text.startsWith('shared.')) {
+      return text;
+    }
+
     try {
       // Check if we can extract named arguments from payload
       Map<String, String>? namedArgs;

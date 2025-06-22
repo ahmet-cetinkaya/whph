@@ -437,6 +437,24 @@ class ReminderService {
     Logger.debug('🔔 ReminderService: Finished reminder cancellation for completed task: $taskId');
   }
 
+  /// Refresh all reminders with updated language translations
+  /// This method cancels all existing reminders and reschedules them with current language
+  Future<void> refreshAllRemindersForLanguageChange() async {
+    try {
+      // 1. Cancel all existing reminders
+      await _reminderService.cancelAllReminders();
+
+      // 2. Reinitialize translation service to load new language
+      await _notificationTranslationService.initialize();
+
+      // 3. Reschedule all existing reminders with new language
+      await _scheduleExistingHabitReminders();
+      await _scheduleExistingTaskReminders();
+    } catch (e) {
+      Logger.error('🔔 ReminderService: Error refreshing reminders for language change: $e');
+    }
+  }
+
   /// Calculate the reminder time based on the task date and reminder setting
   DateTime _calculateTaskReminderTime(DateTime taskDate, ReminderTime reminderTime) {
     switch (reminderTime) {
