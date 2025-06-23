@@ -1,4 +1,4 @@
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'sort_direction.dart';
 
 class CustomOrder {
   final String field;

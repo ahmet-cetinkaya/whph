@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/src/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';

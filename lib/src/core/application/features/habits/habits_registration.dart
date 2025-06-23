@@ -6,7 +6,7 @@ import 'package:whph/src/core/application/features/habits/commands/remove_habit_
 import 'package:whph/src/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_tags_query.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/src/core/application/features/habits/commands/delete_habit_command.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habits_query.dart';

@@ -12,7 +12,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart' show DateTimeHelper;
 
 class HabitStatisticsView extends StatefulWidget {
   final String habitId;

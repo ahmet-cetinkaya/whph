@@ -6,7 +6,7 @@ import 'package:whph/src/presentation/ui/shared/components/border_fade_overlay.d
 import 'package:whph/src/presentation/ui/shared/components/label.dart';
 import 'package:whph/src/presentation/ui/shared/components/markdown_renderer.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 
 class NoteCard extends StatelessWidget {
   final NoteListItem note;

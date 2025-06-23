@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 
 class GetListAppUsageIgnoreRulesQuery implements IRequest<GetListAppUsageIgnoreRulesQueryResponse> {
   final int pageIndex;

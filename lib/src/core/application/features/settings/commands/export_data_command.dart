@@ -20,7 +20,7 @@ import 'package:whph/src/core/application/features/notes/services/abstraction/i_
 import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/constants/setting_translation_keys.dart';
 
 enum ExportDataFileOptions { json, csv }

@@ -1,5 +1,5 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
+import 'package:acore/acore.dart';
 
 enum SettingValueType { string, int, double, bool, json }
 

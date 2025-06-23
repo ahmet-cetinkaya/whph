@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/commands/delete_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_query.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';

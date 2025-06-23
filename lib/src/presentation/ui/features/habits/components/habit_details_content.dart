@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/components/numeric_input.dart';
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper;
 import 'package:whph/src/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/src/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/src/core/application/features/habits/commands/delete_habit_record_command.dart';
@@ -26,7 +26,6 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';

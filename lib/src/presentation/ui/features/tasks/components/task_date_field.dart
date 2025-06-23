@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/components/date_time_picker_field.dart';
+import 'package:acore/acore.dart' show DateTimePickerField;
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';

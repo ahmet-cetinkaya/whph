@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'package:whph/corePackages/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:acore/acore.dart';
 
 class AudioPlayerSoundPlayer implements ISoundPlayer {
   final AudioPlayer _audioPlayer = AudioPlayer();

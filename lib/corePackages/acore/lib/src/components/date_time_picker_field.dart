@@ -4,7 +4,7 @@ import '../time/date_format_service.dart';
 class DateTimePickerField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  final Function(DateTime?) onConfirm;
+  final void Function(DateTime?) onConfirm;
   final DateTime? minDateTime;
   final DateTime? maxDateTime;
   final bool showClearButton;

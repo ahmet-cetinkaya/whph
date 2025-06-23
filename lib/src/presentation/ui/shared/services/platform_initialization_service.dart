@@ -7,7 +7,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 
 /// Service responsible for platform-specific initialization
 /// Handles desktop and mobile platform setup

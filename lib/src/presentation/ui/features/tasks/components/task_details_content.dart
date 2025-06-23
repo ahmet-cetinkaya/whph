@@ -9,7 +9,7 @@ import 'package:whph/src/core/application/features/tasks/commands/remove_task_ta
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/corePackages/acore/time/week_days.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/priority_select_field.dart';
@@ -33,10 +33,7 @@ import 'package:whph/src/presentation/ui/features/tasks/constants/task_ui_consta
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/optional_field_chip.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
-import 'package:whph/corePackages/acore/time/date_format_service.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/corePackages/acore/components/numeric_input.dart';
 import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
 
 class TaskDetailsContent extends StatefulWidget {

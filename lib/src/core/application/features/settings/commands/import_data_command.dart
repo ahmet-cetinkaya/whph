@@ -18,8 +18,7 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'dart:convert';
-import 'package:whph/corePackages/acore/repository/abstraction/i_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/core/domain/features/tags/tag.dart';
 import 'package:whph/src/core/domain/features/tags/tag_tag.dart';
@@ -38,7 +37,6 @@ import 'package:whph/src/core/domain/features/sync/sync_device.dart';
 import 'package:whph/src/core/domain/features/notes/note.dart';
 import 'package:whph/src/core/domain/features/notes/note_tag.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
 import 'package:whph/src/core/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:flutter/foundation.dart';

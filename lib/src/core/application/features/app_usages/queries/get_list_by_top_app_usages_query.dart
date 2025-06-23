@@ -1,8 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryResponse> {
   late int pageIndex;

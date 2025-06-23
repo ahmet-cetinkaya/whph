@@ -17,7 +17,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
+import 'package:acore/acore.dart';
 
 class NotesList extends StatefulWidget {
   final String? search;

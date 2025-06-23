@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart' show SortDirection;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';

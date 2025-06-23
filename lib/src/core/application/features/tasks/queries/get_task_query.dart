@@ -1,7 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/src/core/application/features/tasks/constants/task_translation_keys.dart';

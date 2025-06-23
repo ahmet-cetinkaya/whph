@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/src/core/domain/features/tasks/task_time_record.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
+import 'package:acore/acore.dart';
 
 class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandResponse> {
   final String taskId;

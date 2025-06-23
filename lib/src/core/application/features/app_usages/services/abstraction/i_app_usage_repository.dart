@@ -1,8 +1,8 @@
-import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 
-abstract class IAppUsageRepository extends IRepository<AppUsage, String> {
+abstract class IAppUsageRepository extends app.IRepository<AppUsage, String> {
   Future<AppUsage?> getByDateAndHour({
     required String name,
     required int year,

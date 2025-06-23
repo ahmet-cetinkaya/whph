@@ -14,7 +14,7 @@ import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
+import 'package:acore/acore.dart' show CollectionUtils;
 import 'package:whph/main.dart';
 
 class TagTimeChartOptions extends PersistentListOptionsBase {

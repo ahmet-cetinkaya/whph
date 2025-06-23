@@ -1,16 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart' as acore;
 import 'package:whph/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/src/core/shared/utils/logger.dart';
 
-abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntityId extends Object,
+abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
   @protected
   final AppDatabase database;
@@ -23,8 +18,10 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   Expression<TEntityId> getPrimaryKey(TTable t);
 
   @override
-  Future<PaginatedList<TEntity>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+  Future<acore.PaginatedList<TEntity>> getList(int pageIndex, int pageSize,
+      {bool includeDeleted = false,
+      acore.CustomWhereFilter? customWhereFilter,
+      List<acore.CustomOrder>? customOrder}) async {
     List<String> whereClauses = [
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
@@ -32,7 +29,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     final query = database.customSelect(
@@ -54,7 +51,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
-    return PaginatedList(
+    return acore.PaginatedList(
       items: await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))),
       pageIndex: pageIndex,
       pageSize: pageSize,
@@ -64,14 +61,16 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<List<TEntity>> getAll(
-      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false,
+      acore.CustomWhereFilter? customWhereFilter,
+      List<acore.CustomOrder>? customOrder}) async {
     List<String> whereClauses = [
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     const int chunkSize = 1000;
@@ -125,7 +124,7 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   }
 
   @override
-  Future<TEntity?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
+  Future<TEntity?> getFirst(acore.CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
     List<String> whereClauses = [
       customWhereFilter.query,
       if (!includeDeleted) 'deleted_date IS NULL',
@@ -152,16 +151,15 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
   @override
   Future<void> update(TEntity item) async {
     item.modifiedDate = DateTime.now().toUtc();
-
     final companion = toCompanion(item);
-
     await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
   }
 
   @override
   Future<void> delete(TEntity item) async {
     item.deletedDate = DateTime.now().toUtc();
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(toCompanion(item));
+    final companion = toCompanion(item);
+    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
   }
 
   @override
@@ -175,8 +173,6 @@ abstract class DriftBaseRepository<TEntity extends BaseEntity<TEntityId>, TEntit
 
   @override
   Future<SyncData<TEntity>> getSyncData(DateTime lastSyncDate) async {
-    Logger.debug('🔍 getSyncData called for table: ${table.actualTableName}, lastSyncDate: $lastSyncDate');
-
     Future<List<TEntity>> queryForCreateSync() async {
       final query = 'SELECT * FROM ${table.actualTableName} WHERE created_date > ?';
 

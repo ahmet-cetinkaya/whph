@@ -9,7 +9,7 @@ import 'package:whph/src/core/application/features/notes/queries/get_list_notes_
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 
 void registerNotesFeature(
   IContainer container,

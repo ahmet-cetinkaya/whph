@@ -3,13 +3,9 @@ import 'package:whph/src/core/application/features/tags/queries/get_list_tags_qu
 import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
-import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
 
 enum TaskSortFields {
   createdDate,

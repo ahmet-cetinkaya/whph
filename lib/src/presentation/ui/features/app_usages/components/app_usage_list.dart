@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/load_more_button.dart';
@@ -13,7 +13,6 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {

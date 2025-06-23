@@ -1,8 +1,7 @@
 import 'package:whph/src/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/corePackages/acore/repository/abstraction/i_repository.dart' as core;
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
+import 'package:acore/acore.dart' as acore;
 
-abstract class IRepository<T extends BaseEntity<TId>, TId> extends core.IRepository<T, TId> {
+abstract class IRepository<T extends acore.BaseEntity<TId>, TId> extends acore.IRepository<T, TId> {
   Future<SyncData<T>> getSyncData(DateTime lastSyncDate);
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate);
   Future<void> truncate();

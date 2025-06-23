@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 
 /// Service responsible for handling global errors and exceptions

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/corePackages/acore/logging/i_logger.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 
 /// Static utility class for accessing the centralized logger throughout the application.
 ///

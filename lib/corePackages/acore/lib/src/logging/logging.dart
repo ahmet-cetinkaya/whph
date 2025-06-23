@@ -1,4 +1,4 @@
-/// Logging abstraction layer for the acore package.
+/// Logging module providing flexible logging infrastructure.
 ///
 /// This library provides a flexible logging system with:
 /// - Abstract Logger interface for different implementations
@@ -7,7 +7,7 @@
 ///
 /// Example usage:
 /// ```dart
-/// import 'package:whph/corePackages/acore/logging/logging.dart';
+/// import 'package:acore/acore.dart';
 ///
 /// final logger = ConsoleLogger(
 ///   minLevel: LogLevel.info,
@@ -18,7 +18,6 @@
 /// logger.warning('This is a warning message');
 /// logger.error('An error occurred', error, stackTrace);
 /// ```
-
 library;
 
 export 'console_logger.dart';

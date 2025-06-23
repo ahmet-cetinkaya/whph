@@ -9,7 +9,7 @@ import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_q
 import 'package:whph/src/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/src/core/application/features/sync/services/device_id_service.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';

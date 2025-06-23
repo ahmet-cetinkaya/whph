@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:acore/acore.dart' show BusinessException;
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
 
 /// Service responsible for global error handling and error widget configuration
 class GlobalErrorHandlerService {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart' show DateTimeHelper;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/corePackages/acore/logging/i_logger.dart';
+import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
 class TasksService extends ChangeNotifier {

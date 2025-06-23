@@ -1,10 +1,9 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/sync/sync_device.dart';
 import 'package:whph/src/core/application/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {
   final String? id;

@@ -1,9 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/core/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';

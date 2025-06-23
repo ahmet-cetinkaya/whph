@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_card.dart';
 import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/load_more_button.dart';
@@ -14,7 +14,6 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
 
 class TagsList extends StatefulWidget {
   final List<String>? filterByTags;

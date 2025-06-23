@@ -42,6 +42,11 @@ dependencies:
   flutter:
     sdk: flutter
   test: ^1.25.8
+  
+  # Core package
+  acore:
+    path: lib/corePackages/acore
+  
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

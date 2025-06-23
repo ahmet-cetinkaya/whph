@@ -1,5 +1,5 @@
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_option_with_translation_key.dart';

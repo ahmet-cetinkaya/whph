@@ -18,8 +18,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/features/tasks/models/task_data.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
-import 'package:whph/corePackages/acore/time/date_format_service.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 

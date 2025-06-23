@@ -14,8 +14,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'dart:async';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/tags/pages/tag_details_page.dart';
-import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart' show SortDirection, SortOption;
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;

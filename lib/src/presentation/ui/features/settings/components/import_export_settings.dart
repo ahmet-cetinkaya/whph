@@ -11,9 +11,8 @@ import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helpe
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/corePackages/acore/file/abstraction/i_file_service.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 
 class ImportExportSettings extends StatelessWidget {

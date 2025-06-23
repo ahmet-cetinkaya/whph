@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/corePackages/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';

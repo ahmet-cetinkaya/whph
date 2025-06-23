@@ -9,8 +9,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
-import 'package:whph/corePackages/acore/utils/color_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
 
 class TagTimeChart extends StatefulWidget {

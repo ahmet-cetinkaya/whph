@@ -7,7 +7,7 @@ import 'package:whph/src/presentation/ui/shared/services/app_bootstrap_service.d
 import 'package:whph/src/presentation/ui/shared/services/global_error_handler_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/platform_initialization_service.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 
 /// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
