@@ -13,7 +13,7 @@ import 'package:whph/src/presentation/ui/shared/components/color_field.dart';
 import 'package:whph/src/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
-import 'package:whph/src/presentation/ui/shared/extensions/color_extensions.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
