@@ -1,0 +1,3 @@
+[submodule "lib/corePackages/acore"]
+	path = lib/corePackages/acore
+	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
