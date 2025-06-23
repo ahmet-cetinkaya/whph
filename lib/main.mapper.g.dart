@@ -2,11 +2,11 @@
 // https://github.com/k-paxian/dart-json-mapper
 // @dart = 2.12
 
-import 'corePackages/acore/logging/log_level.dart' as x34 show LogLevel;
-import 'corePackages/acore/repository/models/base_entity.dart' as x1 show BaseEntity;
-import 'corePackages/acore/repository/models/sort_direction.dart' as x25 show SortDirection;
-import 'corePackages/acore/time/date_format_service.dart' as x37 show DateFormatType;
-import 'corePackages/acore/time/week_days.dart' as x31 show WeekDays;
+import 'package:acore/acore.dart' as x34 show LogLevel;
+import 'package:acore/acore.dart' as x1 show BaseEntity;
+import 'package:acore/acore.dart' as x25 show SortDirection;
+import 'package:acore/acore.dart' as x37 show DateFormatType;
+import 'package:acore/acore.dart' as x31 show WeekDays;
 import 'package:dart_json_mapper/dart_json_mapper.dart'
     show JsonMapper, JsonMapperAdapter, SerializationOptions, DeserializationOptions, typeOf;
 import 'src/core/application/features/habits/queries/get_list_habits_query.dart' as x27 show HabitSortFields;
@@ -48,8 +48,8 @@ import 'src/presentation/ui/shared/enums/dialog_size.dart' as x35 show DialogSiz
 import 'dart:core';
 import 'package:dart_json_mapper/src/model/annotations.dart' as prefix0;
 import 'package:flutter/src/material/time.dart' as prefix25;
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart' as prefix7;
-import 'package:whph/corePackages/acore/time/week_days.dart' as prefix26;
+import 'package:acore/acore.dart' as prefix7;
+import 'package:acore/acore.dart' as prefix26;
 import 'package:whph/src/core/application/features/sync/commands/sync_command.dart' as prefix6;
 import 'package:whph/src/core/application/features/sync/models/sync_data.dart' as prefix23;
 import 'package:whph/src/core/application/features/sync/models/sync_data_dto.dart' as prefix5;

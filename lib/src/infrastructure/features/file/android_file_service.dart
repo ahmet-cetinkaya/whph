@@ -3,8 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:whph/corePackages/acore/file/abstraction/i_file_service.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 

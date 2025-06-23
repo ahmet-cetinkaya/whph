@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 
 class SaveSettingCommand implements IRequest<SaveSettingCommandResponse> {

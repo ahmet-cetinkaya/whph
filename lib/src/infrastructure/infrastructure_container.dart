@@ -10,10 +10,7 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
-import 'package:whph/corePackages/acore/file/abstraction/i_file_service.dart';
-import 'package:whph/corePackages/acore/logging/i_logger.dart';
-import 'package:whph/corePackages/acore/logging/console_logger.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/infrastructure/features/setup/services/linux_setup_service.dart';
 import 'package:whph/src/infrastructure/features/app_usage/android_app_usage_service.dart';

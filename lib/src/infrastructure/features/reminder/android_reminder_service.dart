@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';

@@ -1,0 +1,30 @@
+name: acore
+description: A comprehensive core package providing common utilities, abstractions, and components for Flutter applications.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Core dependencies
+  equatable: ^2.0.7
+  meta: ^1.15.0
+  
+  # Dependency injection
+  kiwi: ^5.0.1
+  
+  # Date and time utilities
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -12,8 +12,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/ui_presentation_container.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
-import 'package:whph/corePackages/acore/dependency_injection/container.dart' as acore;
+import 'package:acore/acore.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
 
 /// Service responsible for bootstrapping the application
@@ -24,7 +23,7 @@ class AppBootstrapService {
   /// Returns the configured [IContainer] instance
   static Future<IContainer> initializeApp() async {
     // Initialize dependency injection container and register modules
-    final container = acore.Container();
+    final container = Container();
     initializeJsonMapper();
 
     registerPersistence(container);

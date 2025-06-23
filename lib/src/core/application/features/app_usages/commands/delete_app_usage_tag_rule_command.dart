@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/src/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
 

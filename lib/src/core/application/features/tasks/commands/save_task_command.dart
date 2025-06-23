@@ -1,16 +1,11 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/src/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
-import 'package:whph/corePackages/acore/time/week_days.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/src/core/application/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -86,7 +81,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.id != null) {
       task = await _taskRepository.getById(request.id!);
       if (task == null) {
-        throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
+        throw BusinessException("Task with id ${request.id} not found", TaskTranslationKeys.taskNotFoundError);
       }
 
       task.title = request.title;

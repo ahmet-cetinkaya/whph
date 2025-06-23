@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/utils/color_helper.dart';
+import 'package:acore/acore.dart' show ColorHelper;
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 

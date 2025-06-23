@@ -22,8 +22,7 @@ import 'package:whph/src/core/application/features/tags/services/abstraction/i_t
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
+import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag.dart';

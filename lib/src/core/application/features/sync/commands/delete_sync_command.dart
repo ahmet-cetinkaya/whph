@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/sync/sync_device.dart';
 import 'package:whph/src/core/application/features/sync/constants/sync_translation_keys.dart';
 

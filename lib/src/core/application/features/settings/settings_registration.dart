@@ -4,7 +4,7 @@ import 'package:whph/src/core/application/features/notes/services/abstraction/i_
 import 'package:whph/src/core/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/src/core/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/src/core/application/features/settings/services/import_data_migration_service.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/core/application/features/settings/commands/delete_setting_command.dart';

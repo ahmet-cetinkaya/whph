@@ -1,5 +1,5 @@
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:whph/corePackages/acore/logging/i_logger.dart';
+import 'package:acore/acore.dart';
 import 'abstractions/i_wakelock_service.dart';
 
 /// Implementation of IWakelockService using wakelock_plus package

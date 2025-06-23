@@ -1,6 +1,6 @@
 import 'package:whph/src/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
-import 'package:whph/corePackages/acore/time/week_days.dart';
+import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';

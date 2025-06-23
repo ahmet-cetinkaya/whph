@@ -1,5 +1,5 @@
 import 'package:whph/src/core/domain/features/tasks/task.dart';
-import 'package:whph/corePackages/acore/time/week_days.dart';
+import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
 abstract class ITaskRecurrenceService {

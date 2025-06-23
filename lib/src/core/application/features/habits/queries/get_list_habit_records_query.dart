@@ -1,8 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/habits/habit_record.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class GetListHabitRecordsQuery implements IRequest<GetListHabitRecordsQueryResponse> {
   String habitId;

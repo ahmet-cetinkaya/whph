@@ -1,10 +1,9 @@
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-
+import '../models/base_entity.dart';
+import '../models/custom_order.dart';
+import '../models/custom_where_filter.dart';
 import '../models/paginated_list.dart';
 
-abstract class IRepository<T extends BaseEntity, TId> {
+abstract class IRepository<T extends BaseEntity<TId>, TId> {
   Future<PaginatedList<T>> getList(int pageIndex, int pageSize,
       {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder});
   Future<List<T>> getAll(

@@ -1,9 +1,9 @@
 import 'package:whph/src/core/application/features/app_usages/models/app_usage_time_record_with_details.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/src/core/domain/features/app_usages/app_usage_time_record.dart';
-import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart' as app;
 
-abstract class IAppUsageTimeRecordRepository extends IRepository<AppUsageTimeRecord, String> {
+abstract class IAppUsageTimeRecordRepository extends app.IRepository<AppUsageTimeRecord, String> {
   Future<Map<String, int>> getAppUsageDurations({
     required List<String> appUsageIds,
     DateTime? startDate,

@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 
 class GetNoteQuery implements IRequest<GetNoteQueryResponse> {
   final String id;

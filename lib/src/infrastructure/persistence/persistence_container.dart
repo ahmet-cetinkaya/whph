@@ -14,7 +14,7 @@ import 'package:whph/src/core/application/features/tasks/services/abstraction/i_
 import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/src/infrastructure/persistence/features/app_usages/drift_app_usage_ignore_rule_repository.dart';
 import 'package:whph/src/infrastructure/persistence/features/app_usages/drift_app_usage_repository.dart';

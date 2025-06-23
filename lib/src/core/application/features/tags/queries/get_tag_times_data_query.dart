@@ -4,8 +4,7 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 
 class GetTagTimesDataQuery implements IRequest<GetTagTimesDataQueryResponse> {
   final String tagId;

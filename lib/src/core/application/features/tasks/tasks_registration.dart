@@ -9,7 +9,7 @@ import 'package:whph/src/core/application/features/tasks/commands/update_task_or
 import 'package:whph/src/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';

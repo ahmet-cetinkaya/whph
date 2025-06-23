@@ -1,5 +1,4 @@
-import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import 'package:acore/acore.dart';
 
 class SortOptionWithTranslationKey<T> extends SortOption<T> {
   final String translationKey;

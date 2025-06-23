@@ -1,8 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/sync/sync_device.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class GetListSyncDevicesQuery implements IRequest<GetListSyncDevicesQueryResponse> {
   late int pageIndex;

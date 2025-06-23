@@ -1,7 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/dependency_injection/abstraction/i_container.dart';
-import 'package:whph/corePackages/acore/logging/i_logger.dart';
-import 'package:whph/corePackages/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';

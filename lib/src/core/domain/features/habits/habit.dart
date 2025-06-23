@@ -1,7 +1,6 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/repository/models/base_entity.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 
 @jsonSerializable
 class Habit extends BaseEntity<String> {

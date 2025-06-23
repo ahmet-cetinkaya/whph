@@ -1,10 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_repository.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_order.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
-import 'package:whph/corePackages/acore/queries/models/sort_option.dart';
+import 'package:acore/acore.dart';
 
 enum NoteSortFields {
   title,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/corePackages/acore/sounds/abstraction/sound_player/i_sound_player.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
@@ -10,7 +10,6 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
 
 class TaskCompleteButton extends StatefulWidget {
   final String taskId;

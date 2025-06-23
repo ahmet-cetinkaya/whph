@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/time/week_days.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_recurrence_selector.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';

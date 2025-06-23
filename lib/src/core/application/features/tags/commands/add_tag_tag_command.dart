@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tags/tag_tag.dart';
 import 'package:whph/src/core/application/features/tags/constants/tag_translation_keys.dart';
 

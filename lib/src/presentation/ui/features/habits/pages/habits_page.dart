@@ -13,7 +13,7 @@ import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';

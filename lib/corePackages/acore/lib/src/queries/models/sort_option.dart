@@ -1,4 +1,4 @@
-import 'package:whph/corePackages/acore/repository/models/sort_direction.dart';
+import '../../repository/models/sort_direction.dart';
 
 class SortOption<T> {
   final T field;

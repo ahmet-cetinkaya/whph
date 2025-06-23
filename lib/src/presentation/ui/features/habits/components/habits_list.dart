@@ -13,7 +13,7 @@ import 'package:whph/src/presentation/ui/features/habits/constants/habit_transla
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
+import 'package:acore/acore.dart';
 
 class HabitsList extends StatefulWidget {
   final int pageSize;

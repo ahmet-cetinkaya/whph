@@ -6,7 +6,7 @@ class CoreMapper implements IMapper {
 
   @override
   void addMap<TDestination, TSource>(TDestination Function(TSource source) mapper) {
-    _maps[Map<Type, Type>.from({TDestination: TSource})] = (source) => mapper(source);
+    _maps[Map<Type, Type>.from({TDestination: TSource})] = (TSource source) => mapper(source);
   }
 
   @override

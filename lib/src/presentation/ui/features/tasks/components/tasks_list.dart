@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/corePackages/acore/time/date_time_helper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/load_more_button.dart';
@@ -14,10 +14,8 @@ import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/corePackages/acore/utils/order_rank.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
 import 'package:whph/src/presentation/ui/shared/providers/drag_state_provider.dart';
 
 class TaskList extends StatefulWidget {

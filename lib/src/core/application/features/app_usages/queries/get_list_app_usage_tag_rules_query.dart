@@ -1,9 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/src/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/corePackages/acore/errors/business_exception.dart';
-import 'package:whph/corePackages/acore/repository/models/custom_where_filter.dart';
-import 'package:whph/corePackages/acore/repository/models/paginated_list.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tags/tag.dart';
 import 'package:whph/src/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
 

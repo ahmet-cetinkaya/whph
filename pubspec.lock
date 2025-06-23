@@ -14,6 +14,13 @@ packages:
     description: dart
     source: sdk
     version: "0.3.3"
+  acore:
+    dependency: "direct main"
+    description:
+      path: "lib/corePackages/acore"
+      relative: true
+    source: path
+    version: "1.0.0"
   analyzer:
     dependency: transitive
     description:

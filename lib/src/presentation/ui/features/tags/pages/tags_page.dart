@@ -16,7 +16,7 @@ import 'package:whph/src/presentation/ui/features/tags/pages/tag_details_page.da
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/corePackages/acore/utils/collection_utils.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
