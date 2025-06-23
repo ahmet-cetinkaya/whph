@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
