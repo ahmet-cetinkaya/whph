@@ -125,14 +125,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
-  auto_start_flutter:
-    dependency: "direct main"
-    description:
-      name: auto_start_flutter
-      sha256: "1373507dfa31433b92fe95e4307e3061ba1ed2abbe7bc13b742d038a12d697a0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.4"
   boolean_selector:
     dependency: transitive
     description:
