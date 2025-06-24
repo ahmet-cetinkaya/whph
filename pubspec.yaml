@@ -32,7 +32,7 @@ scripts:
   version:major: bash scripts/version_bump.sh major
   version:minor: bash scripts/version_bump.sh minor
   version:patch: bash scripts/version_bump.sh patch
-  version:push: git push && git push --tags
+  version:push: cd android/fdroid && git push && cd ../.. && git push && git push --tags
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
