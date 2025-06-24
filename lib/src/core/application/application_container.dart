@@ -6,6 +6,8 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/src/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
+import 'package:whph/src/core/application/features/demo/services/demo_data_service.dart';
 import 'package:whph/src/core/application/features/habits/habits_registration.dart';
 import 'package:whph/src/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/src/core/application/features/habits/services/i_habit_repository.dart';
@@ -50,7 +52,23 @@ void registerApplication(IContainer container) {
   final taskRepository = container.resolve<ITaskRepository>();
   final taskTagRepository = container.resolve<ITaskTagRepository>();
   final taskTimeRecordRepository = container.resolve<ITaskTimeRecordRepository>();
-  final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
+  final appUsageTimeRecordRepository = container
+      .resolve<IAppUsageTimeRecordRepository>(); // Register Demo Data Service (conditionally based on environment)
+  container.registerSingleton<IDemoDataService>((_) => DemoDataService(
+        settingRepository: settingRepository,
+        tagRepository: tagRepository,
+        taskRepository: taskRepository,
+        taskTagRepository: taskTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
+        habitTagRepository: habitTagRepository,
+        noteRepository: noteRepository,
+        noteTagRepository: noteTagRepository,
+        appUsageRepository: appUsageRepository,
+        appUsageTimeRecordRepository: appUsageTimeRecordRepository,
+        appUsageTagRepository: appUsageTagRepository,
+      ));
 
   // Register Features
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,

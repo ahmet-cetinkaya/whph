@@ -4,6 +4,22 @@
 
 WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time. It tracks application usage to enhance focus, allowing you to analyze your progress, celebrate achievements, and stay motivated.
 
+## 📱 Screenshots
+
+<p align="center">
+  <a href="docs/screenshots/mobile_01.png"><img src="docs/screenshots/mobile_01.png" alt="Mobile 01" width="220"/></a>
+  <a href="docs/screenshots/mobile_02.png"><img src="docs/screenshots/mobile_02.png" alt="Mobile 02" width="220"/></a>
+  <a href="docs/screenshots/mobile_03.png"><img src="docs/screenshots/mobile_03.png" alt="Mobile 03" width="220"/></a>
+  <a href="docs/screenshots/mobile_04.png"><img src="docs/screenshots/mobile_04.png" alt="Mobile 04" width="220"/></a>
+  <a href="docs/screenshots/mobile_05.png"><img src="docs/screenshots/mobile_05.png" alt="Mobile 05" width="220"/></a>
+  <a href="docs/screenshots/mobile_06.png"><img src="docs/screenshots/mobile_06.png" alt="Mobile 06" width="220"/></a>
+  <a href="docs/screenshots/mobile_07.png"><img src="docs/screenshots/mobile_07.png" alt="Mobile 07" width="220"/></a>
+  <a href="docs/screenshots/mobile_08.png"><img src="docs/screenshots/mobile_08.png" alt="Mobile 08" width="220"/></a>
+  <a href="docs/screenshots/mobile_09.png"><img src="docs/screenshots/mobile_09.png" alt="Mobile 09" width="220"/></a>
+  <a href="docs/screenshots/mobile_10.png"><img src="docs/screenshots/mobile_10.png" alt="Mobile 10" width="220"/></a>
+</p>
+
+
 ## ⚡ Getting Started
 
 ### ⏬ Installation
