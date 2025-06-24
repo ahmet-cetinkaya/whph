@@ -1,3 +1,7 @@
 [submodule "lib/corePackages/acore"]
 	path = lib/corePackages/acore
 	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
+[submodule "android/fdroid"]
+	path = android/fdroid
+	url = git@gitlab.com:ahmet-cetinkaya/fdroid-data.git
+	branch = whph.ahmetcetinkaya.me
