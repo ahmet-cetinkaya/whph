@@ -48,20 +48,6 @@ class NoteCard extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Note content preview
-          if (note.content != null && note.content!.isNotEmpty) ...[
-            SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
-            BorderFadeOverlay(
-              fadeBorders: {FadeBorder.bottom},
-              backgroundColor: AppTheme.surface1,
-              child: SizedBox(
-                height: previewHeight,
-                child: MarkdownRenderer(
-                  data: note.content!,
-                ),
-              ),
-            ),
-          ],
           // Tags and last updated time
           if (note.tags.isNotEmpty || note.updatedAt != null) ...[
             SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
@@ -83,25 +69,24 @@ class NoteCard extends StatelessWidget {
                           .toList(),
                       mini: true,
                     ),
-                  if (note.updatedAt != null)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.update,
-                          size: AppTheme.iconSizeXSmall,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.update,
+                        size: AppTheme.iconSizeXSmall,
+                        color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(width: AppTheme.size3XSmall),
+                      Text(
+                        _formatDateTime(note.updatedAt ?? note.createdDate, context),
+                        style: TextStyle(
                           color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                         ),
-                        const SizedBox(width: AppTheme.size3XSmall),
-                        Text(
-                          _formatDateTime(note.updatedAt!, context),
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
