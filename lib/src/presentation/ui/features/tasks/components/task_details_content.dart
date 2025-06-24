@@ -821,7 +821,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           if (availableChipFields.isNotEmpty) ...[
             Wrap(
               spacing: 4,
-              runSpacing: 4,
+              runSpacing: 2,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
           ],

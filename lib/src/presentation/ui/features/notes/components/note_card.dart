@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/src/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/src/presentation/ui/features/notes/constants/note_ui_constants.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/src/presentation/ui/shared/components/border_fade_overlay.dart';
 import 'package:whph/src/presentation/ui/shared/components/label.dart';
-import 'package:whph/src/presentation/ui/shared/components/markdown_renderer.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/acore.dart';
 
@@ -24,8 +22,6 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final previewHeight = isDense ? 60.0 : 80.0;
-
     return ListTile(
       tileColor: transparentCard ? Theme.of(context).cardColor.withValues(alpha: 0.8) : Theme.of(context).cardColor,
       visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,

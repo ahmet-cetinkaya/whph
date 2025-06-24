@@ -111,7 +111,6 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         borderRadius: BorderRadius.circular(14),
         child: Container(
           height: 36,
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
           decoration: BoxDecoration(
             color: isHovered ? AppTheme.surface2.withAlpha((255 * 0.5).toInt()) : AppTheme.surface1,
             borderRadius: BorderRadius.circular(14),

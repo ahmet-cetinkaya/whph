@@ -676,7 +676,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Description Table
@@ -687,13 +686,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 DetailTableRowData(
                   label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
                   icon: HabitUiConstants.descriptionIcon,
-                  widget: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: MarkdownEditor(
-                      controller: _descriptionController,
-                      onChanged: _onDescriptionChanged,
-                      toolbarBackground: AppTheme.surface1,
-                    ),
+                  widget: MarkdownEditor(
+                    controller: _descriptionController,
+                    onChanged: _onDescriptionChanged,
+                    toolbarBackground: AppTheme.surface1,
                   ),
                 ),
               ],
@@ -706,7 +702,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           if (availableChipFields.isNotEmpty) ...[
             Wrap(
               spacing: 4,
-              runSpacing: 4,
+              runSpacing: 2,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
             const SizedBox(height: AppTheme.size2XSmall),

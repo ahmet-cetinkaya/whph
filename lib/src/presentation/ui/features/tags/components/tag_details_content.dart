@@ -395,7 +395,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
             const SizedBox(height: AppTheme.size2XSmall),
             Wrap(
               spacing: 4,
-              runSpacing: 4,
+              runSpacing: 2,
               children: availableChipFields.map((field) => _buildOptionalFieldChip(field)).toList(),
             ),
           ],

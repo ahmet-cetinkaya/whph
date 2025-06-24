@@ -398,7 +398,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           if (availableChipFields.isNotEmpty) ...[
             Wrap(
               spacing: 4,
-              runSpacing: 4,
+              runSpacing: 2,
               children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
             const SizedBox(height: AppTheme.size2XSmall),

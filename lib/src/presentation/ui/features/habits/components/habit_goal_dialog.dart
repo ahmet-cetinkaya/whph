@@ -60,6 +60,46 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
     });
   }
 
+  bool _canIncrementTargetFrequency() {
+    if (!_hasGoal) return false;
+    // Target frequency can only be incremented if it's less than max value AND would not equal period days
+    return _targetFrequency < _maxValue && (_targetFrequency + 1) < _periodDays;
+  }
+
+  bool _canIncrementPeriodDays() {
+    if (!_hasGoal) return false;
+    // Period days can only be incremented if it's less than max value AND would stay greater than target frequency
+    return _periodDays < _maxValue && (_periodDays + 1) > _targetFrequency;
+  }
+
+  bool _canIncrement(bool isFrequency) {
+    if (isFrequency) {
+      return _canIncrementTargetFrequency();
+    } else {
+      return _canIncrementPeriodDays();
+    }
+  }
+
+  bool _canDecrementTargetFrequency() {
+    if (!_hasGoal) return false;
+    // Target frequency can only be decremented if it's greater than min value
+    return _targetFrequency > _minValue;
+  }
+
+  bool _canDecrementPeriodDays() {
+    if (!_hasGoal) return false;
+    // Period days can only be decremented if it's greater than min value AND would not equal target frequency
+    return _periodDays > _minValue && (_periodDays - 1) > _targetFrequency;
+  }
+
+  bool _canDecrement(bool isFrequency) {
+    if (isFrequency) {
+      return _canDecrementTargetFrequency();
+    } else {
+      return _canDecrementPeriodDays();
+    }
+  }
+
   void _toggleGoal(bool value) {
     setState(() => _hasGoal = value);
   }
@@ -94,7 +134,7 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
         children: [
           IconButton(
             icon: const Icon(Icons.remove_circle_outline),
-            onPressed: _hasGoal ? () => _adjustValue(isFrequency, -1) : null,
+            onPressed: _hasGoal && _canDecrement(isFrequency) ? () => _adjustValue(isFrequency, -1) : null,
             tooltip: widget.translationService.translate(SharedTranslationKeys.deleteButton),
           ),
           const SizedBox(width: 4),
@@ -102,7 +142,7 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
           const SizedBox(width: 4),
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
-            onPressed: _hasGoal ? () => _adjustValue(isFrequency, 1) : null,
+            onPressed: _hasGoal && _canIncrement(isFrequency) ? () => _adjustValue(isFrequency, 1) : null,
             tooltip: widget.translationService.translate(SharedTranslationKeys.addButton),
           ),
         ],
@@ -130,6 +170,36 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Goal description
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.translationService.translate(HabitTranslationKeys.goalDescription),
+                      style: AppTheme.bodySmall.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Switch(
@@ -146,14 +216,14 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
               const SizedBox(height: 16),
               _buildNumberInput(
                 title: widget.translationService.translate(HabitTranslationKeys.targetFrequency),
-                description: 'kez',
+                description: widget.translationService.translate(HabitTranslationKeys.timesUnit),
                 value: _targetFrequency,
                 isFrequency: true,
               ),
               const SizedBox(height: 16),
               _buildNumberInput(
                 title: widget.translationService.translate(HabitTranslationKeys.periodDays),
-                description: 'gün',
+                description: widget.translationService.translate(HabitTranslationKeys.daysUnit),
                 value: _periodDays,
                 isFrequency: false,
               ),

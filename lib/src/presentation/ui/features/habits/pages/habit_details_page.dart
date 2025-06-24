@@ -78,7 +78,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: SingleChildScrollView(
           child: Column(
             children: [

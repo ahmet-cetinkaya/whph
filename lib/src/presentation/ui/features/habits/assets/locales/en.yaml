@@ -113,12 +113,15 @@ habits:
     toggling_archive: Failed to toggle archive status
   goals:
     current_goal: Goal
-    enable: Enable Goals
-    goal: Goal
+    days_unit: days
+    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
+    enable: Enable Custom Goals
+    goal: Custom Goal
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
-    settings: Goal Settings
+    settings: Custom Goal Settings
     target_frequency: Target Frequency
+    times_unit: times
   help:
     description: Help description
   list:
