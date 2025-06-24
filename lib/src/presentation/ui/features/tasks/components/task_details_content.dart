@@ -130,7 +130,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
       if (_hasFieldContent(keyRecurrence)) _visibleOptionalFields.add(keyRecurrence);
-      if (_hasFieldContent(keyParentTask)) _visibleOptionalFields.add(keyParentTask);
 
       // Make reminder fields visible if their corresponding date fields are visible
       if (_visibleOptionalFields.contains(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDateReminder);
@@ -749,7 +748,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyDeadlineDate,
       keyDescription,
       keyRecurrence,
-      keyParentTask,
+      // keyParentTask - Parent task should never appear as chip, only when data exists
       // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
 
@@ -795,12 +794,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           const SizedBox(height: AppTheme.size2XSmall),
 
           // Display optional fields section
-          if (_visibleOptionalFields.isNotEmpty) ...[
+          if (_visibleOptionalFields.isNotEmpty || (_task!.parentTask != null)) ...[
             // Only fields that are manually set as visible (excluding description which is handled separately)
             DetailTable(
               rowData: [
                 if (showElapsedTime) _buildElapsedTimeSection(),
-                if (_visibleOptionalFields.contains(keyParentTask)) _buildParentTaskSection(),
+                if (_task!.parentTask != null) _buildParentTaskSection(),
                 if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
                 if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
                 if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
