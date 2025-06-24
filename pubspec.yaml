@@ -118,8 +118,6 @@ flutter:
   uses-material-design: true
   # The assets section specifies the files that should be included in the
   assets:
-    - linux/getActiveWindow.bash
-    - windows/getActiveWindow.ps1
     - lib/src/core/domain/shared/assets/images/
     - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.png
     - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.ico
