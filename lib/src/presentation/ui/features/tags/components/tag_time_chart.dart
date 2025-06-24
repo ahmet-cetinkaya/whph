@@ -180,8 +180,30 @@ class TagTimeChartState extends State<TagTimeChart> {
   }
 
   List<PieChartSectionData> _buildSections() {
-    // Calculate percentages for each item
-    final itemsWithPercentage = _tagTimes!.items.map((item) {
+    // Aggregate items by tag name to avoid duplicates across categories
+    final Map<String, TagTimeData> aggregatedTags = {};
+
+    for (final item in _tagTimes!.items) {
+      final key = item.tagName;
+      if (aggregatedTags.containsKey(key)) {
+        // Merge durations for same tag name
+        final existing = aggregatedTags[key]!;
+        aggregatedTags[key] = TagTimeData(
+          tagId: existing.tagId, // Keep the first tagId found
+          tagName: existing.tagName,
+          tagColor: existing.tagColor,
+          duration: existing.duration + item.duration,
+          category: existing.category, // Keep the first category found
+        );
+      } else {
+        aggregatedTags[key] = item;
+      }
+    }
+
+    final aggregatedItems = aggregatedTags.values.toList();
+
+    // Calculate percentages for each aggregated item
+    final itemsWithPercentage = aggregatedItems.map((item) {
       final percent = (item.duration / _tagTimes!.totalDuration * 100);
       return (item, percent);
     }).toList();
