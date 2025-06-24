@@ -42,10 +42,16 @@ If you'd like to contribute, please follow these steps:
 
 ### ⚙️ Running the Project
 
-1. Clone the repository:
+1. Clone the repository (with submodules):
    
    ```bash
-   git clone https://github.com/ahmet-cetinkaya/whph.git
+   git clone --recurse-submodules https://github.com/ahmet-cetinkaya/whph.git
+   ```
+   
+   If you already cloned without `--recurse-submodules`, run:
+   
+   ```bash
+   git submodule update --init --recursive
    ```
 
 2. Navigate into the project directory:
