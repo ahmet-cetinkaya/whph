@@ -47,7 +47,7 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
           child: NoteDetailsContent(
             noteId: widget.noteId,
           ),

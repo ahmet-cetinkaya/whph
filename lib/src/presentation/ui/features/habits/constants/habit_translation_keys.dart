@@ -17,6 +17,9 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String goalFormat = 'habits.goals.goal_format';
   static const String goalSettings = 'habits.goals.settings';
   static const String currentGoal = 'habits.goals.current_goal';
+  static const String goalDescription = 'habits.goals.description';
+  static const String timesUnit = 'habits.goals.times_unit';
+  static const String daysUnit = 'habits.goals.days_unit';
 
   // Details
   static const String descriptionLabel = 'habits.details.description';

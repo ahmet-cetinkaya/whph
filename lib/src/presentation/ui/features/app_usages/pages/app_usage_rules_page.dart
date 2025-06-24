@@ -51,7 +51,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           children: [
             BorderFadeOverlay(

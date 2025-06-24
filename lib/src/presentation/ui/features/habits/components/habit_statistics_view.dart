@@ -194,15 +194,15 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader(),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppTheme.sizeSmall),
         if (_habit!.archivedDate != null) ...[
           _buildStatusBanner(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.sizeSmall),
         ],
         _buildStatisticsRow(),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.sizeSmall),
         _buildScoreChart(),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.sizeSmall),
         _buildStreaksSection(),
       ],
     );
@@ -223,8 +223,9 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                   if (_habit!.hasGoal && _habit!.statistics.goalSuccessRate != null) ...[
                     Expanded(
                       child: _buildStatCard(
-                        "${_translationService.translate(HabitTranslationKeys.currentGoal)} (${_habit!.statistics.daysGoalMet}/${_habit!.statistics.totalDaysWithGoal})",
+                        _translationService.translate(HabitTranslationKeys.currentGoal),
                         _habit!.statistics.goalSuccessRate!,
+                        customValue: "${_habit!.statistics.daysGoalMet}/${_habit!.statistics.totalDaysWithGoal}",
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -250,7 +251,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     );
   }
 
-  Widget _buildStatCard(String label, double value, {bool isCount = false, String? subtitle}) {
+  Widget _buildStatCard(String label, double value, {bool isCount = false, String? subtitle, String? customValue}) {
     // Calculate percentage for the background bar
     double percentage = isCount ? 0 : value.clamp(0.0, 1.0);
 
@@ -294,7 +295,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                   ),
                   const SizedBox(height: AppTheme.size2XSmall),
                   Text(
-                    isCount ? HabitUiConstants.formatRecordCount(value.toInt()) : HabitUiConstants.formatScore(value),
+                    customValue ??
+                        (isCount
+                            ? HabitUiConstants.formatRecordCount(value.toInt())
+                            : HabitUiConstants.formatScore(value)),
                     style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),

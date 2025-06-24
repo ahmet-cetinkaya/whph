@@ -29,7 +29,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
         title: Text(_translationService.translate(SettingsTranslationKeys.permissionsTitle)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: ListView(
           children: const [
             // App Usage Permission

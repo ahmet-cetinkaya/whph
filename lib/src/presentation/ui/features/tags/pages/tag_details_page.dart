@@ -105,7 +105,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

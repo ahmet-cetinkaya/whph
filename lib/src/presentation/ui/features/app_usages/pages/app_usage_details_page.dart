@@ -106,7 +106,7 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

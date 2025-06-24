@@ -39,7 +39,7 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.size3XSmall),
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
           child: Container(
             decoration: BoxDecoration(
               color: AppTheme.surface1,
@@ -153,10 +153,12 @@ class DetailTable extends StatelessWidget {
     return Container(
       padding: contentPadding ?? EdgeInsets.zero,
       clipBehavior: Clip.none,
-      constraints: const BoxConstraints(minHeight: 28),
-      alignment: Alignment.centerLeft,
+      constraints: forceVertical ? null : const BoxConstraints(minHeight: 28),
+      alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
       child: DefaultTextStyle(
-        style: AppTheme.bodyMedium.copyWith(overflow: TextOverflow.ellipsis),
+        style: AppTheme.bodyMedium.copyWith(
+          overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
+        ),
         child: data.widget,
       ),
     );

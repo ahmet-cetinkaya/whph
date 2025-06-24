@@ -257,7 +257,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeSmall),
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: SingleChildScrollView(
           child: Column(
             children: [
