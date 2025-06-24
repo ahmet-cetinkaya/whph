@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     # Install dependencies
     - name: Set up Flutter
@@ -64,6 +66,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Get application version
         id: app_version
