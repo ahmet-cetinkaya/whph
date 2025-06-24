@@ -26,6 +26,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PUBSPEC_FILE="$PROJECT_ROOT/pubspec.yaml"
 APP_INFO_FILE="$PROJECT_ROOT/lib/src/core/domain/shared/constants/app_info.dart"
 INSTALLER_FILE="$PROJECT_ROOT/windows/setup-wizard/installer.iss"
+FDROID_METADATA_FILE="$PROJECT_ROOT/android/fdroid/metadata/me.ahmetcetinkaya.whph.yml"
 
 # Extract current version from pubspec.yaml
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
@@ -75,16 +76,35 @@ sed -i "s/static const String version = \".*\";/static const String version = \"
 echo "Updating $INSTALLER_FILE..."
 sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
+# Update F-Droid metadata
+echo "Updating $FDROID_METADATA_FILE..."
+sed -i "s/versionName: .*/versionName: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
+sed -i "s/versionCode: .*/versionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
+sed -i "s/commit: .*/commit: v$NEW_VERSION/" "$FDROID_METADATA_FILE"
+sed -i "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
+sed -i "s/CurrentVersionCode: .*/CurrentVersionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
+
 echo "Version bump completed successfully!"
 echo "Updated files:"
 echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
 echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
 echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
+echo "  - $FDROID_METADATA_FILE (version: $NEW_VERSION+$NEW_BUILD, code: $NEW_BUILD)"
 echo ""
 
 # Git operations
 echo "Committing changes..."
-git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE"
+
+# First, commit changes in the F-Droid submodule
+echo "Committing F-Droid metadata changes in submodule..."
+cd "$PROJECT_ROOT/android/fdroid"
+git add "metadata/me.ahmetcetinkaya.whph.yml"
+git commit -m "chore: update app version to $NEW_VERSION"
+cd "$PROJECT_ROOT"
+
+# Then, commit changes in the main repository (including submodule update)
+echo "Committing main repository changes..."
+git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "android/fdroid"
 git commit -m "chore: update app version to $NEW_VERSION"
 
 echo "Creating git tag..."
@@ -92,8 +112,13 @@ git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION" HEAD
 
 echo ""
 echo "Git operations completed:"
-echo "  - Committed with message: 'chore: update app version to $NEW_VERSION'"
+echo "  - Committed F-Droid metadata in submodule with message: 'chore: update app version to $NEW_VERSION'"
+echo "  - Committed main repository with message: 'chore: update app version to $NEW_VERSION'"
 echo "  - Created tag: v$NEW_VERSION"
 echo ""
 echo "To push changes and tags to remote:"
 echo "  rps version:push"
+echo ""
+echo "This will:"
+echo "  1. Push F-Droid submodule changes"
+echo "  2. Push main repository changes and tags"
