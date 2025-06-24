@@ -226,13 +226,19 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       // Add tag if it exists
       final tagAppUsageTagId = row.read<String?>('tag_app_usage_tag_id');
       if (tagAppUsageTagId != null) {
-        appUsageMap[id]!.tags.add(AppUsageTagListItem(
-              id: tagAppUsageTagId,
-              appUsageId: id,
-              tagId: row.read<String>('tag_id'),
-              tagName: row.read<String>('tag_name'),
-              tagColor: row.read<String?>('tag_color'),
-            ));
+        final tagId = row.read<String?>('tag_id');
+        final tagName = row.read<String?>('tag_name');
+
+        // Only add the tag if we have valid tag data
+        if (tagId != null && tagName != null) {
+          appUsageMap[id]!.tags.add(AppUsageTagListItem(
+                id: tagAppUsageTagId,
+                appUsageId: id,
+                tagId: tagId,
+                tagName: tagName,
+                tagColor: row.read<String?>('tag_color'),
+              ));
+        }
       }
     }
 

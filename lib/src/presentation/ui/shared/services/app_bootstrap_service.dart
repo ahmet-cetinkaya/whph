@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/application_container.dart';
 import 'package:whph/src/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
+import 'package:whph/src/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
 import 'package:whph/src/core/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/src/core/domain/shared/constants/demo_config.dart';
 import 'package:whph/src/infrastructure/infrastructure_container.dart';
 import 'package:whph/src/infrastructure/persistence/persistence_container.dart';
 import 'package:whph/src/presentation/ui/features/notifications/services/reminder_service.dart';
@@ -64,6 +66,21 @@ class AppBootstrapService {
     // Initialize reminder service
     final reminderService = container.resolve<ReminderService>();
     await reminderService.initialize();
+
+    // Initialize demo data if demo mode is enabled
+    if (DemoConfig.isDemoModeEnabled) {
+      Logger.info('AppBootstrapService: Demo mode enabled - initializing demo data...');
+      try {
+        final demoDataService = container.resolve<IDemoDataService>();
+        await demoDataService.initializeDemoDataIfNeeded();
+        Logger.info('AppBootstrapService: Demo data initialization completed');
+      } catch (e) {
+        Logger.error('AppBootstrapService: Error initializing demo data: $e');
+        // Don't rethrow - demo data failures shouldn't prevent app startup
+      }
+    } else {
+      Logger.debug('AppBootstrapService: Demo mode disabled - skipping demo data initialization');
+    }
 
     Logger.debug('AppBootstrapService: Core services initialized successfully');
   }
