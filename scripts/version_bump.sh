@@ -83,6 +83,7 @@ sed -i "s/versionCode: .*/versionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
 sed -i "s/commit: .*/commit: v$NEW_VERSION/" "$FDROID_METADATA_FILE"
 sed -i "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
 sed -i "s/CurrentVersionCode: .*/CurrentVersionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
+sed -i "s/--build-name=.*/--build-name=$NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
 
 echo "Version bump completed successfully!"
 echo "Updated files:"
