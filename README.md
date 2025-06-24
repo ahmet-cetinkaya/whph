@@ -4,6 +4,10 @@
 
 WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time. It tracks application usage to enhance focus, allowing you to analyze your progress, celebrate achievements, and stay motivated.
 
+## ⏬ Installation
+
+Download the latest version of the app from the [releases page](https://github.com/ahmet-cetinkaya/whph/releases).
+
 ## 📱 Screenshots
 
 <p align="center">
@@ -18,17 +22,6 @@ WHPH is a comprehensive productivity app designed to help you manage tasks, deve
   <a href="docs/screenshots/mobile_09.png"><img src="docs/screenshots/mobile_09.png" alt="Mobile 09" width="220"/></a>
   <a href="docs/screenshots/mobile_10.png"><img src="docs/screenshots/mobile_10.png" alt="Mobile 10" width="220"/></a>
 </p>
-
-
-## ⚡ Getting Started
-
-### ⏬ Installation
-
-Download the latest version of the app from the [releases page](https://github.com/ahmet-cetinkaya/whph/releases).
-
-### 📖 Usage
-
-To use WHPH, simply install app, set up your tasks, habits, tags and start tracking your productivity and time. Explore the dashboard to monitor your productivity and celebrate your progress.
 
 ## 🤝 Contributing
 
