@@ -13,8 +13,10 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
-      with:
-        submodules: recursive
+
+    - name: Initialize acore submodule
+      run: |
+        git submodule update --init lib/corePackages/acore
 
     # Install dependencies
     - name: Set up Flutter
@@ -76,8 +78,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Initialize acore submodule
+        run: |
+          git submodule update --init lib/corePackages/acore
 
       - name: Get application version
         id: app_version
