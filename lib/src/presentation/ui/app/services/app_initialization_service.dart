@@ -50,35 +50,47 @@ class AppInitializationService {
         );
       }
     } catch (e) {
-      Logger.error('Error checking onboarding status: $e');
+      // If setting doesn't exist (first time), show onboarding
+      Logger.info('Onboarding setting not found, showing onboarding dialog');
+      await _showDialogWithDelay(
+        navigatorKey: navigatorKey,
+        delay: _dialogDelay,
+        dialogBuilder: () => const OnboardingDialog(),
+        isDismissible: false,
+      );
     }
   }
 
   /// Check and show support dialog if conditions are met
   Future<void> _checkAndShowSupportDialog(GlobalKey<NavigatorState> navigatorKey) async {
-    await Future.delayed(_dialogDelay, () {
-      final context = navigatorKey.currentContext;
-      if (context != null && context.mounted) {
-        _supportDialogService.checkAndShowSupportDialog(context);
-      }
-    });
+    try {
+      await Future.delayed(_dialogDelay, () async {
+        final context = navigatorKey.currentContext;
+        if (context != null && context.mounted) {
+          await _supportDialogService.checkAndShowSupportDialog(context);
+        }
+      });
+    } catch (e) {
+      Logger.error('Error checking support dialog: $e');
+    }
   }
 
   /// Check for app updates
   Future<void> _checkForUpdates(GlobalKey<NavigatorState> navigatorKey) async {
     if (_hasCheckedForUpdates) return;
 
-    await Future.delayed(_updateCheckDelay, () async {
-      final context = navigatorKey.currentContext;
-      if (context != null && context.mounted) {
-        try {
+    try {
+      await Future.delayed(_updateCheckDelay, () async {
+        final context = navigatorKey.currentContext;
+        if (context != null && context.mounted) {
           await _setupService.checkForUpdates(context);
           _hasCheckedForUpdates = true;
-        } catch (e) {
-          Logger.error('Error checking for updates: $e');
         }
-      }
-    });
+      });
+    } catch (e) {
+      Logger.error('Error checking for updates: $e');
+      _hasCheckedForUpdates = true; // Mark as checked even if failed to avoid repeated attempts
+    }
   }
 
   /// Helper method to show dialogs with consistent delay and error handling
