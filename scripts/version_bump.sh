@@ -78,7 +78,7 @@ sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
 # Update F-Droid metadata
 echo "Updating $FDROID_METADATA_FILE..."
-sed -i "s/versionName: .*/versionName: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
+sed -i "s/versionName: .*/versionName: $NEW_VERSION/" "$FDROID_METADATA_FILE"
 sed -i "s/versionCode: .*/versionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
 sed -i "s/commit: .*/commit: v$NEW_VERSION/" "$FDROID_METADATA_FILE"
 sed -i "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
@@ -90,7 +90,7 @@ echo "Updated files:"
 echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
 echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
 echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
-echo "  - $FDROID_METADATA_FILE (version: $NEW_VERSION+$NEW_BUILD, code: $NEW_BUILD)"
+echo "  - $FDROID_METADATA_FILE (versionName: $NEW_VERSION, versionCode: $NEW_BUILD)"
 echo ""
 
 # Git operations
