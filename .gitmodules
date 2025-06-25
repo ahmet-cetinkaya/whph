@@ -4,4 +4,4 @@
 [submodule "android/fdroid"]
 	path = android/fdroid
 	url = https://gitlab.com/ahmet-cetinkaya/fdroid-data.git
-	branch = whph.ahmetcetinkaya.me
+	branch = me.ahmetcetinkaya.whph
