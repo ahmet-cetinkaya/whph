@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'abstraction/base_setup_service.dart';
+import 'package:whph/src/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 
 class WindowsSetupService extends BaseSetupService {
   static const _updateScriptTemplate = '''

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/app.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/app_bootstrap_service.dart';

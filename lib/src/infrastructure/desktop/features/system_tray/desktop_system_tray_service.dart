@@ -5,7 +5,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tr
 import 'package:window_manager/window_manager.dart';
 import 'package:whph/src/core/domain/shared/constants/app_assets.dart';
 
-class SystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
+class DesktopSystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
   final List<TrayMenuItem> _menuItems = [];
   final WindowManager _windowManager = WindowManager.instance;
 

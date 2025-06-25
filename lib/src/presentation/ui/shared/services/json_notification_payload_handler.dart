@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
 /// Implementation of the notification payload handler that uses JSON payloads
 class JsonNotificationPayloadHandler implements INotificationPayloadHandler {

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:whph/src/infrastructure/features/setup/services/abstraction/base_setup_service.dart';
+import 'package:whph/src/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 class LinuxSetupService extends BaseSetupService {

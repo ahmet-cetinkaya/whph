@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
-import 'abstraction/base_setup_service.dart';
+import 'package:whph/src/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 
 class AndroidSetupService extends BaseSetupService {
   static final platform = MethodChannel(AndroidAppConstants.channels.appInstaller);

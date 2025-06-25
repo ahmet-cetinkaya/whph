@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
 /// Service responsible for handling notification payloads and platform channel communication
 class NotificationPayloadService {
