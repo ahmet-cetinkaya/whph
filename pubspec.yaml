@@ -1,18 +1,16 @@
 name: whph
 description: A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
 publish_to: "none"
-# Version format: major.minor.patch+build
-# Build versioning differs by platform:
-# - Android: versionName = version, versionCode = build
-# - iOS: CFBundleShortVersionString = version, CFBundleVersion = build
-# - Windows: product/file version components = version, build suffix = build
-#
-# Update /lib/src/core/domain/shared/constants/app_info.dart file too.
 version: 0.8.3+32
+
 environment:
   sdk: ^3.5.3
-# https://pub.dev/packages/rps: dart pub global activate rps
+
 scripts:
+  # This section defines custom commands you can run using the rps package.
+  # To install rps globally: `dart pub global activate rps`
+  # To run commands: `rps <command>`
+  # For example, to run the `clean` command: `rps clean`
   clean: flutter clean && rm -rf ~/.pub-cache/hosted/pub.dev/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
   format: dart format . -l 120
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && rps format
@@ -26,6 +24,7 @@ scripts:
   test: flutter test
   test:ci: act -j build
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test:ci:fdroid: bash scripts/test_ci_fdroid.sh
   test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
   test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
   run:demo: flutter run --dart-define=DEMO_MODE=true
@@ -33,21 +32,15 @@ scripts:
   version:minor: bash scripts/version_bump.sh minor
   version:patch: bash scripts/version_bump.sh patch
   version:push: cd android/fdroid && git push && cd ../.. && git push && git push --tags
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
+
 dependencies:
   flutter:
     sdk: flutter
   test: ^1.25.8
-  
-  # Core package
+
+  # Core Packages
   acore:
     path: lib/corePackages/acore
-  
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1
@@ -100,23 +93,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
-  rps: ^0.7.0 # Run Pretty Scripts
-  drift_dev: ^2.21.2 # Drift code generation
-  icons_launcher: ^3.0.0 # Flutter app icon generator
-  yaml: ^3.1.3 # YAML parsing
+  rps: ^0.7.0
+  drift_dev: ^2.21.2
+  icons_launcher: ^3.0.0
+  yaml: ^3.1.3
+
 flutter:
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
-  # The assets section specifies the files that should be included in the
   assets:
     - lib/src/core/domain/shared/assets/images/
     - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.png
