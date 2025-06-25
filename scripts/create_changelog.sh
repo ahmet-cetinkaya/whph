@@ -45,8 +45,8 @@ for arg in "$@"; do
 done
 
 # Get current version code from pubspec.yaml
-CURRENT_VERSION_CODE=$(grep "version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d'+' -f2)
-CURRENT_VERSION=$(grep "version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d' ' -f2 | cut -d'+' -f1)
+CURRENT_VERSION_CODE=$(grep "^version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d'+' -f2)
+CURRENT_VERSION=$(grep "^version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d' ' -f2 | cut -d'+' -f1)
 
 VERSION_CODE=${VERSION_CODE:-$CURRENT_VERSION_CODE}
 
@@ -63,32 +63,29 @@ generate_changelog_from_commits() {
     
     cd "$PROJECT_ROOT"
     
-    if [ -z "$start_tag" ]; then
-        if [ -z "$end_tag" ]; then
-            # No start tag and no end tag provided, get the latest version tag
-            LATEST_TAG=$(git tag --sort=-version:refname | head -1)
-            
-            if [ -z "$LATEST_TAG" ]; then
-                echo "Warning: No version tags found. Using all commits from the beginning." >&2
-                COMMIT_RANGE="HEAD"
-            else
-                COMMIT_RANGE="$LATEST_TAG..HEAD"
-                echo "Generating changelog from commits since tag: $LATEST_TAG" >&2
-            fi
+    # If generating for current version (no parameters), use latest tag to HEAD
+    if [ -z "$start_tag" ] && [ -z "$end_tag" ]; then
+        # Get the latest version tag
+        LATEST_TAG=$(git tag --sort=-version:refname | head -1)
+        
+        if [ -z "$LATEST_TAG" ]; then
+            echo "Warning: No version tags found. Using all commits from the beginning." >&2
+            COMMIT_RANGE="HEAD"
         else
-            # No start tag but end tag provided - get all commits from beginning to end_tag
-            COMMIT_RANGE="$end_tag"
-            echo "Generating changelog from all commits up to tag: $end_tag" >&2
+            COMMIT_RANGE="$LATEST_TAG..HEAD"
+            echo "Generating changelog from commits since tag: $LATEST_TAG to current changes" >&2
         fi
+    elif [ -z "$start_tag" ]; then
+        # No start tag but end tag provided - get all commits from beginning to end_tag
+        COMMIT_RANGE="$end_tag"
+        echo "Generating changelog from all commits up to tag: $end_tag" >&2
+    elif [ -z "$end_tag" ]; then
+        # No end tag, use HEAD
+        COMMIT_RANGE="$start_tag..HEAD"
+        echo "Generating changelog from commits between $start_tag and HEAD" >&2
     else
-        if [ -z "$end_tag" ]; then
-            # No end tag, use HEAD
-            COMMIT_RANGE="$start_tag..HEAD"
-            echo "Generating changelog from commits between $start_tag and HEAD" >&2
-        else
-            COMMIT_RANGE="$start_tag..$end_tag"
-            echo "Generating changelog from commits between $start_tag and $end_tag" >&2
-        fi
+        COMMIT_RANGE="$start_tag..$end_tag"
+        echo "Generating changelog from commits between $start_tag and $end_tag" >&2
     fi
     
     # Get commit messages and categorize them
@@ -361,7 +358,8 @@ convert_to_fastlane_format() {
     local keep_a_changelog_content="$1"
     
     # Convert to fastlane format and limit to stay under 500 bytes
-    local fastlane_content=$(echo "$keep_a_changelog_content" | \
+    # Extract lines that start with "- " (bullet points), ignoring section headers
+    local fastlane_content=$(echo -e "$keep_a_changelog_content" | \
     grep "^- " | \
     sed 's/^- /• /' | \
     while IFS= read -r line; do
@@ -372,6 +370,12 @@ convert_to_fastlane_format() {
             echo "• $(capitalize_first_letter "$content")"
         fi
     done)
+    
+    # If no bullet points found, return empty (should not happen with fallback)
+    if [ -z "$fastlane_content" ]; then
+        echo ""
+        return 1
+    fi
     
     # Check if content exceeds 500 bytes and truncate if needed
     local content_size=$(echo -e "$fastlane_content" | wc -c)
@@ -502,11 +506,14 @@ get_version_from_code() {
     # Search through git tags for matching version code
     for tag in $(git tag --sort=-version:refname); do
         if git show "$tag:pubspec.yaml" >/dev/null 2>&1; then
-            local tag_version_code=$(git show "$tag:pubspec.yaml" | grep "version:" | head -1 | cut -d'+' -f2)
-            if [ "$tag_version_code" = "$version_code" ]; then
-                # Clean version number (remove 'v' prefix if present)
-                echo $(echo "$tag" | sed 's/^v//')
-                return 0
+            local version_line=$(git show "$tag:pubspec.yaml" | grep "^version:" | head -1)
+            if [[ "$version_line" =~ version:\ [0-9]+\.[0-9]+\.[0-9]+\+([0-9]+) ]]; then
+                local tag_version_code="${BASH_REMATCH[1]}"
+                if [ "$tag_version_code" = "$version_code" ]; then
+                    # Clean version number (remove 'v' prefix if present)
+                    echo $(echo "$tag" | sed 's/^v//')
+                    return 0
+                fi
             fi
         fi
     done
@@ -549,21 +556,44 @@ fi
 
 # Regular changelog generation (single version)
 if [ -z "$CHANGELOG_TEXT" ]; then
-    echo "No changelog text provided. Checking if version exists in CHANGELOG.md..."
+    echo "No changelog text provided. Generating changelog for current version from pubspec.yaml..."
     
-    # Get version number from version code
-    TARGET_VERSION=$(get_version_from_code "$VERSION_CODE")
-    
-    if [ $? -eq 0 ] && [ "$TARGET_VERSION" != "Unknown version for code $VERSION_CODE" ]; then
-        echo "Found existing version $TARGET_VERSION for code $VERSION_CODE"
+    # For the current version, we use pubspec.yaml version and generate changelog from last tag to HEAD
+    if [ "$VERSION_CODE" = "$CURRENT_VERSION_CODE" ]; then
+        echo "Generating changelog for current version $CURRENT_VERSION (code: $VERSION_CODE)..."
+        echo "Checking for changes since last git tag..."
         
-        # Try to extract from existing CHANGELOG.md
-        CHANGELOG_CONTENT=$(extract_changelog_from_main "$TARGET_VERSION")
+        CHANGELOG_CONTENT=$(generate_changelog_from_commits)
         
-        if [ $? -eq 0 ] && [ -n "$CHANGELOG_CONTENT" ]; then
-            echo "Using existing changelog content from CHANGELOG.md for version $TARGET_VERSION"
+        if [ -z "$CHANGELOG_CONTENT" ]; then
+            echo "No user-facing changes found since last version."
+            echo "All commits appear to be internal changes (CI, build, tests, etc.)"
+            CHANGELOG_CONTENT="### Changed\n- Internal improvements and maintenance"
+        fi
+    else
+        # For historical versions, try to find the corresponding git tag
+        TARGET_VERSION=$(get_version_from_code "$VERSION_CODE")
+        
+        if [ $? -eq 0 ] && [ "$TARGET_VERSION" != "Unknown version for code $VERSION_CODE" ]; then
+            echo "Found existing version $TARGET_VERSION for code $VERSION_CODE"
+            
+            # Try to extract from existing CHANGELOG.md
+            CHANGELOG_CONTENT=$(extract_changelog_from_main "$TARGET_VERSION")
+            
+            if [ $? -eq 0 ] && [ -n "$CHANGELOG_CONTENT" ]; then
+                echo "Using existing changelog content from CHANGELOG.md for version $TARGET_VERSION"
+            else
+                echo "No existing changelog found, generating from commit messages..."
+                CHANGELOG_CONTENT=$(generate_changelog_from_commits)
+                
+                if [ -z "$CHANGELOG_CONTENT" ]; then
+                    echo "No user-facing changes found since last version."
+                    echo "All commits appear to be internal changes (CI, build, tests, etc.)"
+                    CHANGELOG_CONTENT="### Changed\n- Internal improvements and maintenance"
+                fi
+            fi
         else
-            echo "No existing changelog found, generating from commit messages..."
+            echo "Generating from commit messages for version code $VERSION_CODE..."
             CHANGELOG_CONTENT=$(generate_changelog_from_commits)
             
             if [ -z "$CHANGELOG_CONTENT" ]; then
@@ -571,15 +601,6 @@ if [ -z "$CHANGELOG_TEXT" ]; then
                 echo "All commits appear to be internal changes (CI, build, tests, etc.)"
                 CHANGELOG_CONTENT="### Changed\n- Internal improvements and maintenance"
             fi
-        fi
-    else
-        echo "Generating from commit messages for version code $VERSION_CODE..."
-        CHANGELOG_CONTENT=$(generate_changelog_from_commits)
-        
-        if [ -z "$CHANGELOG_CONTENT" ]; then
-            echo "No user-facing changes found since last version."
-            echo "All commits appear to be internal changes (CI, build, tests, etc.)"
-            CHANGELOG_CONTENT="### Changed\n- Internal improvements and maintenance"
         fi
     fi
     
@@ -617,7 +638,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
     
     # Update main CHANGELOG.md only for current version
     if [ "$VERSION_CODE" = "$CURRENT_VERSION_CODE" ]; then
-        echo "Updating main CHANGELOG.md for current version..."
+        echo "Updating main CHANGELOG.md for current version $CURRENT_VERSION..."
         update_main_changelog "$CURRENT_VERSION" "$CHANGELOG_CONTENT"
         echo "✅ Updated $MAIN_CHANGELOG"
     else
