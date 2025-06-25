@@ -41,8 +41,8 @@ class DesktopNotificationService implements INotificationService {
       // For Windows
       windows: WindowsInitializationSettings(
         appName: AppInfo.name,
-        appUserModelId: WindowsAppConstants.config.appUserModelId,
-        guid: WindowsAppConstants.notificationGuid,
+        appUserModelId: WindowsAppConstants.notifications.appUserModelId,
+        guid: WindowsAppConstants.notifications.guid,
         iconPath: AppAssets.logoAdaptiveFgIco,
       ),
       // For macOS
