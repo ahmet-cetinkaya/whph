@@ -1,0 +1,5 @@
+• Add ignoreArchivedTagVisibility to queries
+• Remove unused deadline date calculation
+• Adjust padding for layout in layout
+• Update date filtering logic in today page
+• Add ignore directive for depend_on_referenced_packages

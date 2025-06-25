@@ -1,0 +1,2 @@
+• Enhance QuickTaskBottomSheet with tag selection and clear functionality
+• Add completed tasks section with expandable view in task and tag details pages

@@ -10,12 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.8.3] - 2025-06-25
 
 ### Changed
-- Version release
+- Various behind-the-scenes improvements and optimizations for a better experience
 
 ## [0.8.2] - 2025-06-24
 
 ### Changed
-- Version release
+- Various behind-the-scenes improvements and optimizations for a better experience
 
 ## [0.8.1] - 2025-06-24
 

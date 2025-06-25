@@ -1,0 +1,2 @@
+• Add Inno Setup for Windows installer creation
+• Remove default window size setting

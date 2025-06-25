@@ -1,0 +1,6 @@
+• Improve app bar title layout for better responsiveness
+• Add help modals for Task Details and Tasks Overview pages
+• Add help modals for Tag Details and Tags Overview pages
+• Add help modals for QR Code Scanner and Sync Devices pages
+• Add help modals for Habit Details and Habits Overview pages
+• Add help modal with features and tips for Today view

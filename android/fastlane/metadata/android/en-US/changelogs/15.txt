@@ -1,0 +1,6 @@
+• Enhance tag management and localization
+• Update localization for device sync messages
+• Enhance settings UI and functionality
+• Enhance localization and improve note actions
+• Enhance habit management features and UI
+• Enhance today page list options and error handling

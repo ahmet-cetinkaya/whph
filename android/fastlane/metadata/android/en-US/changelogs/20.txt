@@ -1,0 +1,6 @@
+• Enhance TaskCompleteButton with subtask progress
+• Standardize dialog sizes across components
+• Add ScheduleButton component for task scheduling
+• Add isDense option to search filter and components
+• Implement data migration service
+• Improve layout with Wrap widget

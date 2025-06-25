@@ -1,0 +1,6 @@
+• Update tag percentage threshold for display
+• Add confetti animation for task and habit completion
+• Enhance habit streak tracking and UI
+• Improve scheduling time handling
+• Improve reminder icon layout in HabitCard
+• Add tooltip to schedule button

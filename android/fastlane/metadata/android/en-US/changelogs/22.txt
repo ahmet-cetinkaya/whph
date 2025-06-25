@@ -1,0 +1,5 @@
+• Add export and import progress messages
+• Update app version in migration tests
+• Remove getInitialAppUsages method
+• Enhance getById methods to include deleted notes
+• Update dialog size to medium for better UX

@@ -1,0 +1,4 @@
+• Update tag color handling in app usage and tag details
+• Improve tag processing logic in app usage details
+• Change padding to center alignment
+• Change lock fields dialog size to medium
