@@ -1,0 +1,202 @@
+name: Release All Platforms
+
+on:
+  workflow_run:
+    workflows: 
+      - "Flutter CI - Android"
+      - "Flutter CI - Linux" 
+      - "Flutter CI - Windows"
+    types:
+      - completed
+
+jobs:
+  check-workflows:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}
+    outputs:
+      should-release: ${{ steps.check.outputs.should-release }}
+      tag-name: ${{ steps.check.outputs.tag-name }}
+      tag-version: ${{ steps.check.outputs.tag-version }}
+      app-version: ${{ steps.check.outputs.app-version }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Check if all workflows completed successfully
+        id: check
+        run: |
+          # Extract tag info from the head branch
+          HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          echo "Head branch: $HEAD_BRANCH"
+          
+          if [[ $HEAD_BRANCH =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            TAG_NAME="$HEAD_BRANCH"
+            TAG_VERSION="${TAG_NAME#v}"
+            echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+            echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+            
+            # Get app version from pubspec.yaml
+            APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
+            echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+            
+            # Check if all three workflows have completed successfully for this tag
+            WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+            ALL_SUCCESS=true
+            
+            for workflow in "${WORKFLOWS[@]}"; do
+              echo "Checking workflow: $workflow"
+              LATEST_RUN=$(gh run list --workflow="$workflow" --limit=5 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\") | .[0]")
+              
+              if [[ -n "$LATEST_RUN" ]]; then
+                STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
+                CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
+                
+                echo "  Status: $STATUS, Conclusion: $CONCLUSION"
+                
+                if [[ "$STATUS" != "completed" ]] || [[ "$CONCLUSION" != "success" ]]; then
+                  echo "  ❌ Workflow $workflow not ready"
+                  ALL_SUCCESS=false
+                  break
+                else
+                  echo "  ✅ Workflow $workflow completed successfully"
+                fi
+              else
+                echo "  ❌ No run found for workflow $workflow with tag $TAG_NAME"
+                ALL_SUCCESS=false
+                break
+              fi
+            done
+            
+            if [[ "$ALL_SUCCESS" == "true" ]]; then
+              echo "should-release=true" >> $GITHUB_OUTPUT
+              echo "🎉 All workflows completed successfully for tag $TAG_NAME"
+            else
+              echo "should-release=false" >> $GITHUB_OUTPUT
+              echo "⏳ Not all workflows completed successfully yet"
+            fi
+          else
+            echo "should-release=false" >> $GITHUB_OUTPUT
+            echo "❌ Not a tag push (branch: $HEAD_BRANCH)"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    needs: check-workflows
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-workflows.outputs.should-release == 'true' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Download all artifacts from completed workflows
+        run: |
+          TAG_NAME="${{ needs.check-workflows.outputs.tag-name }}"
+          APP_VERSION="${{ needs.check-workflows.outputs.app-version }}"
+          
+          echo "Downloading artifacts for tag: $TAG_NAME, app version: $APP_VERSION"
+          
+          # Download artifacts from each workflow
+          WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+          
+          for workflow in "${WORKFLOWS[@]}"; do
+            echo "Downloading artifacts from: $workflow"
+            
+            # Get the latest successful run for this tag  
+            RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json id,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .id" | head -1)
+            
+            if [[ -n "$RUN_ID" ]]; then
+              echo "  Found run ID: $RUN_ID"
+              gh run download "$RUN_ID" --dir artifacts/
+            else
+              echo "  ❌ No successful run found for $workflow with tag $TAG_NAME"
+              echo "  Available runs:"
+              gh run list --workflow="$workflow" --limit=5 --json id,headBranch,conclusion
+              exit 1
+            fi
+          done
+          
+          echo "Downloaded artifacts:"
+          find artifacts/ -type f -exec ls -la {} \;
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare release files
+        run: |
+          TAG_VERSION="${{ needs.check-workflows.outputs.tag-version }}"
+          APP_VERSION="${{ needs.check-workflows.outputs.app-version }}"
+          
+          echo "Preparing release files for version: $TAG_VERSION"
+          
+          # Prepare Android APK
+          if [[ -f "artifacts/whph-v$APP_VERSION-android/app-release.apk" ]]; then
+            mv "artifacts/whph-v$APP_VERSION-android/app-release.apk" "whph-v$TAG_VERSION-android.apk"
+            echo "✅ Android APK prepared"
+          else
+            echo "❌ Android APK not found"
+            exit 1
+          fi
+          
+          # Create Linux tar.gz archive
+          if [[ -d "artifacts/whph-v$APP_VERSION-linux" ]]; then
+            cd "artifacts/whph-v$APP_VERSION-linux"
+            tar -czf "../../whph-v$TAG_VERSION-linux.tar.gz" .
+            cd ../..
+            echo "✅ Linux tar.gz created"
+          else
+            echo "❌ Linux build directory not found"
+            exit 1
+          fi
+          
+          # Create Windows portable zip archive
+          if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
+            cd "artifacts/whph-v$APP_VERSION-windows-portable"
+            zip -r "../../whph-v$TAG_VERSION-windows-portable.zip" .
+            cd ../..
+            echo "✅ Windows portable zip created"
+          else
+            echo "❌ Windows portable build directory not found"
+            exit 1
+          fi
+          
+          # Prepare Windows installer
+          if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
+            cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
+            echo "✅ Windows installer prepared"
+          else
+            echo "❌ Windows installer not found"
+            exit 1
+          fi
+          
+          echo "📦 All release files prepared:"
+          ls -la whph-v$TAG_VERSION-*
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe
+          name: ${{ needs.check-workflows.outputs.tag-name }}
+          tag_name: ${{ needs.check-workflows.outputs.tag-name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            **📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes**
+
+            ### Downloads:
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk` - Android APK
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip` - Windows portable  
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe` - Windows installer
