@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'base_desktop_app_usage_service.dart';
+import 'package:whph/src/infrastructure/desktop/features/app_usages/abstractions/base_desktop_app_usage_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/infrastructure/linux/constants/linux_app_constants.dart';
 

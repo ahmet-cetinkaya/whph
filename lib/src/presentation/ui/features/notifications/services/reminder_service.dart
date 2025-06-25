@@ -8,7 +8,7 @@ import 'package:whph/src/core/application/features/tasks/queries/get_task_query.
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/habits/habit.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
-import 'package:whph/src/infrastructure/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/habits/pages/habits_page.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';

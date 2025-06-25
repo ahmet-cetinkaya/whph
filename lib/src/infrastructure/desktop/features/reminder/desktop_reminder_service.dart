@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
+import 'package:whph/src/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';

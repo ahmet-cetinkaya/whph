@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/src/infrastructure/features/wakelock/abstractions/i_wakelock_service.dart';
+import 'package:whph/src/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';

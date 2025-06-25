@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
-import 'package:whph/src/infrastructure/features/window/abstractions/i_window_manager.dart';
+import 'package:whph/src/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/src/presentation/api/api.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';

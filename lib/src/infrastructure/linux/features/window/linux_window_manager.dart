@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'window_manager.dart';
+import '../../../shared/features/window/window_manager.dart';
 
 /// Linux-specific implementation of WindowManagerInterface
 class LinuxWindowManager extends WindowManager {
