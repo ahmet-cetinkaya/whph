@@ -1,0 +1,6 @@
+• Add missing translations and improve structure
+• Improve pomodoro timer ui
+• Enhance update checking and downloading
+• Improve layout and responsiveness across components
+• Enhance layout with responsive design
+• Reduce default page size from 20 to 10

@@ -1,0 +1,1 @@
+• Improve error handling and logging during device sync process

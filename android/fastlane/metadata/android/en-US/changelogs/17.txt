@@ -1,0 +1,5 @@
+• Replace SnackBars with overlay notifications
+• Add loading notification with progress indicator
+• Use release signing config for build types
+• Enhance sync data preparation and logging
+• Update query parameter names for consistency
