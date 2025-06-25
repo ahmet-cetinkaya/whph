@@ -81,7 +81,6 @@ void registerInfrastructure(IContainer container) {
       return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
           appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
-
     if (Platform.isWindows) {
       return WindowsAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
           appUsageTagRepository, appUsageIgnoreRuleRepository);
