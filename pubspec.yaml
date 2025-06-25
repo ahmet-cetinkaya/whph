@@ -17,6 +17,7 @@ scripts:
   gen:icons: flutter pub run icons_launcher:create
   gen:migrate: flutter pub run drift_dev make-migrations && rps format
   gen:changelog: bash scripts/create_changelog.sh --auto
+  gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
   release:linux: flutter build linux --release
   release:windows: flutter build windows --release
   release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
