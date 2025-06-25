@@ -1,12 +1,19 @@
 <!-- ![Software overlay image](https://) -->
 
-# ![Software logo](https://github.com/user-attachments/assets/f58599ea-3313-49ec-a01c-31436340a2a3) WHPH - Work Hard Play Hard [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?&logo=buy-me-a-coffee&logoColor=black)](https://ahmetcetinkaya.me/donate) ![GitHub stars](https://img.shields.io/github/stars/ahmet-cetinkaya/whph?style=social) ![GitHub forks](https://img.shields.io/github/forks/ahmet-cetinkaya/whph?style=social) ![GitHub license](https://img.shields.io/github/license/ahmet-cetinkaya/whph) 
+# ![Software logo](https://github.com/user-attachments/assets/f58599ea-3313-49ec-a01c-31436340a2a3) WHPH - Work Hard Play Hard [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?&logo=buy-me-a-coffee&logoColor=black)](https://ahmetcetinkaya.me/donate) ![GitHub stars](https://img.shields.io/github/stars/ahmet-cetinkaya/whph?style=social) ![GitHub license](https://img.shields.io/github/license/ahmet-cetinkaya/whph) ![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph)
+
 
 WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time. It tracks application usage to enhance focus, allowing you to analyze your progress, celebrate achievements, and stay motivated.
+
+
 
 ## ⏬ Installation
 
 Download the latest version of the app from the [releases page](https://github.com/ahmet-cetinkaya/whph/releases).
+
+Available for Android, Windows, and Linux platforms.
+
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
 ## 📱 Screenshots
 
