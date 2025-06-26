@@ -37,9 +37,6 @@ jobs:
     - name: Install Flutter dependencies
       run: flutter pub get
 
-    - name: Fix Android Packages
-      run: flutter pub run rps fix:android
-
     - name: Setup Keystore
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/whph-release.keystore
