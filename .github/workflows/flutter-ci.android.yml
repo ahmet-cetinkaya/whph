@@ -58,8 +58,10 @@ jobs:
       id: app_version
       run: |
         APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
-        echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV      - name: Upload Android build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: whph-v${{ env.APP_VERSION }}-android
-          path: build/app/outputs/flutter-apk/app-release.apk
+        echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+
+    - name: Upload Android build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: whph-v${{ env.APP_VERSION }}-android
+        path: build/app/outputs/flutter-apk/app-release.apk
