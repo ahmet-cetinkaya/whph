@@ -109,7 +109,7 @@ jobs:
             echo "Downloading artifacts from: $workflow"
             
             # Get the latest successful run for this tag  
-            RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json id,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .id" | head -1)
+            RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .databaseId" | head -1)
             
             if [[ -n "$RUN_ID" ]]; then
               echo "  Found run ID: $RUN_ID"
@@ -117,7 +117,7 @@ jobs:
             else
               echo "  ❌ No successful run found for $workflow with tag $TAG_NAME"
               echo "  Available runs:"
-              gh run list --workflow="$workflow" --limit=5 --json id,headBranch,conclusion
+              gh run list --workflow="$workflow" --limit=5 --json databaseId,headBranch,conclusion
               exit 1
             fi
           done
