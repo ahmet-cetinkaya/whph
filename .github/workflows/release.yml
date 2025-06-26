@@ -47,7 +47,7 @@ jobs:
             
             for workflow in "${WORKFLOWS[@]}"; do
               echo "Checking workflow: $workflow"
-              LATEST_RUN=$(gh run list --workflow="$workflow" --limit=5 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\") | .[0]")
+              LATEST_RUN=$(gh run list --workflow="$workflow" --limit=5 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\")" | head -1)
               
               if [[ -n "$LATEST_RUN" ]]; then
                 STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
