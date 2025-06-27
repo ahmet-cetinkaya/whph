@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
@@ -29,7 +31,9 @@ class AppInitializationService {
   Future<void> initializeApp(GlobalKey<NavigatorState> navigatorKey) async {
     await _checkAndShowOnboarding(navigatorKey);
     await _checkAndShowSupportDialog(navigatorKey);
-    await _checkForUpdates(navigatorKey);
+    if (!Platform.isAndroid) {
+      await _checkForUpdates(navigatorKey);
+    }
   }
 
   /// Check and show onboarding dialog if not completed
