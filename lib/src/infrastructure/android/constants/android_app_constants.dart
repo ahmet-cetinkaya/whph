@@ -20,12 +20,13 @@ class _Channels {
   const _Channels();
 
   String get appInfo => "${AndroidAppConstants.packageName}/app_info";
-  String get backgroundService => "${AndroidAppConstants.packageName}/background_service";
+
   String get batteryOptimization => "${AndroidAppConstants.packageName}/battery_optimization";
   String get exactAlarm => "${AndroidAppConstants.packageName}/exact_alarm";
   String get notification => "${AndroidAppConstants.packageName}/notification";
   String get appUsageStats => "${AndroidAppConstants.packageName}/app_usage_stats";
   String get bootCompleted => "${AndroidAppConstants.packageName}/boot_completed";
+  String get workManager => "${AndroidAppConstants.packageName}/work_manager";
 }
 
 /// Notification channel constants

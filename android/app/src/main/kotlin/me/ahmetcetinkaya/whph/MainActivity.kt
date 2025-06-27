@@ -36,6 +36,9 @@ class MainActivity : FlutterActivity() {
     // Create a single instance of the ReminderTracker
     private val reminderTracker by lazy { ReminderTracker(context) }
 
+    // Handler for periodic pending collection checks
+    private val pendingCollectionHandler = Handler(Looper.getMainLooper())
+
     // Define constants for notification actions
     companion object {
         const val ACTION_NOTIFICATION_CLICK = "${Constants.PACKAGE_NAME}.NOTIFICATION_CLICK"
@@ -50,9 +53,12 @@ class MainActivity : FlutterActivity() {
         val startIntent = intent
         
         super.onCreate(savedInstanceState)
-        
+
         // Process the intent that started this activity
         processIntent(startIntent)
+
+        // Start periodic check for pending app usage collection
+        startPendingCollectionCheck()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -206,6 +212,45 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    /**
+     * Start periodic check for pending app usage collection from WorkManager
+     */
+    private fun startPendingCollectionCheck() {
+        val checkRunnable = object : Runnable {
+            override fun run() {
+                try {
+                    val sharedPreferences = getSharedPreferences("app_usage_worker", Context.MODE_PRIVATE)
+                    val shouldCollect = sharedPreferences.getBoolean("should_collect_usage", false)
+
+                    if (shouldCollect) {
+                        Log.d(TAG, "Pending app usage collection detected, triggering collection")
+
+                        // Clear the flag
+                        sharedPreferences.edit()
+                            .putBoolean("should_collect_usage", false)
+                            .apply()
+
+                        // Trigger collection via method channel to Flutter
+                        val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+                        if (binaryMessenger != null) {
+                            val channel = MethodChannel(binaryMessenger, Constants.Channels.APP_USAGE_STATS)
+                            channel.invokeMethod("triggerCollection", null)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error in pending collection check: ${e.message}", e)
+                }
+
+                // Schedule next check in 30 seconds
+                pendingCollectionHandler.postDelayed(this, 30000)
+            }
+        }
+
+        // Start the periodic check
+        pendingCollectionHandler.post(checkRunnable)
+        Log.d(TAG, "Started periodic pending collection check")
+    }
+
     // Configure Flutter engine and set up method channels
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -247,16 +292,7 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // Channel for managing background service
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.BACKGROUND_SERVICE).setMethodCallHandler { call, result ->
-            if (call.method == "startBackgroundService") {
-                val serviceIntent = Intent(this, AppUsageBackgroundService::class.java)
-                startService(serviceIntent)
-                result.success(null)
-            } else {
-                result.notImplemented()
-            }
-        }
+
 
 
 
@@ -765,6 +801,66 @@ class MainActivity : FlutterActivity() {
                     } catch (e: Exception) {
                         Log.e("AppUsageStats", "Error opening usage access settings: ${e.message}", e)
                         result.error("OPEN_SETTINGS_ERROR", e.message, null)
+                    }
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
+        // Channel for WorkManager app usage tracking
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.WORK_MANAGER).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "startPeriodicAppUsageWork" -> {
+                    try {
+                        // Get optional interval parameter, if not provided, use default (60 minutes)
+                        val intervalMinutes = call.argument<Int>("intervalMinutes")?.toLong()
+                        AppUsageWorker.schedulePeriodicWork(this, intervalMinutes)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("WorkManager", "Error starting periodic work: ${e.message}", e)
+                        result.error("START_WORK_ERROR", e.message, null)
+                    }
+                }
+                "stopPeriodicAppUsageWork" -> {
+                    try {
+                        AppUsageWorker.cancelPeriodicWork(this)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("WorkManager", "Error stopping periodic work: ${e.message}", e)
+                        result.error("STOP_WORK_ERROR", e.message, null)
+                    }
+                }
+                "isWorkScheduled" -> {
+                    try {
+                        val isScheduled = AppUsageWorker.isWorkScheduled(this)
+                        result.success(isScheduled)
+                    } catch (e: Exception) {
+                        Log.e("WorkManager", "Error checking work status: ${e.message}", e)
+                        result.error("CHECK_WORK_ERROR", e.message, null)
+                    }
+                }
+                "checkPendingCollection" -> {
+                    try {
+                        val sharedPreferences = getSharedPreferences("app_usage_worker", Context.MODE_PRIVATE)
+                        val shouldCollect = sharedPreferences.getBoolean("should_collect_usage", false)
+
+                        if (shouldCollect) {
+                            // Clear the flag
+                            sharedPreferences.edit()
+                                .putBoolean("should_collect_usage", false)
+                                .apply()
+
+                            // Trigger collection via method channel to Flutter
+                            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.APP_USAGE_STATS)
+                                .invokeMethod("triggerCollection", null)
+                        }
+
+                        result.success(shouldCollect)
+                    } catch (e: Exception) {
+                        Log.e("WorkManager", "Error checking pending collection: ${e.message}", e)
+                        result.error("CHECK_PENDING_ERROR", e.message, null)
                     }
                 }
                 else -> {
