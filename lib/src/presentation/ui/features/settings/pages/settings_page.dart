@@ -25,33 +25,37 @@ class SettingsPage extends StatelessWidget {
 
     return ResponsiveScaffoldLayout(
       title: translationService.translate(SettingsTranslationKeys.settingsTitle),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
+      builder: (context) => Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: Column(
-            spacing: 8.0,
-            children: [
-              // Startup
-              if (StartupSettings.compatiblePlatform) const StartupSettings(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8.0,
+              children: [
+                // Startup
+                if (StartupSettings.compatiblePlatform) const StartupSettings(),
 
-              // Notification
-              const NotificationSettings(),
+                // Notification
+                const NotificationSettings(),
 
-              // Permissions
-              if (Platform.isAndroid) PermissionSettings(),
+                // Permissions
+                if (Platform.isAndroid) PermissionSettings(),
 
-              // Language
-              LanguageSettings(),
+                // Language
+                LanguageSettings(),
 
-              // Sync Devices
-              SyncDevicesTile(),
+                // Sync Devices
+                SyncDevicesTile(),
 
-              // Import/Export Settings
-              const ImportExportSettings(),
+                // Import/Export Settings
+                const ImportExportSettings(),
 
-              // About
-              AboutTile(),
-            ],
+                // About
+                AboutTile(),
+              ],
+            ),
           ),
         ),
       ),
