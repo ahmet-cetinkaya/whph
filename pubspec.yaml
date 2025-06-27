@@ -23,6 +23,7 @@ scripts:
   release:windows: flutter build windows --release
   release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
   release:android: flutter build apk --release
+  release:android:bundle: flutter build appbundle --release
   test: flutter test
   test:ci: act -j build
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
