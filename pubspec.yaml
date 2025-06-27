@@ -107,12 +107,6 @@ flutter:
   uses-material-design: true
   assets:
     - lib/src/core/domain/shared/assets/images/
-    - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.png
-    - lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.ico
-    - lib/src/core/domain/shared/assets/images/whph_logo_fg_pause.png
-    - lib/src/core/domain/shared/assets/images/whph_logo_fg_pause.ico
-    - lib/src/core/domain/shared/assets/images/whph_logo_fg_play.png
-    - lib/src/core/domain/shared/assets/images/whph_logo_fg_play.ico
     - lib/src/presentation/ui/shared/assets/sounds/
     - lib/src/presentation/ui/shared/assets/locales/
     - lib/src/presentation/ui/features/about/assets/locales/
@@ -125,3 +119,4 @@ flutter:
     - lib/src/presentation/ui/features/tasks/assets/locales/
     - lib/src/presentation/ui/features/tasks/assets/sounds/
     - lib/src/presentation/ui/features/notes/assets/locales/
+    - linux/focus_window.sh
