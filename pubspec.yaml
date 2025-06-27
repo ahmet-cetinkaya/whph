@@ -12,7 +12,7 @@ scripts:
   # To install rps globally: `dart pub global activate rps`
   # To run commands: `rps <command>`
   # For example, to run the `clean` command: `rps clean`
-  clean: flutter clean && rm -rf ~/.pub-cache/hosted/pub.dev/* && rm -rf .dart_tool && flutter pub cache repair && flutter pub get
+  clean: bash scripts/clean.sh
   format: dart format . -l 120
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && rps format
   gen:icons: flutter pub run icons_launcher:create
