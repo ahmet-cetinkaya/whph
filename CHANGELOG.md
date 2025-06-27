@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2025-06-27
+
+### Added
+- Improved background tracking of app usage on Android devices for a smoother experience
+
 ## [0.8.7] - 2025-06-27
 
 ### Added
