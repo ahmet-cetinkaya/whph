@@ -50,5 +50,8 @@ void main() async {
   }, (error, stack) {
     // Global error handling for uncaught exceptions
     GlobalErrorHandlerService.handleZoneError(error, stack, navigatorKey);
+
+    // Log the error to the console
+    debugPrint('Uncaught error on app startup: \n$error\n$stack');
   });
 }
