@@ -13,17 +13,14 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 
 class SupportDialogService implements ISupportDialogService {
   final Mediator _mediator;
-  static const int _usageThresholdHours = 5;
+  static const int _firstUsageThresholdHours = 5;
+  static const int _repeatUsageThresholdHours = 24;
 
   SupportDialogService(this._mediator);
 
   @override
   Future<void> checkAndShowSupportDialog(BuildContext context) async {
-    // Check if dialog has been shown before
-    final hasShownBefore = await _hasShownSupportDialog();
-    if (hasShownBefore) return;
-
-    // Search for our app process
+    // Get total app usage
     final appUsageResponse = await _mediator.send<GetListByTopAppUsagesQuery, GetListByTopAppUsagesQueryResponse>(
       GetListByTopAppUsagesQuery(
         pageIndex: 0,
@@ -31,10 +28,7 @@ class SupportDialogService implements ISupportDialogService {
         searchByProcessName: "whph",
       ),
     );
-
     if (appUsageResponse.items.isEmpty) return;
-
-    // Get app usage statistics
     final appUsage = appUsageResponse.items.first;
     final statistics = await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(
       GetAppUsageStatisticsQuery(
@@ -43,21 +37,39 @@ class SupportDialogService implements ISupportDialogService {
         endDate: DateTime.now().toUtc(),
       ),
     );
-
-    // Convert total duration from seconds to hours
     final totalHours = statistics.totalDuration / 3600;
-    if (totalHours < _usageThresholdHours) return;
 
-    // Show the dialog
+    // Check if dialog has been shown before
+    final hasShownBefore = await _hasShownSupportDialog();
+    if (!hasShownBefore) {
+      if (totalHours < _firstUsageThresholdHours) return;
+      // Show dialog for the first time
+      if (context.mounted) {
+        await ResponsiveDialogHelper.showResponsiveDialog(
+          context: context,
+          child: SupportDialog(),
+          size: DialogSize.min,
+        );
+        await _setSupportDialogShown();
+        await _setSupportDialogLastShownUsage(statistics.totalDuration);
+      }
+      return;
+    }
+
+    // Check if enough time has passed since last shown
+    final lastShownUsage = await _getSupportDialogLastShownUsage();
+    if (lastShownUsage == null) return;
+    final hoursSinceLastShown = (statistics.totalDuration - lastShownUsage) / 3600;
+    if (hoursSinceLastShown < _repeatUsageThresholdHours) return;
+
+    // Show dialog again after each 24h usage
     if (context.mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
         child: SupportDialog(),
         size: DialogSize.min,
       );
-
-      // Mark as shown
-      await _markSupportDialogAsShown();
+      await _setSupportDialogLastShownUsage(statistics.totalDuration);
     }
   }
 
@@ -72,11 +84,31 @@ class SupportDialogService implements ISupportDialogService {
     }
   }
 
-  Future<void> _markSupportDialogAsShown() async {
+  Future<void> _setSupportDialogShown() async {
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.supportDialogShown,
       value: 'true',
       valueType: SettingValueType.bool,
+    ));
+  }
+
+  Future<num?> _getSupportDialogLastShownUsage() async {
+    try {
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        GetSettingQuery(key: SettingKeys.supportDialogLastShownUsage),
+      );
+      final value = response.getValue<String>();
+      return num.tryParse(value);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _setSupportDialogLastShownUsage(num usageSeconds) async {
+    await _mediator.send(SaveSettingCommand(
+      key: SettingKeys.supportDialogLastShownUsage,
+      value: usageSeconds.toString(),
+      valueType: SettingValueType.string,
     ));
   }
 }
