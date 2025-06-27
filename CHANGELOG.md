@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.7] - 2025-06-27
+
+### Added
+- Remove APK updating logic and related permissions
+
 ## [0.8.6] - 2025-06-27
 
 ### Added
