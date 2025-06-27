@@ -1,0 +1,1 @@
+• Remove APK updating logic and related permissions
