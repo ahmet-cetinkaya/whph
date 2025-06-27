@@ -1,0 +1,3 @@
+• Enhance support dialog logic and settings
+• Improve error logging on app startup
+• Improve layout structure in settings page

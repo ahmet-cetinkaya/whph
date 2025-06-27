@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.6] - 2025-06-27
+
+### Added
+- Enhance support dialog logic and settings
+- Improve error logging on app startup
+
+### Fixed
+- Improve layout structure in settings page
+
 ## [0.8.5] - 2025-06-26
 
 ### Changed
