@@ -11,7 +11,6 @@ import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// Service responsible for handling app initialization tasks
 class AppInitializationService {
-  static const Duration _dialogDelay = Duration(milliseconds: 500);
   static const Duration _updateCheckDelay = Duration(milliseconds: 1000);
 
   final Mediator _mediator;
@@ -42,34 +41,38 @@ class AppInitializationService {
 
       final hasCompletedOnboarding = setting.value == 'true';
       if (!hasCompletedOnboarding) {
-        await _showDialogWithDelay(
-          navigatorKey: navigatorKey,
-          delay: _dialogDelay,
-          dialogBuilder: () => const OnboardingDialog(),
-          isDismissible: false,
-        );
+        final context = navigatorKey.currentContext;
+        if (context != null && context.mounted) {
+          ResponsiveDialogHelper.showResponsiveDialog(
+            context: context,
+            child: const OnboardingDialog(),
+            isDismissible: false,
+            size: DialogSize.min,
+          );
+        }
       }
     } catch (e) {
       // If setting doesn't exist (first time), show onboarding
       Logger.info('Onboarding setting not found, showing onboarding dialog');
-      await _showDialogWithDelay(
-        navigatorKey: navigatorKey,
-        delay: _dialogDelay,
-        dialogBuilder: () => const OnboardingDialog(),
-        isDismissible: false,
-      );
+      final context = navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        ResponsiveDialogHelper.showResponsiveDialog(
+          context: context,
+          child: const OnboardingDialog(),
+          isDismissible: false,
+          size: DialogSize.min,
+        );
+      }
     }
   }
 
   /// Check and show support dialog if conditions are met
   Future<void> _checkAndShowSupportDialog(GlobalKey<NavigatorState> navigatorKey) async {
     try {
-      await Future.delayed(_dialogDelay, () async {
-        final context = navigatorKey.currentContext;
-        if (context != null && context.mounted) {
-          await _supportDialogService.checkAndShowSupportDialog(context);
-        }
-      });
+      final context = navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        await _supportDialogService.checkAndShowSupportDialog(context);
+      }
     } catch (e) {
       Logger.error('Error checking support dialog: $e');
     }
@@ -91,25 +94,5 @@ class AppInitializationService {
       Logger.error('Error checking for updates: $e');
       _hasCheckedForUpdates = true; // Mark as checked even if failed to avoid repeated attempts
     }
-  }
-
-  /// Helper method to show dialogs with consistent delay and error handling
-  Future<void> _showDialogWithDelay({
-    required GlobalKey<NavigatorState> navigatorKey,
-    required Duration delay,
-    required Widget Function() dialogBuilder,
-    bool isDismissible = true,
-  }) async {
-    await Future.delayed(delay, () {
-      final context = navigatorKey.currentContext;
-      if (context != null && context.mounted) {
-        ResponsiveDialogHelper.showResponsiveDialog(
-          context: context,
-          child: dialogBuilder(),
-          isDismissible: isDismissible,
-          size: DialogSize.min,
-        );
-      }
-    });
   }
 }
