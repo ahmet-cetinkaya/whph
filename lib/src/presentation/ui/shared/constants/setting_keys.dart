@@ -29,6 +29,9 @@ class SettingKeys {
   static const String todayPageListOptionsSettings = 'TODAY_PAGE_LIST_OPTIONS_SETTINGS';
   static const String appUsagesFilterSettings = 'APP_USAGES_FILTER_SETTINGS';
 
+  // App Usage Collection (Only for Android)
+  static const String appUsageLastCollectionTimestamp = 'APP_USAGE_LAST_COLLECTION_TIMESTAMP';
+
   // Support State
   static const String supportDialogShown = 'SUPPORT_DIALOG_SHOWN';
   static const String supportDialogLastShownUsage = 'SUPPORT_DIALOG_LAST_SHOWN_USAGE';

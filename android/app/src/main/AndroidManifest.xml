@@ -10,12 +10,11 @@
     <!-- For sync device QR code scanning -->
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- For reminders -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- For wake lock on pomodoro timer -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- For reminders -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -80,11 +79,7 @@
         <meta-data
             android:name="io.flutter.app.android.enableImpeller"
             android:value="false" />
-        <service
-            android:name=".AppUsageBackgroundService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
+
 
         <!-- Receiver for handling notifications and alarms -->
         <receiver

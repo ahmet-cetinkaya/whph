@@ -10,12 +10,13 @@ object Constants {
     // Method Channel Names
     object Channels {
         const val APP_INFO = "$PACKAGE_NAME/app_info"
-        const val BACKGROUND_SERVICE = "$PACKAGE_NAME/background_service"
+
         const val BATTERY_OPTIMIZATION = "$PACKAGE_NAME/battery_optimization"
         const val EXACT_ALARM = "$PACKAGE_NAME/exact_alarm"
         const val NOTIFICATION = "$PACKAGE_NAME/notification"
         const val APP_USAGE_STATS = "$PACKAGE_NAME/app_usage_stats"
         const val BOOT_COMPLETED = "$PACKAGE_NAME/boot_completed"
+        const val WORK_MANAGER = "$PACKAGE_NAME/work_manager"
     }
 
     // Notification Channels
@@ -28,9 +29,7 @@ object Constants {
         const val HABIT_CHANNEL_ID = "whph_habit_reminders"
         const val HABIT_CHANNEL_NAME = "Habit Reminders"
         
-        // Background Service
-        const val SERVICE_CHANNEL_ID = "whph_background_service"
-        const val SERVICE_CHANNEL_NAME = "System Tray"
+
     }
 
     // Intent Actions

@@ -4,11 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/src/core/domain/features/settings/setting.dart';
+import 'package:whph/src/core/application/shared/utils/key_helper.dart' as app_key_helper;
+import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
-  static final platform = MethodChannel(AndroidAppConstants.channels.backgroundService);
+
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
+  static final workManagerChannel = MethodChannel(AndroidAppConstants.channels.workManager);
   final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
+  final ISettingRepository _settingRepository;
 
   AndroidAppUsageService(
     super.appUsageRepository,
@@ -16,6 +22,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageIgnoreRuleRepository,
+    this._settingRepository,
   );
 
   @override
@@ -26,62 +33,45 @@ class AndroidAppUsageService extends BaseAppUsageService {
       return;
     }
 
-    await _startBackgroundService();
-
     // Initial fetch for the current partial hour to capture immediate usage.
     await _fetchAndSaveCurrentHourUsage();
 
-    // Schedule the next fetch near the end of the current hour, and subsequent hours.
-    _scheduleNextEndOfHourFetch();
+    // Start WorkManager periodic work for background collection
+    await _startWorkManagerTracking();
+
+    // Set up method channel listener for WorkManager triggers
+    _setupWorkManagerListener();
   }
 
-  void _scheduleNextEndOfHourFetch() {
-    periodicTimer?.cancel(); // Cancel any existing timer.
-
-    DateTime now = DateTime.now();
-    // Target time for fetching: 59 minutes and 30 seconds past the hour.
-    // This allows capturing most of the hour's data before it ends.
-    DateTime targetFetchTimeThisHour = DateTime(now.year, now.month, now.day, now.hour, 59, 30);
-
-    Duration delay;
-    if (now.isBefore(targetFetchTimeThisHour)) {
-      // If current time is before HH:59:30, schedule for HH:59:30 of current hour.
-      delay = targetFetchTimeThisHour.difference(now);
-    } else {
-      // If current time is already past HH:59:30 (or exactly at/after it),
-      // schedule for HH:59:30 of the *next* hour.
-      DateTime targetFetchTimeNextHour = DateTime(now.year, now.month, now.day, now.hour + 1, 59, 30);
-      delay = targetFetchTimeNextHour.difference(now);
+  /// Starts WorkManager periodic work for background app usage collection
+  Future<void> _startWorkManagerTracking() async {
+    try {
+      await workManagerChannel.invokeMethod('startPeriodicAppUsageWork');
+      // Default interval: 60 minutes (1 hour)
+      Logger.info('WorkManager periodic app usage tracking started');
+    } catch (e) {
+      Logger.error('Failed to start WorkManager tracking: $e');
     }
+  }
 
-    // Ensure the delay is not negative or too short (e.g., if calculations took time).
-    // Schedule at least a few seconds into the future.
-    if (delay.isNegative || delay.inSeconds < 5) {
-      delay = const Duration(seconds: 5);
-      Logger.info('Calculated delay for end-of-hour fetch was too short or negative. Scheduling in 5 seconds.');
-    }
-
-    periodicTimer = Timer(delay, () async {
-      final permissionCheck = await checkUsageStatsPermission();
-      if (permissionCheck) {
+  /// Sets up method channel listener for WorkManager triggers
+  void _setupWorkManagerListener() {
+    appUsageStatsChannel.setMethodCallHandler((call) async {
+      if (call.method == 'triggerCollection') {
+        Logger.info('WorkManager triggered app usage collection');
         await _fetchAndSaveCurrentHourUsage();
-        _scheduleNextEndOfHourFetch(); // Reschedule for the end of the next hour.
-      } else {
-        Logger.warning('Permission lost. Pausing app usage tracking. Timer will not reschedule.');
-        // Do not reschedule if permission is lost.
       }
     });
-    DateTime scheduledRunTime = now.add(delay);
-    Logger.info('Next app usage fetch scheduled to run around: $scheduledRunTime');
   }
 
-  /// Fetches app usage for the current calendar hour up to DateTime.now()
-  /// and saves the records. This is called initially and by the recurring timer.
+  /// Fetches app usage from the last collection timestamp to now and saves the records.
+  /// This ensures no data gaps between collections and saves separate records for each hour.
   Future<void> _fetchAndSaveCurrentHourUsage() async {
     // Permission should have been checked by the caller (startTracking or timer callback).
     try {
       DateTime now = DateTime.now();
-      DateTime startDate = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0); // Start of current hour.
+      DateTime startDate = await _getLastCollectionTimestamp() ??
+          DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0); // Fallback to start of current hour
       DateTime endDate = now; // Up to the current moment.
 
       // Ensure startDate is before endDate to form a valid interval.
@@ -91,37 +81,102 @@ class AndroidAppUsageService extends BaseAppUsageService {
       }
 
       Logger.info('Fetching app usages from $startDate to $endDate');
-      List<app_usage_package.AppUsageInfo> usageStats = await _appUsage.getAppUsage(startDate, endDate);
 
-      if (usageStats.isEmpty) {
-        Logger.info('No app usage stats found for the period $startDate - $endDate.');
-      }
+      // Process each hour separately to ensure proper hourly records
+      await _processUsageByHours(startDate, endDate);
 
-      for (app_usage_package.AppUsageInfo usage in usageStats) {
-        if (usage.usage.inSeconds > 0) {
-          // Assuming saveTimeRecord saves for the hour of DateTime.now().
-          // Since 'now.hour' (used by saveTimeRecord implicitly) matches 'startDate.hour',
-          // the data is attributed to the correct hour. 'overwrite: true' updates the record.
-          await saveTimeRecord(usage.appName, usage.usage.inSeconds, overwrite: true);
-        } else if (usage.usage.inSeconds < 0) {
-          Logger.warning(
-              'Negative app usage duration for ${usage.appName} (${usage.usage.inSeconds}s). Skipping record.');
-        }
-        // Usage with 0 seconds is implicitly ignored.
-      }
+      // Update the last collection timestamp to prevent data gaps
+      await _saveLastCollectionTimestamp(endDate);
+      Logger.info('Last collection timestamp updated to: $endDate');
     } catch (e) {
       // Log error with current time context as 'now' is local to this call.
       Logger.error('Error in _fetchAndSaveCurrentHourUsage around ${DateTime.now()}: $e');
     }
   }
 
+  /// Processes app usage data by breaking it down into hourly segments
+  /// and saving separate records for each hour.
+  Future<void> _processUsageByHours(DateTime startDate, DateTime endDate) async {
+    // Get all hours that need to be processed
+    List<DateTime> hourlySegments = _generateHourlySegments(startDate, endDate);
+
+    int totalRecordsSaved = 0;
+
+    for (int i = 0; i < hourlySegments.length; i++) {
+      DateTime segmentStart = hourlySegments[i];
+      DateTime segmentEnd = i < hourlySegments.length - 1
+          ? hourlySegments[i + 1]
+          : endDate;
+
+      Logger.info('Processing hour segment: $segmentStart to $segmentEnd');
+
+      try {
+        List<app_usage_package.AppUsageInfo> usageStats = await _appUsage.getAppUsage(segmentStart, segmentEnd);
+
+        if (usageStats.isEmpty) {
+          Logger.info('No app usage stats found for hour segment $segmentStart - $segmentEnd.');
+          continue;
+        }
+
+        for (app_usage_package.AppUsageInfo usage in usageStats) {
+          if (usage.usage.inSeconds > 0) {
+            // Save record with the specific hour timestamp
+            await saveTimeRecord(
+              usage.appName,
+              usage.usage.inSeconds,
+              overwrite: true,
+              customDateTime: segmentStart, // Use the hour start as the record timestamp
+            );
+            totalRecordsSaved++;
+          } else if (usage.usage.inSeconds < 0) {
+            Logger.warning(
+                'Negative app usage duration for ${usage.appName} (${usage.usage.inSeconds}s) in hour $segmentStart. Skipping record.');
+          }
+          // Usage with 0 seconds is implicitly ignored.
+        }
+
+        Logger.info("${usageStats.length} app usage records processed for hour $segmentStart");
+      } catch (e) {
+        Logger.error('Error processing hour segment $segmentStart to $segmentEnd: $e');
+      }
+    }
+
+    Logger.info("Total $totalRecordsSaved app usage records saved across ${hourlySegments.length} hour segments.");
+  }
+
+  /// Generates a list of hourly segment start times between startDate and endDate
+  List<DateTime> _generateHourlySegments(DateTime startDate, DateTime endDate) {
+    List<DateTime> segments = [];
+
+    // Start from the beginning of the hour containing startDate
+    DateTime currentHour = DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0, 0, 0, 0);
+
+    while (currentHour.isBefore(endDate)) {
+      segments.add(currentHour);
+      currentHour = currentHour.add(const Duration(hours: 1));
+    }
+
+    // If segments is empty, add at least the start hour
+    if (segments.isEmpty) {
+      segments.add(DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0, 0, 0, 0));
+    }
+
+    Logger.info('Generated ${segments.length} hourly segments from $startDate to $endDate');
+    return segments;
+  }
+
   @override
   Future<void> stopTracking() async {
+    try {
+      await workManagerChannel.invokeMethod('stopPeriodicAppUsageWork');
+      Logger.info('WorkManager app usage tracking stopped');
+    } catch (e) {
+      Logger.error('Failed to stop WorkManager tracking: $e');
+    }
+
     periodicTimer?.cancel();
-    periodicTimer = null; // Clear the timer instance.
-    Logger.info('Android app usage tracking stopped and timer cancelled.');
-    // If BaseAppUsageService has its own stopTracking, consider calling super.stopTracking().
-    // e.g., await super.stopTracking();
+    periodicTimer = null; // Clear any remaining timer instance.
+    Logger.info('Android app usage tracking stopped');
   }
 
   /// Checks if the app has permission to access usage statistics
@@ -162,11 +217,45 @@ class AndroidAppUsageService extends BaseAppUsageService {
     }
   }
 
-  Future<void> _startBackgroundService() async {
+  /// Gets the last collection timestamp from settings
+  /// Returns null if no previous collection timestamp exists
+  Future<DateTime?> _getLastCollectionTimestamp() async {
     try {
-      await platform.invokeMethod('startBackgroundService');
+      final setting = await _settingRepository.getByKey(SettingKeys.appUsageLastCollectionTimestamp);
+      if (setting != null) {
+        final timestamp = int.tryParse(setting.value);
+        if (timestamp != null) {
+          return DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
+        }
+      }
     } catch (e) {
-      Logger.error('Failed to start background service: $e');
+      Logger.error('Error getting last collection timestamp: $e');
+    }
+    return null;
+  }
+
+  /// Saves the last collection timestamp to settings
+  Future<void> _saveLastCollectionTimestamp(DateTime timestamp) async {
+    try {
+      final timestampValue = timestamp.toUtc().millisecondsSinceEpoch.toString();
+
+      final existingSetting = await _settingRepository.getByKey(SettingKeys.appUsageLastCollectionTimestamp);
+      if (existingSetting != null) {
+        existingSetting.value = timestampValue;
+        existingSetting.modifiedDate = DateTime.now().toUtc();
+        await _settingRepository.update(existingSetting);
+      } else {
+        final newSetting = Setting(
+          id: app_key_helper.KeyHelper.generateStringId(),
+          key: SettingKeys.appUsageLastCollectionTimestamp,
+          value: timestampValue,
+          valueType: SettingValueType.string,
+          createdDate: DateTime.now().toUtc(),
+        );
+        await _settingRepository.add(newSetting);
+      }
+    } catch (e) {
+      Logger.error('Error saving last collection timestamp: $e');
     }
   }
 }
