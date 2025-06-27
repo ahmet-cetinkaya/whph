@@ -21,7 +21,6 @@ class _Channels {
 
   String get appInfo => "${AndroidAppConstants.packageName}/app_info";
   String get backgroundService => "${AndroidAppConstants.packageName}/background_service";
-  String get appInstaller => "${AndroidAppConstants.packageName}/app_installer";
   String get batteryOptimization => "${AndroidAppConstants.packageName}/battery_optimization";
   String get exactAlarm => "${AndroidAppConstants.packageName}/exact_alarm";
   String get notification => "${AndroidAppConstants.packageName}/notification";

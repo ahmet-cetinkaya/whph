@@ -11,7 +11,6 @@ object Constants {
     object Channels {
         const val APP_INFO = "$PACKAGE_NAME/app_info"
         const val BACKGROUND_SERVICE = "$PACKAGE_NAME/background_service"
-        const val APP_INSTALLER = "$PACKAGE_NAME/app_installer"
         const val BATTERY_OPTIMIZATION = "$PACKAGE_NAME/battery_optimization"
         const val EXACT_ALARM = "$PACKAGE_NAME/exact_alarm"
         const val NOTIFICATION = "$PACKAGE_NAME/notification"

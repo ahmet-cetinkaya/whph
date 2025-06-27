@@ -19,7 +19,7 @@ import android.app.AlarmManager
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.FileProvider
+
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -258,37 +258,7 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // Channel for handling APK installation
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.APP_INSTALLER).setMethodCallHandler { call, result ->
-            if (call.method == "installApk") {
-                try {
-                    val filePath = call.argument<String>("filePath")
-                    if (filePath == null) {
-                        result.error("INVALID_PATH", "File path is null", null)
-                        return@setMethodCallHandler
-                    }
 
-                    val file = File(filePath)
-                    val uri = FileProvider.getUriForFile(
-                        context,
-                        "${Constants.PACKAGE_NAME}.fileprovider",
-                        file
-                    )
-
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        setDataAndType(uri, "application/vnd.android.package-archive")
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    startActivity(intent)
-                    result.success(null)
-                } catch (e: Exception) {
-                    result.error("INSTALL_ERROR", e.message, null)
-                }
-            } else {
-                result.notImplemented()
-            }
-        }
 
         // Channel for checking battery optimization status
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.BATTERY_OPTIMIZATION).setMethodCallHandler { call, result ->
