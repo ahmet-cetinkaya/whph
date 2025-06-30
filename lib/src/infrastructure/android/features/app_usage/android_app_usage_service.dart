@@ -96,52 +96,117 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
   /// Processes app usage data by breaking it down into hourly segments
   /// and saving separate records for each hour.
+  ///
+  /// IMPORTANT: This method calls getAppUsage() once for the entire period to avoid
+  /// data duplication, then calculates incremental usage for each hour.
   Future<void> _processUsageByHours(DateTime startDate, DateTime endDate) async {
-    // Get all hours that need to be processed
-    List<DateTime> hourlySegments = _generateHourlySegments(startDate, endDate);
+    try {
+      // Get usage data for the entire period ONCE to avoid duplication
+      Logger.info('Fetching app usage data for entire period: $startDate to $endDate');
+      List<app_usage_package.AppUsageInfo> totalUsageStats = await _appUsage.getAppUsage(startDate, endDate);
 
-    int totalRecordsSaved = 0;
+      if (totalUsageStats.isEmpty) {
+        Logger.info('No app usage stats found for the entire period $startDate - $endDate.');
+        return;
+      }
+
+      // Get all hours that need to be processed
+      List<DateTime> hourlySegments = _generateHourlySegments(startDate, endDate);
+      Logger.info('Processing ${totalUsageStats.length} apps across ${hourlySegments.length} hour segments');
+
+      int totalRecordsSaved = 0;
+
+      // Process each app separately to distribute its usage across hours
+      for (app_usage_package.AppUsageInfo totalUsage in totalUsageStats) {
+        if (totalUsage.usage.inSeconds <= 0) {
+          if (totalUsage.usage.inSeconds < 0) {
+            Logger.warning('Negative app usage duration for ${totalUsage.appName} (${totalUsage.usage.inSeconds}s). Skipping app.');
+          }
+          continue;
+        }
+
+        // Distribute this app's total usage across the hour segments
+        int recordsForThisApp = await _distributeAppUsageAcrossHours(
+          totalUsage.appName,
+          totalUsage.usage.inSeconds,
+          hourlySegments,
+          startDate,
+          endDate
+        );
+
+        totalRecordsSaved += recordsForThisApp;
+        Logger.info('App ${totalUsage.appName}: ${totalUsage.usage.inSeconds}s total usage distributed across $recordsForThisApp hour records');
+      }
+
+      Logger.info("Total $totalRecordsSaved app usage records saved across ${hourlySegments.length} hour segments.");
+    } catch (e) {
+      Logger.error('Error in _processUsageByHours: $e');
+    }
+  }
+
+  /// Distributes an app's total usage time across hourly segments proportionally
+  /// based on the time spent in each hour segment.
+  Future<int> _distributeAppUsageAcrossHours(
+    String appName,
+    int totalUsageSeconds,
+    List<DateTime> hourlySegments,
+    DateTime actualStartDate,
+    DateTime actualEndDate,
+  ) async {
+    int recordsSaved = 0;
+    int remainingUsage = totalUsageSeconds;
+
+    // Calculate total time span in seconds
+    int totalTimeSpanSeconds = actualEndDate.difference(actualStartDate).inSeconds;
+
+    if (totalTimeSpanSeconds <= 0) {
+      Logger.warning('Invalid time span for app $appName. Start: $actualStartDate, End: $actualEndDate');
+      return 0;
+    }
+
+    Logger.info('Distributing ${totalUsageSeconds}s usage for $appName across ${hourlySegments.length} hours (total span: ${totalTimeSpanSeconds}s)');
 
     for (int i = 0; i < hourlySegments.length; i++) {
       DateTime segmentStart = hourlySegments[i];
       DateTime segmentEnd = i < hourlySegments.length - 1
           ? hourlySegments[i + 1]
-          : endDate;
+          : actualEndDate;
 
-      Logger.info('Processing hour segment: $segmentStart to $segmentEnd');
+      // Calculate the actual time this segment covers within our collection period
+      DateTime effectiveStart = segmentStart.isAfter(actualStartDate) ? segmentStart : actualStartDate;
+      DateTime effectiveEnd = segmentEnd.isBefore(actualEndDate) ? segmentEnd : actualEndDate;
 
-      try {
-        List<app_usage_package.AppUsageInfo> usageStats = await _appUsage.getAppUsage(segmentStart, segmentEnd);
+      if (!effectiveStart.isBefore(effectiveEnd)) {
+        continue; // Skip invalid segments
+      }
 
-        if (usageStats.isEmpty) {
-          Logger.info('No app usage stats found for hour segment $segmentStart - $segmentEnd.');
-          continue;
-        }
+      int segmentTimeSeconds = effectiveEnd.difference(effectiveStart).inSeconds;
 
-        for (app_usage_package.AppUsageInfo usage in usageStats) {
-          if (usage.usage.inSeconds > 0) {
-            // Save record with the specific hour timestamp
-            await saveTimeRecord(
-              usage.appName,
-              usage.usage.inSeconds,
-              overwrite: true,
-              customDateTime: segmentStart, // Use the hour start as the record timestamp
-            );
-            totalRecordsSaved++;
-          } else if (usage.usage.inSeconds < 0) {
-            Logger.warning(
-                'Negative app usage duration for ${usage.appName} (${usage.usage.inSeconds}s) in hour $segmentStart. Skipping record.');
-          }
-          // Usage with 0 seconds is implicitly ignored.
-        }
+      // Calculate proportional usage for this segment
+      int segmentUsage;
+      if (i == hourlySegments.length - 1) {
+        // Last segment gets all remaining usage to avoid rounding errors
+        segmentUsage = remainingUsage;
+      } else {
+        // Proportional distribution based on time spent in this segment
+        segmentUsage = (totalUsageSeconds * segmentTimeSeconds / totalTimeSpanSeconds).round();
+        remainingUsage -= segmentUsage;
+      }
 
-        Logger.info("${usageStats.length} app usage records processed for hour $segmentStart");
-      } catch (e) {
-        Logger.error('Error processing hour segment $segmentStart to $segmentEnd: $e');
+      if (segmentUsage > 0) {
+        await saveTimeRecord(
+          appName,
+          segmentUsage,
+          overwrite: true,
+          customDateTime: segmentStart,
+        );
+        recordsSaved++;
+
+        Logger.info('Hour ${segmentStart.hour}:00 - ${segmentUsage}s usage for $appName (${segmentTimeSeconds}s segment time)');
       }
     }
 
-    Logger.info("Total $totalRecordsSaved app usage records saved across ${hourlySegments.length} hour segments.");
+    return recordsSaved;
   }
 
   /// Generates a list of hourly segment start times between startDate and endDate
