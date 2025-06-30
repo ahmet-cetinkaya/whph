@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2025-06-30
+
+### Fixed
+- Enhance hourly processing of app usage data
+
 ## [0.9.1] - 2025-06-27
 
 ### Fixed
