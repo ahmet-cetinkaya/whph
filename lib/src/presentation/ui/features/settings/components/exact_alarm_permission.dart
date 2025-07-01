@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/main.dart';
@@ -53,7 +53,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   }
 
   Future<void> _checkAndroidVersion() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       if (mounted) {
         setState(() {
           _isAndroid12OrHigher = false;
@@ -105,7 +105,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   }
 
   Future<void> _performThoroughPermissionCheck() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       if (mounted) {
         setState(() {
           _hasExactAlarmPermission = true;
@@ -199,7 +199,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   }
 
   Future<void> _requestPermission() async {
-    if (!Platform.isAndroid || !_isAndroid12OrHigher) return;
+    if (!PlatformUtils.isMobile || !_isAndroid12OrHigher) return;
 
     if (mounted) {
       setState(() {
@@ -246,7 +246,7 @@ class _ExactAlarmPermissionState extends State<ExactAlarmPermission> {
   @override
   Widget build(BuildContext context) {
     // Only show on Android 12+ and only after version check is complete
-    if (!Platform.isAndroid || (!_isAndroid12OrHigher && !_isLoading)) {
+    if (!PlatformUtils.isMobile || (!_isAndroid12OrHigher && !_isLoading)) {
       return const SizedBox.shrink();
     }
 

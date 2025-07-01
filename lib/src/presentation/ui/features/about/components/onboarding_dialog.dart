@@ -1,6 +1,8 @@
+// ignore: unused_import
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
@@ -63,7 +65,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     ];
 
     // Add permissions step only on Android
-    if (Platform.isAndroid) {
+    if (PlatformUtils.isMobile) {
       baseSteps.add(
         _OnboardingStep(
           icon: Icons.security,

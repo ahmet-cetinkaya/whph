@@ -1,7 +1,7 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/src/presentation/ui/features/about/components/onboarding_dialog.dart';
@@ -31,7 +31,7 @@ class AppInitializationService {
   Future<void> initializeApp(GlobalKey<NavigatorState> navigatorKey) async {
     await _checkAndShowOnboarding(navigatorKey);
     await _checkAndShowSupportDialog(navigatorKey);
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       await _checkForUpdates(navigatorKey);
     }
   }

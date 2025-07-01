@@ -192,7 +192,7 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   Future<void> makeFileExecutable(String filePath) async {
-    if (Platform.isLinux || Platform.isMacOS) {
+    if (Platform.isLinux) {
       await Process.run('chmod', ['+x', filePath]);
     }
   }

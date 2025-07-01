@@ -193,8 +193,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     Future<List<TEntity>> queryForUpdateSync() async {
       // Include only records that were explicitly modified after sync
       // Exclude records that were just created (they should only be in createSync)
-      final query =
-          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?';
+      final query = 'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?';
 
       final a = database.customSelect(
         query,

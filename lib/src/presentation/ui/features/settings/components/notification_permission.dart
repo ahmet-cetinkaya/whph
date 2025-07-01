@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/permission_card.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -62,7 +63,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
   List<String> _getInstructionSteps() {
     final steps = <String>[];
 
-    if (Platform.isAndroid) {
+    if (PlatformUtils.isMobile) {
       steps.add(_translationService.translate(SettingsTranslationKeys.notificationPermissionStepAndroid1));
       steps.add(_translationService.translate(SettingsTranslationKeys.notificationPermissionStepAndroid2));
     } else if (Platform.isIOS) {
@@ -85,7 +86,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       if (mounted) {
         setState(() {
           _hasNotificationPermission = permissionGranted;
-          _showError = !permissionGranted && (Platform.isAndroid || Platform.isIOS);
+          _showError = !permissionGranted && (PlatformUtils.isMobile);
         });
       }
 
@@ -106,7 +107,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
   @override
   Widget build(BuildContext context) {
     // Only show on mobile platforms
-    if (!Platform.isAndroid && !Platform.isIOS) return const SizedBox.shrink();
+    if (!PlatformUtils.isMobile && !Platform.isIOS) return const SizedBox.shrink();
 
     final instructionSteps = _getInstructionSteps();
 

@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/presentation/ui/features/settings/components/about_tile.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/language_settings.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/permission_settings.dart';
@@ -35,13 +34,13 @@ class SettingsPage extends StatelessWidget {
               spacing: 8.0,
               children: [
                 // Startup
-                if (StartupSettings.compatiblePlatform) const StartupSettings(),
+                const StartupSettings(),
 
                 // Notification
                 const NotificationSettings(),
 
                 // Permissions
-                if (Platform.isAndroid) PermissionSettings(),
+                if (PlatformUtils.isMobile) PermissionSettings(),
 
                 // Language
                 LanguageSettings(),

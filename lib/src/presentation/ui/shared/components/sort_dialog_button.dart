@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show SortDirection;
+import 'package:acore/acore.dart' show PlatformUtils, SortDirection;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -379,9 +377,8 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               ),
             ),
           // Drag handle for reordering
-          if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-            const SizedBox(width: AppTheme.sizeMedium), // Spacer for better alignment
-          if (_currentConfig.orderOptions.length > 1 && Platform.isAndroid) ...[
+          if (PlatformUtils.isDesktop) const SizedBox(width: AppTheme.sizeMedium), // Spacer for better alignment
+          if (_currentConfig.orderOptions.length > 1 && PlatformUtils.isMobile) ...[
             ReorderableDragStartListener(
               index: index,
               child: IconButton(

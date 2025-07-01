@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/main.dart';
@@ -9,9 +9,6 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 class StartupSettings extends StatefulWidget {
-  static bool get compatiblePlatform =>
-      Platform.isWindows || Platform.isMacOS || Platform.isLinux || Platform.isAndroid;
-
   const StartupSettings({super.key});
 
   @override
@@ -21,7 +18,7 @@ class StartupSettings extends StatefulWidget {
 class _StartupSettingsState extends State<StartupSettings> {
   final _startupService = container.resolve<IStartupSettingsService>();
   final _translationService = container.resolve<ITranslationService>();
-  get _isSystemSettingNeeded => Platform.isAndroid;
+  get _isSystemSettingNeeded => PlatformUtils.isMobile;
 
   bool _isEnabled = false;
   bool _isLoading = true;
@@ -34,8 +31,6 @@ class _StartupSettingsState extends State<StartupSettings> {
   }
 
   Future<void> _loadStartupSetting() async {
-    if (!StartupSettings.compatiblePlatform) return;
-
     await AsyncErrorHandler.executeWithLoading(
       context: context,
       setLoading: (isLoading) => setState(() {
@@ -101,8 +96,6 @@ class _StartupSettingsState extends State<StartupSettings> {
 
   @override
   Widget build(BuildContext context) {
-    if (!StartupSettings.compatiblePlatform) return const SizedBox.shrink();
-
     return Card(
       child: ListTile(
         leading: const Icon(Icons.launch),
@@ -110,13 +103,13 @@ class _StartupSettingsState extends State<StartupSettings> {
           _translationService.translate(SettingsTranslationKeys.startupTitle),
           style: AppTheme.bodyMedium,
         ),
-        subtitle: Platform.isAndroid
+        subtitle: PlatformUtils.isMobile
             ? Text(
                 _translationService.translate(SettingsTranslationKeys.startupSubtitle),
                 style: AppTheme.bodySmall,
               )
             : null,
-        trailing: Platform.isAndroid
+        trailing: PlatformUtils.isMobile
             ? const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge)
             : _isLoading || _isUpdating
                 ? const SizedBox(
