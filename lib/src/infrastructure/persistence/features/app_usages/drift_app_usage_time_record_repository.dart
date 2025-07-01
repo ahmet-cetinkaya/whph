@@ -138,7 +138,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     );
 
     final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
-    
+
     // Check if the requested page is beyond available data
     if (pageIndex * pageSize >= totalCount) {
       return PaginatedList<AppUsageTimeRecordWithDetails>(
@@ -263,7 +263,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     // Convert to list - no need for additional pagination since SQL already handles it
     final allResults = appUsageMap.values.toList();
-    
+
     return PaginatedList<AppUsageTimeRecordWithDetails>(
       items: allResults,
       pageIndex: pageIndex,

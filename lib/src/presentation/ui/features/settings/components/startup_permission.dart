@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/permission_card.dart';
@@ -31,7 +31,7 @@ class _StartupPermissionState extends State<StartupPermission> {
   }
 
   Future<void> _checkPermission() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       setState(() {
         _hasStartupPermission = true;
         _isLoading = false;
@@ -79,7 +79,7 @@ class _StartupPermissionState extends State<StartupPermission> {
   }
 
   Future<void> _requestPermission() async {
-    if (!Platform.isAndroid) return;
+    if (!PlatformUtils.isMobile) return;
 
     setState(() {
       _isLoading = true;
@@ -117,7 +117,7 @@ class _StartupPermissionState extends State<StartupPermission> {
   @override
   Widget build(BuildContext context) {
     // Only show on Android
-    if (!Platform.isAndroid) return const SizedBox.shrink();
+    if (!PlatformUtils.isMobile) return const SizedBox.shrink();
 
     final instructionSteps = _getInstructionSteps();
 

@@ -58,17 +58,17 @@ void registerInfrastructure(IContainer container) {
   });
 
   container.registerSingleton<ISystemTrayService>(
-      (_) => (Platform.isAndroid || Platform.isIOS) ? MobileSystemTrayService() : DesktopSystemTrayService());
+      (_) => (PlatformUtils.isMobile) ? MobileSystemTrayService() : DesktopSystemTrayService());
 
   container.registerSingleton<INotificationService>((_) {
     final mediator = container.resolve<Mediator>();
     final payloadHandler = container.resolve<INotificationPayloadHandler>();
 
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       final windowManager = container.resolve<IWindowManager>();
       return DesktopNotificationService(mediator, windowManager, payloadHandler);
     }
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (PlatformUtils.isMobile) {
       return MobileNotificationService(mediator);
     }
 
@@ -98,7 +98,7 @@ void registerInfrastructure(IContainer container) {
   });
 
   container.registerSingleton<IStartupSettingsService>((_) {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       return DesktopStartupSettingsService(settingRepository);
     }
 
@@ -120,7 +120,7 @@ void registerInfrastructure(IContainer container) {
       return AndroidFileService();
     }
 
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       return DesktopFileService();
     }
 
@@ -133,7 +133,7 @@ void registerInfrastructure(IContainer container) {
     final windowManager = container.resolve<IWindowManager>();
     final notificationService = container.resolve<INotificationService>();
 
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       return DesktopReminderService(windowManager, notificationService);
     }
 
@@ -154,7 +154,7 @@ void registerInfrastructure(IContainer container) {
   container.registerSingleton<ISyncService>((_) {
     final mediator = container.resolve<Mediator>();
 
-    if (Platform.isLinux || Platform.isWindows) {
+    if (PlatformUtils.isDesktop) {
       return DesktopSyncService(mediator);
     }
 

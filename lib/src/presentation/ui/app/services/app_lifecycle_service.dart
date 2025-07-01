@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/src/utils/utils.dart' show PlatformUtils;
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
@@ -24,7 +24,7 @@ class AppLifecycleService with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    if (!_isMobilePlatform) return;
+    if (!PlatformUtils.isMobile) return;
 
     switch (state) {
       case AppLifecycleState.paused:
@@ -42,7 +42,7 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Clean up system tray notifications
   void _cleanupSystemTray() {
-    if (!_isMobilePlatform) return;
+    if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.destroy().catchError((error) {
       Logger.error('Error cleaning up system tray: $error');
@@ -51,13 +51,10 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Initialize system tray
   void _initializeSystemTray() {
-    if (!_isMobilePlatform) return;
+    if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.init().catchError((error) {
       Logger.error('Error initializing system tray: $error');
     });
   }
-
-  /// Check if current platform is mobile
-  bool get _isMobilePlatform => Platform.isAndroid || Platform.isIOS;
 }

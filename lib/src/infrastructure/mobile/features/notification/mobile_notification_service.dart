@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
@@ -122,7 +123,7 @@ class MobileNotificationService implements INotificationService {
 
   @override
   Future<bool> checkPermissionStatus() async {
-    if (!Platform.isAndroid && !Platform.isIOS) {
+    if (!PlatformUtils.isMobile) {
       return true; // Always return true for non-mobile platforms
     }
 
@@ -134,30 +135,19 @@ class MobileNotificationService implements INotificationService {
       return areNotificationsEnabled ?? false;
     }
 
-    if (Platform.isIOS) {
-      final IOSFlutterLocalNotificationsPlugin? iosImplementation =
-          _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-
-      final notificationSettings = await iosImplementation?.checkPermissions();
-      // Consider permission granted if alerts, sounds, or badges are allowed
-      return (notificationSettings?.isAlertEnabled ?? false) ||
-          (notificationSettings?.isSoundEnabled ?? false) ||
-          (notificationSettings?.isBadgeEnabled ?? false);
-    }
-
     return false;
   }
 
   @override
   Future<bool> requestPermission() async {
-    if (!Platform.isAndroid && !Platform.isIOS) {
+    if (!PlatformUtils.isMobile && !Platform.isIOS) {
       return true; // Non-mobile platforms don't need explicit permission
     }
 
     bool permissionGranted = false;
 
     try {
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isMobile) {
         final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 

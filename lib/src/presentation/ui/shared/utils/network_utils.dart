@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
@@ -11,7 +12,7 @@ class NetworkUtils {
 
   static Future<String?> getLocalIpAddress() async {
     try {
-      if (Platform.isAndroid || Platform.isIOS) {
+      if (PlatformUtils.isMobile) {
         // Use NetworkInfo Plus for mobile devices
         final info = NetworkInfo();
         String? wifiIP = await info.getWifiIP();
@@ -73,6 +74,7 @@ class NetworkUtils {
 
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {
+      Logger.debug('🔍 Testing WebSocket connectivity to $host:$webSocketPort...');
       final wsUrl = 'ws://$host:$webSocketPort';
       final ws = await WebSocket.connect(wsUrl).timeout(const Duration(seconds: 5));
 
@@ -90,14 +92,29 @@ class NetworkUtils {
               onTimeout: (_) => throw TimeoutException('No response received'),
             )
             .first;
+        Logger.debug('✅ WebSocket connectivity test passed for $host:$webSocketPort');
       } catch (e) {
-        Logger.debug('Test message failed: $e');
+        Logger.debug('⚠️ Test message failed: $e');
       }
 
       await ws.close();
       return true;
     } catch (e) {
-      Logger.debug('WebSocket connection failed: $e');
+      Logger.debug('❌ WebSocket connection failed to $host:$webSocketPort: $e');
+      return false;
+    }
+  }
+
+  /// Test network connectivity with simple socket connection
+  static Future<bool> testPortConnectivity(String host, {int port = webSocketPort}) async {
+    try {
+      Logger.debug('🔍 Testing port connectivity to $host:$port...');
+      final socket = await Socket.connect(host, port, timeout: const Duration(seconds: 3));
+      await socket.close();
+      Logger.debug('✅ Port connectivity test passed for $host:$port');
+      return true;
+    } catch (e) {
+      Logger.debug('❌ Port connectivity failed to $host:$port: $e');
       return false;
     }
   }

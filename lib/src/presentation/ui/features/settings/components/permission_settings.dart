@@ -1,6 +1,6 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/src/presentation/ui/features/settings/pages/permissions_page.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -25,7 +25,7 @@ class PermissionSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Only show on Android
-    if (!Platform.isAndroid) return const SizedBox.shrink();
+    if (!PlatformUtils.isMobile) return const SizedBox.shrink();
 
     return SettingsMenuTile(
       icon: Icons.security,

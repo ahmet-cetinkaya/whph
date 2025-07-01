@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/main.dart';
@@ -37,7 +37,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
   /// Check if the app is ignoring battery optimizations
   /// This method will retry up to [_maxRetries] times with a delay between retries
   Future<void> _checkPermission() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       setState(() {
         _isIgnoringBatteryOptimizations = true;
         _isLoading = false;
@@ -124,7 +124,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
   }
 
   Future<void> _requestPermission() async {
-    if (!Platform.isAndroid) return;
+    if (!PlatformUtils.isMobile) return;
 
     setState(() {
       _isLoading = true;
@@ -208,7 +208,7 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
   @override
   Widget build(BuildContext context) {
     // Only show on Android
-    if (!Platform.isAndroid) return const SizedBox.shrink();
+    if (!PlatformUtils.isMobile) return const SizedBox.shrink();
 
     return PermissionCard(
       icon: Icons.battery_alert,

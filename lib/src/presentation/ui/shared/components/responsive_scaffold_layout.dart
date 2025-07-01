@@ -1,6 +1,6 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/components/app_logo.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_routes.dart';
@@ -339,7 +339,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   /// Determines whether to show the floating action button based on screen size and widget availability
   bool _shouldShowFloatingActionButton() {
-    return widget.floatingActionButton != null && (Platform.isAndroid || Platform.isIOS);
+    return widget.floatingActionButton != null && (PlatformUtils.isMobile);
   }
 
   /// Builds the bottom navigation bar for smaller screens

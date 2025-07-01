@@ -14,7 +14,7 @@ class DesktopSyncService extends SyncService {
     stopSync();
 
     Logger.debug('Starting desktop periodic sync (30 minutes)');
-    
+
     // Run the initial sync
     await runSync();
 

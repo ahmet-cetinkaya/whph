@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
@@ -265,7 +265,7 @@ class DesktopReminderService implements IReminderService {
 
   /// Ensure the app window is visible and focused for desktop platforms
   Future<void> _ensureWindowVisible() async {
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       if (!await _windowManager.isVisible()) {
         await _windowManager.show();
       }

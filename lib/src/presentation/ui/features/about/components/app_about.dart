@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
@@ -95,7 +96,7 @@ class AppAbout extends StatelessWidget {
                 icon: Icons.mail,
                 url: 'mailto:${AppInfo.supportEmail}',
               ),
-              if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) _buildCheckUpdateButton(context),
+              if (PlatformUtils.isDesktop) _buildCheckUpdateButton(context),
             ],
           ),
         ),
@@ -154,7 +155,7 @@ class AppAbout extends StatelessWidget {
 
   Future<Map<String, String>> _getDeviceInfo() async {
     try {
-      if (Platform.isAndroid) {
+      if (PlatformUtils.isMobile) {
         final androidInfo = await _deviceInfo.androidInfo;
         return {
           'deviceModel': '${androidInfo.brand} ${androidInfo.model}',
@@ -206,7 +207,7 @@ class AppAbout extends StatelessWidget {
   }
 
   String _getBasicDeviceModel() {
-    if (Platform.isAndroid) return 'Android Device';
+    if (PlatformUtils.isMobile) return 'Android Device';
     if (Platform.isIOS) return 'iOS Device';
     if (Platform.isLinux) return 'Linux Device';
     if (Platform.isMacOS) return 'macOS Device';
@@ -215,7 +216,7 @@ class AppAbout extends StatelessWidget {
   }
 
   String _getOSName() {
-    if (Platform.isAndroid) return 'Android';
+    if (PlatformUtils.isMobile) return 'Android';
     if (Platform.isIOS) return 'iOS';
     if (Platform.isLinux) return 'Linux';
     if (Platform.isMacOS) return 'macOS';

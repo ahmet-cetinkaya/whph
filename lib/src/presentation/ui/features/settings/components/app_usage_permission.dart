@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
@@ -35,7 +35,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
   }
 
   Future<void> _checkPermission() async {
-    if (!Platform.isAndroid) {
+    if (!PlatformUtils.isMobile) {
       if (mounted) {
         setState(() {
           _hasAppUsagePermission = true;
@@ -101,7 +101,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
   }
 
   Future<void> _requestPermission() async {
-    if (!Platform.isAndroid) return;
+    if (!PlatformUtils.isMobile) return;
 
     if (mounted) {
       setState(() {
@@ -131,7 +131,7 @@ class _AppUsagePermissionState extends State<AppUsagePermission> {
 
   @override
   Widget build(BuildContext context) {
-    if (!Platform.isAndroid) return const SizedBox.shrink();
+    if (!PlatformUtils.isMobile) return const SizedBox.shrink();
 
     return PermissionCard(
       icon: Icons.data_usage,

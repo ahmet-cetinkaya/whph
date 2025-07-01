@@ -142,7 +142,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
           // Only Android can initiate sync, desktop is passive
-          if (PlatformUtils.isMobile)
+          if (Platform.isAndroid)
             IconButton(
               onPressed: _sync,
               icon: const Icon(Icons.sync),
