@@ -110,7 +110,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
-          onPressed: _onRefresh, // Trigger rebuild to refresh list
+          onPressed: _onRefresh,
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
@@ -119,7 +119,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
       ],
-      builder: (context) => ListView(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!_hasPermission)
             AppUsagePermission(
@@ -140,12 +141,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
             // List
             if (_isListVisible)
-              AppUsageList(
-                onOpenDetails: _openDetails,
-                filterByTags: _filterState.tags,
-                showNoTagsFilter: _filterState.showNoTagsFilter,
-                filterStartDate: _filterState.startDate,
-                filterEndDate: _filterState.endDate,
+              Expanded(
+                child: AppUsageList(
+                  onOpenDetails: _openDetails,
+                  filterByTags: _filterState.tags,
+                  showNoTagsFilter: _filterState.showNoTagsFilter,
+                  filterStartDate: _filterState.startDate,
+                  filterEndDate: _filterState.endDate,
+                ),
               ),
           ],
         ],

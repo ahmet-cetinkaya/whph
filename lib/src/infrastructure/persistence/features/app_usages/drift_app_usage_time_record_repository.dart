@@ -137,6 +137,19 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       readsFrom: {table},
     );
 
+    final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
+    
+    // Check if the requested page is beyond available data
+    if (pageIndex * pageSize >= totalCount) {
+      return PaginatedList<AppUsageTimeRecordWithDetails>(
+        items: [],
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    }
+
+    // Get paginated data with proper app usage-level pagination
     final dataQuery = database.customSelect(
       '''
       WITH app_usages_data AS (
@@ -154,40 +167,46 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         WHERE au.deleted_date IS NULL
         ${searchByProcessName != null ? 'AND au.name = ?' : ''}
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
+      ),
+      filtered_app_usages AS (
+        SELECT ad.id, ad.name, ad.display_name, ad.color, ad.device_name, ad.total_duration
+        FROM app_usages_data ad
+        ${filterByTags != null && filterByTags.isNotEmpty ? '''
+        WHERE EXISTS (
+          SELECT 1 
+          FROM app_usage_tag_table aut 
+          WHERE aut.app_usage_id = ad.id 
+            AND aut.tag_id IN (${filterByTags.map((_) => '?').join(', ')})
+            AND aut.deleted_date IS NULL
+          GROUP BY aut.app_usage_id
+          HAVING COUNT(DISTINCT aut.tag_id) = ?
+        )
+        ''' : showNoTagsFilter ? '''
+        WHERE NOT EXISTS (
+          SELECT 1 
+          FROM app_usage_tag_table aut 
+          WHERE aut.app_usage_id = ad.id
+            AND aut.deleted_date IS NULL
+        )
+        ''' : ''}
+        ORDER BY ad.total_duration DESC
+        LIMIT ? OFFSET ?
       )
       SELECT 
-        ad.id,
-        ad.name,
-        ad.display_name,
-        ad.color,
-        ad.device_name,
-        ad.total_duration as duration,
+        fau.id,
+        fau.name,
+        fau.display_name,
+        fau.color,
+        fau.device_name,
+        fau.total_duration as duration,
         aut.id as tag_app_usage_tag_id,
         aut.tag_id,
         t.name as tag_name,
         t.color as tag_color
-      FROM app_usages_data ad
-      ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      INNER JOIN (
-        SELECT DISTINCT app_usage_id 
-        FROM app_usage_tag_table 
-        WHERE tag_id IN (${filterByTags.map((_) => '?').join(', ')})
-          AND deleted_date IS NULL
-        GROUP BY app_usage_id
-        HAVING COUNT(DISTINCT tag_id) = ?
-      ) filter_aut ON ad.id = filter_aut.app_usage_id
-      ''' : showNoTagsFilter ? '''
-      WHERE NOT EXISTS (
-        SELECT 1 
-        FROM app_usage_tag_table aut_filter 
-        WHERE aut_filter.app_usage_id = ad.id
-          AND aut_filter.deleted_date IS NULL
-      )
-      ''' : ''}
-      LEFT JOIN app_usage_tag_table aut ON ad.id = aut.app_usage_id AND aut.deleted_date IS NULL
+      FROM filtered_app_usages fau
+      LEFT JOIN app_usage_tag_table aut ON fau.id = aut.app_usage_id AND aut.deleted_date IS NULL
       LEFT JOIN tag_table t ON aut.tag_id = t.id AND t.deleted_date IS NULL
-      ORDER BY ad.total_duration DESC, ad.id, aut.id
-      LIMIT ? OFFSET ?
+      ORDER BY fau.total_duration DESC, fau.id, aut.id
       ''',
       variables: [
         if (startDate != null) Variable<DateTime>(startDate),
@@ -197,7 +216,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
         ],
-        Variable<int>(pageSize * 100), // Get more rows to handle tag denormalization
+        Variable<int>(pageSize),
         Variable<int>(pageIndex * pageSize),
       ],
       readsFrom: {table},
@@ -242,15 +261,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       }
     }
 
-    // Convert to list and apply pagination
+    // Convert to list - no need for additional pagination since SQL already handles it
     final allResults = appUsageMap.values.toList();
-    final startIndex = pageIndex * pageSize;
-    final endIndex = (startIndex + pageSize).clamp(0, allResults.length);
-    final pagedResults = allResults.sublist(startIndex, endIndex);
-
-    int totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
+    
     return PaginatedList<AppUsageTimeRecordWithDetails>(
-      items: pagedResults,
+      items: allResults,
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,

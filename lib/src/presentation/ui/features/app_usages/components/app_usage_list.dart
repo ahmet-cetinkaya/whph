@@ -229,9 +229,9 @@ class AppUsageListState extends State<AppUsageList> {
 
     return ListView.separated(
       controller: _scrollController,
-      shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: _appUsageList!.items.length + (_appUsageList!.hasNext ? 1 : 0),
+      itemCount: _appUsageList!.items.length +
+          (_appUsageList!.hasNext && _appUsageList!.items.length < _appUsageList!.totalItemCount ? 1 : 0),
       separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
       itemBuilder: (context, index) {
         if (index == _appUsageList!.items.length) {
