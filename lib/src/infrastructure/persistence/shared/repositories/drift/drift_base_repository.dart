@@ -191,15 +191,14 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     }
 
     Future<List<TEntity>> queryForUpdateSync() async {
-      // Include records where:
-      // 1. modified_date > lastSyncDate (explicitly modified after sync)
-      // 2. modified_date IS NULL AND created_date > lastSyncDate (created after sync but never modified)
+      // Include only records that were explicitly modified after sync
+      // Exclude records that were just created (they should only be in createSync)
       final query =
-          'SELECT * FROM ${table.actualTableName} WHERE (modified_date > ? OR (modified_date IS NULL AND created_date > ?))';
+          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?';
 
       final a = database.customSelect(
         query,
-        variables: [Variable.withDateTime(lastSyncDate), Variable.withDateTime(lastSyncDate)],
+        variables: [Variable.withDateTime(lastSyncDate)],
         readsFrom: {table},
       );
       final b = a.map((row) => table.map(row.data));

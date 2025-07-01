@@ -223,7 +223,10 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
   @override
   Future<SyncCommandResponse> call(SyncCommand request) async {
+    Logger.info('🚀 Starting sync operation');
+
     if (request.syncDataDto != null) {
+      Logger.info('📨 Processing incoming sync data from remote device');
       await _checkVersion(request.syncDataDto!.appVersion);
       await _validateDeviceId(request.syncDataDto!.syncDevice);
     }
@@ -233,6 +236,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       syncDevices = [request.syncDataDto!.syncDevice];
     } else {
       syncDevices = await syncDeviceRepository.getAll();
+      Logger.info('📱 Found ${syncDevices.length} sync devices to process');
     }
 
     bool allDevicesSynced = true;
@@ -240,20 +244,25 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
     for (SyncDevice syncDevice in syncDevices) {
       try {
+        Logger.info('🔄 Processing sync with device: ${syncDevice.id}');
+
         SyncDataDto combinedData = await _prepareSyncData(syncDevice);
         WebSocketMessage message = WebSocketMessage(type: 'sync', data: combinedData);
         String jsonData = JsonMapper.serialize(message);
 
         final response = SyncCommandResponse(syncDataDto: combinedData);
         if (request.syncDataDto != null) {
+          Logger.info('⬇️ Processing incoming sync data');
           bool syncSuccess = await _processIncomingData(request.syncDataDto!);
           if (syncSuccess) {
             await _saveSyncDevice(request.syncDataDto!.syncDevice);
+            Logger.info('✅ Successfully processed incoming sync data');
             return response;
           }
           throw BusinessException('Failed to process sync data', SyncTranslationKeys.processFailedError);
         } else {
           try {
+            Logger.info('⬆️ Sending sync data to device ${syncDevice.id}');
             await _sendDataToWebSocket(syncDevice.fromIp, jsonData);
             await _saveSyncDevice(syncDevice);
 
@@ -275,9 +284,11 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     }
 
     if (allDevicesSynced && oldestLastSyncDate != null) {
+      Logger.info('🧹 Cleaning up soft-deleted data older than: $oldestLastSyncDate');
       await _cleanupSoftDeletedData(oldestLastSyncDate);
     }
 
+    Logger.info('🏁 Sync operation completed successfully');
     return SyncCommandResponse();
   }
 
@@ -303,6 +314,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     for (int i = 0; i < _syncConfigs.length; i++) {
       final config = _syncConfigs[i];
       final result = syncDataResults[i];
+
       Logger.debug(
           '📋 ${config.name}: createSync=${result.createSync.length}, updateSync=${result.updateSync.length}, deleteSync=${result.deleteSync.length}');
     }
@@ -465,49 +477,114 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
 
   Future<bool> _processIncomingData(SyncDataDto syncDataDto) async {
     try {
-      await Future.wait(_syncConfigs.map((config) {
+      Logger.info('📥 Processing incoming sync data with ${_syncConfigs.length} entity types');
+
+      int totalProcessed = 0;
+      int totalConflictsResolved = 0;
+
+      await Future.wait(_syncConfigs.map((config) async {
         final syncData = config.getSyncDataFromDto(syncDataDto);
         if (syncData != null) {
-          return _processSyncDataBatch(syncData, config.repository);
+          Logger.debug(
+              '🔧 Processing ${config.name}: ${syncData.createSync.length + syncData.updateSync.length + syncData.deleteSync.length} items');
+
+          final conflictCount = await _processSyncDataBatch(syncData, config.repository);
+          totalProcessed += syncData.createSync.length + syncData.updateSync.length + syncData.deleteSync.length;
+          totalConflictsResolved += conflictCount;
         }
-        return Future.value(); // Skip if no sync data
       }));
+
+      Logger.info('✅ Successfully processed $totalProcessed items with $totalConflictsResolved conflicts resolved');
       return true;
     } catch (e) {
-      Logger.error('Error processing incoming data: $e');
+      Logger.error('❌ Error processing incoming data: $e');
       return false;
     }
   }
 
-  Future<void> _processSyncDataBatch<T extends BaseEntity<String>>(
+  Future<int> _processSyncDataBatch<T extends BaseEntity<String>>(
       SyncData<T> syncData, IRepository<T, String> repository) async {
     try {
       const batchSize = 100;
+      int conflictsResolved = 0;
 
-      // Process creates and updates together
+      // Process creates and updates with conflict resolution
       final upsertItems = [...syncData.createSync, ...syncData.updateSync];
 
       if (upsertItems.isNotEmpty) {
-        await _processBatchOperation(
-          upsertItems,
-          (item) async {
+        for (var i = 0; i < upsertItems.length; i += batchSize) {
+          final end = (i + batchSize < upsertItems.length) ? i + batchSize : upsertItems.length;
+          for (final item in upsertItems.sublist(i, end)) {
             try {
-              // First try to get the existing item
+              // Get the existing item for conflict detection
               T? existingItem = await repository.getById(item.id);
-              if (existingItem != null) {
-                // If item exists, update it
-                await repository.update(item);
-              } else {
-                // If item doesn't exist, add it
+
+              if (existingItem == null) {
+                // Item doesn't exist locally, add it
+                Logger.debug('🆕 Adding new item ${item.id} (${T.toString()})');
                 await repository.add(item);
+              } else {
+                // Check if local item is soft-deleted but remote item is not
+                if (existingItem.isDeleted && !item.isDeleted) {
+                  Logger.debug(
+                      '🔄 Local item ${item.id} is deleted but remote is not - checking timestamps for resurrection');
+                  final ConflictResolutionResult<T> resolution = _resolveConflict(existingItem, item);
+                  conflictsResolved++;
+
+                  if (resolution.action == ConflictAction.acceptRemote ||
+                      resolution.action == ConflictAction.acceptRemoteForceUpdate) {
+                    Logger.debug('♻️ Resurrecting deleted item ${item.id} (${T.toString()}) with remote version');
+                    await repository.update(item);
+                  } else {
+                    Logger.debug(
+                        '🗑️ Keeping local deleted state for ${item.id} (${T.toString()}) - local deletion is newer');
+                  }
+                } else if (!existingItem.isDeleted && item.isDeleted) {
+                  Logger.debug(
+                      '🗑️ Remote item ${item.id} is deleted but local is not - checking timestamps for deletion');
+                  final ConflictResolutionResult<T> resolution = _resolveConflict(existingItem, item);
+                  conflictsResolved++;
+
+                  if (resolution.action == ConflictAction.acceptRemote ||
+                      resolution.action == ConflictAction.acceptRemoteForceUpdate) {
+                    Logger.debug('🗑️ Accepting deletion of ${item.id} (${T.toString()}) from remote');
+                    await repository.update(item);
+                  } else {
+                    Logger.debug(
+                        '📄 Keeping local non-deleted state for ${item.id} (${T.toString()}) - local modification is newer');
+                  }
+                } else {
+                  // Standard conflict resolution for active items
+                  final ConflictResolutionResult<T> resolution = _resolveConflict(existingItem, item);
+                  conflictsResolved++; // Count any conflict resolution
+
+                  switch (resolution.action) {
+                    case ConflictAction.keepLocal:
+                      Logger.debug(
+                          '⬅️ Conflict resolved: keeping local version of ${item.id} (${T.toString()}) - local is newer');
+                      // Do nothing - keep the local version
+                      break;
+
+                    case ConflictAction.acceptRemote:
+                      Logger.debug(
+                          '➡️ Conflict resolved: accepting remote version of ${item.id} (${T.toString()}) - remote is newer');
+                      await repository.update(item);
+                      break;
+
+                    case ConflictAction.acceptRemoteForceUpdate:
+                      Logger.debug(
+                          '🔄 Accepting remote version of ${item.id} (${T.toString()}) - timestamps identical or missing');
+                      await repository.update(item);
+                      break;
+                  }
+                }
               }
             } catch (e) {
               Logger.error('Error processing item ${item.id}: $e');
               rethrow;
             }
-          },
-          batchSize,
-        );
+          }
+        }
       }
 
       // Process deletes separately
@@ -518,6 +595,8 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
           batchSize,
         );
       }
+
+      return conflictsResolved;
     } catch (e) {
       Logger.error('Error processing batch for ${T.toString()}: $e');
       rethrow;
@@ -549,4 +628,66 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
     await Future.wait(
         _syncConfigs.map((config) => config.repository.hardDeleteSoftDeleted(oldestLastSyncDate)).toList());
   }
+
+  /// Resolves conflicts between local and remote entities using timestamp-based conflict resolution
+  ConflictResolutionResult<T> _resolveConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
+    // Get effective timestamps for comparison (modifiedDate or createdDate as fallback)
+    final DateTime localTimestamp = _getEffectiveTimestamp(localEntity);
+    final DateTime remoteTimestamp = _getEffectiveTimestamp(remoteEntity);
+
+    // Compare timestamps to determine which version is newer
+    if (localTimestamp.isAfter(remoteTimestamp)) {
+      // Local entity is newer
+      return ConflictResolutionResult(
+        action: ConflictAction.keepLocal,
+        winningEntity: localEntity,
+        reason: 'Local timestamp ($localTimestamp) is newer than remote ($remoteTimestamp)',
+      );
+    } else if (remoteTimestamp.isAfter(localTimestamp)) {
+      // Remote entity is newer
+      return ConflictResolutionResult(
+        action: ConflictAction.acceptRemote,
+        winningEntity: remoteEntity,
+        reason: 'Remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
+      );
+    } else {
+      // Timestamps are identical - prefer remote version for consistency
+      return ConflictResolutionResult(
+        action: ConflictAction.acceptRemoteForceUpdate,
+        winningEntity: remoteEntity,
+        reason: 'Timestamps are identical ($localTimestamp), preferring remote version for consistency',
+      );
+    }
+  }
+
+  /// Gets the effective timestamp for conflict resolution
+  /// Uses modifiedDate if available, otherwise falls back to createdDate
+  DateTime _getEffectiveTimestamp<T extends BaseEntity<String>>(T entity) {
+    return entity.modifiedDate ?? entity.createdDate;
+  }
+}
+
+/// Defines the action to take when resolving sync conflicts
+enum ConflictAction {
+  /// Keep the local version (local data is newer)
+  keepLocal,
+
+  /// Accept the remote version (remote data is newer)
+  acceptRemote,
+
+  /// Force accept remote version (when timestamps are identical or missing)
+  acceptRemoteForceUpdate,
+}
+
+/// Result of conflict resolution between local and remote entities
+class ConflictResolutionResult<T> {
+  final ConflictAction action;
+  final T winningEntity;
+  final String reason;
+
+  ConflictResolutionResult({
+    required this.action,
+    required this.winningEntity,
+    required this.reason,
+  });
 }
