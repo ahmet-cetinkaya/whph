@@ -10,7 +10,6 @@ import 'package:whph/src/core/application/shared/utils/key_helper.dart' as app_k
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
-
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
   static final workManagerChannel = MethodChannel(AndroidAppConstants.channels.workManager);
   final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
@@ -120,22 +119,19 @@ class AndroidAppUsageService extends BaseAppUsageService {
       for (app_usage_package.AppUsageInfo totalUsage in totalUsageStats) {
         if (totalUsage.usage.inSeconds <= 0) {
           if (totalUsage.usage.inSeconds < 0) {
-            Logger.warning('Negative app usage duration for ${totalUsage.appName} (${totalUsage.usage.inSeconds}s). Skipping app.');
+            Logger.warning(
+                'Negative app usage duration for ${totalUsage.appName} (${totalUsage.usage.inSeconds}s). Skipping app.');
           }
           continue;
         }
 
         // Distribute this app's total usage across the hour segments
         int recordsForThisApp = await _distributeAppUsageAcrossHours(
-          totalUsage.appName,
-          totalUsage.usage.inSeconds,
-          hourlySegments,
-          startDate,
-          endDate
-        );
+            totalUsage.appName, totalUsage.usage.inSeconds, hourlySegments, startDate, endDate);
 
         totalRecordsSaved += recordsForThisApp;
-        Logger.info('App ${totalUsage.appName}: ${totalUsage.usage.inSeconds}s total usage distributed across $recordsForThisApp hour records');
+        Logger.info(
+            'App ${totalUsage.appName}: ${totalUsage.usage.inSeconds}s total usage distributed across $recordsForThisApp hour records');
       }
 
       Logger.info("Total $totalRecordsSaved app usage records saved across ${hourlySegments.length} hour segments.");
@@ -164,13 +160,12 @@ class AndroidAppUsageService extends BaseAppUsageService {
       return 0;
     }
 
-    Logger.info('Distributing ${totalUsageSeconds}s usage for $appName across ${hourlySegments.length} hours (total span: ${totalTimeSpanSeconds}s)');
+    Logger.info(
+        'Distributing ${totalUsageSeconds}s usage for $appName across ${hourlySegments.length} hours (total span: ${totalTimeSpanSeconds}s)');
 
     for (int i = 0; i < hourlySegments.length; i++) {
       DateTime segmentStart = hourlySegments[i];
-      DateTime segmentEnd = i < hourlySegments.length - 1
-          ? hourlySegments[i + 1]
-          : actualEndDate;
+      DateTime segmentEnd = i < hourlySegments.length - 1 ? hourlySegments[i + 1] : actualEndDate;
 
       // Calculate the actual time this segment covers within our collection period
       DateTime effectiveStart = segmentStart.isAfter(actualStartDate) ? segmentStart : actualStartDate;
@@ -202,7 +197,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
         );
         recordsSaved++;
 
-        Logger.info('Hour ${segmentStart.hour}:00 - ${segmentUsage}s usage for $appName (${segmentTimeSeconds}s segment time)');
+        Logger.info(
+            'Hour ${segmentStart.hour}:00 - ${segmentUsage}s usage for $appName (${segmentTimeSeconds}s segment time)');
       }
     }
 

@@ -27,6 +27,7 @@ void main() async {
 
     // Initialize platform-specific features
     await PlatformInitializationService.initializeDesktop(container);
+    await PlatformInitializationService.initializeMobile(container);
 
     // Set up notification handling
     final payloadHandler = container.resolve<INotificationPayloadHandler>();

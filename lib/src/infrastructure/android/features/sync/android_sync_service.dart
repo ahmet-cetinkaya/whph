@@ -15,13 +15,13 @@ class AndroidSyncService extends SyncService {
     stopSync();
 
     Logger.debug('Starting Android WorkManager periodic sync (30 minutes)');
-    
+
     // Setup listener for WorkManager triggers first
     _setupSyncListener(() async {
       Logger.info('Sync triggered by Android WorkManager');
       await runSync();
     });
-    
+
     // Start WorkManager periodic sync (30 minutes interval)
     final success = await _startPeriodicSyncWork(intervalMinutes: 30);
     if (success) {
@@ -29,7 +29,7 @@ class AndroidSyncService extends SyncService {
     } else {
       Logger.error('Failed to start Android periodic sync');
     }
-    
+
     // For Android, we still want to do an initial sync
     await runSync();
   }

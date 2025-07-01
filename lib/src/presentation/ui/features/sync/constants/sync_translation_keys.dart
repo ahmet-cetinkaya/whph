@@ -28,6 +28,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Sync Devices Page
   static const String pageTitle = 'sync.devices.title';
+  static const String syncTooltip = 'sync.devices.sync_tooltip';
   static const String noDevicesFound = 'sync.devices.no_devices_found';
   static const String loadDevicesError = 'sync.devices.errors.loading';
   static const String removeDeviceError = 'sync.devices.errors.removing';
