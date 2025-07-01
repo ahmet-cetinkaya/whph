@@ -3,9 +3,8 @@ import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/commands/delete_sync_command.dart';
-import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_query.dart';
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
@@ -16,6 +15,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -65,6 +65,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   Future<void> _sync() async {
+    if (!Platform.isAndroid) {
+      Logger.warning('Sync is only supported on Android platform');
+      return;
+    }
+
     if (_isSyncing) return;
 
     // Show initial syncing notification
@@ -76,37 +81,35 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
     setState(() => _isSyncing = true);
 
-    await AsyncErrorHandler.execute<void>(
-      context: context,
-      errorMessage: _translationService.translate(SyncTranslationKeys.syncDevicesError),
-      operation: () async {
-        final command = SyncCommand();
-        await _mediator.send<SyncCommand, void>(command);
-        return;
-      },
-      onSuccess: (_) async {
-        await Future.delayed(const Duration(seconds: 2));
-        await refresh();
+    try {
+      // Use AndroidSyncService for manual sync trigger
+      final androidSyncService = AndroidSyncService(_mediator);
+      await androidSyncService.runSync();
+      
+      await Future.delayed(const Duration(seconds: 2));
+      await refresh();
 
-        if (mounted) {
-          OverlayNotificationHelper.hideNotification();
-          OverlayNotificationHelper.showSuccess(
-            context: context,
-            message: _translationService.translate(SyncTranslationKeys.syncCompleted),
-            duration: const Duration(seconds: 3),
-          );
-        }
-      },
-      onError: (_) {
-        Logger.error('Sync failed');
-        if (mounted) {
-          OverlayNotificationHelper.hideNotification();
-        }
-      },
-      finallyAction: () {
-        if (mounted) setState(() => _isSyncing = false);
-      },
-    );
+      if (mounted) {
+        OverlayNotificationHelper.hideNotification();
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: _translationService.translate(SyncTranslationKeys.syncCompleted),
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      Logger.error('Manual sync failed: $e');
+      if (mounted) {
+        OverlayNotificationHelper.hideNotification();
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSyncing = false);
+    }
   }
 
   Future<void> _removeDevice(String id) async {
@@ -138,13 +141,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       appBar: AppBar(
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
-          IconButton(
-            onPressed: _sync,
-            icon: const Icon(Icons.sync),
-            color: AppTheme.primaryColor,
-          ),
-          if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) SyncQrCodeButton(),
-          if (Platform.isAndroid || Platform.isIOS)
+          // Only Android can initiate sync, desktop is passive
+          if (PlatformUtils.isMobile)
+            IconButton(
+              onPressed: _sync,
+              icon: const Icon(Icons.sync),
+              color: AppTheme.primaryColor,
+              tooltip: _translationService.translate(SyncTranslationKeys.syncTooltip),
+            ),
+          if (PlatformUtils.isDesktop) SyncQrCodeButton(),
+          if (PlatformUtils.isMobile)
             SyncQrScanButton(
               onSyncComplete: refresh,
             ),
@@ -202,7 +208,7 @@ class SyncDeviceListItemWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (Platform.isAndroid || Platform.isIOS) ...[
+              if (PlatformUtils.isMobile) ...[
                 // Host
                 Row(
                   children: [
@@ -230,7 +236,7 @@ class SyncDeviceListItemWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 2),
               ],
-              if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) ...[
+              if (PlatformUtils.isDesktop) ...[
                 // Client
                 Row(
                   children: [

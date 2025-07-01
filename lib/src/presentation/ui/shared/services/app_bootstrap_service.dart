@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/application_container.dart';
 import 'package:whph/src/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
 import 'package:whph/src/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
-import 'package:whph/src/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/src/core/domain/shared/constants/demo_config.dart';
 import 'package:whph/src/infrastructure/infrastructure_container.dart';
 import 'package:whph/src/infrastructure/persistence/persistence_container.dart';
@@ -90,11 +88,6 @@ class AppBootstrapService {
     Logger.debug('AppBootstrapService: Starting background workers...');
 
     final mediator = container.resolve<Mediator>();
-
-    if (Platform.isAndroid || Platform.isIOS) {
-      // Start mobile-specific background services
-      mediator.send(StartSyncCommand());
-    }
 
     // Start app usage tracking for activity monitoring
     await mediator.send(StartTrackAppUsagesCommand());

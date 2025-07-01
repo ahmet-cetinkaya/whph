@@ -14,30 +14,35 @@ Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
 
 void startWebSocketServer() async {
   try {
+    Logger.info('📡 Attempting to start WebSocket server on port $webSocketPort...');
+    
     final server = await HttpServer.bind(
       InternetAddress.anyIPv4,
       webSocketPort,
     );
 
-    Logger.info('WebSocket Server starting on port $webSocketPort');
+    Logger.info('✅ WebSocket Server successfully started on port $webSocketPort');
+    Logger.info('🌐 WebSocket Server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
+    Logger.info('📱 Ready to receive sync requests from other devices');
 
     // Handle incoming connections
     await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
           final ws = await WebSocketTransformer.upgrade(req);
+          Logger.info('🔗 WebSocket connection established from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
 
           ws.listen(
             (data) async {
-              Logger.debug('Received message: $data');
+              Logger.debug('📨 Received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              Logger.error('Connection error: $e');
+              Logger.error('❌ Connection error: $e');
               ws.close();
             },
             onDone: () {
-              Logger.debug('Connection closed normally');
+              Logger.debug('🔚 Connection closed normally');
             },
             cancelOnError: true,
           );
@@ -50,13 +55,13 @@ void startWebSocketServer() async {
             ..close();
         }
       } catch (e) {
-        Logger.error('Request handling error: $e');
+        Logger.error('⚠️ Request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
     }
   } catch (e) {
-    Logger.error('WebSocket server failed to start on port $webSocketPort: $e');
+    Logger.error('💥 WebSocket server failed to start on port $webSocketPort: $e');
     rethrow;
   }
 }
@@ -83,14 +88,17 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'sync':
+        Logger.info('🔄 Processing sync request...');
         final syncData = parsedMessage.data;
         if (syncData == null) {
           throw FormatException('Sync message missing data');
         }
 
+        Logger.debug('📊 Sync data received with keys: ${(syncData as Map<String, dynamic>).keys.join(', ')}');
         final controller = SyncController();
         try {
-          final response = await controller.sync(SyncDataDto.fromJson(syncData as Map<String, dynamic>));
+          final response = await controller.sync(SyncDataDto.fromJson(syncData));
+          Logger.info('✅ Sync processing completed successfully');
 
           WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
             'syncDataDto': response.syncDataDto,
@@ -98,11 +106,13 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             'timestamp': DateTime.now().toIso8601String()
           });
           socket.add(JsonMapper.serialize(responseMessage));
+          Logger.info('📤 Sync response sent to client');
 
           // Add a small delay before closing the connection
           await Future.delayed(const Duration(milliseconds: 500));
           await socket.close();
         } catch (e) {
+          Logger.error('Sync processing failed: $e');
           WebSocketMessage errorMessage =
               WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
           socket.add(JsonMapper.serialize(errorMessage));

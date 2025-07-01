@@ -29,6 +29,7 @@ sync:
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
+    sync_tooltip: Sync Now
     title: Sync Devices
     to_label: To
     unnamed_device: Unnamed Device
