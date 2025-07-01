@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.3] - 2025-07-01
+
+### Added
+- Improve mobile platform sync
+- Enhance logging and conflict resolution
+- Add check for updates functionality
+
+### Fixed
+- Improve list view with separators
+- Improve error logging in import/export
+- Improve pagination logic in app usage list
+
 ## [0.9.2] - 2025-06-30
 
 ### Fixed
