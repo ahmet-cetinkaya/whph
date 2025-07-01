@@ -17,6 +17,13 @@ object Constants {
         const val APP_USAGE_STATS = "$PACKAGE_NAME/app_usage_stats"
         const val BOOT_COMPLETED = "$PACKAGE_NAME/boot_completed"
         const val WORK_MANAGER = "$PACKAGE_NAME/work_manager"
+        const val SYNC = "$PACKAGE_NAME/sync"
+    }
+
+    // WorkManager
+    object WorkManager {
+        const val SYNC_WORK_NAME = "periodic_sync_work"
+        const val SYNC_WORKER_TAG = "sync_worker"
     }
 
     // Notification Channels

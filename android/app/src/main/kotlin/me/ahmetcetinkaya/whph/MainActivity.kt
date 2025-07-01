@@ -38,6 +38,24 @@ class MainActivity : FlutterActivity() {
 
     // Handler for periodic pending collection checks
     private val pendingCollectionHandler = Handler(Looper.getMainLooper())
+    
+    // Broadcast receiver for sync triggers from WorkManager
+    private val syncTriggerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "${Constants.PACKAGE_NAME}.SYNC_TRIGGER") {
+                Log.d(TAG, "Sync trigger received from WorkManager")
+                
+                // Trigger sync via method channel to Flutter
+                val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+                if (binaryMessenger != null) {
+                    val channel = MethodChannel(binaryMessenger, Constants.Channels.SYNC)
+                    channel.invokeMethod("triggerSync", null)
+                } else {
+                    Log.w(TAG, "Flutter engine not ready, cannot trigger sync")
+                }
+            }
+        }
+    }
 
     // Define constants for notification actions
     companion object {
@@ -53,6 +71,15 @@ class MainActivity : FlutterActivity() {
         val startIntent = intent
         
         super.onCreate(savedInstanceState)
+
+        // Register broadcast receiver for sync triggers
+        val filter = IntentFilter("${Constants.PACKAGE_NAME}.SYNC_TRIGGER")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(syncTriggerReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(syncTriggerReceiver, filter)
+        }
+        Log.d(TAG, "Registered sync trigger broadcast receiver")
 
         // Process the intent that started this activity
         processIntent(startIntent)
@@ -160,6 +187,14 @@ class MainActivity : FlutterActivity() {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy called - cleaning up persistent notifications")
+        
+        try {
+            // Unregister broadcast receiver
+            unregisterReceiver(syncTriggerReceiver)
+            Log.d(TAG, "Unregistered sync trigger broadcast receiver")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error unregistering sync trigger receiver: ${e.message}")
+        }
         
         try {
             // Cancel the persistent system tray notification (ID 888)
@@ -861,6 +896,54 @@ class MainActivity : FlutterActivity() {
                     } catch (e: Exception) {
                         Log.e("WorkManager", "Error checking pending collection: ${e.message}", e)
                         result.error("CHECK_PENDING_ERROR", e.message, null)
+                    }
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
+        // Channel for Sync WorkManager 
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.SYNC).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "startPeriodicSyncWork" -> {
+                    try {
+                        // Get optional interval parameter, if not provided, use default (30 minutes)
+                        val intervalMinutes = call.argument<Int>("intervalMinutes")?.toLong()
+                        SyncWorker.schedulePeriodicWork(this, intervalMinutes)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("SyncWorker", "Error starting periodic sync work: ${e.message}", e)
+                        result.error("START_SYNC_WORK_ERROR", e.message, null)
+                    }
+                }
+                "stopPeriodicSyncWork" -> {
+                    try {
+                        SyncWorker.cancelPeriodicWork(this)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("SyncWorker", "Error stopping periodic sync work: ${e.message}", e)
+                        result.error("STOP_SYNC_WORK_ERROR", e.message, null)
+                    }
+                }
+                "isSyncWorkScheduled" -> {
+                    try {
+                        val isScheduled = SyncWorker.isWorkScheduled(this)
+                        result.success(isScheduled)
+                    } catch (e: Exception) {
+                        Log.e("SyncWorker", "Error checking sync work status: ${e.message}", e)
+                        result.error("CHECK_SYNC_WORK_ERROR", e.message, null)
+                    }
+                }
+                "checkPendingSync" -> {
+                    try {
+                        // For broadcast-based sync, we don't need to check SharedPreferences
+                        // Return false since we're not using SharedPreferences anymore
+                        result.success(false)
+                    } catch (e: Exception) {
+                        Log.e("SyncWorker", "Error checking pending sync: ${e.message}", e)
+                        result.error("CHECK_PENDING_SYNC_ERROR", e.message, null)
                     }
                 }
                 else -> {

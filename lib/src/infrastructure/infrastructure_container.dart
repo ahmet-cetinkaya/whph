@@ -9,14 +9,17 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/infrastructure/android/features/settings/android_startup_settings_service.dart';
 import 'package:whph/src/infrastructure/desktop/features/notification/desktop_notification_service.dart';
 import 'package:whph/src/infrastructure/desktop/features/reminder/desktop_reminder_service.dart';
 import 'package:whph/src/infrastructure/desktop/settings/desktop_startup_settings_service.dart';
+import 'package:whph/src/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/src/infrastructure/linux/features/setup/linux_setup_service.dart';
 import 'package:whph/src/infrastructure/android/features/app_usage/android_app_usage_service.dart';
+import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/src/infrastructure/linux/features/app_usages/linux_app_usage_service.dart';
 import 'package:whph/src/infrastructure/linux/features/window/linux_window_manager.dart';
 import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
@@ -145,5 +148,20 @@ void registerInfrastructure(IContainer container) {
     }
 
     throw Exception('Unsupported platform for reminder service.');
+  });
+
+  // Register ISyncService with platform-specific implementations
+  container.registerSingleton<ISyncService>((_) {
+    final mediator = container.resolve<Mediator>();
+
+    if (Platform.isLinux || Platform.isWindows) {
+      return DesktopSyncService(mediator);
+    }
+
+    if (Platform.isAndroid) {
+      return AndroidSyncService(mediator);
+    }
+
+    throw Exception('Unsupported platform for sync service.');
   });
 }
