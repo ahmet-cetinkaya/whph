@@ -63,167 +63,122 @@ class AndroidAppUsageService extends BaseAppUsageService {
     });
   }
 
-  /// Fetches app usage from the last collection timestamp to now and saves the records.
-  /// This ensures no data gaps between collections and saves separate records for each hour.
+  /// Fetches app usage for individual hours to avoid data duplication and over-reporting.
+  /// Uses incremental collection approach to ensure accurate usage statistics.
   Future<void> _fetchAndSaveCurrentHourUsage() async {
     // Permission should have been checked by the caller (startTracking or timer callback).
     try {
       DateTime now = DateTime.now();
-      DateTime startDate = await _getLastCollectionTimestamp() ??
-          DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0); // Fallback to start of current hour
-      DateTime endDate = now; // Up to the current moment.
-
-      // Ensure startDate is before endDate to form a valid interval.
-      if (!startDate.isBefore(endDate)) {
-        Logger.info('Skipping app usage fetch: interval is zero or negative. Start: $startDate, End: $endDate.');
+      DateTime? lastCollection = await _getLastCollectionTimestamp();
+      
+      // If this is the first time running, start from the beginning of current hour
+      if (lastCollection == null) {
+        DateTime currentHourStart = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
+        await _collectUsageForSingleHour(currentHourStart);
+        await _saveLastCollectionTimestamp(now);
         return;
       }
 
-      Logger.info('Fetching app usages from $startDate to $endDate');
+      // Calculate which hours need to be processed since last collection
+      List<DateTime> hoursToProcess = _getHoursToProcess(lastCollection, now);
+      
+      if (hoursToProcess.isEmpty) {
+        Logger.info('No new hours to process since last collection: $lastCollection');
+        return;
+      }
 
-      // Process each hour separately to ensure proper hourly records
-      await _processUsageByHours(startDate, endDate);
+      Logger.info('Processing ${hoursToProcess.length} hours since last collection: $lastCollection');
 
-      // Update the last collection timestamp to prevent data gaps
-      await _saveLastCollectionTimestamp(endDate);
-      Logger.info('Last collection timestamp updated to: $endDate');
+      // Process each hour individually to get accurate data
+      for (DateTime hourStart in hoursToProcess) {
+        await _collectUsageForSingleHour(hourStart);
+      }
+
+      // Update the last collection timestamp
+      await _saveLastCollectionTimestamp(now);
+      Logger.info('Successfully processed ${hoursToProcess.length} hours, updated last collection to: $now');
     } catch (e) {
-      // Log error with current time context as 'now' is local to this call.
-      Logger.error('Error in _fetchAndSaveCurrentHourUsage around ${DateTime.now()}: $e');
+      Logger.error('Error in _fetchAndSaveCurrentHourUsage: $e');
     }
   }
 
-  /// Processes app usage data by breaking it down into hourly segments
-  /// and saving separate records for each hour.
-  ///
-  /// IMPORTANT: This method calls getAppUsage() once for the entire period to avoid
-  /// data duplication, then calculates incremental usage for each hour.
-  Future<void> _processUsageByHours(DateTime startDate, DateTime endDate) async {
-    try {
-      // Get usage data for the entire period ONCE to avoid duplication
-      Logger.info('Fetching app usage data for entire period: $startDate to $endDate');
-      List<app_usage_package.AppUsageInfo> totalUsageStats = await _appUsage.getAppUsage(startDate, endDate);
+  /// Determines which hours need to be processed since the last collection.
+  /// Returns a list of hour start times that need data collection.
+  List<DateTime> _getHoursToProcess(DateTime lastCollection, DateTime now) {
+    List<DateTime> hoursToProcess = [];
+    
+    // Start from the hour after the last collection
+    DateTime startHour = DateTime(
+      lastCollection.year, 
+      lastCollection.month, 
+      lastCollection.day, 
+      lastCollection.hour, 
+      0, 0, 0, 0
+    );
+    
+    // If we're in the same hour as last collection, move to next hour
+    if (startHour.isAtSameMomentAs(DateTime(
+      lastCollection.year, lastCollection.month, lastCollection.day, lastCollection.hour, 0, 0, 0, 0))) {
+      startHour = startHour.add(const Duration(hours: 1));
+    }
+    
+    DateTime currentHour = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
+    
+    // Add all complete hours between last collection and now
+    DateTime processingHour = startHour;
+    while (processingHour.isBefore(currentHour) || processingHour.isAtSameMomentAs(currentHour)) {
+      hoursToProcess.add(processingHour);
+      processingHour = processingHour.add(const Duration(hours: 1));
+    }
+    
+    return hoursToProcess;
+  }
 
-      if (totalUsageStats.isEmpty) {
-        Logger.info('No app usage stats found for the entire period $startDate - $endDate.');
+  /// Collects usage data for a specific hour and saves it as a single record.
+  /// This method fetches usage for exactly one hour to avoid data duplication.
+  Future<void> _collectUsageForSingleHour(DateTime hourStart) async {
+    try {
+      DateTime hourEnd = hourStart.add(const Duration(hours: 1));
+      
+      Logger.info('Collecting usage data for hour: $hourStart to $hourEnd');
+      
+      // Fetch usage data for this specific hour only
+      List<app_usage_package.AppUsageInfo> hourUsageStats = 
+          await _appUsage.getAppUsage(hourStart, hourEnd);
+      
+      if (hourUsageStats.isEmpty) {
+        Logger.info('No app usage stats found for hour $hourStart - $hourEnd');
         return;
       }
-
-      // Get all hours that need to be processed
-      List<DateTime> hourlySegments = _generateHourlySegments(startDate, endDate);
-      Logger.info('Processing ${totalUsageStats.length} apps across ${hourlySegments.length} hour segments');
-
-      int totalRecordsSaved = 0;
-
-      // Process each app separately to distribute its usage across hours
-      for (app_usage_package.AppUsageInfo totalUsage in totalUsageStats) {
-        if (totalUsage.usage.inSeconds <= 0) {
-          if (totalUsage.usage.inSeconds < 0) {
+      
+      int recordsSaved = 0;
+      
+      // Save each app's usage for this hour directly (no distribution needed)
+      for (app_usage_package.AppUsageInfo usageInfo in hourUsageStats) {
+        if (usageInfo.usage.inSeconds <= 0) {
+          if (usageInfo.usage.inSeconds < 0) {
             Logger.warning(
-                'Negative app usage duration for ${totalUsage.appName} (${totalUsage.usage.inSeconds}s). Skipping app.');
+                'Negative app usage duration for ${usageInfo.appName} (${usageInfo.usage.inSeconds}s). Skipping app.');
           }
           continue;
         }
-
-        // Distribute this app's total usage across the hour segments
-        int recordsForThisApp = await _distributeAppUsageAcrossHours(
-            totalUsage.appName, totalUsage.usage.inSeconds, hourlySegments, startDate, endDate);
-
-        totalRecordsSaved += recordsForThisApp;
-        Logger.info(
-            'App ${totalUsage.appName}: ${totalUsage.usage.inSeconds}s total usage distributed across $recordsForThisApp hour records');
-      }
-
-      Logger.info("Total $totalRecordsSaved app usage records saved across ${hourlySegments.length} hour segments.");
-    } catch (e) {
-      Logger.error('Error in _processUsageByHours: $e');
-    }
-  }
-
-  /// Distributes an app's total usage time across hourly segments proportionally
-  /// based on the time spent in each hour segment.
-  Future<int> _distributeAppUsageAcrossHours(
-    String appName,
-    int totalUsageSeconds,
-    List<DateTime> hourlySegments,
-    DateTime actualStartDate,
-    DateTime actualEndDate,
-  ) async {
-    int recordsSaved = 0;
-    int remainingUsage = totalUsageSeconds;
-
-    // Calculate total time span in seconds
-    int totalTimeSpanSeconds = actualEndDate.difference(actualStartDate).inSeconds;
-
-    if (totalTimeSpanSeconds <= 0) {
-      Logger.warning('Invalid time span for app $appName. Start: $actualStartDate, End: $actualEndDate');
-      return 0;
-    }
-
-    Logger.info(
-        'Distributing ${totalUsageSeconds}s usage for $appName across ${hourlySegments.length} hours (total span: ${totalTimeSpanSeconds}s)');
-
-    for (int i = 0; i < hourlySegments.length; i++) {
-      DateTime segmentStart = hourlySegments[i];
-      DateTime segmentEnd = i < hourlySegments.length - 1 ? hourlySegments[i + 1] : actualEndDate;
-
-      // Calculate the actual time this segment covers within our collection period
-      DateTime effectiveStart = segmentStart.isAfter(actualStartDate) ? segmentStart : actualStartDate;
-      DateTime effectiveEnd = segmentEnd.isBefore(actualEndDate) ? segmentEnd : actualEndDate;
-
-      if (!effectiveStart.isBefore(effectiveEnd)) {
-        continue; // Skip invalid segments
-      }
-
-      int segmentTimeSeconds = effectiveEnd.difference(effectiveStart).inSeconds;
-
-      // Calculate proportional usage for this segment
-      int segmentUsage;
-      if (i == hourlySegments.length - 1) {
-        // Last segment gets all remaining usage to avoid rounding errors
-        segmentUsage = remainingUsage;
-      } else {
-        // Proportional distribution based on time spent in this segment
-        segmentUsage = (totalUsageSeconds * segmentTimeSeconds / totalTimeSpanSeconds).round();
-        remainingUsage -= segmentUsage;
-      }
-
-      if (segmentUsage > 0) {
+        
+        // Save the usage directly for this hour (the app_usage package already gives us the correct usage for this time period)
         await saveTimeRecord(
-          appName,
-          segmentUsage,
-          overwrite: true,
-          customDateTime: segmentStart,
+          usageInfo.appName,
+          usageInfo.usage.inSeconds,
+          overwrite: true, // Overwrite any existing data for this hour
+          customDateTime: hourStart,
         );
+        
         recordsSaved++;
-
-        Logger.info(
-            'Hour ${segmentStart.hour}:00 - ${segmentUsage}s usage for $appName (${segmentTimeSeconds}s segment time)');
+        Logger.info('Saved ${usageInfo.usage.inSeconds}s usage for ${usageInfo.appName} at hour $hourStart');
       }
+      
+      Logger.info('Saved $recordsSaved app usage records for hour starting at $hourStart');
+    } catch (e) {
+      Logger.error('Error collecting usage for hour $hourStart: $e');
     }
-
-    return recordsSaved;
-  }
-
-  /// Generates a list of hourly segment start times between startDate and endDate
-  List<DateTime> _generateHourlySegments(DateTime startDate, DateTime endDate) {
-    List<DateTime> segments = [];
-
-    // Start from the beginning of the hour containing startDate
-    DateTime currentHour = DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0, 0, 0, 0);
-
-    while (currentHour.isBefore(endDate)) {
-      segments.add(currentHour);
-      currentHour = currentHour.add(const Duration(hours: 1));
-    }
-
-    // If segments is empty, add at least the start hour
-    if (segments.isEmpty) {
-      segments.add(DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0, 0, 0, 0));
-    }
-
-    Logger.info('Generated ${segments.length} hourly segments from $startDate to $endDate');
-    return segments;
   }
 
   @override
