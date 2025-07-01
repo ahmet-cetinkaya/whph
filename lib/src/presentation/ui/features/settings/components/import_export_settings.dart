@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/src/core/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/src/core/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/main.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -302,6 +303,8 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         }
       },
       onError: (e) {
+        Logger.error("Import failed: $e");
+
         if (context.mounted) {
           // Hide loading overlay
           OverlayNotificationHelper.hideNotification();
@@ -409,6 +412,8 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         }
       },
       onError: (e) {
+        Logger.error('Export failed: $e');
+
         // Show error overlay notification
         if (context.mounted) {
           OverlayNotificationHelper.hideNotification();

@@ -32,11 +32,11 @@ class GlobalErrorHandler {
 
       if (overlay != null) {
         _showErrorNotification(error, stack, context);
-      } else {
-        _logErrorOnly(error, stack);
       }
+
+      _logError(error, stack);
     } catch (e) {
-      _logErrorOnly(error, stack);
+      _logError(error, stack);
     }
   }
 
@@ -66,7 +66,7 @@ class GlobalErrorHandler {
   }
 
   /// Log error without showing notification
-  static void _logErrorOnly(Object error, StackTrace stack) {
+  static void _logError(Object error, StackTrace stack) {
     if (kDebugMode) {
       Logger.error('Error displaying error notification: $error');
       Logger.error('Stack trace: $stack');
