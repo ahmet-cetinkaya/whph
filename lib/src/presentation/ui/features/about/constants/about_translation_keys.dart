@@ -43,4 +43,5 @@ class AboutTranslationKeys extends application.AboutTranslationKeys {
 
   static const String feedback = 'about.links.feedback';
   static const String contact = 'about.links.contact';
+  static const String checkUpdate = 'about.links.check_update';
 }
