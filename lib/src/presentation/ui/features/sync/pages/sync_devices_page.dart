@@ -164,8 +164,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             )
           : Padding(
               padding: const EdgeInsets.all(AppTheme.sizeLarge),
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: list!.items.length,
+                padding: EdgeInsets.only(bottom: AppTheme.sizeSmall),
                 itemBuilder: (context, index) {
                   return SyncDeviceListItemWidget(
                     key: ValueKey(list!.items[index].id),
@@ -173,6 +174,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
                     onRemove: _removeDevice,
                   );
                 },
+                separatorBuilder: (context, index) => const SizedBox(height: AppTheme.sizeSmall),
               ),
             ),
     );
