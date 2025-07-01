@@ -8,12 +8,14 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 
 class AppAbout extends StatelessWidget {
   AppAbout({super.key});
 
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  final ISetupService _setupService = container.resolve<ISetupService>();
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +95,7 @@ class AppAbout extends StatelessWidget {
                 icon: Icons.mail,
                 url: 'mailto:${AppInfo.supportEmail}',
               ),
+              if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) _buildCheckUpdateButton(context),
             ],
           ),
         ),
@@ -110,6 +113,19 @@ class AppAbout extends StatelessWidget {
         maxLines: 2,
       ),
       icon: Icon(icon),
+    );
+  }
+
+  Widget _buildCheckUpdateButton(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () => _setupService.checkForUpdates(context),
+      label: Text(
+        _translationService.translate(AboutTranslationKeys.checkUpdate),
+        style: AppTheme.bodyLarge,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+      ),
+      icon: const Icon(Icons.update),
     );
   }
 
