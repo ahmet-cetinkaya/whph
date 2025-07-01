@@ -12,12 +12,10 @@ class SyncService implements ISyncService {
   final Mediator _mediator;
 
   final _syncCompleteController = StreamController<bool>.broadcast();
-  Timer? _periodicTimer;
   WebSocketChannel? _channel;
   DateTime? _lastSyncTime;
   bool _isConnected = false;
   Timer? _reconnectTimer;
-  static const Duration _syncInterval = Duration(minutes: 1);
   int _reconnectAttempts = 0;
   static const int _maxReconnectAttempts = 3;
 
@@ -73,23 +71,9 @@ class SyncService implements ISyncService {
 
   @override
   Future<void> startSync() async {
-    // First, clear the existing timer
-    stopSync();
-
-    // Run the initial sync
+    // Default implementation - can be overridden by platform-specific services
+    Logger.debug('Base SyncService startSync called');
     await runSync();
-
-    // Start periodic sync
-    _periodicTimer = Timer.periodic(_syncInterval, (timer) async {
-      try {
-        Logger.debug('Running periodic sync at ${DateTime.now()}');
-        await runSync();
-      } catch (e) {
-        Logger.error('Periodic sync failed: $e');
-      }
-    });
-
-    Logger.debug('Started periodic sync with interval: ${_syncInterval.inMinutes} minutes');
   }
 
   @override
@@ -116,11 +100,8 @@ class SyncService implements ISyncService {
 
   @override
   void stopSync() {
-    if (_periodicTimer != null) {
-      Logger.debug('Stopping periodic sync');
-      _periodicTimer!.cancel();
-      _periodicTimer = null;
-    }
+    // Default implementation - can be overridden by platform-specific services
+    Logger.debug('Base SyncService stopSync called');
   }
 
   void notifySyncComplete() {

@@ -10,7 +10,6 @@ import 'package:whph/src/core/application/features/sync/queries/get_sync_query.d
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/src/core/application/features/sync/services/device_id_service.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/src/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
@@ -50,7 +49,7 @@ void registerSyncFeature(
   INoteRepository noteRepository,
   INoteTagRepository noteTagRepository,
 ) {
-  container.registerSingleton<ISyncService>((_) => SyncService(mediator));
+  // ISyncService is registered in infrastructure_container.dart with platform-specific implementations
   final syncService = container.resolve<ISyncService>();
 
   container.registerSingleton<IDeviceIdService>((_) => DeviceIdService());
