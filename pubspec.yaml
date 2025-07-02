@@ -119,4 +119,3 @@ flutter:
     - lib/src/presentation/ui/features/tasks/assets/locales/
     - lib/src/presentation/ui/features/tasks/assets/sounds/
     - lib/src/presentation/ui/features/notes/assets/locales/
-    - linux/focus_window.sh

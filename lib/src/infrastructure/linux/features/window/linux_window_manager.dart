@@ -1,27 +1,57 @@
-import 'dart:io';
+import 'package:flutter/services.dart';
 import '../../../shared/features/window/window_manager.dart';
 
-/// Linux-specific implementation of WindowManagerInterface
+/// Linux-specific implementation of WindowManagerInterface with native platform channel support
 class LinuxWindowManager extends WindowManager {
-  /// Path to the focus window script
-  final String _scriptPath;
+  /// Platform channel for native window operations
+  static const MethodChannel _channel = MethodChannel('me.ahmetcetinkaya.whph/app_usage');
 
   /// Constructor
-  LinuxWindowManager({String? scriptPath}) : _scriptPath = scriptPath ?? 'linux/focus_window.sh';
+  LinuxWindowManager();
 
   @override
   Future<void> focus() async {
-    // Get the current window title
-    final currentTitle = await getTitle();
+    try {
+      // Try to focus using base implementation first
+      await super.focus();
 
-    // Try to focus using base implementation first
-    await super.focus();
+      // Check if already focused
+      final bool isFocused = await super.isFocused();
+      if (isFocused) {
+        return;
+      }
 
-    bool isFocused = await super.isFocused();
-    if (!isFocused && File(_scriptPath).existsSync()) {
-      // Some desktop environments require a script to focus the window
-      await Process.run('chmod', ['+x', _scriptPath]);
-      await Process.run(_scriptPath, [currentTitle]);
+      // Get the current window title
+      final String currentTitle = await getTitle();
+
+      // Use native implementation to focus window
+      final bool success = await _channel.invokeMethod<bool>('focusWindow', currentTitle) ?? false;
+      
+      if (!success) {
+        // If native focus failed, try with default app name
+        await _channel.invokeMethod<bool>('focusWindow', 'whph');
+      }
+    } catch (e) {
+      // If platform channel fails, fallback to base implementation
+      await super.focus();
+    }
+  }
+
+  /// Focus window by title using native implementation
+  Future<bool> focusWindowByTitle(String title) async {
+    try {
+      return await _channel.invokeMethod<bool>('focusWindow', title) ?? false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Get active window info from native implementation
+  Future<String?> getActiveWindowInfo() async {
+    try {
+      return await _channel.invokeMethod<String>('getActiveWindow');
+    } catch (e) {
+      return null;
     }
   }
 }

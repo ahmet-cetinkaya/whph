@@ -14,12 +14,14 @@ public:
     static std::unique_ptr<WindowDetector> Create();
     virtual ~WindowDetector() = default;
     virtual WindowInfo GetActiveWindow() = 0;
+    virtual bool FocusWindow(const std::string& windowTitle) = 0;
 };
 
 // X11 implementation
 class X11WindowDetector : public WindowDetector {
 public:
     WindowInfo GetActiveWindow() override;
+    bool FocusWindow(const std::string& windowTitle) override;
 private:
     bool IsX11Available();
 };
@@ -28,6 +30,7 @@ private:
 class WaylandWindowDetector : public WindowDetector {
 public:
     WindowInfo GetActiveWindow() override;
+    bool FocusWindow(const std::string& windowTitle) override;
 private:
     WindowInfo TryGnomeWayland();
     WindowInfo TrySwayWayland();
@@ -39,6 +42,7 @@ private:
 class FallbackWindowDetector : public WindowDetector {
 public:
     WindowInfo GetActiveWindow() override;
+    bool FocusWindow(const std::string& windowTitle) override;
 };
 
 #endif  // WINDOW_DETECTOR_H_

@@ -359,3 +359,135 @@ WindowInfo FallbackWindowDetector::GetActiveWindow() {
     
     return info;
 }
+
+// X11WindowDetector focus implementation
+bool X11WindowDetector::FocusWindow(const std::string& windowTitle) {
+#ifdef HAVE_X11
+    if (!IsX11Available()) {
+        return false;
+    }
+    
+    Display* display = XOpenDisplay(nullptr);
+    if (!display) {
+        return false;
+    }
+    
+    Window root = DefaultRootWindow(display);
+    Atom net_client_list = XInternAtom(display, "_NET_CLIENT_LIST", False);
+    Atom net_wm_name = XInternAtom(display, "_NET_WM_NAME", False);
+    Atom utf8_string = XInternAtom(display, "UTF8_STRING", False);
+    
+    Atom actual_type;
+    int actual_format;
+    unsigned long nitems, bytes_after;
+    Window* windows = nullptr;
+    
+    // Get list of all windows
+    int status = XGetWindowProperty(display, root, net_client_list, 0, 1024,
+                                   False, XA_WINDOW, &actual_type, &actual_format,
+                                   &nitems, &bytes_after, (unsigned char**)&windows);
+    
+    if (status != Success || !windows) {
+        XCloseDisplay(display);
+        return false;
+    }
+    
+    bool found = false;
+    
+    for (unsigned long i = 0; i < nitems; i++) {
+        Window window = windows[i];
+        
+        // Try _NET_WM_NAME first (UTF-8)
+        unsigned char* name_prop = nullptr;
+        status = XGetWindowProperty(display, window, net_wm_name, 0, 1024,
+                                   False, utf8_string, &actual_type, &actual_format,
+                                   &nitems, &bytes_after, &name_prop);
+        
+        std::string title;
+        if (status == Success && name_prop) {
+            title = std::string((char*)name_prop);
+            XFree(name_prop);
+        } else {
+            // Fallback to WM_NAME
+            char* window_name = nullptr;
+            if (XFetchName(display, window, &window_name) && window_name) {
+                title = std::string(window_name);
+                XFree(window_name);
+            }
+        }
+        
+        // Check if this is our target window
+        if (title.find(windowTitle) != std::string::npos || title == "whph") {
+            // Focus the window
+            XRaiseWindow(display, window);
+            XSetInputFocus(display, window, RevertToParent, CurrentTime);
+            XFlush(display);
+            found = true;
+            break;
+        }
+    }
+    
+    XFree(windows);
+    XCloseDisplay(display);
+    return found;
+#else
+    // Fallback to wmctrl if X11 headers not available
+    std::string command = "wmctrl -a \"" + windowTitle + "\" 2>/dev/null || wmctrl -x -a \"whph\" 2>/dev/null";
+    int result = system(command.c_str());
+    return result == 0;
+#endif
+}
+
+// WaylandWindowDetector focus implementation
+bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
+    // For Wayland, we'll use different methods based on the compositor
+    
+    // Try different Wayland compositors
+    std::vector<std::string> commands = {
+        // GNOME/Mutter
+        "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_title().includes('" + windowTitle + "')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null",
+        
+        // Sway
+        "swaymsg '[title=\"" + windowTitle + "\"] focus' 2>/dev/null",
+        "swaymsg '[app_id=\"whph\"] focus' 2>/dev/null",
+        
+        // KDE/KWin
+        "qdbus org.kde.KWin /KWin org.kde.KWin.activateWindow \"" + windowTitle + "\" 2>/dev/null",
+        
+        // Hyprland
+        "hyprctl dispatch focuswindow title:\"" + windowTitle + "\" 2>/dev/null",
+        "hyprctl dispatch focuswindow class:whph 2>/dev/null",
+        
+        // Generic wmctrl fallback
+        "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
+        "wmctrl -x -a \"whph\" 2>/dev/null"
+    };
+    
+    for (const auto& command : commands) {
+        int result = system(command.c_str());
+        if (result == 0) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// FallbackWindowDetector focus implementation
+bool FallbackWindowDetector::FocusWindow(const std::string& windowTitle) {
+    // Try wmctrl as fallback
+    std::vector<std::string> commands = {
+        "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
+        "wmctrl -x -a \"whph\" 2>/dev/null",
+        "xdotool search --name \"" + windowTitle + "\" windowactivate 2>/dev/null"
+    };
+    
+    for (const auto& command : commands) {
+        int result = system(command.c_str());
+        if (result == 0) {
+            return true;
+        }
+    }
+    
+    return false;
+}
