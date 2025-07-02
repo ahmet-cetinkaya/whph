@@ -222,10 +222,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
           : () async {
               if (hasRecord) {
                 await widget.onDeleteRecord(recordForDay!.id);
-                _soundPlayer.play(SharedSounds.done);
+                _soundPlayer.play(SharedSounds.done, volume: 1.0);
               } else {
                 await widget.onCreateRecord(widget.habitId, date);
-                _soundPlayer.play(SharedSounds.done);
+                _soundPlayer.play(SharedSounds.done, volume: 1.0);
               }
               widget.onRecordChanged?.call();
             },
