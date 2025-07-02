@@ -146,7 +146,7 @@ class _HabitCardState extends State<HabitCard> {
       }
     } else {
       await _createHabitRecord(widget.habit.id, today);
-      _soundPlayer.play(SharedSounds.done);
+      _soundPlayer.play(SharedSounds.done, volume: 1.0);
     }
   }
 
@@ -163,7 +163,7 @@ class _HabitCardState extends State<HabitCard> {
         // Notify service that a record was added
         _habitsService.notifyHabitRecordAdded(habitId);
         widget.onRecordCreated?.call(response);
-        _soundPlayer.play(SharedSounds.done);
+        _soundPlayer.play(SharedSounds.done, volume: 1.0);
       },
     );
   }

@@ -6,6 +6,7 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final Map<String, Uint8List> _soundCache = {};
   bool _isInitialized = false;
+  double _currentVolume = 1.0; // Track current volume setting
 
   // Loop context preservation
   bool _wasLooping = false;
@@ -46,8 +47,11 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   }
 
   @override
-  void play(String path, {bool requestAudioFocus = true}) async {
+  void play(String path, {bool requestAudioFocus = true, double? volume}) async {
     await _ensureInitialized(path, requestAudioFocus: requestAudioFocus);
+
+    // Use provided volume or fall back to current volume
+    final playVolume = volume ?? _currentVolume;
 
     // Check if we're currently looping and this is a different sound
     final wasCurrentlyLooping = _wasLooping && _loopingSoundPath != null && _loopingSoundPath != path;
@@ -62,13 +66,13 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
       // Play the one-time sound
       await _audioPlayer.setSourceBytes(_soundCache[path]!);
       await _audioPlayer.setReleaseMode(ReleaseMode.release); // One-time play
-      await _audioPlayer.setVolume(1);
+      await _audioPlayer.setVolume(playVolume);
       await _audioPlayer.resume();
     } else {
       // Normal play - either first sound or replacing current sound
       await _audioPlayer.stop();
       await _audioPlayer.setSourceBytes(_soundCache[path]!);
-      await _audioPlayer.setVolume(1);
+      await _audioPlayer.setVolume(playVolume);
       await _audioPlayer.resume();
 
       // Set looping sound path if we're in loop mode
@@ -85,7 +89,7 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
       // Resume the looping sound
       await _audioPlayer.setSourceBytes(_soundCache[_loopingSoundPath!]!);
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      await _audioPlayer.setVolume(1);
+      await _audioPlayer.setVolume(_currentVolume);
       await _audioPlayer.resume();
     }
   }
@@ -118,8 +122,12 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
 
   @override
   void setVolume(double volume) {
+    _currentVolume = volume;
     _audioPlayer.setVolume(volume);
   }
+
+  // Getter for current volume
+  double get currentVolume => _currentVolume;
 
   @override
   void stop() {

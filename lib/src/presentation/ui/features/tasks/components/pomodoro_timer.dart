@@ -145,6 +145,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _defaultKeepScreenAwake = await _getBoolSetting(SettingKeys.keepScreenAwake, false);
     _defaultTickingVolume = await _getSetting(SettingKeys.tickingVolume, 50);
     _defaultTickingSpeed = await _getSetting(SettingKeys.tickingSpeed, 1);
+    
+    // Ensure minimum volume is 5
+    if (_defaultTickingVolume < 5) {
+      _defaultTickingVolume = 5;
+      await _saveSetting(SettingKeys.tickingVolume, _defaultTickingVolume);
+    }
+    
     if (mounted) {
       setState(() {
         _workDuration = _defaultWorkDuration;
@@ -210,7 +217,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     });
 
     _soundPlayer.setLoop(true);
-    _soundPlayer.play(SharedSounds.alarmDone);
+    _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
 
     _sendNotification();
   }
@@ -263,7 +270,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     widget.onTimerStart?.call();
 
     if (mounted) {
-      _soundPlayer.play(SharedSounds.button);
+      _soundPlayer.play(SharedSounds.button, volume: 1.0);
       _setSystemTrayIcon();
       _addTimerMenuItems();
       _updateSystemTrayTimer();
@@ -329,7 +336,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _stopTimer() {
     if (mounted) {
-      _soundPlayer.play(SharedSounds.button);
+      _soundPlayer.play(SharedSounds.button, volume: 1.0);
       _stopTicking();
 
       // Disable wakelock when stopping timer
@@ -673,12 +680,12 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
                 (adjustment) {
                   if (!mounted) return;
                   setState(() {
-                    _tickingVolume = (_tickingVolume + adjustment).clamp(0, 100);
+                    _tickingVolume = (_tickingVolume + adjustment).clamp(5, 100);
                   });
                   _saveSetting(SettingKeys.tickingVolume, _tickingVolume);
                 },
-                step: 10,
-                minValue: 0,
+                step: 5,
+                minValue: 5,
                 maxValue: 100,
                 showMinutes: false,
               ),
@@ -849,13 +856,11 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         return;
       }
 
-      // Set volume based on user preference
-      _soundPlayer.setVolume(_tickingVolume / 100);
-
-      // Play alternating tick and tock sounds without requesting audio focus
+      // Play alternating tick and tock sounds with specific volume
       _soundPlayer.play(
         _isTickSound ? TaskSounds.clockTick : TaskSounds.clockTock,
         requestAudioFocus: false,
+        volume: _tickingVolume / 100.0,
       );
       _isTickSound = !_isTickSound; // Toggle for next sound
     });

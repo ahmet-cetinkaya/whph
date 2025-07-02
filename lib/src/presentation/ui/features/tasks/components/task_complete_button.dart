@@ -96,7 +96,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
 
         if (command.isCompleted) {
-          _soundPlayer.play(SharedSounds.done);
+          _soundPlayer.play(SharedSounds.done, volume: 1.0);
         }
       },
       onSuccess: () {
