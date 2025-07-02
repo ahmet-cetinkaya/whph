@@ -76,11 +76,10 @@ sed -i "s/static const String version = \".*\";/static const String version = \"
 echo "Updating $INSTALLER_FILE..."
 sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
-# Update F-Droid metadata
-echo "Updating $FDROID_METADATA_FILE..."
+# First update F-Droid metadata without commit hash
+echo "Updating $FDROID_METADATA_FILE (initial)..."
 sed -i "s/versionName: .*/versionName: $NEW_VERSION/" "$FDROID_METADATA_FILE"
 sed -i "s/versionCode: .*/versionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
-sed -i "s/commit: .*/commit: v$NEW_VERSION/" "$FDROID_METADATA_FILE"
 sed -i "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
 sed -i "s/CurrentVersionCode: .*/CurrentVersionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
 sed -i "s/--build-name=.*/--build-name=$NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
@@ -90,42 +89,54 @@ echo "Generating changelog..."
 cd "$PROJECT_ROOT"
 bash scripts/create_changelog.sh "$NEW_BUILD" --auto
 
-echo "Version bump completed successfully!"
-echo "Updated files:"
-echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
-echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
-echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
-echo "  - $FDROID_METADATA_FILE (versionName: $NEW_VERSION, versionCode: $NEW_BUILD)"
-echo "  - CHANGELOG.md (generated for version $NEW_VERSION)"
-echo "  - fastlane/metadata/android/en-US/changelogs/ (generated for version code $NEW_BUILD)"
-echo ""
-
-# Git operations
-echo "Staging changes..."
+# Git operations - Create version bump commit first
+echo "Creating version bump commit..."
 
 # First, stage changes in the F-Droid submodule
 echo "Staging F-Droid metadata changes in submodule..."
 cd "$PROJECT_ROOT/android/fdroid"
 git add "metadata/me.ahmetcetinkaya.whph.yml"
+git commit -m "chore: update app version to $NEW_VERSION"
 cd "$PROJECT_ROOT"
 
 # Then, stage changes in the main repository (including submodule update)
 echo "Staging main repository changes..."
 git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "android/fdroid" "CHANGELOG.md" "fastlane/metadata/android/en-US/changelogs/"
+git commit -m "chore: update app version to $NEW_VERSION"
 
+# Get the commit hash of the version bump commit
+VERSION_COMMIT=$(git rev-parse HEAD)
+
+# Now update F-Droid metadata with the correct commit hash
+echo "Updating F-Droid metadata with commit hash..."
+cd "$PROJECT_ROOT/android/fdroid"
+sed -i "s/commit: .*/commit: $VERSION_COMMIT/" "metadata/me.ahmetcetinkaya.whph.yml"
+git add "metadata/me.ahmetcetinkaya.whph.yml"
+git commit -m "chore: update commit hash for F-Droid build"
+cd "$PROJECT_ROOT"
+
+# Update the submodule reference in main repo
+git add "android/fdroid"
+git commit -m "chore: update F-Droid submodule with commit hash"
+
+# Create version tag
+git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
+
+echo "Version bump completed successfully!"
+echo "Updated files:"
+echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
+echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
+echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
+echo "  - $FDROID_METADATA_FILE (versionName: $NEW_VERSION, versionCode: $NEW_BUILD, commit: $VERSION_COMMIT)"
+echo "  - CHANGELOG.md (generated for version $NEW_VERSION)"
+echo "  - fastlane/metadata/android/en-US/changelogs/ (generated for version code $NEW_BUILD)"
 echo ""
-echo "Git staging completed:"
-echo "  - Generated changelog for version $NEW_VERSION"
-echo "  - Staged F-Droid metadata changes in submodule"
-echo "  - Staged main repository changes (including changelog)"
-echo ""
-echo "Suggested commit message:"
-echo "  chore: update app version to $NEW_VERSION"
-echo ""
-echo "To commit the changes:"
-echo "  cd android/fdroid && git commit -m 'chore: update app version to $NEW_VERSION'"
-echo "  cd ../.. && git commit -m 'chore: update app version to $NEW_VERSION'"
-echo "  git tag -a 'v$NEW_VERSION' -m 'Version $NEW_VERSION'"
+
+# Git operations completed
+echo "Git operations completed:"
+echo "  - Created version bump commit: $VERSION_COMMIT"
+echo "  - Updated F-Droid metadata with correct commit hash"
+echo "  - Created version tag: v$NEW_VERSION"
 echo ""
 echo "To push changes and tags to remote:"
 echo "  rps version:push"
