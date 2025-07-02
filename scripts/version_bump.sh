@@ -96,7 +96,7 @@ echo "Creating version bump commit..."
 echo "Staging F-Droid metadata changes in submodule..."
 cd "$PROJECT_ROOT/android/fdroid"
 git add "metadata/me.ahmetcetinkaya.whph.yml"
-git commit -m "chore: update app version to $NEW_VERSION"
+git commit -m "feat(me.ahmetcetinkaya.whph): update app version to $NEW_VERSION"
 cd "$PROJECT_ROOT"
 
 # Then, stage changes in the main repository (including submodule update)
@@ -112,7 +112,7 @@ echo "Updating F-Droid metadata with commit hash..."
 cd "$PROJECT_ROOT/android/fdroid"
 sed -i "s/commit: .*/commit: $VERSION_COMMIT/" "metadata/me.ahmetcetinkaya.whph.yml"
 git add "metadata/me.ahmetcetinkaya.whph.yml"
-git commit -m "chore: update commit hash for F-Droid build"
+git commit -m "build(me.ahmetcetinkaya.whph): update commit hash for F-Droid build"
 cd "$PROJECT_ROOT"
 
 # Update the submodule reference in main repo
