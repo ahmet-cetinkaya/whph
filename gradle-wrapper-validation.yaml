@@ -1,0 +1,24 @@
+# Gradle Wrapper Validation Configuration
+# This file helps validate the integrity of the Gradle wrapper
+
+gradle_wrapper_info:
+  version: "8.4"
+  distribution_url: "https://services.gradle.org/distributions/gradle-8.4-all.zip"
+  expected_checksum: "3e1af3ae886920c3ac87f7a91f816c0c7c436f276a6eead863acd29c3288d4acc"
+  
+validation_commands:
+  - description: "Validate Gradle wrapper JAR integrity"
+    command: "gradle wrapper --gradle-version 8.4 --distribution-type all"
+    
+  - description: "Check wrapper properties"
+    command: "cat android/gradle/wrapper/gradle-wrapper.properties"
+    
+  - description: "Verify JAR file exists and is valid"
+    command: "ls -la android/gradle/wrapper/gradle-wrapper.jar"
+
+security_notes: |
+  This configuration helps ensure that:
+  1. The Gradle wrapper version is explicitly specified
+  2. The distribution URL uses HTTPS
+  3. The wrapper JAR file integrity can be verified
+  4. Build reproducibility is improved

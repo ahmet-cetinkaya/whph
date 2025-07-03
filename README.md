@@ -78,3 +78,38 @@ If you'd like to contribute, please follow these steps:
    ```bash
    flutter run
    ```
+
+### 🔒 Security & Reproducible Builds
+
+WHPH implements security best practices and supports reproducible builds:
+
+#### Quick Commands (with RPS)
+```bash
+# Install RPS globally (one-time setup)
+dart pub global activate rps
+
+# Security validation
+rps security-check
+
+# Build production APK with security validation
+rps release:android
+
+# Build fully reproducible APK
+rps release:android:reproducible
+
+# Build Android App Bundle for Play Store
+rps release:android:bundle
+```
+
+#### Manual Commands
+```bash
+# Security validation
+bash scripts/security_validation.sh
+
+# Reproducible build
+flutter clean && flutter pub get && bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --obfuscate --tree-shake-icons
+```
+
+For detailed build commands and workflows, see [Build Commands Reference](docs/BUILD_COMMANDS.md)
+
+For information about security measures and reproducible builds, see [Reproducible Build Guide](docs/REPRODUCIBLE_BUILD.md)

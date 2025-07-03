@@ -17,6 +17,7 @@ android {
 
     ndkVersion = flutter.ndkVersion
 
+    // Reproducible Build Configuration
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -25,6 +26,35 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
+    }
+
+    // Enable BuildConfig feature for custom fields
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // Reproducible Build Settings
+    packagingOptions {
+        // Exclude files that can cause non-reproducible builds
+        excludes += [
+            '**/META-INF/DEPENDENCIES',
+            '**/META-INF/LICENSE',
+            '**/META-INF/LICENSE.txt',
+            '**/META-INF/NOTICE',
+            '**/META-INF/NOTICE.txt',
+            '**/META-INF/*.kotlin_module'
+        ]
+        // Make timestamps deterministic
+        doNotStrip '**/*.so'
+    }
+
+    // Ensure deterministic builds
+    configurations.all {
+        resolutionStrategy {
+            // Force specific versions to avoid dynamic resolution
+            force 'androidx.core:core-ktx:1.12.0'
+            force 'androidx.work:work-runtime-ktx:2.9.0'
+        }
     }
 
     defaultConfig {
@@ -62,6 +92,20 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            
+            // Reproducible Build Settings for Release
+            zipAlignEnabled true
+            debuggable false
+            
+            // Disable build metadata to improve reproducibility
+            buildConfigField "String", "BUILD_TIME", '""'
+            buildConfigField "String", "GIT_HASH", '""'
+        }
+        
+        debug {
+            // Debug build configuration
+            debuggable true
+            minifyEnabled false
         }
     }
 }
