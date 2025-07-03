@@ -55,6 +55,23 @@ class _HabitCardState extends State<HabitCard> {
   void initState() {
     super.initState();
     _getHabitRecords();
+    _habitsService.onHabitRecordAdded.addListener(_refreshHabitRecords);
+    _habitsService.onHabitRecordRemoved.addListener(_refreshHabitRecords);
+  }
+
+  @override
+  void dispose() {
+    _habitsService.onHabitRecordAdded.removeListener(_refreshHabitRecords);
+    _habitsService.onHabitRecordRemoved.removeListener(_refreshHabitRecords);
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(HabitCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.habit.id != oldWidget.habit.id || widget.dateRange != oldWidget.dateRange) {
+      _refreshHabitRecords();
+    }
   }
 
   Future<void> _getHabitRecords() async {
