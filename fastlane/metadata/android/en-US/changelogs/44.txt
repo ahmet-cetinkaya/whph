@@ -1,0 +1,2 @@
+• Enhance update check with notifications
+• Add listeners for habit record changes
