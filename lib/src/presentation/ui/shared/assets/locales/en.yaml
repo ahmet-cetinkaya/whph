@@ -214,6 +214,7 @@ shared:
     downloading: Downloading update...
     failed: Failed to update.
     message: A new version ({version}) is available.
+    no_update_available: You have the latest version.
     question: Would you like to update now?
     success: Update downloaded successfully!
     title: Update Available!

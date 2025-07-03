@@ -15,8 +15,10 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 abstract class BaseSetupService implements ISetupService {
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
+
   @override
-  Future<void> checkForUpdates(BuildContext context) async {
+  Future<void> checkForUpdates(BuildContext context, {bool showNoUpdateNotification = false}) async {
     try {
       Logger.debug('Checking for updates...');
 
@@ -29,6 +31,13 @@ abstract class BaseSetupService implements ISetupService {
 
       if (response.statusCode != 200) {
         Logger.error('Update check failed with status: ${response.statusCode}');
+        if (showNoUpdateNotification && context.mounted) {
+          OverlayNotificationHelper.showError(
+            context: context,
+            message: _translationService.translate(SharedTranslationKeys.updateFailedMessage),
+            duration: const Duration(seconds: 3),
+          );
+        }
         return;
       }
 
@@ -41,14 +50,20 @@ abstract class BaseSetupService implements ISetupService {
 
       if (updateInfo.hasUpdate && context.mounted) {
         _showUpdateDialog(context, updateInfo);
+      } else if (showNoUpdateNotification && context.mounted) {
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: _translationService.translate(SharedTranslationKeys.noUpdateAvailableMessage),
+          duration: const Duration(seconds: 3),
+        );
       }
     } catch (e) {
       Logger.error('Failed to check for updates: $e');
-      // In debug mode, also show a brief notification about the failure
-      if (kDebugMode && context.mounted) {
+      // Show notification for both debug mode and when explicitly requested
+      if ((kDebugMode || showNoUpdateNotification) && context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
-          message: 'Update check failed: ${e.toString()}',
+          message: _translationService.translate(SharedTranslationKeys.updateFailedMessage),
           duration: const Duration(seconds: 3),
         );
       }
@@ -62,38 +77,36 @@ abstract class BaseSetupService implements ISetupService {
       return;
     }
 
-    final translationService = container.resolve<ITranslationService>();
-
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent dismissing by tapping outside
       builder: (context) => AlertDialog(
-        title: Text(translationService.translate(SharedTranslationKeys.updateAvailableTitle)),
+        title: Text(_translationService.translate(SharedTranslationKeys.updateAvailableTitle)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(translationService.translate(
+            Text(_translationService.translate(
               SharedTranslationKeys.updateAvailableMessage,
               namedArgs: {'version': updateInfo.version},
             )),
             const SizedBox(height: 8),
-            Text(translationService.translate(SharedTranslationKeys.updateQuestionMessage)),
+            Text(_translationService.translate(SharedTranslationKeys.updateQuestionMessage)),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => _dismissUpdateDialog(context),
-            child: Text(translationService.translate(SharedTranslationKeys.updateLaterButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.updateLaterButton)),
           ),
           TextButton(
             onPressed: () => _openReleaseUrl(updateInfo.releaseUrl),
-            child: Text(translationService.translate(SharedTranslationKeys.updateDownloadPageButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.updateDownloadPageButton)),
           ),
           if (updateInfo.platformSpecificDownloadUrl != null)
             TextButton(
               onPressed: () => _downloadAndInstallUpdate(context, updateInfo.platformSpecificDownloadUrl!),
-              child: Text(translationService.translate(SharedTranslationKeys.updateNowButton)),
+              child: Text(_translationService.translate(SharedTranslationKeys.updateNowButton)),
             ),
         ],
       ),
@@ -114,8 +127,6 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   Future<void> _downloadAndInstallUpdate(BuildContext context, String downloadUrl) async {
-    final translationService = container.resolve<ITranslationService>();
-
     // Close the update dialog
     Navigator.of(context).pop();
 
@@ -123,7 +134,7 @@ abstract class BaseSetupService implements ISetupService {
     if (context.mounted) {
       OverlayNotificationHelper.showLoading(
         context: context,
-        message: translationService.translate(SharedTranslationKeys.updateDownloadingMessage),
+        message: _translationService.translate(SharedTranslationKeys.updateDownloadingMessage),
         duration: const Duration(minutes: 10), // Long duration for download
       );
     }
@@ -136,7 +147,7 @@ abstract class BaseSetupService implements ISetupService {
       if (context.mounted) {
         OverlayNotificationHelper.showSuccess(
           context: context,
-          message: translationService.translate(SharedTranslationKeys.updateSuccessMessage),
+          message: _translationService.translate(SharedTranslationKeys.updateSuccessMessage),
         );
       }
     } catch (e) {
@@ -146,7 +157,7 @@ abstract class BaseSetupService implements ISetupService {
       if (context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
-          message: translationService.translate(SharedTranslationKeys.updateFailedMessage),
+          message: _translationService.translate(SharedTranslationKeys.updateFailedMessage),
         );
       }
     }

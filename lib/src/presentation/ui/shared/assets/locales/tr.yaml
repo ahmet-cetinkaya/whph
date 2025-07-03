@@ -214,6 +214,7 @@ shared:
     downloading: Güncelleme indiriliyor...
     failed: Güncelleme başarısız oldu.
     message: Yeni bir sürüm ({version}) mevcut.
+    no_update_available: En son sürüme sahipsiniz.
     question: Şimdi güncellemek ister misiniz?
     success: Güncelleme başarıyla indirildi!
     title: Güncelleme Mevcut!

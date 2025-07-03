@@ -155,6 +155,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String updateDownloadingMessage = 'shared.update_dialog.downloading';
   static const String updateSuccessMessage = 'shared.update_dialog.success';
   static const String updateFailedMessage = 'shared.update_dialog.failed';
+  static const String noUpdateAvailableMessage = 'shared.update_dialog.no_update_available';
 
   // Help
   static const String helpTooltip = 'shared.help.tooltip';

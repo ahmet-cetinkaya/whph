@@ -119,7 +119,7 @@ class AppAbout extends StatelessWidget {
 
   Widget _buildCheckUpdateButton(BuildContext context) {
     return TextButton.icon(
-      onPressed: () => _setupService.checkForUpdates(context),
+      onPressed: () => _setupService.checkForUpdates(context, showNoUpdateNotification: true),
       label: Text(
         _translationService.translate(AboutTranslationKeys.checkUpdate),
         style: AppTheme.bodyLarge,
