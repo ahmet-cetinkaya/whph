@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.8] - 2025-07-04
+
+### Added
+- Add current hour data collection and refresh
+
 ## [0.9.7] - 2025-07-03
 
 ### Added

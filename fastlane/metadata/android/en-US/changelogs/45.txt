@@ -1,0 +1,1 @@
+• Add current hour data collection and refresh
