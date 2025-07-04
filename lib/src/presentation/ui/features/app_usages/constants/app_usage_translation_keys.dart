@@ -77,4 +77,8 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
 
   // Tooltips
   static const String editNameTooltip = 'app_usages.tooltips.edit_name';
+
+  // Refresh Messages
+  static const String refreshSuccess = 'app_usages.refresh.success';
+  static const String refreshError = 'app_usages.refresh.error';
 }

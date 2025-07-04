@@ -15,6 +15,7 @@ import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/app_usage_permission.dart';
+import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -33,6 +34,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
   bool _isListVisible = false;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
@@ -84,9 +86,54 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     });
   }
 
-  void _onRefresh() {
-    _appUsagesService.notifyRefresh();
+  Future<void> _onRefresh() async {
+    if (_isRefreshing) return; // Prevent multiple simultaneous refreshes
+
+    setState(() {
+      _isRefreshing = true;
+    });
+
+    try {
+      // First trigger the normal data collection for past hours
+      await _deviceAppUsageService.startTracking();
+
+      // Also trigger current hour collection for real-time data
+      // This is needed because startTracking() only processes complete hours
+      await _deviceAppUsageService.collectCurrentHourData();
+
+      // Give the data collection some time to complete
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Notify UI to refresh after data collection
+      _appUsagesService.notifyRefresh();
+
+      // Show success feedback
+      if (mounted) {
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: _translationService.translate(AppUsageTranslationKeys.refreshSuccess),
+          duration: const Duration(seconds: 2),
+        );
+      }
+    } catch (e) {
+      // Handle errors gracefully
+      if (mounted) {
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: _translationService.translate(AppUsageTranslationKeys.refreshError),
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    }
   }
+
+
 
   Future<void> _showTagRulesSettings() async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -109,8 +156,17 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: _onRefresh,
+          icon: _isRefreshing
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                  ),
+                )
+              : const Icon(Icons.refresh),
+          onPressed: _isRefreshing ? null : _onRefresh,
           color: AppTheme.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),

@@ -67,4 +67,10 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
     _intervalTimer?.cancel();
     super.stopTracking();
   }
+
+  @override
+  Future<void> collectCurrentHourData() async {
+    // For desktop platforms, the current tracking already captures real-time data
+    // No additional collection needed as data is saved every second
+  }
 }

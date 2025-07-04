@@ -63,40 +63,44 @@ class AndroidAppUsageService extends BaseAppUsageService {
     });
   }
 
-  /// Fetches app usage for individual hours to avoid data duplication and over-reporting.
-  /// Uses incremental collection approach to ensure accurate usage statistics.
+  /// Fetches app usage for individual hours using incremental collection to avoid data duplication.
+  /// Uses improved time zone handling and incremental collection approach for accurate statistics.
   Future<void> _fetchAndSaveCurrentHourUsage() async {
     // Permission should have been checked by the caller (startTracking or timer callback).
     try {
+      // Use local time for collection but ensure consistent time zone handling
       DateTime now = DateTime.now();
       DateTime? lastCollection = await _getLastCollectionTimestamp();
-      
-      // If this is the first time running, start from the beginning of current hour
+
+      // If this is the first time running, collect today's usage data
       if (lastCollection == null) {
-        DateTime currentHourStart = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
-        await _collectUsageForSingleHour(currentHourStart);
+        Logger.info('First time collection - collecting today\'s usage data');
+        await _collectTodaysUsageData(now);
         await _saveLastCollectionTimestamp(now);
         return;
       }
 
       // Calculate which hours need to be processed since last collection
       List<DateTime> hoursToProcess = _getHoursToProcess(lastCollection, now);
-      
+
       if (hoursToProcess.isEmpty) {
         Logger.info('No new hours to process since last collection: $lastCollection');
         return;
       }
 
-      Logger.info('Processing ${hoursToProcess.length} hours since last collection: $lastCollection');
+      Logger.info('Processing ${hoursToProcess.length} hours since last collection');
 
-      // Process each hour individually to get accurate data
+      // Process each hour individually using incremental method
       for (DateTime hourStart in hoursToProcess) {
         await _collectUsageForSingleHour(hourStart);
+
+        // Add a small delay between collections to avoid overwhelming the system
+        await Future.delayed(const Duration(milliseconds: 100));
       }
 
       // Update the last collection timestamp
       await _saveLastCollectionTimestamp(now);
-      Logger.info('Successfully processed ${hoursToProcess.length} hours, updated last collection to: $now');
+      Logger.info('Successfully processed ${hoursToProcess.length} hours');
     } catch (e) {
       Logger.error('Error in _fetchAndSaveCurrentHourUsage: $e');
     }
@@ -106,80 +110,130 @@ class AndroidAppUsageService extends BaseAppUsageService {
   /// Returns a list of hour start times that need data collection.
   List<DateTime> _getHoursToProcess(DateTime lastCollection, DateTime now) {
     List<DateTime> hoursToProcess = [];
-    
+
     // Start from the hour after the last collection
-    DateTime startHour = DateTime(
-      lastCollection.year, 
-      lastCollection.month, 
-      lastCollection.day, 
-      lastCollection.hour, 
+    DateTime lastCollectionHour = DateTime(
+      lastCollection.year,
+      lastCollection.month,
+      lastCollection.day,
+      lastCollection.hour,
       0, 0, 0, 0
     );
-    
-    // If we're in the same hour as last collection, move to next hour
-    if (startHour.isAtSameMomentAs(DateTime(
-      lastCollection.year, lastCollection.month, lastCollection.day, lastCollection.hour, 0, 0, 0, 0))) {
-      startHour = startHour.add(const Duration(hours: 1));
-    }
-    
+
+    // Always start from the next hour after last collection
+    DateTime startHour = lastCollectionHour.add(const Duration(hours: 1));
+
     DateTime currentHour = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
-    
-    // Add all complete hours between last collection and now
+
+    // Add all complete hours between start and current hour (exclusive of current if incomplete)
     DateTime processingHour = startHour;
-    while (processingHour.isBefore(currentHour) || processingHour.isAtSameMomentAs(currentHour)) {
+    while (processingHour.isBefore(currentHour)) {
       hoursToProcess.add(processingHour);
       processingHour = processingHour.add(const Duration(hours: 1));
     }
-    
+
+    // Only include current hour if it's complete (we're in the next hour)
+    if (processingHour.isAtSameMomentAs(currentHour) && now.minute >= 59) {
+      hoursToProcess.add(processingHour);
+    }
+
     return hoursToProcess;
   }
 
-  /// Collects usage data for a specific hour and saves it as a single record.
-  /// This method fetches usage for exactly one hour to avoid data duplication.
+  /// Collects usage data using fixed incremental approach that properly handles cumulative data.
+  /// This method calculates the actual usage during the specific hour.
   Future<void> _collectUsageForSingleHour(DateTime hourStart) async {
     try {
-      DateTime hourEnd = hourStart.add(const Duration(hours: 1));
-      
-      Logger.info('Collecting usage data for hour: $hourStart to $hourEnd');
-      
-      // Fetch usage data for this specific hour only
-      List<app_usage_package.AppUsageInfo> hourUsageStats = 
-          await _appUsage.getAppUsage(hourStart, hourEnd);
-      
-      if (hourUsageStats.isEmpty) {
-        Logger.info('No app usage stats found for hour $hourStart - $hourEnd');
+      // Get usage data using fixed incremental approach
+      Map<String, int> hourlyUsage = await _getIncrementalUsageForHour(hourStart);
+
+      if (hourlyUsage.isEmpty) {
         return;
       }
-      
-      int recordsSaved = 0;
-      
-      // Save each app's usage for this hour directly (no distribution needed)
-      for (app_usage_package.AppUsageInfo usageInfo in hourUsageStats) {
-        if (usageInfo.usage.inSeconds <= 0) {
-          if (usageInfo.usage.inSeconds < 0) {
-            Logger.warning(
-                'Negative app usage duration for ${usageInfo.appName} (${usageInfo.usage.inSeconds}s). Skipping app.');
-          }
-          continue;
+
+      // Save each app's incremental usage for this hour
+      for (MapEntry<String, int> entry in hourlyUsage.entries) {
+        String appName = entry.key;
+        int incrementalSeconds = entry.value;
+
+        if (incrementalSeconds <= 0) {
+          continue; // Skip zero or negative values
         }
-        
-        // Save the usage directly for this hour (the app_usage package already gives us the correct usage for this time period)
+
+        // Save the incremental usage for this hour
         await saveTimeRecord(
-          usageInfo.appName,
-          usageInfo.usage.inSeconds,
+          appName,
+          incrementalSeconds,
           overwrite: true, // Overwrite any existing data for this hour
           customDateTime: hourStart,
         );
-        
-        recordsSaved++;
-        Logger.info('Saved ${usageInfo.usage.inSeconds}s usage for ${usageInfo.appName} at hour $hourStart');
       }
-      
-      Logger.info('Saved $recordsSaved app usage records for hour starting at $hourStart');
+
     } catch (e) {
       Logger.error('Error collecting usage for hour $hourStart: $e');
     }
   }
+
+  /// Calculates incremental usage for a specific hour using proper cumulative data handling.
+  /// Since app_usage package returns cumulative data, we always use incremental calculation.
+  Future<Map<String, int>> _getIncrementalUsageForHour(DateTime hourStart) async {
+    try {
+      DateTime hourEnd = hourStart.add(const Duration(hours: 1));
+
+      // Since the package returns cumulative data, we need to get usage at two points:
+      // 1. Cumulative usage up to the START of our target hour
+      // 2. Cumulative usage up to the END of our target hour
+      // The difference is the actual usage during our target hour
+
+      List<app_usage_package.AppUsageInfo> usageAtHourStart =
+          await _appUsage.getAppUsage(DateTime(2000), hourStart); // From epoch to hour start
+
+      List<app_usage_package.AppUsageInfo> usageAtHourEnd =
+          await _appUsage.getAppUsage(DateTime(2000), hourEnd); // From epoch to hour end
+
+      // Create maps for easier comparison
+      Map<String, int> usageAtStart = {};
+      Map<String, int> usageAtEnd = {};
+
+      for (var app in usageAtHourStart) {
+        usageAtStart[app.appName] = app.usage.inSeconds;
+      }
+
+      for (var app in usageAtHourEnd) {
+        usageAtEnd[app.appName] = app.usage.inSeconds;
+      }
+
+      // Calculate incremental differences (usage during the target hour)
+      Map<String, int> incrementalUsage = {};
+
+      // Check all apps that have usage at the end of the hour
+      for (String appName in usageAtEnd.keys) {
+        int endSeconds = usageAtEnd[appName] ?? 0;
+        int startSeconds = usageAtStart[appName] ?? 0;
+        int incrementalSeconds = endSeconds - startSeconds;
+
+        if (incrementalSeconds > 0) {
+          incrementalUsage[appName] = incrementalSeconds;
+        } else if (incrementalSeconds < 0) {
+          // This shouldn't happen with cumulative data, but log if it does
+          Logger.warning('Unexpected negative incremental usage for $appName: start=${startSeconds}s, end=${endSeconds}s, diff=${incrementalSeconds}s');
+        }
+      }
+
+      return incrementalUsage;
+
+    } catch (e) {
+      Logger.error('Error in fixed incremental calculation: $e');
+
+      // If this fails, we have a serious problem - return empty map
+      Logger.error('Cannot calculate incremental usage - returning empty map to prevent cumulative data storage');
+      return {};
+    }
+  }
+
+
+
+
 
   @override
   Future<void> stopTracking() async {
@@ -232,6 +286,120 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.error('Error requesting usage stats permission: $e');
     }
   }
+
+  /// Collects today's usage data for first-time app launch
+  /// This ensures users see existing usage data when they first open the app
+  Future<void> _collectTodaysUsageData(DateTime now) async {
+    try {
+      Logger.info('=== COLLECTING TODAY\'S USAGE DATA (FIRST TIME) ===');
+
+      DateTime todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime currentHour = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
+
+      Logger.info('Collecting usage from $todayStart to $currentHour');
+
+      // Get cumulative usage for today up to current hour
+      List<app_usage_package.AppUsageInfo> todayUsage =
+          await _appUsage.getAppUsage(todayStart, currentHour);
+
+      Logger.info('Found ${todayUsage.length} apps with usage today');
+
+      if (todayUsage.isEmpty) {
+        Logger.info('No usage data found for today');
+        return;
+      }
+
+      // Calculate how many hours have passed today
+      int hoursToday = currentHour.hour;
+      if (hoursToday == 0) hoursToday = 1; // At least 1 hour to avoid division by zero
+
+      Logger.info('Distributing today\'s usage across $hoursToday hours');
+
+      int totalSaved = 0;
+      int recordsSaved = 0;
+
+      for (var app in todayUsage) {
+        if (app.usage.inSeconds > 0) {
+          // Distribute the usage across the hours of today
+          int usagePerHour = (app.usage.inSeconds / hoursToday).round();
+
+          // Save usage for each hour of today
+          for (int hour = 0; hour < hoursToday; hour++) {
+            DateTime hourStart = DateTime(now.year, now.month, now.day, hour, 0, 0, 0, 0);
+
+            await saveTimeRecord(
+              app.appName,
+              usagePerHour,
+              overwrite: true,
+              customDateTime: hourStart,
+            );
+          }
+
+          totalSaved += app.usage.inSeconds;
+          recordsSaved++;
+        }
+      }
+
+      Logger.info('=== TODAY\'S DATA COLLECTION COMPLETE ===');
+      Logger.info('Distributed $recordsSaved apps across $hoursToday hours, total: ${totalSaved}s (${(totalSaved/60).toStringAsFixed(1)}min)');
+
+    } catch (e) {
+      Logger.error('Error collecting today\'s usage data: $e');
+    }
+  }
+
+  /// Collects usage data for the current hour (including incomplete hour)
+  /// This is used for manual refresh to capture real-time usage updates
+  @override
+  Future<void> collectCurrentHourData() async {
+    try {
+      DateTime now = DateTime.now();
+      DateTime currentHourStart = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
+
+      // Force collection of current hour even if incomplete
+      await _collectUsageForSingleHour(currentHourStart);
+
+      // Update last collection timestamp to current time
+      await _saveLastCollectionTimestamp(now);
+
+    } catch (e) {
+      Logger.error('Error collecting current hour data: $e');
+    }
+  }
+
+  /// Test method to show current cumulative usage data for debugging
+  Future<void> showCurrentUsageData() async {
+    try {
+      Logger.info('=== CURRENT USAGE DATA TEST ===');
+
+      DateTime now = DateTime.now();
+      DateTime todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+      Logger.info('Getting cumulative usage from today start ($todayStart) to now ($now)');
+
+      List<app_usage_package.AppUsageInfo> todayUsage =
+          await _appUsage.getAppUsage(todayStart, now);
+
+      Logger.info('Found ${todayUsage.length} apps with usage today');
+
+      for (var app in todayUsage) {
+        if (app.usage.inSeconds > 0) {
+          double minutes = app.usage.inSeconds / 60.0;
+          Logger.info('${app.appName}: ${app.usage.inSeconds}s (${minutes.toStringAsFixed(1)}min)');
+        }
+      }
+
+      int totalSeconds = todayUsage.fold(0, (sum, app) => sum + app.usage.inSeconds);
+      Logger.info('Total usage today: ${totalSeconds}s (${(totalSeconds/60).toStringAsFixed(1)}min)');
+
+      Logger.info('=== USAGE DATA TEST COMPLETE ===');
+
+    } catch (e) {
+      Logger.error('Error showing current usage data: $e');
+    }
+  }
+
+
 
   /// Gets the last collection timestamp from settings
   /// Returns null if no previous collection timestamp exists

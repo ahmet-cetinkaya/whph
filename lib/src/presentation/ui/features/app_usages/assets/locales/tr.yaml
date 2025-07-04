@@ -169,5 +169,8 @@ app_usages:
     title: Uygulama Kullanım Kuralları
   tooltips:
     edit_name: İsmi düzenle
+  refresh:
+    success: Uygulama kullanım verileri başarıyla yenilendi
+    error: Uygulama kullanım verileri yenilenemedi
   units:
     minutes: dk

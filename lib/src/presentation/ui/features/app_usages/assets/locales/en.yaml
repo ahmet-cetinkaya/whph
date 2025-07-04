@@ -169,5 +169,8 @@ app_usages:
     title: App Usage Rules
   tooltips:
     edit_name: Edit Name
+  refresh:
+    success: App usage data refreshed successfully
+    error: Failed to refresh app usage data
   units:
     minutes: min
