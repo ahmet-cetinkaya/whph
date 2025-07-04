@@ -10,7 +10,7 @@ flutter clean
 # Remove all contents of android/fdroid/build except extlib
 echo "> 🗑️  Cleaning android/fdroid/build except extlib..."
 if [ -d "android/fdroid/build" ]; then
-  find android/fdroid/build -mindepth 1 -name extlib -prune -o -exec rm -rf {} +
+  find android/fdroid/build -mindepth 1 -name extlib -prune -o -exec rm -rf {} + 2>/dev/null
 fi
 
 # Remove pub cache
