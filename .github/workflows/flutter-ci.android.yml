@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: Initialize acore submodule
       run: |
@@ -22,7 +24,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        channel: 'stable'
+        flutter-version: '3.32.0'
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -34,9 +36,6 @@ jobs:
       uses: android-actions/setup-android@v3
     
     # Build for Android
-    - name: Install Flutter dependencies
-      run: flutter pub get
-
     - name: Setup Keystore
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/whph-release.keystore
@@ -50,8 +49,29 @@ jobs:
         storeFile=whph-release.keystore
         EOF
 
+    - name: Setup Build Environment
+      run: |
+        flutter config --no-analytics
+        export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)
+        echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}" >> $GITHUB_ENV
+        echo "FLUTTER_STORAGE_BASE_URL=https://storage.googleapis.com" >> $GITHUB_ENV
+        echo "DART_OBFUSCATION=true" >> $GITHUB_ENV
+
+    - name: Clean Build Environment
+      run: flutter clean
+
+    - name: Get Dependencies
+      run: flutter pub get
+
+    - name: Security Validation
+      run: bash scripts/security_validation.sh --ci
+
     - name: Build for Android
-      run: flutter build apk --release
+      run: |
+        export SOURCE_DATE_EPOCH=${{ env.SOURCE_DATE_EPOCH }}
+        export FLUTTER_STORAGE_BASE_URL=${{ env.FLUTTER_STORAGE_BASE_URL }}
+        export DART_OBFUSCATION=${{ env.DART_OBFUSCATION }}
+        flutter build apk --release --split-debug-info=build/app/outputs/symbols --obfuscate --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
     
     # Publish the build artifacts
     - name: Get application version
