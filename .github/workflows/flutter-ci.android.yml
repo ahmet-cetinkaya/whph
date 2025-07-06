@@ -55,7 +55,9 @@ jobs:
         export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)
         echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}" >> $GITHUB_ENV
         echo "FLUTTER_STORAGE_BASE_URL=https://storage.googleapis.com" >> $GITHUB_ENV
-        echo "DART_OBFUSCATION=true" >> $GITHUB_ENV
+        echo "TZ=UTC" >> $GITHUB_ENV
+        echo "LC_ALL=C" >> $GITHUB_ENV
+        echo "LANG=C" >> $GITHUB_ENV
 
     - name: Clean Build Environment
       run: flutter clean
@@ -70,8 +72,10 @@ jobs:
       run: |
         export SOURCE_DATE_EPOCH=${{ env.SOURCE_DATE_EPOCH }}
         export FLUTTER_STORAGE_BASE_URL=${{ env.FLUTTER_STORAGE_BASE_URL }}
-        export DART_OBFUSCATION=${{ env.DART_OBFUSCATION }}
-        flutter build apk --release --split-debug-info=build/app/outputs/symbols --obfuscate --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
+        export TZ=${{ env.TZ }}
+        export LC_ALL=${{ env.LC_ALL }}
+        export LANG=${{ env.LANG }}
+        flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
     
     # Publish the build artifacts
     - name: Get application version

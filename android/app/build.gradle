@@ -30,7 +30,7 @@ android {
 
     // Enable BuildConfig feature for custom fields
     buildFeatures {
-        buildConfig = true
+        buildConfig = false  // Disable BuildConfig to avoid timestamps
     }
 
     // Reproducible Build Settings
@@ -46,6 +46,8 @@ android {
         ]
         // Make timestamps deterministic
         doNotStrip '**/*.so'
+        // Use legacy packaging for stable binary layout
+        jniLibs.useLegacyPackaging = true
     }
 
     // Ensure deterministic builds
@@ -96,10 +98,6 @@ android {
             // Reproducible Build Settings for Release
             zipAlignEnabled true
             debuggable false
-            
-            // Disable build metadata to improve reproducibility
-            buildConfigField "String", "BUILD_TIME", '""'
-            buildConfigField "String", "GIT_HASH", '""'
         }
         
         debug {
