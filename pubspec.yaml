@@ -20,9 +20,9 @@ scripts:
   gen:migrate: flutter pub run drift_dev make-migrations && rps format
   gen:changelog: bash scripts/create_changelog.sh --auto
   gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
-  release:android: bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons
-  release:android:bundle: bash scripts/security_validation.sh && flutter build appbundle --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons
-  release:android:reproducible: flutter clean && flutter pub get && bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons
+  release:android: bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
+  release:android:bundle: bash scripts/security_validation.sh && flutter build appbundle --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
+  release:android:reproducible: flutter clean && flutter pub get && bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
   release:linux: flutter build linux --release
   release:windows: flutter build windows --release
   release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss

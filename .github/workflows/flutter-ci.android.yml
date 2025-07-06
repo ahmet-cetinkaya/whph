@@ -18,7 +18,7 @@ jobs:
 
     - name: Initialize acore submodule
       run: |
-        git submodule update --init lib/corePackages/acore
+        git submodule update --init --recursive lib/corePackages/acore
 
     # Install dependencies
     - name: Set up Flutter
@@ -75,7 +75,7 @@ jobs:
         export TZ=${{ env.TZ }}
         export LC_ALL=${{ env.LC_ALL }}
         export LANG=${{ env.LANG }}
-        flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
+        flutter build apk --release --build-name=0.9.10 --build-number=47 --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
     
     # Publish the build artifacts
     - name: Get application version
