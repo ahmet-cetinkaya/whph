@@ -1,0 +1,20 @@
+# Act configuration for reproducible builds
+# This ensures act uses consistent environment settings
+
+# Use Ubuntu 22.04 for consistency
+-P ubuntu-latest=catthehacker/ubuntu:act-22.04
+
+# Bind mount the current directory to ensure file paths are consistent
+--bind
+
+# Set environment variables for reproducible builds
+--env TZ=UTC
+--env LC_ALL=C
+--env LANG=C
+--env FLUTTER_STORAGE_BASE_URL=https://storage.googleapis.com
+
+# Ensure consistent Git configuration
+--env GIT_AUTHOR_NAME="GitHub Actions"
+--env GIT_AUTHOR_EMAIL="actions@github.com"
+--env GIT_COMMITTER_NAME="GitHub Actions"
+--env GIT_COMMITTER_EMAIL="actions@github.com"
