@@ -36,28 +36,54 @@ jobs:
       uses: android-actions/setup-android@v3
     
     # Flutter setup and dependencies
-    - name: Get Flutter dependencies
-      run: flutter pub get
-    
-    - name: Verify Flutter installation
+    - name: Get Flutter dependencies and verify installation
       run: |
+        # Install Flutter dependencies
+        flutter pub get
+        
+        # Verify pubspec.lock exists
+        if [ ! -f "pubspec.lock" ]; then
+          echo "❌ ERROR: pubspec.lock not found after flutter pub get"
+          exit 1
+        fi
+        
+        echo "✅ Flutter dependencies installed successfully"
+        
+        # Show Flutter and Dart versions
         flutter --version
+        dart --version
+        
+        # Run Flutter doctor for diagnostics
         flutter doctor -v
     
     - name: Create local.properties
       run: |
-        # Get Flutter SDK path
-        FLUTTER_ROOT=$(flutter --version --verbose 2>/dev/null | grep "Flutter" | head -1 | grep -o '/[^ ]*flutter' | head -1)
+        echo "=== Flutter SDK Detection ==="
+        
+        # Debug: Show flutter installation info
+        which flutter
+        flutter --version
+        
+        # Get Flutter SDK path using flutter config
+        FLUTTER_ROOT=$(flutter config | grep "flutter-root" | cut -d'=' -f2 | tr -d ' ')
+        echo "Flutter config result: '$FLUTTER_ROOT'"
+        
         if [ -z "$FLUTTER_ROOT" ]; then
-          FLUTTER_ROOT=$(which flutter | sed 's|/bin/flutter||')
+          # Fallback: Get from which flutter and remove bin/flutter
+          FLUTTER_ROOT=$(dirname $(dirname $(which flutter)))
+          echo "Fallback method result: '$FLUTTER_ROOT'"
         fi
+        
         if [ -z "$FLUTTER_ROOT" ]; then
           echo "Warning: Could not determine Flutter SDK path, using default"
           FLUTTER_ROOT="/opt/hostedtoolcache/flutter/stable-3.32.0-x64"
         fi
         
+        echo "Final Flutter SDK path: $FLUTTER_ROOT"
+        
         # Get Android SDK path
         ANDROID_HOME=${ANDROID_SDK_ROOT:-${ANDROID_HOME:-"/usr/local/lib/android/sdk"}}
+        echo "Android SDK path: $ANDROID_HOME"
         
         # Create local.properties
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
@@ -70,14 +96,42 @@ jobs:
         # Verify paths exist
         if [ ! -d "$ANDROID_HOME" ]; then
           echo "Warning: Android SDK path does not exist: $ANDROID_HOME"
+        else
+          echo "✅ Android SDK path exists: $ANDROID_HOME"
         fi
+        
         if [ ! -d "$FLUTTER_ROOT" ]; then
           echo "Warning: Flutter SDK path does not exist: $FLUTTER_ROOT"
+        else
+          echo "✅ Flutter SDK path exists: $FLUTTER_ROOT"
+        fi
+        
+        # Verify Flutter tools gradle exists
+        FLUTTER_TOOLS_GRADLE="$FLUTTER_ROOT/packages/flutter_tools/gradle"
+        if [ ! -d "$FLUTTER_TOOLS_GRADLE" ]; then
+          echo "Error: Flutter tools gradle not found at: $FLUTTER_TOOLS_GRADLE"
+          echo "Available paths in Flutter SDK:"
+          find "$FLUTTER_ROOT" -name "gradle" -type d 2>/dev/null || echo "No gradle directories found"
+          echo "Flutter SDK directory structure:"
+          ls -la "$FLUTTER_ROOT/" 2>/dev/null || echo "Cannot list Flutter SDK directory"
+          exit 1
+        else
+          echo "✅ Flutter tools gradle found at: $FLUTTER_TOOLS_GRADLE"
         fi
     
     # Build for Android
     - name: Install RPS globally
       run: dart pub global activate rps
+
+    - name: Prepare Flutter project for build
+      run: |
+        # Clean any previous builds
+        flutter clean
+        
+        # Verify Flutter project structure
+        flutter pub deps --style=tree | head -20
+        
+        echo "✅ Flutter project prepared for build"
 
     - name: Build for Android (Reproducible)
       run: rps release:android:reproducible
