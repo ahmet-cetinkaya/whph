@@ -27,9 +27,9 @@ try {
         # If running in GitHub Actions, set the environment variable
         if ($env:GITHUB_ENV) {
             echo "APP_VERSION=$appVersion" >> $env:GITHUB_ENV
-            Write-Host "✅ Set APP_VERSION=$appVersion in GitHub Actions environment"
+            Write-Host "Set APP_VERSION=$appVersion in GitHub Actions environment"
         } else {
-            Write-Host "ℹ️  APP_VERSION=$appVersion (not in GitHub Actions environment)"
+            Write-Host "APP_VERSION=$appVersion (not in GitHub Actions environment)"
         }
     } else {
         Write-Host "ERROR: Could not find version line in pubspec.yaml"
