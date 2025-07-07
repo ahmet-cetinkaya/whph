@@ -35,6 +35,46 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
     
+    # Flutter setup and dependencies
+    - name: Get Flutter dependencies
+      run: flutter pub get
+    
+    - name: Verify Flutter installation
+      run: |
+        flutter --version
+        flutter doctor -v
+    
+    - name: Create local.properties
+      run: |
+        # Get Flutter SDK path
+        FLUTTER_ROOT=$(flutter --version --verbose 2>/dev/null | grep "Flutter" | head -1 | grep -o '/[^ ]*flutter' | head -1)
+        if [ -z "$FLUTTER_ROOT" ]; then
+          FLUTTER_ROOT=$(which flutter | sed 's|/bin/flutter||')
+        fi
+        if [ -z "$FLUTTER_ROOT" ]; then
+          echo "Warning: Could not determine Flutter SDK path, using default"
+          FLUTTER_ROOT="/opt/hostedtoolcache/flutter/stable-3.32.0-x64"
+        fi
+        
+        # Get Android SDK path
+        ANDROID_HOME=${ANDROID_SDK_ROOT:-${ANDROID_HOME:-"/usr/local/lib/android/sdk"}}
+        
+        # Create local.properties
+        echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+        echo "flutter.sdk=$FLUTTER_ROOT" >> android/local.properties
+        echo "flutter.buildMode=release" >> android/local.properties
+        
+        echo "Created local.properties:"
+        cat android/local.properties
+        
+        # Verify paths exist
+        if [ ! -d "$ANDROID_HOME" ]; then
+          echo "Warning: Android SDK path does not exist: $ANDROID_HOME"
+        fi
+        if [ ! -d "$FLUTTER_ROOT" ]; then
+          echo "Warning: Flutter SDK path does not exist: $FLUTTER_ROOT"
+        fi
+    
     # Build for Android
     - name: Install RPS globally
       run: dart pub global activate rps
@@ -77,10 +117,14 @@ jobs:
     # Publish the build artifacts
     - name: Get application version
       id: app_version
-      run: bash scripts/get_app_version.sh
+      run: |
+        APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml | cut -d'+' -f1)
+        echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+        echo "APP_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
+        echo "✅ Set APP_VERSION=$APP_VERSION"
 
     - name: Upload Android build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: whph-v${{ env.APP_VERSION }}-android
+        name: whph-v${{ steps.app_version.outputs.APP_VERSION }}-android
         path: build/app/outputs/flutter-apk/app-release.apk
