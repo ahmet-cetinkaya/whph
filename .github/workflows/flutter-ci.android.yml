@@ -166,7 +166,7 @@ jobs:
         echo "🔍 Gradle wrapper check:"
         ls -la android/gradlew
         echo "Gradle wrapper version:"
-        ./android/gradlew --version
+        cd android && ./gradlew --version && cd ..
         echo ""
         
         # Run reproducible build
