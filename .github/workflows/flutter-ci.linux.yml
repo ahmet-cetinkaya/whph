@@ -27,6 +27,9 @@ jobs:
     - name: Install Flutter dependencies
       run: flutter pub get
 
+    - name: Install RPS globally
+      run: dart pub global activate rps
+
     - name: Install dependencies
       run: |
         sudo apt-get update && sudo apt-get upgrade
@@ -40,14 +43,57 @@ jobs:
 
     # Build for Linux
     - name: Build for Linux
-      run: flutter build linux --release
+      run: rps release:linux
+    
+    - name: Verify and Display Build Output
+      run: |
+        BUILD_PATH="build/linux/x64/release/bundle"
+        echo "=== Linux Build Output Verification ==="
+        
+        if [ -d "$BUILD_PATH" ]; then
+          echo "✅ Build directory exists: $BUILD_PATH"
+          
+          # Get directory size
+          DIR_SIZE=$(du -sb "$BUILD_PATH" | cut -f1)
+          DIR_SIZE_MB=$(awk "BEGIN {printf \"%.2f\", $DIR_SIZE / 1024 / 1024}")
+          echo "📦 Build size: $DIR_SIZE bytes ($DIR_SIZE_MB MB)"
+          
+          # List main executable and key files
+          echo "📁 Build contents:"
+          find "$BUILD_PATH" -type f -name "whph" -o -name "*.so" -o -name "*.desktop" | while read file; do
+            FILE_SIZE=$(stat -c%s "$file" 2>/dev/null || echo "0")
+            FILE_SIZE_KB=$(awk "BEGIN {printf \"%.1f\", $FILE_SIZE / 1024}")
+            echo "  - $(basename "$file"): $FILE_SIZE_KB KB"
+          done
+          
+          # Calculate hash of the main executable
+          EXECUTABLE="$BUILD_PATH/whph"
+          if [ -f "$EXECUTABLE" ]; then
+            SHA256=$(sha256sum "$EXECUTABLE" | cut -d' ' -f1)
+            echo "🔐 Executable SHA256: $SHA256"
+          else
+            echo "⚠️  Main executable not found at expected location"
+          fi
+          
+          # Get modification time
+          MODIFIED=$(stat -c%y "$BUILD_PATH" 2>/dev/null || echo "Unknown")
+          echo "⏰ Modified: $MODIFIED"
+          
+          echo "=== Build Output Summary ==="
+          echo "Path: $BUILD_PATH"
+          echo "Size: $DIR_SIZE_MB MB"
+          echo "Files: $(find "$BUILD_PATH" -type f | wc -l)"
+        else
+          echo "❌ ERROR: Build directory not found at $BUILD_PATH"
+          echo "Available build directories:"
+          find build -type d -name "*release*" 2>/dev/null || echo "No release directories found"
+          exit 1
+        fi
     
     # Publish the build artifacts
     - name: Get application version
       id: app_version
-      run: |
-        APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
-        echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+      run: bash scripts/get_app_version.sh
 
     - name: Upload Linux build artifact
       uses: actions/upload-artifact@v4

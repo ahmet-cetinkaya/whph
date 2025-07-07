@@ -15,6 +15,7 @@ scripts:
   clean: bash scripts/clean.sh
   format: dart format . -l 120
   security-check: bash scripts/security_validation.sh
+  security-check:ci: bash scripts/security_validation.sh --ci
   gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && rps format
   gen:icons: flutter pub run icons_launcher:create
   gen:migrate: flutter pub run drift_dev make-migrations && rps format
@@ -22,7 +23,7 @@ scripts:
   gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
   release:android: bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
   release:android:bundle: bash scripts/security_validation.sh && flutter build appbundle --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
-  release:android:reproducible: flutter clean && flutter pub get && bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
+  release:android:reproducible: bash scripts/reproducible_build.sh
   release:linux: flutter build linux --release
   release:windows: flutter build windows --release
   release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
@@ -37,6 +38,7 @@ scripts:
   version:minor: bash scripts/version_bump.sh minor
   version:patch: bash scripts/version_bump.sh patch
   version:push: cd android/fdroid && git push && cd ../.. && git push && git push --tags
+  get-version: bash scripts/get_app_version.sh
 
 dependencies:
   flutter:
