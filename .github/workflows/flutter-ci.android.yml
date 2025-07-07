@@ -146,7 +146,31 @@ jobs:
         echo "   bash scripts/analyze_build_environment.sh"
 
     - name: Build for Android (Reproducible)
-      run: rps release:android:reproducible
+      env:
+        # Set reproducible build environment variables
+        SOURCE_DATE_EPOCH: 1751892913
+        TZ: UTC
+        LC_ALL: C
+        LANG: C
+        # Use project's gradle wrapper, not system gradle
+        GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8"
+      run: |
+        echo "🔧 Setting up reproducible build environment in CI..."
+        echo "SOURCE_DATE_EPOCH: $SOURCE_DATE_EPOCH"
+        echo "TZ: $TZ"
+        echo "LC_ALL: $LC_ALL"
+        echo "LANG: $LANG"
+        echo ""
+        
+        # Ensure we use the project's gradle wrapper
+        echo "🔍 Gradle wrapper check:"
+        ls -la android/gradlew
+        echo "Gradle wrapper version:"
+        ./android/gradlew --version
+        echo ""
+        
+        # Run reproducible build
+        rps release:android:reproducible
     
     - name: Verify and Display Build Output
       run: |
