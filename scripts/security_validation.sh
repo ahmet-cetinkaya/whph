@@ -54,10 +54,10 @@ if [ -f "$GRADLE_WRAPPER_PROPS" ]; then
     print_status $GREEN "✅ Gradle wrapper properties exist"
     
     # Check wrapper properties
-    if grep -q "gradle-8.4" "$GRADLE_WRAPPER_PROPS"; then
-        print_status $GREEN "✅ Gradle version is pinned to 8.4"
+    if grep -q "gradle-8.8" "$GRADLE_WRAPPER_PROPS"; then
+        print_status $GREEN "✅ Gradle version is pinned to 8.8"
     else
-        print_status $RED "❌ Gradle version should be pinned to 8.4"
+        print_status $RED "❌ Gradle version should be pinned to 8.8"
         exit 1
     fi
     
@@ -82,7 +82,7 @@ elif [ "$IS_CI" = "true" ]; then
     # Try to generate the wrapper JAR if gradle is available
     if command -v gradle > /dev/null 2>&1; then
         print_status $YELLOW "🔄 Attempting to generate Gradle wrapper..."
-        cd android && gradle wrapper --gradle-version 8.4 && cd ..
+        cd android && gradle wrapper --gradle-version 8.8 && cd ..
         if [ -f "$GRADLE_WRAPPER_JAR" ]; then
             print_status $GREEN "✅ Gradle wrapper JAR generated successfully"
         fi

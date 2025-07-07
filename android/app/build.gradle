@@ -35,9 +35,6 @@ android {
 
     // Reproducible Build Settings
     packagingOptions {
-        // Ensure deterministic builds
-        reproducibleFileOrder = true
-        
         // Exclude metadata that can cause non-deterministic builds
         excludes += [
             'META-INF/DEPENDENCIES',
@@ -132,6 +129,26 @@ android {
             // Debug build configuration
             debuggable true
             minifyEnabled false
+        }
+    }
+
+    // Additional reproducible build configuration
+    android {
+        // Ensure consistent ordering and deterministic builds
+        bundle {
+            // Disable metadata that can cause non-deterministic builds
+            language {
+                // Exclude locale-specific resources for reproducible builds
+                enableSplit = false
+            }
+            density {
+                // Disable density splitting for reproducible builds
+                enableSplit = false
+            }
+            abi {
+                // Disable ABI splitting for reproducible builds
+                enableSplit = false
+            }
         }
     }
 }

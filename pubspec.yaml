@@ -34,6 +34,7 @@ scripts:
   # Analysis and debugging commands
   analyze:build-env: bash scripts/analyze_build_environment.sh
   analyze:apk-hash: bash scripts/compare_apk_hashes.sh
+  test:reproducible: bash scripts/test_local_reproducibility.sh
   
   # Test commands
   test: flutter test
