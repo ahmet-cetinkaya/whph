@@ -35,6 +35,28 @@ android {
 
     // Reproducible Build Settings
     packagingOptions {
+        // Ensure deterministic builds
+        reproducibleFileOrder = true
+        
+        // Exclude metadata that can cause non-deterministic builds
+        excludes += [
+            'META-INF/DEPENDENCIES',
+            'META-INF/LICENSE',
+            'META-INF/LICENSE.txt',
+            'META-INF/NOTICE',
+            'META-INF/NOTICE.txt',
+            'META-INF/*.version',
+            'META-INF/*.properties',
+            'META-INF/maven/**',
+            'META-INF/gradle/**',
+            'META-INF/proguard/**',
+            'META-INF/com.android.build/**',
+            'META-INF/services/**'
+        ]
+        
+        // Merge strategy for duplicates
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libjsc.so'
         // Exclude files that can cause non-reproducible builds
         excludes += [
             '**/META-INF/DEPENDENCIES',

@@ -12,6 +12,7 @@ scripts:
   # To install rps globally: `dart pub global activate rps`
   # To run commands: `rps <command>`
   # For example, to run the `clean` command: `rps clean`
+  # Script commands
   clean: bash scripts/clean.sh
   format: dart format . -l 120
   security-check: bash scripts/security_validation.sh
@@ -21,19 +22,31 @@ scripts:
   gen:migrate: flutter pub run drift_dev make-migrations && rps format
   gen:changelog: bash scripts/create_changelog.sh --auto
   gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
+  
+  # Build commands  
   release:android: bash scripts/security_validation.sh && flutter build apk --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
   release:android:bundle: bash scripts/security_validation.sh && flutter build appbundle --release --split-debug-info=build/app/outputs/symbols --tree-shake-icons --dart-define=FLUTTER_WEB_USE_SKIA=true --target-platform=android-arm64,android-arm,android-x64
   release:android:reproducible: bash scripts/reproducible_build.sh
   release:linux: flutter build linux --release
   release:windows: flutter build windows --release
   release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
+  
+  # Analysis and debugging commands
+  analyze:build-env: bash scripts/analyze_build_environment.sh
+  analyze:apk-hash: bash scripts/compare_apk_hashes.sh
+  
+  # Test commands
   test: flutter test
   test:ci: act -j build
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
   test:ci:fdroid: bash scripts/test_ci_fdroid.sh
   test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
   test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
+  
+  # Development commands
   run:demo: flutter run --dart-define=DEMO_MODE=true
+  
+  # Version commands
   version:major: bash scripts/version_bump.sh major
   version:minor: bash scripts/version_bump.sh minor
   version:patch: bash scripts/version_bump.sh patch

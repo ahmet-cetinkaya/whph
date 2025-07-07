@@ -133,6 +133,18 @@ jobs:
         
         echo "✅ Flutter project prepared for build"
 
+    - name: Analyze Build Environment
+      run: |
+        # Run build environment analysis
+        bash scripts/analyze_build_environment.sh > build_env_ci.txt
+        
+        echo "=== CI Build Environment Analysis ==="
+        cat build_env_ci.txt
+        
+        echo ""
+        echo "💡 Compare this output with local environment using:"
+        echo "   bash scripts/analyze_build_environment.sh"
+
     - name: Build for Android (Reproducible)
       run: rps release:android:reproducible
     
