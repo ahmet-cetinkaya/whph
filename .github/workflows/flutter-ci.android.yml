@@ -164,9 +164,9 @@ jobs:
         
         # Ensure we use the project's gradle wrapper
         echo "🔍 Gradle wrapper check:"
-        ls -la android/gradlew
+        ls -la android/gradlew android/gradle/wrapper/gradle-wrapper.jar
         echo "Gradle wrapper version:"
-        cd android && ./gradlew --version && cd ..
+        (cd android && ./gradlew --version)
         echo ""
         
         # Run reproducible build
