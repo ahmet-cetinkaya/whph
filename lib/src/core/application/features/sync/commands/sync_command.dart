@@ -242,33 +242,37 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         Logger.info('📱 Only Android devices can initiate sync operations');
         return SyncCommandResponse();
       }
-      
+
       Logger.info('📱 Android platform detected - proceeding with sync initiation');
-      
+
       // When initiating sync, find devices where this device participates and sync with the remote counterpart
       final localDeviceId = await deviceIdService.getDeviceId();
       final localIP = await NetworkUtils.getLocalIpAddress();
       final allDevices = await syncDeviceRepository.getAll();
-      
+
       Logger.debug('🔍 Local device details - ID: $localDeviceId, IP: $localIP');
       Logger.debug('📋 All sync devices found: ${allDevices.length}');
-      
+
       for (final device in allDevices) {
-        Logger.debug('   Device ${device.id}: From ${device.fromIp}:${device.fromDeviceId} → To ${device.toIp}:${device.toDeviceId}');
+        Logger.debug(
+            '   Device ${device.id}: From ${device.fromIp}:${device.fromDeviceId} → To ${device.toIp}:${device.toDeviceId}');
       }
-      
+
       // Filter to include devices where this device is either fromDeviceId OR toDeviceId
       // This allows any device to initiate sync with its counterpart
-      syncDevices = allDevices.where((device) => 
-        device.fromDeviceId == localDeviceId || device.toDeviceId == localDeviceId).toList();
-      
-      Logger.info('📱 Found ${allDevices.length} total sync devices, filtering to ${syncDevices.length} devices where this device participates');
-      
+      syncDevices = allDevices
+          .where((device) => device.fromDeviceId == localDeviceId || device.toDeviceId == localDeviceId)
+          .toList();
+
+      Logger.info(
+          '📱 Found ${allDevices.length} total sync devices, filtering to ${syncDevices.length} devices where this device participates');
+
       if (syncDevices.isEmpty) {
-        Logger.info('🔍 No remote devices found to sync with - this device is not configured for any sync relationships');
+        Logger.info(
+            '🔍 No remote devices found to sync with - this device is not configured for any sync relationships');
         return SyncCommandResponse();
       }
-      
+
       for (final device in syncDevices) {
         final isFromDevice = device.fromDeviceId == localDeviceId;
         final remoteIp = isFromDevice ? device.toIp : device.fromIp;
@@ -291,15 +295,15 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
         if (request.syncDataDto != null) {
           // Mobile/receiving device: Process incoming sync data and send back response
           Logger.info('⬇️ Processing incoming sync data from remote device');
-          
+
           // Store original lastSyncDate before processing incoming data
           final originalLastSyncDate = request.syncDataDto!.syncDevice.lastSyncDate;
           Logger.debug('📅 Storing original lastSyncDate for response preparation: $originalLastSyncDate');
-          
+
           bool syncSuccess = await _processIncomingData(request.syncDataDto!);
           if (syncSuccess) {
             Logger.info('📊 Incoming data processed successfully, preparing response with local changes');
-            
+
             // Create a fresh SyncDevice object for response preparation
             // Simply swap the from/to relationships to create the return path
             final localSyncDevice = SyncDevice(
@@ -312,15 +316,16 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
               lastSyncDate: originalLastSyncDate, // Use original date to include local changes
               createdDate: request.syncDataDto!.syncDevice.createdDate,
             );
-            
+
             Logger.debug('🔄 Preparing response data using swapped sync device for return path');
-            Logger.debug('📱 Response sync device - From: ${localSyncDevice.fromIp}:${localSyncDevice.fromDeviceId} To: ${localSyncDevice.toIp}:${localSyncDevice.toDeviceId}');
-            
+            Logger.debug(
+                '📱 Response sync device - From: ${localSyncDevice.fromIp}:${localSyncDevice.fromDeviceId} To: ${localSyncDevice.toIp}:${localSyncDevice.toDeviceId}');
+
             final responseData = await _prepareSyncData(localSyncDevice);
-            
+
             // Now update the sync device timestamp after preparing response
             await _saveSyncDevice(request.syncDataDto!.syncDevice);
-            
+
             Logger.info('✅ Successfully processed incoming sync data, sending response data back');
             return SyncCommandResponse(syncDataDto: responseData);
           }
@@ -329,24 +334,24 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
           // Initiating device: Send sync data to the counterpart device
           try {
             Logger.info('⬆️ Sending sync data to device ${syncDevice.id}');
-            
+
             // Determine the target IP based on which device this is in the sync relationship
             final localDeviceId = await deviceIdService.getDeviceId();
             final isFromDevice = syncDevice.fromDeviceId == localDeviceId;
             final targetIp = isFromDevice ? syncDevice.toIp : syncDevice.fromIp;
             final remoteDeviceId = isFromDevice ? syncDevice.toDeviceId : syncDevice.fromDeviceId;
-            
+
             Logger.debug('🎯 Targeting IP: $targetIp (local device $localDeviceId → remote device $remoteDeviceId)');
-            
+
             // Test connectivity before sending data
             Logger.debug('🔍 Testing connectivity to $targetIp...');
             final portTest = await NetworkUtils.testPortConnectivity(targetIp);
             Logger.debug('📡 Port connectivity test result: ${portTest ? 'SUCCESS' : 'FAILED'}');
-            
+
             if (!portTest) {
               Logger.warning('⚠️ Port connectivity test failed for $targetIp:44040. Proceeding anyway...');
             }
-            
+
             await _sendDataToWebSocket(targetIp, jsonData);
             await _saveSyncDevice(syncDevice);
             Logger.info('✅ Successfully completed bidirectional sync with device ${syncDevice.id}');
@@ -432,12 +437,11 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
   Future<void> _saveSyncDevice(SyncDevice syncDevice) async {
     final DateTime now = DateTime.now().toUtc();
     final DateTime? previousSyncDate = syncDevice.lastSyncDate;
-    
+
     syncDevice.lastSyncDate = now;
     await syncDeviceRepository.update(syncDevice);
-    
-    Logger.debug(
-        '💾 Updated sync device ${syncDevice.id}: lastSyncDate changed from $previousSyncDate to $now');
+
+    Logger.debug('💾 Updated sync device ${syncDevice.id}: lastSyncDate changed from $previousSyncDate to $now');
   }
 
   Future<void> _sendDataToWebSocket(String ipAddress, String jsonData) async {
@@ -577,10 +581,10 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
       for (int i = 0; i < _syncConfigs.length; i++) {
         final config = _syncConfigs[i];
         final syncData = config.getSyncDataFromDto(syncDataDto);
-        
+
         if (syncData != null) {
           final itemCount = syncData.createSync.length + syncData.updateSync.length + syncData.deleteSync.length;
-          
+
           if (itemCount > 0) {
             Logger.debug(
                 '🔧 Processing ${config.name}: ${syncData.createSync.length} creates, ${syncData.updateSync.length} updates, ${syncData.deleteSync.length} deletes');
@@ -588,7 +592,7 @@ class SyncCommandHandler implements IRequestHandler<SyncCommand, SyncCommandResp
             final conflictCount = await _processSyncDataBatch(syncData, config.repository);
             totalProcessed += itemCount;
             totalConflictsResolved += conflictCount;
-            
+
             Logger.debug('✅ Completed processing ${config.name}: $itemCount items, $conflictCount conflicts resolved');
           } else {
             Logger.debug('⏭️ Skipping ${config.name}: no changes to process');

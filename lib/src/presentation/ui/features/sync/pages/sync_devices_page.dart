@@ -85,7 +85,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       // Use AndroidSyncService for manual sync trigger
       final androidSyncService = AndroidSyncService(_mediator);
       await androidSyncService.runSync();
-      
+
       await Future.delayed(const Duration(seconds: 2));
       await refresh();
 

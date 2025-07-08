@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;

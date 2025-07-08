@@ -70,7 +70,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     try {
       DateTime now = DateTime.now();
       DateTime? lastCollection = await _getLastCollectionTimestamp();
-      
+
       // If this is the first time running, start from the beginning of current hour
       if (lastCollection == null) {
         DateTime currentHourStart = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
@@ -81,7 +81,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
       // Calculate which hours need to be processed since last collection
       List<DateTime> hoursToProcess = _getHoursToProcess(lastCollection, now);
-      
+
       if (hoursToProcess.isEmpty) {
         Logger.info('No new hours to process since last collection: $lastCollection');
         return;
@@ -106,31 +106,26 @@ class AndroidAppUsageService extends BaseAppUsageService {
   /// Returns a list of hour start times that need data collection.
   List<DateTime> _getHoursToProcess(DateTime lastCollection, DateTime now) {
     List<DateTime> hoursToProcess = [];
-    
+
     // Start from the hour after the last collection
-    DateTime startHour = DateTime(
-      lastCollection.year, 
-      lastCollection.month, 
-      lastCollection.day, 
-      lastCollection.hour, 
-      0, 0, 0, 0
-    );
-    
+    DateTime startHour =
+        DateTime(lastCollection.year, lastCollection.month, lastCollection.day, lastCollection.hour, 0, 0, 0, 0);
+
     // If we're in the same hour as last collection, move to next hour
-    if (startHour.isAtSameMomentAs(DateTime(
-      lastCollection.year, lastCollection.month, lastCollection.day, lastCollection.hour, 0, 0, 0, 0))) {
+    if (startHour.isAtSameMomentAs(
+        DateTime(lastCollection.year, lastCollection.month, lastCollection.day, lastCollection.hour, 0, 0, 0, 0))) {
       startHour = startHour.add(const Duration(hours: 1));
     }
-    
+
     DateTime currentHour = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
-    
+
     // Add all complete hours between last collection and now
     DateTime processingHour = startHour;
     while (processingHour.isBefore(currentHour) || processingHour.isAtSameMomentAs(currentHour)) {
       hoursToProcess.add(processingHour);
       processingHour = processingHour.add(const Duration(hours: 1));
     }
-    
+
     return hoursToProcess;
   }
 
@@ -139,20 +134,19 @@ class AndroidAppUsageService extends BaseAppUsageService {
   Future<void> _collectUsageForSingleHour(DateTime hourStart) async {
     try {
       DateTime hourEnd = hourStart.add(const Duration(hours: 1));
-      
+
       Logger.info('Collecting usage data for hour: $hourStart to $hourEnd');
-      
+
       // Fetch usage data for this specific hour only
-      List<app_usage_package.AppUsageInfo> hourUsageStats = 
-          await _appUsage.getAppUsage(hourStart, hourEnd);
-      
+      List<app_usage_package.AppUsageInfo> hourUsageStats = await _appUsage.getAppUsage(hourStart, hourEnd);
+
       if (hourUsageStats.isEmpty) {
         Logger.info('No app usage stats found for hour $hourStart - $hourEnd');
         return;
       }
-      
+
       int recordsSaved = 0;
-      
+
       // Save each app's usage for this hour directly (no distribution needed)
       for (app_usage_package.AppUsageInfo usageInfo in hourUsageStats) {
         if (usageInfo.usage.inSeconds <= 0) {
@@ -162,7 +156,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
           }
           continue;
         }
-        
+
         // Save the usage directly for this hour (the app_usage package already gives us the correct usage for this time period)
         await saveTimeRecord(
           usageInfo.appName,
@@ -170,11 +164,11 @@ class AndroidAppUsageService extends BaseAppUsageService {
           overwrite: true, // Overwrite any existing data for this hour
           customDateTime: hourStart,
         );
-        
+
         recordsSaved++;
         Logger.info('Saved ${usageInfo.usage.inSeconds}s usage for ${usageInfo.appName} at hour $hourStart');
       }
-      
+
       Logger.info('Saved $recordsSaved app usage records for hour starting at $hourStart');
     } catch (e) {
       Logger.error('Error collecting usage for hour $hourStart: $e');
