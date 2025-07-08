@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
@@ -6,6 +9,7 @@ import 'package:whph/src/presentation/ui/features/app_usages/components/app_usag
 import 'package:whph/src/presentation/ui/features/app_usages/pages/app_usage_details_page.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
+import 'package:whph/src/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -97,11 +101,26 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {}); // Trigger rebuild to refresh list
   }
 
+  Future<void> _showAndroidDebugScreen() async {
+    await ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: AndroidAppUsageDebugPage(),
+      size: DialogSize.large,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       appBarActions: [
+        if (Platform.isAndroid && kDebugMode)
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            onPressed: _showAndroidDebugScreen,
+            color: AppTheme.primaryColor,
+            tooltip: 'Debug Usage Statistics',
+          ),
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: _showTagRulesSettings,

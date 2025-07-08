@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:app_usage/app_usage.dart' as app_usage_package;
 import 'package:flutter/services.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
@@ -12,7 +11,6 @@ import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 class AndroidAppUsageService extends BaseAppUsageService {
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
   static final workManagerChannel = MethodChannel(AndroidAppConstants.channels.workManager);
-  final app_usage_package.AppUsage _appUsage = app_usage_package.AppUsage();
   final ISettingRepository _settingRepository;
 
   AndroidAppUsageService(
@@ -31,6 +29,11 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.warning('Usage stats permission not granted. Cannot start tracking.');
       return;
     }
+
+    // Run a diagnostic comparison for the last hour to help debug accuracy issues
+    final now = DateTime.now();
+    final oneHourAgo = now.subtract(const Duration(hours: 1));
+    await compareUsageMethods(oneHourAgo, now);
 
     // Initial fetch for the current partial hour to capture immediate usage.
     await _fetchAndSaveCurrentHourUsage();
@@ -71,11 +74,22 @@ class AndroidAppUsageService extends BaseAppUsageService {
       DateTime now = DateTime.now();
       DateTime? lastCollection = await _getLastCollectionTimestamp();
 
-      // If this is the first time running, start from the beginning of current hour
+      // If this is the first time running, collect data for the entire current day
       if (lastCollection == null) {
-        DateTime currentHourStart = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
-        await _collectUsageForSingleHour(currentHourStart);
+        DateTime dayStart = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
+        DateTime currentHour = DateTime(now.year, now.month, now.day, now.hour, 0, 0, 0, 0);
+
+        Logger.info('First time running - collecting usage data for entire day from $dayStart to $currentHour');
+
+        // Collect usage for each hour from start of day to current hour
+        DateTime hourToProcess = dayStart;
+        while (hourToProcess.isBefore(currentHour) || hourToProcess.isAtSameMomentAs(currentHour)) {
+          await _collectUsageForSingleHour(hourToProcess);
+          hourToProcess = hourToProcess.add(const Duration(hours: 1));
+        }
+
         await _saveLastCollectionTimestamp(now);
+        Logger.info('Successfully collected usage data for entire day');
         return;
       }
 
@@ -137,41 +151,76 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
       Logger.info('Collecting usage data for hour: $hourStart to $hourEnd');
 
-      // Fetch usage data for this specific hour only
-      List<app_usage_package.AppUsageInfo> hourUsageStats = await _appUsage.getAppUsage(hourStart, hourEnd);
+      // Use the new accurate method that filters for foreground activity only
+      final usageMap =
+          await _getAccurateForegroundUsage(hourStart.millisecondsSinceEpoch, hourEnd.millisecondsSinceEpoch);
 
-      if (hourUsageStats.isEmpty) {
+      if (usageMap.isEmpty) {
         Logger.info('No app usage stats found for hour $hourStart - $hourEnd');
         return;
       }
 
       int recordsSaved = 0;
 
-      // Save each app's usage for this hour directly (no distribution needed)
-      for (app_usage_package.AppUsageInfo usageInfo in hourUsageStats) {
-        if (usageInfo.usage.inSeconds <= 0) {
-          if (usageInfo.usage.inSeconds < 0) {
-            Logger.warning(
-                'Negative app usage duration for ${usageInfo.appName} (${usageInfo.usage.inSeconds}s). Skipping app.');
-          }
+      // Save each app's usage for this hour
+      for (final entry in usageMap.entries) {
+        final packageName = entry.key;
+        final usageData = entry.value as Map<String, dynamic>;
+        final usageTimeSeconds = usageData['usageTimeSeconds'] as int;
+        final appName = usageData['appName'] as String;
+
+        if (usageTimeSeconds <= 0) {
           continue;
         }
 
-        // Save the usage directly for this hour (the app_usage package already gives us the correct usage for this time period)
+        // Save the usage directly for this hour
         await saveTimeRecord(
-          usageInfo.appName,
-          usageInfo.usage.inSeconds,
+          appName,
+          usageTimeSeconds,
           overwrite: true, // Overwrite any existing data for this hour
           customDateTime: hourStart,
         );
 
         recordsSaved++;
-        Logger.info('Saved ${usageInfo.usage.inSeconds}s usage for ${usageInfo.appName} at hour $hourStart');
+        Logger.info('Saved ${usageTimeSeconds}s usage for $appName ($packageName) at hour $hourStart');
       }
 
       Logger.info('Saved $recordsSaved app usage records for hour starting at $hourStart');
     } catch (e) {
       Logger.error('Error collecting usage for hour $hourStart: $e');
+    }
+  }
+
+  /// Gets accurate foreground usage data using the native Android UsageStatsManager.
+  /// This method filters for foreground activity only and matches Digital Wellbeing accuracy.
+  Future<Map<String, dynamic>> _getAccurateForegroundUsage(int startTimeMs, int endTimeMs) async {
+    try {
+      final result = await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
+        'getAccurateForegroundUsage',
+        {
+          'startTime': startTimeMs,
+          'endTime': endTimeMs,
+        },
+      );
+
+      if (result == null) {
+        Logger.warning('No accurate usage data returned from native method');
+        return {};
+      }
+
+      // Convert to proper type
+      final Map<String, dynamic> typedResult = {};
+      result.forEach((key, value) {
+        if (key is String && value is Map) {
+          typedResult[key] = Map<String, dynamic>.from(value);
+        }
+      });
+
+      Logger.info('Retrieved accurate usage data for ${typedResult.length} apps');
+      return typedResult;
+    } catch (e) {
+      Logger.error('Error getting accurate foreground usage: $e');
+      return {};
     }
   }
 
@@ -199,19 +248,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       return hasPermission ?? false;
     } catch (e) {
       Logger.error('Error checking usage stats permission: $e');
-
-      // Use backup check in case of method channel error
-      try {
-        // Try to fetch data for a small time range as backup
-        await _appUsage.getAppUsage(
-          DateTime.now().subtract(const Duration(minutes: 5)),
-          DateTime.now(),
-        );
-        return true;
-      } catch (backupError) {
-        Logger.error('Backup permission check failed: $backupError');
-        return false;
-      }
+      return false;
     }
   }
 
@@ -266,6 +303,63 @@ class AndroidAppUsageService extends BaseAppUsageService {
       }
     } catch (e) {
       Logger.error('Error saving last collection timestamp: $e');
+    }
+  }
+
+  /// Diagnostic method to log usage calculation results.
+  /// This helps identify and debug the accuracy of the event-based method.
+  Future<void> compareUsageMethods(DateTime startTime, DateTime endTime) async {
+    try {
+      Logger.info('=== USAGE DIAGNOSTIC ===');
+      Logger.info('Time range: $startTime to $endTime');
+
+      // Use the event-based method to get usage data
+      final usageMap =
+          await _getAccurateForegroundUsage(startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch);
+      Logger.info('--- EVENT-BASED FOREGROUND METHOD ---');
+      for (final entry in usageMap.entries) {
+        final usageData = entry.value as Map<String, dynamic>;
+        final usageTimeSeconds = usageData['usageTimeSeconds'] as int;
+        final appName = usageData['appName'] as String;
+        Logger.info('$appName: ${usageTimeSeconds}s (${(usageTimeSeconds / 60).toStringAsFixed(1)}m)');
+      }
+
+      Logger.info('=== END DIAGNOSTIC ===');
+    } catch (e) {
+      Logger.error('Error in usage diagnostic: $e');
+    }
+  }
+
+  /// Public method to test accuracy of usage calculation for debugging purposes.
+  /// This can be called from the Flutter UI to test the event-based method for specific time ranges.
+  Future<Map<String, dynamic>> testUsageAccuracy({DateTime? startTime, DateTime? endTime}) async {
+    final now = DateTime.now();
+    final start = startTime ?? now.subtract(const Duration(hours: 1));
+    final end = endTime ?? now;
+
+    try {
+      // Get usage from the event-based method only
+      final usageMap = await _getAccurateForegroundUsage(start.millisecondsSinceEpoch, end.millisecondsSinceEpoch);
+
+      return {
+        'timeRange': {
+          'start': start.toIso8601String(),
+          'end': end.toIso8601String(),
+          'durationHours': end.difference(start).inHours,
+        },
+        'newMethod': usageMap, // Keep the old key name for compatibility
+        'eventBasedMethod': usageMap, // Also provide the new key name
+        'totalApps': usageMap.length,
+      };
+    } catch (e) {
+      Logger.error('Error in testUsageAccuracy: $e');
+      return {
+        'error': e.toString(),
+        'timeRange': {
+          'start': start.toIso8601String(),
+          'end': end.toIso8601String(),
+        },
+      };
     }
   }
 }
