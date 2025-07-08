@@ -19,10 +19,16 @@ jobs:
         git submodule update --init lib/corePackages/acore
 
     # Install dependencies
+    - name: Get Flutter version
+      id: flutter_version
+      run: |
+        echo "version=$(bash scripts/get_flutter_version.sh)" >> $GITHUB_OUTPUT
+        
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
+        flutter-version: ${{ steps.flutter_version.outputs.version }}
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
