@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
 import 'package:whph/src/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/src/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/src/core/application/features/habits/commands/delete_habit_record_command.dart';
@@ -21,6 +21,7 @@ import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constant
 import 'package:whph/src/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/src/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -52,6 +53,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final _mediator = container.resolve<Mediator>();
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _soundPlayer = container.resolve<ISoundPlayer>();
 
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();
@@ -216,6 +218,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             _getHabitRecordsForMonth(currentMonth);
             _getHabit();
           });
+
+          // Play sound feedback for record creation
+          _soundPlayer.play(SharedSounds.done, volume: 1.0);
 
           // Notify service that a record was added to trigger statistics refresh
           _habitsService.notifyHabitRecordAdded(habitId);
