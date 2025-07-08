@@ -789,7 +789,7 @@ class MainActivity : FlutterActivity() {
             }
         }
         
-        // Channel for App Usage Stats permission checking
+        // Channel for App Usage Stats permission checking and accurate usage retrieval
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Constants.Channels.APP_USAGE_STATS).setMethodCallHandler { call, result ->
             when (call.method) {
                 "checkUsageStatsPermission" -> {
@@ -836,6 +836,34 @@ class MainActivity : FlutterActivity() {
                     } catch (e: Exception) {
                         Log.e("AppUsageStats", "Error opening usage access settings: ${e.message}", e)
                         result.error("OPEN_SETTINGS_ERROR", e.message, null)
+                    }
+                }
+                "getAccurateForegroundUsage" -> {
+                    try {
+                        val startTime = call.argument<Long>("startTime") ?: return@setMethodCallHandler result.error("INVALID_ARGS", "startTime is required", null)
+                        val endTime = call.argument<Long>("endTime") ?: return@setMethodCallHandler result.error("INVALID_ARGS", "endTime is required", null)
+                        
+                        Log.d("AppUsageStats", "Getting accurate foreground usage from $startTime to $endTime")
+                        
+                        val usageHandler = AppUsageStatsHandler(this@MainActivity)
+                        val usageMap = usageHandler.getAccurateForegroundUsage(startTime, endTime)
+                        
+                        // Convert to Flutter-compatible format
+                        val resultMap = mutableMapOf<String, Any>()
+                        usageMap.forEach { (packageName, usageTimeMs) ->
+                            resultMap[packageName] = mapOf(
+                                "packageName" to packageName,
+                                "appName" to usageHandler.getAppDisplayName(packageName),
+                                "usageTimeSeconds" to (usageTimeMs / 1000).toInt(),
+                                "usageTimeMs" to usageTimeMs
+                            )
+                        }
+                        
+                        Log.d("AppUsageStats", "Returning ${resultMap.size} apps with accurate usage data")
+                        result.success(resultMap)
+                    } catch (e: Exception) {
+                        Log.e("AppUsageStats", "Error getting accurate foreground usage: ${e.message}", e)
+                        result.error("USAGE_ERROR", e.message, null)
                     }
                 }
                 else -> {
