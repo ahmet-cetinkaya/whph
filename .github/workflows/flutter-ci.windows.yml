@@ -57,7 +57,7 @@ jobs:
       - name: Apply Windows build workarounds
         run: |
           Write-Host "Applying workarounds for Windows build issues..."
-          
+
           # Check if the problematic plugin exists
           Write-Host "Checking for flutter_local_notifications_windows plugin..."
           if (Test-Path "pubspec.lock") {
@@ -78,7 +78,7 @@ jobs:
           } else {
             Write-Host "pubspec.lock not found"
           }
-          
+
           Write-Host "Setting additional build environment variables..."
           # These flags may help with the AOT compilation issue
           echo "FLUTTER_BUILD_MODE=release" >> $env:GITHUB_ENV
@@ -87,18 +87,18 @@ jobs:
         run: |
           Write-Host "=== Starting Windows Build Process ==="
           flutter config --enable-windows-desktop
-          
+
           Write-Host "=== Flutter Environment Check ==="
           flutter doctor -v
-          
+
           Write-Host "=== Cleaning Previous Builds ==="
           flutter clean
-          
+
           Write-Host "=== Installing Dependencies ==="
           flutter pub get
-          
+
           Write-Host "=== Attempting Windows Build (Multiple Strategies) ==="
-          
+
           # Strategy 1: Standard release build
           Write-Host "📦 Strategy 1: Standard release build"
           flutter build windows --release --verbose
@@ -129,13 +129,13 @@ jobs:
               }
             }
           }
-          
+
           # Verify BUILD_TYPE was set
           if (-not $env:BUILD_TYPE) {
             Write-Host "⚠️  WARNING: BUILD_TYPE not set, defaulting to Release"
             echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
           }
-          
+
           Write-Host "🎯 Final BUILD_TYPE: $env:BUILD_TYPE"
           Write-Host "=== Build Process Complete ==="
         env:
@@ -204,12 +204,12 @@ jobs:
       - name: Create Windows Installer
         run: |
           Write-Host "Creating Windows installer with Inno Setup..."
-          
+
           # Get app version for the installer
           $content = Get-Content 'pubspec.yaml'
           $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value.Split('+')[0] }
           Write-Host "App version: $version"
-          
+
           # Verify the build output exists
           $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
           Write-Host "Checking build output at: $buildPath"
@@ -221,34 +221,34 @@ jobs:
             }
             exit 1
           }
-          
+
           # Create installer directory in the correct location
           $installerDir = "build\windows\installer"
           New-Item -ItemType Directory -Force -Path $installerDir
           Write-Host "Created installer directory: $installerDir"
-          
+
           # Get absolute paths for debugging
           $currentDir = Get-Location
           $absoluteInstallerDir = Join-Path $currentDir $installerDir
           Write-Host "Working directory: $currentDir"
           Write-Host "Absolute installer directory: $absoluteInstallerDir"
-          
+
           # Create a copy of the installer script with dynamic paths
           $issTemplate = Get-Content 'windows\setup-wizard\installer.iss' -Raw
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
           $issTemplate = $issTemplate -replace 'Source: "\.\.\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
           # Use absolute path for output directory to avoid confusion
           $issTemplate = $issTemplate -replace 'OutputDir=build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
-          
+
           # Write the modified script to a temporary file
           $tempIssFile = "windows\setup-wizard\installer_temp.iss"
           $issTemplate | Set-Content $tempIssFile
-          
+
           Write-Host "=== Generated Installer Script Content ==="
           Write-Host "Key lines from the installer script:"
           $issTemplate.Split("`n") | Where-Object { $_ -match "(OutputDir|Source)" } | ForEach-Object { Write-Host "  $_" }
           Write-Host "=== End Installer Script Content ==="
-          
+
           # Check if Inno Setup is available
           $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
           if (-not (Test-Path $innoSetupPath)) {
@@ -259,13 +259,13 @@ jobs:
               exit 1
             }
           }
-          
+
           Write-Host "Using Inno Setup at: $innoSetupPath"
           Write-Host "Compiling installer with build type: ${{ env.BUILD_TYPE }}"
-          
+
           # Compile the installer
           & "$innoSetupPath" $tempIssFile
-          
+
           if ($LASTEXITCODE -eq 0) {
             Write-Host "=== Installer Compilation Success ==="
             # Check both possible locations for the installer
@@ -311,7 +311,7 @@ jobs:
             Write-Host "ERROR: Installer creation failed with exit code: $LASTEXITCODE"
             exit 1
           }
-          
+
           # Clean up temporary file
           if (Test-Path $tempIssFile) {
             Remove-Item $tempIssFile
