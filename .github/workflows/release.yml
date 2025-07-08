@@ -2,9 +2,9 @@ name: Release All Platforms
 
 on:
   workflow_run:
-    workflows: 
+    workflows:
       - "Flutter CI - Android"
-      - "Flutter CI - Linux" 
+      - "Flutter CI - Linux"
       - "Flutter CI - Windows"
     types:
       - completed
@@ -30,7 +30,7 @@ jobs:
           # Extract tag info from the head branch
           HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
           echo "Head branch: $HEAD_BRANCH"
-          
+
           if [[ $HEAD_BRANCH =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             TAG_NAME="$HEAD_BRANCH"
             TAG_VERSION="${TAG_NAME#v}"
@@ -99,12 +99,12 @@ jobs:
         run: |
           TAG_NAME="${{ needs.check-workflows.outputs.tag-name }}"
           APP_VERSION="${{ needs.check-workflows.outputs.app-version }}"
-          
+
           echo "Downloading artifacts for tag: $TAG_NAME, app version: $APP_VERSION"
-          
+
           # Download artifacts from each workflow
           WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
-          
+
           for workflow in "${WORKFLOWS[@]}"; do
             echo "Downloading artifacts from: $workflow"
             
@@ -121,7 +121,7 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo "Downloaded artifacts:"
           find artifacts/ -type f -exec ls -la {} \;
         env:
@@ -131,9 +131,9 @@ jobs:
         run: |
           TAG_VERSION="${{ needs.check-workflows.outputs.tag-version }}"
           APP_VERSION="${{ needs.check-workflows.outputs.app-version }}"
-          
+
           echo "Preparing release files for version: $TAG_VERSION"
-          
+
           # Prepare Android APK
           if [[ -f "artifacts/whph-v$APP_VERSION-android/app-release.apk" ]]; then
             mv "artifacts/whph-v$APP_VERSION-android/app-release.apk" "whph-v$TAG_VERSION-android.apk"
@@ -142,7 +142,7 @@ jobs:
             echo "❌ Android APK not found"
             exit 1
           fi
-          
+
           # Create Linux tar.gz archive
           if [[ -d "artifacts/whph-v$APP_VERSION-linux" ]]; then
             cd "artifacts/whph-v$APP_VERSION-linux"
@@ -153,7 +153,7 @@ jobs:
             echo "❌ Linux build directory not found"
             exit 1
           fi
-          
+
           # Create Windows portable zip archive
           if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
             cd "artifacts/whph-v$APP_VERSION-windows-portable"
@@ -164,7 +164,7 @@ jobs:
             echo "❌ Windows portable build directory not found"
             exit 1
           fi
-          
+
           # Prepare Windows installer
           if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
             cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
@@ -173,7 +173,7 @@ jobs:
             echo "❌ Windows installer not found"
             exit 1
           fi
-          
+
           echo "📦 All release files prepared:"
           ls -la whph-v$TAG_VERSION-*
 
