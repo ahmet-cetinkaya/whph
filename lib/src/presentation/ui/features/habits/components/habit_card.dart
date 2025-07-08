@@ -415,7 +415,7 @@ class _HabitCardState extends State<HabitCard> {
           ],
           IconButton(
             padding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
+            visualDensity: VisualDensity.standard,
             constraints: BoxConstraints(
               minWidth: widget.isDense ? 24 : 32,
               minHeight: widget.isDense ? 24 : 32,
