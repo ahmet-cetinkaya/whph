@@ -15,7 +15,7 @@ Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
 void startWebSocketServer() async {
   try {
     Logger.info('📡 Attempting to start WebSocket server on port $webSocketPort...');
-    
+
     final server = await HttpServer.bind(
       InternetAddress.anyIPv4,
       webSocketPort,
@@ -30,7 +30,8 @@ void startWebSocketServer() async {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
           final ws = await WebSocketTransformer.upgrade(req);
-          Logger.info('🔗 WebSocket connection established from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
+          Logger.info(
+              '🔗 WebSocket connection established from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
 
           ws.listen(
             (data) async {

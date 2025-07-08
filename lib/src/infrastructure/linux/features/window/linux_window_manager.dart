@@ -26,7 +26,7 @@ class LinuxWindowManager extends WindowManager {
 
       // Use native implementation to focus window
       final bool success = await _channel.invokeMethod<bool>('focusWindow', currentTitle) ?? false;
-      
+
       if (!success) {
         // If native focus failed, try with default app name
         await _channel.invokeMethod<bool>('focusWindow', 'whph');

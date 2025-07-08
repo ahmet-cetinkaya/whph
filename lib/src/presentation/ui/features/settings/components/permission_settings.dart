@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/presentation/ui/features/settings/components/settings_menu_tile.dart';

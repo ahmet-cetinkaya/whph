@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';

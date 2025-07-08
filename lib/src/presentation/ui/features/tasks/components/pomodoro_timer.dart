@@ -145,13 +145,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     _defaultKeepScreenAwake = await _getBoolSetting(SettingKeys.keepScreenAwake, false);
     _defaultTickingVolume = await _getSetting(SettingKeys.tickingVolume, 50);
     _defaultTickingSpeed = await _getSetting(SettingKeys.tickingSpeed, 1);
-    
+
     // Ensure minimum volume is 5
     if (_defaultTickingVolume < 5) {
       _defaultTickingVolume = 5;
       await _saveSetting(SettingKeys.tickingVolume, _defaultTickingVolume);
     }
-    
+
     if (mounted) {
       setState(() {
         _workDuration = _defaultWorkDuration;
