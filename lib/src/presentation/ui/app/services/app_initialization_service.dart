@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
@@ -18,11 +19,7 @@ class AppInitializationService {
   final ISupportDialogService _supportDialogService;
   final ISetupService _setupService;
 
-  AppInitializationService(
-    this._mediator,
-    this._supportDialogService,
-    this._setupService,
-  );
+  AppInitializationService(this._mediator, this._supportDialogService, this._setupService);
 
   bool _hasCheckedForUpdates = false;
 
@@ -37,6 +34,11 @@ class AppInitializationService {
 
   /// Check and show onboarding dialog if not completed
   Future<void> _checkAndShowOnboarding(GlobalKey<NavigatorState> navigatorKey) async {
+    if (kDebugMode) {
+      Logger.info("Skipping onboarding dialog in debug mode.");
+      return;
+    }
+
     try {
       final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.onboardingCompleted),
@@ -71,6 +73,11 @@ class AppInitializationService {
 
   /// Check and show support dialog if conditions are met
   Future<void> _checkAndShowSupportDialog(GlobalKey<NavigatorState> navigatorKey) async {
+    if (kDebugMode) {
+      Logger.info("Skipping support dialog in debug mode.");
+      return;
+    }
+
     try {
       final context = navigatorKey.currentContext;
       if (context != null && context.mounted) {
