@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.8] - 2025-07-08
+
+### Added
+- Implement accurate foreground app usage tracking for Android
+
+### Changed
+- Update logo assets for improved optimization
+
+### Fixed
+- Update IconButton visual density
+- Add sound feedback on record creation
+
 ## [0.9.7] - 2025-07-07
 
 ### Changed
