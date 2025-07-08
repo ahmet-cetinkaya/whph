@@ -146,7 +146,6 @@ class _HabitCardState extends State<HabitCard> {
       }
     } else {
       await _createHabitRecord(widget.habit.id, today);
-      _soundPlayer.play(SharedSounds.done, volume: 1.0);
     }
   }
 
