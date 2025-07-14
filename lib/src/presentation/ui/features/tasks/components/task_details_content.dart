@@ -1007,6 +1007,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 controller: _descriptionController,
                 onChanged: _onDescriptionChanged,
                 toolbarBackground: AppTheme.surface1,
+                height: 250,
               ),
             ),
           ),

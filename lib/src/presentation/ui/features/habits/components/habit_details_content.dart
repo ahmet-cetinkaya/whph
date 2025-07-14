@@ -695,6 +695,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
                     toolbarBackground: AppTheme.surface1,
+                    height: 250,
                   ),
                 ),
               ],
