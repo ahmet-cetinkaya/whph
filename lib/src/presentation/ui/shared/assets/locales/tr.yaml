@@ -88,6 +88,18 @@ shared:
   editor:
     markdown:
       hint: Markdown formatını kullanarak yazabilirsiniz...
+      tooltips:
+        bold: Kalın
+        italic: İtalik
+        strikethrough: Üstü Çizili
+        code: Kod
+        link: Bağlantı
+        quote: Alıntı
+        bulleted_list: Madde Listesi
+        numbered_list: Numaralı Liste
+        horizontal_rule: Yatay Çizgi
+        edit: Düzenle
+        preview: Önizleme
   errors:
     deleting: Veri silinirken hata oluştu
     file_not_found: Dosya bulunamadı

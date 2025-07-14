@@ -91,6 +91,18 @@ shared:
   editor:
     markdown:
       hint: You can write using Markdown format...
+      tooltips:
+        bold: Bold
+        italic: Italic
+        strikethrough: Strikethrough
+        code: Code
+        link: Link
+        quote: Quote
+        bulleted_list: Bulleted List
+        numbered_list: Numbered List
+        horizontal_rule: Horizontal Rule
+        edit: Edit
+        preview: Preview
   errors:
     deleting: Error occurred while deleting data
     file_not_found: File not found

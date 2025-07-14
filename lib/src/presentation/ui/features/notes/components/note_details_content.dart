@@ -413,6 +413,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             controller: _contentController,
             onChanged: _onContentChanged,
             style: AppTheme.bodyMedium,
+            height: 400,
           ),
         ],
       ),

@@ -5,7 +5,7 @@ version: 0.9.8+45
 
 environment:
   sdk: ^3.5.3
-  flutter: '3.32.0'
+  flutter: "3.32.0"
 
 scripts:
   # This section defines custom commands you can run using the rps package.
@@ -82,7 +82,8 @@ dependencies:
   fl_chart: ^1.0.0
   flutter_colorpicker: ^1.1.0
   flutter_confetti: ^0.5.1
-  markdown_editor_plus: ^0.2.15
+  flutter_markdown: ^0.7.2
+  markdown_toolbar: ^0.5.0
   # Desktop
   launch_at_startup: ^0.5.1
   qr_flutter: ^4.1.0
