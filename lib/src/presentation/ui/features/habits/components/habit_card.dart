@@ -195,7 +195,10 @@ class _HabitCardState extends State<HabitCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
-      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      contentPadding: EdgeInsets.only(
+        left: AppTheme.sizeMedium,
+        right: widget.isMiniLayout ? AppTheme.sizeMedium : 0,
+      ),
       onTap: widget.onOpenDetails,
       dense: widget.isDense,
       leading: _buildLeading(),
