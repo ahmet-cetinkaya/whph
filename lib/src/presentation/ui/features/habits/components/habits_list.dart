@@ -25,6 +25,7 @@ class HabitsList extends StatefulWidget {
   final bool filterByArchived;
   final String? search;
   final SortConfig<HabitSortFields>? sortConfig;
+  final DateTime? excludeCompletedForDate;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -42,6 +43,7 @@ class HabitsList extends StatefulWidget {
     this.filterByArchived = false,
     this.search,
     this.sortConfig,
+    this.excludeCompletedForDate,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -115,6 +117,7 @@ class HabitsListState extends State<HabitsList> {
         filterByArchived: widget.filterByArchived, // Changed from showArchived
         search: widget.search,
         sortConfig: widget.sortConfig,
+        excludeCompletedForDate: widget.excludeCompletedForDate,
       );
 
   bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -201,6 +204,7 @@ class HabitsListState extends State<HabitsList> {
           search: _currentFilters.search,
           sortBy: _currentFilters.sortConfig?.orderOptions,
           sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
+          excludeCompletedForDate: _currentFilters.excludeCompletedForDate,
         );
 
         return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
@@ -359,6 +363,7 @@ class FilterContext {
   final bool filterByArchived;
   final String? search;
   final SortConfig<HabitSortFields>? sortConfig;
+  final DateTime? excludeCompletedForDate;
 
   FilterContext({
     required this.mini,
@@ -368,5 +373,6 @@ class FilterContext {
     required this.filterByArchived,
     this.search,
     this.sortConfig,
+    this.excludeCompletedForDate,
   });
 }
