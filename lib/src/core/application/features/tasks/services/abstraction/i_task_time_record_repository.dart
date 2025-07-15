@@ -7,4 +7,6 @@ abstract class ITaskTimeRecordRepository extends app.IRepository<TaskTimeRecord,
     DateTime? startDate,
     DateTime? endDate,
   });
+
+  Future<List<TaskTimeRecord>> getByTaskId(String taskId);
 }

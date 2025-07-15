@@ -28,7 +28,11 @@ void registerHabitsFeature(
       () => SaveHabitCommandHandler(habitRepository: habitRepository),
     )
     ..registerHandler<DeleteHabitCommand, DeleteHabitCommandResponse, DeleteHabitCommandHandler>(
-      () => DeleteHabitCommandHandler(habitRepository: habitRepository),
+      () => DeleteHabitCommandHandler(
+        habitRepository: habitRepository,
+        habitTagsRepository: habitTagRepository,
+        habitRecordRepository: habitRecordRepository,
+      ),
     )
     ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(
       () => GetListHabitsQueryHandler(

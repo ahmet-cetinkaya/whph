@@ -5,4 +5,6 @@ import 'package:whph/src/core/domain/features/habits/habit_record.dart';
 abstract class IHabitRecordRepository extends app.IRepository<HabitRecord, String> {
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize);
+
+  Future<List<HabitRecord>> getByHabitId(String habitId);
 }

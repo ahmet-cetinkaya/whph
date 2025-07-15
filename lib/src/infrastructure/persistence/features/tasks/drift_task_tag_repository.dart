@@ -46,6 +46,16 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
   }
 
   @override
+  Future<List<TaskTag>> getByTaskId(String taskId) async {
+    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+  }
+
+  @override
+  Future<List<TaskTag>> getByTagId(String tagId) async {
+    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+  }
+
+  @override
   Future<List<TagTimeData>> getTopTagsByDuration(
     DateTime startDate,
     DateTime endDate, {

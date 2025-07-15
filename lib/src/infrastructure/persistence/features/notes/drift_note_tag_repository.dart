@@ -50,4 +50,9 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
     final results = await query.get();
     return results.isEmpty ? null : results.first;
   }
+
+  @override
+  Future<List<NoteTag>> getByTagId(String tagId) async {
+    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+  }
 }

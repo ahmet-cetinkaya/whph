@@ -307,6 +307,28 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   @override
+  Future<List<Task>> getByParentTaskId(String parentTaskId) async {
+    final result = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE parent_task_id = ? AND deleted_date IS NULL',
+      variables: [Variable.withString(parentTaskId)],
+      readsFrom: {table},
+    ).get();
+
+    return result.map((row) => _mapTaskFromRow(row.data)).toList();
+  }
+
+  @override
+  Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId) async {
+    final result = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE recurrence_parent_id = ? AND deleted_date IS NULL',
+      variables: [Variable.withString(recurrenceParentId)],
+      readsFrom: {table},
+    ).get();
+
+    return result.map((row) => _mapTaskFromRow(row.data)).toList();
+  }
+
+  @override
   Insertable<Task> toCompanion(Task entity) {
     // Ensure all DateTime values are in UTC format
     DateTime? plannedDate = entity.plannedDate?.toUtc();

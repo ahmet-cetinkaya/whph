@@ -10,6 +10,8 @@ abstract class IAppUsageTimeRecordRepository extends app.IRepository<AppUsageTim
     DateTime? endDate,
   });
 
+  Future<List<AppUsageTimeRecord>> getByAppUsageId(String appUsageId);
+
   Future<PaginatedList<AppUsageTimeRecordWithDetails>> getTopAppUsagesWithDetails({
     int pageIndex = 0,
     int pageSize = 10,
