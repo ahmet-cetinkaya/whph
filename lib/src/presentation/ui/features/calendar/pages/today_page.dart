@@ -279,6 +279,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       mini: true,
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
+                      // Only show habits not completed today
+                      excludeCompletedForDate: DateTime(now.year, now.month, now.day),
                       onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                       onHabitCompleted: _onHabitCompleted,
                       onListing: _onHabitsListed,

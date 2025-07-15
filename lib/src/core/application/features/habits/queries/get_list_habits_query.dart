@@ -25,6 +25,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   bool sortByCustomSort;
   String? search;
   bool ignoreArchivedTagVisibility;
+  DateTime? excludeCompletedForDate;
 
   GetListHabitsQuery({
     required this.pageIndex,
@@ -37,6 +38,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
     this.sortByCustomSort = false,
     this.search,
     this.ignoreArchivedTagVisibility = false,
+    this.excludeCompletedForDate,
   });
 }
 
@@ -151,6 +153,16 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
       conditions.add(
           "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date > ? AND habit_record_table.date < ? AND habit_record_table.deleted_date IS NULL) = 0");
+      variables.add(startDate);
+      variables.add(endDate);
+    }
+
+    // Exclude habits completed for a specific date
+    if (request.excludeCompletedForDate != null) {
+      final startDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month, request.excludeCompletedForDate!.day).toUtc();
+      final endDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month, request.excludeCompletedForDate!.day, 23, 59, 59, 999).toUtc();
+      conditions.add(
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.date >= ? AND habit_record_table.date <= ? AND habit_record_table.deleted_date IS NULL) = 0");
       variables.add(startDate);
       variables.add(endDate);
     }
