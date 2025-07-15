@@ -61,4 +61,9 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     final result = await query.getSingleOrNull();
     return result?.read<int>('total_duration') ?? 0;
   }
+
+  @override
+  Future<List<TaskTimeRecord>> getByTaskId(String taskId) async {
+    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+  }
 }

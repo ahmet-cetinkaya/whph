@@ -33,7 +33,11 @@ void registerTasksFeature(
       () => SaveTaskCommandHandler(taskService: taskRepository, taskTagRepository: taskTagRepository),
     )
     ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
-      () => DeleteTaskCommandHandler(taskRepository: taskRepository),
+      () => DeleteTaskCommandHandler(
+        taskRepository: taskRepository,
+        taskTagRepository: taskTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+      ),
     )
     ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
       () => GetListTasksQueryHandler(

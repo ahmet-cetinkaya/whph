@@ -11,4 +11,8 @@ abstract class ITaskRepository extends app.IRepository<Task, String> {
     CustomWhereFilter? customWhereFilter,
     List<CustomOrder>? customOrder,
   });
+
+  Future<List<Task>> getByParentTaskId(String parentTaskId);
+
+  Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId);
 }

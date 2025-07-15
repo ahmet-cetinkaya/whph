@@ -19,6 +19,7 @@ import 'package:whph/src/core/application/features/tags/services/abstraction/i_t
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:acore/acore.dart';
 
 void registerTagsFeature(
@@ -34,6 +35,7 @@ void registerTagsFeature(
   IHabitRepository habitRepository,
   IHabitRecordRepository habitRecordRepository,
   IHabitTagsRepository habitTagRepository,
+  INoteTagRepository noteTagRepository,
 ) {
   mediator
     ..registerHandler<GetListTagsQuery, GetListTagsQueryResponse, GetListTagsQueryHandler>(
@@ -85,7 +87,14 @@ void registerTagsFeature(
       () => SaveTagCommandHandler(tagRepository: tagRepository),
     )
     ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse, DeleteTagCommandHandler>(
-      () => DeleteTagCommandHandler(tagRepository: tagRepository),
+      () => DeleteTagCommandHandler(
+        tagRepository: tagRepository,
+        tagTagRepository: tagTagRepository,
+        taskTagRepository: taskTagRepository,
+        habitTagsRepository: habitTagRepository,
+        noteTagRepository: noteTagRepository,
+        appUsageTagRepository: appUsageTagRepository,
+      ),
     )
     ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(
       () => AddTagTagCommandHandler(tagTagRepository: tagTagRepository),

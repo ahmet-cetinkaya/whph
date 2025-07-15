@@ -102,6 +102,7 @@ void registerApplication(IContainer container) {
     habitRepository,
     habitRecordRepository,
     habitTagRepository,
+    noteTagRepository,
   );
   registerSettingsFeature(
     container,

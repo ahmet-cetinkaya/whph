@@ -67,7 +67,11 @@ void registerAppUsagesFeature(
       () => SaveAppUsageCommandHandler(appUsageRepository: appUsageRepository),
     )
     ..registerHandler<DeleteAppUsageCommand, DeleteAppUsageCommandResponse, DeleteAppUsageCommandHandler>(
-      () => DeleteAppUsageCommandHandler(appUsageRepository: appUsageRepository),
+      () => DeleteAppUsageCommandHandler(
+        appUsageRepository: appUsageRepository,
+        appUsageTagRepository: appUsageTagRepository,
+        appUsageTimeRecordRepository: appUsageTimeRecordRepository,
+      ),
     )
     ..registerHandler<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse, AddAppUsageTagRuleCommandHandler>(
       () => AddAppUsageTagRuleCommandHandler(repository: appUsageTagRuleRepository),

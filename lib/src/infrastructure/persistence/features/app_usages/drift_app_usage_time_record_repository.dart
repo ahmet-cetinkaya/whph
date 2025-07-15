@@ -77,6 +77,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
   }
 
   @override
+  Future<List<AppUsageTimeRecord>> getByAppUsageId(String appUsageId) async {
+    return (database.select(table)..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())).get();
+  }
+
+  @override
   Future<PaginatedList<AppUsageTimeRecordWithDetails>> getTopAppUsagesWithDetails({
     int pageIndex = 0,
     int pageSize = 10,

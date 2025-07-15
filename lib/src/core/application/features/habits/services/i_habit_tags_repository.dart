@@ -8,6 +8,10 @@ abstract class IHabitTagsRepository extends app.IRepository<HabitTag, String> {
 
   Future<PaginatedList<HabitTag>> getListByHabitId(String habitId, int pageIndex, int pageSize);
 
+  Future<List<HabitTag>> getByHabitId(String habitId);
+
+  Future<List<HabitTag>> getByTagId(String tagId);
+
   Future<List<TagTimeData>> getTopTagsByDuration(
     DateTime startDate,
     DateTime endDate, {

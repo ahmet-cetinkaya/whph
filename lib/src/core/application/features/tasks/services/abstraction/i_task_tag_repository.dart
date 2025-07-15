@@ -5,6 +5,10 @@ import 'package:whph/src/core/application/features/tags/models/tag_time_data.dar
 abstract class ITaskTagRepository extends app.IRepository<TaskTag, String> {
   Future<bool> anyByTaskIdAndTagId(String taskId, String tagId);
 
+  Future<List<TaskTag>> getByTaskId(String taskId);
+
+  Future<List<TaskTag>> getByTagId(String tagId);
+
   Future<List<TagTimeData>> getTopTagsByDuration(
     DateTime startDate,
     DateTime endDate, {

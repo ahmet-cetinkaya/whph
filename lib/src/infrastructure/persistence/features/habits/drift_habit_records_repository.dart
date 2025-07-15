@@ -58,4 +58,9 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       totalItemCount: totalCount,
     );
   }
+
+  @override
+  Future<List<HabitRecord>> getByHabitId(String habitId) async {
+    return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+  }
 }
