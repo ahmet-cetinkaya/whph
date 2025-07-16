@@ -10,7 +10,9 @@ Available for Android, Windows, and Linux platforms.
 
 Download the latest version of the app from the [releases page](https://github.com/ahmet-cetinkaya/whph/releases).
 
-[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&style=for-the-badge&logo=github)](https://github.com/ahmet-cetinkaya/whph/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&style=for-the-badge&logo=github)](https://github.com/ahmet-cetinkaya/whph/releases) [![F-Droid](https://img.shields.io/f-droid/v/me.ahmetcetinkaya.whph?style=for-the-badge&logo=f-droid&label=F-Droid&color=1976D2)](https://f-droid.org/packages/me.ahmetcetinkaya.whph)
+
+
 
 ## 📱 Screenshots
 
