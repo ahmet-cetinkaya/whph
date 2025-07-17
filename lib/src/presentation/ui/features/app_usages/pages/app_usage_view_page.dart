@@ -167,6 +167,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                   showNoTagsFilter: _filterState.showNoTagsFilter,
                   filterStartDate: _filterState.startDate,
                   filterEndDate: _filterState.endDate,
+                  filterByDevices: _filterState.devices
                 ),
               ),
           ],

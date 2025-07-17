@@ -44,6 +44,10 @@ app_usages:
     tags:
       hint: Etiket seç
       label: Etiketler
+  device_filter:
+    clear_all: Tümünü Temizle
+    search:
+      label: Cihaz ara
   errors:
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu.
     app_usage_ignore_rule_not_found: Yok sayma kuralı bulunamadı
@@ -80,6 +84,7 @@ app_usages:
     view:
       buttons:
         filter_tags: Etiketleri Filtrele
+        filter_devices: Cihazları Filtrele
         tag_rules: Etiket Kuralları
       help:
         content: |

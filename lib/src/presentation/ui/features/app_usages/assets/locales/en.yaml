@@ -44,6 +44,10 @@ app_usages:
     tags:
       hint: Select tags
       label: Tags
+  device_filter:
+    clear_all: Clear All
+    search:
+      label: Search devices
   errors:
     add_tag: An unexpected error occurred while adding tag
     app_usage_ignore_rule_not_found: Ignore rule not found
@@ -80,6 +84,7 @@ app_usages:
     view:
       buttons:
         filter_tags: Filter Tags
+        filter_devices: Filter Devices
         tag_rules: Tag Rules
       help:
         content: |

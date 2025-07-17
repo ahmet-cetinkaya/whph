@@ -22,6 +22,7 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/app_usages/commands/add_app_usage_ignore_rule_command.dart';
 import 'package:whph/src/core/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/src/core/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph/src/core/application/features/app_usages/queries/get_distinct_device_names_query.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 
 void registerAppUsagesFeature(
@@ -101,5 +102,8 @@ void registerAppUsagesFeature(
     )
     ..registerHandler<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse, GetAppUsageStatisticsQueryHandler>(
       () => GetAppUsageStatisticsQueryHandler(appUsageTimeRecordRepository: appUsageTimeRecordRepository),
+    )
+    ..registerHandler<GetDistinctDeviceNamesQuery, GetDistinctDeviceNamesQueryResponse, GetDistinctDeviceNamesQueryHandler>(
+      () => GetDistinctDeviceNamesQueryHandler(timeRecordRepository: appUsageTimeRecordRepository),
     );
 }

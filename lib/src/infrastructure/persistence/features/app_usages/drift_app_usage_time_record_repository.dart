@@ -90,6 +90,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     DateTime? startDate,
     DateTime? endDate,
     String? searchByProcessName,
+    List<String>? filterByDevices,
   }) async {
     final countQuery = database.customSelect(
       '''
@@ -111,8 +112,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       )
       SELECT COUNT(*) as total_count
       FROM app_usages_data ad
+      WHERE 1=1
       ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      WHERE EXISTS (
+      AND EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
         WHERE aut.app_usage_id = ad.id 
@@ -122,12 +124,15 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         HAVING COUNT(DISTINCT aut.tag_id) = ?
       )
       ''' : showNoTagsFilter ? '''
-      WHERE NOT EXISTS (
+      AND NOT EXISTS (
         SELECT 1 
         FROM app_usage_tag_table aut 
         WHERE aut.app_usage_id = ad.id
           AND aut.deleted_date IS NULL
       )
+      ''' : ''}
+      ${filterByDevices != null && filterByDevices.isNotEmpty ? '''
+      AND ad.device_name IN (${filterByDevices.map((_) => '?').join(', ')})
       ''' : ''}
       ''',
       variables: [
@@ -137,6 +142,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         if (filterByTags != null && filterByTags.isNotEmpty) ...[
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
+        ],
+        if (filterByDevices != null && filterByDevices.isNotEmpty) ...[
+          ...filterByDevices.map((device) => Variable<String>(device)),
         ],
       ],
       readsFrom: {table},
@@ -176,8 +184,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       filtered_app_usages AS (
         SELECT ad.id, ad.name, ad.display_name, ad.color, ad.device_name, ad.total_duration
         FROM app_usages_data ad
+        WHERE 1=1
         ${filterByTags != null && filterByTags.isNotEmpty ? '''
-        WHERE EXISTS (
+        AND EXISTS (
           SELECT 1 
           FROM app_usage_tag_table aut 
           WHERE aut.app_usage_id = ad.id 
@@ -187,12 +196,15 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           HAVING COUNT(DISTINCT aut.tag_id) = ?
         )
         ''' : showNoTagsFilter ? '''
-        WHERE NOT EXISTS (
+        AND NOT EXISTS (
           SELECT 1 
           FROM app_usage_tag_table aut 
           WHERE aut.app_usage_id = ad.id
             AND aut.deleted_date IS NULL
         )
+        ''' : ''}
+        ${filterByDevices != null && filterByDevices.isNotEmpty ? '''
+        AND ad.device_name IN (${filterByDevices.map((_) => '?').join(', ')})
         ''' : ''}
         ORDER BY ad.total_duration DESC
         LIMIT ? OFFSET ?
@@ -220,6 +232,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         if (filterByTags != null && filterByTags.isNotEmpty) ...[
           ...filterByTags.map((tag) => Variable<String>(tag)),
           Variable<int>(filterByTags.length)
+        ],
+        if (filterByDevices != null && filterByDevices.isNotEmpty) ...[
+          ...filterByDevices.map((device) => Variable<String>(device)),
         ],
         Variable<int>(pageSize),
         Variable<int>(pageIndex * pageSize),
@@ -275,5 +290,24 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       pageSize: pageSize,
       totalItemCount: totalCount,
     );
+  }
+
+  @override
+  Future<List<String>> getDistinctDeviceNames() async {
+    final query = database.customSelect(
+      '''
+      SELECT DISTINCT device_name
+      FROM app_usage_table
+      WHERE deleted_date IS NULL
+        AND device_name IS NOT NULL
+        AND device_name != ''
+      ORDER BY device_name
+      ''',
+      variables: [],
+      readsFrom: {database.appUsageTable},
+    );
+
+    final results = await query.get();
+    return results.map((row) => row.read<String>('device_name')).toList();
   }
 }

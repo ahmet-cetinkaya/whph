@@ -11,12 +11,16 @@ class AppUsageFilterSettings {
   /// End date for filtering
   final DateTime endDate;
 
+  /// Selected device names for filtering
+  final List<String>? devices;
+
   /// Default constructor
   AppUsageFilterSettings({
     this.tags,
     this.showNoTagsFilter = false,
     required this.startDate,
     required this.endDate,
+    this.devices,
   });
 
   /// Create settings from a JSON map
@@ -42,6 +46,7 @@ class AppUsageFilterSettings {
       showNoTagsFilter: json['showNoTagsFilter'] as bool? ?? false,
       startDate: startDate ?? defaultStart,
       endDate: endDate ?? defaultEnd,
+      devices: json['devices'] != null ? List<String>.from(json['devices'] as List<dynamic>) : null,
     );
   }
 
@@ -57,6 +62,10 @@ class AppUsageFilterSettings {
       json['tags'] = tags;
     }
 
+    if (devices != null) {
+      json['devices'] = devices;
+    }
+
     return json;
   }
 
@@ -66,12 +75,14 @@ class AppUsageFilterSettings {
     bool? showNoTagsFilter,
     DateTime? startDate,
     DateTime? endDate,
+    List<String>? devices,
   }) {
     return AppUsageFilterSettings(
       tags: tags ?? this.tags,
       showNoTagsFilter: showNoTagsFilter ?? this.showNoTagsFilter,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      devices: devices ?? this.devices,
     );
   }
 }
