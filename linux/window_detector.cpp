@@ -264,30 +264,104 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
 WindowInfo WaylandWindowDetector::TryKdeWayland() {
     WindowInfo info{"unknown", "unknown"};
     
-    // Check if qdbus is available and KDE Plasma is running
-    if (ExecuteCommand("which qdbus").empty() || 
-        ExecuteCommand("pgrep -f plasmashell").empty()) {
+    // Check if KDE Plasma is running
+    if (ExecuteCommand("pgrep -f plasmashell").empty()) {
         return info;
     }
     
-    // Get window ID
-    std::string window_id = ExecuteCommand("qdbus org.kde.KWin /KWin activeWindow 2>/dev/null");
-    if (window_id.empty()) {
-        return info;
-    }
-    
-    // Get window info
-    std::string info_cmd = "qdbus org.kde.KWin /KWin getWindowInfo " + window_id + " 2>/dev/null";
-    std::string window_info = ExecuteCommand(info_cmd);
-    
-    if (!window_info.empty()) {
-        // Extract title
-        std::string title_cmd = "echo '" + window_info + "' | grep 'Caption:' | sed 's/Caption: //g'";
-        info.title = ExecuteCommand(title_cmd);
+    // Method 1: Try using qdbus to interact with KWin
+    if (!ExecuteCommand("which qdbus").empty()) {
+        // Check what KWin services are actually available
+        std::string kwin_services = ExecuteCommand("qdbus 2>/dev/null | grep -E '(org\\.kde\\.KWin|org\\.kde\\.kwin)' 2>/dev/null");
         
-        // Extract application
-        std::string app_cmd = "echo '" + window_info + "' | grep 'resourceClass:' | sed 's/resourceClass: //g'";
-        info.application = ExecuteCommand(app_cmd);
+        if (!kwin_services.empty()) {
+            // Try different KWin D-Bus interfaces
+            std::vector<std::string> kwin_attempts = {
+                // Try KWin scripting with simpler approach
+                "qdbus org.kde.KWin /Scripting 2>/dev/null",
+                "qdbus org.kde.kwin /Scripting 2>/dev/null"
+            };
+            
+            for (const auto& attempt : kwin_attempts) {
+                std::string scripting_check = ExecuteCommand(attempt);
+                if (!scripting_check.empty()) {
+                    // KWin scripting is available, but the inline script approach might not work
+                    // Let's try a different approach - check for window manager info
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Method 2: Try using xprop even on Wayland (sometimes works with XWayland)
+    if (!ExecuteCommand("which xprop").empty()) {
+        std::string xprop_result = ExecuteCommand("xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | cut -d' ' -f5");
+        if (!xprop_result.empty() && xprop_result != "0x0") {
+            std::string title_cmd = "xprop -id " + xprop_result + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
+            std::string class_cmd = "xprop -id " + xprop_result + " WM_CLASS 2>/dev/null | cut -d'\"' -f4";
+            
+            std::string title = ExecuteCommand(title_cmd);
+            std::string app_class = ExecuteCommand(class_cmd);
+            
+            if (!title.empty() && title != "unknown") {
+                info.title = title;
+                info.application = !app_class.empty() ? app_class : title;
+                return info;
+            }
+        }
+    }
+    
+    // Method 3: Try using wmctrl (sometimes works on KDE Wayland)
+    if (!ExecuteCommand("which wmctrl").empty()) {
+        std::string wmctrl_result = ExecuteCommand("wmctrl -l 2>/dev/null | head -1");
+        if (!wmctrl_result.empty()) {
+            // Parse wmctrl output: window_id desktop_id hostname window_title
+            std::istringstream iss(wmctrl_result);
+            std::string window_id, desktop_id, hostname;
+            if (iss >> window_id >> desktop_id >> hostname) {
+                std::string title;
+                std::getline(iss, title);
+                if (!title.empty()) {
+                    title = title.substr(1); // Remove leading space
+                    info.title = title;
+                    info.application = title; // Use title as application name
+                    return info;
+                }
+            }
+        }
+    }
+    
+    // Method 4: Process-based detection with better heuristics
+    std::vector<std::string> gui_process_commands = {
+        // Look for recently active GUI processes
+        "ps -eo pid,lstart,comm 2>/dev/null | grep -E '(firefox|chrome|chromium|kate|dolphin|konsole|okular|kwrite|gwenview|ark|spectacle|code|atom|sublime)' 2>/dev/null | tail -1",
+        
+        // Look for processes with high CPU usage (likely active)
+        "ps -eo pid,pcpu,comm --sort=-pcpu 2>/dev/null | grep -vE '(systemd|dbus|kwin|plasmashell|bash|ps|grep|kernel)' 2>/dev/null | head -1 2>/dev/null",
+        
+        // Look for processes using X11/Wayland
+        "ps -eo pid,comm 2>/dev/null | grep -E '(qt|gtk|electron|java)' 2>/dev/null | head -1 2>/dev/null"
+    };
+    
+    for (const auto& cmd : gui_process_commands) {
+        std::string result = ExecuteCommand(cmd);
+        if (!result.empty()) {
+            std::istringstream iss(result);
+            std::string pid, extra, comm;
+            if (iss >> pid >> extra >> comm) {
+                // Clean up the process name
+                if (comm.find('/') != std::string::npos) {
+                    size_t slash_pos = comm.find_last_of('/');
+                    comm = comm.substr(slash_pos + 1);
+                }
+                
+                if (!comm.empty() && comm != "unknown") {
+                    info.application = comm;
+                    info.title = comm;
+                    return info;
+                }
+            }
+        }
     }
     
     return info;
@@ -440,32 +514,122 @@ bool X11WindowDetector::FocusWindow(const std::string& windowTitle) {
 
 // WaylandWindowDetector focus implementation
 bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
-    // For Wayland, we'll use different methods based on the compositor
+    // Detect which compositor is running and use appropriate method
     
-    // Try different Wayland compositors
-    std::vector<std::string> commands = {
-        // GNOME/Mutter
-        "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_title().includes('" + windowTitle + "')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null",
+    // Try GNOME/Mutter first
+    if (!ExecuteCommand("pgrep -f gnome-shell").empty()) {
+        std::string gnome_cmd = "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_title().includes('" + windowTitle + "')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null";
+        if (system(gnome_cmd.c_str()) == 0) {
+            return true;
+        }
         
-        // Sway
-        "swaymsg '[title=\"" + windowTitle + "\"] focus' 2>/dev/null",
-        "swaymsg '[app_id=\"whph\"] focus' 2>/dev/null",
+        // Fallback for GNOME
+        std::string gnome_fallback = "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_wm_class().toLowerCase().includes('whph')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null";
+        if (system(gnome_fallback.c_str()) == 0) {
+            return true;
+        }
+    }
+    
+    // Try Sway
+    if (!ExecuteCommand("pgrep -f sway").empty()) {
+        std::vector<std::string> sway_commands = {
+            "swaymsg '[title=\"" + windowTitle + "\"] focus' 2>/dev/null",
+            "swaymsg '[app_id=\"whph\"] focus' 2>/dev/null",
+            "swaymsg '[class=\"whph\"] focus' 2>/dev/null"
+        };
         
-        // KDE/KWin
-        "qdbus org.kde.KWin /KWin org.kde.KWin.activateWindow \"" + windowTitle + "\" 2>/dev/null",
+        for (const auto& cmd : sway_commands) {
+            if (system(cmd.c_str()) == 0) {
+                return true;
+            }
+        }
+    }
+    
+    // Try KDE/KWin with safer methods
+    if (!ExecuteCommand("pgrep -f plasmashell").empty()) {
+        // Method 1: Try using wmctrl first (sometimes works on KDE Wayland)
+        std::vector<std::string> wmctrl_commands = {
+            "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
+            "wmctrl -x -a \"whph\" 2>/dev/null"
+        };
         
-        // Hyprland
-        "hyprctl dispatch focuswindow title:\"" + windowTitle + "\" 2>/dev/null",
-        "hyprctl dispatch focuswindow class:whph 2>/dev/null",
+        for (const auto& cmd : wmctrl_commands) {
+            if (system(cmd.c_str()) == 0) {
+                return true;
+            }
+        }
         
-        // Generic wmctrl fallback
+        // Method 2: Try KWin D-Bus methods if available
+        if (!ExecuteCommand("which qdbus").empty()) {
+            // Check if KWin scripting is available
+            std::string kwin_check = ExecuteCommand("qdbus org.kde.KWin /Scripting 2>/dev/null");
+            if (!kwin_check.empty()) {
+                // Create a temporary script file for window focusing
+                std::string temp_script = "/tmp/kwin_focus_window.js";
+                std::string script_content = 
+                    "var clients = workspace.clientList();\n"
+                    "for (var i = 0; i < clients.length; i++) {\n"
+                    "    var client = clients[i];\n"
+                    "    if (client.caption.indexOf('" + windowTitle + "') !== -1 || \n"
+                    "        client.resourceClass.indexOf('whph') !== -1) {\n"
+                    "        workspace.activeClient = client;\n"
+                    "        client.desktop = workspace.currentDesktop;\n"
+                    "        break;\n"
+                    "    }\n"
+                    "}\n";
+                
+                std::ofstream script_file(temp_script);
+                if (script_file.is_open()) {
+                    script_file << script_content;
+                    script_file.close();
+                    
+                    // Load and run the script
+                    std::string load_cmd = "qdbus org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript " + temp_script + " 2>/dev/null";
+                    std::string script_id = ExecuteCommand(load_cmd);
+                    
+                    if (!script_id.empty()) {
+                        std::string run_cmd = "qdbus org.kde.KWin /" + script_id + " org.kde.kwin.Script.run 2>/dev/null";
+                        int result = system(run_cmd.c_str());
+                        
+                        // Clean up
+                        std::string stop_cmd = "qdbus org.kde.KWin /" + script_id + " org.kde.kwin.Script.stop 2>/dev/null";
+                        system(stop_cmd.c_str());
+                        std::remove(temp_script.c_str());
+                        
+                        if (result == 0) {
+                            return true;
+                        }
+                    } else {
+                        std::remove(temp_script.c_str());
+                    }
+                }
+            }
+        }
+    }
+    
+    // Try Hyprland
+    if (!ExecuteCommand("pgrep -f Hyprland").empty()) {
+        std::vector<std::string> hypr_commands = {
+            "hyprctl dispatch focuswindow title:\"" + windowTitle + "\" 2>/dev/null",
+            "hyprctl dispatch focuswindow class:whph 2>/dev/null"
+        };
+        
+        for (const auto& cmd : hypr_commands) {
+            if (system(cmd.c_str()) == 0) {
+                return true;
+            }
+        }
+    }
+    
+    // Generic fallbacks that might work on some Wayland compositors
+    std::vector<std::string> fallback_commands = {
         "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
-        "wmctrl -x -a \"whph\" 2>/dev/null"
+        "wmctrl -x -a \"whph\" 2>/dev/null",
+        "xdotool search --name \"" + windowTitle + "\" windowactivate 2>/dev/null"
     };
     
-    for (const auto& command : commands) {
-        int result = system(command.c_str());
-        if (result == 0) {
+    for (const auto& command : fallback_commands) {
+        if (system(command.c_str()) == 0) {
             return true;
         }
     }
