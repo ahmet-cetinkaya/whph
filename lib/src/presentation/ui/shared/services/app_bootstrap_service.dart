@@ -37,6 +37,15 @@ class AppBootstrapService {
     registerApplication(container);
     registerUIPresentation(container);
 
+    Logger.info('AppBootstrapService: Dependency injection container setup completed');
+
+    return container;
+  }
+
+  /// Initializes core services after the container has been made globally available
+  ///
+  /// This method should be called after the container is assigned to the global variable
+  static Future<void> initializeCoreServices(IContainer container) async {
     // Initialize core services
     await _initializeCoreServices(container);
 
@@ -44,8 +53,6 @@ class AppBootstrapService {
     await _startBackgroundWorkers(container);
 
     Logger.info('AppBootstrapService: App initialization completed successfully');
-
-    return container;
   }
 
   /// Initializes essential core services required for app functionality

@@ -5,7 +5,8 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph/main.dart' show container;
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag.dart';
@@ -103,8 +104,8 @@ class AppDatabase extends _$AppDatabase {
       beforeOpen: (details) async {
         if (!isTestMode) {
           // Create database directory if it doesn't exist
-          final dbFolder = await getApplicationDocumentsDirectory();
-          final dbDirectory = Directory(p.join(dbFolder.path, folderName));
+          final dbFolder = await _getApplicationDirectory();
+          final dbDirectory = Directory(dbFolder.path);
           if (!await dbDirectory.exists()) {
             await dbDirectory.create(recursive: true);
           }
@@ -410,11 +411,17 @@ class AppDatabase extends _$AppDatabase {
       if (isTestMode) {
         file = File(p.join(testDirectory?.path ?? Directory.systemTemp.path, databaseName));
       } else {
-        final dbFolder = await getApplicationDocumentsDirectory();
-        file = File(p.join(dbFolder.path, folderName, kDebugMode ? 'debug_$databaseName' : databaseName));
+        final dbFolder = await _getApplicationDirectory();
+        file = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
         await file.parent.create(recursive: true);
       }
       return NativeDatabase.createInBackground(file);
     });
+  }
+
+  /// Gets the application directory using the injected application directory service
+  static Future<Directory> _getApplicationDirectory() async {
+    final applicationDirectoryService = container.resolve<IApplicationDirectoryService>();
+    return await applicationDirectoryService.getApplicationDirectory();
   }
 }

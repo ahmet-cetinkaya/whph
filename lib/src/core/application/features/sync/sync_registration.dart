@@ -9,6 +9,7 @@ import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_q
 import 'package:whph/src/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/src/core/application/features/sync/services/device_id_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -52,7 +53,13 @@ void registerSyncFeature(
   // ISyncService is registered in infrastructure_container.dart with platform-specific implementations
   final syncService = container.resolve<ISyncService>();
 
-  container.registerSingleton<IDeviceIdService>((_) => DeviceIdService());
+  // IApplicationDirectoryService is registered in infrastructure_container.dart with platform-specific implementations
+  final applicationDirectoryService = container.resolve<IApplicationDirectoryService>();
+
+  // Register device ID service with dependency injection
+  container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
+    applicationDirectoryService: applicationDirectoryService,
+  ));
   final deviceIdService = container.resolve<IDeviceIdService>();
 
   mediator

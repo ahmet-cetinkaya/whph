@@ -22,8 +22,11 @@ void main() async {
     // Set up global error handling
     GlobalErrorHandlerService.setupErrorHandling(navigatorKey);
 
-    // Initialize the application
+    // Initialize the application container first
     container = await AppBootstrapService.initializeApp();
+
+    // Initialize core services after container is globally available
+    await AppBootstrapService.initializeCoreServices(container);
 
     // Initialize platform-specific features
     await PlatformInitializationService.initializeDesktop(container);
