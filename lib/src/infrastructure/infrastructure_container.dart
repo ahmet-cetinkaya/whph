@@ -10,6 +10,7 @@ import 'package:whph/src/core/application/features/app_usages/services/abstracti
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/infrastructure/android/features/settings/android_startup_settings_service.dart';
@@ -39,7 +40,10 @@ import 'package:whph/src/infrastructure/desktop/features/system_tray/desktop_sys
 import 'package:whph/src/infrastructure/mobile/features/notification/mobile_notification_service.dart';
 import 'package:whph/src/infrastructure/android/features/setup/android_setup_service.dart';
 import 'package:whph/src/infrastructure/android/features/file_system/android_file_service.dart';
+import 'package:whph/src/infrastructure/android/features/file_system/android_application_directory_service.dart';
 import 'package:whph/src/infrastructure/desktop/features/file_system/desktop_file_service.dart';
+import 'package:whph/src/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
+import 'package:whph/src/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 
 void registerInfrastructure(IContainer container) {
   // Register Logger Service
@@ -47,6 +51,20 @@ void registerInfrastructure(IContainer container) {
 
   final settingRepository = container.resolve<ISettingRepository>();
   final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
+
+  // Register platform-specific application directory service
+  container.registerSingleton<IApplicationDirectoryService>((_) {
+    if (Platform.isAndroid) {
+      return AndroidApplicationDirectoryService();
+    }
+    if (Platform.isWindows) {
+      return WindowsApplicationDirectoryService();
+    }
+    if (Platform.isLinux) {
+      return LinuxApplicationDirectoryService();
+    }
+    throw Exception('Unsupported platform for application directory service.');
+  });
 
   // Register DeviceInfoPlugin for device-specific information
   container.registerSingleton<DeviceInfoPlugin>((_) => DeviceInfoPlugin());
