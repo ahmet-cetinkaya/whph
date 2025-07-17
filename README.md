@@ -8,10 +8,12 @@ Available for Android, Windows, and Linux platforms.
 
 ## ⏬ Installation
 
-Download the latest version of the app from the [releases page](https://github.com/ahmet-cetinkaya/whph/releases).
+You can download the app from the following links:
 
-[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&style=for-the-badge&logo=github)](https://github.com/ahmet-cetinkaya/whph/releases) [![F-Droid](https://img.shields.io/f-droid/v/me.ahmetcetinkaya.whph?style=for-the-badge&logo=f-droid&label=F-Droid&color=1976D2)](https://f-droid.org/packages/me.ahmetcetinkaya.whph)
+[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release%20(All%20Platforms)&style=for-the-badge&logo=github)](https://github.com/ahmet-cetinkaya/whph/releases)
+[![F-Droid](https://img.shields.io/f-droid/v/me.ahmetcetinkaya.whph?style=for-the-badge&logo=f-droid&label=F-Droid%20(Android)&color=1976D2)](https://f-droid.org/packages/me.ahmetcetinkaya.whph)
 
+> For Linux users, please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md) to ensure you have all required system libraries installed before running the application.
 
 
 ## 📱 Screenshots
@@ -31,49 +33,4 @@ Download the latest version of the app from the [releases page](https://github.c
 
 ## 🤝 Contributing
 
-If you'd like to contribute, please follow these steps:
-
-1. Fork the repository
-2. Create a new branch (e.g., `git checkout -b feat/feature-branch`)
-3. Make your changes
-4. Commit your changes (e.g., `git commit -m 'feat: add new feature'`)
-5. Push to the branch (e.g., `git push origin feat/feature-branch`)
-6. Open a Pull Request
-
-### 📋 Requirements
-
-- Flutter SDK
-- Dart SDK
-- A compatible device or emulator for Windows, Linux, or Android
-
-### ⚙️ Running the Project
-
-1. Clone the repository (with submodules):
-
-   ```bash
-   git clone --recurse-submodules https://github.com/ahmet-cetinkaya/whph.git
-   ```
-
-   If you already cloned without `--recurse-submodules`, run:
-
-   ```bash
-   git submodule update --init --recursive
-   ```
-
-2. Navigate into the project directory:
-
-   ```bash
-   cd whph
-   ```
-
-3. Install the dependencies:
-
-   ```bash
-   flutter pub get
-   ```
-
-4. Start the application:
-
-   ```bash
-   flutter run
-   ```
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for comprehensive contribution guidelines, including environment setup, code style, pull request process, issue reporting, and testing requirements.
