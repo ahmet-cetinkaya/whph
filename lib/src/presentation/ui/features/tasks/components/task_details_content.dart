@@ -1001,15 +1001,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           DetailTableRowData(
             label: _translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            widget: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: MarkdownEditor(
-                controller: _descriptionController,
-                onChanged: _onDescriptionChanged,
-                toolbarBackground: AppTheme.surface1,
-                height: 250,
-              ),
+            widget: MarkdownEditor(
+              controller: _descriptionController,
+              onChanged: _onDescriptionChanged,
+              toolbarBackground: AppTheme.surface1,
+              height: 250,
             ),
+            removePadding: true,
           ),
         ],
         isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),

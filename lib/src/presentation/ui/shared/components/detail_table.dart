@@ -9,6 +9,7 @@ class DetailTableRowData {
   final Widget widget;
   final String? tooltip;
   final String? hintText;
+  final bool removePadding;
 
   DetailTableRowData({
     required this.label,
@@ -16,6 +17,7 @@ class DetailTableRowData {
     required this.widget,
     this.tooltip,
     this.hintText,
+    this.removePadding = false,
   });
 }
 
@@ -46,7 +48,7 @@ class DetailTable extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size3XSmall),
+              padding: _getContainerPadding(data),
               // Ensure minimum height for each row
               child: !forceVertical
                   ? SizedBox(
@@ -85,7 +87,9 @@ class DetailTable extends StatelessWidget {
             ),
           const SizedBox(height: AppTheme.size3XSmall),
           Padding(
-            padding: const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall),
+            padding: data.removePadding 
+                ? EdgeInsets.zero 
+                : const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall),
             child: _buildContent(context, data),
           ),
         ],
@@ -162,5 +166,13 @@ class DetailTable extends StatelessWidget {
         child: data.widget,
       ),
     );
+  }
+
+  EdgeInsets _getContainerPadding(DetailTableRowData data) {
+    if (data.removePadding) {
+      // Only keep vertical padding, remove horizontal padding
+      return const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall);
+    }
+    return const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size3XSmall);
   }
 }

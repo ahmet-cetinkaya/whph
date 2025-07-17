@@ -697,6 +697,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     toolbarBackground: AppTheme.surface1,
                     height: 250,
                   ),
+                  removePadding: true,
                 ),
               ],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
