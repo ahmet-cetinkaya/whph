@@ -20,17 +20,19 @@ class FilterContext {
   final bool showNoTagsFilter;
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
+  final List<String>? filterByDevices;
 
   const FilterContext({
     this.filterByTags,
     this.showNoTagsFilter = false,
     this.filterStartDate,
     this.filterEndDate,
+    this.filterByDevices,
   });
 
   @override
   String toString() =>
-      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate)';
+      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices)';
 }
 
 class AppUsageList extends StatefulWidget {
@@ -40,6 +42,7 @@ class AppUsageList extends StatefulWidget {
   final Function(String id)? onOpenDetails;
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
+  final List<String>? filterByDevices;
 
   const AppUsageList({
     super.key,
@@ -49,6 +52,7 @@ class AppUsageList extends StatefulWidget {
     this.onOpenDetails,
     this.filterStartDate,
     this.filterEndDate,
+    this.filterByDevices,
   });
 
   @override
@@ -97,6 +101,7 @@ class AppUsageListState extends State<AppUsageList> {
         showNoTagsFilter: widget.showNoTagsFilter,
         filterStartDate: widget.filterStartDate,
         filterEndDate: widget.filterEndDate,
+        filterByDevices: widget.filterByDevices,
       );
 
   bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -105,6 +110,7 @@ class AppUsageListState extends State<AppUsageList> {
       'showNoTagsFilter': oldFilters.showNoTagsFilter,
       'startDate': oldFilters.filterStartDate,
       'endDate': oldFilters.filterEndDate,
+      'filterByDevices': oldFilters.filterByDevices
     };
 
     final newMap = {
@@ -112,6 +118,7 @@ class AppUsageListState extends State<AppUsageList> {
       'showNoTagsFilter': newFilters.showNoTagsFilter,
       'startDate': newFilters.filterStartDate,
       'endDate': newFilters.filterEndDate,
+      'filterByDevices': newFilters.filterByDevices
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -160,6 +167,7 @@ class AppUsageListState extends State<AppUsageList> {
           : null,
       endDate:
           _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
+      filterByDevices: _currentFilters.filterByDevices
     );
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(

@@ -11,6 +11,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   DateTime? startDate;
   DateTime? endDate;
   String? searchByProcessName;
+  List<String>? filterByDevices;
 
   GetListByTopAppUsagesQuery({
     required this.pageIndex,
@@ -20,6 +21,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     DateTime? startDate,
     DateTime? endDate,
     this.searchByProcessName,
+    this.filterByDevices,
   })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
         endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null;
 }
@@ -67,6 +69,7 @@ class GetListByTopAppUsagesQueryHandler
       startDate: request.startDate,
       endDate: request.endDate,
       searchByProcessName: request.searchByProcessName,
+      filterByDevices: request.filterByDevices,
     );
 
     final items = results.items

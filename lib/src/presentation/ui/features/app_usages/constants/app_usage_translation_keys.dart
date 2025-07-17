@@ -72,8 +72,13 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String viewTitle = 'app_usages.pages.view.title';
   static const String tagRulesButton = 'app_usages.pages.view.buttons.tag_rules';
   static const String filterTagsButton = 'app_usages.pages.view.buttons.filter_tags';
+  static const String filterDevicesButton = 'app_usages.pages.view.buttons.filter_devices';
   static const String viewHelpTitle = 'app_usages.pages.view.help.title';
   static const String viewHelpContent = 'app_usages.pages.view.help.content';
+
+  // Device Filter
+  static const String searchLabel = 'app_usages.device_filter.search.label';
+  static const String clearAllButton = 'app_usages.device_filter.clear_all';
 
   // Tooltips
   static const String editNameTooltip = 'app_usages.tooltips.edit_name';

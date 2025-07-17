@@ -20,5 +20,8 @@ abstract class IAppUsageTimeRecordRepository extends app.IRepository<AppUsageTim
     DateTime? startDate,
     DateTime? endDate,
     String? searchByProcessName,
+    List<String>? filterByDevices,
   });
+
+  Future<List<String>> getDistinctDeviceNames();
 }

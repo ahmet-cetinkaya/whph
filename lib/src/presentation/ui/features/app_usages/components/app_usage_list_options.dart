@@ -5,6 +5,7 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/src/presentation/ui/features/app_usages/components/device_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/src/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
@@ -20,12 +21,14 @@ class AppUsageFilterState {
   final bool showNoTagsFilter;
   final DateTime startDate;
   final DateTime endDate;
+  final List<String>? devices;
 
   const AppUsageFilterState({
     this.tags,
     this.showNoTagsFilter = false,
     required this.startDate,
     required this.endDate,
+    this.devices,
   });
 
   AppUsageFilterState copyWith({
@@ -33,12 +36,14 @@ class AppUsageFilterState {
     bool? showNoTagsFilter,
     DateTime? startDate,
     DateTime? endDate,
+    List<String>? devices,
   }) {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
       showNoTagsFilter: showNoTagsFilter ?? this.showNoTagsFilter,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      devices: devices ?? this.devices,
     );
   }
 }
@@ -92,6 +97,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
         showNoTagsFilter: settings.showNoTagsFilter,
         startDate: settings.startDate,
         endDate: settings.endDate,
+        devices: settings.devices,
       );
 
       if (mounted) {
@@ -121,6 +127,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
           showNoTagsFilter: _currentState.showNoTagsFilter,
           startDate: _currentState.startDate,
           endDate: _currentState.endDate,
+          devices: _currentState.devices,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -147,6 +154,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       showNoTagsFilter: _currentState.showNoTagsFilter,
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
+      devices: _currentState.devices,
     );
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -168,6 +176,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       showNoTagsFilter: isNoneSelected,
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
+      devices: _currentState.devices,
     );
 
     if (mounted) {
@@ -188,6 +197,25 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       showNoTagsFilter: _currentState.showNoTagsFilter,
       startDate: dateFilterStart,
       endDate: dateFilterEnd,
+      devices: _currentState.devices,
+    );
+
+    if (mounted) {
+      setState(() => _currentState = newState);
+    }
+
+    widget.onFiltersChanged(newState);
+    handleFilterChange();
+  }
+
+  void _handleDeviceSelect(List<DropdownOption<String>> deviceOptions, bool isNoneSelected) {
+    final selectedValues = deviceOptions.map((option) => option.value).toList();
+    final newState = AppUsageFilterState(
+      tags: _currentState.tags,
+      showNoTagsFilter: _currentState.showNoTagsFilter,
+      startDate: _currentState.startDate,
+      endDate: _currentState.endDate,
+      devices: selectedValues.isEmpty ? null : selectedValues,
     );
 
     if (mounted) {
@@ -227,6 +255,27 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
                 ? AppTheme.primaryColor
                 : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
+          ),
+
+          // Device Filter
+          DeviceSelectDropdown(
+            isMultiSelect: true,
+            initialSelectedDevices: _currentState.devices
+                    ?.map(
+                      (device) => DropdownOption(value: device, label: device),
+                    )
+                    .toList() ??
+                [],
+            onDevicesSelected: _handleDeviceSelect,
+            showLength: true,
+            showNoneOption: false,
+            initialNoneSelected: false,
+            icon: Icons.devices,
+            iconSize: AppTheme.iconSizeMedium,
+            color: (_currentState.devices?.isNotEmpty ?? false)
+                ? AppTheme.primaryColor
+                : Colors.grey,
+            tooltip: _translationService.translate(AppUsageTranslationKeys.filterDevicesButton),
           ),
 
           // Date Range Filter
