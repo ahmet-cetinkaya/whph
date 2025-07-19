@@ -1,0 +1,140 @@
+tags:
+  actions:
+    add: Tag hinzufügen
+    archive: Tag archivieren
+    delete: Tag löschen
+    edit: Tag bearbeiten
+    hide_archived: Archivierte Tags ausblenden
+    show_archived: Archivierte Tags anzeigen
+    unarchive: Tag aus Archiv entfernen
+  categories:
+    all: Alle
+    app_usage: App-Nutzung
+    habits: Gewohnheiten
+    tasks: Aufgaben
+  default_name: Neues Tag
+  details:
+    archived: Archiviert
+    color: Farbe
+    help:
+      description: Details-Hilfebeschreibung
+      title: Details-Hilfe-Titel
+    name: Name
+    related_tags: Verwandte Tags
+    select_tag: Tag auswählen
+    tasks_label: Aufgaben
+  errors:
+    creating: Tag konnte nicht erstellt werden
+    deleting: Tag konnte nicht gelöscht werden
+    get_tags: Fehler beim Abrufen der Tags
+    loading: Tags konnten nicht geladen werden
+    loading_archive_status: Archivstatus konnte nicht geladen werden
+    same_tag: Primäre und sekundäre Tags können nicht identisch sein
+    saving: Tag konnte nicht gespeichert werden
+    tag_not_found: Tag nicht gefunden
+    tag_tag_already_exists: Diese Tag-Beziehung existiert bereits
+    tag_tag_not_found: Tag-Beziehung nicht gefunden
+    toggling_archive: Archivstatus konnte nicht geändert werden
+  filter:
+    all_categories: Alle Kategorien
+    select_category: Kategorie auswählen
+  filter_tooltip: Nach Tags filtern
+  help:
+    content: |
+      🏷️ Tags helfen Ihnen dabei, Elemente zu gruppieren und zu organisieren.
+
+      ## ⚡ Funktionen
+      - Elemente in Kategorien einteilen
+      - Visuelle Ordnung mit Farben schaffen
+      - Verwandte Elemente leicht finden
+
+      ## 💡 Tipps
+      - Klare und verständliche Namen verwenden
+      - Ähnliche Elemente mit demselben Tag gruppieren
+      - Farbkodierung für visuelle Ordnung nutzen
+      - Archivierungsfunktion zur Ordnungserhaltung verwenden
+    description: Tags helfen Ihnen dabei, Elemente zu kategorisieren und zu gruppieren
+    overview:
+      content: |
+        Transformieren Sie Ihre Produktivität mit strategischem Tagging, das Ihnen hilft, Arbeit zu organisieren, Zeitinvestitionen zu verfolgen und klaren Fokus auf das Wichtigste zu behalten.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Tag-basierte Organisation ist fundamental für effektives Zeitmanagement und Produktivität. Durch die Kategorisierung Ihrer Aktivitäten mit aussagekräftigen Tags gewinnen Sie klare Einblicke, wie Sie Ihre Zeit verbringen, und können informierte Entscheidungen treffen, um Ihren Fokus und Ihre Effizienz zu optimieren.
+
+        ## 📊 Zeitinvestitions-Analyse
+
+        Verstehen Sie, wohin Ihre Zeit geht, und treffen Sie datengesteuerte Entscheidungen über Ihre Prioritäten. Zeitverfolgung mit Tags enthüllt Muster, die Ihnen helfen, Ihren Zeitplan und Ihre Arbeitsgewohnheiten zu optimieren.
+
+        - ⏱️ Zeit überwachen, die in verschiedenen Aktivitätskategorien verbracht wird
+        - 📅 Zeitinvestitionen über bestimmte Zeiträume und Trends verfolgen
+        - ⚖️ Zeitverteilung zwischen Projekten und Verantwortlichkeiten vergleichen
+        - 📈 Produktivitätsmuster und Spitzenleistungszeiten identifizieren
+        - 🎯 Ihre Energie auf wirkungsvolle Aktivitäten fokussieren
+
+        ## 🗂️ Strategische Organisation
+
+        Erstellen Sie einen systematischen Ansatz zur Organisation Ihrer Arbeit, der mit Ihren Bedürfnissen skaliert. Gut strukturierte Tags bilden das Fundament eines effizienten Produktivitätssystems.
+
+        - 🔍 Informationen schnell mit Multi-Tag-Suchen filtern und finden
+        - 🗄️ Abgeschlossene Projekte archivieren, um saubere Organisation zu erhalten
+        - 🧩 Hierarchische Strukturen aufbauen, die Ihre Arbeitsmuster widerspiegeln
+        - 👥 Verwandte Aktivitäten für besseres Projektmanagement gruppieren
+        - ⏳ Umfassende Zeitverfolgung über alle Aktivitäten ermöglichen
+
+        ## 💡 Optimierungsstrategien
+
+        Nutzen Sie fortgeschrittene Tagging-Techniken, um die Effektivität Ihres Organisationssystems zu maximieren und langfristiges Produktivitätswachstum zu erhalten.
+
+        - 🏷️ Klare, beschreibende Namen verwenden, die über die Zeit bedeutsam bleiben
+        - 🔗 **Hierarchische Strukturen erstellen:** Projekte → Abteilungen → Bereiche
+        - 📊 Zeitanalyse-Berichte regelmäßig überprüfen, um Verbesserungsmöglichkeiten zu identifizieren
+        - 🗄️ Systemsauberkeit durch Archivierung abgeschlossener Arbeit erhalten
+        - 🎯 Fokussierte Filterung anwenden, um Ablenkungen zu eliminieren und Konzentration zu verstärken
+      title: Tag-basierte Organisation & Zeitmanagement-Leitfaden
+    title: Tag-Hilfe
+  labels:
+    color: Farbe
+    description: Beschreibung
+    name: Name
+    tags: Tags
+  list:
+    filter_tooltip: Nach Tags filtern
+    no_tags: Keine Tags
+  messages:
+    archive_confirm: Sind Sie sicher, dass Sie dieses Tag archivieren möchten?
+    confirm_archive: Sind Sie sicher, dass Sie dieses Tag archivieren möchten?
+    confirm_delete: Sind Sie sicher, dass Sie dieses Tag löschen möchten?
+    confirm_unarchive: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
+    unarchive_confirm: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
+  new_tag: Neues Tag
+  no_tags: Keine Tags
+  none_option: Keine
+  search:
+    clear_all: Alle löschen
+    label: Tags suchen
+  sections:
+    list: Tags
+  selection:
+    done: Fertig
+  tag_details: Tag-Details
+  time_bar_chart:
+    by_element: Nach Element
+    no_data: Keine Daten
+    title: Zeitverteilung
+  time_chart:
+    no_data: Keine Daten
+    other_category: Andere
+  time_distribution: Zeitverteilung
+  time_records: Zeitaufzeichnungen
+  title: Tags
+  tooltips:
+    add_tag: Tag hinzufügen
+    add_task: Neue Aufgabe hinzufügen
+    archive_tag: Tag archivieren
+    color: Klicken, um Tag eine Farbe zuzuweisen
+    delete_tag: Tag löschen
+    edit_name: Name bearbeiten
+    remove_tag: Tag entfernen
+    select: Klicken, um Tag auszuwählen
+    unarchive_tag: Tag aus Archiv entfernen

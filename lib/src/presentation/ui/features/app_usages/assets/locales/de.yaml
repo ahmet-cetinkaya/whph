@@ -1,0 +1,178 @@
+app_usages:
+  delete:
+    confirm_title: App-Nutzung löschen
+    error: Ein unerwarteter Fehler ist beim Löschen der App-Nutzung aufgetreten.
+  details:
+    color:
+      hint: Klicken, um Farbe zu ändern
+      label: Farbe
+    device:
+      label: Gerät
+      unknown: Unbekanntes Gerät
+    help:
+      content: |
+        Sehen Sie genau, wie viel Zeit Sie in Apps verbringen und behalten Sie die Kontrolle, indem Sie sie mit Tags organisieren.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Zeitmanagement ist der Schlüssel zu Ihrer Produktivität. Das Verfolgen Ihrer App-Nutzung und das Taggen mit den richtigen Kategorien verbessert Ihren Fokus und hilft, unnötige Zeitverluste zu vermeiden.
+
+        ## ⏱️ Zeitverfolgung
+
+        Verfolgen Sie Ihre täglichen Nutzungsgewohnheiten, um Ihre Zeit genau zu analysieren. Mit detaillierten Nutzungsdauern in der App und aktiver Fensterverfolgung sehen Sie leicht, wie viel Aufmerksamkeit Sie jeder App widmen. Diese Daten leiten Sie an, wo Verbesserungen nötig sind.
+
+        - ⏳ Tägliche Nutzungsdauern überprüfen
+        - 🔍 Aktive Fenster verfolgen
+        - 📊 Ihre Zeitverteilung mit detaillierten Berichten verstehen
+
+        ## 🏷️ Tag-Verwaltung
+
+        Das Kategorisieren und Organisieren Ihrer Apps steigert die Produktivität. Mit dem Tagging-System können Sie Ihre Apps gruppieren und Ihren Arbeitsablauf mit Automatisierungsregeln beschleunigen. Dies hilft Ihnen, den Fokus zu behalten und Ihre Zeit effizienter zu nutzen.
+
+        - 🏷️ Apps mit aussagekräftigen Kategorien taggen
+        - ⚙️ Automatische Tagging-Regeln erstellen
+        - 🔄 Zeit sparen durch Reduzierung manueller Aufgaben
+
+        ## 📈 Analyse & Produktivitätsverfolgung
+
+        Visualisieren Sie Ihre eigenen Nutzungsmuster, um Ihre Stärken und Schwächen zu entdecken. Das Verfolgen Ihrer produktiven Zeit ist kritisch für die Verbesserung des Fokus. Mit In-App-Vergleichs- und Berichtstools können Sie Ihren Fortschritt klar sehen.
+
+        - 📊 Ihre Nutzungsmuster visualisieren
+        - 🤝 Mit ähnlichen Apps vergleichen
+        - 🚀 Produktive vs. unproduktive Zeit verfolgen
+      title: Zeit- & Produktivitätsverfolgung Leitfaden
+    tags:
+      hint: Tags auswählen
+      label: Tags
+  device_filter:
+    clear_all: Alle löschen
+    search:
+      label: Geräte suchen
+  errors:
+    add_tag: Ein unerwarteter Fehler ist beim Hinzufügen des Tags aufgetreten
+    app_usage_ignore_rule_not_found: Ignorierregel nicht gefunden
+    app_usage_not_found: App-Nutzung nicht gefunden
+    app_usage_tag_not_found: App-Nutzungs-Tag nicht gefunden
+    delete: Ein unerwarteter Fehler ist beim Löschen der App-Nutzung aufgetreten
+    app_usage_tag_rule_not_found: Tag-Regel nicht gefunden
+    get_tags: Fehler beim Abrufen der App-Nutzungs-Tags
+    get_usage: Ein unerwarteter Fehler ist beim Abrufen der App-Nutzung aufgetreten
+    remove_tag: Ein unerwarteter Fehler ist beim Entfernen des Tags aufgetreten
+    save_rule: Ein unerwarteter Fehler ist beim Speichern der Ignorierregeln aufgetreten
+    save_usage: Ein unerwarteter Fehler ist beim Speichern der App-Nutzung aufgetreten
+    statistics: Ein unerwarteter Fehler ist beim Abrufen der Statistiken aufgetreten
+    tag_already_exists: Dieses Tag wurde bereits hinzugefügt
+  form:
+    description:
+      hint: Geben Sie eine Beschreibung für diese Regel ein
+      label: Beschreibung (Optional)
+    pattern:
+      help_tooltip: Regex-Hilfe anzeigen
+      hint: Regex-Muster eingeben
+      label: Muster
+      required: Muster ist erforderlich
+    save: Speichern
+    saved: Gespeichert
+  ignore_rules:
+    delete_confirm: 'Sind Sie sicher, dass Sie die Ignorierregel "{pattern}" löschen möchten?'
+    delete_title: Regel löschen
+    delete_tooltip: Regel löschen
+    no_rules: Keine Ignorierregeln
+    pattern_label: Muster
+  no_usage: Noch keine App-Nutzung
+  pages:
+    view:
+      buttons:
+        filter_tags: Tags filtern
+        filter_devices: Geräte filtern
+        tag_rules: Tag-Regeln
+      help:
+        content: |
+          Analysieren, organisieren und kontrollieren Sie Ihre App-Nutzung, um effizienter zu arbeiten. Mit Tagging- und Analyse-Tools sehen, verwalten und verbessern Sie, wie Sie Ihre Zeit verbringen.
+
+          ## ⏱️ Nutzungsverfolgung
+
+          Entdecken Sie Ihre täglichen Nutzungsgewohnheiten. Verfolgen Sie aktive Fenster und Dauern, um zu verstehen, wohin Ihre Zeit geht. Dies hilft Ihnen, Fokusbereiche zu identifizieren und Zeitverschwendung zu reduzieren.
+
+          - ⌛ App-Nutzungsdauern überprüfen
+          - 📅 Tägliche Muster analysieren
+          - 🖥️ Aktive Fensterhistorie verfolgen
+
+          ## 🏷️ Tagging und Kategorisierung
+
+          Erstellen Sie eine organisierte Struktur durch Gruppierung von Apps. Mit dem Tagging-System machen Sie Ihre Daten aussagekräftiger und analysieren leicht, wie viel Zeit Sie pro Kategorie verbringen.
+
+          - 🏷️ Apps aussagekräftige Tags zuweisen
+          - ⚙️ Automatische Tagging-Regeln definieren
+          - 📚 Nutzungszeit nach Kategorie anzeigen
+
+          ## 📊 Nutzungsanalyse
+
+          Analysieren Sie, wie effizient Sie Ihre Zeit nutzen. Durch App-Vergleiche und Nutzungsmuster sehen Sie, welche Tools tatsächlich für Sie vorteilhaft sind.
+
+          - 📈 Ihre eigenen Nutzungsmuster analysieren
+          - 🔄 Verschiedene Apps vergleichen
+          - 🚀 Ihre produktive und unproduktive Zeit verfolgen
+
+          ## ⚙️ Verwaltungstools
+
+          Verwenden Sie Regeln und Filteroptionen, um App-Verhalten besser zu kontrollieren. Besonders mit Automatisierung sparen Sie wertvolle Zeit.
+
+          - 🛠️ Neue Regeln definieren oder bestehende bearbeiten
+          - 🗑️ Unnötige Regeln entfernen
+          - 🔍 Nach Tag und Datumsbereich filtern
+        title: App-Nutzung & Zeitmanagement Leitfaden
+
+      title: App-Nutzung
+  rules:
+    add_new_rule: Neue Regel hinzufügen
+    delete_confirm_message: Sind Sie sicher, dass Sie diese Regel löschen möchten?
+    delete_confirm_title: Regel löschen
+    errors:
+      delete_rule: Ein unerwarteter Fehler ist beim Löschen der Regel aufgetreten
+      get_rules: Ein unerwarteter Fehler ist beim Abrufen der Regeln aufgetreten
+    existing_rules: Bestehende Regeln
+    help:
+      content: |
+        Verwenden Sie Regeln, um App-Daten organisiert, konsistent und effizient zu verwalten. Passen Sie App-Tracking mit automatischem Tagging und Ausschlussoptionen an, um Ihr Zeitmanagement zu stärken.
+
+        ## 🏷️ Automatische Tagging-Regeln
+
+        Erstellen Sie Regeln für Ihre Apps, damit das System die richtigen Tags in Ihrem Namen zuweisen kann. Dies eliminiert die Notwendigkeit für manuelles Tagging.
+
+        - 🧠 Apps automatisch basierend auf ihren Namen taggen
+        - 🗂️ Mehrere Tags mit einer einzigen Regel zuordnen
+        - ⏱️ Zeit automatisch für getaggte Apps verfolgen
+
+        ## ⚙️ Regelverwaltung
+
+        Verwenden Sie den flexiblen Regelverwaltungsbildschirm, um Ihr eigenes System aufzubauen. Löschen Sie unnötige Regeln, fügen Sie neue hinzu und aktualisieren Sie bestehende.
+
+        - ➕ Neue Regeln definieren
+        - ✏️ Bestehende Regeln bearbeiten
+        - 🗑️ Regeln entfernen, die Sie nicht mehr verwenden
+
+        ## 🚫 Ignorierregeln
+
+        Schließen Sie System- oder Hintergrund-Apps aus, die Ihre Produktivitätsanalyse verzerren könnten. Mit diesen Regeln können Sie sich nur auf das wirklich Wichtige konzentrieren.
+
+        - 🧹 Bestimmte Apps von der Verfolgung ausschließen
+        - 🖥️ Systemprozesse und Hilfstools auslassen
+        - 🔕 Im Hintergrund laufende Apps herausfiltern
+
+        ## 🧩 Erweiterte Übereinstimmungsoptionen
+
+        Verbessern Sie Ihre Regeln mit erweiterten Musterübereinstimmungsoptionen.
+
+        - ✳️ Flexible Regeln mit Wildcards erstellen
+        - 🧾 Exakte App-Namen zuordnen
+        - 🔠 Groß-/Kleinschreibung-Empfindlichkeitseinstellungen wählen
+      title: Tagging & Ausschlussregeln Leitfaden
+    ignore_rules: Ignorierregeln
+    no_rules: Keine Regeln
+    tag_rules: Tag-Regeln
+    title: App-Nutzungsregeln
+  tooltips:
+    edit_name: Name bearbeiten
+  units:
+    minutes: Min

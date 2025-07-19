@@ -1,0 +1,209 @@
+habits:
+  archive:
+    archive: Archivieren
+    archive_confirm: Sind Sie sicher, dass Sie diese Gewohnheit archivieren möchten?
+    archive_tooltip: Diese Gewohnheit archivieren
+    archived_date: Archivierungsdatum
+    hide_archived: Archivierte ausblenden
+    show_archived: Archivierte anzeigen
+    unarchive: Aus Archiv entfernen
+    unarchive_confirm: Sind Sie sicher, dass Sie diese Gewohnheit aus dem Archiv entfernen möchten?
+    unarchive_tooltip: Diese Gewohnheit aus dem Archiv entfernen
+
+  calendar:
+    week_days:
+      fri: Fr
+      mon: Mo
+      sat: Sa
+      sun: So
+      thu: Do
+      tue: Di
+      wed: Mi
+  delete:
+    confirm_message: Sind Sie sicher, dass Sie diese Gewohnheit löschen möchten?
+    confirm_title: Gewohnheit löschen
+  details:
+    archived_status: Archiviert
+    create_record_tooltip: Als heute erledigt markieren
+    description: Beschreibung
+    estimated_time: Geschätzte Zeit
+    estimated_time_not_set: Nicht festgelegt
+    help:
+      content: |
+        Bauen Sie nachhaltige tägliche Routinen durch systematische Gewohnheitsverfolgung auf, die Ihre Absichten in konsistente Handlungen und messbaren Fortschritt zu Ihren Zielen verwandelt.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Gewohnheitsbildung ist der Grundstein der persönlichen Entwicklung und nachhaltigen Erfolgs. Konsistente tägliche Handlungen verstärken sich über die Zeit zu bemerkenswerten Ergebnissen, während systematische Verfolgung sicherstellt, dass Sie Momentum beibehalten und kontinuierliche Verbesserungen an Ihren Routinen vornehmen.
+
+        ## ⚙️ Strategisches Gewohnheitsdesign
+
+        Erstellen Sie Gewohnheiten, die sich nahtlos in Ihr Leben integrieren und Ihre langfristigen Ziele unterstützen. Gut gestaltete Gewohnheiten werden zu automatischen Verhaltensweisen, die minimale Willenskraft zur Aufrechterhaltung benötigen.
+
+        - 📝 Klare, spezifische Gewohnheiten mit umsetzbaren Beschreibungen entwerfen
+        - 📅 Konsistente Zeitpläne etablieren, die mit Ihren natürlichen Rhythmen übereinstimmen
+        - 🏷️ Ähnliche Gewohnheiten in kohärente Gruppen für systematische Verfolgung organisieren
+        - 🎯 Jede Gewohnheit mit bedeutsamen Ergebnissen und persönlichen Werten verbinden
+
+        ## ⏱️ Leistungsüberwachung
+
+        Verfolgen Sie Ihre Gewohnheitsausführung, um Muster zu verstehen, Fortschritt zu messen und Ihren Ansatz für maximale Effektivität und nachhaltiges Wachstum zu optimieren.
+
+        - ⏳ Erledigungszeiten aufzeichnen, um Gewohnheitsdauer und Effizienz zu verstehen
+        - 📊 Zeitinvestitionen über Gewohnheitskategorien für ausgewogene Entwicklung analysieren
+        - 📈 Leistungstrends überwachen, um Verbesserungsmöglichkeiten und optimales Timing zu identifizieren
+        - 🔄 Datenerkenntnisse nutzen, um Gewohnheitsschwierigkeit und Zeitplanung für nachhaltigen Erfolg zu verfeinern
+
+        ## 📅 Konsistenz & Momentum
+
+        Bauen Sie die Konsistenz auf und erhalten Sie sie, die für dauerhafte Verhaltensänderung durch systematische Verfolgung und strategische Überprüfung Ihrer Fortschrittsmuster erforderlich ist.
+
+        - 📚 Erledigungshistorie überprüfen, um Fortschritt zu bewerten und Erfolgsmuster zu identifizieren
+        - 🔗 Tägliche Serien verfolgen, um Momentum für langfristigen Erfolg aufzubauen und zu erhalten
+        - 📌 Konsistenzmetriken überwachen, um Motivation und Engagement zu verstärken
+        - 🎯 Meilensteine und Erfolge feiern, um positive Verhaltensänderung zu verstärken
+
+        ## 🚀 Optimierungsstrategien
+
+        Wenden Sie bewährte Techniken für Gewohnheitsoptimierung an, die Fortschritt beschleunigen und sicherstellen, dass Ihre Bemühungen sich in bedeutsame, dauerhafte Verbesserungen in Ihrem Leben und Ihrer Produktivität übersetzen.
+
+        - 🐾 **Klein anfangen:** Mit handhabbaren Gewohnheiten beginnen, die frühe Erfolge garantieren
+        - 🏷️ **Strategische Gruppierung:** Gewohnheiten nach Lebensbereich oder Tageszeit organisieren
+        - 📊 **Datengesteuerte Anpassungen:** Verfolgungserkenntnisse nutzen, um Timing und Ansatz zu optimieren
+        - 🌅 **Prime Time Fokus:** Wichtige Gewohnheiten während Ihrer Spitzenenergiephasen planen
+      description: Hilfebeschreibung
+      title: Gewohnheitsbildung & Leistungsverfolgung Leitfaden
+    records: Aufzeichnungen
+    remove_record_tooltip: Heutige Erledigung entfernen
+    statistics:
+      archived_note: "Archiviert am:"
+      archived_on: Archiviert am
+      archived_warning: "Statistiken werden bis zum Archivierungsdatum angezeigt. {startDate} - {archivedDate}"
+      from: Von
+      monthly: Monatlich
+      overall: Gesamt
+      records: Aufzeichnungen
+      score_trends: Bewertungstrends
+      to: Bis
+      top_streaks: Top-Serien
+      no_streaks_yet: Noch keine Serien. Beginnen Sie mit dem Aufbau von Konsistenz!
+      completions: Erledigungen
+      yearly: Jährlich
+    statistics_label: Statistiken
+    tags: Tags
+    tags_hint: Tags zum Verknüpfen auswählen
+  errors:
+    adding_tag: Tag konnte nicht hinzugefügt werden
+    creating_record: Gewohnheitsaufzeichnung konnte nicht erstellt werden
+    deleting: Unerwarteter Fehler beim Löschen der Gewohnheit
+    deleting_record: Gewohnheitsaufzeichnung konnte nicht gelöscht werden
+    habit_not_found: Gewohnheit nicht gefunden
+    habit_record_not_found: Gewohnheitsaufzeichnung nicht gefunden
+    habit_tag_not_found: Gewohnheits-Tag nicht gefunden
+    loading_archive_status: Archivstatus konnte nicht geladen werden
+    loading_details: Gewohnheitsdetails konnten nicht geladen werden
+    loading_habit: Gewohnheit konnte nicht geladen werden
+    loading_habits: Gewohnheiten konnten nicht geladen werden
+    loading_records: Gewohnheitsaufzeichnungen konnten nicht geladen werden
+    loading_tags: Gewohnheits-Tags konnten nicht geladen werden
+    removing_tag: Tag konnte nicht entfernt werden
+    saving_details: Gewohnheit konnte nicht gespeichert werden
+    saving_habit: Gewohnheit konnte nicht gespeichert werden
+    tag_already_exists: Dieses Tag wurde bereits hinzugefügt
+    toggling_archive: Archivstatus konnte nicht geändert werden
+  goals:
+    current_goal: Ziel
+    days_unit: Tage
+    description: Möchten Sie die Gewohnheit mit einer bestimmten Häufigkeit anstatt täglich praktizieren? Dann setzen Sie ein benutzerdefiniertes Ziel.
+    enable: Benutzerdefinierte Ziele aktivieren
+    goal: Benutzerdefiniertes Ziel
+    goal_format: "{count} mal in {dayCount} Tagen"
+    period_days: Zeitraumtage
+    settings: Benutzerdefinierte Zieleinstellungen
+    target_frequency: Zielhäufigkeit
+    times_unit: mal
+  help:
+    description: Hilfebeschreibung
+  list:
+    all_habits_done: Alle Gewohnheiten erledigt!
+    no_habits_found: Keine Gewohnheiten
+  new_habit: Neue Gewohnheit
+  notifications:
+    reminder_message: "Denken Sie daran, Ihre Gewohnheit zu erledigen: {name}"
+    reminder_title: "Gewohnheitserinnerung: {name}"
+  overview:
+    filter_by_tags_tooltip: Nach Tags filtern
+    help:
+      content: |
+        Meistern Sie Ihre täglichen Routinen durch systematische Gewohnheitsverfolgung, die Konsistenz aufbaut, positives Momentum schafft und bedeutsamen Fortschritt zu Ihren langfristigen Zielen vorantreibt.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Tägliches Gewohnheitsmanagement ist die Grundlage persönlicher Exzellenz und nachhaltigen Wachstums. Konsistente Ausführung gut geplanter Gewohnheiten schafft zusammengesetzte Vorteile über die Zeit, während systematische Verfolgung sicherstellt, dass Sie Verantwortlichkeit beibehalten und datengesteuerte Verbesserungen an Ihren Routinen vornehmen.
+
+        ## 📅 Tägliche Ausführung & Verfolgung
+
+        Entwickeln Sie ein zuverlässiges System für die Ausführung und Überwachung Ihrer Gewohnheiten, das Konsistenz schafft und unaufhaltsames Momentum zu Ihren Zielen aufbaut.
+
+        - ✅ **Tägliche Erledigung:** Gewohnheiten als erledigt markieren, um Konsistenzketten aufzubauen
+        - 📆 **Mehrtagesansicht:** Muster über Tage und Wochen für umfassende Erkenntnisse überwachen
+        - 🔄 **Serienaufbau:** Aufeinanderfolgende Erledigungstage beibehalten, um motivierendes Momentum zu maximieren
+        - 📊 **Fortschrittsvisualisierung:** Erledigungsraten und Muster über die Zeit verfolgen
+
+        ## ⏱️ Zeitanalyse & Optimierung
+
+        Überwachen Sie Zeitinvestitionen in Ihre Gewohnheiten, um Ihren Tagesablauf zu optimieren und ausgewogene Entwicklung über alle wichtigen Lebensbereiche sicherzustellen.
+
+        - ⏳ **Dauerverfolgung:** Tatsächlich aufgewendete Zeit aufzeichnen, um Gewohnheitsanforderungen zu verstehen
+        - 🏷️ **Kategorienanalyse:** Gewohnheiten nach Tags gruppieren, um Zeitverteilung über Lebensbereiche zu sehen
+        - ⏰ **Zeitplanoptimierung:** Gewohnheitstiming für nachhaltige tägliche Ausführung ausbalancieren
+        - 📈 **Effizienzverbesserung:** Möglichkeiten zur Straffung der Gewohnheitsausführung identifizieren
+
+        ## 🗂️ Strategische Organisation
+
+        Erstellen Sie ein Organisationssystem, das konsistente Ausführung unterstützt und gleichzeitig die Flexibilität bietet, sich anzupassen, wenn sich Ihre Ziele und Umstände entwickeln.
+
+        - 🏷️ **Bedeutsame Kategorisierung:** Gewohnheiten nach Lebensbereich, Zeit oder Prioritätsstufe gruppieren
+        - ⚙️ **Flexible Zeitplanung:** Gewohnheitstiming entwerfen, das mit Ihrem Lebensstil und Energiemustern funktioniert
+        - 🎯 **Prioritätsfokus:** Sicherstellen, dass Ihre wichtigsten Gewohnheiten angemessene Aufmerksamkeit und Energie erhalten
+
+        ## 💡 Meisterschaftsprinzipien
+
+        Wenden Sie bewährte Strategien für Gewohnheitsmeisterschaft an, die sicherstellen, dass sich Ihre Bemühungen zu dauerhafter Verhaltensänderung und messbaren Lebensverbesserungen verstärken.
+
+        - 🐾 **Klein anfangen:** Mit Gewohnheiten beginnen, die Sie konsistent ausführen können, dann schrittweise Schwierigkeit erhöhen
+        - 🏷️ **Strategische Gruppierung:** Gewohnheiten organisieren, um logische Sequenzen und Unterstützungssysteme zu schaffen
+        - 📊 **Leistungsüberprüfung:** Zeitverfolgungsdaten nutzen, um Muster zu verstehen und Ihren Ansatz zu optimieren
+        - 🌅 **Prime Time Ausführung:** Ihre wichtigsten Gewohnheiten während Spitzenenergiephasen planen
+
+        ### 📊 Verwendung der Kalenderansicht
+        - 📅 Mehrere Tage gleichzeitig in der Kalenderansicht anzeigen.
+        - ✅ Ihre Erledigungsmuster visuell verfolgen.
+        - ⚡ Zeit sparen mit schneller Erledigungsmarkierung.
+        - 🎯 Motivation mit visueller Serienverfolgung steigern.
+        - 🔄 Vergangene und zukünftige Gewohnheiten mit flexibler Datumsnavigation erkunden.
+      title: Tägliches Gewohnheitsmanagement & Routinen-Optimierung Leitfaden
+    title: Gewohnheiten
+  reminder:
+    enableReminders: Erinnerungen aktivieren
+    everyDay: Jeden Tag
+    noReminder: Keine Erinnerung gesetzt
+    reminderDays: Erinnerungstage
+    reminderSettings: Erinnerungseinstellungen
+    reminderTime: Erinnerungszeit
+    selectDaysWarning: Bitte wählen Sie mindestens einen Tag für Erinnerungen aus
+  reminders:
+    enable: Erinnerungen aktivieren
+    select_days_warning: Bitte wählen Sie mindestens einen Tag für Erinnerungen aus
+  statistics:
+    archived_on: Archiviert am
+    from: Von
+    to: Bis
+  tags:
+    add_tooltip: Tag hinzufügen
+    select_tooltip: Tag auswählen
+  tooltips:
+    add_habit: Gewohnheit hinzufügen
+    decrease_estimated_time: Geschätzte Zeit verringern
+    edit_name: Name bearbeiten
+    increase_estimated_time: Geschätzte Zeit erhöhen

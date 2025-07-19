@@ -1,0 +1,66 @@
+error:
+  scan: Scannen fehlgeschlagen
+sync:
+  devices:
+    errors:
+      loading: Synchronisationsgeräte konnten nicht geladen werden
+      removing: Synchronisationsgerät konnte nicht entfernt werden
+      sync_failed: Geräte konnten nicht synchronisiert werden
+    from_label: Von
+    help:
+      content: |
+        🔄 Synchronisieren Sie Ihre Daten sicher zwischen mehreren Geräten.
+
+        ## 🔗 QR-Code-Verbindung
+        - Einfache Gerätekopplung
+        - Sichere Verbindungseinrichtung
+        - Schnelle Synchronisationsinitiierung
+
+        ## 📱 Geräteverwaltung
+        - Verbundene Geräte anzeigen
+        - Synchronisationsstatus überwachen
+        - Alte Geräte entfernen
+
+        ## 💡 Tipps
+        - Geräte im selben Netzwerk halten
+        - Regelmäßig synchronisieren für beste Ergebnisse
+        - Ungenutzte Geräteverbindungen entfernen
+        - Letzte Synchronisationsdaten überprüfen
+        - QR-Codes für schnelle Einrichtung verwenden
+        - Auf Synchronisationsabschluss warten
+      title: Gerätesynchronisation Hilfe
+    last_sync_label: Letzte Synchronisation
+    no_devices_found: Keine synchronisierten Geräte
+    sync_tooltip: Jetzt synchronisieren
+    title: Geräte synchronisieren
+    to_label: An
+    unnamed_device: Unbenanntes Gerät
+  error:
+    scan: Scannen fehlgeschlagen
+  errors:
+    connection_failed: |
+      Verbindung fehlgeschlagen. Bitte stellen Sie sicher:
+
+      1. Beide Geräte sind im selben Netzwerk
+      2. Beide Apps sind geöffnet und laufen
+      3. Keine Firewall blockiert die Verbindung
+    device_mismatch: Synchronisationsfehler. Das Gerät, das zu synchronisieren versucht, ist nicht ordnungsgemäß mit diesem Gerät gekoppelt.
+    device_not_found: Synchronisationsgerät nicht gefunden
+    ip_address: Lokale IP-Adresse konnte nicht abgerufen werden
+    parse_message: Gescannte Nachricht konnte nicht verarbeitet werden
+    process_failed: Synchronisationsprozess fehlgeschlagen.
+    save_device: Synchronisationsgerät konnte nicht gespeichert werden
+    scan: QR-Code konnte nicht gescannt werden
+    sync_failed: Synchronisation fehlgeschlagen. Bitte versuchen Sie es erneut.
+    sync_timeout: Synchronisation-Timeout
+    version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf dieselbe Version."
+  messages:
+    device_already_paired: Dieses Gerät ist bereits gekoppelt
+    sync_completed: Synchronisation erfolgreich abgeschlossen
+    sync_in_progress: Synchronisation läuft...
+    testing_connection: Verbindung wird getestet...
+  qr_code:
+    close_button: Schließen
+    dialog_title: QR-Code scannen zum Synchronisieren
+  scanner:
+    title: QR-Code scannen

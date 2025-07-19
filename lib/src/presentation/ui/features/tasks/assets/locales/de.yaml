@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: Neue Aufgabe hinzufügen
+  all_tasks_done: Alle Aufgaben erledigt!
+  card:
+    schedule:
+      today: Für heute planen
+      tomorrow: Für morgen planen
+    tooltips:
+      schedule: Aufgabe planen
+  complete:
+    error: Unerwarteter Fehler beim Speichern der Aufgabenerledigung.
+  date_selection:
+    deadline_date_title: Fälligkeitsdatum auswählen
+    planned_date_title: Geplantes Datum auswählen
+  delete:
+    error: Unerwarteter Fehler beim Löschen der Aufgabe.
+    message: Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?
+    title: Aufgabe löschen
+  details:
+    deadline_date:
+      label: Fälligkeitsdatum
+    description:
+      hint: Beschreibung hinzufügen...
+      label: Beschreibung
+    elapsed_time:
+      label: Verstrichene Zeit
+    estimated_time:
+      label: Geschätzte Zeit
+    is_completed: Erledigt
+    planned_date:
+      label: Geplantes Datum
+    priority:
+      label: Priorität
+    sub_tasks:
+      label: Unteraufgaben
+    parent_task:
+      label: Übergeordnete Aufgabe
+      tooltip: Klicken, um zur übergeordneten Aufgabe zu navigieren
+    tags:
+      hint: Tags zum Verknüpfen auswählen
+      label: Tags
+    tags_hint: Tags für Aufgabe auswählen
+    title:
+      label: Titel
+    total_elapsed_time: Gesamte verstrichene Zeit
+  errors:
+    add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
+    adding_tag: Tag konnte nicht hinzugefügt werden
+    get_tags: Fehler beim Abrufen der Tags
+    get_task: Unerwarteter Fehler beim Laden der Aufgabe
+    loading_tags: Aufgaben-Tags konnten nicht geladen werden
+    loading_task: Aufgabe konnte nicht geladen werden
+    loading_tasks: Aufgaben konnten nicht geladen werden
+    remove_tag: Unerwarteter Fehler beim Entfernen des Tags
+    removing_tag: Tag konnte nicht entfernt werden
+    same_tag: Dasselbe Tag kann nicht zweimal hinzugefügt werden
+    save_task: Unerwarteter Fehler beim Speichern der Aufgabe
+    saving_task: Aufgabe konnte nicht gespeichert werden
+    sort_field_not_supported: Sortierfeld nicht unterstützt
+    task_not_found: Aufgabe nicht gefunden
+    task_tag_already_deleted: Aufgaben-Tag ist bereits gelöscht
+    task_tag_already_exists: Dieses Aufgaben-Tag existiert bereits
+    task_tag_not_found: Aufgaben-Tag nicht gefunden
+  filters:
+    completion: Nach Erledigungsstatus
+    deadline_date: Nach Fälligkeitsdatum
+    planned_date: Nach geplantem Datum
+    search:
+      placeholder: Aufgaben suchen
+    tags: Nach Tags
+    tooltips:
+      filter_by_tags: Nach Tags filtern
+  help:
+    details:
+      content: |
+        Meistern Sie Ihr Aufgabenmanagement und maximieren Sie die Produktivität, indem Sie Ihre Arbeit effektiv organisieren, priorisieren und verfolgen.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Effektives Aufgabenmanagement ist die Grundlage der Produktivität. Richtig strukturierte Aufgaben mit klaren Prioritäten und Fristen helfen Ihnen, sich auf das Wichtigste zu konzentrieren und verhindern, dass wichtige Arbeit übersehen wird.
+
+        ## 📝 Aufgabenorganisation
+
+        Strukturieren Sie Ihre Aufgaben mit umfassenden Details, um Klarheit und Fokus zu bewahren. Verwenden Sie Tags, Prioritäten und Zeitschätzungen, um einen systematischen Ansatz für Ihre Arbeitsbelastung zu schaffen.
+
+        - 🏷️ Aufgaben mit aussagekräftigen Tags kategorisieren
+        - ⚖️ Prioritäten mit bewährten Frameworks setzen
+        - ⏱️ Zeitanforderungen genau schätzen
+        - 📅 Realistische Fristen und Zeitpläne planen
+
+        ## ⏰ Zeitmanagement
+
+        Verfolgen Sie Ihre Zeitinvestitionen, um Ihre Arbeitsmuster zu verstehen und die Effizienz zu verbessern. Richtiges Zeitmanagement verwandelt verstreute Bemühungen in fokussierte Produktivität.
+
+        - 📊 Tatsächliche vs. geschätzte Zeit überwachen
+        - 🎯 Sich auf wirkungsvolle Aktivitäten konzentrieren
+        - 📈 Produktivitätsmuster über die Zeit analysieren
+        - ⏳ Dringende und wichtige Aufgaben ausbalancieren
+
+        ## 📊 Prioritäts-Framework (Eisenhower-Matrix)
+
+        Organisieren Sie Ihre Aufgaben mit dieser bewährten Priorisierungsmethode, um sicherzustellen, dass Sie immer zur richtigen Zeit an den richtigen Dingen arbeiten.
+
+        - 🔥 **Dringend & Wichtig:** Sofort bearbeiten - Krisenmanagement und Fristen
+        - 📈 **Wichtig, nicht dringend:** Strategisch planen - Planung und Kompetenzentwicklung
+        - ⚡ **Dringend, nicht wichtig:** Wenn möglich delegieren - Unterbrechungen und einige Meetings
+        - 🗑️ **Weder dringend noch wichtig:** Eliminieren - Zeitverschwender und geringwertige Aktivitäten
+      title: Aufgabenmanagement & Produktivitätsleitfaden
+    overview:
+      content: |
+        Transformieren Sie Ihre Produktivität mit systematischem Aufgabenmanagement, das Ihnen hilft, organisiert, fokussiert und in Kontrolle Ihrer Arbeitsbelastung zu bleiben.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Effektives Aufgabenmanagement ist der Grundstein für persönlichen und beruflichen Erfolg. Durch systematische Organisation Ihrer Arbeit reduzieren Sie Stress, halten Fristen konsequent ein und schaffen Raum für bedeutsamen Fortschritt bei wichtigen Zielen.
+
+        ## 📋 Aufgabenorganisation
+
+        Erstellen Sie einen strukturierten Ansatz für die Verwaltung Ihrer Verantwortlichkeiten. Gut organisierte Aufgaben führen zu klaren Prioritäten und effizienter Ausführung Ihrer täglichen Arbeit.
+
+        - ✅ Aufgaben systematisch erstellen und kategorisieren
+        - 🏷️ Verwandte Arbeiten mit aussagekräftigen Tags gruppieren
+        - ⚖️ Klare Prioritäten und Fristen setzen
+        - 🔍 Filter und Suche für schnellen Zugriff verwenden
+
+        ## ⏱️ Zeitverfolgung & Fokus
+
+        Überwachen Sie Ihre Zeitinvestitionen, um Produktivitätsmuster zu verstehen und Ihren Arbeitsablauf zu optimieren. Zeitbewusstsein führt zu besserer Planung und verbesserter Leistung.
+
+        - ⏰ Tatsächlich aufgewendete Zeit pro Aufgabe verfolgen
+        - 🎯 Marathon-Modus für fokussierte Arbeitssitzungen verwenden
+        - 📊 Erledigungsmuster und Trends analysieren
+        - 🔄 Zeitschätzungen regelmäßig überprüfen und anpassen
+
+        ## 📈 Fortschrittsüberwachung
+
+        Verfolgen Sie Ihre Erfolge und lernen Sie aus Ihren Arbeitsmustern. Regelmäßige Überprüfung und Reflexion fördern kontinuierliche Verbesserung in Ihrem Produktivitätssystem.
+
+        - 📈 Aufgabenerledigungsraten überwachen
+        - 📅 Täglichen und wöchentlichen Fortschritt überprüfen
+        - 🎯 Engpässe und Optimierungsmöglichkeiten identifizieren
+        - 🏆 Erfolge und Meilensteine feiern
+      title: Aufgabenmanagement & Workflow-Leitfaden
+  marathon:
+    details:
+      title: Aufgabendetails
+    help:
+      content: |
+        Maximieren Sie Ihren Fokus und Ihre Produktivität mit strukturierten Arbeitssitzungen, die Ihnen helfen, tiefe Konzentration aufrechtzuerhalten und gleichzeitig Burnout zu vermeiden.
+
+        ## ⚡ Warum ist es wichtig?
+
+        Fokussierte Arbeitssitzungen sind essentiell für tiefe Arbeit und hochwertige Ergebnisse. Durch Arbeiten in strukturierten Intervallen mit regelmäßigen Pausen erhalten Sie Spitzenleistung und vermeiden die Ermüdung, die durch längere, unfokussierte Arbeitsperioden entsteht.
+
+        ## ⏰ Zeitboxed Fokus-Sitzungen
+
+        Verwenden Sie bewährte Zeitmanagement-Techniken, um Ihre Arbeit für maximale Effizienz zu strukturieren. Strukturierte Sitzungen helfen Ihnen, die Konzentration aufrechtzuerhalten und Aufgaben effektiver zu erledigen.
+
+        - 🎯 **Klassischer Fokus:** 25 Minuten Arbeit / 5 Minuten Pause
+        - 📈 **Erweiterter Fokus:** 50 Minuten Arbeit / 10 Minuten Pause
+        - 🔄 **Lange Pause:** 15-30 Minuten nach 4 Sitzungen
+        - ⚖️ **Benutzerdefinierte Zeit:** Intervalle an Ihren natürlichen Rhythmus anpassen
+
+        ## 🧠 Kognitive Vorteile
+
+        Strukturierte Arbeitssitzungen nutzen die natürlichen Aufmerksamkeitszyklen Ihres Gehirns, um die Leistung zu optimieren und mentale Ermüdung zu verhindern, die Qualität und Kreativität reduziert.
+
+        - 🎯 Verbesserte Fokussierung und tiefe Konzentration
+        - 🔋 Reduzierte mentale Ermüdung und Burnout
+        - 💪 Anhaltende Motivation durch regelmäßige Erfolge
+        - ⚡ Verbessertes Zeitbewusstsein und Planungsgenauigkeit
+
+        ## 📊 Leistungsoptimierung
+
+        Verfolgen Sie Ihre fokussierten Arbeitsmuster, um Ihre Spitzenproduktivitätszeiten zu verstehen und Ihren Zeitplan für maximale Effektivität zu optimieren.
+
+        - 🏷️ Fokus-Sitzungen mit Tags für Analyse kategorisieren
+        - 📈 Produktivitätsmuster zu verschiedenen Zeiten überwachen
+        - 🚫 Ablenkungen vor Sitzungsbeginn eliminieren
+        - 🚶 Pausen für körperliche Bewegung und mentale Erholung nutzen
+      title: Fokussierte Arbeitssitzungen & Zeitmanagement-Leitfaden
+      tooltip: Marathon-Hilfe-Tooltip
+    label: Marathon-Modus
+    unpin_task_tooltip: Aktuelle Aufgabe lösen
+  new_task: Neue Aufgabe
+  no_tasks: Keine Aufgaben
+  notifications:
+    deadline_message: "Ihre Aufgabenfrist ist um {time}"
+    deadline_title: "Aufgabenfrist: {title}"
+    planned_message: "Ihre Aufgabe ist für {time} geplant"
+    reminder_title: "Aufgabenerinnerung: {title}"
+  page:
+    completed_tasks_title: Erledigte Aufgaben
+    title: Aufgaben
+  pomodoro:
+    actions:
+      stop_timer: Timer stoppen
+    notifications:
+      break_completed: Pausensitzung abgeschlossen!
+      long_break_completed: Lange Pause abgeschlossen!
+      time_remaining_prefix: "Verbleibende Zeit:"
+      timer_completed: Timer abgeschlossen!
+      title: Pomodoro-Timer
+      work_completed: Arbeitssitzung abgeschlossen!
+    settings:
+      auto_start_break: Pause nach Arbeit automatisch starten
+      auto_start_section: Auto-Start-Optionen
+      auto_start_work: Arbeit nach Pause automatisch starten
+      break_duration: Pausendauer
+      long_break_duration: Lange Pausendauer
+      sessions_before_long_break: Sitzungen vor langer Pause
+      ticking_sound: Tickgeräusch aktivieren
+      ticking_sound_section: Tickgeräusch
+      ticking_speed: Geschwindigkeit
+      ticking_volume: Lautstärke
+      keep_screen_awake_section: Bildschirm wach halten
+      keep_screen_awake: Bildschirm während Sitzungen wach halten
+      timer_label: Sitzungsdauern
+      title: Timer-Einstellungen
+      work_duration: Arbeitsdauer
+    system_tray:
+      app_running: App läuft
+      complete_title: Pomodoro abgeschlossen
+      tap_to_open: Zum Öffnen tippen
+      timer_running: Timer läuft
+  priorities:
+    not_urgent_important: Nicht dringend aber wichtig
+    not_urgent_not_important: Nicht dringend oder wichtig
+    urgent_important: Dringend und wichtig
+    urgent_not_important: Dringend aber nicht wichtig
+  priority:
+    selection:
+      title: Priorität auswählen
+    tooltips:
+      none: Keine Priorität
+      not_urgent_important: Nicht dringend aber wichtig
+      not_urgent_not_important: Nicht dringend & nicht wichtig
+      urgent_important: Dringend & wichtig
+      urgent_not_important: Dringend aber nicht wichtig
+    types:
+      none: Keine Priorität
+      not_urgent_important: Nicht dringend aber wichtig
+      not_urgent_not_important: Nicht dringend & nicht wichtig
+      urgent_important: Dringend & wichtig
+      urgent_not_important: Dringend aber nicht wichtig
+  quick_task:
+    create_error: Fehler beim Erstellen der Aufgabe
+    lock_description: Eigenschaften sperren, um ihre Werte beim Erstellen mehrerer ähnlicher Aufgaben beizubehalten. Gesperrte Eigenschaften werden beim Zurücksetzen des Formulars nicht gelöscht.
+    lock_settings: Sperreinstellungen
+    reset_all: Alle Felder zurücksetzen
+    reset_confirm:
+      message: Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+      title: Alle Felder zurücksetzen
+    title: Schnellaufgabe
+    title_hint: Aufgabentitel
+    tooltips:
+      deadline_date: "Frist: {date}"
+      deadline_date_not_set: "Frist: Nicht festgelegt"
+      estimated_time: "Geschätzte Zeit: {time}"
+      estimated_time_not_set: "Geschätzte Zeit: Nicht festgelegt"
+      planned_date: "Geplant: {date}"
+      planned_date_not_set: "Geplant: Nicht festgelegt"
+  recurrence:
+    count: Anzahl der Wiederholungen
+    custom: Benutzerdefiniert
+    daily: Täglich
+    daySuffix: Tag(e)
+    endDate: Enddatum
+    enterCountHint: Anzahl eingeben
+    interval:
+      label: Wiederholen alle
+      prefix: alle
+      suffix:
+        days: Tag(e)
+        months: Monat(e)
+        weeks: Woche(n)
+        years: Jahr(e)
+    label: Wiederholung
+    monthSuffix: Monat(e)
+    monthly: Monatlich
+    none: Keine Wiederholung
+    range: Bereich
+    selectDateHint: Datum auswählen
+    startDate: Startdatum
+    summary:
+      endsAfter: endet nach
+      endsOnDate: endet am
+      occurrences: Wiederholungen
+      on: am
+      starts: beginnt
+    weekDays: Wochentage
+    weekSuffix: Woche(n)
+    weekly: Wöchentlich
+    yearSuffix: Jahr(e)
+    yearly: Jährlich
+  reminder:
+    atTime: Zur geplanten Zeit
+    deadlineReminderLabel: Fristerinnerung
+    fifteenMinutesBefore: 15 Minuten vorher
+    fiveMinutesBefore: 5 Minuten vorher
+    none: Keine Erinnerung
+    oneDayBefore: 1 Tag vorher
+    oneHourBefore: 1 Stunde vorher
+    plannedReminderLabel: Geplante Datumserinnerung
+  task_details: Aufgabendetails
+  title: Aufgaben
+  tooltips:
+    clear_date: Datum löschen
+    decrease_estimated_time: Geschätzte Zeit verringern
+    edit_title: Titel bearbeiten
+    increase_estimated_time: Geschätzte Zeit erhöhen
+    set_reminder: Erinnerung setzen
+    show_completed_tasks: Erledigte Aufgaben filtern

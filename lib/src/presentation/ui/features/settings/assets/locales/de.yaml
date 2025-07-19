@@ -1,0 +1,115 @@
+common:
+  buttons:
+    cancel: Abbrechen
+settings:
+  about:
+    title: Über
+  errors:
+    export_failed: Export fehlgeschlagen
+    import_failed: Import fehlgeschlagen
+    setting_not_found: Einstellung nicht gefunden
+    version_mismatch: Version nicht gefunden
+  export:
+    csv_description: Sie können dies verwenden, um in Excel und ähnlichen Anwendungen anzuzeigen.
+    error: Export fehlgeschlagen
+    in_progress: Daten werden exportiert, bitte warten...
+    json_description: Sie können diese Datei verwenden, um Daten zurück in die App zu importieren.
+    select_directory: Export-Verzeichnis auswählen
+    select_path: Speicherort auswählen
+    select_type: Export-Format auswählen
+    success: "Export erfolgreich. Dateispeicherort:"
+    title: Exportieren
+    canceled: Export vom Benutzer abgebrochen
+  export_data:
+    title: Daten exportieren
+  import:
+    error: Import fehlgeschlagen
+    error.entity: Fehler im Typ
+    in_progress: Daten werden importiert, bitte warten...
+    migration_failed: Import fehlgeschlagen. Bitte stellen Sie sicher, dass Sie die neueste Version der App installiert haben.
+    select_file: Datei auswählen
+    strategy:
+      merge: Mit vorhandenen Daten zusammenführen
+      replace: Vorhandene Daten löschen und neue hinzufügen
+      title: Import-Strategie
+    success: Import erfolgreich
+    title: Importieren
+    unsupported_version: Nicht unterstützte Version
+    version_mismatch: Version nicht gefunden
+  import_export:
+    description: Sie können Ihre Daten im JSON-Format sichern oder aus einem zuvor erstellten Backup wiederherstellen
+    select_action: Import-/Export-Aktion auswählen
+    title: Import/Export
+  language:
+    choose_title: Wählen Sie Ihre Sprache
+    title: Sprache
+  notifications:
+    disable_error: Benachrichtigungen konnten nicht deaktiviert werden
+    enable_error: Benachrichtigungen konnten nicht aktiviert werden
+    title: Benachrichtigungen
+  permissions:
+    app_usage:
+      description: Diese App benötigt die Berechtigung zum Zugriff auf App-Nutzungsstatistiken, um Ihre App-Nutzungsmuster genau zu verfolgen.
+      instructions: "Anweisungen:"
+      steps:
+        step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+        step2: Finden Sie im sich öffnenden Nutzungszugriff-Einstellungsbildschirm "{appName}" in der Liste
+        step3: Tippen Sie auf "{appName}"
+        step4: Aktivieren Sie "Nutzungszugriff erlauben" oder schalten Sie den Schalter auf EIN
+      title: App-Nutzungsberechtigung
+    battery_optimization:
+      description: Für zuverlässige Benachrichtigungen muss diese App von der Batterieoptimierung ausgeschlossen werden. Ohne dies können Erinnerungen verzögert oder gar nicht zugestellt werden.
+      importance: Die Position dieser Einstellung kann je nach Gerätehersteller variieren.
+      instructions: "Anweisungen:"
+      not_disabled: Batterieoptimierung ist noch aktiviert. Erteilen Sie die Berechtigung, damit die entsprechende Funktion korrekt funktioniert.
+      steps:
+        step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+        step2: Finden Sie im sich öffnenden Einstellungsbildschirm "{appName}"
+        step3: Tippen Sie auf "{appName}"
+        step4: Stellen Sie sicher, dass "Hintergrundnutzung erlauben" auf der sich öffnenden Seite aktiviert ist
+        step5: Tippen Sie auf "Hintergrundnutzung erlauben"
+        step6: Wählen Sie "Uneingeschränkt"
+      title: Batterieoptimierung
+    exact_alarm:
+      description: Android 12+ erfordert die Berechtigung, exakte Alarme zu planen, damit Erinnerungen ordnungsgemäß funktionieren.
+      instructions: "Anweisungen:"
+      steps:
+        android12plus:
+          step2: Gehen Sie zu Alarme & Erinnerungen und aktivieren Sie die Berechtigung
+          step3: Bestätigen Sie die exakte Alarmberechtigung
+        step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+        step2: 'Aktivieren Sie auf der sich öffnenden {appName} App-Seite für Alarme & Erinnerungen "Alarme und Erinnerungen setzen erlauben"'
+      title: Exakte Alarmberechtigung
+    fix_it: Reparieren
+    granted: Berechtigung erteilt
+    instructions: Anweisungen
+    notification:
+      description: Benachrichtigungsberechtigung ist erforderlich, um Erinnerungen zu erhalten. Ohne diese Berechtigung erhalten Sie keine Benachrichtigungen.
+      instructions: "Anweisungen:"
+      steps:
+        android:
+          step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+          step2: Erlauben Sie Benachrichtigungen, wenn Sie dazu aufgefordert werden
+        ios:
+          step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+          step2: Erlauben Sie Benachrichtigungen, wenn Sie dazu aufgefordert werden
+      title: Benachrichtigungsberechtigung
+    open_settings: Einstellung öffnen
+    startup:
+      description: Damit die App automatisch mit Ihrem Gerät startet, ist eine Autostart-Berechtigung erforderlich. Dies stellt sicher, dass Erinnerungen und Benachrichtigungen auch nach Geräteneustarts ordnungsgemäß funktionieren.
+      importance: Die Position der Autostart-Einstellung variiert oder ist möglicherweise nicht vorhanden, je nach Gerätehersteller.
+      instructions: "Anweisungen:"
+      steps:
+        step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
+        step2: 'Finden Sie im sich öffnenden Einstellungsbildschirm die "{appName}" App'
+        step3: 'Aktivieren Sie "Autostart", "Automatisch ausführen", "Beim Booten starten" oder ähnliche Berechtigung'
+      title: Autostart-Berechtigung
+    title: Berechtigungen
+  startup:
+    disable_error: Startup-Einstellung konnte nicht deaktiviert werden
+    enable_error: Startup-Einstellung konnte nicht aktiviert werden
+    subtitle: Tippen Sie, um die Systemeinstellungen zu öffnen und die Autostart-Berechtigung für die App zu aktivieren
+    title: Beim Start starten
+  sync_devices:
+    title: Geräte synchronisieren
+  title: Einstellungen
