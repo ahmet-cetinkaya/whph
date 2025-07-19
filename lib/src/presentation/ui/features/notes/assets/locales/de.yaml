@@ -1,0 +1,95 @@
+notes:
+  help:
+    content: |
+      Erstellen Sie ein umfassendes Wissensmanagement-System, das Ihre Ideen erfasst, Informationen effizient organisiert und wichtige Erkenntnisse bei Bedarf leicht zugänglich macht.
+
+      ## ⚡ Warum ist es wichtig?
+
+      Effektive Notizen und Wissensmanagement sind essentiell für Produktivität und Lernen. Ein gut organisiertes Notizsystem verhindert, dass wertvolle Erkenntnisse verloren gehen, beschleunigt Entscheidungsfindung und schafft ein zuverlässiges externes Gedächtnis, das mit der Zeit wertvoller wird.
+
+      ## ✍️ Mühelose Informationserfassung
+
+      Erstellen Sie einen nahtlosen Arbeitsablauf für die Erfassung und Verarbeitung von Informationen, der sicherstellt, dass nichts Wichtiges übersehen wird, während Sie sich auf Ihre aktuelle Arbeit konzentrieren.
+
+      - 📝 Ideen schnell erfassen, ohne Ihren Arbeitsfluss zu unterbrechen
+      - ✏️ Informationen bearbeiten und verfeinern, während sich das Verständnis entwickelt
+      - 🗑️ Veraltete oder irrelevante Informationen systematisch entfernen
+      - 📌 Kritische Informationen leicht zugänglich und organisiert halten
+
+      ## 🗂️ Strategische Organisation
+
+      Entwickeln Sie ein Organisationssystem, das mit Ihrer Wissensbasis skaliert und Informationsabruf schnell und zuverlässig macht, unabhängig vom Umfang.
+
+      - 🏷️ Konsistente Tagging-Strategien für schnelle Kategorisierung anwenden
+      - 🔍 Leistungsstarke Suchfunktionen nutzen, um Informationen sofort zu finden
+      - 📚 Verwandte Notizen gruppieren, um umfassende Wissensbereiche zu schaffen
+      - 🎯 Fokus durch organisierte Informationsarchitektur beibehalten
+
+      ## 📄 Professionelle Inhaltserstellung
+
+      Nutzen Sie erweiterte Formatierungstools, um klare, gut strukturierte Inhalte zu erstellen, die effektiv kommunizieren und dem Test der Zeit standhalten.
+
+      - 🎨 **Reichhaltige Formatierung:** Markdown für professionelle Dokumentstruktur verwenden
+      - 📋 **Klare Struktur:** Inhalte mit Überschriften, Listen und Hervorhebungen organisieren
+      - 🔗 **Verknüpftes Wissen:** Verwandte Konzepte und Informationen verlinken
+      - 📖 **Lesbare Ausgabe:** Inhalte für einfaches Verständnis und Teilen formatieren
+
+      ## 🚀 Produktivitätsvorteile
+
+      Verwandeln Sie Ihre Notizpraxis in einen Produktivitätsmultiplikator, der Ihr Denken verbessert, das Lernen beschleunigt und die Qualität der Entscheidungsfindung steigert.
+
+      - 🧠 **Verbessertes Denken:** Externes Gedächtnis befreit mentale Kapazität für kreative Arbeit
+      - ⚡ **Schnellerer Zugriff:** Organisierte Informationen reduzieren die Suchzeit
+      - 🌐 **Universelle Verfügbarkeit:** Zugriff auf Ihre Wissensbasis von jedem Gerät
+      - 📈 **Kontinuierliche Verbesserung:** Verfeinerte Inhalte werden mit der Zeit wertvoller
+    title: Wissensmanagement & Notizorganisation Leitfaden
+  actions:
+    add: Notiz hinzufügen
+    delete: Notiz löschen
+    edit: Notiz bearbeiten
+    save: Notiz speichern
+  components:
+    note_details_content:
+      add_tag_button: Tag hinzufügen
+      content_placeholder: Notizinhalt hier schreiben...
+      save_button: Speichern
+      saved_message: Notiz erfolgreich gespeichert
+      title_placeholder: Notiztitel
+      update_button: Aktualisieren
+    notes_list:
+      empty_message: Keine Notizen gefunden
+      loading: Notizen werden geladen...
+  delete:
+    confirm_message: Sind Sie sicher, dass Sie diese Notiz löschen möchten?
+    confirm_title: Notiz löschen
+  details:
+    content: Inhalt
+    tags:
+      hint: Tags für Notiz auswählen
+      label: Tags
+    title: Titel
+  errors:
+    adding_tag: Tag konnte nicht hinzugefügt werden
+    deleting: Unerwarteter Fehler beim Löschen der Notiz
+    getting_notes: Fehler beim Abrufen der Notizen
+    loading_details: Notizdetails konnten nicht geladen werden
+    loading_tags: Notiz-Tags konnten nicht geladen werden
+    note_not_found: Notiz nicht gefunden
+    note_tag_not_found: Notiz-Tag nicht gefunden
+    removing_tag: Tag konnte nicht entfernt werden
+    saving_note: Notiz konnte nicht gespeichert werden
+    tag_already_exists: Dieses Tag wurde bereits hinzugefügt
+  filters:
+    search:
+      placeholder: Notizen suchen...
+    tooltips:
+      filter_by_tags: Nach Tags filtern
+  new_note: Neue Notiz
+  no_notes: Keine Notizen
+  note_details: Notizdetails
+  notes: Notizen
+  title: Notizen
+  tooltips:
+    add_note: Notiz hinzufügen
+    delete_note: Notiz löschen
+    edit_name: Titel bearbeiten

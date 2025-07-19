@@ -1,0 +1,51 @@
+calendar:
+  pages:
+    today:
+      help:
+        content: |
+          Optimieren Sie Ihre tägliche Produktivität mit einer einheitlichen Ansicht, die Aufgaben, Gewohnheiten und Zeitverfolgung integriert, um Ihnen zu helfen, den Fokus zu behalten und Ihre Ziele effizient zu erreichen.
+
+          ## ⚡ Warum ist es wichtig?
+
+          Tägliches Produktivitätsmanagement ist der Grundstein für effektive Zeitnutzung und Zielerreichung. Durch die Zentralisierung Ihrer täglichen Aktivitäten in einer Ansicht eliminieren Sie Kontextwechsel, behalten klare Prioritäten bei und schaffen einen systematischen Ansatz zur Erledigung Ihrer wichtigsten Arbeit.
+
+          ## 🔄 Gewohnheitskonsistenz
+
+          Überwachen und erhalten Sie Ihre täglichen Routinen mit optimierter Gewohnheitsverfolgung, die Momentum aufbaut und positive Verhaltensmuster während Ihres Tages verstärkt.
+
+          - ✅ **Schnelle Bewertung:** Alle täglichen Gewohnheiten auf einen Blick für schnelle Fortschrittsbewertung anzeigen
+          - ✔️ **Sofortige Erledigung:** Gewohnheiten mit einfachen Interaktionen als erledigt markieren, die den Fluss beibehalten
+          - 🔄 **Routinenverstärkung:** Tägliche Muster durch konsistente Verfolgung und Anerkennung stärken
+          - 📈 **Momentum-Aufbau:** Visuelle Fortschrittsindikatoren, die anhaltende Konsistenz motivieren
+
+          ## 📋 Aufgabenausführung
+
+          Fokussieren Sie Ihr Aufgabenmanagement mit einer klaren Sicht auf die heutigen Prioritäten, die Ihnen hilft, effektiv zu handeln, ohne Fristen und Verpflichtungen aus den Augen zu verlieren.
+
+          - 🗓️ **Prioritätsklarheit:** Geplante und fällige Aufgaben für optimale Ausführung organisiert sehen
+          - ➕ **Schnelle Erfassung:** Neue Aufgaben schnell hinzufügen, ohne den aktuellen Arbeitsfluss zu stören
+          - ✔️ **Fortschrittsverfolgung:** Erledigungsstatus überwachen, um Verantwortlichkeit und Momentum zu erhalten
+          - 🎯 **Fokuserhaltung:** Klare Tagesansicht verhindert Überforderung durch zukünftige Verpflichtungen
+
+          ## ⏰ Zeitinvestitions-Analyse
+
+          Verstehen Sie, wie Sie Ihre Zeit durch kategorisierte Analyse verbringen, die Produktivitätsmuster aufdeckt und hilft, Ihren Tagesablauf für maximale Effektivität zu optimieren.
+
+          - 📊 **Kategorie-Einblicke:** Zeitverteilung über verschiedene Aktivitäts-Tags und Projekte analysieren
+          - 📈 **Mustererkennung:** Produktivitätstrends und Spitzenleistungsperioden identifizieren
+          - 🕒 **Aktivitätsüberwachung:** Zeit verfolgen, die für verschiedene tägliche Aktivitäten und Verantwortlichkeiten aufgewendet wird
+          - 🎯 **Optimierungsmöglichkeiten:** Daten nutzen, um informierte Entscheidungen über Zeitverteilung zu treffen
+
+          ## ⚙️ Produktivitäts-Shortcuts
+
+          Nutzen Sie schnelle Aktionen und effiziente Arbeitsabläufe, die Reibung minimieren und Ihre Fähigkeit maximieren, den Fokus auf wertvolle Aktivitäten während Ihres Tages zu behalten.
+
+          - ▶️ **Fokus-Sitzungen:** Konzentrierte Arbeitsperioden mit Marathon-Modus-Timer-Integration starten
+          - 🔎 **Intelligente Filterung:** Tag-basierte Filterung verwenden, um sich auf bestimmte Projekte oder Lebensbereiche zu konzentrieren
+          - ✅ **Effiziente Erledigung:** Gewohnheiten und Aufgaben mit optimierten, ablenkungsfreien Interaktionen erledigen
+          - 📊 **Leistungseinblicke:** Zugriff auf Zeitdiagramme für sofortiges Feedback zu täglichen Produktivitätsmustern
+        title: Tägliches Produktivitätsmanagement Leitfaden
+      title: Heute
+  sections:
+    habits: Gewohnheiten
+    tasks: Aufgaben

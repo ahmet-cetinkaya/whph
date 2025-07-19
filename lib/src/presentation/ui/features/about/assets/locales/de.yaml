@@ -1,0 +1,49 @@
+about:
+  about_title: "Über"
+  version: "Version {version}"
+  description: >
+    {appName} ist eine umfassende App, die entwickelt wurde, um Ihre persönliche Produktivität zu steigern; sie ermöglicht es Ihnen, Ihre Aufgaben effektiv zu verwalten, neue Gewohnheiten zu entwickeln und das Beste aus Ihrer Zeit zu machen. Zusätzlich stärkt sie Ihren Fokus, indem sie verfolgt, wie viel Zeit Sie in verschiedenen Apps verbringen. Durch die Analyse Ihres Fortschritts können Sie Ihre Erfolge feiern und die Motivation gewinnen, die für ein produktiveres Leben erforderlich ist.
+  links:
+    website: Website
+    source_code: Quellcode
+    feedback: Feedback
+    contact: Kontakt
+    check_update: Nach Updates suchen
+  support_me:
+    title: "{appName} unterstützen"
+    description: >
+      {appName} ist eine vollständig kostenlose und Open-Source-Software. Jeder kann sie frei nutzen, erkunden, verbessern und teilen.
+
+
+      Während Sie sie weiterhin gerne nutzen, arbeite ich daran, sie noch besser zu machen. Wenn Sie die Fortsetzung dieser Bemühung unterstützen möchten, können Sie mir einen Kaffee spendieren; Ihre Unterstützung wird direkt zur Entwicklung und Nachhaltigkeit von {appName} beitragen. 😊
+    button_text: Spendiere mir einen Kaffee
+  onboarding:
+    step1:
+      title: "Willkommen bei {appName}"
+      description: "Ihr persönlicher Begleiter für den Aufbau besserer Gewohnheiten, die Verwaltung von Aufgaben und die effektive Zeitverfolgung. Lassen Sie uns die wichtigsten Funktionen gemeinsam erkunden!"
+    step2:
+      title: "Aufgabenverwaltung"
+      description: "Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen und Erinnerungen. Verwenden Sie den Pomodoro-Timer, um fokussiert zu bleiben und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen."
+    step3:
+      title: "Gewohnheitsaufbau"
+      description: "Bauen Sie dauerhafte Gewohnheiten auf, indem Sie tägliche Aktivitäten verfolgen. Setzen Sie Erinnerungen, überwachen Sie Ihre Serien und visualisieren Sie Ihren Fortschritt mit detaillierten Statistiken."
+    step4:
+      title: "Notizen machen"
+      description: "Halten Sie wichtige Informationen mit einem leistungsstarken Notizsystem organisiert. Taggen Sie Ihre Notizen für einfache Kategorisierung und schnellen Zugriff."
+    step5:
+      title: "App-Nutzung & Zeit-Einblicke"
+      description: "Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit, die für verschiedene Aktivitäten aufgewendet wird. Gewinnen Sie Einblicke in Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität."
+    step6:
+      title: "Intelligentes Tagging-System"
+      description: "Verwenden Sie Tags, um Ihre Aufgaben, Gewohnheiten und Apps zu organisieren und zu gruppieren. Verfolgen Sie die Zeit, die für verschiedene Aktivitäten nach Tags aufgewendet wird, um zu verstehen, wohin Ihre Zeit geht, und optimieren Sie Ihren Arbeitsablauf."
+    step7:
+      title: "App-Berechtigungen"
+      description: "{appName} benötigt bestimmte Berechtigungen, um ordnungsgemäß zu funktionieren. Sie können die Berechtigungen überprüfen, die Sie für Systemfunktionen wie Benachrichtigungen und App-Tracking gewähren möchten."
+      review_permissions: "Berechtigungen überprüfen"
+    step8:
+      title: "Bereit, Ihr Leben zu transformieren?"
+      description: "Sie haben alle Werkzeuge, die Sie brauchen, um bessere Gewohnheiten aufzubauen, fokussiert zu bleiben und Ihre Ziele zu erreichen. Beginnen Sie heute Ihre Reise zu einem produktiveren und erfüllenderen Leben!"
+    buttons:
+      next: "Weiter"
+      back: "Zurück"
+      start: "Loslegen"

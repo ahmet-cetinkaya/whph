@@ -14,6 +14,7 @@ class TranslationService implements ITranslationService {
   static const _supportedLocales = [
     Locale('en'),
     Locale('tr'),
+    Locale('de'),
   ];
 
   @override
