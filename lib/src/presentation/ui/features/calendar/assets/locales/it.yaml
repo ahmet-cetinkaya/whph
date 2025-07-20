@@ -1,0 +1,51 @@
+calendar:
+  pages:
+    today:
+      help:
+        content: |
+          Ottimizza la tua produttività quotidiana con una vista unificata che integra attività, abitudini e tracciamento del tempo per aiutarti a mantenere la concentrazione e raggiungere i tuoi obiettivi efficientemente.
+
+          ## ⚡ Perché è importante?
+
+          La gestione della produttività quotidiana è la pietra angolare dell'uso efficace del tempo e del raggiungimento degli obiettivi. Centralizzando le tue attività quotidiane in una vista, elimini il cambio di contesto, mantieni priorità chiare e crei un approccio sistematico per completare il tuo lavoro più importante.
+
+          ## 🔄 Coerenza delle abitudini
+
+          Monitora e mantieni le tue routine quotidiane con tracciamento delle abitudini semplificato che costruisce momentum e rinforza pattern comportamentali positivi durante la tua giornata.
+
+          - ✅ **Valutazione rapida:** Visualizza tutte le abitudini quotidiane a colpo d'occhio per una valutazione rapida dei progressi
+          - ✔️ **Completamento istantaneo:** Segna le abitudini come complete con interazioni semplici che mantengono il flusso
+          - 🔄 **Rinforzo della routine:** Rafforza i pattern quotidiani attraverso tracciamento e riconoscimento coerenti
+          - 📈 **Costruzione momentum:** Indicatori di progresso visivi che motivano la coerenza continua
+
+          ## 📋 Esecuzione attività
+
+          Concentra la tua gestione delle attività con una vista chiara delle priorità di oggi che ti aiuta a eseguire efficacemente senza perdere di vista scadenze e impegni.
+
+          - 🗓️ **Chiarezza priorità:** Vedi attività pianificate e in scadenza organizzate per un'esecuzione ottimale
+          - ➕ **Cattura rapida:** Aggiungi nuove attività rapidamente senza interrompere il flusso di lavoro corrente
+          - ✔️ **Tracciamento progressi:** Monitora lo stato di completamento per mantenere responsabilità e momentum
+          - 🎯 **Mantenimento focus:** Vista quotidiana chiara previene il sovraccarico da obblighi futuri
+
+          ## ⏰ Analisi investimento tempo
+
+          Comprendi come trascorri il tuo tempo attraverso analisi categorizzate che rivelano pattern di produttività e aiutano a ottimizzare il tuo programma quotidiano per la massima efficacia.
+
+          - 📊 **Insight categorie:** Analizza la distribuzione del tempo tra diversi tag di attività e progetti
+          - 📈 **Riconoscimento pattern:** Identifica trend di produttività e periodi di prestazione di picco
+          - 🕒 **Monitoraggio attività:** Traccia il tempo trascorso su varie attività e responsabilità quotidiane
+          - 🎯 **Opportunità di ottimizzazione:** Usa i dati per prendere decisioni informate sull'allocazione del tempo
+
+          ## ⚙️ Scorciatoie produttività
+
+          Sfrutta azioni rapide e flussi di lavoro efficienti che minimizzano l'attrito e massimizzano la tua capacità di mantenere la concentrazione su attività ad alto valore durante la tua giornata.
+
+          - ▶️ **Sessioni di focus:** Inizia periodi di lavoro concentrato con integrazione timer modalità Maratona
+          - 🔎 **Filtraggio intelligente:** Usa il filtraggio basato su tag per concentrarti su progetti specifici o aree di vita
+          - ✅ **Completamento efficiente:** Completa abitudini e attività con interazioni semplificate e senza distrazioni
+          - 📊 **Insight prestazioni:** Accedi ai grafici temporali per feedback immediato sui pattern di produttività quotidiana
+        title: Guida alla gestione produttività quotidiana
+      title: Oggi
+  sections:
+    habits: Abitudini
+    tasks: Attività

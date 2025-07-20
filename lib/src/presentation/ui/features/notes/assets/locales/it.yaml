@@ -1,0 +1,95 @@
+notes:
+  help:
+    content: |
+      Costruisci un sistema completo di gestione della conoscenza che catturi le tue idee, organizzi le informazioni in modo efficiente e renda gli insight importanti facilmente accessibili quando ne hai bisogno.
+
+      ## ⚡ Perché è importante?
+
+      Prendere note efficacemente e gestire la conoscenza sono essenziali per la produttività e l'apprendimento. Un sistema di note ben organizzato previene la perdita di insight preziosi, accelera il processo decisionale e crea una memoria esterna affidabile che diventa più preziosa nel tempo.
+
+      ## ✍️ Cattura delle informazioni senza sforzo
+
+      Crea un flusso di lavoro fluido per catturare e processare informazioni che assicuri che nulla di importante vada perso mantenendo il focus sul tuo lavoro attuale.
+
+      - 📝 Cattura le idee rapidamente senza interrompere il tuo flusso
+      - ✏️ Modifica e raffina le informazioni man mano che la comprensione si sviluppa
+      - 🗑️ Rimuovi sistematicamente informazioni obsolete o irrilevanti
+      - 📌 Mantieni le informazioni critiche facilmente accessibili e organizzate
+
+      ## 🗂️ Organizzazione strategica
+
+      Sviluppa un sistema organizzativo che si adatti alla tua base di conoscenza e renda il recupero delle informazioni veloce e affidabile, indipendentemente dal volume.
+
+      - 🏷️ Applica strategie di tagging coerenti per una categorizzazione rapida
+      - 🔍 Usa potenti capacità di ricerca per trovare informazioni istantaneamente
+      - 📚 Raggruppa note correlate per creare aree di conoscenza complete
+      - 🎯 Mantieni il focus attraverso un'architettura informativa organizzata
+
+      ## 📄 Creazione di contenuti professionali
+
+      Sfrutta strumenti di formattazione avanzati per creare contenuti chiari e ben strutturati che comunichino efficacemente e resistano alla prova del tempo.
+
+      - 🎨 **Formattazione ricca:** Usa Markdown per una struttura documentale professionale
+      - 📋 **Struttura chiara:** Organizza il contenuto con intestazioni, elenchi ed enfasi
+      - 🔗 **Conoscenza connessa:** Collega concetti e informazioni correlate
+      - 📖 **Output leggibile:** Formatta il contenuto per facile comprensione e condivisione
+
+      ## 🚀 Vantaggi di produttività
+
+      Trasforma la tua pratica di prendere note in un moltiplicatore di produttività che migliora il tuo pensiero, accelera l'apprendimento e migliora la qualità del processo decisionale.
+
+      - 🧠 **Pensiero migliorato:** La memoria esterna libera capacità mentale per il lavoro creativo
+      - ⚡ **Accesso più veloce:** Le informazioni organizzate riducono il tempo speso nella ricerca
+      - 🌐 **Disponibilità universale:** Accedi alla tua base di conoscenza da qualsiasi dispositivo
+      - 📈 **Miglioramento continuo:** Il contenuto raffinato diventa più prezioso nel tempo
+    title: Guida alla gestione della conoscenza e organizzazione delle note
+  actions:
+    add: Aggiungi nota
+    delete: Elimina nota
+    edit: Modifica nota
+    save: Salva nota
+  components:
+    note_details_content:
+      add_tag_button: Aggiungi tag
+      content_placeholder: Scrivi il contenuto della nota qui...
+      save_button: Salva
+      saved_message: Nota salvata con successo
+      title_placeholder: Titolo della nota
+      update_button: Aggiorna
+    notes_list:
+      empty_message: Nessuna nota trovata
+      loading: Caricamento note...
+  delete:
+    confirm_message: Sei sicuro di voler eliminare questa nota?
+    confirm_title: Elimina nota
+  details:
+    content: Contenuto
+    tags:
+      hint: Seleziona tag per la nota
+      label: Tag
+    title: Titolo
+  errors:
+    adding_tag: Impossibile aggiungere il tag
+    deleting: Errore imprevisto durante l'eliminazione della nota
+    getting_notes: Errore durante il recupero delle note
+    loading_details: Impossibile caricare i dettagli della nota
+    loading_tags: Impossibile caricare i tag della nota
+    note_not_found: Nota non trovata
+    note_tag_not_found: Tag della nota non trovato
+    removing_tag: Impossibile rimuovere il tag
+    saving_note: Impossibile salvare la nota
+    tag_already_exists: Questo tag è già stato aggiunto
+  filters:
+    search:
+      placeholder: Cerca note...
+    tooltips:
+      filter_by_tags: Filtra per tag
+  new_note: Nuova nota
+  no_notes: Nessuna nota
+  note_details: Dettagli nota
+  notes: Note
+  title: Note
+  tooltips:
+    add_note: Aggiungi nota
+    delete_note: Elimina nota
+    edit_name: Modifica titolo

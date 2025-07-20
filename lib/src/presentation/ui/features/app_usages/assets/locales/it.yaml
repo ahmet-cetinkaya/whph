@@ -1,0 +1,177 @@
+app_usages:
+  delete:
+    confirm_title: Elimina utilizzo app
+    error: Si è verificato un errore imprevisto durante l'eliminazione dell'utilizzo app
+  details:
+    color:
+      hint: Clicca per cambiare colore
+      label: Colore
+    device:
+      label: Dispositivo
+      unknown: Dispositivo sconosciuto
+    help:
+      content: |
+        Vedi esattamente quanto tempo trascorri sulle app e mantieni il controllo organizzandole con tag.
+
+        ## ⚡ Perché è importante?
+
+        La gestione del tempo è la chiave della tua produttività. Tracciare l'utilizzo delle app e etichettarle con le categorie giuste migliora la tua concentrazione e aiuta a prevenire perdite di tempo inutili.
+
+        ## ⏱️ Tracciamento del tempo
+
+        Traccia le tue abitudini di utilizzo quotidiano per analizzare accuratamente il tuo tempo. Con durate di utilizzo dettagliate in-app e tracciamento delle finestre attive, vedi facilmente quanto focus dai a ogni app. Questi dati ti guidano su dove sono necessari miglioramenti.
+
+        - ⏳ Rivedi le durate di utilizzo quotidiano
+        - 🔍 Traccia le finestre attive
+        - 📊 Comprendi la tua distribuzione del tempo con report dettagliati
+
+        ## 🏷️ Gestione tag
+
+        Categorizzare e organizzare le tue app aumenta la produttività. Con il sistema di etichettatura, puoi raggruppare le tue app e velocizzare il tuo flusso di lavoro usando regole di automazione. Questo ti aiuta a mantenere la concentrazione e usare il tuo tempo più efficientemente.
+
+        - 🏷️ Etichetta le app con categorie significative
+        - ⚙️ Crea regole di etichettatura automatica
+        - 🔄 Risparmia tempo riducendo le attività manuali
+
+        ## 📈 Analisi e tracciamento produttività
+
+        Visualizza i tuoi pattern di utilizzo per scoprire i tuoi punti di forza e debolezza. Tracciare il tuo tempo produttivo è critico per migliorare la concentrazione. Con strumenti di confronto e reporting in-app, puoi vedere chiaramente i tuoi progressi.
+
+        - 📊 Visualizza i tuoi pattern di utilizzo
+        - 🤝 Confronta con app simili
+        - 🚀 Traccia tempo produttivo vs. improduttivo
+      title: Guida al tracciamento tempo e produttività
+    tags:
+      hint: Seleziona tag
+      label: Tag
+  device_filter:
+    clear_all: Cancella tutto
+    search:
+      label: Cerca dispositivi
+  errors:
+    add_tag: Si è verificato un errore imprevisto durante l'aggiunta del tag
+    app_usage_ignore_rule_not_found: Regola di esclusione non trovata
+    app_usage_not_found: Utilizzo app non trovato
+    app_usage_tag_not_found: Tag utilizzo app non trovato
+    delete: Si è verificato un errore imprevisto durante l'eliminazione dell'utilizzo app
+    app_usage_tag_rule_not_found: Regola tag non trovata
+    get_tags: Si è verificato un errore durante il recupero dei tag utilizzo app
+    get_usage: Si è verificato un errore imprevisto durante il recupero dell'utilizzo app
+    remove_tag: Si è verificato un errore imprevisto durante la rimozione del tag
+    save_rule: Si è verificato un errore imprevisto durante il salvataggio delle regole di esclusione
+    save_usage: Si è verificato un errore imprevisto durante il salvataggio dell'utilizzo app
+    statistics: Si è verificato un errore imprevisto durante il recupero delle statistiche
+    tag_already_exists: Questo tag è già stato aggiunto
+  form:
+    description:
+      hint: Inserisci una descrizione per questa regola
+      label: Descrizione (Opzionale)
+    pattern:
+      help_tooltip: Mostra aiuto regex
+      hint: Inserisci pattern regex
+      label: Pattern
+      required: Pattern è obbligatorio
+    save: Salva
+    saved: Salvato
+  ignore_rules:
+    delete_confirm: 'Sei sicuro di voler eliminare la regola di esclusione "{pattern}"?'
+    delete_title: Elimina regola
+    delete_tooltip: Elimina regola
+    no_rules: Nessuna regola di esclusione
+    pattern_label: Pattern
+  no_usage: Nessun utilizzo app ancora
+  pages:
+    view:
+      buttons:
+        filter_tags: Filtra tag
+        filter_devices: Filtra dispositivi
+        tag_rules: Regole tag
+      help:
+        content: |
+          Analizza, organizza e prendi il controllo del tuo utilizzo app per lavorare più efficientemente. Con strumenti di etichettatura e analisi, vedi, gestisci e migliora come trascorri il tuo tempo.
+
+          ## ⏱️ Tracciamento utilizzo
+
+          Scopri le tue abitudini di utilizzo quotidiano. Traccia finestre attive e durate per capire dove va il tuo tempo. Questo ti aiuta a identificare aree di focus e ridurre lo spreco di tempo.
+
+          - ⌛ Rivedi le durate di utilizzo app
+          - 📅 Analizza i pattern quotidiani
+          - 🖥️ Traccia la cronologia delle finestre attive
+
+          ## 🏷️ Etichettatura e categorizzazione
+
+          Crea una struttura organizzata raggruppando le app. Con il sistema di etichettatura, rendi i tuoi dati più significativi e analizza facilmente quanto tempo trascorri per categoria.
+
+          - 🏷️ Assegna tag significativi alle app
+          - ⚙️ Definisci regole di etichettatura automatica
+          - 📚 Visualizza il tempo di utilizzo per categoria
+
+          ## 📊 Analisi utilizzo
+
+          Analizza quanto efficientemente usi il tuo tempo. Attraverso confronti di app e pattern di utilizzo, vedi quali strumenti sono effettivamente benefici per te.
+
+          - 📈 Analizza i tuoi pattern di utilizzo
+          - 🔄 Confronta diverse app
+          - 🚀 Traccia il tuo tempo produttivo e improduttivo
+
+          ## ⚙️ Strumenti di gestione
+
+          Usa regole e opzioni di filtraggio per controllare meglio i comportamenti delle app. Specialmente con l'automazione, risparmia tempo prezioso.
+
+          - 🛠️ Definisci nuove regole o modifica quelle esistenti
+          - 🗑️ Rimuovi regole non necessarie
+          - 🔍 Filtra per tag e intervallo di date
+        title: Guida alla gestione utilizzo app e tempo
+      title: Utilizzo app
+  rules:
+    add_new_rule: Aggiungi nuova regola
+    delete_confirm_message: Sei sicuro di voler eliminare questa regola?
+    delete_confirm_title: Elimina regola
+    errors:
+      delete_rule: Si è verificato un errore imprevisto durante l'eliminazione della regola
+      get_rules: Si è verificato un errore imprevisto durante il recupero delle regole
+    existing_rules: Regole esistenti
+    help:
+      content: |
+        Usa le regole per gestire i dati delle app in modo organizzato, coerente ed efficiente. Personalizza il tracciamento delle app con opzioni di etichettatura automatica ed esclusione per rafforzare la tua gestione del tempo.
+
+        ## 🏷️ Regole di etichettatura automatica
+
+        Crea regole per le tue app così il sistema può assegnare i tag corretti per tuo conto. Questo elimina la necessità di etichettatura manuale.
+
+        - 🧠 Etichetta automaticamente le app basandosi sui loro nomi
+        - 🗂️ Abbina più tag con una singola regola
+        - ⏱️ Traccia automaticamente il tempo trascorso su app etichettate
+
+        ## ⚙️ Gestione regole
+
+        Usa la schermata di gestione regole flessibile per costruire il tuo sistema. Elimina regole non necessarie, aggiungi nuove e aggiorna quelle esistenti.
+
+        - ➕ Definisci nuove regole
+        - ✏️ Modifica regole esistenti
+        - 🗑️ Rimuovi regole che non usi più
+
+        ## 🚫 Regole di esclusione
+
+        Escludi app di sistema o in background che potrebbero distorcere la tua analisi di produttività. Con queste regole, puoi concentrarti solo su ciò che è veramente importante.
+
+        - 🧹 Escludi app specifiche dal tracciamento
+        - 🖥️ Ometti processi di sistema e strumenti helper
+        - 🔕 Filtra app che girano in background
+
+        ## 🧩 Opzioni di corrispondenza avanzate
+
+        Migliora le tue regole con opzioni avanzate di pattern-matching.
+
+        - ✳️ Crea regole flessibili usando wildcards
+        - 🧾 Abbina nomi app esatti
+        - 🔠 Scegli impostazioni di sensibilità alle maiuscole
+      title: Guida alle regole di etichettatura ed esclusione
+    ignore_rules: Regole di esclusione
+    no_rules: Nessuna regola
+    tag_rules: Regole tag
+    title: Regole utilizzo app
+  tooltips:
+    edit_name: Modifica nome
+  units:
+    minutes: min

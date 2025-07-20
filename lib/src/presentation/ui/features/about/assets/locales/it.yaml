@@ -1,0 +1,49 @@
+about:
+  about_title: "Informazioni"
+  version: Versione {version}
+  description: >
+    {appName} è un'app completa progettata per migliorare la tua produttività personale; ti permette di gestire efficacemente le tue attività, sviluppare nuove abitudini e sfruttare al meglio il tuo tempo. Inoltre, rafforza la tua concentrazione tracciando quanto tempo trascorri su diverse app. Analizzando i tuoi progressi, puoi celebrare i tuoi risultati e ottenere la motivazione necessaria per una vita più produttiva.
+  links:
+    website: Sito web
+    source_code: Codice sorgente
+    feedback: Feedback
+    contact: Contatto
+    check_update: Controlla aggiornamenti
+  support_me:
+    title: Supporta {appName}
+    description: >
+      {appName} è un software completamente gratuito e open-source. Tutti sono liberi di usarlo, esplorarlo, migliorarlo e condividerlo.
+
+
+      Mentre continui a goderti il suo utilizzo, io continuo a lavorare per renderlo ancora migliore. Se vuoi supportare la continuazione di questo sforzo, puoi offrirmi un caffè; il tuo supporto contribuirà direttamente allo sviluppo e alla sostenibilità di {appName}. 😊
+    button_text: Offrimi un caffè
+  onboarding:
+    step1:
+      title: "Benvenuto in {appName}"
+      description: "Il tuo compagno personale per costruire abitudini migliori, gestire attività e tracciare il tempo efficacemente. Esploriamo insieme le funzionalità principali!"
+    step2:
+      title: "Gestione attività"
+      description: "Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere concentrato e tracciare i tuoi progressi su attività importanti."
+    step3:
+      title: "Costruzione abitudini"
+      description: "Costruisci abitudini durature tracciando le attività quotidiane. Imposta promemoria, monitora le tue serie e visualizza i tuoi progressi con statistiche dettagliate."
+    step4:
+      title: "Prendere appunti"
+      description: "Mantieni le informazioni importanti organizzate con un potente sistema di presa di appunti. Etichetta le tue note per una facile categorizzazione e accesso rapido."
+    step5:
+      title: "Utilizzo app e insight temporali"
+      description: "Monitora i pattern di utilizzo delle app e analizza il tempo trascorso su diverse attività. Ottieni insight sulle tue abitudini digitali e ottimizza la tua produttività."
+    step6:
+      title: "Sistema di etichettatura intelligente"
+      description: "Usa i tag per organizzare e raggruppare le tue attività, abitudini e app. Traccia il tempo trascorso su diverse attività per tag per capire dove va il tuo tempo e ottimizzare il tuo flusso di lavoro."
+    step7:
+      title: "Permessi app"
+      description: "{appName} ha bisogno di certi permessi per funzionare correttamente. Puoi rivedere i permessi che vorresti concedere per funzionalità di sistema come notifiche e tracciamento app."
+      review_permissions: "Rivedi permessi"
+    step8:
+      title: "Pronto a trasformare la tua vita?"
+      description: "Hai tutti gli strumenti di cui hai bisogno per costruire abitudini migliori, rimanere concentrato e raggiungere i tuoi obiettivi. Inizia oggi il tuo viaggio verso una vita più produttiva e appagante!"
+    buttons:
+      next: "Avanti"
+      back: "Indietro"
+      start: "Inizia"

@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: Aggiungi nuova attività
+  all_tasks_done: Tutte le attività completate!
+  card:
+    schedule:
+      today: Programma per oggi
+      tomorrow: Programma per domani
+    tooltips:
+      schedule: Programma attività
+  complete:
+    error: Errore imprevisto durante il salvataggio del completamento dell'attività.
+  date_selection:
+    deadline_date_title: Seleziona data di scadenza
+    planned_date_title: Seleziona data pianificata
+  delete:
+    error: Errore imprevisto durante l'eliminazione dell'attività.
+    message: Sei sicuro di voler eliminare questa attività?
+    title: Elimina attività
+  details:
+    deadline_date:
+      label: Data di scadenza
+    description:
+      hint: Aggiungi descrizione...
+      label: Descrizione
+    elapsed_time:
+      label: Tempo trascorso
+    estimated_time:
+      label: Tempo stimato
+    is_completed: Completato
+    planned_date:
+      label: Data pianificata
+    priority:
+      label: Priorità
+    sub_tasks:
+      label: Sotto-attività
+    parent_task:
+      label: Attività padre
+      tooltip: Clicca per navigare all'attività padre
+    tags:
+      hint: Seleziona tag da associare
+      label: Tag
+    tags_hint: Seleziona tag per l'attività
+    title:
+      label: Titolo
+    total_elapsed_time: Tempo totale trascorso
+  errors:
+    add_tag: Errore imprevisto durante l'aggiunta del tag
+    adding_tag: Impossibile aggiungere il tag
+    get_tags: Errore durante il recupero dei tag
+    get_task: Errore imprevisto durante il caricamento dell'attività
+    loading_tags: Impossibile caricare i tag dell'attività
+    loading_task: Impossibile caricare l'attività
+    loading_tasks: Impossibile caricare le attività
+    remove_tag: Errore imprevisto durante la rimozione del tag
+    removing_tag: Impossibile rimuovere il tag
+    same_tag: Non è possibile aggiungere lo stesso tag due volte
+    save_task: Errore imprevisto durante il salvataggio dell'attività
+    saving_task: Impossibile salvare l'attività
+    sort_field_not_supported: Campo di ordinamento non supportato
+    task_not_found: Attività non trovata
+    task_tag_already_deleted: Il tag dell'attività è già eliminato
+    task_tag_already_exists: Questo tag dell'attività esiste già
+    task_tag_not_found: Tag dell'attività non trovato
+  filters:
+    completion: Per stato di completamento
+    deadline_date: Per data di scadenza
+    planned_date: Per data pianificata
+    search:
+      placeholder: Cerca attività
+    tags: Per tag
+    tooltips:
+      filter_by_tags: Filtra per tag
+  help:
+    details:
+      content: |
+        Padroneggia la gestione delle attività e massimizza la produttività organizzando, prioritizzando e tracciando il tuo lavoro efficacemente.
+
+        ## ⚡ Perché è importante?
+
+        La gestione efficace delle attività è la base della produttività. Attività ben strutturate con priorità chiare e scadenze ti aiutano a concentrarti su ciò che conta di più e prevengono che il lavoro importante vada perso.
+
+        ## 📝 Organizzazione delle attività
+
+        Struttura le tue attività con dettagli completi per mantenere chiarezza e focus. Usa tag, priorità e stime temporali per creare un approccio sistematico al tuo carico di lavoro.
+
+        - 🏷️ Categorizza le attività con tag significativi
+        - ⚖️ Imposta priorità usando framework comprovati
+        - ⏱️ Stima accuratamente i requisiti temporali
+        - 📅 Pianifica scadenze e programmi realistici
+
+        ## ⏰ Gestione del tempo
+
+        Traccia i tuoi investimenti temporali per comprendere i tuoi pattern di lavoro e migliorare l'efficienza. Una gestione appropriata del tempo trasforma sforzi dispersi in produttività focalizzata.
+
+        - 📊 Monitora tempo effettivo vs stimato
+        - 🎯 Concentrati su attività ad alto impatto
+        - 📈 Analizza i pattern di produttività nel tempo
+        - ⏳ Bilancia attività urgenti e importanti
+
+        ## 📊 Framework delle priorità (Matrice di Eisenhower)
+
+        Organizza le tue attività usando questo metodo di prioritizzazione comprovato per assicurarti di lavorare sempre sulle cose giuste al momento giusto.
+
+        - 🔥 **Urgente e Importante:** Gestisci immediatamente - gestione crisi e scadenze
+        - 📈 **Importante, non urgente:** Pianifica strategicamente - pianificazione e sviluppo competenze
+        - ⚡ **Urgente, non importante:** Delega quando possibile - interruzioni e alcuni meeting
+        - 🗑️ **Né urgente né importante:** Elimina - attività che fanno perdere tempo e di basso valore
+      title: Guida alla gestione delle attività e produttività
+    overview:
+      content: |
+        Trasforma la tua produttività con una gestione sistematica delle attività che ti aiuta a rimanere organizzato, focalizzato e in controllo del tuo carico di lavoro.
+
+        ## ⚡ Perché è importante?
+
+        La gestione efficace delle attività è la pietra angolare del successo personale e professionale. Organizzando sistematicamente il tuo lavoro, riduci lo stress, rispetti le scadenze costantemente e crei spazio per progressi significativi su obiettivi importanti.
+
+        ## 📋 Organizzazione delle attività
+
+        Crea un approccio strutturato per gestire le tue responsabilità. Attività ben organizzate portano a priorità chiare ed esecuzione efficiente del tuo lavoro quotidiano.
+
+        - ✅ Crea e categorizza attività sistematicamente
+        - 🏷️ Raggruppa lavoro correlato con tag significativi
+        - ⚖️ Imposta priorità e scadenze chiare
+        - 🔍 Usa filtri e ricerca per accesso rapido
+
+        ## ⏱️ Tracciamento del tempo e focus
+
+        Monitora i tuoi investimenti temporali per comprendere i pattern di produttività e ottimizzare il tuo flusso di lavoro. La consapevolezza del tempo porta a una migliore pianificazione e prestazioni migliorate.
+
+        - ⏰ Traccia il tempo effettivo speso per attività
+        - 🎯 Usa la modalità Maratona per sessioni di lavoro focalizzate
+        - 📊 Analizza pattern e trend di completamento
+        - 🔄 Rivedi e aggiusta regolarmente le stime temporali
+
+        ## 📈 Monitoraggio dei progressi
+
+        Traccia i tuoi risultati e impara dai tuoi pattern di lavoro. Revisione e riflessione regolari guidano il miglioramento continuo nel tuo sistema di produttività.
+
+        - 📈 Monitora i tassi di completamento delle attività
+        - 📅 Rivedi i progressi giornalieri e settimanali
+        - 🎯 Identifica colli di bottiglia e opportunità di ottimizzazione
+        - 🏆 Celebra risultati e completamenti di milestone
+      title: Guida alla gestione delle attività e flusso di lavoro
+  marathon:
+    details:
+      title: Dettagli attività
+    help:
+      content: |
+        Massimizza il tuo focus e produttività con sessioni di lavoro strutturate che ti aiutano a mantenere una concentrazione profonda prevenendo il burnout.
+
+        ## ⚡ Perché è importante?
+
+        Le sessioni di lavoro focalizzate sono essenziali per il lavoro profondo e output di alta qualità. Lavorando in intervalli strutturati con pause regolari, mantieni prestazioni mentali di picco evitando la fatica che deriva da periodi di lavoro estesi e non focalizzati.
+
+        ## ⏰ Sessioni di focus temporizzate
+
+        Usa tecniche di gestione del tempo comprovate per strutturare il tuo lavoro per la massima efficienza. Le sessioni strutturate ti aiutano a mantenere la concentrazione e completare le attività più efficacemente.
+
+        - 🎯 **Focus classico:** 25 minuti lavoro / 5 minuti pausa
+        - 📈 **Focus esteso:** 50 minuti lavoro / 10 minuti pausa
+        - 🔄 **Pausa lunga:** 15-30 minuti dopo 4 sessioni
+        - ⚖️ **Timing personalizzato:** Aggiusta gli intervalli per adattarli al tuo ritmo naturale
+
+        ## 🧠 Benefici cognitivi
+
+        Le sessioni di lavoro strutturate sfruttano i cicli di attenzione naturali del tuo cervello per ottimizzare le prestazioni e prevenire la fatica mentale che riduce qualità e creatività.
+
+        - 🎯 Focus migliorato e concentrazione profonda
+        - 🔋 Fatica mentale e burnout ridotti
+        - 💪 Motivazione sostenuta attraverso risultati regolari
+        - ⚡ Consapevolezza del tempo e accuratezza di pianificazione migliorate
+
+        ## 📊 Ottimizzazione delle prestazioni
+
+        Traccia i tuoi pattern di lavoro focalizzato per comprendere i tuoi tempi di produttività di picco e ottimizzare il tuo programma per la massima efficacia.
+
+        - 🏷️ Categorizza le sessioni di focus con tag per l'analisi
+        - 📈 Monitora i pattern di produttività in momenti diversi
+        - 🚫 Elimina le distrazioni prima di iniziare le sessioni
+        - 🚶 Usa le pause per movimento fisico e reset mentale
+      title: Guida alle sessioni di lavoro focalizzate e gestione del tempo
+      tooltip: Tooltip aiuto Maratona
+    label: Modalità Maratona
+    unpin_task_tooltip: Sgancia attività corrente
+  new_task: Nuova attività
+  no_tasks: Nessuna attività
+  notifications:
+    deadline_message: "La scadenza della tua attività è alle {time}"
+    deadline_title: "Scadenza attività: {title}"
+    planned_message: "La tua attività è pianificata per le {time}"
+    reminder_title: "Promemoria attività: {title}"
+  page:
+    completed_tasks_title: Attività completate
+    title: Attività
+  pomodoro:
+    actions:
+      stop_timer: Ferma timer
+    notifications:
+      break_completed: Sessione di pausa completata!
+      long_break_completed: Pausa lunga completata!
+      time_remaining_prefix: "Tempo rimanente:"
+      timer_completed: Timer completato!
+      title: Timer Pomodoro
+      work_completed: Sessione di lavoro completata!
+    settings:
+      auto_start_break: Avvia automaticamente pausa dopo lavoro
+      auto_start_section: Opzioni avvio automatico
+      auto_start_work: Avvia automaticamente lavoro dopo pausa
+      break_duration: Durata pausa
+      long_break_duration: Durata pausa lunga
+      sessions_before_long_break: Sessioni prima della pausa lunga
+      ticking_sound: Abilita suono ticchettio
+      ticking_sound_section: Suono ticchettio
+      ticking_speed: Velocità
+      ticking_volume: Volume
+      keep_screen_awake_section: Mantieni schermo acceso
+      keep_screen_awake: Mantieni schermo acceso durante le sessioni
+      timer_label: Durate delle sessioni
+      title: Impostazioni timer
+      work_duration: Durata lavoro
+    system_tray:
+      app_running: App in esecuzione
+      complete_title: Pomodoro completato
+      tap_to_open: Tocca per aprire
+      timer_running: Timer in esecuzione
+  priorities:
+    not_urgent_important: Non urgente ma importante
+    not_urgent_not_important: Non urgente o importante
+    urgent_important: Urgente e importante
+    urgent_not_important: Urgente ma non importante
+  priority:
+    selection:
+      title: Seleziona priorità
+    tooltips:
+      none: Nessuna priorità
+      not_urgent_important: Non urgente ma importante
+      not_urgent_not_important: Non urgente e non importante
+      urgent_important: Urgente e importante
+      urgent_not_important: Urgente ma non importante
+    types:
+      none: Nessuna priorità
+      not_urgent_important: Non urgente ma importante
+      not_urgent_not_important: Non urgente e non importante
+      urgent_important: Urgente e importante
+      urgent_not_important: Urgente ma non importante
+  quick_task:
+    create_error: Errore nella creazione dell'attività
+    lock_description: Blocca le proprietà per mantenere i loro valori quando crei più attività simili. Le proprietà bloccate non verranno cancellate quando resetti il modulo.
+    lock_settings: Impostazioni blocco
+    reset_all: Reimposta tutti i campi
+    reset_confirm:
+      message: Sei sicuro di voler reimpostare tutti i campi? Questa azione non può essere annullata.
+      title: Reimposta tutti i campi
+    title: Attività rapida
+    title_hint: Titolo attività
+    tooltips:
+      deadline_date: "Scadenza: {date}"
+      deadline_date_not_set: "Scadenza: Non impostata"
+      estimated_time: "Tempo stimato: {time}"
+      estimated_time_not_set: "Tempo stimato: Non impostato"
+      planned_date: "Pianificato: {date}"
+      planned_date_not_set: "Pianificato: Non impostato"
+  recurrence:
+    count: Numero di occorrenze
+    custom: Personalizzato
+    daily: Giornaliero
+    daySuffix: giorno/i
+    endDate: Data fine
+    enterCountHint: Inserisci numero
+    interval:
+      label: Ripeti ogni
+      prefix: ogni
+      suffix:
+        days: giorno/i
+        months: mese/i
+        weeks: settimana/e
+        years: anno/i
+    label: Ricorrenza
+    monthSuffix: mese/i
+    monthly: Mensile
+    none: Nessuna ricorrenza
+    range: Intervallo
+    selectDateHint: Seleziona data
+    startDate: Data inizio
+    summary:
+      endsAfter: finisce dopo
+      endsOnDate: finisce il
+      occurrences: occorrenze
+      on: il
+      starts: inizia
+    weekDays: Giorni della settimana
+    weekSuffix: settimana/e
+    weekly: Settimanale
+    yearSuffix: anno/i
+    yearly: Annuale
+  reminder:
+    atTime: All'orario programmato
+    deadlineReminderLabel: Promemoria scadenza
+    fifteenMinutesBefore: 15 minuti prima
+    fiveMinutesBefore: 5 minuti prima
+    none: Nessun promemoria
+    oneDayBefore: 1 giorno prima
+    oneHourBefore: 1 ora prima
+    plannedReminderLabel: Promemoria data pianificata
+  task_details: Dettagli attività
+  title: Attività
+  tooltips:
+    clear_date: Cancella data
+    decrease_estimated_time: Diminuisci tempo stimato
+    edit_title: Modifica titolo
+    increase_estimated_time: Aumenta tempo stimato
+    set_reminder: Imposta promemoria
+    show_completed_tasks: Filtra attività completate
