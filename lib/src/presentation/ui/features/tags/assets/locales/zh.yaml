@@ -1,0 +1,127 @@
+tags:
+  actions:
+    add: 添加标签
+    archive: 归档标签
+    delete: 删除标签
+    edit: 编辑标签
+    hide_archived: 隐藏已归档标签
+    show_archived: 显示已归档标签
+    unarchive: 取消归档标签
+  categories:
+    all: 全部
+    app_usage: 应用使用情况
+    habits: 习惯
+    tasks: 任务
+  default_name: 新标签
+  details:
+    archived: 已归档
+    color: 颜色
+    help:
+      description: 详情帮助描述
+      title: 详情帮助标题
+    name: 名称
+    related_tags: 相关标签
+    select_tag: 选择标签
+    tasks_label: 任务
+  errors:
+    creating: 创建标签失败
+    deleting: 删除标签失败
+    get_tags: 获取标签时发生错误
+    loading: 加载标签失败
+    loading_archive_status: 加载归档状态失败
+    same_tag: 主标签和次标签不能相同
+    saving: 保存标签失败
+    tag_not_found: 未找到标签
+    tag_tag_already_exists: 此标签关系已存在
+    tag_tag_not_found: 未找到标签关系
+    toggling_archive: 切换归档状态失败
+  filter:
+    all_categories: 所有类别
+    select_category: 选择类别
+  filter_tooltip: 按标签筛选
+  help:
+    content: 标签帮助内容
+    overview:
+      content: |
+        通过战略性标签使用转变您的生产力，帮助您组织工作、跟踪时间投资并保持对最重要事情的清晰专注。
+
+        ## ⚡ 为什么重要？
+
+        基于标签的组织是有效时间管理和生产力的基础。通过用有意义的标签对活动进行分类，您可以获得关于时间使用的清晰洞察，并做出明智决策来优化专注力和效率。
+
+        ## 📊 时间投资分析
+
+        了解您的时间去向并对优先事项做出数据驱动的决策。使用标签进行时间跟踪揭示有助于优化时间表和工作习惯的模式。
+
+        - ⏱️ 监控不同活动类别的时间花费
+        - 📅 跟踪特定时期和趋势的时间投资
+        - ⚖️ 比较项目和责任间的时间分配
+        - 📈 识别生产力模式和峰值表现时间
+        - 🎯 将精力集中在高影响活动上
+
+        ## 🗂️ 战略组织
+
+        创建一个随需求扩展的工作组织系统性方法。结构良好的标签形成高效生产力系统的基础。
+
+        - 🔍 通过多标签搜索快速筛选和查找信息
+        - 🗄️ 归档已完成项目以保持清洁组织
+        - 🧩 构建反映工作模式的层次结构
+        - 👥 为更好的项目管理分组相关活动
+        - ⏳ 在所有活动中启用全面时间跟踪
+
+        ## 💡 优化策略
+
+        利用高级标签技术最大化组织系统的效果并维持长期生产力增长。
+
+        - 🏷️ 使用随时间保持意义的清晰、描述性名称
+        - 🔗 **创建层次结构：** 项目 → 部门 → 领域
+        - 📊 定期审查时间分析报告以识别改进机会
+        - 🗄️ 通过归档已完成工作保持系统整洁
+        - 🎯 应用专注筛选以消除干扰并增强集中力
+      title: 基于标签的组织和时间管理指南
+    title: 标签帮助
+  labels:
+    color: 颜色
+    description: 描述
+    name: 名称
+    tags: 标签
+  list:
+    filter_tooltip: 按标签筛选
+    no_tags: 没有标签
+  messages:
+    archive_confirm: 您确定要归档此标签吗？
+    confirm_archive: 您确定要归档此标签吗？
+    confirm_delete: 您确定要删除此标签吗？
+    confirm_unarchive: 您确定要取消归档此标签吗？
+    unarchive_confirm: 您确定要取消归档此标签吗？
+  new_tag: 新标签
+  no_tags: 没有标签
+  none_option: 无
+  search:
+    clear_all: 全部清除
+    label: 搜索标签
+  sections:
+    list: 标签
+  selection:
+    done: 完成
+  tag_details: 标签详情
+  time_bar_chart:
+    by_element: 按元素
+    no_data: 无数据
+    title: 时间分布
+  time_chart:
+    no_data: 无数据
+    other_category: 其他
+  time_distribution: 时间分布
+  time_records: 时间记录
+  title: 标签
+  tooltips:
+    add_tag: 添加标签
+    add_task: 添加新任务
+    archive_tag: 归档标签
+    color: 点击为标签分配颜色
+    delete_tag: 删除标签
+    edit_name: 编辑名称
+    remove_tag: 移除标签
+    select: 点击选择标签
+    unarchive_tag: 取消归档标签

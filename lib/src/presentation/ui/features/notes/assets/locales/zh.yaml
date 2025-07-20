@@ -1,0 +1,95 @@
+notes:
+  help:
+    content: |
+      构建一个全面的知识管理系统，捕获您的想法，高效组织信息，并在需要时轻松访问重要见解。
+
+      ## ⚡ 为什么重要？
+
+      有效的笔记记录和知识管理对生产力和学习至关重要。一个组织良好的笔记系统可以防止宝贵见解的丢失，加速决策制定，并创建一个随时间推移变得更有价值的可靠外部记忆。
+
+      ## ✍️ 轻松信息捕获
+
+      创建一个无缝的工作流程来捕获和处理信息，确保重要内容不会遗漏，同时保持对当前工作的专注。
+
+      - 📝 快速捕获想法而不中断工作流程
+      - ✏️ 随着理解的深入编辑和完善信息
+      - 🗑️ 系统性地删除过时或无关的信息
+      - 📌 保持关键信息易于访问和有序
+
+      ## 🗂️ 战略性组织
+
+      开发一个与您的知识库一起扩展的组织系统，使信息检索快速可靠，无论数量多少。
+
+      - 🏷️ 应用一致的标签策略进行快速分类
+      - 🔍 使用强大的搜索功能即时查找信息
+      - 📚 将相关笔记分组以创建全面的知识领域
+      - 🎯 通过有序的信息架构保持专注
+
+      ## 📄 专业内容创建
+
+      利用高级格式工具创建清晰、结构良好的内容，有效沟通并经得起时间考验。
+
+      - 🎨 **丰富格式：** 使用 Markdown 创建专业文档结构
+      - 📋 **清晰结构：** 用标题、列表和强调组织内容
+      - 🔗 **连接知识：** 链接相关概念和信息
+      - 📖 **可读输出：** 格式化内容以便于理解和分享
+
+      ## 🚀 生产力优势
+
+      将您的笔记记录实践转化为生产力倍增器，增强思维，加速学习，提高决策质量。
+
+      - 🧠 **增强思维：** 外部记忆释放创造性工作的心理容量
+      - ⚡ **快速访问：** 有序信息减少搜索时间
+      - 🌐 **通用可用性：** 从任何设备访问您的知识库
+      - 📈 **持续改进：** 精炼内容随时间变得更有价值
+    title: 知识管理和笔记整理指南
+  actions:
+    add: 添加笔记
+    delete: 删除笔记
+    edit: 编辑笔记
+    save: 保存笔记
+  components:
+    note_details_content:
+      add_tag_button: 添加标签
+      content_placeholder: 在此处写入笔记内容...
+      save_button: 保存
+      saved_message: 笔记保存成功
+      title_placeholder: 笔记标题
+      update_button: 更新
+    notes_list:
+      empty_message: 未找到笔记
+      loading: 正在加载笔记...
+  delete:
+    confirm_message: 您确定要删除此笔记吗？
+    confirm_title: 删除笔记
+  details:
+    content: 内容
+    tags:
+      hint: 为笔记选择标签
+      label: 标签
+    title: 标题
+  errors:
+    adding_tag: 添加标签失败
+    deleting: 删除笔记时发生意外错误
+    getting_notes: 获取笔记时发生错误
+    loading_details: 加载笔记详情失败
+    loading_tags: 加载笔记标签失败
+    note_not_found: 未找到笔记
+    note_tag_not_found: 未找到笔记标签
+    removing_tag: 移除标签失败
+    saving_note: 保存笔记失败
+    tag_already_exists: 此标签已添加
+  filters:
+    search:
+      placeholder: 搜索笔记...
+    tooltips:
+      filter_by_tags: 按标签筛选
+  new_note: 新笔记
+  no_notes: 没有笔记
+  note_details: 笔记详情
+  notes: 笔记
+  title: 笔记
+  tooltips:
+    add_note: 添加笔记
+    delete_note: 删除笔记
+    edit_name: 编辑标题
