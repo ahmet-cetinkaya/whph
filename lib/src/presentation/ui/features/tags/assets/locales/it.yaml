@@ -1,0 +1,127 @@
+tags:
+  actions:
+    add: Aggiungi tag
+    archive: Archivia tag
+    delete: Elimina tag
+    edit: Modifica tag
+    hide_archived: Nascondi tag archiviati
+    show_archived: Mostra tag archiviati
+    unarchive: Desarchivia tag
+  categories:
+    all: Tutti
+    app_usage: Utilizzo app
+    habits: Abitudini
+    tasks: Attività
+  default_name: Nuovo tag
+  details:
+    archived: Archiviato
+    color: Colore
+    help:
+      description: Descrizione aiuto dettagli
+      title: Titolo aiuto dettagli
+    name: Nome
+    related_tags: Tag correlati
+    select_tag: Seleziona tag
+    tasks_label: Attività
+  errors:
+    creating: Impossibile creare tag
+    deleting: Impossibile eliminare tag
+    get_tags: Si è verificato un errore durante il recupero dei tag
+    loading: Impossibile caricare tag
+    loading_archive_status: Impossibile caricare stato archivio
+    same_tag: I tag primario e secondario non possono essere uguali
+    saving: Impossibile salvare tag
+    tag_not_found: Tag non trovato
+    tag_tag_already_exists: Questa relazione tag esiste già
+    tag_tag_not_found: Relazione tag non trovata
+    toggling_archive: Impossibile cambiare stato archivio
+  filter:
+    all_categories: Tutte le categorie
+    select_category: Seleziona categoria
+  filter_tooltip: Filtra per tag
+  help:
+    content: Contenuto aiuto tag
+    overview:
+      content: |
+        Trasforma la tua produttività con etichettatura strategica che ti aiuta a organizzare il lavoro, tracciare investimenti di tempo e mantenere focus chiaro su ciò che conta di più.
+
+        ## ⚡ Perché è importante?
+
+        L'organizzazione basata su tag è fondamentale per la gestione efficace del tempo e la produttività. Categorizzando le tue attività con tag significativi, ottieni insight chiari su come trascorri il tuo tempo e puoi prendere decisioni informate per ottimizzare il tuo focus ed efficienza.
+
+        ## 📊 Analisi investimento tempo
+
+        Comprendi dove va il tuo tempo e prendi decisioni basate sui dati riguardo le tue priorità. Il tracciamento del tempo con tag rivela pattern che ti aiutano a ottimizzare il tuo programma e abitudini di lavoro.
+
+        - ⏱️ Monitora il tempo trascorso tra diverse categorie di attività
+        - 📅 Traccia investimenti di tempo su periodi specifici e trend
+        - ⚖️ Confronta l'allocazione del tempo tra progetti e responsabilità
+        - 📈 Identifica pattern di produttività e tempi di prestazione di picco
+        - 🎯 Concentra la tua energia su attività ad alto impatto
+
+        ## 🗂️ Organizzazione strategica
+
+        Crea un approccio sistematico per organizzare il tuo lavoro che si adatta alle tue esigenze. Tag ben strutturati formano la base di un sistema di produttività efficiente.
+
+        - 🔍 Filtra e trova informazioni rapidamente con ricerche multi-tag
+        - 🗄️ Archivia progetti completati per mantenere organizzazione pulita
+        - 🧩 Costruisci strutture gerarchiche che riflettono i tuoi pattern di lavoro
+        - 👥 Raggruppa attività correlate per migliore gestione progetti
+        - ⏳ Abilita tracciamento tempo completo su tutte le attività
+
+        ## 💡 Strategie di ottimizzazione
+
+        Sfrutta tecniche di etichettatura avanzate per massimizzare l'efficacia del tuo sistema organizzativo e mantenere crescita di produttività a lungo termine.
+
+        - 🏷️ Usa nomi chiari e descrittivi che rimangano significativi nel tempo
+        - 🔗 **Crea strutture gerarchiche:** Progetti → Dipartimenti → Aree
+        - 📊 Rivedi regolarmente i report di analisi tempo per identificare opportunità di miglioramento
+        - 🗄️ Mantieni pulizia del sistema archiviando lavoro completato
+        - 🎯 Applica filtraggio focalizzato per eliminare distrazioni e migliorare concentrazione
+      title: Guida all'organizzazione basata su tag e gestione tempo
+    title: Aiuto tag
+  labels:
+    color: Colore
+    description: Descrizione
+    name: Nome
+    tags: Tag
+  list:
+    filter_tooltip: Filtra per tag
+    no_tags: Nessun tag
+  messages:
+    archive_confirm: Sei sicuro di voler archiviare questo tag?
+    confirm_archive: Sei sicuro di voler archiviare questo tag?
+    confirm_delete: Sei sicuro di voler eliminare questo tag?
+    confirm_unarchive: Sei sicuro di voler desarchiviare questo tag?
+    unarchive_confirm: Sei sicuro di voler desarchiviare questo tag?
+  new_tag: Nuovo tag
+  no_tags: Nessun tag
+  none_option: Nessuno
+  search:
+    clear_all: Cancella tutto
+    label: Cerca tag
+  sections:
+    list: Tag
+  selection:
+    done: Fatto
+  tag_details: Dettagli tag
+  time_bar_chart:
+    by_element: Per elemento
+    no_data: Nessun dato
+    title: Distribuzione tempo
+  time_chart:
+    no_data: Nessun dato
+    other_category: Altro
+  time_distribution: Distribuzione tempo
+  time_records: Record tempo
+  title: Tag
+  tooltips:
+    add_tag: Aggiungi tag
+    add_task: Aggiungi nuova attività
+    archive_tag: Archivia tag
+    color: Clicca per assegnare colore al tag
+    delete_tag: Elimina tag
+    edit_name: Modifica nome
+    remove_tag: Rimuovi tag
+    select: Clicca per selezionare tag
+    unarchive_tag: Desarchivia tag

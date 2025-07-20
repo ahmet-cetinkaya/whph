@@ -1,0 +1,116 @@
+common:
+  buttons:
+    cancel: Annulla
+
+settings:
+  about:
+    title: Informazioni
+  errors:
+    export_failed: Esportazione fallita
+    import_failed: Importazione fallita
+    setting_not_found: Impostazione non trovata
+    version_mismatch: Versione non trovata
+  export:
+    csv_description: Puoi usare questo per visualizzare in Excel e applicazioni simili.
+    error: Esportazione fallita
+    in_progress: Esportazione dati in corso, attendere...
+    json_description: Puoi usare questo file per importare i dati di nuovo nell'app.
+    select_directory: Seleziona directory di esportazione
+    select_path: Seleziona posizione di salvataggio
+    select_type: Seleziona formato di esportazione
+    success: "Esportazione riuscita. Posizione file:"
+    title: Esporta
+    canceled: Esportazione annullata dall'utente
+  export_data:
+    title: Esporta dati
+  import:
+    error: Importazione fallita
+    error.entity: Errore nel tipo
+    in_progress: Importazione dati in corso, attendere...
+    migration_failed: Importazione fallita. Assicurati di avere l'ultima versione dell'app installata.
+    select_file: Seleziona file
+    strategy:
+      merge: Unisci con dati esistenti
+      replace: Elimina dati esistenti e aggiungi nuovi
+      title: Strategia importazione
+    success: Importazione riuscita
+    title: Importa
+    unsupported_version: Versione non supportata
+    version_mismatch: Versione non trovata
+  import_export:
+    description: Puoi fare il backup dei tuoi dati in formato JSON o ripristinare da un backup creato precedentemente
+    select_action: Seleziona azione importa/esporta
+    title: Importa/Esporta
+  language:
+    choose_title: Scegli la tua lingua
+    title: Lingua
+  notifications:
+    disable_error: Impossibile disabilitare le notifiche
+    enable_error: Impossibile abilitare le notifiche
+    title: Notifiche
+  permissions:
+    app_usage:
+      description: Questa app ha bisogno del permesso per accedere alle statistiche di utilizzo app per tracciare accuratamente i tuoi pattern di utilizzo app.
+      instructions: "Istruzioni:"
+      steps:
+        step1: Premi il pulsante "Apri impostazioni"
+        step2: Nella schermata impostazioni accesso utilizzo che si apre, trova "{appName}" nell'elenco
+        step3: Tocca su "{appName}"
+        step4: Abilita "Consenti accesso utilizzo" o attiva l'interruttore su ON
+      title: Permesso utilizzo app
+    battery_optimization:
+      description: Per notifiche affidabili, questa app deve essere esclusa dall'ottimizzazione batteria. Senza questo, i promemoria potrebbero essere ritardati o non consegnati affatto.
+      importance: La posizione di questa impostazione può variare a seconda del produttore del dispositivo.
+      instructions: "Istruzioni:"
+      not_disabled: L'ottimizzazione batteria è ancora abilitata. Fornisci il permesso perché la funzione pertinente funzioni correttamente.
+      steps:
+        step1: Premi il pulsante "Apri impostazioni"
+        step2: Nella schermata impostazioni che si apre, trova "{appName}"
+        step3: Tocca su "{appName}"
+        step4: Assicurati che "Consenti utilizzo in background" sia abilitato nella pagina che si apre
+        step5: Tocca su "Consenti utilizzo in background"
+        step6: Seleziona "Senza restrizioni"
+      title: Ottimizzazione batteria
+    exact_alarm:
+      description: Android 12+ richiede il permesso per programmare allarmi esatti perché i promemoria funzionino correttamente.
+      instructions: "Istruzioni:"
+      steps:
+        android12plus:
+          step2: Vai a Allarmi e promemoria e abilita il permesso
+          step3: Conferma il permesso allarme esatto
+        step1: Premi il pulsante "Apri impostazioni"
+        step2: 'Nella pagina Allarmi e promemoria dell''app {appName} aperta, abilita "Consenti impostazione allarmi e promemoria"'
+      title: Permesso allarme esatto
+    fix_it: Risolvi
+    granted: Permesso concesso
+    instructions: Istruzioni
+    notification:
+      description: Il permesso notifiche è richiesto per ricevere promemoria. Senza questo permesso, non riceverai alcuna notifica.
+      instructions: "Istruzioni:"
+      steps:
+        android:
+          step1: Premi il pulsante "Apri impostazioni"
+          step2: Consenti le notifiche quando richiesto
+        ios:
+          step1: Premi il pulsante "Apri impostazioni"
+          step2: Consenti le notifiche quando richiesto
+      title: Permesso notifiche
+    open_settings: Apri impostazioni
+    startup:
+      description: Perché l'app si avvii automaticamente con il tuo dispositivo, è richiesto il permesso di avvio automatico. Questo assicura che promemoria e notifiche funzionino correttamente anche dopo i riavvii del dispositivo.
+      importance: La posizione dell'impostazione avvio automatico varia o potrebbe non essere presente per produttore del dispositivo.
+      instructions: "Istruzioni:"
+      steps:
+        step1: Premi il pulsante "Apri impostazioni"
+        step2: 'Nella schermata impostazioni che si apre, trova l''app "{appName}"'
+        step3: 'Abilita "Avvio automatico", "Autorun", "Avvia all''avvio" o permesso simile'
+      title: Permesso avvio automatico
+    title: Permessi
+  startup:
+    disable_error: Impossibile disabilitare l'impostazione di avvio
+    enable_error: Impossibile abilitare l'impostazione di avvio
+    subtitle: Tocca per aprire le impostazioni di sistema e abilitare il permesso di avvio automatico per l'app
+    title: Avvia all'avvio
+  sync_devices:
+    title: Sincronizza dispositivi
+  title: Impostazioni
