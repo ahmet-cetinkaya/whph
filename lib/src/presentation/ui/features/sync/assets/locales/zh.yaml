@@ -1,0 +1,64 @@
+sync:
+  devices:
+    errors:
+      loading: 加载同步设备失败
+      removing: 移除同步设备失败
+      sync_failed: 设备同步失败
+    from_label: 来自
+    help:
+      content: |
+        🔄 在多个设备间安全同步您的数据。
+
+        ## 🔗 二维码连接
+        - 简单的设备配对
+        - 安全的连接设置
+        - 快速同步启动
+
+        ## 📱 设备管理
+        - 查看已连接设备
+        - 监控同步状态
+        - 移除旧设备
+
+        ## 💡 提示
+        - 保持设备在同一网络
+        - 定期同步以获得最佳效果
+        - 移除未使用的设备连接
+        - 检查最后同步日期
+        - 使用二维码快速设置
+        - 等待同步完成
+      title: 设备同步帮助
+    last_sync_label: 最后同步
+    no_devices_found: 没有同步设备
+    sync_tooltip: 立即同步
+    title: 设备同步
+    to_label: 到
+    unnamed_device: 未命名设备
+  error:
+    scan: 扫描失败
+  errors:
+    connection_failed: |
+      连接失败。请确保：
+
+      1. 两个设备在同一网络上
+      2. 两个应用都已打开并运行
+      3. 防火墙没有阻止连接
+    device_mismatch: 同步错误。尝试同步的设备未与此设备正确配对。
+    device_not_found: 未找到同步设备
+    ip_address: 无法获取本地IP地址
+    parse_message: 无法解析扫描的消息
+    process_failed: 同步过程失败。
+    save_device: 保存同步设备失败
+    scan: 扫描失败
+    sync_failed: 同步失败。请重试。
+    sync_timeout: 同步超时
+    version_mismatch: "版本不匹配。本地版本：{currentVersion}，远程版本：{remoteVersion}。请将两个应用程序更新到相同版本。"
+  messages:
+    device_already_paired: 此设备已配对
+    sync_completed: 同步成功完成
+    sync_in_progress: 正在同步...
+    testing_connection: 正在测试连接...
+  qr_code:
+    close_button: 关闭
+    dialog_title: 扫描二维码进行同步
+  scanner:
+    title: 扫描二维码

@@ -1,0 +1,116 @@
+common:
+  buttons:
+    cancel: 取消
+
+settings:
+  about:
+    title: 关于应用
+  errors:
+    export_failed: 导出失败
+    import_failed: 导入失败
+    setting_not_found: 未找到设置
+    version_mismatch: 未找到版本
+  export:
+    csv_description: 您可以使用此文件在 Excel 和类似应用程序中查看。
+    error: 导出失败
+    in_progress: 正在导出数据，请稍候...
+    json_description: 您可以使用此文件将数据重新导入应用。
+    select_directory: 选择导出目录
+    select_path: 选择保存位置
+    select_type: 选择导出格式
+    success: "导出成功。文件位置："
+    title: 导出
+    canceled: 用户取消导出
+  export_data:
+    title: 导出数据
+  import:
+    error: 导入失败
+    error.entity: 类型错误
+    in_progress: 正在导入数据，请稍候...
+    migration_failed: 导入失败。请确保您安装了最新版本的应用。
+    select_file: 选择文件
+    strategy:
+      merge: 与现有数据合并
+      replace: 删除现有数据并添加新数据
+      title: 导入策略
+    success: 导入成功
+    title: 导入
+    unsupported_version: 不支持的版本
+    version_mismatch: 未找到版本
+  import_export:
+    description: 您可以以 JSON 格式备份数据或从之前创建的备份中恢复
+    select_action: 选择导入/导出操作
+    title: 导入/导出
+  language:
+    choose_title: 选择您的语言
+    title: 语言
+  notifications:
+    disable_error: 禁用通知失败
+    enable_error: 启用通知失败
+    title: 通知
+  permissions:
+    app_usage:
+      description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
+      instructions: "说明："
+      steps:
+        step1: "按下\"打开设置\"按钮"
+        step2: "在打开的使用访问设置界面中，从列表中找到\"{appName}\""
+        step3: "点击\"{appName}\""
+        step4: "启用\"允许使用访问\"或将开关切换到开启"
+      title: 应用使用权限
+    battery_optimization:
+      description: 为了可靠的通知，此应用需要从电池优化中排除。没有这个，提醒可能会延迟或根本不会送达。
+      importance: 此设置的位置可能因设备制造商而异。
+      instructions: "说明："
+      not_disabled: 电池优化仍然启用。请提供权限以使相关功能正常工作。
+      steps:
+        step1: "按下\"打开设置\"按钮"
+        step2: "在打开的设置界面中找到\"{appName}\""
+        step3: "点击\"{appName}\""
+        step4: "确保在打开的页面上启用\"允许后台使用\""
+        step5: "点击\"允许后台使用\""
+        step6: "选择\"无限制\""
+      title: 电池优化
+    exact_alarm:
+      description: Android 12+ 需要权限来安排精确闹钟以使提醒正常工作。
+      instructions: "说明："
+      steps:
+        android12plus:
+          step2: 转到闹钟和提醒并启用权限
+          step3: 确认精确闹钟权限
+        step1: "按下\"打开设置\"按钮"
+        step2: "在打开的 {appName} 应用的闹钟和提醒页面中，启用\"允许设置闹钟和提醒\""
+      title: 精确闹钟权限
+    fix_it: 修复
+    granted: 权限已授予
+    instructions: 说明
+    notification:
+      description: 接收提醒需要通知权限。没有此权限，您将不会收到任何通知。
+      instructions: "说明："
+      steps:
+        android:
+          step1: "按下\"打开设置\"按钮"
+          step2: 出现提示时允许通知
+        ios:
+          step1: "按下\"打开设置\"按钮"
+          step2: 出现提示时允许通知
+      title: 通知权限
+    open_settings: 打开设置
+    startup:
+      description: 要让应用与设备一起自动启动，需要自动启动权限。这确保即使在设备重启后提醒和通知也能正常工作。
+      importance: 自动启动设置位置因设备制造商而异或可能不存在。
+      instructions: "说明："
+      steps:
+        step1: "按下\"打开设置\"按钮"
+        step2: "在打开的设置界面中找到\"{appName}\"应用"
+        step3: "启用\"自动启动\"、\"自动运行\"、\"开机启动\"或类似权限"
+      title: 自动启动权限
+    title: 权限
+  startup:
+    disable_error: 禁用启动设置失败
+    enable_error: 启用启动设置失败
+    subtitle: 点击打开系统设置并为应用启用自动启动权限
+    title: 开机启动
+  sync_devices:
+    title: 设备同步
+  title: 设置

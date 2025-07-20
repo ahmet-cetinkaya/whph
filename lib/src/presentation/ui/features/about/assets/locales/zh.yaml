@@ -1,0 +1,49 @@
+about:
+  about_title: "关于应用"
+  version: "版本 {version}"
+  description: >
+    "{appName} 是一个旨在提升个人生产力的综合应用。它让您能够有效管理任务、培养新习惯并充分利用时间。此外，它通过跟踪您在不同应用上花费的时间来增强专注力。通过分析进展，您可以庆祝成就并获得更高效生活所需的动力。"
+  links:
+    website: 网站
+    source_code: 源代码
+    feedback: 反馈
+    contact: 联系
+    check_update: 检查更新
+  support_me:
+    title: "支持 {appName}"
+    description: >
+      "{appName} 是完全免费的开源软件。每个人都可以自由使用、探索、改进和分享。
+
+
+      在您继续享受使用的同时，我继续努力让它变得更好。如果您想支持这项努力的继续，您可以请我喝杯咖啡；您的支持将直接为 {appName} 的开发和可持续性做出贡献。😊"
+    button_text: 请我喝咖啡
+  onboarding:
+    step1:
+      title: "欢迎使用 {appName}"
+      description: "您构建更好习惯、管理任务和有效跟踪时间的个人伴侣。让我们一起探索主要功能！"
+    step2:
+      title: "任务管理"
+      description: "创建和组织具有优先级、截止日期和提醒的任务。使用番茄钟计时器保持专注并跟踪重要任务的进展。"
+    step3:
+      title: "习惯养成"
+      description: "通过跟踪日常活动建立持久习惯。设置提醒，监控连续记录，并通过详细统计可视化进展。"
+    step4:
+      title: "笔记记录"
+      description: "使用强大的笔记系统保持重要信息的组织。为笔记添加标签以便于分类和快速访问。"
+    step5:
+      title: "应用使用情况和时间洞察"
+      description: "监控应用使用模式并分析在不同活动上花费的时间。获得数字习惯洞察并优化生产力。"
+    step6:
+      title: "智能标签系统"
+      description: "使用标签组织和分组您的任务、习惯和应用。按标签跟踪在不同活动上花费的时间，了解时间去向并优化工作流程。"
+    step7:
+      title: "应用权限"
+      description: "{appName} 需要某些权限才能正常运行。您可以查看想要为通知和应用跟踪等系统功能授予的权限。"
+      review_permissions: "查看权限"
+    step8:
+      title: "准备好改变您的生活了吗？"
+      description: "您拥有构建更好习惯、保持专注和实现目标所需的所有工具。今天就开始您更高效、更充实生活的旅程！"
+    buttons:
+      next: "下一步"
+      back: "返回"
+      start: "开始"

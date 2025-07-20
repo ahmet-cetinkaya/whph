@@ -1,0 +1,209 @@
+habits:
+  archive:
+    archive: 归档
+    archive_confirm: 您确定要归档此习惯吗？
+    archive_tooltip: 归档此习惯
+    archived_date: 归档日期
+    hide_archived: 隐藏已归档
+    show_archived: 显示已归档
+    unarchive: 取消归档
+    unarchive_confirm: 您确定要取消归档此习惯吗？
+    unarchive_tooltip: 取消归档此习惯
+
+  calendar:
+    week_days:
+      fri: 五
+      mon: 一
+      sat: 六
+      sun: 日
+      thu: 四
+      tue: 二
+      wed: 三
+  delete:
+    confirm_message: 您确定要删除此习惯吗？
+    confirm_title: 删除习惯
+  details:
+    archived_status: 已归档
+    create_record_tooltip: 标记为今天已完成
+    description: 描述
+    estimated_time: 预计时间
+    estimated_time_not_set: 未设置
+    help:
+      content: |
+        通过系统性的习惯跟踪构建可持续的日常例程，将您的意图转化为一致的行动和朝向目标的可衡量进展。
+
+        ## ⚡ 为什么重要？
+
+        习惯养成是个人发展和持续成就的基石。一致的日常行动随时间复合产生显著结果，而系统性跟踪确保您保持动力并持续改进例程。
+
+        ## ⚙️ 战略性习惯设计
+
+        创建无缝融入您生活并支持长期目标的习惯。设计良好的习惯成为需要最少意志力维持的自动行为。
+
+        - 📝 设计具有可操作描述的清晰、具体习惯
+        - 📅 建立与您自然节奏一致的一致时间表
+        - 🏷️ 将相似习惯组织成连贯组以进行系统跟踪
+        - 🎯 将每个习惯与有意义的结果和个人价值联系起来
+
+        ## ⏱️ 性能监控
+
+        跟踪您的习惯执行以了解模式，衡量进展，并优化您的方法以获得最大效果和可持续增长。
+
+        - ⏳ 记录完成时间以了解习惯持续时间和效率
+        - 📊 分析习惯类别间的时间投资以实现平衡发展
+        - 📈 监控性能趋势以识别改进机会和最佳时机
+        - 🔄 使用数据洞察来完善习惯难度和时间安排以获得持续成功
+
+        ## 📅 一致性和动力
+
+        通过系统性跟踪和战略性审查您的进展模式来建立和维持持久行为改变所需的一致性。
+
+        - 📚 审查完成历史以评估进展并识别成功模式
+        - 🔗 跟踪每日连续记录以建立和维持长期成功的动力
+        - 📌 监控一致性指标以增强动机和承诺
+        - 🎯 庆祝里程碑和成就以强化积极的行为改变
+
+        ## 🚀 优化策略
+
+        应用经过验证的习惯优化技术，加速进展并确保您的努力转化为生活和生产力的有意义、持久改进。
+
+        - 🐾 **从小开始：** 从保证早期胜利的可管理习惯开始
+        - 🏷️ **战略分组：** 按生活领域或一天中的时间组织习惯
+        - 📊 **数据驱动调整：** 使用跟踪洞察来优化时机和方法
+        - 🌅 **黄金时间专注：** 在您的峰值能量期间安排重要习惯
+      description: 帮助描述
+      title: 习惯养成和性能跟踪指南
+    records: 记录
+    remove_record_tooltip: 移除今天的完成记录
+    statistics:
+      archived_note: "归档于："
+      archived_on: 归档于
+      archived_warning: "统计显示到归档日期。{startDate} - {archivedDate}"
+      from: 从
+      monthly: 月度
+      overall: 总体
+      records: 记录
+      score_trends: 分数趋势
+      to: 到
+      top_streaks: 最高连续记录
+      no_streaks_yet: 还没有连续记录。开始建立一致性！
+      completions: 完成次数
+      yearly: 年度
+    statistics_label: 统计
+    tags: 标签
+    tags_hint: 选择要关联的标签
+  errors:
+    adding_tag: 添加标签失败
+    creating_record: 创建习惯记录失败
+    deleting: 删除习惯时发生意外错误
+    deleting_record: 删除习惯记录失败
+    habit_not_found: 未找到习惯
+    habit_record_not_found: 未找到习惯记录
+    habit_tag_not_found: 未找到习惯标签
+    loading_archive_status: 加载归档状态失败
+    loading_details: 加载习惯详情失败
+    loading_habit: 加载习惯失败
+    loading_habits: 加载习惯失败
+    loading_records: 加载习惯记录失败
+    loading_tags: 加载习惯标签失败
+    removing_tag: 移除标签失败
+    saving_details: 保存习惯失败
+    saving_habit: 保存习惯失败
+    tag_already_exists: 此标签已添加
+    toggling_archive: 切换归档状态失败
+  goals:
+    current_goal: 目标
+    days_unit: 天
+    description: 您想以特定频率而不是每天练习习惯吗？那么设置自定义目标。
+    enable: 启用自定义目标
+    goal: 自定义目标
+    goal_format: "{dayCount}天内{count}次"
+    period_days: 期间天数
+    settings: 自定义目标设置
+    target_frequency: 目标频率
+    times_unit: 次
+  help:
+    description: 帮助描述
+  list:
+    all_habits_done: 所有习惯已完成！
+    no_habits_found: 没有习惯
+  new_habit: 新习惯
+  notifications:
+    reminder_message: "记得完成您的习惯：{name}"
+    reminder_title: "习惯提醒：{name}"
+  overview:
+    filter_by_tags_tooltip: 按标签筛选
+    help:
+      content: |
+        通过系统性的习惯跟踪掌握您的日常例程，建立一致性，创造积极动力，并推动朝向长期目标的有意义进展。
+
+        ## ⚡ 为什么重要？
+
+        日常习惯管理是个人卓越和可持续增长的基础。执行良好计划的习惯随时间创造复合效益，而系统性跟踪确保您保持责任感并对例程进行数据驱动的改进。
+
+        ## 📅 日常执行和跟踪
+
+        开发一个可靠的系统来执行和监控您的习惯，创造一致性并建立朝向目标的不可阻挡动力。
+
+        - ✅ **日常完成：** 标记习惯为完成以建立一致性链条
+        - 📆 **多日视图：** 监控跨天和周的模式以获得全面洞察
+        - 🔄 **连续记录建立：** 保持连续完成天数以最大化激励动力
+        - 📊 **进展可视化：** 跟踪随时间的完成率和模式
+
+        ## ⏱️ 时间分析和优化
+
+        监控您在习惯上的时间投资以优化日程安排并确保所有重要生活领域的平衡发展。
+
+        - ⏳ **持续时间跟踪：** 记录实际花费时间以了解习惯要求
+        - 🏷️ **类别分析：** 按标签分组习惯以查看生活领域间的时间分配
+        - ⏰ **时间表优化：** 平衡习惯时机以实现可持续的日常执行
+        - 📈 **效率改进：** 识别简化习惯执行的机会
+
+        ## 🗂️ 战略组织
+
+        创建一个支持一致执行的组织系统，同时提供随着目标和环境发展而适应的灵活性。
+
+        - 🏷️ **有意义的分类：** 按生活领域、时间或优先级水平分组习惯
+        - ⚙️ **灵活安排：** 设计适合您生活方式和能量模式的习惯时机
+        - 🎯 **优先级专注：** 确保您最重要的习惯获得适当的关注和能量
+
+        ## 💡 掌握原则
+
+        应用经过验证的习惯掌握策略，确保您的努力复合成持久的行为改变和可衡量的生活改进。
+
+        - 🐾 **从小开始：** 从您能一致执行的习惯开始，然后逐渐增加难度
+        - 🏷️ **战略分组：** 组织习惯以创建逻辑序列和支持系统
+        - 📊 **性能审查：** 使用时间跟踪数据来了解模式并优化您的方法
+        - 🌅 **黄金时间执行：** 在峰值能量期间安排您最重要的习惯
+
+        ### 📊 使用日历视图
+        - 📅 在日历视图中同时查看多天。
+        - ✅ 视觉跟踪您的完成模式。
+        - ⚡ 通过快速完成标记节省时间。
+        - 🎯 通过视觉连续记录跟踪增加动机。
+        - 🔄 通过灵活的日期导航探索过去和未来的习惯。
+      title: 日常习惯管理和例程优化指南
+    title: 习惯
+  reminder:
+    enableReminders: 启用提醒
+    everyDay: 每天
+    noReminder: 未设置提醒
+    reminderDays: 提醒日期
+    reminderSettings: 提醒设置
+    reminderTime: 提醒时间
+    selectDaysWarning: 请为提醒至少选择一天
+  reminders:
+    enable: 启用提醒
+    select_days_warning: 请为提醒至少选择一天
+  statistics:
+    archived_on: 归档于
+    from: 从
+    to: 到
+  tags:
+    add_tooltip: 添加标签
+    select_tooltip: 选择标签
+  tooltips:
+    add_habit: 添加习惯
+    decrease_estimated_time: 减少预计时间
+    edit_name: 编辑名称
+    increase_estimated_time: 增加预计时间

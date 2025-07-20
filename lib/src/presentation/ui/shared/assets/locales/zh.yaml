@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: 版本不匹配
+shared:
+  buttons:
+    add: 添加
+    back: 返回
+    cancel: 取消
+    close: 关闭
+    confirm: 确认
+    delete: 删除
+    done: 完成
+    load_more: 加载更多
+    save: 保存
+    saved: 已保存
+  calendar:
+    months:
+      apr: 四月
+      apr_short: 4月
+      aug: 八月
+      aug_short: 8月
+      dec: 十二月
+      dec_short: 12月
+      feb: 二月
+      feb_short: 2月
+      jan: 一月
+      jan_short: 1月
+      jul: 七月
+      jul_short: 7月
+      jun: 六月
+      jun_short: 6月
+      mar: 三月
+      mar_short: 3月
+      may: 五月
+      may_short: 5月
+      nov: 十一月
+      nov_short: 11月
+      oct: 十月
+      oct_short: 10月
+      sep: 九月
+      sep_short: 9月
+    week_days:
+      friday: 星期五
+      friday_short: 五
+      monday: 星期一
+      monday_short: 一
+      saturday: 星期六
+      saturday_short: 六
+      sunday: 星期日
+      sunday_short: 日
+      thursday: 星期四
+      thursday_short: 四
+      tuesday: 星期二
+      tuesday_short: 二
+      wednesday: 星期三
+      wednesday_short: 三
+  change: 更改
+  color_picker:
+    confirm_selection: 确认选择
+    select_color_title: 选择颜色
+    tabs:
+      custom: 自定义
+      palette: 调色板
+    title: 颜色选择器
+  data:
+    created_date_label: 创建日期
+    modified_date_label: 修改日期
+    name_label: 名称
+  date_filter:
+    title: 选择日期范围
+    tooltips:
+      clear: 清除日期筛选
+      filter: 按日期筛选
+  date_format:
+    hint: YYYY/MM/DD
+  days:
+    friday: 星期五
+    friday_short: 五
+    monday: 星期一
+    monday_short: 一
+    saturday: 星期六
+    saturday_short: 六
+    sunday: 星期日
+    sunday_short: 日
+    thursday: 星期四
+    thursday_short: 四
+    tuesday: 星期二
+    tuesday_short: 二
+    wednesday: 星期三
+    wednesday_short: 三
+  editor:
+    markdown:
+      hint: 您可以使用 Markdown 格式编写...
+      tooltips:
+        bold: 粗体
+        italic: 斜体
+        strikethrough: 删除线
+        code: 代码
+        link: 链接
+        quote: 引用
+        bulleted_list: 项目符号列表
+        numbered_list: 编号列表
+        horizontal_rule: 水平线
+        edit: 编辑
+        preview: 预览
+  errors:
+    deleting: 删除数据时发生错误
+    file_not_found: 文件未找到
+    file_pick: 选择文件时发生错误
+    file_read: 读取文件时发生错误
+    file_save: 保存文件时发生错误
+    file_write: 写入文件时发生错误
+    loading: 加载数据时发生错误
+    report_subject: "{appName} 应用：意外错误报告"
+    report_template: |
+      您好，我在使用 {appName} 应用时遇到了意外错误。
+
+      以下信息可能有助于您诊断问题：
+      应用版本：{version}
+      设备信息：{device}
+      操作系统：{os}
+      系统版本：{osVersion}
+      错误信息：
+      ```
+      {error}
+      堆栈跟踪：
+      {stackTrace}
+      ```
+
+      请帮助我解决这个问题。
+
+      谢谢！
+    saving: 保存数据时发生错误
+    storage_permission: 需要存储权限
+    storage_permission_denied: 存储权限被拒绝
+    unexpected: 发生意外错误
+  filters:
+    search: 搜索
+  help:
+    tooltip: 帮助
+  messages:
+    confirm_delete: 您确定要删除此项目吗？
+    no_items_found: 没有项目
+  nav:
+    items:
+      app_usages: 应用使用情况
+      habits: 习惯
+      more: 更多
+      notes: 笔记
+      settings: 设置
+      tags: 标签
+      tasks: 任务
+      today: 今天
+  none_option: "无标签"
+  regex_help:
+    examples:
+      chat: "匹配 \"Slack\" 或 \"Discord\""
+      chrome: "匹配包含 \"Chrome\" 的窗口标题"
+      exact_chrome: "精确匹配 \"Chrome\""
+      pdf: 匹配任何 PDF 文件
+      vscode: 匹配任何 VS Code 窗口
+    tips:
+      any_chars: "使用 \".*\" 匹配任何字符"
+      dot: "使用 \"\\.\" 匹配点号"
+      end: "使用 \"$\" 匹配文本结尾"
+      or: "\"|\" 表示或运算符"
+      start: "使用 \"^\" 匹配文本开头"
+    tips_title: 💡 提示
+    title: 模式示例
+  report_error: 报告错误
+  save_list_options: 保存列表选项
+  search:
+    placeholder: 搜索
+    tooltip: 搜索项目
+  sections:
+    habits: 习惯
+    special_filters: 特殊筛选
+    statistics: 统计
+    tags: 标签
+    tasks: 任务
+    time: 时间
+  sort:
+    ascending: 升序
+    custom_order:
+      description: 拖放以重新排序项目
+      title: 自定义排序
+    descending: 降序
+    remove_criteria: 移除条件
+    reset_to_default: 重置为默认
+    sort: 排序
+  statistics:
+    daily_usage:
+      description: 显示每周各天的总使用时间
+      title: 每日使用情况
+    hourly_usage:
+      description: 显示每天各小时的总使用时间
+      title: 每小时使用情况
+  time:
+    not_set: "未设置"
+  time_periods:
+    custom: 自定义
+    last_month: 上个月
+    last_three_months: 过去3个月
+    last_week: 上周
+    this_month: 本月
+    this_three_months: 最近3个月
+    this_week: 本周
+    today: 今天
+  tooltips:
+    compare_with_previous: 与上一期间比较
+    filter_by_tags: 按标签筛选
+    refresh: 刷新
+  ui:
+    report_error: 报告
+  units:
+    days: 天
+    hours: 小时
+    minutes: 分钟
+    minutes_short: 分
+    seconds: 秒
+  update_dialog:
+    buttons:
+      download_page: 下载页面
+      later: 稍后
+      update_now: 立即更新
+    downloading: 正在下载更新...
+    failed: 更新失败。
+    message: "新版本 ({version}) 可用。"
+    question: 您想现在更新吗？
+    success: 更新下载成功！
+    title: 有可用更新！
+  validation:
+    required: "{field}是必填项"
