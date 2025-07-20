@@ -1,0 +1,64 @@
+sync:
+  devices:
+    errors:
+      loading: 同期デバイスの読み込みに失敗しました
+      removing: 同期デバイスの削除に失敗しました
+      sync_failed: デバイスの同期に失敗しました
+    from_label: 送信元
+    help:
+      content: |
+        🔄 複数のデバイス間でデータを安全に同期します。
+
+        ## 🔗 QRコード接続
+        - 簡単なデバイスペアリング
+        - 安全な接続設定
+        - 迅速な同期開始
+
+        ## 📱 デバイス管理
+        - 接続されたデバイスを表示
+        - 同期状況を監視
+        - 古いデバイスを削除
+
+        ## 💡 ヒント
+        - デバイスを同じネットワークに保つ
+        - 最良の結果のために定期的に同期
+        - 未使用のデバイス接続を削除
+        - 最後の同期日を確認
+        - 迅速な設定にQRコードを使用
+        - 同期完了を待つ
+      title: デバイス同期ヘルプ
+    last_sync_label: 最後の同期
+    no_devices_found: 同期されたデバイスがありません
+    sync_tooltip: 今すぐ同期
+    title: デバイス同期
+    to_label: 送信先
+    unnamed_device: 名前のないデバイス
+  error:
+    scan: スキャンに失敗しました
+  errors:
+    connection_failed: |
+      接続に失敗しました。以下を確認してください：
+
+      1. 両方のデバイスが同じネットワークにある
+      2. 両方のアプリが開いて実行中である
+      3. ファイアウォールが接続をブロックしていない
+    device_mismatch: 同期エラー。同期を試みているデバイスがこのデバイスと適切にペアリングされていません。
+    device_not_found: 同期デバイスが見つかりません
+    ip_address: ローカルIPアドレスを取得できません
+    parse_message: スキャンしたメッセージを解析できません
+    process_failed: 同期プロセスが失敗しました。
+    save_device: 同期デバイスの保存に失敗しました
+    scan: スキャンに失敗しました
+    sync_failed: 同期に失敗しました。もう一度お試しください。
+    sync_timeout: 同期タイムアウト
+    version_mismatch: "バージョンの不一致。ローカルバージョン: {currentVersion}、リモートバージョン: {remoteVersion}。両方のアプリケーションを同じバージョンに更新してください。"
+  messages:
+    device_already_paired: このデバイスは既にペアリングされています
+    sync_completed: 同期が正常に完了しました
+    sync_in_progress: 同期中...
+    testing_connection: 接続をテスト中...
+  qr_code:
+    close_button: 閉じる
+    dialog_title: QRコードをスキャンして同期
+  scanner:
+    title: QRコードをスキャン

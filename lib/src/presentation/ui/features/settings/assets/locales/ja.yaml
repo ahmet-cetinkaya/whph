@@ -1,0 +1,116 @@
+common:
+  buttons:
+    cancel: キャンセル
+
+settings:
+  about:
+    title: アプリについて
+  errors:
+    export_failed: エクスポートに失敗しました
+    import_failed: インポートに失敗しました
+    setting_not_found: 設定が見つかりません
+    version_mismatch: バージョンが見つかりません
+  export:
+    csv_description: ExcelやExcel類似のアプリケーションで表示するために使用できます。
+    error: エクスポートに失敗しました
+    in_progress: データをエクスポート中です。お待ちください...
+    json_description: このファイルを使用してデータをアプリに再インポートできます。
+    select_directory: エクスポートディレクトリを選択
+    select_path: 保存場所を選択
+    select_type: エクスポート形式を選択
+    success: "エクスポートが成功しました。ファイルの場所:"
+    title: エクスポート
+    canceled: ユーザーによりエクスポートがキャンセルされました
+  export_data:
+    title: データをエクスポート
+  import:
+    error: インポートに失敗しました
+    error.entity: タイプにエラーがあります
+    in_progress: データをインポート中です。お待ちください...
+    migration_failed: インポートに失敗しました。最新バージョンのアプリがインストールされていることを確認してください。
+    select_file: ファイルを選択
+    strategy:
+      merge: 既存データとマージ
+      replace: 既存データを削除して新しいデータを追加
+      title: インポート戦略
+    success: インポートが成功しました
+    title: インポート
+    unsupported_version: サポートされていないバージョン
+    version_mismatch: バージョンが見つかりません
+  import_export:
+    description: データをJSON形式でバックアップしたり、以前に作成したバックアップから復元できます
+    select_action: インポート/エクスポートアクションを選択
+    title: インポート/エクスポート
+  language:
+    choose_title: 言語を選択
+    title: 言語
+  notifications:
+    disable_error: 通知の無効化に失敗しました
+    enable_error: 通知の有効化に失敗しました
+    title: 通知
+  permissions:
+    app_usage:
+      description: このアプリはアプリ使用パターンを正確に追跡するためにアプリ使用統計へのアクセス許可が必要です。
+      instructions: "手順:"
+      steps:
+        step1: "\"設定を開く\"ボタンを押してください"
+        step2: "開いた使用アクセス設定画面で、リストから\"{appName}\"を見つけてください"
+        step3: "\"{appName}\"をタップしてください"
+        step4: "\"使用アクセスを許可\"を有効にするか、スイッチをONにしてください"
+      title: アプリ使用許可
+    battery_optimization:
+      description: 信頼性の高い通知のために、このアプリをバッテリー最適化から除外する必要があります。これがないと、リマインダーが遅延したり、全く配信されない場合があります。
+      importance: この設定の場所はデバイスメーカーによって異なる場合があります。
+      instructions: "手順:"
+      not_disabled: バッテリー最適化がまだ有効です。関連機能が正しく動作するように許可を提供してください。
+      steps:
+        step1: "\"設定を開く\"ボタンを押してください"
+        step2: "開いた設定画面で\"{appName}\"を見つけてください"
+        step3: "\"{appName}\"をタップしてください"
+        step4: "開いたページで\"バックグラウンド使用を許可\"が有効になっていることを確認してください"
+        step5: "\"バックグラウンド使用を許可\"をタップしてください"
+        step6: "\"無制限\"を選択してください"
+      title: バッテリー最適化
+    exact_alarm:
+      description: Android 12以降では、リマインダーが正しく動作するために正確なアラームをスケジュールする許可が必要です。
+      instructions: "手順:"
+      steps:
+        android12plus:
+          step2: アラーム・リマインダーに移動して許可を有効にしてください
+          step3: 正確なアラーム許可を確認してください
+        step1: "\"設定を開く\"ボタンを押してください"
+        step2: "開いた{appName}アプリのアラーム・リマインダーページで、\"アラームとリマインダーの設定を許可\"を有効にしてください"
+      title: 正確なアラーム許可
+    fix_it: 修正する
+    granted: 許可が付与されました
+    instructions: 手順
+    notification:
+      description: リマインダーを受信するには通知許可が必要です。この許可がないと、通知を受信できません。
+      instructions: "手順:"
+      steps:
+        android:
+          step1: "\"設定を開く\"ボタンを押してください"
+          step2: プロンプトが表示されたら通知を許可してください
+        ios:
+          step1: "\"設定を開く\"ボタンを押してください"
+          step2: プロンプトが表示されたら通知を許可してください
+      title: 通知許可
+    open_settings: 設定を開く
+    startup:
+      description: アプリがデバイスと一緒に自動的に起動するには、自動起動許可が必要です。これにより、デバイス再起動後でもリマインダーと通知が正しく動作することが保証されます。
+      importance: 自動起動設定の場所はデバイスメーカーによって異なるか、存在しない場合があります。
+      instructions: "手順:"
+      steps:
+        step1: "\"設定を開く\"ボタンを押してください"
+        step2: "開いた設定画面で\"{appName}\"アプリを見つけてください"
+        step3: "\"自動起動\"、\"自動実行\"、\"起動時に開始\"または類似の許可を有効にしてください"
+      title: 自動起動許可
+    title: 許可
+  startup:
+    disable_error: 起動設定の無効化に失敗しました
+    enable_error: 起動設定の有効化に失敗しました
+    subtitle: タップしてシステム設定を開き、アプリの自動起動許可を有効にしてください
+    title: 起動時に開始
+  sync_devices:
+    title: デバイス同期
+  title: 設定
