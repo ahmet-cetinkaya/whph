@@ -1,0 +1,4 @@
+• KDE Wayland-Fenstermethoden verbessert
+• Gerätefilterung zu App-Nutzungsfunktionen hinzugefügt
+• Anwendungsverzeichnisdienst für Plattformen implementiert
+• Abstand aus Beschreibungen entfernt
