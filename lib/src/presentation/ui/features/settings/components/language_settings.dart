@@ -36,10 +36,33 @@ class LanguageSettings extends StatelessWidget {
   }
 }
 
+class _LanguageOption {
+  final String code;
+  final String displayName;
+
+  const _LanguageOption({
+    required this.code,
+    required this.displayName,
+  });
+}
+
 class _LanguageDialog extends StatelessWidget {
   final ITranslationService _translationService;
 
   _LanguageDialog() : _translationService = container.resolve<ITranslationService>();
+
+  static const List<_LanguageOption> _supportedLanguages = [
+    _LanguageOption(code: 'en', displayName: 'English'),
+    _LanguageOption(code: 'tr', displayName: 'Türkçe'),
+    _LanguageOption(code: 'de', displayName: 'Deutsch'),
+    _LanguageOption(code: 'fr', displayName: 'Français'),
+  ];
+
+  void _changeLanguage(BuildContext context, String languageCode) {
+    _translationService.changeLanguage(context, languageCode);
+    Navigator.pop(context);
+    Navigator.of(context).pushReplacementNamed(SettingsPage.route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,66 +79,18 @@ class _LanguageDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Language Options Section
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text(
-                'English',
-                style: AppTheme.bodyMedium,
+            for (final language in _supportedLanguages)
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: Text(
+                  language.displayName,
+                  style: AppTheme.bodyMedium,
+                ),
+                trailing: _translationService.getCurrentLanguage(context) == language.code
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
+                onTap: () => _changeLanguage(context, language.code),
               ),
-              trailing: _translationService.getCurrentLanguage(context) == 'en'
-                  ? const Icon(Icons.check, color: Colors.green)
-                  : null,
-              onTap: () {
-                _translationService.changeLanguage(context, 'en');
-                Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed(SettingsPage.route);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text(
-                'Türkçe',
-                style: AppTheme.bodyMedium,
-              ),
-              trailing: _translationService.getCurrentLanguage(context) == 'tr'
-                  ? const Icon(Icons.check, color: Colors.green)
-                  : null,
-              onTap: () {
-                _translationService.changeLanguage(context, 'tr');
-                Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed(SettingsPage.route);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text(
-                'Deutsch',
-                style: AppTheme.bodyMedium,
-              ),
-              trailing: _translationService.getCurrentLanguage(context) == 'de'
-                  ? const Icon(Icons.check, color: Colors.green)
-                  : null,
-              onTap: () {
-                _translationService.changeLanguage(context, 'de');
-                Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed(SettingsPage.route);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text(
-                'Français',
-                style: AppTheme.bodyMedium,
-              ),
-              trailing: _translationService.getCurrentLanguage(context) == 'fr'
-                  ? const Icon(Icons.check, color: Colors.green)
-                  : null,
-              onTap: () {
-                _translationService.changeLanguage(context, 'fr');
-                Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed(SettingsPage.route);
-              },
-            ),
           ],
         ),
       ),
