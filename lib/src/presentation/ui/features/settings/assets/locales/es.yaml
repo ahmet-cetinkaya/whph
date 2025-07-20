@@ -1,0 +1,115 @@
+common:
+  buttons:
+    cancel: Cancelar
+settings:
+  about:
+    title: Acerca de
+  errors:
+    export_failed: Falló la exportación
+    import_failed: Falló la importación
+    setting_not_found: Configuración no encontrada
+    version_mismatch: Versión no encontrada
+  export:
+    csv_description: Puedes usar esto para ver en Excel y aplicaciones similares.
+    error: Falló la exportación
+    in_progress: Exportando datos, por favor espera...
+    json_description: Puedes usar este archivo para importar datos de vuelta a la aplicación.
+    select_directory: Seleccionar directorio de exportación
+    select_path: Seleccionar ubicación de guardado
+    select_type: Seleccionar formato de exportación
+    success: "Exportación exitosa. Ubicación del archivo:"
+    title: Exportar
+    canceled: Exportación cancelada por el usuario
+  export_data:
+    title: Exportar datos
+  import:
+    error: Falló la importación
+    error.entity: Error en el tipo
+    in_progress: Importando datos, por favor espera...
+    migration_failed: Falló la importación. Por favor asegúrate de tener instalada la última versión de la aplicación.
+    select_file: Seleccionar archivo
+    strategy:
+      merge: Fusionar con datos existentes
+      replace: Eliminar datos existentes y añadir nuevos
+      title: Estrategia de importación
+    success: Importación exitosa
+    title: Importar
+    unsupported_version: Versión no soportada
+    version_mismatch: Versión no encontrada
+  import_export:
+    description: Puedes respaldar tus datos en formato JSON o restaurar desde un respaldo creado previamente
+    select_action: Seleccionar acción de importar/exportar
+    title: Importar/Exportar
+  language:
+    choose_title: Elige tu idioma
+    title: Idioma
+  notifications:
+    disable_error: No se pudieron desactivar las notificaciones
+    enable_error: No se pudieron activar las notificaciones
+    title: Notificaciones
+  permissions:
+    app_usage:
+      description: Esta aplicación necesita permiso para acceder a las estadísticas de uso de aplicaciones para rastrear tus patrones de uso de aplicaciones con precisión.
+      instructions: "Instrucciones:"
+      steps:
+        step1: Presiona el botón "Abrir configuración"
+        step2: En la pantalla de configuración de acceso de uso que se abre, encuentra "{appName}" en la lista
+        step3: Toca en "{appName}"
+        step4: Habilita "Permitir acceso de uso" o cambia el interruptor a ENCENDIDO
+      title: Permiso de uso de aplicación
+    battery_optimization:
+      description: Para notificaciones confiables, esta aplicación necesita ser excluida de la optimización de batería. Sin esto, los recordatorios pueden retrasarse o no entregarse en absoluto.
+      importance: La ubicación de esta configuración puede variar dependiendo del fabricante de tu dispositivo.
+      instructions: "Instrucciones:"
+      not_disabled: La optimización de batería aún está habilitada. Proporciona permiso para que la función relevante funcione correctamente.
+      steps:
+        step1: Presiona el botón "Abrir configuración"
+        step2: En la pantalla de configuración que se abre, encuentra "{appName}"
+        step3: Toca en "{appName}"
+        step4: Asegúrate de que "Permitir uso en segundo plano" esté habilitado en la página que se abre
+        step5: Toca en "Permitir uso en segundo plano"
+        step6: Selecciona "Sin restricciones"
+      title: Optimización de batería
+    exact_alarm:
+      description: Android 12+ requiere permiso para programar alarmas exactas para que los recordatorios funcionen correctamente.
+      instructions: "Instrucciones:"
+      steps:
+        android12plus:
+          step2: Ve a Alarmas y recordatorios y habilita el permiso
+          step3: Confirma el permiso de alarma exacta
+        step1: Presiona el botón "Abrir configuración"
+        step2: 'En la página de Alarmas y recordatorios de la aplicación {appName} que se abre, habilita "Permitir configurar alarmas y recordatorios"'
+      title: Permiso de alarma exacta
+    fix_it: Arreglarlo
+    granted: Permiso otorgado
+    instructions: Instrucciones
+    notification:
+      description: El permiso de notificación es requerido para recibir recordatorios. Sin este permiso, no recibirás ninguna notificación.
+      instructions: "Instrucciones:"
+      steps:
+        android:
+          step1: Presiona el botón "Abrir configuración"
+          step2: Permite notificaciones cuando se solicite
+        ios:
+          step1: Presiona el botón "Abrir configuración"
+          step2: Permite notificaciones cuando se solicite
+      title: Permiso de notificación
+    open_settings: Abrir configuración
+    startup:
+      description: Para que la aplicación inicie automáticamente con tu dispositivo, se requiere permiso de inicio automático. Esto asegura que los recordatorios y notificaciones funcionen correctamente incluso después de reinicios del dispositivo.
+      importance: La ubicación de la configuración de inicio automático varía o puede no estar presente según el fabricante del dispositivo.
+      instructions: "Instrucciones:"
+      steps:
+        step1: Presiona el botón "Abrir configuración"
+        step2: 'En la pantalla de configuración que se abre, encuentra la aplicación "{appName}"'
+        step3: 'Habilita "Inicio automático", "Ejecución automática", "Iniciar al arrancar" o permiso similar'
+      title: Permiso de inicio automático
+    title: Permisos
+  startup:
+    disable_error: No se pudo desactivar la configuración de inicio
+    enable_error: No se pudo activar la configuración de inicio
+    subtitle: Toca para abrir la configuración del sistema y habilitar el permiso de inicio automático para la aplicación
+    title: Iniciar al arranque
+  sync_devices:
+    title: Sincronizar dispositivos
+  title: Configuración

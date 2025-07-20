@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: Añadir nueva tarea
+  all_tasks_done: ¡Todas las tareas completadas!
+  card:
+    schedule:
+      today: Programar para hoy
+      tomorrow: Programar para mañana
+    tooltips:
+      schedule: Programar tarea
+  complete:
+    error: Error inesperado al guardar la finalización de la tarea.
+  date_selection:
+    deadline_date_title: Seleccionar fecha límite
+    planned_date_title: Seleccionar fecha planificada
+  delete:
+    error: Error inesperado al eliminar la tarea.
+    message: ¿Estás seguro de que quieres eliminar esta tarea?
+    title: Eliminar tarea
+  details:
+    deadline_date:
+      label: Fecha límite
+    description:
+      hint: Añadir descripción...
+      label: Descripción
+    elapsed_time:
+      label: Tiempo transcurrido
+    estimated_time:
+      label: Tiempo estimado
+    is_completed: Completado
+    planned_date:
+      label: Fecha planificada
+    priority:
+      label: Prioridad
+    sub_tasks:
+      label: Subtareas
+    parent_task:
+      label: Tarea padre
+      tooltip: Hacer clic para navegar a la tarea padre
+    tags:
+      hint: Seleccionar etiquetas para asociar
+      label: Etiquetas
+    tags_hint: Seleccionar etiquetas para la tarea
+    title:
+      label: Título
+    total_elapsed_time: Tiempo total transcurrido
+  errors:
+    add_tag: Error inesperado al añadir la etiqueta
+    adding_tag: No se pudo añadir la etiqueta
+    get_tags: Error al obtener las etiquetas
+    get_task: Error inesperado al cargar la tarea
+    loading_tags: No se pudieron cargar las etiquetas de la tarea
+    loading_task: No se pudo cargar la tarea
+    loading_tasks: No se pudieron cargar las tareas
+    remove_tag: Error inesperado al eliminar la etiqueta
+    removing_tag: No se pudo eliminar la etiqueta
+    same_tag: No se puede añadir la misma etiqueta dos veces
+    save_task: Error inesperado al guardar la tarea
+    saving_task: No se pudo guardar la tarea
+    sort_field_not_supported: Campo de ordenación no soportado
+    task_not_found: Tarea no encontrada
+    task_tag_already_deleted: La etiqueta de tarea ya está eliminada
+    task_tag_already_exists: Esta etiqueta de tarea ya existe
+    task_tag_not_found: Etiqueta de tarea no encontrada
+  filters:
+    completion: Por estado de finalización
+    deadline_date: Por fecha límite
+    planned_date: Por fecha planificada
+    search:
+      placeholder: Buscar tareas
+    tags: Por etiquetas
+    tooltips:
+      filter_by_tags: Filtrar por etiquetas
+  help:
+    details:
+      content: |
+        Domina tu gestión de tareas y maximiza la productividad organizando, priorizando y siguiendo tu trabajo de manera efectiva.
+
+        ## ⚡ ¿Por qué es importante?
+
+        La gestión efectiva de tareas es la base de la productividad. Las tareas bien estructuradas con prioridades claras y fechas límite te ayudan a enfocarte en lo que más importa y previenen que el trabajo importante se escape.
+
+        ## 📝 Organización de tareas
+
+        Estructura tus tareas con detalles comprensivos para mantener claridad y enfoque. Usa etiquetas, prioridades y estimaciones de tiempo para crear un enfoque sistemático a tu carga de trabajo.
+
+        - 🏷️ Categoriza tareas con etiquetas significativas
+        - ⚖️ Establece prioridades usando marcos probados
+        - ⏱️ Estima requerimientos de tiempo con precisión
+        - 📅 Planifica fechas límite y horarios realistas
+
+        ## ⏰ Gestión del tiempo
+
+        Rastrea tus inversiones de tiempo para entender tus patrones de trabajo y mejorar la eficiencia. La gestión apropiada del tiempo transforma esfuerzos dispersos en productividad enfocada.
+
+        - 📊 Monitorea tiempo real vs estimado
+        - 🎯 Enfócate en actividades de alto impacto
+        - 📈 Analiza patrones de productividad a lo largo del tiempo
+        - ⏳ Equilibra tareas urgentes e importantes
+
+        ## 📊 Marco de prioridades (Matriz de Eisenhower)
+
+        Organiza tus tareas usando este método de priorización probado para asegurar que siempre estés trabajando en las cosas correctas en el momento correcto.
+
+        - 🔥 **Urgente e Importante:** Maneja inmediatamente - gestión de crisis y fechas límite
+        - 📈 **Importante, no urgente:** Planifica estratégicamente - planificación y desarrollo de habilidades
+        - ⚡ **Urgente, no importante:** Delega cuando sea posible - interrupciones y algunas reuniones
+        - 🗑️ **Ni urgente ni importante:** Elimina - actividades que pierden tiempo y de bajo valor
+      title: Guía de gestión de tareas y productividad
+    overview:
+      content: |
+        Transforma tu productividad con gestión sistemática de tareas que te ayude a mantenerte organizado, enfocado y en control de tu carga de trabajo.
+
+        ## ⚡ ¿Por qué es importante?
+
+        La gestión efectiva de tareas es la piedra angular del éxito personal y profesional. Al organizar sistemáticamente tu trabajo, reduces el estrés, cumples fechas límite consistentemente y creas espacio para progreso significativo en objetivos importantes.
+
+        ## 📋 Organización de tareas
+
+        Crea un enfoque estructurado para gestionar tus responsabilidades. Las tareas bien organizadas llevan a prioridades claras y ejecución eficiente de tu trabajo diario.
+
+        - ✅ Crea y categoriza tareas sistemáticamente
+        - 🏷️ Agrupa trabajo relacionado con etiquetas significativas
+        - ⚖️ Establece prioridades y fechas límite claras
+        - 🔍 Usa filtros y búsqueda para acceso rápido
+
+        ## ⏱️ Seguimiento de tiempo y enfoque
+
+        Monitorea tus inversiones de tiempo para entender patrones de productividad y optimizar tu flujo de trabajo. La conciencia del tiempo lleva a mejor planificación y rendimiento mejorado.
+
+        - ⏰ Rastrea tiempo real gastado por tarea
+        - 🎯 Usa modo Maratón para sesiones de trabajo enfocadas
+        - 📊 Analiza patrones y tendencias de finalización
+        - 🔄 Revisa y ajusta estimaciones de tiempo regularmente
+
+        ## 📈 Monitoreo de progreso
+
+        Rastrea tus logros y aprende de tus patrones de trabajo. La revisión y reflexión regular impulsan la mejora continua en tu sistema de productividad.
+
+        - 📈 Monitorea tasas de finalización de tareas
+        - 📅 Revisa progreso diario y semanal
+        - 🎯 Identifica cuellos de botella y oportunidades de optimización
+        - 🏆 Celebra logros y finalizaciones de hitos
+      title: Guía de gestión de tareas y flujo de trabajo
+  marathon:
+    details:
+      title: Detalles de la tarea
+    help:
+      content: |
+        Maximiza tu enfoque y productividad con sesiones de trabajo estructuradas que te ayuden a mantener concentración profunda mientras previenen el agotamiento.
+
+        ## ⚡ ¿Por qué es importante?
+
+        Las sesiones de trabajo enfocadas son esenciales para trabajo profundo y resultados de alta calidad. Al trabajar en intervalos estructurados con descansos regulares, mantienes rendimiento mental pico mientras evitas la fatiga que viene de períodos de trabajo extendidos y sin enfoque.
+
+        ## ⏰ Sesiones de enfoque cronometradas
+
+        Usa técnicas de gestión del tiempo probadas para estructurar tu trabajo para máxima eficiencia. Las sesiones estructuradas te ayudan a mantener concentración y completar tareas más efectivamente.
+
+        - 🎯 **Enfoque clásico:** 25 minutos trabajo / 5 minutos descanso
+        - 📈 **Enfoque extendido:** 50 minutos trabajo / 10 minutos descanso
+        - 🔄 **Descanso largo:** 15-30 minutos después de 4 sesiones
+        - ⚖️ **Tiempo personalizado:** Ajusta intervalos para coincidir con tu ritmo natural
+
+        ## 🧠 Beneficios cognitivos
+
+        Las sesiones de trabajo estructuradas aprovechan los ciclos de atención naturales de tu cerebro para optimizar rendimiento y prevenir fatiga mental que reduce calidad y creatividad.
+
+        - 🎯 Enfoque mejorado y concentración profunda
+        - 🔋 Fatiga mental y agotamiento reducidos
+        - 💪 Motivación sostenida a través de logros regulares
+        - ⚡ Conciencia del tiempo y precisión de planificación mejoradas
+
+        ## 📊 Optimización de rendimiento
+
+        Rastrea tus patrones de trabajo enfocado para entender tus tiempos de productividad pico y optimizar tu horario para máxima efectividad.
+
+        - 🏷️ Categoriza sesiones de enfoque con etiquetas para análisis
+        - 📈 Monitorea patrones de productividad en diferentes momentos
+        - 🚫 Elimina distracciones antes de comenzar sesiones
+        - 🚶 Usa descansos para movimiento físico y reinicio mental
+      title: Guía de sesiones de trabajo enfocadas y gestión del tiempo
+      tooltip: Tooltip de ayuda de Maratón
+    label: Modo Maratón
+    unpin_task_tooltip: Desanclar tarea actual
+  new_task: Nueva tarea
+  no_tasks: Sin tareas
+  notifications:
+    deadline_message: "La fecha límite de tu tarea es a las {time}"
+    deadline_title: "Fecha límite de tarea: {title}"
+    planned_message: "Tu tarea está planificada para las {time}"
+    reminder_title: "Recordatorio de tarea: {title}"
+  page:
+    completed_tasks_title: Tareas completadas
+    title: Tareas
+  pomodoro:
+    actions:
+      stop_timer: Detener temporizador
+    notifications:
+      break_completed: ¡Sesión de descanso completada!
+      long_break_completed: ¡Descanso largo completado!
+      time_remaining_prefix: "Tiempo restante:"
+      timer_completed: ¡Temporizador completado!
+      title: Temporizador Pomodoro
+      work_completed: ¡Sesión de trabajo completada!
+    settings:
+      auto_start_break: Iniciar descanso automáticamente después del trabajo
+      auto_start_section: Opciones de inicio automático
+      auto_start_work: Iniciar trabajo automáticamente después del descanso
+      break_duration: Duración del descanso
+      long_break_duration: Duración del descanso largo
+      sessions_before_long_break: Sesiones antes del descanso largo
+      ticking_sound: Habilitar sonido de tic-tac
+      ticking_sound_section: Sonido de tic-tac
+      ticking_speed: Velocidad
+      ticking_volume: Volumen
+      keep_screen_awake_section: Mantener pantalla despierta
+      keep_screen_awake: Mantener pantalla despierta durante sesiones
+      timer_label: Duraciones de sesión
+      title: Configuración del temporizador
+      work_duration: Duración del trabajo
+    system_tray:
+      app_running: App ejecutándose
+      complete_title: Pomodoro completado
+      tap_to_open: Toca para abrir
+      timer_running: Temporizador ejecutándose
+  priorities:
+    not_urgent_important: No urgente pero importante
+    not_urgent_not_important: No urgente o importante
+    urgent_important: Urgente e importante
+    urgent_not_important: Urgente pero no importante
+  priority:
+    selection:
+      title: Seleccionar prioridad
+    tooltips:
+      none: Sin prioridad
+      not_urgent_important: No urgente pero importante
+      not_urgent_not_important: No urgente y no importante
+      urgent_important: Urgente e importante
+      urgent_not_important: Urgente pero no importante
+    types:
+      none: Sin prioridad
+      not_urgent_important: No urgente pero importante
+      not_urgent_not_important: No urgente y no importante
+      urgent_important: Urgente e importante
+      urgent_not_important: Urgente pero no importante
+  quick_task:
+    create_error: Error al crear la tarea
+    lock_description: Bloquea propiedades para retener sus valores al crear múltiples tareas similares. Las propiedades bloqueadas no se limpiarán cuando reinicies el formulario.
+    lock_settings: Configuración de bloqueo
+    reset_all: Reiniciar todos los campos
+    reset_confirm:
+      message: ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción no se puede deshacer.
+      title: Reiniciar todos los campos
+    title: Tarea rápida
+    title_hint: Título de la tarea
+    tooltips:
+      deadline_date: "Fecha límite: {date}"
+      deadline_date_not_set: "Fecha límite: No establecida"
+      estimated_time: "Tiempo estimado: {time}"
+      estimated_time_not_set: "Tiempo estimado: No establecido"
+      planned_date: "Planificado: {date}"
+      planned_date_not_set: "Planificado: No establecido"
+  recurrence:
+    count: Número de ocurrencias
+    custom: Personalizado
+    daily: Diario
+    daySuffix: día(s)
+    endDate: Fecha de fin
+    enterCountHint: Ingresar cantidad
+    interval:
+      label: Repetir cada
+      prefix: cada
+      suffix:
+        days: día(s)
+        months: mes(es)
+        weeks: semana(s)
+        years: año(s)
+    label: Recurrencia
+    monthSuffix: mes(es)
+    monthly: Mensual
+    none: Sin recurrencia
+    range: Rango
+    selectDateHint: Seleccionar fecha
+    startDate: Fecha de inicio
+    summary:
+      endsAfter: termina después de
+      endsOnDate: termina el
+      occurrences: ocurrencias
+      on: el
+      starts: comienza
+    weekDays: Días de la semana
+    weekSuffix: semana(s)
+    weekly: Semanal
+    yearSuffix: año(s)
+    yearly: Anual
+  reminder:
+    atTime: A la hora programada
+    deadlineReminderLabel: Recordatorio de fecha límite
+    fifteenMinutesBefore: 15 minutos antes
+    fiveMinutesBefore: 5 minutos antes
+    none: Sin recordatorio
+    oneDayBefore: 1 día antes
+    oneHourBefore: 1 hora antes
+    plannedReminderLabel: Recordatorio de fecha planificada
+  task_details: Detalles de la tarea
+  title: Tareas
+  tooltips:
+    clear_date: Limpiar fecha
+    decrease_estimated_time: Disminuir tiempo estimado
+    edit_title: Editar título
+    increase_estimated_time: Aumentar tiempo estimado
+    set_reminder: Establecer recordatorio
+    show_completed_tasks: Filtrar tareas completadas

@@ -1,0 +1,51 @@
+calendar:
+  pages:
+    today:
+      help:
+        content: |
+          Optimiza tu productividad diaria con una vista unificada que integra tareas, hábitos y seguimiento de tiempo para ayudarte a mantener el enfoque y lograr tus objetivos eficientemente.
+
+          ## ⚡ ¿Por qué es importante?
+
+          La gestión diaria de productividad es la piedra angular del uso efectivo del tiempo y el logro de objetivos. Al centralizar tus actividades diarias en una vista, eliminas el cambio de contexto, mantienes prioridades claras y creas un enfoque sistemático para lograr tu trabajo más importante.
+
+          ## 🔄 Consistencia de hábitos
+
+          Monitorea y mantén tus rutinas diarias con seguimiento de hábitos optimizado que construye impulso y refuerza patrones de comportamiento positivos a lo largo de tu día.
+
+          - ✅ **Evaluación rápida:** Ve todos los hábitos diarios de un vistazo para evaluación rápida de progreso
+          - ✔️ **Finalización instantánea:** Marca hábitos como completados con interacciones simples que mantienen el flujo
+          - 🔄 **Refuerzo de rutina:** Fortalece patrones diarios a través de seguimiento consistente y reconocimiento
+          - 📈 **Construcción de impulso:** Indicadores de progreso visual que motivan consistencia continua
+
+          ## 📋 Ejecución de tareas
+
+          Enfoca tu gestión de tareas con una vista clara de las prioridades de hoy que te ayuda a ejecutar efectivamente sin perder de vista fechas límite y compromisos.
+
+          - 🗓️ **Claridad de prioridades:** Ve tareas planificadas y vencidas organizadas para ejecución óptima
+          - ➕ **Captura rápida:** Añade nuevas tareas rápidamente sin interrumpir el flujo de trabajo actual
+          - ✔️ **Seguimiento de progreso:** Monitorea estado de finalización para mantener responsabilidad e impulso
+          - 🎯 **Mantenimiento de enfoque:** Vista diaria clara previene abrumarse por obligaciones futuras
+
+          ## ⏰ Análisis de inversión de tiempo
+
+          Entiende cómo pasas tu tiempo a través de análisis categorizado que revela patrones de productividad y ayuda a optimizar tu horario diario para máxima efectividad.
+
+          - 📊 **Insights por categoría:** Analiza distribución de tiempo a través de diferentes etiquetas de actividad y proyectos
+          - 📈 **Reconocimiento de patrones:** Identifica tendencias de productividad y períodos de rendimiento pico
+          - 🕒 **Monitoreo de actividad:** Rastrea tiempo gastado en varias actividades y responsabilidades diarias
+          - 🎯 **Oportunidades de optimización:** Usa datos para tomar decisiones informadas sobre asignación de tiempo
+
+          ## ⚙️ Atajos de productividad
+
+          Aprovecha acciones rápidas y flujos de trabajo eficientes que minimizan la fricción y maximizan tu capacidad de mantener enfoque en actividades de alto valor a lo largo de tu día.
+
+          - ▶️ **Sesiones de enfoque:** Comienza períodos de trabajo concentrado con integración de temporizador modo Maratón
+          - 🔎 **Filtrado inteligente:** Usa filtrado basado en etiquetas para enfocarte en proyectos específicos o áreas de vida
+          - ✅ **Finalización eficiente:** Completa hábitos y tareas con interacciones optimizadas y libres de distracción
+          - 📊 **Insights de rendimiento:** Accede a gráficos de tiempo para retroalimentación inmediata sobre patrones de productividad diarios
+        title: Guía de gestión diaria de productividad
+      title: Hoy
+  sections:
+    habits: Hábitos
+    tasks: Tareas

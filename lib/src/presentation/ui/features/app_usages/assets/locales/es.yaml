@@ -1,0 +1,178 @@
+app_usages:
+  delete:
+    confirm_title: Eliminar uso de app
+    error: Ha ocurrido un error inesperado al eliminar el uso de la app.
+  details:
+    color:
+      hint: Hacer clic para cambiar color
+      label: Color
+    device:
+      label: Dispositivo
+      unknown: Dispositivo desconocido
+    help:
+      content: |
+        Ve exactamente cuánto tiempo pasas en las aplicaciones y mantén el control organizándolas con etiquetas.
+
+        ## ⚡ ¿Por qué es importante?
+
+        La gestión del tiempo es la clave de tu productividad. Rastrear el uso de tus aplicaciones y etiquetarlas con las categorías correctas mejora tu enfoque y ayuda a prevenir pérdidas de tiempo innecesarias.
+
+        ## ⏱️ Seguimiento de tiempo
+
+        Rastrea tus hábitos de uso diarios para analizar tu tiempo con precisión. Con duraciones de uso detalladas en la aplicación y seguimiento de ventanas activas, ve fácilmente cuánta atención das a cada aplicación. Estos datos te guían sobre dónde se necesitan mejoras.
+
+        - ⏳ Revisa duraciones de uso diarias
+        - 🔍 Rastrea ventanas activas
+        - 📊 Entiende tu distribución de tiempo con reportes detallados
+
+        ## 🏷️ Gestión de etiquetas
+
+        Categorizar y organizar tus aplicaciones impulsa la productividad. Con el sistema de etiquetado, puedes agrupar tus aplicaciones y acelerar tu flujo de trabajo usando reglas de automatización. Esto te ayuda a mantener el enfoque y usar tu tiempo más eficientemente.
+
+        - 🏷️ Etiqueta aplicaciones con categorías significativas
+        - ⚙️ Crea reglas de etiquetado automático
+        - 🔄 Ahorra tiempo reduciendo tareas manuales
+
+        ## 📈 Análisis y seguimiento de productividad
+
+        Visualiza tus propios patrones de uso para descubrir tus fortalezas y debilidades. Rastrear tu tiempo productivo es crítico para mejorar el enfoque. Con herramientas de comparación y reporte en la aplicación, puedes ver claramente tu progreso.
+
+        - 📊 Visualiza tus patrones de uso
+        - 🤝 Compara con aplicaciones similares
+        - 🚀 Rastrea tiempo productivo vs improductivo
+      title: Guía de seguimiento de tiempo y productividad
+    tags:
+      hint: Seleccionar etiquetas
+      label: Etiquetas
+  device_filter:
+    clear_all: Limpiar todo
+    search:
+      label: Buscar dispositivos
+  errors:
+    add_tag: Ha ocurrido un error inesperado al añadir la etiqueta
+    app_usage_ignore_rule_not_found: Regla de ignorar no encontrada
+    app_usage_not_found: Uso de app no encontrado
+    app_usage_tag_not_found: Etiqueta de uso de app no encontrada
+    delete: Ha ocurrido un error inesperado al eliminar el uso de la app
+    app_usage_tag_rule_not_found: Regla de etiqueta no encontrada
+    get_tags: Error al obtener las etiquetas de uso de app
+    get_usage: Ha ocurrido un error inesperado al obtener el uso de la app
+    remove_tag: Ha ocurrido un error inesperado al eliminar la etiqueta
+    save_rule: Ha ocurrido un error inesperado al guardar las reglas de ignorar
+    save_usage: Ha ocurrido un error inesperado al guardar el uso de la app
+    statistics: Ha ocurrido un error inesperado al obtener las estadísticas
+    tag_already_exists: Esta etiqueta ya ha sido añadida
+  form:
+    description:
+      hint: Ingresa una descripción para esta regla
+      label: Descripción (Opcional)
+    pattern:
+      help_tooltip: Mostrar ayuda de regex
+      hint: Ingresar patrón regex
+      label: Patrón
+      required: El patrón es requerido
+    save: Guardar
+    saved: Guardado
+  ignore_rules:
+    delete_confirm: '¿Estás seguro de que quieres eliminar la regla de ignorar "{pattern}"?'
+    delete_title: Eliminar regla
+    delete_tooltip: Eliminar regla
+    no_rules: Sin reglas de ignorar
+    pattern_label: Patrón
+  no_usage: Aún no hay uso de apps
+  pages:
+    view:
+      buttons:
+        filter_tags: Filtrar etiquetas
+        filter_devices: Filtrar dispositivos
+        tag_rules: Reglas de etiquetas
+      help:
+        content: |
+          Analiza, organiza y toma control de tu uso de aplicaciones para trabajar más eficientemente. Con herramientas de etiquetado y análisis, ve, gestiona y mejora cómo pasas tu tiempo.
+
+          ## ⏱️ Seguimiento de uso
+
+          Descubre tus hábitos de uso diarios. Rastrea ventanas activas y duraciones para entender a dónde va tu tiempo. Esto te ayuda a identificar áreas de enfoque y reducir pérdida de tiempo.
+
+          - ⌛ Revisa duraciones de uso de aplicaciones
+          - 📅 Analiza patrones diarios
+          - 🖥️ Rastrea historial de ventanas activas
+
+          ## 🏷️ Etiquetado y categorización
+
+          Crea una estructura organizada agrupando aplicaciones. Con el sistema de etiquetado, haz tus datos más significativos y analiza fácilmente cuánto tiempo pasas por categoría.
+
+          - 🏷️ Asigna etiquetas significativas a las aplicaciones
+          - ⚙️ Define reglas de etiquetado automático
+          - 📚 Ve tiempo de uso por categoría
+
+          ## 📊 Análisis de uso
+
+          Analiza qué tan eficientemente usas tu tiempo. A través de comparaciones de aplicaciones y patrones de uso, ve qué herramientas son realmente beneficiosas para ti.
+
+          - 📈 Analiza tus propios patrones de uso
+          - 🔄 Compara diferentes aplicaciones
+          - 🚀 Rastrea tu tiempo productivo e improductivo
+
+          ## ⚙️ Herramientas de gestión
+
+          Usa reglas y opciones de filtrado para controlar mejor los comportamientos de las aplicaciones. Especialmente con automatización, ahorra tiempo valioso.
+
+          - 🛠️ Define nuevas reglas o edita las existentes
+          - 🗑️ Elimina reglas innecesarias
+          - 🔍 Filtra por etiqueta y rango de fechas
+        title: Guía de uso de aplicaciones y gestión del tiempo
+
+      title: Uso de aplicaciones
+  rules:
+    add_new_rule: Añadir nueva regla
+    delete_confirm_message: ¿Estás seguro de que quieres eliminar esta regla?
+    delete_confirm_title: Eliminar regla
+    errors:
+      delete_rule: Ha ocurrido un error inesperado al eliminar la regla
+      get_rules: Ha ocurrido un error inesperado al obtener las reglas
+    existing_rules: Reglas existentes
+    help:
+      content: |
+        Usa reglas para gestionar datos de aplicaciones de manera organizada, consistente y eficiente. Personaliza el seguimiento de aplicaciones con etiquetado automático y opciones de exclusión para fortalecer tu gestión del tiempo.
+
+        ## 🏷️ Reglas de etiquetado automático
+
+        Crea reglas para tus aplicaciones para que el sistema pueda asignar las etiquetas correctas en tu nombre. Esto elimina la necesidad de etiquetado manual.
+
+        - 🧠 Etiqueta automáticamente aplicaciones basándose en sus nombres
+        - 🗂️ Coincide múltiples etiquetas con una sola regla
+        - ⏱️ Rastrea automáticamente tiempo gastado en aplicaciones etiquetadas
+
+        ## ⚙️ Gestión de reglas
+
+        Usa la pantalla flexible de gestión de reglas para construir tu propio sistema. Elimina reglas innecesarias, añade nuevas y actualiza las existentes.
+
+        - ➕ Define nuevas reglas
+        - ✏️ Edita reglas existentes
+        - 🗑️ Elimina reglas que ya no uses
+
+        ## 🚫 Reglas de ignorar
+
+        Excluye aplicaciones del sistema o de fondo que podrían distorsionar tu análisis de productividad. Con estas reglas, puedes enfocarte solo en lo que es verdaderamente importante.
+
+        - 🧹 Excluye aplicaciones específicas del seguimiento
+        - 🖥️ Omite procesos del sistema y herramientas auxiliares
+        - 🔕 Filtra aplicaciones que se ejecutan en segundo plano
+
+        ## 🧩 Opciones de coincidencia avanzadas
+
+        Mejora tus reglas con opciones avanzadas de coincidencia de patrones.
+
+        - ✳️ Crea reglas flexibles usando comodines
+        - 🧾 Coincide nombres exactos de aplicaciones
+        - 🔠 Elige configuraciones de sensibilidad a mayúsculas
+      title: Guía de reglas de etiquetado y exclusión
+    ignore_rules: Reglas de ignorar
+    no_rules: Sin reglas
+    tag_rules: Reglas de etiquetas
+    title: Reglas de uso de aplicaciones
+  tooltips:
+    edit_name: Editar nombre
+  units:
+    minutes: min

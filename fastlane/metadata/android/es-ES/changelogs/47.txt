@@ -1,0 +1,4 @@
+• Mejorar métodos de ventana KDE Wayland
+• Añadir filtrado de dispositivos a características de uso de apps
+• Implementar servicio de directorio de aplicaciones para plataformas
+• Eliminar padding de descripciones

@@ -1,0 +1,66 @@
+error:
+  scan: Fallo al escanear
+sync:
+  devices:
+    errors:
+      loading: No se pudieron cargar los dispositivos de sincronización
+      removing: No se pudo eliminar el dispositivo de sincronización
+      sync_failed: No se pudieron sincronizar los dispositivos
+    from_label: De
+    help:
+      content: |
+        🔄 Sincroniza tus datos de forma segura entre múltiples dispositivos.
+
+        ## 🔗 Conexión por código QR
+        - Emparejamiento fácil de dispositivos
+        - Configuración de conexión segura
+        - Inicio rápido de sincronización
+
+        ## 📱 Gestión de dispositivos
+        - Ver dispositivos conectados
+        - Monitorear estado de sincronización
+        - Eliminar dispositivos antiguos
+
+        ## 💡 Consejos
+        - Mantén los dispositivos en la misma red
+        - Sincroniza regularmente para mejores resultados
+        - Elimina conexiones de dispositivos no utilizados
+        - Verifica fechas de última sincronización
+        - Usa códigos QR para configuración rápida
+        - Espera a que complete la sincronización
+      title: Ayuda de sincronización de dispositivos
+    last_sync_label: Última sincronización
+    no_devices_found: Sin dispositivos sincronizados
+    sync_tooltip: Sincronizar ahora
+    title: Sincronizar dispositivos
+    to_label: A
+    unnamed_device: Dispositivo sin nombre
+  error:
+    scan: Fallo al escanear
+  errors:
+    connection_failed: |
+      Conexión fallida. Por favor asegúrate de que:
+
+      1. Ambos dispositivos están en la misma red
+      2. Ambas aplicaciones están abiertas y ejecutándose
+      3. Ningún firewall está bloqueando la conexión
+    device_mismatch: Error de sincronización. El dispositivo que intenta sincronizar no está emparejado correctamente con este dispositivo.
+    device_not_found: Dispositivo de sincronización no encontrado
+    ip_address: No se pudo obtener la dirección IP local
+    parse_message: No se pudo analizar el mensaje escaneado
+    process_failed: Proceso de sincronización fallido.
+    save_device: No se pudo guardar el dispositivo de sincronización
+    scan: No se pudo escanear el código QR
+    sync_failed: Sincronización fallida. Por favor inténtalo de nuevo.
+    sync_timeout: Tiempo de espera de sincronización agotado
+    version_mismatch: "Incompatibilidad de versión. Versión local: {currentVersion}, Versión remota: {remoteVersion}. Por favor actualiza ambas aplicaciones a la misma versión."
+  messages:
+    device_already_paired: Este dispositivo ya está emparejado
+    sync_completed: Sincronización completada exitosamente
+    sync_in_progress: Sincronización en progreso...
+    testing_connection: Probando conexión...
+  qr_code:
+    close_button: Cerrar
+    dialog_title: Escanear código QR para sincronizar
+  scanner:
+    title: Escanear código QR

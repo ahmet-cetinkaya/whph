@@ -1,0 +1,95 @@
+notes:
+  help:
+    content: |
+      Construye un sistema integral de gestión del conocimiento que capture tus ideas, organice la información de manera eficiente y haga que los insights importantes sean fácilmente accesibles cuando los necesites.
+
+      ## ⚡ ¿Por qué es importante?
+
+      La toma de notas efectiva y la gestión del conocimiento son esenciales para la productividad y el aprendizaje. Un sistema de notas bien organizado previene que se pierdan insights valiosos, acelera la toma de decisiones y crea una memoria externa confiable que se vuelve más valiosa con el tiempo.
+
+      ## ✍️ Captura de información sin esfuerzo
+
+      Crea un flujo de trabajo fluido para capturar y procesar información que asegure que nada importante se escape mientras mantienes el enfoque en tu trabajo actual.
+
+      - 📝 Captura ideas rápidamente sin interrumpir tu flujo
+      - ✏️ Edita y refina la información a medida que se desarrolla la comprensión
+      - 🗑️ Elimina sistemáticamente información obsoleta o irrelevante
+      - 📌 Mantén la información crítica fácilmente accesible y organizada
+
+      ## 🗂️ Organización estratégica
+
+      Desarrolla un sistema organizacional que escale con tu base de conocimiento y haga que la recuperación de información sea rápida y confiable, independientemente del volumen.
+
+      - 🏷️ Aplica estrategias de etiquetado consistentes para categorización rápida
+      - 🔍 Usa capacidades de búsqueda poderosas para encontrar información al instante
+      - 📚 Agrupa notas relacionadas para crear áreas de conocimiento comprensivas
+      - 🎯 Mantén el enfoque a través de una arquitectura de información organizada
+
+      ## 📄 Creación de contenido profesional
+
+      Aprovecha herramientas de formato avanzadas para crear contenido claro y bien estructurado que comunique efectivamente y resista la prueba del tiempo.
+
+      - 🎨 **Formato enriquecido:** Usa Markdown para estructura de documento profesional
+      - 📋 **Estructura clara:** Organiza el contenido con encabezados, listas y énfasis
+      - 🔗 **Conocimiento conectado:** Vincula conceptos e información relacionada
+      - 📖 **Salida legible:** Formatea el contenido para fácil comprensión y compartición
+
+      ## 🚀 Beneficios de productividad
+
+      Transforma tu práctica de toma de notas en un multiplicador de productividad que mejore tu pensamiento, acelere el aprendizaje y mejore la calidad de toma de decisiones.
+
+      - 🧠 **Pensamiento mejorado:** La memoria externa libera capacidad mental para trabajo creativo
+      - ⚡ **Acceso más rápido:** La información organizada reduce el tiempo gastado buscando
+      - 🌐 **Disponibilidad universal:** Accede a tu base de conocimiento desde cualquier dispositivo
+      - 📈 **Mejora continua:** El contenido refinado se vuelve más valioso con el tiempo
+    title: Guía de gestión del conocimiento y organización de notas
+  actions:
+    add: Añadir nota
+    delete: Eliminar nota
+    edit: Editar nota
+    save: Guardar nota
+  components:
+    note_details_content:
+      add_tag_button: Añadir etiqueta
+      content_placeholder: Escribe el contenido de la nota aquí...
+      save_button: Guardar
+      saved_message: Nota guardada exitosamente
+      title_placeholder: Título de la nota
+      update_button: Actualizar
+    notes_list:
+      empty_message: No se encontraron notas
+      loading: Cargando notas...
+  delete:
+    confirm_message: ¿Estás seguro de que quieres eliminar esta nota?
+    confirm_title: Eliminar nota
+  details:
+    content: Contenido
+    tags:
+      hint: Seleccionar etiquetas para la nota
+      label: Etiquetas
+    title: Título
+  errors:
+    adding_tag: No se pudo añadir la etiqueta
+    deleting: Error inesperado al eliminar la nota
+    getting_notes: Error al obtener las notas
+    loading_details: No se pudieron cargar los detalles de la nota
+    loading_tags: No se pudieron cargar las etiquetas de la nota
+    note_not_found: Nota no encontrada
+    note_tag_not_found: Etiqueta de nota no encontrada
+    removing_tag: No se pudo eliminar la etiqueta
+    saving_note: No se pudo guardar la nota
+    tag_already_exists: Esta etiqueta ya ha sido añadida
+  filters:
+    search:
+      placeholder: Buscar notas...
+    tooltips:
+      filter_by_tags: Filtrar por etiquetas
+  new_note: Nueva nota
+  no_notes: Sin notas
+  note_details: Detalles de la nota
+  notes: Notas
+  title: Notas
+  tooltips:
+    add_note: Añadir nota
+    delete_note: Eliminar nota
+    edit_name: Editar título

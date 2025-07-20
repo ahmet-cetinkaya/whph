@@ -1,0 +1,49 @@
+about:
+  about_title: "Acerca de"
+  version: "Versión {version}"
+  description: >
+    {appName} es una aplicación integral diseñada para mejorar tu productividad personal; te permite gestionar eficazmente tus tareas, desarrollar nuevos hábitos y aprovechar al máximo tu tiempo. Además, fortalece tu enfoque rastreando cuánto tiempo pasas en diferentes aplicaciones. Al analizar tu progreso, puedes celebrar tus logros y obtener la motivación necesaria para una vida más productiva.
+  links:
+    website: Sitio web
+    source_code: Código fuente
+    feedback: Comentarios
+    contact: Contacto
+    check_update: Buscar actualizaciones
+  support_me:
+    title: "Apoyar {appName}"
+    description: >
+      {appName} es un software completamente gratuito y de código abierto. Todos son libres de usarlo, explorarlo, mejorarlo y compartirlo.
+
+
+      Mientras continúas disfrutando usándolo, sigo trabajando para hacerlo aún mejor. Si te gustaría apoyar la continuación de este esfuerzo, puedes comprarme un café; tu apoyo contribuirá directamente al desarrollo y sostenibilidad de {appName}. 😊
+    button_text: Cómprame un café
+  onboarding:
+    step1:
+      title: "Bienvenido a {appName}"
+      description: "Tu compañero personal para construir mejores hábitos, gestionar tareas y rastrear tiempo efectivamente. ¡Exploremos juntos las características clave!"
+    step2:
+      title: "Gestión de tareas"
+      description: "Crea y organiza tareas con prioridades, fechas límite y recordatorios. Usa el temporizador Pomodoro para mantenerte enfocado y rastrea tu progreso en tareas importantes."
+    step3:
+      title: "Construcción de hábitos"
+      description: "Construye hábitos duraderos rastreando actividades diarias. Establece recordatorios, monitorea tus rachas y visualiza tu progreso con estadísticas detalladas."
+    step4:
+      title: "Toma de notas"
+      description: "Mantén información importante organizada con un sistema poderoso de toma de notas. Etiqueta tus notas para categorización fácil y acceso rápido."
+    step5:
+      title: "Uso de apps e insights de tiempo"
+      description: "Monitorea patrones de uso de aplicaciones y analiza tiempo gastado en diferentes actividades. Obtén insights sobre tus hábitos digitales y optimiza tu productividad."
+    step6:
+      title: "Sistema de etiquetado inteligente"
+      description: "Usa etiquetas para organizar y agrupar tus tareas, hábitos y aplicaciones. Rastrea tiempo gastado en diferentes actividades por etiquetas para entender a dónde va tu tiempo y optimizar tu flujo de trabajo."
+    step7:
+      title: "Permisos de aplicación"
+      description: "{appName} necesita ciertos permisos para funcionar correctamente. Puedes revisar los permisos que te gustaría otorgar para características del sistema como notificaciones y rastreo de aplicaciones."
+      review_permissions: "Revisar permisos"
+    step8:
+      title: "¿Listo para transformar tu vida?"
+      description: "Tienes todas las herramientas que necesitas para construir mejores hábitos, mantenerte enfocado y lograr tus objetivos. ¡Comienza tu viaje hacia una vida más productiva y satisfactoria hoy!"
+    buttons:
+      next: "Siguiente"
+      back: "Atrás"
+      start: "Comenzar"

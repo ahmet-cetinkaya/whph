@@ -1,0 +1,4 @@
+• Implementar seguimiento preciso de uso de apps en primer plano para Android
+• Actualizar recursos de logo para optimización mejorada
+• Actualizar densidad visual de IconButton
+• Añadir retroalimentación de sonido en creación de registros
