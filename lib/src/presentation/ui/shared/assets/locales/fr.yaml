@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Incompatibilité de version
+shared:
+  buttons:
+    add: Ajouter
+    back: Retour
+    cancel: Annuler
+    close: Fermer
+    confirm: Confirmer
+    delete: Supprimer
+    done: Terminé
+    load_more: Charger plus
+    save: Enregistrer
+    saved: Enregistré
+  calendar:
+    months:
+      apr: Avril
+      apr_short: Avr
+      aug: Août
+      aug_short: Aoû
+      dec: Décembre
+      dec_short: Déc
+      feb: Février
+      feb_short: Fév
+      jan: Janvier
+      jan_short: Jan
+      jul: Juillet
+      jul_short: Jul
+      jun: Juin
+      jun_short: Jun
+      mar: Mars
+      mar_short: Mar
+      may: Mai
+      may_short: Mai
+      nov: Novembre
+      nov_short: Nov
+      oct: Octobre
+      oct_short: Oct
+      sep: Septembre
+      sep_short: Sep
+    week_days:
+      friday: Vendredi
+      friday_short: Ven
+      monday: Lundi
+      monday_short: Lun
+      saturday: Samedi
+      saturday_short: Sam
+      sunday: Dimanche
+      sunday_short: Dim
+      thursday: Jeudi
+      thursday_short: Jeu
+      tuesday: Mardi
+      tuesday_short: Mar
+      wednesday: Mercredi
+      wednesday_short: Mer
+  change: Modifier
+  color_picker:
+    confirm_selection: Confirmer la sélection
+    select_color_title: Sélectionner une couleur
+    tabs:
+      custom: Personnalisé
+      palette: Couleurs
+    title: Sélecteur de couleur
+  data:
+    created_date_label: Date de création
+    modified_date_label: Date de modification
+    name_label: Nom
+  date_filter:
+    title: Sélectionner une plage de dates
+    tooltips:
+      clear: Effacer le filtre de date
+      filter: Filtrer par date
+  date_format:
+    hint: JJ/MM/AAAA
+  days:
+    friday: Vendredi
+    friday_short: Ven
+    monday: Lundi
+    monday_short: Lun
+    saturday: Samedi
+    saturday_short: Sam
+    sunday: Dimanche
+    sunday_short: Dim
+    thursday: Jeudi
+    thursday_short: Jeu
+    tuesday: Mardi
+    tuesday_short: Mar
+    wednesday: Mercredi
+    wednesday_short: Mer
+  editor:
+    markdown:
+      hint: Vous pouvez écrire en format Markdown...
+      tooltips:
+        bold: Gras
+        italic: Italique
+        strikethrough: Barré
+        code: Code
+        link: Lien
+        quote: Citation
+        bulleted_list: Liste à puces
+        numbered_list: Liste numérotée
+        horizontal_rule: Ligne horizontale
+        edit: Modifier
+        preview: Aperçu
+  errors:
+    deleting: Erreur lors de la suppression des données
+    file_not_found: Fichier non trouvé
+    file_pick: Erreur lors de la sélection du fichier
+    file_read: Erreur lors de la lecture du fichier
+    file_save: Erreur lors de l'enregistrement du fichier
+    file_write: Erreur lors de l'écriture du fichier
+    loading: Erreur lors du chargement des données
+    report_subject: "App {appName} : Rapport d'erreur inattendue"
+    report_template: |
+      Bonjour, j'ai rencontré une erreur inattendue en utilisant l'application {appName}.
+
+      Voici les informations qui pourraient vous aider à diagnostiquer le problème :
+      Version de l'app : {version}
+      Informations sur l'appareil : {device}
+      Système d'exploitation : {os}
+      Version de l'OS : {osVersion}
+      Message d'erreur :
+      ```
+      {error}
+      Trace de pile :
+      {stackTrace}
+      ```
+
+      Veuillez m'aider à résoudre ce problème.
+
+      Merci !
+    saving: Erreur lors de l'enregistrement des données
+    storage_permission: Permission de stockage requise
+    storage_permission_denied: Permission de stockage refusée
+    unexpected: Une erreur inattendue s'est produite
+  filters:
+    search: Rechercher
+  help:
+    tooltip: Aide
+  messages:
+    confirm_delete: Êtes-vous sûr de vouloir supprimer cet élément ?
+    no_items_found: Aucun élément
+  nav:
+    items:
+      app_usages: Utilisation des apps
+      habits: Habitudes
+      more: Plus
+      notes: Notes
+      settings: Paramètres
+      tags: Tags
+      tasks: Tâches
+      today: Aujourd'hui
+  none_option: "Aucun tag"
+  regex_help:
+    examples:
+      chat: 'Correspond à "Slack" ou "Discord"'
+      chrome: 'Correspond à tout titre de fenêtre contenant "Chrome"'
+      exact_chrome: 'Correspond exactement à "Chrome"'
+      pdf: Correspond à tout fichier PDF
+      vscode: Correspond à toute fenêtre VS Code
+    tips:
+      any_chars: 'Utilisez ".*" pour correspondre à n''importe quels caractères'
+      dot: '"\\." correspond à un point'
+      end: '"$" correspond à la fin du texte'
+      or: '"|" signifie OU'
+      start: '"^" correspond au début du texte'
+    tips_title: 💡 Conseils
+    title: Exemples de motifs
+  report_error: Signaler une erreur
+  save_list_options: Enregistrer les options de liste
+  search:
+    placeholder: Rechercher
+    tooltip: Rechercher des éléments
+  sections:
+    habits: Habitudes
+    special_filters: Filtres spéciaux
+    statistics: Statistiques
+    tags: Tags
+    tasks: Tâches
+    time: Temps
+  sort:
+    ascending: Croissant
+    custom_order:
+      description: Activer le glisser-déposer pour réorganiser les éléments
+      title: Tri personnalisé
+    descending: Décroissant
+    remove_criteria: Supprimer le critère
+    reset_to_default: Remettre par défaut
+    sort: Trier
+  statistics:
+    daily_usage:
+      description: Affiche le temps d'utilisation total par jour de la semaine
+      title: Utilisation quotidienne
+    hourly_usage:
+      description: Affiche le temps d'utilisation total par heure de la journée
+      title: Utilisation horaire
+  time:
+    not_set: "Non défini"
+  time_periods:
+    custom: Personnalisé
+    last_month: Mois dernier
+    last_three_months: 3 derniers mois
+    last_week: Semaine dernière
+    this_month: Ce mois
+    this_three_months: Ces 3 mois
+    this_week: Cette semaine
+    today: Aujourd'hui
+  tooltips:
+    compare_with_previous: Comparer avec la période précédente
+    filter_by_tags: Filtrer par tags
+    refresh: Actualiser
+  ui:
+    report_error: Signaler
+  units:
+    days: jours
+    hours: h
+    minutes: min
+    minutes_short: m
+    seconds: sec
+  update_dialog:
+    buttons:
+      download_page: Page de téléchargement
+      later: Plus tard
+      update_now: Mettre à jour maintenant
+    downloading: Téléchargement de la mise à jour...
+    failed: Échec de la mise à jour.
+    message: Une nouvelle version ({version}) est disponible.
+    question: Voulez-vous mettre à jour maintenant ?
+    success: Mise à jour téléchargée avec succès !
+    title: Mise à jour disponible !
+  validation:
+    required: "{field} est requis"

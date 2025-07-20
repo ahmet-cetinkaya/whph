@@ -1,0 +1,49 @@
+about:
+  about_title: "À propos"
+  version: "Version {version}"
+  description: >
+    {appName} est une application complète conçue pour améliorer votre productivité personnelle ; elle vous permet de gérer efficacement vos tâches, développer de nouvelles habitudes et tirer le meilleur parti de votre temps. De plus, elle renforce votre concentration en suivant combien de temps vous passez sur différentes applications. En analysant vos progrès, vous pouvez célébrer vos réussites et obtenir la motivation nécessaire pour une vie plus productive.
+  links:
+    website: Site web
+    source_code: Code source
+    feedback: Commentaires
+    contact: Contact
+    check_update: Vérifier les mises à jour
+  support_me:
+    title: "Soutenir {appName}"
+    description: >
+      {appName} est un logiciel complètement gratuit et open source. Tout le monde est libre de l'utiliser, l'explorer, l'améliorer et le partager.
+
+
+      Pendant que vous continuez à l'utiliser avec plaisir, je continue à travailler pour le rendre encore meilleur. Si vous souhaitez soutenir la continuation de cet effort, vous pouvez m'offrir un café ; votre soutien contribuera directement au développement et à la durabilité de {appName}. 😊
+    button_text: Offrez-moi un café
+  onboarding:
+    step1:
+      title: "Bienvenue dans {appName}"
+      description: "Votre compagnon personnel pour construire de meilleures habitudes, gérer les tâches et suivre le temps efficacement. Explorons ensemble les fonctionnalités clés !"
+    step2:
+      title: "Gestion des tâches"
+      description: "Créez et organisez des tâches avec des priorités, échéances et rappels. Utilisez le minuteur Pomodoro pour rester concentré et suivre vos progrès sur les tâches importantes."
+    step3:
+      title: "Construction d'habitudes"
+      description: "Construisez des habitudes durables en suivant les activités quotidiennes. Définissez des rappels, surveillez vos séries et visualisez vos progrès avec des statistiques détaillées."
+    step4:
+      title: "Prise de notes"
+      description: "Gardez les informations importantes organisées avec un système de prise de notes puissant. Marquez vos notes pour une catégorisation facile et un accès rapide."
+    step5:
+      title: "Utilisation d'apps et insights temps"
+      description: "Surveillez les modèles d'utilisation des applications et analysez le temps passé sur différentes activités. Obtenez des insights sur vos habitudes numériques et optimisez votre productivité."
+    step6:
+      title: "Système de marquage intelligent"
+      description: "Utilisez des tags pour organiser et grouper vos tâches, habitudes et applications. Suivez le temps passé sur différentes activités par tags pour comprendre où va votre temps et optimiser votre flux de travail."
+    step7:
+      title: "Permissions d'application"
+      description: "{appName} a besoin de certaines permissions pour fonctionner correctement. Vous pouvez examiner les permissions que vous souhaitez accorder pour les fonctionnalités système comme les notifications et le suivi d'applications."
+      review_permissions: "Examiner les permissions"
+    step8:
+      title: "Prêt à transformer votre vie ?"
+      description: "Vous avez tous les outils dont vous avez besoin pour construire de meilleures habitudes, rester concentré et atteindre vos objectifs. Commencez votre voyage vers une vie plus productive et épanouissante dès aujourd'hui !"
+    buttons:
+      next: "Suivant"
+      back: "Retour"
+      start: "Commencer"

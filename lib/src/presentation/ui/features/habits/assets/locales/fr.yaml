@@ -1,0 +1,209 @@
+habits:
+  archive:
+    archive: Archiver
+    archive_confirm: Êtes-vous sûr de vouloir archiver cette habitude ?
+    archive_tooltip: Archiver cette habitude
+    archived_date: Date d'archivage
+    hide_archived: Masquer les archivées
+    show_archived: Afficher les archivées
+    unarchive: Désarchiver
+    unarchive_confirm: Êtes-vous sûr de vouloir désarchiver cette habitude ?
+    unarchive_tooltip: Désarchiver cette habitude
+
+  calendar:
+    week_days:
+      fri: Ven
+      mon: Lun
+      sat: Sam
+      sun: Dim
+      thu: Jeu
+      tue: Mar
+      wed: Mer
+  delete:
+    confirm_message: Êtes-vous sûr de vouloir supprimer cette habitude ?
+    confirm_title: Supprimer l'habitude
+  details:
+    archived_status: Archivé
+    create_record_tooltip: Marquer comme terminé aujourd'hui
+    description: Description
+    estimated_time: Temps estimé
+    estimated_time_not_set: Non défini
+    help:
+      content: |
+        Construisez des routines quotidiennes durables grâce au suivi systématique des habitudes qui transforme vos intentions en actions cohérentes et en progrès mesurable vers vos objectifs.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        La formation d'habitudes est la pierre angulaire du développement personnel et de la réussite durable. Des actions quotidiennes cohérentes se composent au fil du temps pour créer des résultats remarquables, tandis que le suivi systématique garantit que vous maintenez l'élan et apportez des améliorations continues à vos routines.
+
+        ## ⚙️ Conception stratégique des habitudes
+
+        Créez des habitudes qui s'intègrent parfaitement dans votre vie et soutiennent vos objectifs à long terme. Les habitudes bien conçues deviennent des comportements automatiques qui nécessitent une volonté minimale pour être maintenues.
+
+        - 📝 Concevez des habitudes claires et spécifiques avec des descriptions exploitables
+        - 📅 Établissez des horaires cohérents qui s'alignent sur vos rythmes naturels
+        - 🏷️ Organisez des habitudes similaires en groupes cohérents pour un suivi systématique
+        - 🎯 Connectez chaque habitude à des résultats significatifs et des valeurs personnelles
+
+        ## ⏱️ Surveillance des performances
+
+        Suivez l'exécution de vos habitudes pour comprendre les modèles, mesurer les progrès et optimiser votre approche pour une efficacité maximale et une croissance durable.
+
+        - ⏳ Enregistrez les temps d'achèvement pour comprendre la durée et l'efficacité des habitudes
+        - 📊 Analysez les investissements en temps à travers les catégories d'habitudes pour un développement équilibré
+        - 📈 Surveillez les tendances de performance pour identifier les opportunités d'amélioration et le timing optimal
+        - 🔄 Utilisez les insights de données pour affiner la difficulté et la planification des habitudes pour un succès durable
+
+        ## 📅 Cohérence et élan
+
+        Construisez et maintenez la cohérence nécessaire pour un changement comportemental durable grâce au suivi systématique et à la révision stratégique de vos modèles de progrès.
+
+        - 📚 Révisez l'historique d'achèvement pour évaluer les progrès et identifier les modèles de succès
+        - 🔗 Suivez les séries quotidiennes pour construire et maintenir l'élan pour un succès à long terme
+        - 📌 Surveillez les métriques de cohérence pour améliorer la motivation et l'engagement
+        - 🎯 Célébrez les étapes importantes et les réalisations pour renforcer le changement comportemental positif
+
+        ## 🚀 Stratégies d'optimisation
+
+        Appliquez des techniques éprouvées pour l'optimisation des habitudes qui accélèrent les progrès et garantissent que vos efforts se traduisent par des améliorations significatives et durables dans votre vie et votre productivité.
+
+        - 🐾 **Commencer petit :** Commencez par des habitudes gérables qui garantissent des victoires précoces
+        - 🏷️ **Regroupement stratégique :** Organisez les habitudes par domaine de vie ou moment de la journée
+        - 📊 **Ajustements basés sur les données :** Utilisez les insights de suivi pour optimiser le timing et l'approche
+        - 🌅 **Focus sur les heures de pointe :** Planifiez les habitudes importantes pendant vos périodes d'énergie maximale
+      description: Description de l'aide
+      title: Guide de formation d'habitudes et de suivi des performances
+    records: Enregistrements
+    remove_record_tooltip: Supprimer l'achèvement d'aujourd'hui
+    statistics:
+      archived_note: "Archivé le :"
+      archived_on: Archivé le
+      archived_warning: "Les statistiques sont affichées jusqu'à la date d'archivage. {startDate} - {archivedDate}"
+      from: De
+      monthly: Mensuel
+      overall: Global
+      records: Enregistrements
+      score_trends: Tendances des scores
+      to: À
+      top_streaks: Meilleures séries
+      no_streaks_yet: Pas encore de séries. Commencez à construire la cohérence !
+      completions: achèvements
+      yearly: Annuel
+    statistics_label: Statistiques
+    tags: Tags
+    tags_hint: Sélectionner des tags à associer
+  errors:
+    adding_tag: Impossible d'ajouter le tag
+    creating_record: Impossible de créer l'enregistrement d'habitude
+    deleting: Erreur inattendue lors de la suppression de l'habitude
+    deleting_record: Impossible de supprimer l'enregistrement d'habitude
+    habit_not_found: Habitude non trouvée
+    habit_record_not_found: Enregistrement d'habitude non trouvé
+    habit_tag_not_found: Tag d'habitude non trouvé
+    loading_archive_status: Impossible de charger le statut d'archivage
+    loading_details: Impossible de charger les détails de l'habitude
+    loading_habit: Impossible de charger l'habitude
+    loading_habits: Impossible de charger les habitudes
+    loading_records: Impossible de charger les enregistrements d'habitude
+    loading_tags: Impossible de charger les tags d'habitude
+    removing_tag: Impossible de supprimer le tag
+    saving_details: Impossible d'enregistrer l'habitude
+    saving_habit: Impossible d'enregistrer l'habitude
+    tag_already_exists: Ce tag a déjà été ajouté
+    toggling_archive: Impossible de basculer le statut d'archivage
+  goals:
+    current_goal: Objectif
+    days_unit: jours
+    description: Voulez-vous pratiquer l'habitude avec une fréquence spécifique plutôt que tous les jours ? Alors définissez un objectif personnalisé.
+    enable: Activer les objectifs personnalisés
+    goal: Objectif personnalisé
+    goal_format: "{count} fois en {dayCount} jours"
+    period_days: Jours de période
+    settings: Paramètres d'objectif personnalisé
+    target_frequency: Fréquence cible
+    times_unit: fois
+  help:
+    description: Description de l'aide
+  list:
+    all_habits_done: Toutes les habitudes terminées !
+    no_habits_found: Aucune habitude
+  new_habit: Nouvelle habitude
+  notifications:
+    reminder_message: "N'oubliez pas de terminer votre habitude : {name}"
+    reminder_title: "Rappel d'habitude : {name}"
+  overview:
+    filter_by_tags_tooltip: Filtrer par tags
+    help:
+      content: |
+        Maîtrisez vos routines quotidiennes grâce au suivi systématique des habitudes qui construit la cohérence, crée un élan positif et favorise des progrès significatifs vers vos objectifs à long terme.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        La gestion quotidienne des habitudes est le fondement de l'excellence personnelle et de la croissance durable. L'exécution cohérente d'habitudes bien planifiées crée des avantages composés au fil du temps, tandis que le suivi systématique garantit que vous maintenez la responsabilité et apportez des améliorations basées sur les données à vos routines.
+
+        ## 📅 Exécution et suivi quotidiens
+
+        Développez un système fiable pour exécuter et surveiller vos habitudes qui crée la cohérence et construit un élan imparable vers vos objectifs.
+
+        - ✅ **Achèvement quotidien :** Marquez les habitudes comme terminées pour construire des chaînes de cohérence
+        - 📆 **Vue multi-jours :** Surveillez les modèles sur les jours et semaines pour des insights complets
+        - 🔄 **Construction de séries :** Maintenez des jours d'achèvement consécutifs pour maximiser l'élan motivationnel
+        - 📊 **Visualisation des progrès :** Suivez les taux d'achèvement et les modèles au fil du temps
+
+        ## ⏱️ Analyse du temps et optimisation
+
+        Surveillez les investissements en temps dans vos habitudes pour optimiser votre horaire quotidien et assurer un développement équilibré dans tous les domaines de vie importants.
+
+        - ⏳ **Suivi de la durée :** Enregistrez le temps réel passé pour comprendre les exigences des habitudes
+        - 🏷️ **Analyse par catégorie :** Groupez les habitudes par tags pour voir l'allocation de temps à travers les domaines de vie
+        - ⏰ **Optimisation de l'horaire :** Équilibrez le timing des habitudes pour une exécution quotidienne durable
+        - 📈 **Amélioration de l'efficacité :** Identifiez les opportunités pour rationaliser l'exécution des habitudes
+
+        ## 🗂️ Organisation stratégique
+
+        Créez un système d'organisation qui soutient l'exécution cohérente tout en offrant la flexibilité de s'adapter à mesure que vos objectifs et circonstances évoluent.
+
+        - 🏷️ **Catégorisation significative :** Groupez les habitudes par domaine de vie, temps ou niveau de priorité
+        - ⚙️ **Planification flexible :** Concevez le timing des habitudes qui fonctionne avec votre style de vie et vos modèles d'énergie
+        - 🎯 **Focus sur les priorités :** Assurez-vous que vos habitudes les plus importantes reçoivent une attention et une énergie appropriées
+
+        ## 💡 Principes de maîtrise
+
+        Appliquez des stratégies éprouvées pour la maîtrise des habitudes qui garantissent que vos efforts se composent en changement comportemental durable et améliorations de vie mesurables.
+
+        - 🐾 **Commencer petit :** Commencez par des habitudes que vous pouvez exécuter de manière cohérente, puis augmentez progressivement la difficulté
+        - 🏷️ **Regroupement stratégique :** Organisez les habitudes pour créer des séquences logiques et des systèmes de soutien
+        - 📊 **Révision des performances :** Utilisez les données de suivi du temps pour comprendre les modèles et optimiser votre approche
+        - 🌅 **Exécution aux heures de pointe :** Planifiez vos habitudes les plus importantes pendant les périodes d'énergie maximale
+
+        ### 📊 Utilisation de la vue calendrier
+        - 📅 Affichez plusieurs jours simultanément dans la vue calendrier.
+        - ✅ Suivez visuellement vos modèles d'achèvement.
+        - ⚡ Gagnez du temps avec un marquage d'achèvement rapide.
+        - 🎯 Augmentez la motivation avec le suivi visuel des séries.
+        - 🔄 Explorez les habitudes passées et futures avec une navigation de date flexible.
+      title: Guide de gestion quotidienne des habitudes et d'optimisation des routines
+    title: Habitudes
+  reminder:
+    enableReminders: Activer les rappels
+    everyDay: Tous les jours
+    noReminder: Aucun rappel défini
+    reminderDays: Jours de rappel
+    reminderSettings: Paramètres de rappel
+    reminderTime: Heure de rappel
+    selectDaysWarning: Veuillez sélectionner au moins un jour pour les rappels
+  reminders:
+    enable: Activer les rappels
+    select_days_warning: Veuillez sélectionner au moins un jour pour les rappels
+  statistics:
+    archived_on: Archivé le
+    from: De
+    to: À
+  tags:
+    add_tooltip: Ajouter un tag
+    select_tooltip: Sélectionner un tag
+  tooltips:
+    add_habit: Ajouter une habitude
+    decrease_estimated_time: Diminuer le temps estimé
+    edit_name: Modifier le nom
+    increase_estimated_time: Augmenter le temps estimé

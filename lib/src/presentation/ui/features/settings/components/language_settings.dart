@@ -101,6 +101,21 @@ class _LanguageDialog extends StatelessWidget {
                 Navigator.of(context).pushReplacementNamed(SettingsPage.route);
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: const Text(
+                'Français',
+                style: AppTheme.bodyMedium,
+              ),
+              trailing: _translationService.getCurrentLanguage(context) == 'fr'
+                  ? const Icon(Icons.check, color: Colors.green)
+                  : null,
+              onTap: () {
+                _translationService.changeLanguage(context, 'fr');
+                Navigator.pop(context);
+                Navigator.of(context).pushReplacementNamed(SettingsPage.route);
+              },
+            ),
           ],
         ),
       ),

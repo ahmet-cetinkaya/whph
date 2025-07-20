@@ -1,0 +1,140 @@
+tags:
+  actions:
+    add: Ajouter un tag
+    archive: Archiver le tag
+    delete: Supprimer le tag
+    edit: Modifier le tag
+    hide_archived: Masquer les tags archivés
+    show_archived: Afficher les tags archivés
+    unarchive: Désarchiver le tag
+  categories:
+    all: Tous
+    app_usage: Utilisation d'apps
+    habits: Habitudes
+    tasks: Tâches
+  default_name: Nouveau tag
+  details:
+    archived: Archivé
+    color: Couleur
+    help:
+      description: Description de l'aide des détails
+      title: Titre de l'aide des détails
+    name: Nom
+    related_tags: Tags liés
+    select_tag: Sélectionner un tag
+    tasks_label: Tâches
+  errors:
+    creating: Impossible de créer le tag
+    deleting: Impossible de supprimer le tag
+    get_tags: Erreur lors de la récupération des tags
+    loading: Impossible de charger les tags
+    loading_archive_status: Impossible de charger le statut d'archivage
+    same_tag: Les tags primaire et secondaire ne peuvent pas être identiques
+    saving: Impossible d'enregistrer le tag
+    tag_not_found: Tag non trouvé
+    tag_tag_already_exists: Cette relation de tag existe déjà
+    tag_tag_not_found: Relation de tag non trouvée
+    toggling_archive: Impossible de basculer le statut d'archivage
+  filter:
+    all_categories: Toutes les catégories
+    select_category: Sélectionner une catégorie
+  filter_tooltip: Filtrer par tags
+  help:
+    content: |
+      🏷️ Les tags vous aident à grouper et organiser les éléments.
+
+      ## ⚡ Fonctionnalités
+      - Divisez les éléments en catégories
+      - Créez un ordre visuel avec les couleurs
+      - Trouvez facilement les éléments liés
+
+      ## 💡 Conseils
+      - Utilisez des noms clairs et compréhensibles
+      - Groupez les éléments similaires avec le même tag
+      - Utilisez le codage couleur pour l'ordre visuel
+      - Utilisez la fonction d'archivage pour maintenir l'ordre
+    description: Les tags vous aident à catégoriser et grouper les éléments
+    overview:
+      content: |
+        Transformez votre productivité avec un marquage stratégique qui vous aide à organiser le travail, suivre les investissements en temps et maintenir une concentration claire sur ce qui compte le plus.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        L'organisation basée sur les tags est fondamentale pour une gestion efficace du temps et la productivité. En catégorisant vos activités avec des tags significatifs, vous obtenez des insights clairs sur la façon dont vous passez votre temps et pouvez prendre des décisions éclairées pour optimiser votre concentration et efficacité.
+
+        ## 📊 Analyse des investissements en temps
+
+        Comprenez où va votre temps et prenez des décisions basées sur les données concernant vos priorités. Le suivi du temps avec des tags révèle des modèles qui vous aident à optimiser votre horaire et vos habitudes de travail.
+
+        - ⏱️ Surveillez le temps passé dans différentes catégories d'activités
+        - 📅 Suivez les investissements en temps sur des périodes spécifiques et les tendances
+        - ⚖️ Comparez l'allocation de temps entre projets et responsabilités
+        - 📈 Identifiez les modèles de productivité et les heures de performance optimale
+        - 🎯 Concentrez votre énergie sur les activités à fort impact
+
+        ## 🗂️ Organisation stratégique
+
+        Créez une approche systématique pour organiser votre travail qui évolue avec vos besoins. Des tags bien structurés forment la base d'un système de productivité efficace.
+
+        - 🔍 Filtrez et trouvez rapidement l'information avec des recherches multi-tags
+        - 🗄️ Archivez les projets terminés pour maintenir une organisation propre
+        - 🧩 Construisez des structures hiérarchiques qui reflètent vos modèles de travail
+        - 👥 Groupez les activités liées pour une meilleure gestion de projet
+        - ⏳ Activez le suivi complet du temps à travers toutes les activités
+
+        ## 💡 Stratégies d'optimisation
+
+        Exploitez les techniques de marquage avancées pour maximiser l'efficacité de votre système d'organisation et maintenir une croissance de productivité à long terme.
+
+        - 🏷️ Utilisez des noms clairs et descriptifs qui restent significatifs dans le temps
+        - 🔗 **Créez des structures hiérarchiques :** Projets → Départements → Domaines
+        - 📊 Révisez régulièrement les rapports d'analyse du temps pour identifier les opportunités d'amélioration
+        - 🗄️ Maintenez la propreté du système en archivant le travail terminé
+        - 🎯 Appliquez un filtrage ciblé pour éliminer les distractions et améliorer la concentration
+      title: Guide d'organisation basée sur les tags et de gestion du temps
+    title: Aide des tags
+  labels:
+    color: Couleur
+    description: Description
+    name: Nom
+    tags: Tags
+  list:
+    filter_tooltip: Filtrer par tags
+    no_tags: Aucun tag
+  messages:
+    archive_confirm: Êtes-vous sûr de vouloir archiver ce tag ?
+    confirm_archive: Êtes-vous sûr de vouloir archiver ce tag ?
+    confirm_delete: Êtes-vous sûr de vouloir supprimer ce tag ?
+    confirm_unarchive: Êtes-vous sûr de vouloir désarchiver ce tag ?
+    unarchive_confirm: Êtes-vous sûr de vouloir désarchiver ce tag ?
+  new_tag: Nouveau tag
+  no_tags: Aucun tag
+  none_option: Aucun
+  search:
+    clear_all: Tout effacer
+    label: Rechercher des tags
+  sections:
+    list: Tags
+  selection:
+    done: Terminé
+  tag_details: Détails du tag
+  time_bar_chart:
+    by_element: Par élément
+    no_data: Aucune donnée
+    title: Distribution du temps
+  time_chart:
+    no_data: Aucune donnée
+    other_category: Autre
+  time_distribution: Distribution du temps
+  time_records: Enregistrements de temps
+  title: Tags
+  tooltips:
+    add_tag: Ajouter un tag
+    add_task: Ajouter une nouvelle tâche
+    archive_tag: Archiver le tag
+    color: Cliquer pour assigner une couleur au tag
+    delete_tag: Supprimer le tag
+    edit_name: Modifier le nom
+    remove_tag: Supprimer le tag
+    select: Cliquer pour sélectionner le tag
+    unarchive_tag: Désarchiver le tag

@@ -1,0 +1,51 @@
+calendar:
+  pages:
+    today:
+      help:
+        content: |
+          Optimisez votre productivité quotidienne avec une vue unifiée qui intègre les tâches, habitudes et suivi du temps pour vous aider à maintenir la concentration et atteindre vos objectifs efficacement.
+
+          ## ⚡ Pourquoi est-ce important ?
+
+          La gestion quotidienne de la productivité est la pierre angulaire de l'utilisation efficace du temps et de la réalisation des objectifs. En centralisant vos activités quotidiennes dans une vue, vous éliminez le changement de contexte, maintenez des priorités claires et créez une approche systématique pour accomplir votre travail le plus important.
+
+          ## 🔄 Cohérence des habitudes
+
+          Surveillez et maintenez vos routines quotidiennes avec un suivi d'habitudes rationalisé qui construit l'élan et renforce les modèles comportementaux positifs tout au long de votre journée.
+
+          - ✅ **Évaluation rapide :** Affichez toutes les habitudes quotidiennes d'un coup d'œil pour une évaluation rapide des progrès
+          - ✔️ **Achèvement instantané :** Marquez les habitudes comme terminées avec des interactions simples qui maintiennent le flux
+          - 🔄 **Renforcement de routine :** Renforcez les modèles quotidiens grâce au suivi cohérent et à la reconnaissance
+          - 📈 **Construction d'élan :** Indicateurs de progrès visuels qui motivent la cohérence continue
+
+          ## 📋 Exécution des tâches
+
+          Concentrez votre gestion des tâches avec une vue claire des priorités d'aujourd'hui qui vous aide à exécuter efficacement sans perdre de vue les échéances et engagements.
+
+          - 🗓️ **Clarté des priorités :** Voyez les tâches planifiées et dues organisées pour une exécution optimale
+          - ➕ **Capture rapide :** Ajoutez de nouvelles tâches rapidement sans perturber le flux de travail actuel
+          - ✔️ **Suivi des progrès :** Surveillez le statut d'achèvement pour maintenir la responsabilité et l'élan
+          - 🎯 **Maintien de la concentration :** Vue quotidienne claire empêche la surcharge des obligations futures
+
+          ## ⏰ Analyse des investissements en temps
+
+          Comprenez comment vous passez votre temps grâce à une analyse catégorisée qui révèle les modèles de productivité et aide à optimiser votre horaire quotidien pour une efficacité maximale.
+
+          - 📊 **Insights par catégorie :** Analysez la distribution du temps à travers différents tags d'activité et projets
+          - 📈 **Reconnaissance de modèles :** Identifiez les tendances de productivité et les périodes de performance optimale
+          - 🕒 **Surveillance d'activité :** Suivez le temps passé sur diverses activités et responsabilités quotidiennes
+          - 🎯 **Opportunités d'optimisation :** Utilisez les données pour prendre des décisions éclairées sur l'allocation du temps
+
+          ## ⚙️ Raccourcis de productivité
+
+          Exploitez les actions rapides et flux de travail efficaces qui minimisent la friction et maximisent votre capacité à maintenir la concentration sur les activités de haute valeur tout au long de votre journée.
+
+          - ▶️ **Sessions de concentration :** Commencez des périodes de travail concentrées avec l'intégration du minuteur mode Marathon
+          - 🔎 **Filtrage intelligent :** Utilisez le filtrage basé sur les tags pour vous concentrer sur des projets ou domaines de vie spécifiques
+          - ✅ **Achèvement efficace :** Terminez les habitudes et tâches avec des interactions rationalisées et sans distraction
+          - 📊 **Insights de performance :** Accédez aux graphiques de temps pour un retour immédiat sur les modèles de productivité quotidiens
+        title: Guide de gestion quotidienne de la productivité
+      title: Aujourd'hui
+  sections:
+    habits: Habitudes
+    tasks: Tâches
