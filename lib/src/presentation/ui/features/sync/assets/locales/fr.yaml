@@ -1,0 +1,66 @@
+error:
+  scan: Échec du scan
+sync:
+  devices:
+    errors:
+      loading: Impossible de charger les appareils de synchronisation
+      removing: Impossible de supprimer l'appareil de synchronisation
+      sync_failed: Impossible de synchroniser les appareils
+    from_label: De
+    help:
+      content: |
+        🔄 Synchronisez vos données en toute sécurité entre plusieurs appareils.
+
+        ## 🔗 Connexion par code QR
+        - Appairage d'appareils facile
+        - Configuration de connexion sécurisée
+        - Initiation rapide de la synchronisation
+
+        ## 📱 Gestion des appareils
+        - Afficher les appareils connectés
+        - Surveiller le statut de synchronisation
+        - Supprimer les anciens appareils
+
+        ## 💡 Conseils
+        - Gardez les appareils sur le même réseau
+        - Synchronisez régulièrement pour de meilleurs résultats
+        - Supprimez les connexions d'appareils inutilisées
+        - Vérifiez les dates de dernière synchronisation
+        - Utilisez les codes QR pour une configuration rapide
+        - Attendez la fin de la synchronisation
+      title: Aide de synchronisation des appareils
+    last_sync_label: Dernière synchronisation
+    no_devices_found: Aucun appareil synchronisé
+    sync_tooltip: Synchroniser maintenant
+    title: Synchroniser les appareils
+    to_label: Vers
+    unnamed_device: Appareil sans nom
+  error:
+    scan: Échec du scan
+  errors:
+    connection_failed: |
+      Connexion échouée. Veuillez vous assurer que :
+
+      1. Les deux appareils sont sur le même réseau
+      2. Les deux applications sont ouvertes et en cours d'exécution
+      3. Aucun pare-feu ne bloque la connexion
+    device_mismatch: Erreur de synchronisation. L'appareil tentant de se synchroniser n'est pas correctement apparié avec cet appareil.
+    device_not_found: Appareil de synchronisation non trouvé
+    ip_address: Impossible de récupérer l'adresse IP locale
+    parse_message: Impossible d'analyser le message scanné
+    process_failed: Processus de synchronisation échoué.
+    save_device: Impossible d'enregistrer l'appareil de synchronisation
+    scan: Impossible de scanner le code QR
+    sync_failed: Synchronisation échouée. Veuillez réessayer.
+    sync_timeout: Délai de synchronisation dépassé
+    version_mismatch: "Incompatibilité de version. Version locale : {currentVersion}, Version distante : {remoteVersion}. Veuillez mettre à jour les deux applications à la même version."
+  messages:
+    device_already_paired: Cet appareil est déjà apparié
+    sync_completed: Synchronisation terminée avec succès
+    sync_in_progress: Synchronisation en cours...
+    testing_connection: Test de connexion...
+  qr_code:
+    close_button: Fermer
+    dialog_title: Scanner le code QR pour synchroniser
+  scanner:
+    title: Scanner le code QR

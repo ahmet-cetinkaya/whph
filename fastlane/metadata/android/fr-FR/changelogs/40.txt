@@ -1,0 +1,6 @@
+• Amélioration de la synchronisation de plateforme mobile
+• Amélioration de la journalisation et résolution de conflits
+• Ajout de la fonctionnalité de vérification des mises à jour
+• Amélioration de la vue liste avec séparateurs
+• Amélioration de la journalisation d'erreurs dans import/export
+• Amélioration de la logique de pagination dans la liste d'utilisation d'apps

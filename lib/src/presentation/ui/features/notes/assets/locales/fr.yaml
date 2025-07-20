@@ -1,0 +1,95 @@
+notes:
+  help:
+    content: |
+      Construisez un système de gestion des connaissances complet qui capture vos idées, organise l'information efficacement et rend les insights importants facilement accessibles quand vous en avez besoin.
+
+      ## ⚡ Pourquoi est-ce important ?
+
+      La prise de notes efficace et la gestion des connaissances sont essentielles pour la productivité et l'apprentissage. Un système de notes bien organisé empêche la perte d'insights précieux, accélère la prise de décision et crée une mémoire externe fiable qui devient plus précieuse avec le temps.
+
+      ## ✍️ Capture d'informations sans effort
+
+      Créez un flux de travail fluide pour capturer et traiter l'information qui garantit qu'aucune information importante ne passe à travers les mailles du filet tout en maintenant votre concentration sur votre travail actuel.
+
+      - 📝 Capturez rapidement les idées sans perturber votre flux
+      - ✏️ Modifiez et affinez l'information au fur et à mesure que la compréhension se développe
+      - 🗑️ Supprimez systématiquement les informations obsolètes ou non pertinentes
+      - 📌 Gardez les informations critiques facilement accessibles et organisées
+
+      ## 🗂️ Organisation stratégique
+
+      Développez un système d'organisation qui évolue avec votre base de connaissances et rend la récupération d'informations rapide et fiable, quel que soit le volume.
+
+      - 🏷️ Appliquez des stratégies de marquage cohérentes pour une catégorisation rapide
+      - 🔍 Utilisez des capacités de recherche puissantes pour trouver l'information instantanément
+      - 📚 Groupez les notes liées pour créer des domaines de connaissance complets
+      - 🎯 Maintenez la concentration grâce à une architecture d'information organisée
+
+      ## 📄 Création de contenu professionnel
+
+      Exploitez les outils de formatage avancés pour créer un contenu clair et bien structuré qui communique efficacement et résiste à l'épreuve du temps.
+
+      - 🎨 **Formatage riche :** Utilisez Markdown pour une structure de document professionnelle
+      - 📋 **Structure claire :** Organisez le contenu avec des en-têtes, listes et emphases
+      - 🔗 **Connaissances connectées :** Liez les concepts et informations connexes
+      - 📖 **Sortie lisible :** Formatez le contenu pour une compréhension et un partage faciles
+
+      ## 🚀 Avantages de productivité
+
+      Transformez votre pratique de prise de notes en un multiplicateur de productivité qui améliore votre réflexion, accélère l'apprentissage et améliore la qualité de prise de décision.
+
+      - 🧠 **Réflexion améliorée :** La mémoire externe libère la capacité mentale pour le travail créatif
+      - ⚡ **Accès plus rapide :** L'information organisée réduit le temps passé à chercher
+      - 🌐 **Disponibilité universelle :** Accédez à votre base de connaissances depuis n'importe quel appareil
+      - 📈 **Amélioration continue :** Le contenu affiné devient plus précieux avec le temps
+    title: Guide de gestion des connaissances et d'organisation des notes
+  actions:
+    add: Ajouter une note
+    delete: Supprimer la note
+    edit: Modifier la note
+    save: Enregistrer la note
+  components:
+    note_details_content:
+      add_tag_button: Ajouter un tag
+      content_placeholder: Écrivez le contenu de la note ici...
+      save_button: Enregistrer
+      saved_message: Note enregistrée avec succès
+      title_placeholder: Titre de la note
+      update_button: Mettre à jour
+    notes_list:
+      empty_message: Aucune note trouvée
+      loading: Chargement des notes...
+  delete:
+    confirm_message: Êtes-vous sûr de vouloir supprimer cette note ?
+    confirm_title: Supprimer la note
+  details:
+    content: Contenu
+    tags:
+      hint: Sélectionner des tags pour la note
+      label: Tags
+    title: Titre
+  errors:
+    adding_tag: Impossible d'ajouter le tag
+    deleting: Erreur inattendue lors de la suppression de la note
+    getting_notes: Erreur lors de la récupération des notes
+    loading_details: Impossible de charger les détails de la note
+    loading_tags: Impossible de charger les tags de la note
+    note_not_found: Note non trouvée
+    note_tag_not_found: Tag de note non trouvé
+    removing_tag: Impossible de supprimer le tag
+    saving_note: Impossible d'enregistrer la note
+    tag_already_exists: Ce tag a déjà été ajouté
+  filters:
+    search:
+      placeholder: Rechercher des notes...
+    tooltips:
+      filter_by_tags: Filtrer par tags
+  new_note: Nouvelle note
+  no_notes: Aucune note
+  note_details: Détails de la note
+  notes: Notes
+  title: Notes
+  tooltips:
+    add_note: Ajouter une note
+    delete_note: Supprimer la note
+    edit_name: Modifier le titre

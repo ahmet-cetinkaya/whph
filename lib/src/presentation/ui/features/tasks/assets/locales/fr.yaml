@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: Ajouter une nouvelle tâche
+  all_tasks_done: Toutes les tâches terminées !
+  card:
+    schedule:
+      today: Planifier pour aujourd'hui
+      tomorrow: Planifier pour demain
+    tooltips:
+      schedule: Planifier la tâche
+  complete:
+    error: Erreur inattendue lors de l'enregistrement de l'achèvement de la tâche.
+  date_selection:
+    deadline_date_title: Sélectionner la date d'échéance
+    planned_date_title: Sélectionner la date prévue
+  delete:
+    error: Erreur inattendue lors de la suppression de la tâche.
+    message: Êtes-vous sûr de vouloir supprimer cette tâche ?
+    title: Supprimer la tâche
+  details:
+    deadline_date:
+      label: Date d'échéance
+    description:
+      hint: Ajouter une description...
+      label: Description
+    elapsed_time:
+      label: Temps écoulé
+    estimated_time:
+      label: Temps estimé
+    is_completed: Terminé
+    planned_date:
+      label: Date prévue
+    priority:
+      label: Priorité
+    sub_tasks:
+      label: Sous-tâches
+    parent_task:
+      label: Tâche parente
+      tooltip: Cliquer pour naviguer vers la tâche parente
+    tags:
+      hint: Sélectionner des tags à associer
+      label: Tags
+    tags_hint: Sélectionner des tags pour la tâche
+    title:
+      label: Titre
+    total_elapsed_time: Temps total écoulé
+  errors:
+    add_tag: Erreur inattendue lors de l'ajout du tag
+    adding_tag: Impossible d'ajouter le tag
+    get_tags: Erreur lors de la récupération des tags
+    get_task: Erreur inattendue lors du chargement de la tâche
+    loading_tags: Impossible de charger les tags de la tâche
+    loading_task: Impossible de charger la tâche
+    loading_tasks: Impossible de charger les tâches
+    remove_tag: Erreur inattendue lors de la suppression du tag
+    removing_tag: Impossible de supprimer le tag
+    same_tag: Impossible d'ajouter le même tag deux fois
+    save_task: Erreur inattendue lors de l'enregistrement de la tâche
+    saving_task: Impossible d'enregistrer la tâche
+    sort_field_not_supported: Champ de tri non supporté
+    task_not_found: Tâche non trouvée
+    task_tag_already_deleted: Le tag de tâche est déjà supprimé
+    task_tag_already_exists: Ce tag de tâche existe déjà
+    task_tag_not_found: Tag de tâche non trouvé
+  filters:
+    completion: Par statut d'achèvement
+    deadline_date: Par date d'échéance
+    planned_date: Par date prévue
+    search:
+      placeholder: Rechercher des tâches
+    tags: Par tags
+    tooltips:
+      filter_by_tags: Filtrer par tags
+  help:
+    details:
+      content: |
+        Maîtrisez votre gestion des tâches et maximisez la productivité en organisant, priorisant et suivant votre travail efficacement.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        La gestion efficace des tâches est le fondement de la productivité. Des tâches bien structurées avec des priorités claires et des échéances vous aident à vous concentrer sur ce qui compte le plus et empêchent le travail important de passer à travers les mailles du filet.
+
+        ## 📝 Organisation des tâches
+
+        Structurez vos tâches avec des détails complets pour maintenir la clarté et la concentration. Utilisez des tags, priorités et estimations de temps pour créer une approche systématique de votre charge de travail.
+
+        - 🏷️ Catégorisez les tâches avec des tags significatifs
+        - ⚖️ Définissez des priorités en utilisant des frameworks éprouvés
+        - ⏱️ Estimez précisément les exigences de temps
+        - 📅 Planifiez des échéances et horaires réalistes
+
+        ## ⏰ Gestion du temps
+
+        Suivez vos investissements en temps pour comprendre vos modèles de travail et améliorer l'efficacité. Une gestion appropriée du temps transforme les efforts dispersés en productivité focalisée.
+
+        - 📊 Surveillez le temps réel vs estimé
+        - 🎯 Concentrez-vous sur les activités à fort impact
+        - 📈 Analysez les modèles de productivité dans le temps
+        - ⏳ Équilibrez les tâches urgentes et importantes
+
+        ## 📊 Cadre de priorité (Matrice d'Eisenhower)
+
+        Organisez vos tâches en utilisant cette méthode de priorisation éprouvée pour vous assurer de toujours travailler sur les bonnes choses au bon moment.
+
+        - 🔥 **Urgent et Important :** Gérez immédiatement - gestion de crise et échéances
+        - 📈 **Important, pas urgent :** Planifiez stratégiquement - planification et développement des compétences
+        - ⚡ **Urgent, pas important :** Déléguez si possible - interruptions et certaines réunions
+        - 🗑️ **Ni urgent ni important :** Éliminez - activités chronophages et de faible valeur
+      title: Guide de gestion des tâches et de productivité
+    overview:
+      content: |
+        Transformez votre productivité avec une gestion systématique des tâches qui vous aide à rester organisé, concentré et en contrôle de votre charge de travail.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        La gestion efficace des tâches est la pierre angulaire du succès personnel et professionnel. En organisant systématiquement votre travail, vous réduisez le stress, respectez les échéances de manière cohérente et créez de l'espace pour des progrès significatifs sur des objectifs importants.
+
+        ## 📋 Organisation des tâches
+
+        Créez une approche structurée pour gérer vos responsabilités. Des tâches bien organisées mènent à des priorités claires et une exécution efficace de votre travail quotidien.
+
+        - ✅ Créez et catégorisez les tâches systématiquement
+        - 🏷️ Groupez le travail connexe avec des tags significatifs
+        - ⚖️ Définissez des priorités et échéances claires
+        - 🔍 Utilisez des filtres et la recherche pour un accès rapide
+
+        ## ⏱️ Suivi du temps et concentration
+
+        Surveillez vos investissements en temps pour comprendre les modèles de productivité et optimiser votre flux de travail. La conscience du temps mène à une meilleure planification et une performance améliorée.
+
+        - ⏰ Suivez le temps réel passé par tâche
+        - 🎯 Utilisez le mode Marathon pour des sessions de travail concentrées
+        - 📊 Analysez les modèles et tendances d'achèvement
+        - 🔄 Révisez et ajustez régulièrement les estimations de temps
+
+        ## 📈 Surveillance des progrès
+
+        Suivez vos accomplissements et apprenez de vos modèles de travail. La révision et réflexion régulières favorisent l'amélioration continue de votre système de productivité.
+
+        - 📈 Surveillez les taux d'achèvement des tâches
+        - 📅 Révisez les progrès quotidiens et hebdomadaires
+        - 🎯 Identifiez les goulots d'étranglement et opportunités d'optimisation
+        - 🏆 Célébrez les réalisations et achèvements d'étapes importantes
+      title: Guide de gestion des tâches et de flux de travail
+  marathon:
+    details:
+      title: Détails de la tâche
+    help:
+      content: |
+        Maximisez votre concentration et productivité avec des sessions de travail structurées qui vous aident à maintenir une concentration profonde tout en prévenant l'épuisement.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        Les sessions de travail concentrées sont essentielles pour le travail en profondeur et des résultats de haute qualité. En travaillant par intervalles structurés avec des pauses régulières, vous maintenez des performances mentales optimales tout en évitant la fatigue qui vient de périodes de travail prolongées et non concentrées.
+
+        ## ⏰ Sessions de concentration chronométrées
+
+        Utilisez des techniques de gestion du temps éprouvées pour structurer votre travail pour une efficacité maximale. Les sessions structurées vous aident à maintenir la concentration et à accomplir les tâches plus efficacement.
+
+        - 🎯 **Concentration classique :** 25 minutes de travail / 5 minutes de pause
+        - 📈 **Concentration étendue :** 50 minutes de travail / 10 minutes de pause
+        - 🔄 **Pause longue :** 15-30 minutes après 4 sessions
+        - ⚖️ **Timing personnalisé :** Ajustez les intervalles selon votre rythme naturel
+
+        ## 🧠 Avantages cognitifs
+
+        Les sessions de travail structurées exploitent les cycles d'attention naturels de votre cerveau pour optimiser les performances et prévenir la fatigue mentale qui réduit la qualité et la créativité.
+
+        - 🎯 Concentration améliorée et concentration profonde
+        - 🔋 Fatigue mentale et épuisement réduits
+        - 💪 Motivation soutenue grâce à des accomplissements réguliers
+        - ⚡ Conscience du temps et précision de planification améliorées
+
+        ## 📊 Optimisation des performances
+
+        Suivez vos modèles de travail concentré pour comprendre vos heures de productivité optimales et optimiser votre horaire pour une efficacité maximale.
+
+        - 🏷️ Catégorisez les sessions de concentration avec des tags pour l'analyse
+        - 📈 Surveillez les modèles de productivité à différents moments
+        - 🚫 Éliminez les distractions avant de commencer les sessions
+        - 🚶 Utilisez les pauses pour le mouvement physique et la réinitialisation mentale
+      title: Guide des sessions de travail concentrées et de gestion du temps
+      tooltip: Info-bulle d'aide Marathon
+    label: Mode Marathon
+    unpin_task_tooltip: Détacher la tâche actuelle
+  new_task: Nouvelle tâche
+  no_tasks: Aucune tâche
+  notifications:
+    deadline_message: "L'échéance de votre tâche est à {time}"
+    deadline_title: "Échéance de tâche : {title}"
+    planned_message: "Votre tâche est prévue pour {time}"
+    reminder_title: "Rappel de tâche : {title}"
+  page:
+    completed_tasks_title: Tâches terminées
+    title: Tâches
+  pomodoro:
+    actions:
+      stop_timer: Arrêter le minuteur
+    notifications:
+      break_completed: Session de pause terminée !
+      long_break_completed: Pause longue terminée !
+      time_remaining_prefix: "Temps restant :"
+      timer_completed: Minuteur terminé !
+      title: Minuteur Pomodoro
+      work_completed: Session de travail terminée !
+    settings:
+      auto_start_break: Démarrer automatiquement la pause après le travail
+      auto_start_section: Options de démarrage automatique
+      auto_start_work: Démarrer automatiquement le travail après la pause
+      break_duration: Durée de la pause
+      long_break_duration: Durée de la pause longue
+      sessions_before_long_break: Sessions avant la pause longue
+      ticking_sound: Activer le son de tic-tac
+      ticking_sound_section: Son de tic-tac
+      ticking_speed: Vitesse
+      ticking_volume: Volume
+      keep_screen_awake_section: Garder l'écran allumé
+      keep_screen_awake: Garder l'écran allumé pendant les sessions
+      timer_label: Durées des sessions
+      title: Paramètres du minuteur
+      work_duration: Durée de travail
+    system_tray:
+      app_running: Application en cours
+      complete_title: Pomodoro terminé
+      tap_to_open: Appuyer pour ouvrir
+      timer_running: Minuteur en cours
+  priorities:
+    not_urgent_important: Pas urgent mais important
+    not_urgent_not_important: Pas urgent ou important
+    urgent_important: Urgent et important
+    urgent_not_important: Urgent mais pas important
+  priority:
+    selection:
+      title: Sélectionner la priorité
+    tooltips:
+      none: Aucune priorité
+      not_urgent_important: Pas urgent mais important
+      not_urgent_not_important: Pas urgent et pas important
+      urgent_important: Urgent et important
+      urgent_not_important: Urgent mais pas important
+    types:
+      none: Aucune priorité
+      not_urgent_important: Pas urgent mais important
+      not_urgent_not_important: Pas urgent et pas important
+      urgent_important: Urgent et important
+      urgent_not_important: Urgent mais pas important
+  quick_task:
+    create_error: Erreur lors de la création de la tâche
+    lock_description: Verrouillez les propriétés pour conserver leurs valeurs lors de la création de plusieurs tâches similaires. Les propriétés verrouillées ne seront pas effacées lors de la réinitialisation du formulaire.
+    lock_settings: Paramètres de verrouillage
+    reset_all: Réinitialiser tous les champs
+    reset_confirm:
+      message: Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action ne peut pas être annulée.
+      title: Réinitialiser tous les champs
+    title: Tâche rapide
+    title_hint: Titre de la tâche
+    tooltips:
+      deadline_date: "Échéance : {date}"
+      deadline_date_not_set: "Échéance : Non définie"
+      estimated_time: "Temps estimé : {time}"
+      estimated_time_not_set: "Temps estimé : Non défini"
+      planned_date: "Prévu : {date}"
+      planned_date_not_set: "Prévu : Non défini"
+  recurrence:
+    count: Nombre d'occurrences
+    custom: Personnalisé
+    daily: Quotidien
+    daySuffix: jour(s)
+    endDate: Date de fin
+    enterCountHint: Entrer le nombre
+    interval:
+      label: Répéter tous les
+      prefix: tous les
+      suffix:
+        days: jour(s)
+        months: mois
+        weeks: semaine(s)
+        years: année(s)
+    label: Récurrence
+    monthSuffix: mois
+    monthly: Mensuel
+    none: Aucune récurrence
+    range: Plage
+    selectDateHint: Sélectionner la date
+    startDate: Date de début
+    summary:
+      endsAfter: se termine après
+      endsOnDate: se termine le
+      occurrences: occurrences
+      on: le
+      starts: commence
+    weekDays: Jours de la semaine
+    weekSuffix: semaine(s)
+    weekly: Hebdomadaire
+    yearSuffix: année(s)
+    yearly: Annuel
+  reminder:
+    atTime: À l'heure prévue
+    deadlineReminderLabel: Rappel d'échéance
+    fifteenMinutesBefore: 15 minutes avant
+    fiveMinutesBefore: 5 minutes avant
+    none: Aucun rappel
+    oneDayBefore: 1 jour avant
+    oneHourBefore: 1 heure avant
+    plannedReminderLabel: Rappel de date prévue
+  task_details: Détails de la tâche
+  title: Tâches
+  tooltips:
+    clear_date: Effacer la date
+    decrease_estimated_time: Diminuer le temps estimé
+    edit_title: Modifier le titre
+    increase_estimated_time: Augmenter le temps estimé
+    set_reminder: Définir un rappel
+    show_completed_tasks: Filtrer les tâches terminées

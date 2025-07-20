@@ -1,0 +1,4 @@
+• Implémentation du suivi précis d'utilisation d'apps au premier plan pour Android
+• Mise à jour des ressources de logo pour une optimisation améliorée
+• Mise à jour de la densité visuelle d'IconButton
+• Ajout de retour sonore lors de la création d'enregistrements

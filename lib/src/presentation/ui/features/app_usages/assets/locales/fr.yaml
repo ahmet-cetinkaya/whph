@@ -1,0 +1,178 @@
+app_usages:
+  delete:
+    confirm_title: Supprimer l'utilisation d'app
+    error: Une erreur inattendue s'est produite lors de la suppression de l'utilisation d'app.
+  details:
+    color:
+      hint: Cliquer pour changer la couleur
+      label: Couleur
+    device:
+      label: Appareil
+      unknown: Appareil inconnu
+    help:
+      content: |
+        Voyez exactement combien de temps vous passez sur les applications et gardez le contrôle en les organisant avec des tags.
+
+        ## ⚡ Pourquoi est-ce important ?
+
+        La gestion du temps est la clé de votre productivité. Suivre l'utilisation de vos applications et les marquer avec les bonnes catégories améliore votre concentration et aide à prévenir les pertes de temps inutiles.
+
+        ## ⏱️ Suivi du temps
+
+        Suivez vos habitudes d'utilisation quotidiennes pour analyser précisément votre temps. Avec les durées d'utilisation détaillées dans l'application et le suivi des fenêtres actives, voyez facilement combien d'attention vous accordez à chaque application. Ces données vous guident sur les domaines nécessitant des améliorations.
+
+        - ⏳ Révisez les durées d'utilisation quotidiennes
+        - 🔍 Suivez les fenêtres actives
+        - 📊 Comprenez votre distribution de temps avec des rapports détaillés
+
+        ## 🏷️ Gestion des tags
+
+        Catégoriser et organiser vos applications booste la productivité. Avec le système de marquage, vous pouvez grouper vos applications et accélérer votre flux de travail en utilisant des règles d'automatisation. Cela vous aide à maintenir la concentration et utiliser votre temps plus efficacement.
+
+        - 🏷️ Marquez les applications avec des catégories significatives
+        - ⚙️ Créez des règles de marquage automatique
+        - 🔄 Économisez du temps en réduisant les tâches manuelles
+
+        ## 📈 Analyse et suivi de productivité
+
+        Visualisez vos propres modèles d'utilisation pour découvrir vos forces et faiblesses. Suivre votre temps productif est critique pour améliorer la concentration. Avec les outils de comparaison et de rapport dans l'application, vous pouvez clairement voir vos progrès.
+
+        - 📊 Visualisez vos modèles d'utilisation
+        - 🤝 Comparez avec des applications similaires
+        - 🚀 Suivez le temps productif vs improductif
+      title: Guide de suivi du temps et de productivité
+    tags:
+      hint: Sélectionner des tags
+      label: Tags
+  device_filter:
+    clear_all: Tout effacer
+    search:
+      label: Rechercher des appareils
+  errors:
+    add_tag: Une erreur inattendue s'est produite lors de l'ajout du tag
+    app_usage_ignore_rule_not_found: Règle d'ignorance non trouvée
+    app_usage_not_found: Utilisation d'app non trouvée
+    app_usage_tag_not_found: Tag d'utilisation d'app non trouvé
+    delete: Une erreur inattendue s'est produite lors de la suppression de l'utilisation d'app
+    app_usage_tag_rule_not_found: Règle de tag non trouvée
+    get_tags: Erreur lors de la récupération des tags d'utilisation d'app
+    get_usage: Une erreur inattendue s'est produite lors de la récupération de l'utilisation d'app
+    remove_tag: Une erreur inattendue s'est produite lors de la suppression du tag
+    save_rule: Une erreur inattendue s'est produite lors de l'enregistrement des règles d'ignorance
+    save_usage: Une erreur inattendue s'est produite lors de l'enregistrement de l'utilisation d'app
+    statistics: Une erreur inattendue s'est produite lors de la récupération des statistiques
+    tag_already_exists: Ce tag a déjà été ajouté
+  form:
+    description:
+      hint: Entrez une description pour cette règle
+      label: Description (Optionnel)
+    pattern:
+      help_tooltip: Afficher l'aide regex
+      hint: Entrer le motif regex
+      label: Motif
+      required: Le motif est requis
+    save: Enregistrer
+    saved: Enregistré
+  ignore_rules:
+    delete_confirm: 'Êtes-vous sûr de vouloir supprimer la règle d''ignorance "{pattern}" ?'
+    delete_title: Supprimer la règle
+    delete_tooltip: Supprimer la règle
+    no_rules: Aucune règle d'ignorance
+    pattern_label: Motif
+  no_usage: Aucune utilisation d'app encore
+  pages:
+    view:
+      buttons:
+        filter_tags: Filtrer les tags
+        filter_devices: Filtrer les appareils
+        tag_rules: Règles de tags
+      help:
+        content: |
+          Analysez, organisez et prenez le contrôle de votre utilisation d'applications pour travailler plus efficacement. Avec les outils de marquage et d'analyse, voyez, gérez et améliorez la façon dont vous passez votre temps.
+
+          ## ⏱️ Suivi d'utilisation
+
+          Découvrez vos habitudes d'utilisation quotidiennes. Suivez les fenêtres actives et les durées pour comprendre où va votre temps. Cela vous aide à identifier les domaines de concentration et réduire la perte de temps.
+
+          - ⌛ Révisez les durées d'utilisation des applications
+          - 📅 Analysez les modèles quotidiens
+          - 🖥️ Suivez l'historique des fenêtres actives
+
+          ## 🏷️ Marquage et catégorisation
+
+          Créez une structure organisée en groupant les applications. Avec le système de marquage, rendez vos données plus significatives et analysez facilement combien de temps vous passez par catégorie.
+
+          - 🏷️ Assignez des tags significatifs aux applications
+          - ⚙️ Définissez des règles de marquage automatique
+          - 📚 Affichez le temps d'utilisation par catégorie
+
+          ## 📊 Analyse d'utilisation
+
+          Analysez l'efficacité de votre utilisation du temps. Grâce aux comparaisons d'applications et aux modèles d'utilisation, voyez quels outils vous sont réellement bénéfiques.
+
+          - 📈 Analysez vos propres modèles d'utilisation
+          - 🔄 Comparez différentes applications
+          - 🚀 Suivez votre temps productif et improductif
+
+          ## ⚙️ Outils de gestion
+
+          Utilisez les règles et options de filtrage pour mieux contrôler les comportements des applications. Particulièrement avec l'automatisation, économisez un temps précieux.
+
+          - 🛠️ Définissez de nouvelles règles ou modifiez les existantes
+          - 🗑️ Supprimez les règles inutiles
+          - 🔍 Filtrez par tag et plage de dates
+        title: Guide d'utilisation d'applications et de gestion du temps
+
+      title: Utilisation d'applications
+  rules:
+    add_new_rule: Ajouter une nouvelle règle
+    delete_confirm_message: Êtes-vous sûr de vouloir supprimer cette règle ?
+    delete_confirm_title: Supprimer la règle
+    errors:
+      delete_rule: Une erreur inattendue s'est produite lors de la suppression de la règle
+      get_rules: Une erreur inattendue s'est produite lors de la récupération des règles
+    existing_rules: Règles existantes
+    help:
+      content: |
+        Utilisez les règles pour gérer les données d'applications de manière organisée, cohérente et efficace. Personnalisez le suivi des applications avec le marquage automatique et les options d'exclusion pour renforcer votre gestion du temps.
+
+        ## 🏷️ Règles de marquage automatique
+
+        Créez des règles pour vos applications afin que le système puisse assigner les bons tags en votre nom. Cela élimine le besoin de marquage manuel.
+
+        - 🧠 Marquez automatiquement les applications basées sur leurs noms
+        - 🗂️ Associez plusieurs tags avec une seule règle
+        - ⏱️ Suivez automatiquement le temps passé sur les applications marquées
+
+        ## ⚙️ Gestion des règles
+
+        Utilisez l'écran de gestion des règles flexible pour construire votre propre système. Supprimez les règles inutiles, ajoutez-en de nouvelles et mettez à jour les existantes.
+
+        - ➕ Définissez de nouvelles règles
+        - ✏️ Modifiez les règles existantes
+        - 🗑️ Supprimez les règles que vous n'utilisez plus
+
+        ## 🚫 Règles d'ignorance
+
+        Excluez les applications système ou d'arrière-plan qui pourraient fausser votre analyse de productivité. Avec ces règles, vous pouvez vous concentrer uniquement sur ce qui est vraiment important.
+
+        - 🧹 Excluez des applications spécifiques du suivi
+        - 🖥️ Omettez les processus système et outils d'aide
+        - 🔕 Filtrez les applications fonctionnant en arrière-plan
+
+        ## 🧩 Options de correspondance avancées
+
+        Améliorez vos règles avec des options de correspondance de motifs avancées.
+
+        - ✳️ Créez des règles flexibles en utilisant des caractères génériques
+        - 🧾 Associez les noms d'applications exacts
+        - 🔠 Choisissez les paramètres de sensibilité à la casse
+      title: Guide des règles de marquage et d'exclusion
+    ignore_rules: Règles d'ignorance
+    no_rules: Aucune règle
+    tag_rules: Règles de tags
+    title: Règles d'utilisation d'applications
+  tooltips:
+    edit_name: Modifier le nom
+  units:
+    minutes: min
