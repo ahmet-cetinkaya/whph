@@ -1,0 +1,6 @@
+• Mejorar sincronización de plataforma móvil
+• Mejorar registro y resolución de conflictos
+• Añadir funcionalidad de verificar actualizaciones
+• Mejorar vista de lista con separadores
+• Mejorar registro de errores en importar/exportar
+• Mejorar lógica de paginación en lista de uso de apps

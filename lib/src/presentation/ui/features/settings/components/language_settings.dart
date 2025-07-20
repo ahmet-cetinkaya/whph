@@ -56,6 +56,7 @@ class _LanguageDialog extends StatelessWidget {
     _LanguageOption(code: 'tr', displayName: 'Türkçe'),
     _LanguageOption(code: 'de', displayName: 'Deutsch'),
     _LanguageOption(code: 'fr', displayName: 'Français'),
+    _LanguageOption(code: 'es', displayName: 'Español'),
   ];
 
   void _changeLanguage(BuildContext context, String languageCode) {

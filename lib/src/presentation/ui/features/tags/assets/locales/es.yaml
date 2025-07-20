@@ -1,0 +1,140 @@
+tags:
+  actions:
+    add: Añadir etiqueta
+    archive: Archivar etiqueta
+    delete: Eliminar etiqueta
+    edit: Editar etiqueta
+    hide_archived: Ocultar etiquetas archivadas
+    show_archived: Mostrar etiquetas archivadas
+    unarchive: Desarchivar etiqueta
+  categories:
+    all: Todas
+    app_usage: Uso de apps
+    habits: Hábitos
+    tasks: Tareas
+  default_name: Nueva etiqueta
+  details:
+    archived: Archivado
+    color: Color
+    help:
+      description: Descripción de ayuda de detalles
+      title: Título de ayuda de detalles
+    name: Nombre
+    related_tags: Etiquetas relacionadas
+    select_tag: Seleccionar etiqueta
+    tasks_label: Tareas
+  errors:
+    creating: No se pudo crear la etiqueta
+    deleting: No se pudo eliminar la etiqueta
+    get_tags: Error al obtener las etiquetas
+    loading: No se pudieron cargar las etiquetas
+    loading_archive_status: No se pudo cargar el estado de archivo
+    same_tag: Las etiquetas primaria y secundaria no pueden ser iguales
+    saving: No se pudo guardar la etiqueta
+    tag_not_found: Etiqueta no encontrada
+    tag_tag_already_exists: Esta relación de etiqueta ya existe
+    tag_tag_not_found: Relación de etiqueta no encontrada
+    toggling_archive: No se pudo cambiar el estado de archivo
+  filter:
+    all_categories: Todas las categorías
+    select_category: Seleccionar categoría
+  filter_tooltip: Filtrar por etiquetas
+  help:
+    content: |
+      🏷️ Las etiquetas te ayudan a agrupar y organizar elementos.
+
+      ## ⚡ Características
+      - Divide elementos en categorías
+      - Crea orden visual con colores
+      - Encuentra fácilmente elementos relacionados
+
+      ## 💡 Consejos
+      - Usa nombres claros y comprensibles
+      - Agrupa elementos similares con la misma etiqueta
+      - Usa codificación de colores para orden visual
+      - Usa la función de archivo para mantener el orden
+    description: Las etiquetas te ayudan a categorizar y agrupar elementos
+    overview:
+      content: |
+        Transforma tu productividad con etiquetado estratégico que te ayude a organizar el trabajo, rastrear inversiones de tiempo y mantener enfoque claro en lo que más importa.
+
+        ## ⚡ ¿Por qué es importante?
+
+        La organización basada en etiquetas es fundamental para la gestión efectiva del tiempo y la productividad. Al categorizar tus actividades con etiquetas significativas, obtienes insights claros sobre cómo pasas tu tiempo y puedes tomar decisiones informadas para optimizar tu enfoque y eficiencia.
+
+        ## 📊 Análisis de inversión de tiempo
+
+        Entiende a dónde va tu tiempo y toma decisiones basadas en datos sobre tus prioridades. El seguimiento de tiempo con etiquetas revela patrones que te ayudan a optimizar tu horario y hábitos de trabajo.
+
+        - ⏱️ Monitorea tiempo gastado en diferentes categorías de actividades
+        - 📅 Rastrea inversiones de tiempo sobre períodos específicos y tendencias
+        - ⚖️ Compara asignación de tiempo entre proyectos y responsabilidades
+        - 📈 Identifica patrones de productividad y tiempos de rendimiento pico
+        - 🎯 Enfoca tu energía en actividades de alto impacto
+
+        ## 🗂️ Organización estratégica
+
+        Crea un enfoque sistemático para organizar tu trabajo que escale con tus necesidades. Las etiquetas bien estructuradas forman la base de un sistema de productividad eficiente.
+
+        - 🔍 Filtra y encuentra información rápidamente con búsquedas multi-etiqueta
+        - 🗄️ Archiva proyectos completados para mantener organización limpia
+        - 🧩 Construye estructuras jerárquicas que reflejen tus patrones de trabajo
+        - 👥 Agrupa actividades relacionadas para mejor gestión de proyectos
+        - ⏳ Habilita seguimiento comprensivo de tiempo a través de todas las actividades
+
+        ## 💡 Estrategias de optimización
+
+        Aprovecha técnicas avanzadas de etiquetado para maximizar la efectividad de tu sistema organizacional y mantener crecimiento de productividad a largo plazo.
+
+        - 🏷️ Usa nombres claros y descriptivos que permanezcan significativos a lo largo del tiempo
+        - 🔗 **Crea estructuras jerárquicas:** Proyectos → Departamentos → Áreas
+        - 📊 Revisa reportes de análisis de tiempo regularmente para identificar oportunidades de mejora
+        - 🗄️ Mantén limpieza del sistema archivando trabajo completado
+        - 🎯 Aplica filtrado enfocado para eliminar distracciones y mejorar concentración
+      title: Guía de organización basada en etiquetas y gestión del tiempo
+    title: Ayuda de etiquetas
+  labels:
+    color: Color
+    description: Descripción
+    name: Nombre
+    tags: Etiquetas
+  list:
+    filter_tooltip: Filtrar por etiquetas
+    no_tags: Sin etiquetas
+  messages:
+    archive_confirm: ¿Estás seguro de que quieres archivar esta etiqueta?
+    confirm_archive: ¿Estás seguro de que quieres archivar esta etiqueta?
+    confirm_delete: ¿Estás seguro de que quieres eliminar esta etiqueta?
+    confirm_unarchive: ¿Estás seguro de que quieres desarchivar esta etiqueta?
+    unarchive_confirm: ¿Estás seguro de que quieres desarchivar esta etiqueta?
+  new_tag: Nueva etiqueta
+  no_tags: Sin etiquetas
+  none_option: Ninguna
+  search:
+    clear_all: Limpiar todo
+    label: Buscar etiquetas
+  sections:
+    list: Etiquetas
+  selection:
+    done: Hecho
+  tag_details: Detalles de la etiqueta
+  time_bar_chart:
+    by_element: Por elemento
+    no_data: Sin datos
+    title: Distribución de tiempo
+  time_chart:
+    no_data: Sin datos
+    other_category: Otro
+  time_distribution: Distribución de tiempo
+  time_records: Registros de tiempo
+  title: Etiquetas
+  tooltips:
+    add_tag: Añadir etiqueta
+    add_task: Añadir nueva tarea
+    archive_tag: Archivar etiqueta
+    color: Hacer clic para asignar color a la etiqueta
+    delete_tag: Eliminar etiqueta
+    edit_name: Editar nombre
+    remove_tag: Eliminar etiqueta
+    select: Hacer clic para seleccionar etiqueta
+    unarchive_tag: Desarchivar etiqueta
