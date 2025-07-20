@@ -1,0 +1,116 @@
+common:
+  buttons:
+    cancel: 취소
+
+settings:
+  about:
+    title: 앱 정보
+  errors:
+    export_failed: 내보내기에 실패했습니다
+    import_failed: 가져오기에 실패했습니다
+    setting_not_found: 설정을 찾을 수 없습니다
+    version_mismatch: 버전을 찾을 수 없습니다
+  export:
+    csv_description: Excel 및 유사한 애플리케이션에서 보기 위해 사용할 수 있습니다.
+    error: 내보내기에 실패했습니다
+    in_progress: 데이터를 내보내는 중입니다. 잠시 기다려 주세요...
+    json_description: 이 파일을 사용하여 데이터를 앱으로 다시 가져올 수 있습니다.
+    select_directory: 내보내기 디렉터리 선택
+    select_path: 저장 위치 선택
+    select_type: 내보내기 형식 선택
+    success: "내보내기가 성공했습니다. 파일 위치:"
+    title: 내보내기
+    canceled: 사용자가 내보내기를 취소했습니다
+  export_data:
+    title: 데이터 내보내기
+  import:
+    error: 가져오기에 실패했습니다
+    error.entity: 유형에 오류가 있습니다
+    in_progress: 데이터를 가져오는 중입니다. 잠시 기다려 주세요...
+    migration_failed: 가져오기에 실패했습니다. 최신 버전의 앱이 설치되어 있는지 확인하세요.
+    select_file: 파일 선택
+    strategy:
+      merge: 기존 데이터와 병합
+      replace: 기존 데이터 삭제 후 새 데이터 추가
+      title: 가져오기 전략
+    success: 가져오기가 성공했습니다
+    title: 가져오기
+    unsupported_version: 지원되지 않는 버전
+    version_mismatch: 버전을 찾을 수 없습니다
+  import_export:
+    description: 데이터를 JSON 형식으로 백업하거나 이전에 생성한 백업에서 복원할 수 있습니다
+    select_action: 가져오기/내보내기 작업 선택
+    title: 가져오기/내보내기
+  language:
+    choose_title: 언어 선택
+    title: 언어
+  notifications:
+    disable_error: 알림 비활성화에 실패했습니다
+    enable_error: 알림 활성화에 실패했습니다
+    title: 알림
+  permissions:
+    app_usage:
+      description: 이 앱은 앱 사용 패턴을 정확하게 추적하기 위해 앱 사용 통계에 대한 액세스 권한이 필요합니다.
+      instructions: "지침:"
+      steps:
+        step1: "\"설정 열기\" 버튼을 누르세요"
+        step2: "열린 사용 액세스 설정 화면에서 목록에서 \"{appName}\"을 찾으세요"
+        step3: "\"{appName}\"을 탭하세요"
+        step4: "\"사용 액세스 허용\"을 활성화하거나 스위치를 ON으로 전환하세요"
+      title: 앱 사용 권한
+    battery_optimization:
+      description: 신뢰할 수 있는 알림을 위해 이 앱을 배터리 최적화에서 제외해야 합니다. 이것이 없으면 알림이 지연되거나 전혀 전달되지 않을 수 있습니다.
+      importance: 이 설정의 위치는 기기 제조업체에 따라 다를 수 있습니다.
+      instructions: "지침:"
+      not_disabled: 배터리 최적화가 여전히 활성화되어 있습니다. 관련 기능이 올바르게 작동하도록 권한을 제공하세요.
+      steps:
+        step1: "\"설정 열기\" 버튼을 누르세요"
+        step2: "열린 설정 화면에서 \"{appName}\"을 찾으세요"
+        step3: "\"{appName}\"을 탭하세요"
+        step4: "열린 페이지에서 \"백그라운드 사용 허용\"이 활성화되어 있는지 확인하세요"
+        step5: "\"백그라운드 사용 허용\"을 탭하세요"
+        step6: "\"무제한\"을 선택하세요"
+      title: 배터리 최적화
+    exact_alarm:
+      description: Android 12 이상에서는 알림이 제대로 작동하도록 정확한 알람을 예약할 권한이 필요합니다.
+      instructions: "지침:"
+      steps:
+        android12plus:
+          step2: 알람 및 알림으로 이동하여 권한을 활성화하세요
+          step3: 정확한 알람 권한을 확인하세요
+        step1: "\"설정 열기\" 버튼을 누르세요"
+        step2: "열린 {appName} 앱의 알람 및 알림 페이지에서 \"알람 및 알림 설정 허용\"을 활성화하세요"
+      title: 정확한 알람 권한
+    fix_it: 수정하기
+    granted: 권한이 부여되었습니다
+    instructions: 지침
+    notification:
+      description: 알림을 받으려면 알림 권한이 필요합니다. 이 권한이 없으면 알림을 받을 수 없습니다.
+      instructions: "지침:"
+      steps:
+        android:
+          step1: "\"설정 열기\" 버튼을 누르세요"
+          step2: 메시지가 표시되면 알림을 허용하세요
+        ios:
+          step1: "\"설정 열기\" 버튼을 누르세요"
+          step2: 메시지가 표시되면 알림을 허용하세요
+      title: 알림 권한
+    open_settings: 설정 열기
+    startup:
+      description: 앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이 제대로 작동합니다.
+      importance: 자동 시작 설정 위치는 기기 제조업체에 따라 다르거나 존재하지 않을 수 있습니다.
+      instructions: "지침:"
+      steps:
+        step1: "\"설정 열기\" 버튼을 누르세요"
+        step2: "열린 설정 화면에서 \"{appName}\" 앱을 찾으세요"
+        step3: "\"자동 시작\", \"자동 실행\", \"부팅 시 시작\" 또는 유사한 권한을 활성화하세요"
+      title: 자동 시작 권한
+    title: 권한
+  startup:
+    disable_error: 시작 설정 비활성화에 실패했습니다
+    enable_error: 시작 설정 활성화에 실패했습니다
+    subtitle: 탭하여 시스템 설정을 열고 앱의 자동 시작 권한을 활성화하세요
+    title: 시작 시 실행
+  sync_devices:
+    title: 기기 동기화
+  title: 설정
