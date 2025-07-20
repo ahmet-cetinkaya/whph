@@ -52,15 +52,15 @@ class _LanguageDialog extends StatelessWidget {
   _LanguageDialog() : _translationService = container.resolve<ITranslationService>();
 
   static const List<_LanguageOption> _supportedLanguages = [
-    _LanguageOption(code: 'en', displayName: 'English'),
-    _LanguageOption(code: 'tr', displayName: 'Türkçe'),
     _LanguageOption(code: 'de', displayName: 'Deutsch'),
-    _LanguageOption(code: 'fr', displayName: 'Français'),
+    _LanguageOption(code: 'en', displayName: 'English'),
     _LanguageOption(code: 'es', displayName: 'Español'),
-    _LanguageOption(code: 'ru', displayName: 'Русский'),
+    _LanguageOption(code: 'fr', displayName: 'Français'),
     _LanguageOption(code: 'it', displayName: 'Italiano'),
     _LanguageOption(code: 'ja', displayName: '日本語'),
     _LanguageOption(code: 'ko', displayName: '한국어'),
+    _LanguageOption(code: 'ru', displayName: 'Русский'),
+    _LanguageOption(code: 'tr', displayName: 'Türkçe'),
     _LanguageOption(code: 'zh', displayName: '中文'),
   ];
 

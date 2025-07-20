@@ -12,15 +12,15 @@ import 'package:whph/src/presentation/ui/shared/services/background_translation_
 
 class TranslationService implements ITranslationService {
   static const _supportedLocales = [
-    Locale('en'),
-    Locale('tr'),
     Locale('de'),
-    Locale('fr'),
+    Locale('en'),
     Locale('es'),
-    Locale('ru'),
+    Locale('fr'),
     Locale('it'),
     Locale('ja'),
     Locale('ko'),
+    Locale('ru'),
+    Locale('tr'),
     Locale('zh'),
   ];
 
