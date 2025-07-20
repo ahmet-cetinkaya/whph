@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: 新しいタスクを追加
+  all_tasks_done: すべてのタスクが完了しました！
+  card:
+    schedule:
+      today: 今日のスケジュール
+      tomorrow: 明日のスケジュール
+    tooltips:
+      schedule: タスクをスケジュール
+  complete:
+    error: タスク完了の保存中に予期しないエラーが発生しました。
+  date_selection:
+    deadline_date_title: 期限日を選択
+    planned_date_title: 予定日を選択
+  delete:
+    error: タスクの削除中に予期しないエラーが発生しました。
+    message: このタスクを削除してもよろしいですか？
+    title: タスクを削除
+  details:
+    deadline_date:
+      label: 期限日
+    description:
+      hint: 説明を追加...
+      label: 説明
+    elapsed_time:
+      label: 経過時間
+    estimated_time:
+      label: 予想時間
+    is_completed: 完了
+    planned_date:
+      label: 予定日
+    priority:
+      label: 優先度
+    sub_tasks:
+      label: サブタスク
+    parent_task:
+      label: 親タスク
+      tooltip: クリックして親タスクに移動
+    tags:
+      hint: 関連付けるタグを選択
+      label: タグ
+    tags_hint: タスクのタグを選択
+    title:
+      label: タイトル
+    total_elapsed_time: 総経過時間
+  errors:
+    add_tag: タグの追加中に予期しないエラーが発生しました
+    adding_tag: タグの追加に失敗しました
+    get_tags: タグの取得中にエラーが発生しました
+    get_task: タスクの読み込み中に予期しないエラーが発生しました
+    loading_tags: タスクタグの読み込みに失敗しました
+    loading_task: タスクの読み込みに失敗しました
+    loading_tasks: タスクの読み込みに失敗しました
+    remove_tag: タグの削除中に予期しないエラーが発生しました
+    removing_tag: タグの削除に失敗しました
+    same_tag: 同じタグを2回追加することはできません
+    save_task: タスクの保存中に予期しないエラーが発生しました
+    saving_task: タスクの保存に失敗しました
+    sort_field_not_supported: ソートフィールドはサポートされていません
+    task_not_found: タスクが見つかりません
+    task_tag_already_deleted: タスクタグは既に削除されています
+    task_tag_already_exists: このタスクタグは既に存在します
+    task_tag_not_found: タスクタグが見つかりません
+  filters:
+    completion: 完了状況で絞り込み
+    deadline_date: 期限日で絞り込み
+    planned_date: 予定日で絞り込み
+    search:
+      placeholder: タスクを検索
+    tags: タグで絞り込み
+    tooltips:
+      filter_by_tags: タグでフィルター
+  help:
+    details:
+      content: |
+        タスク管理をマスターし、作業を効果的に整理、優先順位付け、追跡することで生産性を最大化しましょう。
+
+        ## ⚡ なぜ重要なのか？
+
+        効果的なタスク管理は生産性の基盤です。明確な優先順位と期限を持つ適切に構造化されたタスクは、最も重要なことに集中し、重要な作業が見落とされることを防ぎます。
+
+        ## 📝 タスクの整理
+
+        明確性と集中力を維持するために、包括的な詳細でタスクを構造化します。タグ、優先度、時間見積もりを使用して、作業負荷に対する体系的なアプローチを作成します。
+
+        - 🏷️ 意味のあるタグでタスクを分類
+        - ⚖️ 実証済みのフレームワークを使用して優先度を設定
+        - ⏱️ 時間要件を正確に見積もり
+        - 📅 現実的な期限とスケジュールを計画
+
+        ## ⏰ 時間管理
+
+        時間投資を追跡して作業パターンを理解し、効率を向上させます。適切な時間管理は散発的な努力を集中した生産性に変換します。
+
+        - 📊 実際の時間と見積もり時間を監視
+        - 🎯 高インパクトな活動に集中
+        - 📈 時間の経過とともに生産性パターンを分析
+        - ⏳ 緊急で重要なタスクのバランスを取る
+
+        ## 📊 優先度フレームワーク（アイゼンハワーマトリックス）
+
+        この実証済みの優先順位付け方法を使用してタスクを整理し、適切な時に適切なことに常に取り組んでいることを確認します。
+
+        - 🔥 **緊急かつ重要:** 即座に処理 - 危機管理と期限
+        - 📈 **重要だが緊急でない:** 戦略的にスケジュール - 計画とスキル開発
+        - ⚡ **緊急だが重要でない:** 可能な場合は委任 - 中断といくつかの会議
+        - 🗑️ **緊急でも重要でもない:** 排除 - 時間の無駄と低価値活動
+      title: タスク管理・生産性ガイド
+    overview:
+      content: |
+        整理され、集中し、作業負荷をコントロールするのに役立つ体系的なタスク管理で生産性を変革しましょう。
+
+        ## ⚡ なぜ重要なのか？
+
+        効果的なタスク管理は個人的および職業的成功の礎石です。作業を体系的に整理することで、ストレスを軽減し、一貫して期限を守り、重要な目標での意味のある進歩のためのスペースを作り出します。
+
+        ## 📋 タスクの整理
+
+        責任を管理するための構造化されたアプローチを作成します。よく整理されたタスクは明確な優先順位と日常業務の効率的な実行につながります。
+
+        - ✅ タスクを体系的に作成・分類
+        - 🏷️ 意味のあるタグで関連作業をグループ化
+        - ⚖️ 明確な優先度と期限を設定
+        - 🔍 迅速なアクセスのためにフィルターと検索を使用
+
+        ## ⏱️ 時間追跡と集中
+
+        時間投資を監視して生産性パターンを理解し、ワークフローを最適化します。時間の認識はより良い計画と改善されたパフォーマンスにつながります。
+
+        - ⏰ タスクごとの実際の時間を追跡
+        - 🎯 集中した作業セッションにマラソンモードを使用
+        - 📊 完了パターンと傾向を分析
+        - 🔄 時間見積もりを定期的に見直し・調整
+
+        ## 📈 進捗監視
+
+        成果を追跡し、作業パターンから学びます。定期的な見直しと反省は生産性システムの継続的改善を推進します。
+
+        - 📈 タスク完了率を監視
+        - 📅 日次・週次の進捗を見直し
+        - 🎯 ボトルネックと最適化の機会を特定
+        - 🏆 成果とマイルストーン完了を祝う
+      title: タスク管理・ワークフローガイド
+  marathon:
+    details:
+      title: タスクの詳細
+    help:
+      content: |
+        燃え尽きを防ぎながら深い集中を維持するのに役立つ構造化された作業セッションで、集中力と生産性を最大化しましょう。
+
+        ## ⚡ なぜ重要なのか？
+
+        集中した作業セッションは深い作業と高品質な成果にとって不可欠です。定期的な休憩を伴う構造化された間隔で作業することで、長時間の集中力のない作業期間からくる疲労を避けながら、ピークの精神的パフォーマンスを維持します。
+
+        ## ⏰ 時間制限付き集中セッション
+
+        最大効率のために作業を構造化する実証済みの時間管理技術を使用します。構造化されたセッションは集中力を維持し、タスクをより効果的に完了するのに役立ちます。
+
+        - 🎯 **クラシック集中:** 25分作業 / 5分休憩
+        - 📈 **拡張集中:** 50分作業 / 10分休憩
+        - 🔄 **長い休憩:** 4セッション後に15-30分
+        - ⚖️ **カスタムタイミング:** 自然なリズムに合わせて間隔を調整
+
+        ## 🧠 認知的利点
+
+        構造化された作業セッションは脳の自然な注意サイクルを活用してパフォーマンスを最適化し、品質と創造性を低下させる精神的疲労を防ぎます。
+
+        - 🎯 集中力と深い集中の向上
+        - 🔋 精神的疲労と燃え尽きの軽減
+        - 💪 定期的な成果による持続的なモチベーション
+        - ⚡ 時間認識と計画精度の向上
+
+        ## 📊 パフォーマンス最適化
+
+        集中した作業パターンを追跡してピーク生産性時間を理解し、最大効果のためにスケジュールを最適化します。
+
+        - 🏷️ 分析のためにタグで集中セッションを分類
+        - 📈 異なる時間での生産性パターンを監視
+        - 🚫 セッション開始前に気を散らすものを排除
+        - 🚶 身体的動きと精神的リセットのために休憩を使用
+      title: 集中作業セッション・時間管理ガイド
+      tooltip: マラソンヘルプツールチップ
+    label: マラソンモード
+    unpin_task_tooltip: 現在のタスクのピンを外す
+  new_task: 新しいタスク
+  no_tasks: タスクがありません
+  notifications:
+    deadline_message: "タスクの期限は{time}です"
+    deadline_title: "タスクの期限: {title}"
+    planned_message: "タスクは{time}に予定されています"
+    reminder_title: "タスクリマインダー: {title}"
+  page:
+    completed_tasks_title: 完了したタスク
+    title: タスク
+  pomodoro:
+    actions:
+      stop_timer: タイマーを停止
+    notifications:
+      break_completed: 休憩セッションが完了しました！
+      long_break_completed: 長い休憩が完了しました！
+      time_remaining_prefix: "残り時間:"
+      timer_completed: タイマーが完了しました！
+      title: ポモドーロタイマー
+      work_completed: 作業セッションが完了しました！
+    settings:
+      auto_start_break: 作業後に自動で休憩を開始
+      auto_start_section: 自動開始オプション
+      auto_start_work: 休憩後に自動で作業を開始
+      break_duration: 休憩時間
+      long_break_duration: 長い休憩時間
+      sessions_before_long_break: 長い休憩前のセッション数
+      ticking_sound: チクタク音を有効にする
+      ticking_sound_section: チクタク音
+      ticking_speed: 速度
+      ticking_volume: 音量
+      keep_screen_awake_section: 画面をオンに保つ
+      keep_screen_awake: セッション中は画面をオンに保つ
+      timer_label: セッション時間
+      title: タイマー設定
+      work_duration: 作業時間
+    system_tray:
+      app_running: アプリ実行中
+      complete_title: ポモドーロ完了
+      tap_to_open: タップして開く
+      timer_running: タイマー実行中
+  priorities:
+    not_urgent_important: 緊急でないが重要
+    not_urgent_not_important: 緊急でも重要でもない
+    urgent_important: 緊急かつ重要
+    urgent_not_important: 緊急だが重要でない
+  priority:
+    selection:
+      title: 優先度を選択
+    tooltips:
+      none: 優先度なし
+      not_urgent_important: 緊急でないが重要
+      not_urgent_not_important: 緊急でも重要でもない
+      urgent_important: 緊急かつ重要
+      urgent_not_important: 緊急だが重要でない
+    types:
+      none: 優先度なし
+      not_urgent_important: 緊急でないが重要
+      not_urgent_not_important: 緊急でも重要でもない
+      urgent_important: 緊急かつ重要
+      urgent_not_important: 緊急だが重要でない
+  quick_task:
+    create_error: タスク作成エラー
+    lock_description: 複数の類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
+    lock_settings: ロック設定
+    reset_all: すべてのフィールドをリセット
+    reset_confirm:
+      message: すべてのフィールドをリセットしてもよろしいですか？この操作は元に戻せません。
+      title: すべてのフィールドをリセット
+    title: クイックタスク
+    title_hint: タスクのタイトル
+    tooltips:
+      deadline_date: "期限: {date}"
+      deadline_date_not_set: "期限: 未設定"
+      estimated_time: "予想時間: {time}"
+      estimated_time_not_set: "予想時間: 未設定"
+      planned_date: "予定: {date}"
+      planned_date_not_set: "予定: 未設定"
+  recurrence:
+    count: 発生回数
+    custom: カスタム
+    daily: 毎日
+    daySuffix: 日
+    endDate: 終了日
+    enterCountHint: 回数を入力
+    interval:
+      label: 繰り返し間隔
+      prefix: 毎
+      suffix:
+        days: 日
+        months: ヶ月
+        weeks: 週
+        years: 年
+    label: 繰り返し
+    monthSuffix: ヶ月
+    monthly: 毎月
+    none: 繰り返しなし
+    range: 範囲
+    selectDateHint: 日付を選択
+    startDate: 開始日
+    summary:
+      endsAfter: 終了後
+      endsOnDate: 終了日
+      occurrences: 回
+      on: に
+      starts: 開始
+    weekDays: 曜日
+    weekSuffix: 週
+    weekly: 毎週
+    yearSuffix: 年
+    yearly: 毎年
+  reminder:
+    atTime: 予定時刻に
+    deadlineReminderLabel: 期限リマインダー
+    fifteenMinutesBefore: 15分前
+    fiveMinutesBefore: 5分前
+    none: リマインダーなし
+    oneDayBefore: 1日前
+    oneHourBefore: 1時間前
+    plannedReminderLabel: 予定日リマインダー
+  task_details: タスクの詳細
+  title: タスク
+  tooltips:
+    clear_date: 日付をクリア
+    decrease_estimated_time: 予想時間を減らす
+    edit_title: タイトルを編集
+    increase_estimated_time: 予想時間を増やす
+    set_reminder: リマインダーを設定
+    show_completed_tasks: 完了したタスクをフィルター

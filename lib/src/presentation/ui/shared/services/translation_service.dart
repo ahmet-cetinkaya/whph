@@ -19,6 +19,7 @@ class TranslationService implements ITranslationService {
     Locale('es'),
     Locale('ru'),
     Locale('it'),
+    Locale('ja'),
   ];
 
   @override

@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: バージョンの不一致
+shared:
+  buttons:
+    add: 追加
+    back: 戻る
+    cancel: キャンセル
+    close: 閉じる
+    confirm: 確認
+    delete: 削除
+    done: 完了
+    load_more: さらに読み込む
+    save: 保存
+    saved: 保存済み
+  calendar:
+    months:
+      apr: 4月
+      apr_short: 4月
+      aug: 8月
+      aug_short: 8月
+      dec: 12月
+      dec_short: 12月
+      feb: 2月
+      feb_short: 2月
+      jan: 1月
+      jan_short: 1月
+      jul: 7月
+      jul_short: 7月
+      jun: 6月
+      jun_short: 6月
+      mar: 3月
+      mar_short: 3月
+      may: 5月
+      may_short: 5月
+      nov: 11月
+      nov_short: 11月
+      oct: 10月
+      oct_short: 10月
+      sep: 9月
+      sep_short: 9月
+    week_days:
+      friday: 金曜日
+      friday_short: 金
+      monday: 月曜日
+      monday_short: 月
+      saturday: 土曜日
+      saturday_short: 土
+      sunday: 日曜日
+      sunday_short: 日
+      thursday: 木曜日
+      thursday_short: 木
+      tuesday: 火曜日
+      tuesday_short: 火
+      wednesday: 水曜日
+      wednesday_short: 水
+  change: 変更
+  color_picker:
+    confirm_selection: 選択を確認
+    select_color_title: 色を選択
+    tabs:
+      custom: カスタム
+      palette: カラー
+    title: カラーピッカー
+  data:
+    created_date_label: 作成日
+    modified_date_label: 更新日
+    name_label: 名前
+  date_filter:
+    title: 日付範囲を選択
+    tooltips:
+      clear: 日付フィルターをクリア
+      filter: 日付でフィルター
+  date_format:
+    hint: YYYY/MM/DD
+  days:
+    friday: 金曜日
+    friday_short: 金
+    monday: 月曜日
+    monday_short: 月
+    saturday: 土曜日
+    saturday_short: 土
+    sunday: 日曜日
+    sunday_short: 日
+    thursday: 木曜日
+    thursday_short: 木
+    tuesday: 火曜日
+    tuesday_short: 火
+    wednesday: 水曜日
+    wednesday_short: 水
+  editor:
+    markdown:
+      hint: Markdown形式で記述できます...
+      tooltips:
+        bold: 太字
+        italic: 斜体
+        strikethrough: 取り消し線
+        code: コード
+        link: リンク
+        quote: 引用
+        bulleted_list: 箇条書きリスト
+        numbered_list: 番号付きリスト
+        horizontal_rule: 水平線
+        edit: 編集
+        preview: プレビュー
+  errors:
+    deleting: データの削除中にエラーが発生しました
+    file_not_found: ファイルが見つかりません
+    file_pick: ファイル選択中にエラーが発生しました
+    file_read: ファイル読み込み中にエラーが発生しました
+    file_save: ファイル保存中にエラーが発生しました
+    file_write: ファイル書き込み中にエラーが発生しました
+    loading: データの読み込み中にエラーが発生しました
+    report_subject: "{appName} アプリ: 予期しないエラーレポート"
+    report_template: |
+      こんにちは、{appName}アプリの使用中に予期しないエラーが発生しました。
+
+      問題の診断に役立つ情報は以下の通りです：
+      アプリバージョン: {version}
+      デバイス情報: {device}
+      OS: {os}
+      OSバージョン: {osVersion}
+      エラーメッセージ:
+      ```
+      {error}
+      スタックトレース:
+      {stackTrace}
+      ```
+
+      この問題の解決をお願いします。
+
+      よろしくお願いします！
+    saving: データの保存中にエラーが発生しました
+    storage_permission: ストレージ権限が必要です
+    storage_permission_denied: ストレージ権限が拒否されました
+    unexpected: 予期しないエラーが発生しました
+  filters:
+    search: 検索
+  help:
+    tooltip: ヘルプ
+  messages:
+    confirm_delete: このアイテムを削除してもよろしいですか？
+    no_items_found: アイテムがありません
+  nav:
+    items:
+      app_usages: アプリ使用状況
+      habits: 習慣
+      more: その他
+      notes: ノート
+      settings: 設定
+      tags: タグ
+      tasks: タスク
+      today: 今日
+  none_option: "タグなし"
+  regex_help:
+    examples:
+      chat: '"Slack"または"Discord"にマッチ'
+      chrome: '"Chrome"を含むウィンドウタイトルにマッチ'
+      exact_chrome: '正確に"Chrome"にマッチ'
+      pdf: 任意のPDFファイルにマッチ
+      vscode: 任意のVS Codeウィンドウにマッチ
+    tips:
+      any_chars: '".*"で任意の文字にマッチ'
+      dot: '"\\."でドットにマッチ'
+      end: '"$"でテキストの終端にマッチ'
+      or: '"|"はOR演算子'
+      start: '"^"でテキストの開始にマッチ'
+    tips_title: 💡 ヒント
+    title: パターン例
+  report_error: エラーを報告
+  save_list_options: リストオプションを保存
+  search:
+    placeholder: 検索
+    tooltip: アイテムを検索
+  sections:
+    habits: 習慣
+    special_filters: 特別フィルター
+    statistics: 統計
+    tags: タグ
+    tasks: タスク
+    time: 時間
+  sort:
+    ascending: 昇順
+    custom_order:
+      description: ドラッグ&ドロップでアイテムを並び替え
+      title: カスタムソート
+    descending: 降順
+    remove_criteria: 条件を削除
+    reset_to_default: デフォルトにリセット
+    sort: ソート
+  statistics:
+    daily_usage:
+      description: 曜日ごとの総使用時間を表示
+      title: 日別使用状況
+    hourly_usage:
+      description: 時間帯ごとの総使用時間を表示
+      title: 時間別使用状況
+  time:
+    not_set: "未設定"
+  time_periods:
+    custom: カスタム
+    last_month: 先月
+    last_three_months: 過去3ヶ月
+    last_week: 先週
+    this_month: 今月
+    this_three_months: この3ヶ月
+    this_week: 今週
+    today: 今日
+  tooltips:
+    compare_with_previous: 前の期間と比較
+    filter_by_tags: タグでフィルター
+    refresh: 更新
+  ui:
+    report_error: 報告
+  units:
+    days: 日
+    hours: 時間
+    minutes: 分
+    minutes_short: 分
+    seconds: 秒
+  update_dialog:
+    buttons:
+      download_page: ダウンロードページ
+      later: 後で
+      update_now: 今すぐ更新
+    downloading: アップデートをダウンロード中...
+    failed: 更新に失敗しました。
+    message: "新しいバージョン（{version}）が利用可能です。"
+    question: 今すぐ更新しますか？
+    success: アップデートのダウンロードが完了しました！
+    title: アップデート利用可能！
+  validation:
+    required: "{field}は必須です"

@@ -1,0 +1,127 @@
+tags:
+  actions:
+    add: タグを追加
+    archive: タグをアーカイブ
+    delete: タグを削除
+    edit: タグを編集
+    hide_archived: アーカイブされたタグを非表示
+    show_archived: アーカイブされたタグを表示
+    unarchive: タグのアーカイブを解除
+  categories:
+    all: すべて
+    app_usage: アプリ使用状況
+    habits: 習慣
+    tasks: タスク
+  default_name: 新しいタグ
+  details:
+    archived: アーカイブ済み
+    color: 色
+    help:
+      description: 詳細ヘルプの説明
+      title: 詳細ヘルプタイトル
+    name: 名前
+    related_tags: 関連タグ
+    select_tag: タグを選択
+    tasks_label: タスク
+  errors:
+    creating: タグの作成に失敗しました
+    deleting: タグの削除に失敗しました
+    get_tags: タグの取得中にエラーが発生しました
+    loading: タグの読み込みに失敗しました
+    loading_archive_status: アーカイブ状況の読み込みに失敗しました
+    same_tag: プライマリタグとセカンダリタグは同じにできません
+    saving: タグの保存に失敗しました
+    tag_not_found: タグが見つかりません
+    tag_tag_already_exists: このタグ関係は既に存在します
+    tag_tag_not_found: タグ関係が見つかりません
+    toggling_archive: アーカイブ状況の切り替えに失敗しました
+  filter:
+    all_categories: すべてのカテゴリ
+    select_category: カテゴリを選択
+  filter_tooltip: タグでフィルター
+  help:
+    content: タグヘルプコンテンツ
+    overview:
+      content: |
+        作業を整理し、時間投資を追跡し、最も重要なことに明確な焦点を維持するのに役立つ戦略的タグ付けで生産性を変革しましょう。
+
+        ## ⚡ なぜ重要なのか？
+
+        タグベースの整理は効果的な時間管理と生産性の基盤です。意味のあるタグで活動を分類することで、時間の使い方について明確な洞察を得て、焦点と効率を最適化するための情報に基づいた決定を下すことができます。
+
+        ## 📊 時間投資分析
+
+        時間がどこに行くかを理解し、優先事項についてデータ駆動の決定を下します。タグを使った時間追跡は、スケジュールと作業習慣を最適化するのに役立つパターンを明らかにします。
+
+        - ⏱️ 異なる活動カテゴリで費やした時間を監視
+        - 📅 特定の期間とトレンドでの時間投資を追跡
+        - ⚖️ プロジェクトと責任全体での時間配分を比較
+        - 📈 生産性パターンとピークパフォーマンス時間を特定
+        - 🎯 高インパクト活動にエネルギーを集中
+
+        ## 🗂️ 戦略的整理
+
+        ニーズに合わせてスケールする作業整理の体系的アプローチを作成します。よく構造化されたタグは効率的な生産性システムの基盤を形成します。
+
+        - 🔍 マルチタグ検索で情報を迅速にフィルターし見つける
+        - 🗄️ 完了したプロジェクトをアーカイブしてクリーンな整理を維持
+        - 🧩 作業パターンを反映する階層構造を構築
+        - 👥 より良いプロジェクト管理のために関連活動をグループ化
+        - ⏳ すべての活動での包括的な時間追跡を有効にする
+
+        ## 💡 最適化戦略
+
+        組織システムの効果を最大化し、長期的な生産性成長を維持するための高度なタグ付け技術を活用します。
+
+        - 🏷️ 時間が経っても意味のある明確で説明的な名前を使用
+        - 🔗 **階層構造を作成:** プロジェクト → 部門 → エリア
+        - 📊 改善機会を特定するために時間分析レポートを定期的にレビュー
+        - 🗄️ 完了した作業をアーカイブしてシステムの清潔さを維持
+        - 🎯 気を散らすものを排除し集中力を向上させるために集中フィルタリングを適用
+      title: タグベース整理・時間管理ガイド
+    title: タグヘルプ
+  labels:
+    color: 色
+    description: 説明
+    name: 名前
+    tags: タグ
+  list:
+    filter_tooltip: タグでフィルター
+    no_tags: タグがありません
+  messages:
+    archive_confirm: このタグをアーカイブしてもよろしいですか？
+    confirm_archive: このタグをアーカイブしてもよろしいですか？
+    confirm_delete: このタグを削除してもよろしいですか？
+    confirm_unarchive: このタグのアーカイブを解除してもよろしいですか？
+    unarchive_confirm: このタグのアーカイブを解除してもよろしいですか？
+  new_tag: 新しいタグ
+  no_tags: タグがありません
+  none_option: なし
+  search:
+    clear_all: すべてクリア
+    label: タグを検索
+  sections:
+    list: タグ
+  selection:
+    done: 完了
+  tag_details: タグの詳細
+  time_bar_chart:
+    by_element: 要素別
+    no_data: データがありません
+    title: 時間分布
+  time_chart:
+    no_data: データがありません
+    other_category: その他
+  time_distribution: 時間分布
+  time_records: 時間記録
+  title: タグ
+  tooltips:
+    add_tag: タグを追加
+    add_task: 新しいタスクを追加
+    archive_tag: タグをアーカイブ
+    color: クリックしてタグに色を割り当て
+    delete_tag: タグを削除
+    edit_name: 名前を編集
+    remove_tag: タグを削除
+    select: クリックしてタグを選択
+    unarchive_tag: タグのアーカイブを解除
