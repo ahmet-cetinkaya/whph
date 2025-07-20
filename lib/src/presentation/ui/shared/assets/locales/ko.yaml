@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: 버전 불일치
+shared:
+  buttons:
+    add: 추가
+    back: 뒤로
+    cancel: 취소
+    close: 닫기
+    confirm: 확인
+    delete: 삭제
+    done: 완료
+    load_more: 더 보기
+    save: 저장
+    saved: 저장됨
+  calendar:
+    months:
+      apr: 4월
+      apr_short: 4월
+      aug: 8월
+      aug_short: 8월
+      dec: 12월
+      dec_short: 12월
+      feb: 2월
+      feb_short: 2월
+      jan: 1월
+      jan_short: 1월
+      jul: 7월
+      jul_short: 7월
+      jun: 6월
+      jun_short: 6월
+      mar: 3월
+      mar_short: 3월
+      may: 5월
+      may_short: 5월
+      nov: 11월
+      nov_short: 11월
+      oct: 10월
+      oct_short: 10월
+      sep: 9월
+      sep_short: 9월
+    week_days:
+      friday: 금요일
+      friday_short: 금
+      monday: 월요일
+      monday_short: 월
+      saturday: 토요일
+      saturday_short: 토
+      sunday: 일요일
+      sunday_short: 일
+      thursday: 목요일
+      thursday_short: 목
+      tuesday: 화요일
+      tuesday_short: 화
+      wednesday: 수요일
+      wednesday_short: 수
+  change: 변경
+  color_picker:
+    confirm_selection: 선택 확인
+    select_color_title: 색상 선택
+    tabs:
+      custom: 사용자 정의
+      palette: 색상
+    title: 색상 선택기
+  data:
+    created_date_label: 생성일
+    modified_date_label: 수정일
+    name_label: 이름
+  date_filter:
+    title: 날짜 범위 선택
+    tooltips:
+      clear: 날짜 필터 지우기
+      filter: 날짜로 필터링
+  date_format:
+    hint: YYYY/MM/DD
+  days:
+    friday: 금요일
+    friday_short: 금
+    monday: 월요일
+    monday_short: 월
+    saturday: 토요일
+    saturday_short: 토
+    sunday: 일요일
+    sunday_short: 일
+    thursday: 목요일
+    thursday_short: 목
+    tuesday: 화요일
+    tuesday_short: 화
+    wednesday: 수요일
+    wednesday_short: 수
+  editor:
+    markdown:
+      hint: 마크다운 형식으로 작성할 수 있습니다...
+      tooltips:
+        bold: 굵게
+        italic: 기울임
+        strikethrough: 취소선
+        code: 코드
+        link: 링크
+        quote: 인용
+        bulleted_list: 글머리 기호 목록
+        numbered_list: 번호 목록
+        horizontal_rule: 수평선
+        edit: 편집
+        preview: 미리보기
+  errors:
+    deleting: 데이터 삭제 중 오류가 발생했습니다
+    file_not_found: 파일을 찾을 수 없습니다
+    file_pick: 파일 선택 중 오류가 발생했습니다
+    file_read: 파일 읽기 중 오류가 발생했습니다
+    file_save: 파일 저장 중 오류가 발생했습니다
+    file_write: 파일 쓰기 중 오류가 발생했습니다
+    loading: 데이터 로드 중 오류가 발생했습니다
+    report_subject: "{appName} 앱: 예상치 못한 오류 보고서"
+    report_template: |
+      안녕하세요, {appName} 앱 사용 중 예상치 못한 오류가 발생했습니다.
+
+      문제 진단에 도움이 될 정보는 다음과 같습니다:
+      앱 버전: {version}
+      기기 정보: {device}
+      OS: {os}
+      OS 버전: {osVersion}
+      오류 메시지:
+      ```
+      {error}
+      스택 추적:
+      {stackTrace}
+      ```
+
+      이 문제 해결을 도와주세요.
+
+      감사합니다!
+    saving: 데이터 저장 중 오류가 발생했습니다
+    storage_permission: 저장소 권한이 필요합니다
+    storage_permission_denied: 저장소 권한이 거부되었습니다
+    unexpected: 예상치 못한 오류가 발생했습니다
+  filters:
+    search: 검색
+  help:
+    tooltip: 도움말
+  messages:
+    confirm_delete: 이 항목을 삭제하시겠습니까?
+    no_items_found: 항목 없음
+  nav:
+    items:
+      app_usages: 앱 사용량
+      habits: 습관
+      more: 더보기
+      notes: 노트
+      settings: 설정
+      tags: 태그
+      tasks: 작업
+      today: 오늘
+  none_option: "태그 없음"
+  regex_help:
+    examples:
+      chat: "\"Slack\" 또는 \"Discord\"와 일치"
+      chrome: "\"Chrome\"을 포함하는 창 제목과 일치"
+      exact_chrome: "정확히 \"Chrome\"과 일치"
+      pdf: 모든 PDF 파일과 일치
+      vscode: 모든 VS Code 창과 일치
+    tips:
+      any_chars: "\".*\"로 모든 문자와 일치"
+      dot: "\"\\.\"로 점과 일치"
+      end: "\"$\"로 텍스트 끝과 일치"
+      or: "\"|\"는 OR 연산자"
+      start: "\"^\"로 텍스트 시작과 일치"
+    tips_title: 💡 팁
+    title: 패턴 예제
+  report_error: 오류 보고
+  save_list_options: 목록 옵션 저장
+  search:
+    placeholder: 검색
+    tooltip: 항목 검색
+  sections:
+    habits: 습관
+    special_filters: 특별 필터
+    statistics: 통계
+    tags: 태그
+    tasks: 작업
+    time: 시간
+  sort:
+    ascending: 오름차순
+    custom_order:
+      description: 드래그 앤 드롭으로 항목 순서 변경
+      title: 사용자 정의 정렬
+    descending: 내림차순
+    remove_criteria: 조건 제거
+    reset_to_default: 기본값으로 재설정
+    sort: 정렬
+  statistics:
+    daily_usage:
+      description: 요일별 총 사용 시간을 표시
+      title: 일별 사용량
+    hourly_usage:
+      description: 시간대별 총 사용 시간을 표시
+      title: 시간별 사용량
+  time:
+    not_set: "설정되지 않음"
+  time_periods:
+    custom: 사용자 정의
+    last_month: 지난달
+    last_three_months: 지난 3개월
+    last_week: 지난주
+    this_month: 이번 달
+    this_three_months: 최근 3개월
+    this_week: 이번 주
+    today: 오늘
+  tooltips:
+    compare_with_previous: 이전 기간과 비교
+    filter_by_tags: 태그로 필터링
+    refresh: 새로고침
+  ui:
+    report_error: 보고
+  units:
+    days: 일
+    hours: 시간
+    minutes: 분
+    minutes_short: 분
+    seconds: 초
+  update_dialog:
+    buttons:
+      download_page: 다운로드 페이지
+      later: 나중에
+      update_now: 지금 업데이트
+    downloading: 업데이트 다운로드 중...
+    failed: 업데이트에 실패했습니다.
+    message: "새 버전({version})을 사용할 수 있습니다."
+    question: 지금 업데이트하시겠습니까?
+    success: 업데이트 다운로드가 완료되었습니다!
+    title: 업데이트 사용 가능!
+  validation:
+    required: "{field}은(는) 필수입니다"

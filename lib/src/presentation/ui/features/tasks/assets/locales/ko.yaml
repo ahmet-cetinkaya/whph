@@ -1,0 +1,314 @@
+tasks:
+  add_button:
+    tooltip: 새 작업 추가
+  all_tasks_done: 모든 작업이 완료되었습니다!
+  card:
+    schedule:
+      today: 오늘 일정
+      tomorrow: 내일 일정
+    tooltips:
+      schedule: 작업 일정 잡기
+  complete:
+    error: 작업 완료 저장 중 예상치 못한 오류가 발생했습니다.
+  date_selection:
+    deadline_date_title: 마감일 선택
+    planned_date_title: 계획일 선택
+  delete:
+    error: 작업 삭제 중 예상치 못한 오류가 발생했습니다.
+    message: 이 작업을 삭제하시겠습니까?
+    title: 작업 삭제
+  details:
+    deadline_date:
+      label: 마감일
+    description:
+      hint: 설명 추가...
+      label: 설명
+    elapsed_time:
+      label: 경과 시간
+    estimated_time:
+      label: 예상 시간
+    is_completed: 완료됨
+    planned_date:
+      label: 계획일
+    priority:
+      label: 우선순위
+    sub_tasks:
+      label: 하위 작업
+    parent_task:
+      label: 상위 작업
+      tooltip: 클릭하여 상위 작업으로 이동
+    tags:
+      hint: 연결할 태그 선택
+      label: 태그
+    tags_hint: 작업의 태그 선택
+    title:
+      label: 제목
+    total_elapsed_time: 총 경과 시간
+  errors:
+    add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다
+    adding_tag: 태그 추가에 실패했습니다
+    get_tags: 태그 가져오기 중 오류가 발생했습니다
+    get_task: 작업 로드 중 예상치 못한 오류가 발생했습니다
+    loading_tags: 작업 태그 로드에 실패했습니다
+    loading_task: 작업 로드에 실패했습니다
+    loading_tasks: 작업 로드에 실패했습니다
+    remove_tag: 태그 제거 중 예상치 못한 오류가 발생했습니다
+    removing_tag: 태그 제거에 실패했습니다
+    same_tag: 같은 태그를 두 번 추가할 수 없습니다
+    save_task: 작업 저장 중 예상치 못한 오류가 발생했습니다
+    saving_task: 작업 저장에 실패했습니다
+    sort_field_not_supported: 정렬 필드가 지원되지 않습니다
+    task_not_found: 작업을 찾을 수 없습니다
+    task_tag_already_deleted: 작업 태그가 이미 삭제되었습니다
+    task_tag_already_exists: 이 작업 태그가 이미 존재합니다
+    task_tag_not_found: 작업 태그를 찾을 수 없습니다
+  filters:
+    completion: 완료 상태별
+    deadline_date: 마감일별
+    planned_date: 계획일별
+    search:
+      placeholder: 작업 검색
+    tags: 태그별
+    tooltips:
+      filter_by_tags: 태그로 필터링
+  help:
+    details:
+      content: |
+        작업을 효과적으로 정리, 우선순위 지정, 추적하여 작업 관리를 마스터하고 생산성을 극대화하세요.
+
+        ## ⚡ 왜 중요한가요?
+
+        효과적인 작업 관리는 생산성의 기초입니다. 명확한 우선순위와 마감일을 가진 적절히 구조화된 작업은 가장 중요한 것에 집중하고 중요한 작업이 빠지지 않도록 도와줍니다.
+
+        ## 📝 작업 정리
+
+        명확성과 집중력을 유지하기 위해 포괄적인 세부 정보로 작업을 구조화하세요. 태그, 우선순위, 시간 추정을 사용하여 작업량에 대한 체계적인 접근 방식을 만드세요.
+
+        - 🏷️ 의미 있는 태그로 작업 분류
+        - ⚖️ 검증된 프레임워크를 사용하여 우선순위 설정
+        - ⏱️ 시간 요구 사항을 정확하게 추정
+        - 📅 현실적인 마감일과 일정 계획
+
+        ## ⏰ 시간 관리
+
+        시간 투자를 추적하여 작업 패턴을 이해하고 효율성을 개선하세요. 적절한 시간 관리는 흩어진 노력을 집중된 생산성으로 변환합니다.
+
+        - 📊 실제 시간 대 예상 시간 모니터링
+        - 🎯 고영향 활동에 집중
+        - 📈 시간 경과에 따른 생산성 패턴 분석
+        - ⏳ 긴급하고 중요한 작업의 균형 맞추기
+
+        ## 📊 우선순위 프레임워크 (아이젠하워 매트릭스)
+
+        이 검증된 우선순위 지정 방법을 사용하여 작업을 정리하고 적절한 시간에 적절한 일을 항상 하고 있는지 확인하세요.
+
+        - 🔥 **긴급하고 중요:** 즉시 처리 - 위기 관리 및 마감일
+        - 📈 **중요하지만 긴급하지 않음:** 전략적으로 일정 잡기 - 계획 및 기술 개발
+        - ⚡ **긴급하지만 중요하지 않음:** 가능하면 위임 - 방해 요소 및 일부 회의
+        - 🗑️ **긴급하지도 중요하지도 않음:** 제거 - 시간 낭비 및 저가치 활동
+      title: 작업 관리 및 생산성 가이드
+    overview:
+      content: |
+        체계적인 작업 관리로 생산성을 변화시켜 정리되고, 집중되며, 작업량을 통제할 수 있도록 도와주세요.
+
+        ## ⚡ 왜 중요한가요?
+
+        효과적인 작업 관리는 개인적, 직업적 성공의 초석입니다. 작업을 체계적으로 정리함으로써 스트레스를 줄이고, 일관되게 마감일을 맞추며, 중요한 목표에서 의미 있는 진전을 위한 공간을 만들어냅니다.
+
+        ## 📋 작업 정리
+
+        책임을 관리하기 위한 구조화된 접근 방식을 만드세요. 잘 정리된 작업은 명확한 우선순위와 일상 업무의 효율적인 실행으로 이어집니다.
+
+        - ✅ 작업을 체계적으로 생성하고 분류
+        - 🏷️ 의미 있는 태그로 관련 작업 그룹화
+        - ⚖️ 명확한 우선순위와 마감일 설정
+        - 🔍 빠른 접근을 위해 필터와 검색 사용
+
+        ## ⏱️ 시간 추적 및 집중
+
+        시간 투자를 모니터링하여 생산성 패턴을 이해하고 워크플로우를 최적화하세요. 시간 인식은 더 나은 계획과 향상된 성과로 이어집니다.
+
+        - ⏰ 작업당 실제 소요 시간 추적
+        - 🎯 집중된 작업 세션을 위해 마라톤 모드 사용
+        - 📊 완료 패턴과 트렌드 분석
+        - 🔄 시간 추정을 정기적으로 검토하고 조정
+
+        ## 📈 진행 상황 모니터링
+
+        성취를 추적하고 작업 패턴에서 배우세요. 정기적인 검토와 반성은 생산성 시스템의 지속적인 개선을 이끕니다.
+
+        - 📈 작업 완료율 모니터링
+        - 📅 일일 및 주간 진행 상황 검토
+        - 🎯 병목 현상과 최적화 기회 식별
+        - 🏆 성취와 이정표 완료 축하
+      title: 작업 관리 및 워크플로우 가이드
+  marathon:
+    details:
+      title: 작업 세부 정보
+    help:
+      content: |
+        번아웃을 방지하면서 깊은 집중을 유지하는 데 도움이 되는 구조화된 작업 세션으로 집중력과 생산성을 극대화하세요.
+
+        ## ⚡ 왜 중요한가요?
+
+        집중된 작업 세션은 깊은 작업과 고품질 결과물에 필수적입니다. 정기적인 휴식과 함께 구조화된 간격으로 작업함으로써 장시간의 집중력 없는 작업 기간에서 오는 피로를 피하면서 최고의 정신적 성과를 유지합니다.
+
+        ## ⏰ 시간 제한 집중 세션
+
+        최대 효율성을 위해 작업을 구조화하는 검증된 시간 관리 기법을 사용하세요. 구조화된 세션은 집중력을 유지하고 작업을 더 효과적으로 완료하는 데 도움이 됩니다.
+
+        - 🎯 **클래식 집중:** 25분 작업 / 5분 휴식
+        - 📈 **확장 집중:** 50분 작업 / 10분 휴식
+        - 🔄 **긴 휴식:** 4세션 후 15-30분
+        - ⚖️ **사용자 정의 타이밍:** 자연스러운 리듬에 맞게 간격 조정
+
+        ## 🧠 인지적 이점
+
+        구조화된 작업 세션은 뇌의 자연스러운 주의 주기를 활용하여 성과를 최적화하고 품질과 창의성을 저하시키는 정신적 피로를 방지합니다.
+
+        - 🎯 향상된 집중력과 깊은 집중
+        - 🔋 정신적 피로와 번아웃 감소
+        - 💪 정기적인 성취를 통한 지속적인 동기 부여
+        - ⚡ 향상된 시간 인식과 계획 정확성
+
+        ## 📊 성과 최적화
+
+        집중된 작업 패턴을 추적하여 최고 생산성 시간을 이해하고 최대 효과를 위해 일정을 최적화하세요.
+
+        - 🏷️ 분석을 위해 태그로 집중 세션 분류
+        - 📈 다양한 시간대의 생산성 패턴 모니터링
+        - 🚫 세션 시작 전 방해 요소 제거
+        - 🚶 신체 활동과 정신적 재설정을 위해 휴식 사용
+      title: 집중 작업 세션 및 시간 관리 가이드
+      tooltip: 마라톤 도움말 툴팁
+    label: 마라톤 모드
+    unpin_task_tooltip: 현재 작업 고정 해제
+  new_task: 새 작업
+  no_tasks: 작업 없음
+  notifications:
+    deadline_message: "작업 마감일은 {time}입니다"
+    deadline_title: "작업 마감일: {title}"
+    planned_message: "작업이 {time}에 계획되어 있습니다"
+    reminder_title: "작업 알림: {title}"
+  page:
+    completed_tasks_title: 완료된 작업
+    title: 작업
+  pomodoro:
+    actions:
+      stop_timer: 타이머 중지
+    notifications:
+      break_completed: 휴식 세션이 완료되었습니다!
+      long_break_completed: 긴 휴식이 완료되었습니다!
+      time_remaining_prefix: "남은 시간:"
+      timer_completed: 타이머가 완료되었습니다!
+      title: 포모도로 타이머
+      work_completed: 작업 세션이 완료되었습니다!
+    settings:
+      auto_start_break: 작업 후 자동으로 휴식 시작
+      auto_start_section: 자동 시작 옵션
+      auto_start_work: 휴식 후 자동으로 작업 시작
+      break_duration: 휴식 시간
+      long_break_duration: 긴 휴식 시간
+      sessions_before_long_break: 긴 휴식 전 세션 수
+      ticking_sound: 똑딱 소리 활성화
+      ticking_sound_section: 똑딱 소리
+      ticking_speed: 속도
+      ticking_volume: 음량
+      keep_screen_awake_section: 화면 켜짐 유지
+      keep_screen_awake: 세션 중 화면 켜짐 유지
+      timer_label: 세션 시간
+      title: 타이머 설정
+      work_duration: 작업 시간
+    system_tray:
+      app_running: 앱 실행 중
+      complete_title: 포모도로 완료
+      tap_to_open: 탭하여 열기
+      timer_running: 타이머 실행 중
+  priorities:
+    not_urgent_important: 긴급하지 않지만 중요함
+    not_urgent_not_important: 긴급하지도 중요하지도 않음
+    urgent_important: 긴급하고 중요함
+    urgent_not_important: 긴급하지만 중요하지 않음
+  priority:
+    selection:
+      title: 우선순위 선택
+    tooltips:
+      none: 우선순위 없음
+      not_urgent_important: 긴급하지 않지만 중요함
+      not_urgent_not_important: 긴급하지도 중요하지도 않음
+      urgent_important: 긴급하고 중요함
+      urgent_not_important: 긴급하지만 중요하지 않음
+    types:
+      none: 우선순위 없음
+      not_urgent_important: 긴급하지 않지만 중요함
+      not_urgent_not_important: 긴급하지도 중요하지도 않음
+      urgent_important: 긴급하고 중요함
+      urgent_not_important: 긴급하지만 중요하지 않음
+  quick_task:
+    create_error: 작업 생성 오류
+    lock_description: 여러 유사한 작업을 생성할 때 값을 유지하기 위해 속성을 잠그세요. 잠긴 속성은 양식을 재설정할 때 지워지지 않습니다.
+    lock_settings: 잠금 설정
+    reset_all: 모든 필드 재설정
+    reset_confirm:
+      message: 모든 필드를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+      title: 모든 필드 재설정
+    title: 빠른 작업
+    title_hint: 작업 제목
+    tooltips:
+      deadline_date: "마감일: {date}"
+      deadline_date_not_set: "마감일: 설정되지 않음"
+      estimated_time: "예상 시간: {time}"
+      estimated_time_not_set: "예상 시간: 설정되지 않음"
+      planned_date: "계획일: {date}"
+      planned_date_not_set: "계획일: 설정되지 않음"
+  recurrence:
+    count: 발생 횟수
+    custom: 사용자 정의
+    daily: 매일
+    daySuffix: 일
+    endDate: 종료일
+    enterCountHint: 횟수 입력
+    interval:
+      label: 반복 간격
+      prefix: 매
+      suffix:
+        days: 일
+        months: 개월
+        weeks: 주
+        years: 년
+    label: 반복
+    monthSuffix: 개월
+    monthly: 매월
+    none: 반복 없음
+    range: 범위
+    selectDateHint: 날짜 선택
+    startDate: 시작일
+    summary:
+      endsAfter: 종료 후
+      endsOnDate: 종료일
+      occurrences: 회
+      on: 에
+      starts: 시작
+    weekDays: 요일
+    weekSuffix: 주
+    weekly: 매주
+    yearSuffix: 년
+    yearly: 매년
+  reminder:
+    atTime: 예정된 시간에
+    deadlineReminderLabel: 마감일 알림
+    fifteenMinutesBefore: 15분 전
+    fiveMinutesBefore: 5분 전
+    none: 알림 없음
+    oneDayBefore: 1일 전
+    oneHourBefore: 1시간 전
+    plannedReminderLabel: 계획일 알림
+  task_details: 작업 세부 정보
+  title: 작업
+  tooltips:
+    clear_date: 날짜 지우기
+    decrease_estimated_time: 예상 시간 줄이기
+    edit_title: 제목 편집
+    increase_estimated_time: 예상 시간 늘리기
+    set_reminder: 알림 설정
+    show_completed_tasks: 완료된 작업 필터링
