@@ -1,15 +1,30 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/services.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 class DeviceInfoHelper {
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  static const MethodChannel _appInfoChannel = MethodChannel('me.ahmetcetinkaya.whph/app_info');
 
   static Future<String> getDeviceName() async {
     try {
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
-        return '${androidInfo.brand.toUpperCase()} ${androidInfo.model}';
+        String deviceName = '${androidInfo.brand.toUpperCase()} ${androidInfo.model}';
+        
+        // Check if running in work profile and add (Work) suffix
+        try {
+          final isWorkProfile = await _appInfoChannel.invokeMethod<bool>('isRunningInWorkProfile') ?? false;
+          if (isWorkProfile) {
+            deviceName += ' (Work)';
+          }
+        } catch (e) {
+          Logger.error('Failed to check work profile status: $e');
+          // Continue without work profile detection if it fails
+        }
+        
+        return deviceName;
       }
 
       final userName = Platform.environment['USERNAME'] ?? Platform.environment['USER'];
