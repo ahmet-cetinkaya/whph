@@ -45,11 +45,10 @@ import 'package:flutter/foundation.dart';
 enum ImportStrategy { replace, merge }
 
 class ImportDataCommand implements IRequest<ImportDataCommandResponse> {
-  final dynamic fileContent; // String for JSON, Uint8List for backup
+  final Uint8List backupData;
   final ImportStrategy strategy;
-  final bool isBackupFile;
 
-  ImportDataCommand(this.fileContent, this.strategy, {this.isBackupFile = false});
+  ImportDataCommand(this.backupData, this.strategy);
 }
 
 class ImportDataCommandResponse {}
@@ -201,42 +200,26 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
   @override
   Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
-    Map<String, dynamic> data;
-    
-    if (request.isBackupFile) {
-      if (request.fileContent is! Uint8List) {
-        throw BusinessException('Invalid content type for backup file.', SettingTranslationKeys.backupInvalidFormatError);
-      }
-      // Handle backup file (.whph)
-      final backupData = request.fileContent as Uint8List;
-      
-      // Validate header
-      if (!compressionService.validateHeader(backupData)) {
-        throw BusinessException(
-          'Invalid backup file format',
-          SettingTranslationKeys.backupInvalidFormatError,
-        );
-      }
-      
-      // Validate checksum
-      final isValidChecksum = await compressionService.validateChecksum(backupData);
-      if (!isValidChecksum) {
-        throw BusinessException(
-          'Backup file is corrupted',
-          SettingTranslationKeys.backupCorruptedError,
-        );
-      }
-      
-      // Extract and decompress data
-      final jsonString = await compressionService.extractFromWhphFile(backupData);
-      data = json.decode(jsonString);
-    } else {
-      if (request.fileContent is! String) {
-        throw BusinessException('Invalid content type for JSON file.', SettingTranslationKeys.importError);
-      }
-      // Handle JSON file
-      data = json.decode(request.fileContent as String);
+    // Validate header
+    if (!compressionService.validateHeader(request.backupData)) {
+      throw BusinessException(
+        'Invalid backup file format',
+        SettingTranslationKeys.backupInvalidFormatError,
+      );
     }
+    
+    // Validate checksum
+    final isValidChecksum = await compressionService.validateChecksum(request.backupData);
+    if (!isValidChecksum) {
+      throw BusinessException(
+        'Backup file is corrupted',
+        SettingTranslationKeys.backupCorruptedError,
+      );
+    }
+    
+    // Extract and decompress data
+    final jsonString = await compressionService.extractFromWhphFile(request.backupData);
+    Map<String, dynamic> data = json.decode(jsonString);
 
     // Get the imported version
     final importedVersion = data['appInfo']?['version'] as String?;
