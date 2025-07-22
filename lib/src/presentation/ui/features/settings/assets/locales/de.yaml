@@ -13,7 +13,7 @@ settings:
     csv_description: Sie können dies verwenden, um in Excel und ähnlichen Anwendungen anzuzeigen.
     error: Export fehlgeschlagen
     in_progress: Daten werden exportiert, bitte warten...
-    json_description: Sie können diese Datei verwenden, um Daten zurück in die App zu importieren.
+    json_description: Daten im lesbaren JSON-Format für Entwicklungs- und Debugging-Zwecke exportieren.
     select_directory: Export-Verzeichnis auswählen
     select_path: Speicherort auswählen
     select_type: Export-Format auswählen
@@ -37,7 +37,7 @@ settings:
     unsupported_version: Nicht unterstützte Version
     version_mismatch: Version nicht gefunden
   import_export:
-    description: Sie können Ihre Daten im JSON-Format sichern oder aus einem zuvor erstellten Backup wiederherstellen
+    description: Exportieren Sie Ihre Daten in verschiedenen Formaten oder importieren Sie Daten aus Backup-Dateien
     select_action: Import-/Export-Aktion auswählen
     title: Import/Export
   language:
@@ -113,3 +113,31 @@ settings:
   sync_devices:
     title: Geräte synchronisieren
   title: Einstellungen
+  backup:
+    title: Sicherung
+    description: Erstellen und wiederherstellen Sie komprimierte Sicherungen Ihrer Anwendungsdaten im sicheren .whph-Format
+    export:
+      title: Sicherung erstellen
+      description: Exportieren Sie alle Ihre Daten in eine komprimierte .whph-Sicherungsdatei
+      in_progress: Sicherung wird erstellt, bitte warten...
+      success: "Sicherung erfolgreich erstellt. Dateispeicherort:"
+      error: Fehler beim Erstellen der Sicherung
+      select_path: Speicherort für Sicherung auswählen
+    import:
+      title: Sicherung wiederherstellen
+      description: Daten aus einer zuvor erstellten .whph-Sicherungsdatei importieren
+      in_progress: Sicherung wird wiederhergestellt, bitte warten...
+      success: Sicherung erfolgreich wiederhergestellt
+      error: Fehler beim Wiederherstellen der Sicherung
+      select_file: Sicherungsdatei auswählen
+      strategy:
+        title: Wiederherstellungsstrategie
+        replace: Vorhandene Daten löschen und wiederherstellen
+        merge: Mit vorhandenen Daten zusammenführen
+    canceled: Sicherungsvorgang vom Benutzer abgebrochen
+    export_failed: Sicherungsexport fehlgeschlagen
+    import_failed: Sicherungsimport fehlgeschlagen
+    invalid_format: Ungültiges Sicherungsdateiformat
+    invalid_format_error: Ungültiges Sicherungsdateiformat
+    corrupted: Sicherungsdatei ist beschädigt oder defekt
+    export_description: Erstellen Sie eine komprimierte Sicherungsdatei mit all Ihren Daten

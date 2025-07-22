@@ -3,6 +3,9 @@ import 'package:whph/src/core/application/features/notes/services/abstraction/i_
 import 'package:whph/src/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/src/core/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/src/core/application/features/settings/commands/import_data_command.dart';
+
+import 'package:whph/src/core/application/shared/services/compression_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:whph/src/core/application/features/settings/services/import_data_migration_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -49,6 +52,9 @@ void registerSettingsFeature(
 ) {
   // Register the import data migration service
   container.registerSingleton<IImportDataMigrationService>((_) => ImportDataMigrationService());
+  
+  // Register the compression service
+  container.registerSingleton<ICompressionService>((_) => CompressionService());
 
   mediator
     ..registerHandler<SaveSettingCommand, SaveSettingCommandResponse, SaveSettingCommandHandler>(
@@ -82,6 +88,7 @@ void registerSettingsFeature(
         taskTimeRecordRepository: taskTimeRecordRepository,
         noteRepository: noteRepository,
         noteTagRepository: noteTagRepository,
+        compressionService: container.resolve<ICompressionService>(),
       ),
     )
     ..registerHandler<ImportDataCommand, ImportDataCommandResponse, ImportDataCommandHandler>(
@@ -104,6 +111,7 @@ void registerSettingsFeature(
         noteRepository: noteRepository,
         noteTagRepository: noteTagRepository,
         migrationService: container.resolve<IImportDataMigrationService>(),
+        compressionService: container.resolve<ICompressionService>(),
       ),
     );
 }

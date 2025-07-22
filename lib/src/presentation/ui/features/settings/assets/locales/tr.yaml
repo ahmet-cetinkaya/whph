@@ -13,7 +13,7 @@ settings:
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
     error: Dışa aktarma başarısız
     in_progress: Veriler dışa aktarılıyor, lütfen bekleyin...
-    json_description: Daha sonra uygulamaya içe aktarmak için kullanabilirsiniz.
+    json_description: Geliştirme ve hata ayıklama amaçları için okunabilir JSON formatında veri dışa aktarın.
     select_directory: Dışa aktarma dizinini seç
     select_path: Kayıt konumu seçin
     select_type: Dışa aktarma formatını seçin
@@ -37,7 +37,7 @@ settings:
     unsupported_version: Desteklenmeyen sürüm
     version_mismatch: Sürüm bulunamadı
   import_export:
-    description: Verilerinizi JSON formatında yedekleyebilir veya önceden oluşturulmuş bir yedeği geri yükleyebilirsiniz
+    description: Verilerinizi çeşitli formatlarda dışa aktarın veya yedek dosyalarından veri içe aktarın
     select_action: İç/Dışa aktarma işlemi seçin
     title: İçe/Dışa Aktar
   language:
@@ -113,3 +113,31 @@ settings:
   sync_devices:
     title: Cihazları Senkronize Et
   title: Ayarlar
+  backup:
+    title: Yedekleme
+    description: Güvenli .whph formatını kullanarak uygulama verilerinizin sıkıştırılmış yedeklerini oluşturun ve geri yükleyin
+    export:
+      title: Yedek Oluştur
+      description: Tüm verilerinizi sıkıştırılmış .whph yedek dosyasına aktarın
+      in_progress: Yedek oluşturuluyor, lütfen bekleyin...
+      success: "Yedek başarıyla oluşturuldu. Dosya konumu:"
+      error: Yedek oluşturma hatası
+      select_path: Yedek kayıt konumunu seçin
+    import:
+      title: Yedeği Geri Yükle
+      description: Önceden oluşturulmuş .whph yedek dosyasından verileri içe aktarın
+      in_progress: Yedek geri yükleniyor, lütfen bekleyin...
+      success: Yedek başarıyla geri yüklendi
+      error: Yedek geri yükleme hatası
+      select_file: Yedek dosyasını seçin
+      strategy:
+        title: Geri Yükleme Stratejisi
+        replace: Mevcut verileri sil ve geri yükle
+        merge: Mevcut verilerle birleştir
+    canceled: Yedekleme işlemi kullanıcı tarafından iptal edildi
+    export_failed: Yedek dışa aktarma başarısız
+    import_failed: Yedek içe aktarma başarısız
+    invalid_format: Geçersiz yedek dosya formatı
+    invalid_format_error: Geçersiz yedek dosya formatı
+    corrupted: Yedek dosyası bozuk veya hasarlı
+    export_description: Tüm verilerinizi içeren sıkıştırılmış yedek dosyası oluşturun
