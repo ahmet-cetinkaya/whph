@@ -196,7 +196,6 @@ class _HabitsPageState extends State<HabitsPage> {
           titleKey: HabitTranslationKeys.overviewHelpTitle,
           markdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
-        const SizedBox(width: 8),
       ],
       builder: (context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
