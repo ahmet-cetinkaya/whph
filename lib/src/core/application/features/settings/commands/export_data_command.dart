@@ -22,8 +22,9 @@ import 'package:csv/csv.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_compression_service.dart';
 
-enum ExportDataFileOptions { json, csv }
+enum ExportDataFileOptions { json, csv, backup }
 
 class ExportDataCommand implements IRequest<ExportDataCommandResponse> {
   late ExportDataFileOptions fileOption;
@@ -32,9 +33,11 @@ class ExportDataCommand implements IRequest<ExportDataCommandResponse> {
 }
 
 class ExportDataCommandResponse {
-  final String fileContent;
+  final dynamic fileContent; // String for JSON/CSV, Uint8List for backup
+  final String fileName;
+  final String fileExtension;
 
-  ExportDataCommandResponse(this.fileContent);
+  ExportDataCommandResponse(this.fileContent, this.fileName, this.fileExtension);
 }
 
 class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, ExportDataCommandResponse> {
@@ -55,6 +58,7 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
   final INoteRepository noteRepository;
   final INoteTagRepository noteTagRepository;
+  final ICompressionService compressionService;
 
   ExportDataCommandHandler({
     required this.appUsageRepository,
@@ -74,6 +78,7 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
     required this.appUsageIgnoreRuleRepository,
     required this.noteRepository,
     required this.noteTagRepository,
+    required this.compressionService,
   });
 
   @override
@@ -100,6 +105,8 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
       final data = {
         'appInfo': {
           'version': AppInfo.version,
+          'exportDate': DateTime.now().toIso8601String(),
+          'format': request.fileOption == ExportDataFileOptions.backup ? 'whph_backup' : 'export',
         },
         'appUsages': appUsages,
         'appUsageTags': appUsageTags,
@@ -120,9 +127,34 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
         'noteTags': noteTags,
       };
 
-      return ExportDataCommandResponse(
-        request.fileOption == ExportDataFileOptions.json ? JsonMapper.serialize(data) : _convertToCSV(data),
-      );
+      // Generate filename and extension based on file option
+      final now = DateTime.now();
+      final version = AppInfo.version;
+      final timestamp = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
+          '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
+
+      switch (request.fileOption) {
+        case ExportDataFileOptions.json:
+          return ExportDataCommandResponse(
+            JsonMapper.serialize(data),
+            'whph_export_${version}_$timestamp.json',
+            'json',
+          );
+        case ExportDataFileOptions.csv:
+          return ExportDataCommandResponse(
+            _convertToCSV(data),
+            'whph_export_${version}_$timestamp.csv',
+            'csv',
+          );
+        case ExportDataFileOptions.backup:
+          final jsonString = JsonMapper.serialize(data);
+          final compressedData = await compressionService.createWhphFile(jsonString);
+          return ExportDataCommandResponse(
+            compressedData,
+            'whph_backup_${version}_$timestamp.whph',
+            'whph',
+          );
+      }
     } catch (e) {
       throw BusinessException('Export failed', SettingTranslationKeys.exportFailedError);
     }
