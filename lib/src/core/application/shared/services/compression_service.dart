@@ -8,6 +8,11 @@ import 'package:whph/src/core/application/shared/services/abstraction/i_compress
 class CompressionService implements ICompressionService {
   static const String _whphHeader = 'WHPH';
   static const int _version = 1;
+  static const int _headerSize = 16;
+  static const int _headerFieldSize = 4;
+  static const int _versionOffset = 4;
+  static const int _checksumOffset = 8;
+  static const int _dataLengthOffset = 12;
 
   /// Compresses data in a background isolate
   @override
@@ -27,10 +32,10 @@ class CompressionService implements ICompressionService {
   /// Validates the header of a .whph file
   @override
   bool validateHeader(Uint8List data) {
-    if (data.length < 8) return false;
+    if (data.length < _checksumOffset) return false;
     
-    final header = String.fromCharCodes(data.sublist(0, 4));
-    final version = data.buffer.asByteData().getUint32(4, Endian.little);
+    final header = String.fromCharCodes(data.sublist(0, _headerFieldSize));
+    final version = data.buffer.asByteData().getUint32(_versionOffset, Endian.little);
     
     return header == _whphHeader && version == _version;
   }
@@ -71,57 +76,34 @@ class CompressionService implements ICompressionService {
     final jsonBytes = utf8.encode(jsonData);
     final compressed = _compressData(Uint8List.fromList(jsonBytes));
     
-    // Calculate checksum (simple CRC32)
-    final crc = _calculateCrc32(compressed);
+    // Calculate checksum using standard library CRC32
+    final crc = getCrc32(compressed);
     
     // Create header: WHPH (4 bytes) + version (4 bytes) + checksum (4 bytes) + data length (4 bytes)
-    final headerSize = 16;
-    final result = Uint8List(headerSize + compressed.length);
+    final result = Uint8List(_headerSize + compressed.length);
     final byteData = result.buffer.asByteData();
     
     // Write header
-    result.setRange(0, 4, _whphHeader.codeUnits);
-    byteData.setUint32(4, _version, Endian.little);
-    byteData.setUint32(8, crc, Endian.little);
-    byteData.setUint32(12, compressed.length, Endian.little);
+    result.setRange(0, _headerFieldSize, _whphHeader.codeUnits);
+    byteData.setUint32(_versionOffset, _version, Endian.little);
+    byteData.setUint32(_checksumOffset, crc, Endian.little);
+    byteData.setUint32(_dataLengthOffset, compressed.length, Endian.little);
     
     // Write compressed data
-    result.setRange(headerSize, headerSize + compressed.length, compressed);
+    result.setRange(_headerSize, _headerSize + compressed.length, compressed);
     
     return result;
   }
 
   static String _extractFromWhphFileIsolate(Uint8List whphData) {
-    if (whphData.length < 16) {
-      throw Exception('Invalid .whph file: too small');
-    }
-    
-    final byteData = whphData.buffer.asByteData();
-    
-    // Validate header
-    final header = String.fromCharCodes(whphData.sublist(0, 4));
-    final version = byteData.getUint32(4, Endian.little);
-    final storedChecksum = byteData.getUint32(8, Endian.little);
-    final dataLength = byteData.getUint32(12, Endian.little);
-    
-    if (header != _whphHeader) {
-      throw Exception('Invalid .whph file: wrong header');
-    }
-    
-    if (version != _version) {
-      throw Exception('Unsupported .whph file version: $version');
-    }
-    
-    if (whphData.length < 16 + dataLength) {
-      throw Exception('Invalid .whph file: incomplete data');
-    }
+    final headerInfo = _parseWhphHeader(whphData);
     
     // Extract compressed data
-    final compressedData = whphData.sublist(16, 16 + dataLength);
+    final compressedData = whphData.sublist(_headerSize, _headerSize + headerInfo.dataLength);
     
     // Validate checksum
-    final calculatedChecksum = _calculateCrc32(compressedData);
-    if (calculatedChecksum != storedChecksum) {
+    final calculatedChecksum = getCrc32(compressedData);
+    if (calculatedChecksum != headerInfo.storedChecksum) {
       throw Exception('Invalid .whph file: checksum mismatch');
     }
     
@@ -132,39 +114,57 @@ class CompressionService implements ICompressionService {
 
   static bool _validateChecksumIsolate(Uint8List whphData) {
     try {
-      if (whphData.length < 16) return false;
+      final headerInfo = _parseWhphHeader(whphData);
+      final compressedData = whphData.sublist(_headerSize, _headerSize + headerInfo.dataLength);
+      final calculatedChecksum = getCrc32(compressedData);
       
-      final byteData = whphData.buffer.asByteData();
-      final storedChecksum = byteData.getUint32(8, Endian.little);
-      final dataLength = byteData.getUint32(12, Endian.little);
-      
-      if (whphData.length < 16 + dataLength) return false;
-      
-      final compressedData = whphData.sublist(16, 16 + dataLength);
-      final calculatedChecksum = _calculateCrc32(compressedData);
-      
-      return calculatedChecksum == storedChecksum;
+      return calculatedChecksum == headerInfo.storedChecksum;
     } catch (e) {
       return false;
     }
   }
 
-  static int _calculateCrc32(Uint8List data) {
-    // Simple CRC32 implementation
-    const int polynomial = 0xEDB88320;
-    int crc = 0xFFFFFFFF;
-    
-    for (int byte in data) {
-      crc ^= byte;
-      for (int i = 0; i < 8; i++) {
-        if (crc & 1 != 0) {
-          crc = (crc >> 1) ^ polynomial;
-        } else {
-          crc >>= 1;
-        }
-      }
+  /// Helper method to parse .whph file header and validate it
+  static _WhphHeaderInfo _parseWhphHeader(Uint8List whphData) {
+    if (whphData.length < _headerSize) {
+      throw Exception('Invalid .whph file: too small');
     }
     
-    return crc ^ 0xFFFFFFFF;
+    final byteData = whphData.buffer.asByteData();
+    
+    // Parse header fields
+    final header = String.fromCharCodes(whphData.sublist(0, _headerFieldSize));
+    final version = byteData.getUint32(_versionOffset, Endian.little);
+    final storedChecksum = byteData.getUint32(_checksumOffset, Endian.little);
+    final dataLength = byteData.getUint32(_dataLengthOffset, Endian.little);
+    
+    // Validate header
+    if (header != _whphHeader) {
+      throw Exception('Invalid .whph file: wrong header');
+    }
+    
+    if (version != _version) {
+      throw Exception('Unsupported .whph file version: $version');
+    }
+    
+    if (whphData.length < _headerSize + dataLength) {
+      throw Exception('Invalid .whph file: incomplete data');
+    }
+    
+    return _WhphHeaderInfo(
+      storedChecksum: storedChecksum,
+      dataLength: dataLength,
+    );
   }
+}
+
+/// Helper class to hold parsed header information
+class _WhphHeaderInfo {
+  final int storedChecksum;
+  final int dataLength;
+  
+  _WhphHeaderInfo({
+    required this.storedChecksum,
+    required this.dataLength,
+  });
 }
