@@ -555,6 +555,19 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     );
   }
 
+  String _getTagsTooltip() {
+    if (_selectedTags.isEmpty) {
+      return _translationService.translate(TaskTranslationKeys.tagsLabel);
+    }
+    
+    final tagNames = _selectedTags.map((tag) => tag.label).where((name) => name.isNotEmpty).toList();
+    if (tagNames.isEmpty) {
+      return _translationService.translate(TaskTranslationKeys.tagsLabel);
+    }
+    
+    return tagNames.join(', ');
+  }
+
   Future<void> _onClearAllFields() async {
     // Show confirmation dialog
     final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -689,7 +702,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           child: TagSelectDropdown(
             initialSelectedTags: _selectedTags,
             isMultiSelect: true,
-            tooltip: _translationService.translate(TaskTranslationKeys.tagsLabel),
+            tooltip: _getTagsTooltip(),
             onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
             iconSize: iconSize,
             color: _selectedTags.isEmpty ? Colors.white : TaskUiConstants.tagColor,
@@ -705,7 +718,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               color: TaskUiConstants.getPriorityColor(_selectedPriority),
             ),
             onPressed: _togglePriority,
-            tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
+            tooltip: TaskUiConstants.getPriorityTooltip(_selectedPriority, _translationService),
             iconSize: iconSize,
           ),
           isLocked: _lockPriority,
