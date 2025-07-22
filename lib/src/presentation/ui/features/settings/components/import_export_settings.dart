@@ -304,7 +304,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         
         // Execute import command for backup file
         return await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
-          ImportDataCommand(backupData, strategy, isBackupFile: true),
+          ImportDataCommand(backupData, strategy),
         );
       },
       onSuccess: (_) {
