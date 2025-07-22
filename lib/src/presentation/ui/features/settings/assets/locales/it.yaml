@@ -14,7 +14,7 @@ settings:
     csv_description: Puoi usare questo per visualizzare in Excel e applicazioni simili.
     error: Esportazione fallita
     in_progress: Esportazione dati in corso, attendere...
-    json_description: Puoi usare questo file per importare i dati di nuovo nell'app.
+    json_description: Esporta i dati in formato JSON leggibile per scopi di sviluppo e debug.
     select_directory: Seleziona directory di esportazione
     select_path: Seleziona posizione di salvataggio
     select_type: Seleziona formato di esportazione
@@ -38,7 +38,7 @@ settings:
     unsupported_version: Versione non supportata
     version_mismatch: Versione non trovata
   import_export:
-    description: Puoi fare il backup dei tuoi dati in formato JSON o ripristinare da un backup creato precedentemente
+    description: Esporta i tuoi dati in vari formati o importa dati da file di backup
     select_action: Seleziona azione importa/esporta
     title: Importa/Esporta
   language:
@@ -114,3 +114,31 @@ settings:
   sync_devices:
     title: Sincronizza dispositivi
   title: Impostazioni
+  backup:
+    title: Backup
+    description: Crea e ripristina backup compressi dei dati della tua applicazione utilizzando il formato sicuro .whph
+    export:
+      title: Crea backup
+      description: Esporta tutti i tuoi dati in un file di backup .whph compresso
+      in_progress: Creazione backup in corso, attendere...
+      success: "Backup creato con successo. Posizione file:"
+      error: Errore nella creazione del backup
+      select_path: Seleziona posizione di salvataggio backup
+    import:
+      title: Ripristina backup
+      description: Importa dati da un file di backup .whph creato precedentemente
+      in_progress: Ripristino backup in corso, attendere...
+      success: Backup ripristinato con successo
+      error: Errore nel ripristino del backup
+      select_file: Seleziona file di backup
+      strategy:
+        title: Strategia di ripristino
+        replace: Elimina dati esistenti e ripristina
+        merge: Unisci con dati esistenti
+    canceled: Operazione di backup annullata dall'utente
+    export_failed: Esportazione backup fallita
+    import_failed: Importazione backup fallita
+    invalid_format: Formato file di backup non valido
+    invalid_format_error: Formato file di backup non valido
+    corrupted: Il file di backup è corrotto o danneggiato
+    export_description: Crea un file di backup compresso contenente tutti i tuoi dati

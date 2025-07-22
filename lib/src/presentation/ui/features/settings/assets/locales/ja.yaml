@@ -14,7 +14,7 @@ settings:
     csv_description: ExcelやExcel類似のアプリケーションで表示するために使用できます。
     error: エクスポートに失敗しました
     in_progress: データをエクスポート中です。お待ちください...
-    json_description: このファイルを使用してデータをアプリに再インポートできます。
+    json_description: 開発およびデバッグ目的で読み取り可能なJSON形式でデータをエクスポートします。
     select_directory: エクスポートディレクトリを選択
     select_path: 保存場所を選択
     select_type: エクスポート形式を選択
@@ -38,7 +38,7 @@ settings:
     unsupported_version: サポートされていないバージョン
     version_mismatch: バージョンが見つかりません
   import_export:
-    description: データをJSON形式でバックアップしたり、以前に作成したバックアップから復元できます
+    description: さまざまな形式でデータをエクスポートしたり、バックアップファイルからデータをインポートできます
     select_action: インポート/エクスポートアクションを選択
     title: インポート/エクスポート
   language:
@@ -114,3 +114,31 @@ settings:
   sync_devices:
     title: デバイス同期
   title: 設定
+  backup:
+    title: バックアップ
+    description: 安全な.whph形式を使用してアプリケーションデータの圧縮バックアップを作成および復元します
+    export:
+      title: バックアップを作成
+      description: すべてのデータを圧縮された.whphバックアップファイルにエクスポートします
+      in_progress: バックアップを作成中です。お待ちください...
+      success: "バックアップが正常に作成されました。ファイルの場所:"
+      error: バックアップの作成に失敗しました
+      select_path: バックアップの保存場所を選択
+    import:
+      title: バックアップを復元
+      description: 以前に作成された.whphバックアップファイルからデータをインポートします
+      in_progress: バックアップを復元中です。お待ちください...
+      success: バックアップが正常に復元されました
+      error: バックアップの復元に失敗しました
+      select_file: バックアップファイルを選択
+      strategy:
+        title: 復元戦略
+        replace: 既存データを削除して復元
+        merge: 既存データとマージ
+    canceled: バックアップ操作がユーザーによってキャンセルされました
+    export_failed: バックアップエクスポートに失敗しました
+    import_failed: バックアップインポートに失敗しました
+    invalid_format: 無効なバックアップファイル形式
+    invalid_format_error: 無効なバックアップファイル形式
+    corrupted: バックアップファイルが破損しているか損傷しています
+    export_description: すべてのデータを含む圧縮バックアップファイルを作成します

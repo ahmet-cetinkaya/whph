@@ -10,11 +10,11 @@ import 'package:whph/src/presentation/ui/features/settings/constants/settings_tr
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
+import 'dart:typed_data';
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
@@ -201,6 +201,15 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         Column(
           children: [
             _ExportOptionTile(
+              icon: Icons.backup,
+              titleKey: SettingsTranslationKeys.backupExportTitle,
+              descriptionKey: SettingsTranslationKeys.backupExportDescription,
+              fileOption: ExportDataFileOptions.backup,
+              onSelect: () => _handleExportOptionSelect(ExportDataFileOptions.backup, context),
+              isDisabled: _isProcessing,
+            ),
+                        const SizedBox(height: AppTheme.sizeSmall),
+            _ExportOptionTile(
               icon: Icons.code,
               title: 'JSON',
               descriptionKey: SettingsTranslationKeys.exportJsonDescription,
@@ -243,13 +252,25 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
-        // Pick JSON file
+        // Pick backup file (.whph only) - show all files since .whph is not supported by file picker
         final filePath = await _fileService.pickFile(
-          allowedExtensions: ['json'],
+          allowedExtensions: null, // Show all files
           dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
         );
 
         if (filePath != null && mounted) {
+          // Validate that the selected file is a .whph backup file
+          if (!filePath.toLowerCase().endsWith('.whph')) {
+            if (context.mounted) {
+              OverlayNotificationHelper.showError(
+                context: context,
+                message: _translationService.translate(SettingsTranslationKeys.backupInvalidFormatError),
+                duration: const Duration(seconds: 4),
+              );
+            }
+            return;
+          }
+          
           setState(() {
             _selectedFilePath = filePath;
           });
@@ -277,13 +298,13 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
-        // Read file content
-        final content = await _fileService.readFile(_selectedFilePath!);
+        // Read backup file as binary data (only .whph files are supported)
+        final backupData = await _fileService.readBinaryFile(_selectedFilePath!);
         final mediator = container.resolve<Mediator>();
-
-        // Execute import command
+        
+        // Execute import command for backup file
         return await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
-          ImportDataCommand(content, strategy),
+          ImportDataCommand(backupData, strategy, isBackupFile: true),
         );
       },
       onSuccess: (_) {
@@ -366,17 +387,10 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           ExportDataCommand(option),
         );
 
-        // Get save path
-        final extension = option == ExportDataFileOptions.json ? 'json' : 'csv';
-        final version = AppInfo.version;
-        final now = DateTime.now();
-        final fileName = 'whph_export_${version}_'
-            '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
-            '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$extension';
-
+        // Get save path using the filename from response
         String? savePath = await _fileService.getSavePath(
-          fileName: fileName,
-          allowedExtensions: [extension],
+          fileName: response.fileName,
+          allowedExtensions: [response.fileExtension],
           dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
         );
 
@@ -392,11 +406,21 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           return;
         }
 
-        // Write file
-        await _fileService.writeFile(
-          filePath: savePath,
-          content: response.fileContent,
-        );
+        // Write file based on content type
+        if (option == ExportDataFileOptions.backup) {
+          // Write binary data for backup files
+          final backupData = response.fileContent as Uint8List;
+          await _fileService.writeBinaryFile(
+            filePath: savePath,
+            data: backupData,
+          );
+        } else {
+          // Write string data for JSON/CSV files
+          await _fileService.writeFile(
+            filePath: savePath,
+            content: response.fileContent as String,
+          );
+        }
 
         if (context.mounted) {
           // Hide loading overlay and show success overlay notification with file path
@@ -516,7 +540,8 @@ class _ImportStrategyOption extends StatelessWidget {
 
 class _ExportOptionTile extends StatelessWidget {
   final IconData icon;
-  final String title;
+  final String? title;
+  final String? titleKey;
   final String descriptionKey;
   final ExportDataFileOptions fileOption;
   final VoidCallback onSelect;
@@ -524,20 +549,25 @@ class _ExportOptionTile extends StatelessWidget {
 
   const _ExportOptionTile({
     required this.icon,
-    required this.title,
+    this.title,
+    this.titleKey,
     required this.descriptionKey,
     required this.fileOption,
     required this.onSelect,
     this.isDisabled = false,
-  });
+  }) : assert(title != null || titleKey != null, 'Either title or titleKey must be provided');
 
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
+    final displayTitle = titleKey != null 
+        ? translationService.translate(titleKey!) 
+        : title!;
+        
     return Card(
       child: ListTile(
         leading: Icon(icon, color: isDisabled ? Theme.of(context).disabledColor : null),
-        title: Text(title,
+        title: Text(displayTitle,
             style: AppTheme.bodyMedium.copyWith(
               color: isDisabled ? Theme.of(context).disabledColor : null,
             )),
