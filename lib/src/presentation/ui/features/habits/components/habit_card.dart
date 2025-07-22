@@ -55,6 +55,35 @@ class _HabitCardState extends State<HabitCard> {
   void initState() {
     super.initState();
     _getHabitRecords();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChange);
+  }
+
+  void _removeEventListeners() {
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChange);
+  }
+
+  void _handleHabitRecordChange() {
+    if (!mounted) return;
+    
+    // Check if the event is for this specific habit
+    final addedHabitId = _habitsService.onHabitRecordAdded.value;
+    final removedHabitId = _habitsService.onHabitRecordRemoved.value;
+    
+    if (addedHabitId == widget.habit.id || removedHabitId == widget.habit.id) {
+      _refreshHabitRecords();
+    }
   }
 
   Future<void> _getHabitRecords() async {
