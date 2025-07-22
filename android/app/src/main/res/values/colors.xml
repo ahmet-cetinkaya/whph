@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="ic_launcher_background">#FF000000</color>
+    <!-- App Colors -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+
+    <!-- App Theme Colors (from app_theme.dart) -->
+    <color name="primary_color">#F4D03E</color>
+    <color name="surface0">#000000</color>
+    <color name="surface1">#121212</color>
+    <color name="surface2">#181818</color>
+    <color name="surface3">#202020</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="secondary_text_color">#B0B0B0</color>
+    <color name="dark_text_color">#000000</color>
+    <color name="light_text_color">#FFFFFF</color>
+    <color name="divider_color">#282828</color>
+    <color name="success_color">#4CAF50</color>
+    <color name="warning_color">#FFC107</color>
+    <color name="error_color">#F44336</color>
+    <color name="info_color">#2196F3</color>
+    <color name="disabled_color">#9E9E9E</color>
+    <color name="border_color">#BDBDBD</color>
+
+    <!-- Widget Colors - Light Theme -->
+    <color name="widget_background">#FFFFFF</color>
+    <color name="widget_background_dark">@color/surface1</color>
+    <color name="widget_border">#E0E0E0</color>
+    <color name="widget_border_dark">@color/divider_color</color>
+    <color name="widget_text_primary">#212121</color>
+    <color name="widget_text_primary_dark">@color/text_color</color>
+    <color name="widget_text_secondary">#757575</color>
+    <color name="widget_text_secondary_dark">@color/secondary_text_color</color>
+    <color name="widget_accent">@color/primary_color</color>
+    <color name="widget_success">@color/success_color</color>
+    <color name="widget_checkbox_unchecked">@color/secondary_text_color</color>
+    <color name="widget_checkbox_checked">@color/primary_color</color>
 </resources>

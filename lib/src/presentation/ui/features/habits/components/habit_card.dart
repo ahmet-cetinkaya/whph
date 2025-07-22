@@ -395,41 +395,47 @@ class _HabitCardState extends State<HabitCard> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (widget.isDateLabelShowing) ...[
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                DateTimeHelper.getWeekday(localDate.weekday),
-                style: AppTheme.bodySmall.copyWith(
-                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  DateTimeHelper.getWeekday(localDate.weekday),
+                  style: AppTheme.bodySmall.copyWith(
+                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: widget.isDense ? 1 : 2),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                localDate.day.toString(),
-                style: AppTheme.bodySmall.copyWith(
-                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  localDate.day.toString(),
+                  style: AppTheme.bodySmall.copyWith(
+                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: widget.isDense ? 2 : 4),
+            SizedBox(height: widget.isDense ? 1 : 2),
           ],
-          IconButton(
-            padding: EdgeInsets.zero,
-            visualDensity: VisualDensity.standard,
-            constraints: BoxConstraints(
-              minWidth: widget.isDense ? 24 : 32,
-              minHeight: widget.isDense ? 24 : 32,
+          Flexible(
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.standard,
+              constraints: BoxConstraints(
+                minWidth: widget.isDense ? 24 : 32,
+                minHeight: widget.isDense ? 24 : 32,
+              ),
+              onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
+              icon: Icon(
+                hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
+                size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
+                color: _getRecordStateColor(hasRecord, isDisabled),
+              ),
             ),
-            onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
-            icon: Icon(
-              hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
-              size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
-              color: _getRecordStateColor(hasRecord, isDisabled),
-            ),
-          ),
+          )
         ],
       ),
     );
