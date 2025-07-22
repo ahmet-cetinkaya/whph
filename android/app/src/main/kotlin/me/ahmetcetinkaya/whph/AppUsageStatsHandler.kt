@@ -48,15 +48,22 @@ class AppUsageStatsHandler(private val context: Context) {
         if (endTime - startTime > maxRange) {
             Log.w(TAG, "Time range too large: ${(endTime - startTime) / (1000 * 60 * 60 * 24)} days, limiting to 7 days")
             val limitedStartTime = endTime - maxRange
-            return getEventBasedUsage(limitedStartTime, endTime)
+            return getAccurateForegroundUsage(limitedStartTime, endTime)
         }
         
         try {
-            // Use only event-based tracking for consistency with Digital Wellbeing
+            // Use hybrid approach: combine both UsageStats and UsageEvents for better accuracy
+            val statsBasedUsage = getStatsBasedUsage(startTime, endTime)
             val eventBasedUsage = getEventBasedUsage(startTime, endTime)
             
+            Log.d(TAG, "Stats-based approach returned ${statsBasedUsage.size} apps")
             Log.d(TAG, "Event-based approach returned ${eventBasedUsage.size} apps")
-            return eventBasedUsage
+            
+            // Combine both approaches, preferring UsageStats for total time but validating with events
+            val combinedUsage = combineUsageData(statsBasedUsage, eventBasedUsage)
+            
+            Log.d(TAG, "Combined approach returned ${combinedUsage.size} apps")
+            return combinedUsage
             
         } catch (e: Exception) {
             Log.e(TAG, "Error getting accurate foreground usage", e)
@@ -127,6 +134,7 @@ class AppUsageStatsHandler(private val context: Context) {
                         appStates.entries.filter { it.value.state == AppState.State.FOREGROUND }.forEach { (packageName, state) ->
                             finalizeSession(packageName, state.timestamp, event.timeStamp, completedSessions, startTime, endTime)
                             appStates[packageName] = AppState(AppState.State.BACKGROUND, event.timeStamp)
+                            Log.d(TAG, "Screen off: closed session for $packageName (${(event.timeStamp - state.timestamp)/1000}s)")
                         }
                         Log.d(TAG, "Screen off: closed all foreground sessions")
                     }
@@ -143,7 +151,7 @@ class AppUsageStatsHandler(private val context: Context) {
             // Close any remaining foreground sessions at the end of the query period
             appStates.entries.filter { it.value.state == AppState.State.FOREGROUND }.forEach { (packageName, state) ->
                 finalizeSession(packageName, state.timestamp, endTime, completedSessions, startTime, endTime)
-                Log.d(TAG, "Closed remaining session for $packageName at query end")
+                Log.d(TAG, "Closed remaining session for $packageName at query end (${(endTime - state.timestamp)/1000}s)")
             }
             
             // Calculate total usage with improved deduplication
@@ -223,8 +231,8 @@ class AppUsageStatsHandler(private val context: Context) {
         val clampedEndTime = minOf(endTime, queryEndTime)
         val duration = clampedEndTime - clampedStartTime
         
-        // Strict validation: must be at least 1 second, max 4 hours per session
-        if (duration >= 1000 && duration <= 4 * 60 * 60 * 1000) {
+        // Validation: must be at least 1 second
+        if (duration >= 1000) {
             val session = UsageSession(
                 startTime = clampedStartTime,
                 endTime = clampedEndTime,
@@ -272,32 +280,124 @@ class AppUsageStatsHandler(private val context: Context) {
     }
     
     /**
+     * Combines UsageStats and UsageEvents data for better accuracy.
+     * Uses UsageStats as the primary source (more reliable for total time) but validates with events.
+     */
+    private fun combineUsageData(statsUsage: Map<String, Long>, eventUsage: Map<String, Long>): Map<String, Long> {
+        val combinedUsage = HashMap<String, Long>()
+        
+        // Get all unique package names from both sources
+        val allPackages = (statsUsage.keys + eventUsage.keys).toSet()
+        
+        allPackages.forEach { packageName ->
+            val statsTime = statsUsage[packageName] ?: 0L
+            val eventTime = eventUsage[packageName] ?: 0L
+            
+            // Choose the best value based on reliability rules
+            val finalTime = when {
+                // If both have data, use intelligent selection
+                statsTime > 0 && eventTime > 0 -> {
+                    val ratio = if (statsTime > 0) eventTime.toDouble() / statsTime.toDouble() else 0.0
+                    
+                    val chosenTime = when {
+                        // If event time is much higher than stats (>150%), likely event tracking error - use stats
+                        ratio > 1.5 -> {
+                            Log.d(TAG, "Combined $packageName: events too high (${(ratio*100).toInt()}%), using stats=${statsTime/1000}s")
+                            statsTime
+                        }
+                        // If stats time is much higher than events (>150%), likely stats includes background - use events
+                        ratio < 0.67 && statsTime > eventTime * 1.5 -> {
+                            Log.d(TAG, "Combined $packageName: stats too high (${((1/ratio)*100).toInt()}%), using events=${eventTime/1000}s")
+                            eventTime
+                        }
+                        // If they're reasonably close (within 50%), use the average for better accuracy
+                        ratio >= 0.67 && ratio <= 1.5 -> {
+                            val averageTime = (statsTime + eventTime) / 2
+                            Log.d(TAG, "Combined $packageName: stats=${statsTime/1000}s, events=${eventTime/1000}s -> average=${averageTime/1000}s (${(ratio*100).toInt()}%)")
+                            averageTime
+                        }
+                        // Default case - use the higher value
+                        else -> {
+                            val chosenTime = maxOf(statsTime, eventTime)
+                            Log.d(TAG, "Combined $packageName: stats=${statsTime/1000}s, events=${eventTime/1000}s -> max=${chosenTime/1000}s (${(ratio*100).toInt()}%)")
+                            chosenTime
+                        }
+                    }
+                    chosenTime
+                }
+                
+                // If only stats has data, use it (UsageStats is generally more reliable for totals)
+                statsTime > 0 -> {
+                    Log.d(TAG, "Combined $packageName: using stats=${statsTime/1000}s (no event data)")
+                    statsTime
+                }
+                
+                // If only events has data, use it
+                eventTime > 0 -> {
+                    Log.d(TAG, "Combined $packageName: using events=${eventTime/1000}s (no stats data)")
+                    eventTime
+                }
+                
+                else -> 0L
+            }
+            
+            if (finalTime > 0) {
+                combinedUsage[packageName] = finalTime
+            }
+        }
+        
+        Log.d(TAG, "=== Combined usage data: ${combinedUsage.size} apps ===")
+        return combinedUsage
+    }
+    
+    /**
      * Gets usage data using UsageStats API (similar to Digital Wellbeing approach).
      */
     private fun getStatsBasedUsage(startTime: Long, endTime: Long): Map<String, Long> {
         val usageMap = HashMap<String, Long>()
         
         try {
-            Log.d(TAG, "Getting UsageStats from ${Date(startTime)} to ${Date(endTime)}")
+            Log.d(TAG, "=== Getting UsageStats from ${Date(startTime)} to ${Date(endTime)} ===")
             
-            // Use INTERVAL_BEST for most accurate data
+            // Use INTERVAL_DAILY for better accuracy with time ranges
             val usageStats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_BEST,
+                UsageStatsManager.INTERVAL_DAILY,
                 startTime,
                 endTime
             )
             
+            Log.d(TAG, "Raw UsageStats returned ${usageStats.size} entries")
+            
             usageStats.forEach { stats ->
                 if (isValidUserApp(stats.packageName)) {
                     val foregroundTime = stats.totalTimeInForeground
-                    if (foregroundTime > 0) {
-                        usageMap[stats.packageName] = foregroundTime
-                        Log.d(TAG, "Stats: ${stats.packageName} = ${foregroundTime/1000}s")
+                    
+                    // Only include apps with meaningful usage (> 1 second)
+                    if (foregroundTime > 1000) {
+                        // Sum up multiple entries for the same app (UsageStats can return duplicates)
+                        val existingTime = usageMap[stats.packageName] ?: 0L
+                        val totalTime = existingTime + foregroundTime
+                        
+                        // Apply reasonable maximum per day (16 hours max per app per day)
+                        val maxDailyUsage = 16 * 60 * 60 * 1000L // 16 hours
+                        val cappedTime = minOf(totalTime, maxDailyUsage)
+                        
+                        usageMap[stats.packageName] = cappedTime
+                        
+                        if (existingTime > 0) {
+                            Log.d(TAG, "Stats summed: ${stats.packageName} = ${existingTime/1000}s + ${foregroundTime/1000}s = ${totalTime/1000}s")
+                        } else {
+                            Log.d(TAG, "Stats: ${stats.packageName} = ${foregroundTime/1000}s")
+                        }
+                        
+                        if (cappedTime != totalTime) {
+                            Log.d(TAG, "Stats capped: ${stats.packageName} = ${totalTime/1000}s -> ${cappedTime/1000}s")
+                        }
                     }
                 }
             }
             
-            Log.d(TAG, "UsageStats returned ${usageMap.size} apps")
+            Log.d(TAG, "=== UsageStats returned ${usageMap.size} valid apps ===")
             
         } catch (e: Exception) {
             Log.e(TAG, "Error getting stats-based usage", e)
