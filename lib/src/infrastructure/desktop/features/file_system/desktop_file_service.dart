@@ -101,6 +101,18 @@ class DesktopFileService implements IFileService {
       }
 
       await file.writeAsBytes(data);
+
+      // Verify the file was actually written
+      if (!await file.exists()) {
+        throw BusinessException(
+            'Failed to save binary file: File does not exist after write operation', SharedTranslationKeys.fileSaveError);
+      }
+
+      // Verify the content was written correctly by checking file size
+      if (await file.length() != data.length) {
+        throw BusinessException(
+            'Failed to save binary file: Data length mismatch after write operation', SharedTranslationKeys.fileSaveError);
+      }
     } catch (e) {
       throw BusinessException('Failed to write binary file: $e', SharedTranslationKeys.fileWriteError);
     }

@@ -174,9 +174,9 @@ class AndroidFileService implements IFileService {
             'Failed to save binary file: File does not exist after write operation', SharedTranslationKeys.fileSaveError);
       }
 
-      // Verify the content was written correctly
-      final writtenData = await file.readAsBytes();
-      if (writtenData.length != data.length) {
+      // Verify the content was written correctly by checking the file size
+      final writtenLength = await file.length();
+      if (writtenLength != data.length) {
         throw BusinessException(
             'Failed to save binary file: Data length mismatch after write operation', SharedTranslationKeys.fileSaveError);
       }

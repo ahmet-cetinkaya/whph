@@ -408,13 +408,18 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
         // Write file based on content type
         if (option == ExportDataFileOptions.backup) {
+          if (response.fileContent is! Uint8List) {
+            throw Exception('Invalid content type for backup file. Expected Uint8List.');
+          }
           // Write binary data for backup files
-          final backupData = response.fileContent as Uint8List;
           await _fileService.writeBinaryFile(
             filePath: savePath,
-            data: backupData,
+            data: response.fileContent as Uint8List,
           );
         } else {
+          if (response.fileContent is! String) {
+            throw Exception('Invalid content type for export file. Expected String.');
+          }
           // Write string data for JSON/CSV files
           await _fileService.writeFile(
             filePath: savePath,

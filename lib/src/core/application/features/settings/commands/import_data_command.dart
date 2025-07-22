@@ -204,6 +204,9 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     Map<String, dynamic> data;
     
     if (request.isBackupFile) {
+      if (request.fileContent is! Uint8List) {
+        throw BusinessException('Invalid content type for backup file.', SettingTranslationKeys.backupInvalidFormatError);
+      }
       // Handle backup file (.whph)
       final backupData = request.fileContent as Uint8List;
       
@@ -228,6 +231,9 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       final jsonString = await compressionService.extractFromWhphFile(backupData);
       data = json.decode(jsonString);
     } else {
+      if (request.fileContent is! String) {
+        throw BusinessException('Invalid content type for JSON file.', SettingTranslationKeys.importError);
+      }
       // Handle JSON file
       data = json.decode(request.fileContent as String);
     }

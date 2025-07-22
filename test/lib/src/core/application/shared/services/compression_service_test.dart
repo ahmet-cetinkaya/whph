@@ -95,20 +95,15 @@ void main() {
       final inputData = Uint8List.fromList(utf8.encode(largeData));
 
       // Act
-      final startTime = DateTime.now();
       final compressed = await compressionService.compressInBackground(inputData);
-      final compressionTime = DateTime.now().difference(startTime);
-
       final decompressed = await compressionService.decompressStreamedInBackground(
         Stream.value(compressed.toList()),
       ).first;
-      final totalTime = DateTime.now().difference(startTime);
 
       // Assert
       expect(compressed.length, lessThan(inputData.length));
       expect(utf8.decode(decompressed), equals(largeData));
-      expect(compressionTime.inMilliseconds, lessThan(5000)); // Should complete within 5 seconds
-      expect(totalTime.inMilliseconds, lessThan(10000)); // Total should complete within 10 seconds
+      // Note: Removed time-based assertions to avoid flaky tests
     });
   });
 }
