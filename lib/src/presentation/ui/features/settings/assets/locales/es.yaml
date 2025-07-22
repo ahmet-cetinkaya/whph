@@ -13,7 +13,7 @@ settings:
     csv_description: Puedes usar esto para ver en Excel y aplicaciones similares.
     error: Falló la exportación
     in_progress: Exportando datos, por favor espera...
-    json_description: Puedes usar este archivo para importar datos de vuelta a la aplicación.
+    json_description: Exportar datos en formato JSON legible para propósitos de desarrollo y depuración.
     select_directory: Seleccionar directorio de exportación
     select_path: Seleccionar ubicación de guardado
     select_type: Seleccionar formato de exportación
@@ -37,7 +37,7 @@ settings:
     unsupported_version: Versión no soportada
     version_mismatch: Versión no encontrada
   import_export:
-    description: Puedes respaldar tus datos en formato JSON o restaurar desde un respaldo creado previamente
+    description: Exporta tus datos en varios formatos o importa datos desde archivos de copia de seguridad
     select_action: Seleccionar acción de importar/exportar
     title: Importar/Exportar
   language:
@@ -113,3 +113,31 @@ settings:
   sync_devices:
     title: Sincronizar dispositivos
   title: Configuración
+  backup:
+    title: Copia de seguridad
+    description: Crear y restaurar copias de seguridad comprimidas de los datos de su aplicación usando el formato seguro .whph
+    export:
+      title: Crear copia de seguridad
+      description: Exportar todos sus datos a un archivo de copia de seguridad .whph comprimido
+      in_progress: Creando copia de seguridad, por favor espere...
+      success: "Copia de seguridad creada exitosamente. Ubicación del archivo:"
+      error: Error al crear la copia de seguridad
+      select_path: Seleccionar ubicación para guardar la copia de seguridad
+    import:
+      title: Restaurar copia de seguridad
+      description: Importar datos desde un archivo de copia de seguridad .whph creado previamente
+      in_progress: Restaurando copia de seguridad, por favor espere...
+      success: Copia de seguridad restaurada exitosamente
+      error: Error al restaurar la copia de seguridad
+      select_file: Seleccionar archivo de copia de seguridad
+      strategy:
+        title: Estrategia de restauración
+        replace: Eliminar datos existentes y restaurar
+        merge: Combinar con datos existentes
+    canceled: Operación de copia de seguridad cancelada por el usuario
+    export_failed: Exportación de copia de seguridad falló
+    import_failed: Importación de copia de seguridad falló
+    invalid_format: Formato de archivo de copia de seguridad inválido
+    invalid_format_error: Formato de archivo de copia de seguridad inválido
+    corrupted: El archivo de copia de seguridad está corrupto o dañado
+    export_description: Crear un archivo de copia de seguridad comprimido que contenga todos sus datos

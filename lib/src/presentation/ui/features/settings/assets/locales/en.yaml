@@ -14,7 +14,7 @@ settings:
     csv_description: You can use this to view in Excel and similar applications.
     error: Export failed
     in_progress: Exporting data, please wait...
-    json_description: You can use this file to import data back to the app.
+    json_description: Export data in readable JSON format for development and debugging purposes.
     select_directory: Select export directory
     select_path: Select save location
     select_type: Select export format
@@ -38,7 +38,7 @@ settings:
     unsupported_version: Unsupported version
     version_mismatch: Version not found
   import_export:
-    description: You can backup your data in JSON format or restore from a previously created backup
+    description: Export your data in various formats or import data from backup files
     select_action: Select import/export action
     title: Import/Export
   language:
@@ -114,3 +114,31 @@ settings:
   sync_devices:
     title: Sync Devices
   title: Settings
+  backup:
+    title: Backup
+    description: Create and restore compressed backups of your application data using the secure .whph format
+    export:
+      title: Create Backup
+      description: Export all your data to a compressed .whph backup file
+      in_progress: Creating backup, please wait...
+      success: "Backup created successfully. File location:"
+      error: Failed to create backup
+      select_path: Select backup save location
+    import:
+      title: Restore Backup
+      description: Import data from a previously created .whph backup file
+      in_progress: Restoring backup, please wait...
+      success: Backup restored successfully
+      error: Failed to restore backup
+      select_file: Select backup file
+      strategy:
+        title: Restore Strategy
+        replace: Delete Existing Data and Restore
+        merge: Merge with Existing Data
+    canceled: Backup operation canceled by user
+    export_failed: Backup export failed
+    import_failed: Backup import failed
+    invalid_format: Invalid backup file format
+    invalid_format_error: Invalid backup file format
+    corrupted: Backup file is corrupted or damaged
+    export_description: Create a compressed backup file containing all your data

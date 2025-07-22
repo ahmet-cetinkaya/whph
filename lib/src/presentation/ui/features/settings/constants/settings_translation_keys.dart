@@ -97,4 +97,25 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String appUsageStep2 = 'settings.permissions.app_usage.steps.step2';
   static const String appUsageStep3 = 'settings.permissions.app_usage.steps.step3';
   static const String appUsageStep4 = 'settings.permissions.app_usage.steps.step4';
+
+  // Backup
+  static const String backupTitle = 'settings.backup.title';
+  static const String backupDescription = 'settings.backup.description';
+  static const String backupExportTitle = 'settings.backup.export.title';
+  static const String backupImportTitle = 'settings.backup.import.title';
+  static const String backupExportDescription = 'settings.backup.export.description';
+  static const String backupImportDescription = 'settings.backup.import.description';
+  static const String backupExportInProgress = 'settings.backup.export.in_progress';
+  static const String backupImportInProgress = 'settings.backup.import.in_progress';
+  static const String backupExportSuccess = 'settings.backup.export.success';
+  static const String backupImportSuccess = 'settings.backup.import.success';
+  static const String backupExportError = 'settings.backup.export.error';
+  static const String backupImportError = 'settings.backup.import.error';
+  static const String backupSelectFile = 'settings.backup.import.select_file';
+  static const String backupSelectPath = 'settings.backup.export.select_path';
+  static const String backupStrategyTitle = 'settings.backup.import.strategy.title';
+  static const String backupStrategyReplace = 'settings.backup.import.strategy.replace';
+  static const String backupStrategyMerge = 'settings.backup.import.strategy.merge';
+  static const String backupCanceled = 'settings.backup.canceled';
+  static const String backupInvalidFormatError = 'settings.backup.invalid_format_error';
 }
