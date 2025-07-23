@@ -56,14 +56,17 @@ class GlobalErrorHandlerService {
 
   /// Builds a custom error widget for Flutter rendering errors
   static Widget _buildErrorWidget(FlutterErrorDetails details) {
-    return Material(
-      child: Container(
-        color: Colors.red,
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeLarge),
-          child: Text(
-            ' ${details.exception}',
-            style: const TextStyle(color: Colors.white),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Material(
+        child: Container(
+          color: Colors.red,
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+            child: Text(
+              'Error: ${details.exception}',
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
       ),

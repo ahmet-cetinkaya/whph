@@ -707,7 +707,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   widget: MarkdownEditor(
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
-                    toolbarBackground: AppTheme.surface1,
+                    
                     height: 250,
                   ),
                   removePadding: true,
@@ -809,7 +809,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ),
             ),
             // Edit Icon Section
-            const Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
+             Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
           ],
         ),
       ),

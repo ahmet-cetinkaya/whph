@@ -37,6 +37,8 @@ class DetailTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
@@ -44,7 +46,7 @@ class DetailTable extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.surface1,
+              color: theme.cardTheme.color ?? theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             ),
             child: Padding(
@@ -55,9 +57,9 @@ class DetailTable extends StatelessWidget {
                       // You can adjust the minHeight value as needed
                       // Use a constant or theme value for consistency
                       height: isDense ? AppTheme.size3XLarge : AppTheme.size4XLarge,
-                      child: _buildRow(context, data),
+                      child: _buildRow(context, data, theme),
                     )
-                  : _buildRow(context, data),
+                  : _buildRow(context, data, theme),
             ),
           ),
         );
@@ -65,7 +67,7 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, DetailTableRowData data) {
+  Widget _buildRow(BuildContext context, DetailTableRowData data, ThemeData theme) {
     final isSmallScreen = AppThemeHelper.isSmallScreen(context);
     final labelWidth = isSmallScreen ? 110.0 : 160.0;
 
@@ -73,24 +75,35 @@ class DetailTable extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildLabel(context, data),
+          // Başlık kısmı - normal padding ile
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
+            child: _buildLabel(context, data, theme),
+          ),
           if (data.hintText != null)
             Padding(
-              padding:
-                  const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall, top: AppTheme.size2XSmall),
+              padding: const EdgeInsets.only(
+                left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall, 
+                right: AppTheme.sizeMedium,
+                top: AppTheme.size2XSmall,
+              ),
               child: Text(
                 data.hintText!,
-                style: AppTheme.labelSmall.copyWith(
-                  color: AppTheme.lightTextColor.withValues(alpha: 0.6),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ),
           const SizedBox(height: AppTheme.size3XSmall),
+          // Content kısmı - minimal padding ile
           Padding(
             padding: data.removePadding 
-                ? EdgeInsets.zero 
-                : const EdgeInsets.only(left: AppTheme.sizeLarge + AppTheme.size2XSmall),
-            child: _buildContent(context, data),
+                ? const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall)
+                : const EdgeInsets.only(
+                    left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall,
+                    right: AppTheme.sizeMedium,
+                  ),
+            child: _buildContent(context, data, theme),
           ),
         ],
       );
@@ -101,24 +114,24 @@ class DetailTable extends StatelessWidget {
       children: [
         SizedBox(
           width: labelWidth,
-          child: _buildLabel(context, data),
+          child: _buildLabel(context, data, theme),
         ),
         const SizedBox(width: AppTheme.sizeSmall),
         Expanded(
-          child: _buildContent(context, data),
+          child: _buildContent(context, data, theme),
         ),
       ],
     );
   }
 
-  Widget _buildLabel(BuildContext context, DetailTableRowData data) {
+  Widget _buildLabel(BuildContext context, DetailTableRowData data, ThemeData theme) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           data.icon,
           size: AppTheme.iconSizeSmall,
-          color: AppTheme.lightTextColor.withValues(alpha: 0.8),
+          color: theme.colorScheme.onSurface.withOpacity(0.8),
         ),
         const SizedBox(width: AppTheme.size2XSmall),
         Flexible(
@@ -128,9 +141,9 @@ class DetailTable extends StatelessWidget {
               Flexible(
                 child: Text(
                   data.label,
-                  style: AppTheme.bodyMedium.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: AppTheme.lightTextColor.withValues(alpha: 0.8),
+                    color: theme.colorScheme.onSurface.withOpacity(0.8),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -142,7 +155,7 @@ class DetailTable extends StatelessWidget {
                   child: Icon(
                     SharedUiConstants.helpIcon,
                     size: AppTheme.iconSizeXSmall,
-                    color: AppTheme.lightTextColor.withValues(alpha: 0.5),
+                    color: theme.colorScheme.onSurface.withOpacity(0.5),
                   ),
                 ),
               ],
@@ -153,16 +166,17 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, DetailTableRowData data) {
+  Widget _buildContent(BuildContext context, DetailTableRowData data, ThemeData theme) {
     return Container(
       padding: contentPadding ?? EdgeInsets.zero,
       clipBehavior: Clip.none,
       constraints: forceVertical ? null : const BoxConstraints(minHeight: 28),
       alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
       child: DefaultTextStyle(
-        style: AppTheme.bodyMedium.copyWith(
+        style: theme.textTheme.bodyMedium?.copyWith(
           overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
-        ),
+          color: theme.colorScheme.onSurface,
+        ) ?? const TextStyle(),
         child: data.widget,
       ),
     );
@@ -170,7 +184,7 @@ class DetailTable extends StatelessWidget {
 
   EdgeInsets _getContainerPadding(DetailTableRowData data) {
     if (data.removePadding) {
-      // Only keep vertical padding, remove horizontal padding
+      // Sadece vertical padding, horizontal padding'i içeride hallederiz
       return const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall);
     }
     return const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size3XSmall);

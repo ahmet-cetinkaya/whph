@@ -361,6 +361,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     if (_note == null) return const SizedBox.shrink();
 
     final availableChipFields = [keyTags].where(_shouldShowAsChip).toList();
+    final theme = Theme.of(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.zero,
@@ -381,7 +382,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
                 child: const Icon(Icons.edit, size: AppTheme.iconSizeSmall),
               ),
             ),
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: theme.textTheme.bodyLarge,
           ),
           const SizedBox(height: AppTheme.size2XSmall),
 
@@ -405,14 +406,14 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           ],
 
           // Divider
-          const Divider(thickness: 1, color: AppTheme.dividerColor),
+          Divider(thickness: 1, color: theme.dividerColor),
 
           // Note Content (always visible)
           const SizedBox(height: AppTheme.size2XSmall),
           MarkdownEditor(
             controller: _contentController,
             onChanged: _onContentChanged,
-            style: AppTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium,
             height: 400,
           ),
         ],

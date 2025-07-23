@@ -17,15 +17,15 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 class HabitArchiveButton extends StatefulWidget {
   final String habitId;
   final VoidCallback? onArchiveSuccess;
-  final Color buttonColor;
-  final Color buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
   final String? tooltip;
 
   const HabitArchiveButton({
     super.key,
     required this.habitId,
     this.onArchiveSuccess,
-    this.buttonColor = AppTheme.primaryColor,
+    this.buttonColor,
     this.buttonBackgroundColor = Colors.transparent,
     this.tooltip,
   });
@@ -152,7 +152,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
             _isArchived! ? HabitTranslationKeys.unarchiveHabitTooltip : HabitTranslationKeys.archiveHabitTooltip,
           ),
       onPressed: _toggleArchiveStatus,
-      color: widget.buttonColor,
+      color: widget.buttonColor ?? AppTheme.primaryColor,
       style: IconButton.styleFrom(
         backgroundColor: widget.buttonBackgroundColor,
       ),

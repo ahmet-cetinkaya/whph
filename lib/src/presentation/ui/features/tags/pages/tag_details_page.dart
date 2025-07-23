@@ -98,10 +98,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
             buttonColor: AppTheme.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
           ),
-          HelpMenu(
-            titleKey: TagTranslationKeys.detailsHelpTitle,
-            markdownContentKey: TagTranslationKeys.helpContent,
-          ),
         ],
       ),
       body: SingleChildScrollView(

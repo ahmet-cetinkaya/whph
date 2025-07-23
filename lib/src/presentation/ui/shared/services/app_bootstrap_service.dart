@@ -8,6 +8,7 @@ import 'package:whph/src/infrastructure/infrastructure_container.dart';
 import 'package:whph/src/infrastructure/persistence/persistence_container.dart';
 import 'package:whph/src/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
@@ -63,6 +64,10 @@ class AppBootstrapService {
     final translationService = container.resolve<ITranslationService>();
     await translationService.init();
     ErrorHelper.initialize(translationService);
+
+    // Initialize theme service
+    final themeService = container.resolve<IThemeService>();
+    await themeService.initialize();
 
     // Initialize notification service
     final notificationService = container.resolve<INotificationService>();
