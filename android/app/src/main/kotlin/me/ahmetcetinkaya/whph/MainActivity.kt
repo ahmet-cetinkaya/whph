@@ -1093,7 +1093,7 @@ class MainActivity : FlutterActivity() {
             
             // Find the main user (typically UserHandle{0})
             val mainUser = userProfiles.firstOrNull { 
-                userManager.isUserRunning(it) && it.toString().contains("0") 
+                userManager.isUserRunning(it) && it.hashCode() == 0 
             }
             
             Log.d(TAG, "Main user: $mainUser")
