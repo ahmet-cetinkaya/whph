@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
-import 'package:whph/main.dart' show container;
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag.dart';
@@ -74,9 +74,13 @@ class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
   static bool isTestMode = false;
   static Directory? testDirectory;
+  static IContainer? _container;
 
-  static AppDatabase instance() {
-    return _instance ??= AppDatabase();
+  static AppDatabase instance([IContainer? container]) {
+    if (container != null) {
+      _container = container;
+    }
+    return _instance ??= AppDatabase(_openConnection());
   }
 
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
@@ -421,7 +425,8 @@ class AppDatabase extends _$AppDatabase {
 
   /// Gets the application directory using the injected application directory service
   static Future<Directory> _getApplicationDirectory() async {
-    final applicationDirectoryService = container.resolve<IApplicationDirectoryService>();
+    _container ??= Container().instance;
+    final applicationDirectoryService = _container!.resolve<IApplicationDirectoryService>();
     return await applicationDirectoryService.getApplicationDirectory();
   }
 }

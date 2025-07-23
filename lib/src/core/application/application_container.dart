@@ -24,6 +24,7 @@ import 'package:whph/src/core/application/features/tasks/services/abstraction/i_
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/src/core/application/features/tasks/tasks_registration.dart';
+import 'package:whph/src/core/application/features/widget/widget_registration.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -146,4 +147,5 @@ void registerApplication(IContainer container) {
     noteRepository,
     noteTagRepository,
   );
+  registerWidgetFeature(container, mediator);
 }

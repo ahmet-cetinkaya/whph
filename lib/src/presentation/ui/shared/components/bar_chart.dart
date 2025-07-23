@@ -93,7 +93,7 @@ class BarChart extends StatelessWidget {
                               padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
                               child: Row(
                                 children: [
-                                  _buildTitle(Colors.white),
+                                  _buildTitle(context),
                                   if (additionalWidget != null)
                                     Padding(
                                       padding: const EdgeInsets.only(left: AppTheme.size2XSmall),
@@ -116,12 +116,12 @@ class BarChart extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle(Color textColor) {
+  Widget _buildTitle(BuildContext context) {
     return Text(
       title,
       style: AppTheme.bodySmall.copyWith(
         fontWeight: FontWeight.bold,
-        color: textColor,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

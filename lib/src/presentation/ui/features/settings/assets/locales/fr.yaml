@@ -13,7 +13,7 @@ settings:
     csv_description: Vous pouvez utiliser ceci pour visualiser dans Excel et applications similaires.
     error: Échec de l'exportation
     in_progress: Exportation des données, veuillez patienter...
-    json_description: Vous pouvez utiliser ce fichier pour importer les données dans l'application.
+    json_description: Exporter les données au format JSON lisible à des fins de développement et de débogage.
     select_directory: Sélectionner le répertoire d'exportation
     select_path: Sélectionner l'emplacement de sauvegarde
     select_type: Sélectionner le format d'exportation
@@ -37,7 +37,7 @@ settings:
     unsupported_version: Version non supportée
     version_mismatch: Version non trouvée
   import_export:
-    description: Vous pouvez sauvegarder vos données au format JSON ou restaurer à partir d'une sauvegarde créée précédemment
+    description: Exportez vos données dans différents formats ou importez des données depuis des fichiers de sauvegarde
     select_action: Sélectionner l'action d'import/export
     title: Import/Export
   language:
@@ -113,3 +113,46 @@ settings:
   sync_devices:
     title: Synchroniser les appareils
   title: Paramètres
+  backup:
+    title: Sauvegarde
+    description: Créer et restaurer des sauvegardes compressées de vos données d'application en utilisant le format sécurisé .whph
+    export:
+      title: Créer une sauvegarde
+      description: Exporter toutes vos données vers un fichier de sauvegarde .whph compressé
+      in_progress: Création de la sauvegarde, veuillez patienter...
+      success: "Sauvegarde créée avec succès. Emplacement du fichier :"
+      error: Échec de la création de la sauvegarde
+      select_path: Sélectionner l'emplacement de sauvegarde
+    import:
+      title: Restaurer la sauvegarde
+      description: Importer des données depuis un fichier de sauvegarde .whph créé précédemment
+      in_progress: Restauration de la sauvegarde, veuillez patienter...
+      success: Sauvegarde restaurée avec succès
+      error: Échec de la restauration de la sauvegarde
+      select_file: Sélectionner le fichier de sauvegarde
+      strategy:
+        title: Stratégie de restauration
+        replace: Supprimer les données existantes et restaurer
+        merge: Fusionner avec les données existantes
+    canceled: Opération de sauvegarde annulée par l'utilisateur
+    export_failed: Échec de l'exportation de sauvegarde
+    import_failed: Échec de l'importation de sauvegarde
+    invalid_format: Format de fichier de sauvegarde invalide
+    invalid_format_error: Format de fichier de sauvegarde invalide
+    corrupted: Le fichier de sauvegarde est corrompu ou endommagé
+    export_description: Créer un fichier de sauvegarde compressé contenant toutes vos données
+  theme:
+    title: Thème
+    description: Personnaliser l'apparence de WHPH
+    mode:
+      title: Mode de thème
+      light: Clair
+      dark: Sombre
+      auto:
+        title: Automatique
+        description: Suivre les paramètres du thème système
+    dynamic_accent:
+      title: Couleur d'accent dynamique
+      description: Utiliser les couleurs dynamiques de votre thème système
+      feature: Dynamique
+    error: Échec du chargement des paramètres de thème

@@ -113,7 +113,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   void _handleHabitRecordChanged() {
-    if (!mounted || _habitsService.onHabitRecordAdded.value != widget.habitId) return;
+    if (!mounted) return;
+
+    // Check if the event is for this habit (either added or removed)
+    final addedHabitId = _habitsService.onHabitRecordAdded.value;
+    final removedHabitId = _habitsService.onHabitRecordRemoved.value;
+
+    if (addedHabitId != widget.habitId && removedHabitId != widget.habitId) return;
+
     _getHabitRecordsForMonth(currentMonth);
     _getHabit(); // Refresh statistics
   }
@@ -224,6 +231,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
           // Notify service that a record was added to trigger statistics refresh
           _habitsService.notifyHabitRecordAdded(habitId);
+
+          // Also notify parent component about the update
+          widget.onHabitUpdated?.call();
         }
       },
     );
@@ -246,6 +256,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
           // Notify service that a record was removed to trigger statistics refresh
           _habitsService.notifyHabitRecordRemoved(widget.habitId);
+
+          // Also notify parent component about the update
+          widget.onHabitUpdated?.call();
         }
       },
     );
@@ -694,7 +707,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   widget: MarkdownEditor(
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
-                    toolbarBackground: AppTheme.surface1,
                     height: 250,
                   ),
                   removePadding: true,
@@ -796,7 +808,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               ),
             ),
             // Edit Icon Section
-            const Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
+            Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
           ],
         ),
       ),

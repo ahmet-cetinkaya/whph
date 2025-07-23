@@ -14,7 +14,7 @@ settings:
     csv_description: 您可以使用此文件在 Excel 和类似应用程序中查看。
     error: 导出失败
     in_progress: 正在导出数据，请稍候...
-    json_description: 您可以使用此文件将数据重新导入应用。
+    json_description: 以可读的JSON格式导出数据，用于开发和调试目的。
     select_directory: 选择导出目录
     select_path: 选择保存位置
     select_type: 选择导出格式
@@ -38,7 +38,7 @@ settings:
     unsupported_version: 不支持的版本
     version_mismatch: 未找到版本
   import_export:
-    description: 您可以以 JSON 格式备份数据或从之前创建的备份中恢复
+    description: 以各种格式导出您的数据或从备份文件导入数据
     select_action: 选择导入/导出操作
     title: 导入/导出
   language:
@@ -53,10 +53,10 @@ settings:
       description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
       instructions: "说明："
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的使用访问设置界面中，从列表中找到\"{appName}\""
-        step3: "点击\"{appName}\""
-        step4: "启用\"允许使用访问\"或将开关切换到开启"
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的使用访问设置界面中，从列表中找到"{appName}"'
+        step3: '点击"{appName}"'
+        step4: '启用"允许使用访问"或将开关切换到开启'
       title: 应用使用权限
     battery_optimization:
       description: 为了可靠的通知，此应用需要从电池优化中排除。没有这个，提醒可能会延迟或根本不会送达。
@@ -64,12 +64,12 @@ settings:
       instructions: "说明："
       not_disabled: 电池优化仍然启用。请提供权限以使相关功能正常工作。
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的设置界面中找到\"{appName}\""
-        step3: "点击\"{appName}\""
-        step4: "确保在打开的页面上启用\"允许后台使用\""
-        step5: "点击\"允许后台使用\""
-        step6: "选择\"无限制\""
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的设置界面中找到"{appName}"'
+        step3: '点击"{appName}"'
+        step4: '确保在打开的页面上启用"允许后台使用"'
+        step5: '点击"允许后台使用"'
+        step6: '选择"无限制"'
       title: 电池优化
     exact_alarm:
       description: Android 12+ 需要权限来安排精确闹钟以使提醒正常工作。
@@ -78,8 +78,8 @@ settings:
         android12plus:
           step2: 转到闹钟和提醒并启用权限
           step3: 确认精确闹钟权限
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的 {appName} 应用的闹钟和提醒页面中，启用\"允许设置闹钟和提醒\""
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的 {appName} 应用的闹钟和提醒页面中，启用"允许设置闹钟和提醒"'
       title: 精确闹钟权限
     fix_it: 修复
     granted: 权限已授予
@@ -89,10 +89,10 @@ settings:
       instructions: "说明："
       steps:
         android:
-          step1: "按下\"打开设置\"按钮"
+          step1: '按下"打开设置"按钮'
           step2: 出现提示时允许通知
         ios:
-          step1: "按下\"打开设置\"按钮"
+          step1: '按下"打开设置"按钮'
           step2: 出现提示时允许通知
       title: 通知权限
     open_settings: 打开设置
@@ -101,9 +101,9 @@ settings:
       importance: 自动启动设置位置因设备制造商而异或可能不存在。
       instructions: "说明："
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的设置界面中找到\"{appName}\"应用"
-        step3: "启用\"自动启动\"、\"自动运行\"、\"开机启动\"或类似权限"
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的设置界面中找到"{appName}"应用'
+        step3: '启用"自动启动"、"自动运行"、"开机启动"或类似权限'
       title: 自动启动权限
     title: 权限
   startup:
@@ -114,3 +114,46 @@ settings:
   sync_devices:
     title: 设备同步
   title: 设置
+  backup:
+    title: 备份
+    description: 使用安全的.whph格式创建和恢复应用程序数据的压缩备份
+    export:
+      title: 创建备份
+      description: 将所有数据导出到压缩的.whph备份文件
+      in_progress: 正在创建备份，请稍候...
+      success: "备份创建成功。文件位置："
+      error: 创建备份失败
+      select_path: 选择备份保存位置
+    import:
+      title: 恢复备份
+      description: 从之前创建的.whph备份文件导入数据
+      in_progress: 正在恢复备份，请稍候...
+      success: 备份恢复成功
+      error: 恢复备份失败
+      select_file: 选择备份文件
+      strategy:
+        title: 恢复策略
+        replace: 删除现有数据并恢复
+        merge: 与现有数据合并
+    canceled: 备份操作被用户取消
+    export_failed: 备份导出失败
+    import_failed: 备份导入失败
+    invalid_format: 无效的备份文件格式
+    invalid_format_error: 无效的备份文件格式
+    corrupted: 备份文件已损坏或损坏
+    export_description: 创建包含所有数据的压缩备份文件
+  theme:
+    title: 主题
+    description: 自定义WHPH的外观
+    mode:
+      title: 主题模式
+      light: 浅色
+      dark: 深色
+      auto:
+        title: 自动
+        description: 跟随系统主题设置
+    dynamic_accent:
+      title: 动态强调色
+      description: 使用系统主题的动态颜色
+      feature: 动态
+    error: 加载主题设置失败

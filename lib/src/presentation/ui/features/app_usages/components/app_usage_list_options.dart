@@ -272,9 +272,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
             initialNoneSelected: false,
             icon: Icons.devices,
             iconSize: AppTheme.iconSizeMedium,
-            color: (_currentState.devices?.isNotEmpty ?? false)
-                ? AppTheme.primaryColor
-                : Colors.grey,
+            color: (_currentState.devices?.isNotEmpty ?? false) ? AppTheme.primaryColor : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterDevicesButton),
           ),
 

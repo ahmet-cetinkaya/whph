@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Colors - Dark Theme -->
+    <color name="ic_launcher_background">@color/surface1</color>
+
+    <!-- Widget Colors - Dark Theme -->
+    <color name="widget_background">@color/widget_background_dark</color>
+    <color name="widget_border">@color/widget_border_dark</color>
+    <color name="widget_text_primary">@color/widget_text_primary_dark</color>
+    <color name="widget_text_secondary">@color/widget_text_secondary_dark</color>
+    <color name="widget_checkbox_unchecked">@color/secondary_text_color</color>
+    <color name="widget_checkbox_checked">@color/primary_color</color>
+</resources>

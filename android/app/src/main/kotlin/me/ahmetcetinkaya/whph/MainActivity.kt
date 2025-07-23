@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.os.Build
+import android.os.UserManager
 import android.provider.Settings
 import android.app.AlarmManager
 import android.util.Log
@@ -102,7 +103,7 @@ class MainActivity : FlutterActivity() {
     }
 
     /**
-     * Process an intent to extract and handle notification payload
+     * Process an intent to extract and handle notification payload or widget clicks
      */
     private fun processIntent(intent: Intent?) {
         if (intent == null) {
@@ -111,7 +112,21 @@ class MainActivity : FlutterActivity() {
         }
 
         Log.d(TAG, "Processing intent with action: ${intent.action}")
-        
+        Log.d(TAG, "Intent data: ${intent.data}")
+
+        // Check for widget clicks first
+        if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
+            val uri = intent.data!!
+            Log.d(TAG, "=== WIDGET CLICK DETECTED ===")
+            Log.d(TAG, "Widget click URI: $uri")
+
+            if (uri.scheme == "whph" && uri.host == "widget") {
+                Log.d(TAG, "Valid widget click URI detected")
+                handleWidgetClick(uri)
+                return // Don't process as notification
+            }
+        }
+
         // Extract payload based on the action
         val payload = when (intent.action) {
             // Handle our custom notification action
@@ -161,6 +176,79 @@ class MainActivity : FlutterActivity() {
             }
         } else {
             Log.d(TAG, "No payload found in intent. Intent extras: ${intent.extras?.keySet()?.joinToString()}")
+        }
+    }
+
+    /**
+     * Handle widget click by triggering the HomeWidget plugin's click mechanism
+     */
+    private fun handleWidgetClick(uri: Uri) {
+        try {
+            Log.d(TAG, "=== HANDLING WIDGET CLICK ===")
+            Log.d(TAG, "Widget URI: $uri")
+
+            // Use HomeWidget plugin to trigger the click event
+            // This should trigger the widgetClicked stream in Flutter
+            try {
+                // Try to use HomeWidget plugin's triggerClick method
+                val homeWidgetClass = Class.forName("es.antonborri.home_widget.HomeWidgetPlugin")
+                val triggerClickMethod = homeWidgetClass.getDeclaredMethod("triggerClick", String::class.java)
+                triggerClickMethod.isAccessible = true
+                triggerClickMethod.invoke(null, uri.toString())
+                Log.d(TAG, "Successfully triggered HomeWidget click via reflection")
+
+            } catch (reflectionError: Exception) {
+                Log.w(TAG, "Reflection method failed, trying alternative: $reflectionError")
+
+                // Alternative approach: Try to access the plugin instance
+                try {
+                    val homeWidgetClass = Class.forName("es.antonborri.home_widget.HomeWidgetPlugin")
+                    val instanceField = homeWidgetClass.getDeclaredField("instance")
+                    instanceField.isAccessible = true
+                    val pluginInstance = instanceField.get(null)
+
+                    if (pluginInstance != null) {
+                        val widgetClickedMethod = homeWidgetClass.getDeclaredMethod("widgetClicked", String::class.java)
+                        widgetClickedMethod.isAccessible = true
+                        widgetClickedMethod.invoke(pluginInstance, uri.toString())
+                        Log.d(TAG, "Successfully triggered HomeWidget click via instance method")
+                    } else {
+                        Log.w(TAG, "HomeWidget plugin instance is null")
+                        fallbackWidgetClick(uri)
+                    }
+
+                } catch (instanceError: Exception) {
+                    Log.w(TAG, "Instance method failed: $instanceError")
+                    fallbackWidgetClick(uri)
+                }
+            }
+
+            Log.d(TAG, "=== WIDGET CLICK HANDLING COMPLETE ===")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Error handling widget click", e)
+            fallbackWidgetClick(uri)
+        }
+    }
+
+    /**
+     * Fallback method to handle widget clicks when HomeWidget plugin methods fail
+     */
+    private fun fallbackWidgetClick(uri: Uri) {
+        try {
+            Log.d(TAG, "Using fallback widget click handling")
+
+            // Send a broadcast that might be picked up by the HomeWidget plugin
+            val broadcastIntent = Intent().apply {
+                action = "es.antonborri.home_widget.WIDGET_CLICK"
+                putExtra("url", uri.toString())
+                setPackage(packageName)
+            }
+            sendBroadcast(broadcastIntent)
+            Log.d(TAG, "Sent fallback broadcast for widget click")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Fallback widget click handling failed", e)
         }
     }
 
@@ -320,6 +408,15 @@ class MainActivity : FlutterActivity() {
                 "getInstalledApps" -> {
                     val installedApps = AppInfo().getInstalledAppNames()
                     result.success(installedApps)
+                }
+                "isRunningInWorkProfile" -> {
+                    try {
+                        val isWorkProfile = isRunningInWorkProfile()
+                        result.success(isWorkProfile)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error checking work profile status: ${e.message}", e)
+                        result.error("WORK_PROFILE_ERROR", e.message, null)
+                    }
                 }
                 else -> {
                     result.notImplemented()
@@ -978,6 +1075,38 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+        }
+    }
+
+    /**
+     * Detects if the app is running in a work profile.
+     * Uses UserManager and UserHandle APIs to determine profile context.
+     */
+    private fun isRunningInWorkProfile(): Boolean {
+        return try {
+            val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+            val currentUser = android.os.Process.myUserHandle()
+            val userProfiles = userManager.userProfiles
+            
+            Log.d(TAG, "Current user: $currentUser")
+            Log.d(TAG, "User profiles: $userProfiles")
+            
+            // Find the main user (typically UserHandle{0})
+            val mainUser = userProfiles.firstOrNull { 
+                userManager.isUserRunning(it) && it.hashCode() == 0 
+            }
+            
+            Log.d(TAG, "Main user: $mainUser")
+            
+            // If we have multiple profiles and current user is not the main user, we're in work profile
+            val isWorkProfile = currentUser != mainUser && userProfiles.size > 1
+            
+            Log.d(TAG, "Is running in work profile: $isWorkProfile")
+            return isWorkProfile
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error detecting work profile: ${e.message}", e)
+            false
         }
     }
 

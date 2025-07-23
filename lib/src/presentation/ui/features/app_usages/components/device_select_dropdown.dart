@@ -59,8 +59,7 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
   @override
   void initState() {
     _selectedDevices = widget.initialSelectedDevices.map((e) => e.value).toList();
-    _hasExplicitlySelectedNone = widget.showNoneOption &&
-        (_selectedDevices.isEmpty && widget.initialNoneSelected);
+    _hasExplicitlySelectedNone = widget.showNoneOption && (_selectedDevices.isEmpty && widget.initialNoneSelected);
 
     if (_hasExplicitlySelectedNone) {
       _selectedDevices.clear();
@@ -80,8 +79,7 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
     }
 
     if (oldWidget.initialNoneSelected != widget.initialNoneSelected) {
-      _hasExplicitlySelectedNone = widget.showNoneOption &&
-          (_selectedDevices.isEmpty && widget.initialNoneSelected);
+      _hasExplicitlySelectedNone = widget.showNoneOption && (_selectedDevices.isEmpty && widget.initialNoneSelected);
 
       if (_hasExplicitlySelectedNone) {
         _selectedDevices.clear();

@@ -58,8 +58,8 @@ void registerSyncFeature(
 
   // Register device ID service with dependency injection
   container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
-    applicationDirectoryService: applicationDirectoryService,
-  ));
+        applicationDirectoryService: applicationDirectoryService,
+      ));
   final deviceIdService = container.resolve<IDeviceIdService>();
 
   mediator

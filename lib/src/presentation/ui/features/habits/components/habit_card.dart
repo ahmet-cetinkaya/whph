@@ -55,6 +55,35 @@ class _HabitCardState extends State<HabitCard> {
   void initState() {
     super.initState();
     _getHabitRecords();
+    _setupEventListeners();
+  }
+
+  @override
+  void dispose() {
+    _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupEventListeners() {
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChange);
+  }
+
+  void _removeEventListeners() {
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChange);
+  }
+
+  void _handleHabitRecordChange() {
+    if (!mounted) return;
+
+    // Check if the event is for this specific habit
+    final addedHabitId = _habitsService.onHabitRecordAdded.value;
+    final removedHabitId = _habitsService.onHabitRecordRemoved.value;
+
+    if (addedHabitId == widget.habit.id || removedHabitId == widget.habit.id) {
+      _refreshHabitRecords();
+    }
   }
 
   Future<void> _getHabitRecords() async {
@@ -395,41 +424,47 @@ class _HabitCardState extends State<HabitCard> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (widget.isDateLabelShowing) ...[
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                DateTimeHelper.getWeekday(localDate.weekday),
-                style: AppTheme.bodySmall.copyWith(
-                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  DateTimeHelper.getWeekday(localDate.weekday),
+                  style: AppTheme.bodySmall.copyWith(
+                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: widget.isDense ? 1 : 2),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                localDate.day.toString(),
-                style: AppTheme.bodySmall.copyWith(
-                  color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  localDate.day.toString(),
+                  style: AppTheme.bodySmall.copyWith(
+                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: widget.isDense ? 2 : 4),
+            SizedBox(height: widget.isDense ? 1 : 2),
           ],
-          IconButton(
-            padding: EdgeInsets.zero,
-            visualDensity: VisualDensity.standard,
-            constraints: BoxConstraints(
-              minWidth: widget.isDense ? 24 : 32,
-              minHeight: widget.isDense ? 24 : 32,
+          Flexible(
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.standard,
+              constraints: BoxConstraints(
+                minWidth: widget.isDense ? 24 : 32,
+                minHeight: widget.isDense ? 24 : 32,
+              ),
+              onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
+              icon: Icon(
+                hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
+                size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
+                color: _getRecordStateColor(hasRecord, isDisabled),
+              ),
             ),
-            onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
-            icon: Icon(
-              hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon,
-              size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
-              color: _getRecordStateColor(hasRecord, isDisabled),
-            ),
-          ),
+          )
         ],
       ),
     );

@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:whph/src/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/main.dart';
 
 class AppTheme {
-  // Colors
-  static const Color primaryColor = domain.AppTheme.primaryColor;
+  static IThemeService? _themeService;
 
-  // Surface Colors
-  static const Color surface0 = Color.fromARGB(255, 0, 0, 0);
-  static const Color surface1 = Color(0xFF121212);
-  static const Color surface2 = Color(0xFF181818);
-  static const Color surface3 = Color(0xFF202020);
+  static IThemeService get _service {
+    _themeService ??= container.resolve<IThemeService>();
+    return _themeService!;
+  }
 
-  // Barrier Colors
-  static Color barrierColor = surface3.withValues(alpha: 0.8);
+  // Dynamic Colors (get from theme service)
+  static Color get primaryColor => _service.primaryColor;
+  static Color get surface0 => _service.surface0;
+  static Color get surface1 => _service.surface1;
+  static Color get surface2 => _service.surface2;
+  static Color get surface3 => _service.surface3;
+  static Color get barrierColor => _service.barrierColor;
+  static Color get textColor => _service.textColor;
+  static Color get secondaryTextColor => _service.secondaryTextColor;
+  static Color get darkTextColor => _service.darkTextColor;
+  static Color get lightTextColor => _service.lightTextColor;
+  static Color get dividerColor => _service.dividerColor;
 
-  // Text Colors
-  static const Color textColor = Color(0xFFFFFFFF);
-  static const Color secondaryTextColor = Color(0xFFB0B0B0);
-  static const Color darkTextColor = Color(0xFF000000);
-  static const Color lightTextColor = Color(0xFFFFFFFF);
-
-  // Other Colors
-  static const Color dividerColor = Color(0xFF282828);
+  // Static Colors (don't change with theme)
   static const Color successColor = Color(0xFF4CAF50);
   static const Color warningColor = Color(0xFFFFC107);
   static const Color errorColor = Color(0xFFF44336);
   static const Color infoColor = Color(0xFF2196F3);
   static const Color disabledColor = Color(0xFF9E9E9E);
 
-  // Chart Colors
+  // Chart Colors (static)
   static const Color chartColor1 = domain.AppTheme.chartColor1;
   static const Color chartColor2 = domain.AppTheme.chartColor2;
   static const Color chartColor3 = domain.AppTheme.chartColor3;
@@ -78,62 +81,62 @@ class AppTheme {
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
-  // Text Styles
-  static const TextStyle label = TextStyle(
-    color: textColor,
-    fontSize: fontSizeMedium,
-    height: 1.5,
-  );
-  static const TextStyle bodyXSmall = TextStyle(
-    color: textColor,
-    fontSize: fontSizeXSmall,
-    height: 1.5,
-  );
-  static const TextStyle bodySmall = TextStyle(
-    color: textColor,
-    fontSize: fontSizeSmall,
-    height: 1.5,
-  );
-  static const TextStyle bodyMedium = TextStyle(
-    color: textColor,
-    fontSize: fontSizeMedium,
-    height: 1.5,
-  );
-  static const TextStyle bodyLarge = TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    height: 1.5,
-    fontWeight: FontWeight.w500,
-  );
-  static const TextStyle headlineSmall = TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    fontWeight: FontWeight.bold,
-    height: 1.3,
-  );
-  static const TextStyle headlineMedium = TextStyle(
-    color: textColor,
-    fontSize: fontSizeXLarge,
-    fontWeight: FontWeight.bold,
-    height: 1.3,
-  );
-  static const TextStyle headlineLarge = TextStyle(
-    color: textColor,
-    fontSize: fontSizeXLarge + 8,
-    fontWeight: FontWeight.bold,
-    height: 1.2,
-  );
-  static const TextStyle displaySmall = TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    fontWeight: FontWeight.bold,
-  );
-  static const TextStyle displayLarge = TextStyle(
-    color: textColor,
-    fontSize: 48.0,
-    fontWeight: FontWeight.bold,
-    height: 1.1,
-  );
+  // Text Styles (dynamic)
+  static TextStyle get label => TextStyle(
+        color: textColor,
+        fontSize: fontSizeMedium,
+        height: 1.5,
+      );
+  static TextStyle get bodyXSmall => TextStyle(
+        color: textColor,
+        fontSize: fontSizeXSmall,
+        height: 1.5,
+      );
+  static TextStyle get bodySmall => TextStyle(
+        color: textColor,
+        fontSize: fontSizeSmall,
+        height: 1.5,
+      );
+  static TextStyle get bodyMedium => TextStyle(
+        color: textColor,
+        fontSize: fontSizeMedium,
+        height: 1.5,
+      );
+  static TextStyle get bodyLarge => TextStyle(
+        color: textColor,
+        fontSize: fontSizeLarge,
+        height: 1.5,
+        fontWeight: FontWeight.w500,
+      );
+  static TextStyle get headlineSmall => TextStyle(
+        color: textColor,
+        fontSize: fontSizeLarge,
+        fontWeight: FontWeight.bold,
+        height: 1.3,
+      );
+  static TextStyle get headlineMedium => TextStyle(
+        color: textColor,
+        fontSize: fontSizeXLarge,
+        fontWeight: FontWeight.bold,
+        height: 1.3,
+      );
+  static TextStyle get headlineLarge => TextStyle(
+        color: textColor,
+        fontSize: fontSizeXLarge + 8,
+        fontWeight: FontWeight.bold,
+        height: 1.2,
+      );
+  static TextStyle get displaySmall => TextStyle(
+        color: textColor,
+        fontSize: fontSizeLarge,
+        fontWeight: FontWeight.bold,
+      );
+  static TextStyle get displayLarge => TextStyle(
+        color: textColor,
+        fontSize: 48.0,
+        fontWeight: FontWeight.bold,
+        height: 1.1,
+      );
 
   // Sizes
   static const double size4XSmall = 1.0;
@@ -183,149 +186,6 @@ class AppTheme {
     letterSpacing: 0.5,
   );
 
-  // ThemeData definition
-  static final ThemeData themeData = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.dark(
-      primary: primaryColor,
-      onPrimary: textColor,
-      surface: surface1,
-      onSurface: textColor,
-      secondary: surface3,
-      onSecondary: textColor,
-    ),
-    primaryColor: domain.AppTheme.primaryColor,
-    scaffoldBackgroundColor: AppTheme.surface0,
-    highlightColor: surface3,
-    cardTheme: CardThemeData(
-      color: surface2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
-      clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      margin: EdgeInsets.zero,
-    ),
-    textTheme: TextTheme(
-      bodySmall: bodySmall,
-      bodyMedium: bodyMedium,
-      bodyLarge: bodyLarge,
-      headlineSmall: headlineSmall,
-      headlineMedium: headlineMedium,
-      headlineLarge: headlineLarge,
-      displaySmall: displaySmall,
-      displayLarge: displayLarge,
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(containerBorderRadius),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(containerBorderRadius),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(containerBorderRadius),
-        borderSide: BorderSide.none,
-      ),
-      disabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(containerBorderRadius),
-        borderSide: BorderSide.none,
-      ),
-      filled: true,
-      fillColor: surface1,
-      labelStyle: bodyMedium.copyWith(color: secondaryTextColor),
-    ),
-    checkboxTheme: CheckboxThemeData(
-      checkColor: WidgetStateProperty.all(surface1),
-    ),
-    dropdownMenuTheme: DropdownMenuThemeData(
-      textStyle: bodySmall,
-      menuStyle: MenuStyle(
-        backgroundColor: WidgetStateProperty.all(surface1),
-        elevation: WidgetStateProperty.all(0),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: sizeSmall, vertical: size2XSmall),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-          borderSide: BorderSide.none,
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-          borderSide: BorderSide.none,
-        ),
-        filled: true,
-        fillColor: surface1,
-      ),
-    ),
-    dividerTheme: DividerThemeData(
-      color: dividerColor,
-      thickness: 1,
-    ),
-    chipTheme: ChipThemeData(
-      labelPadding: EdgeInsets.all(size2XSmall),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(containerBorderRadius)),
-      side: BorderSide.none,
-    ),
-    expansionTileTheme: ExpansionTileThemeData(
-      iconColor: textColor,
-      textColor: textColor,
-      backgroundColor: surface2,
-    ),
-    switchTheme: SwitchThemeData(
-      trackColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return primaryColor.withAlpha((255 * 0.5).toInt());
-        }
-        return surface3;
-      }),
-      thumbColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return primaryColor;
-        }
-        return textColor;
-      }),
-    ),
-    dialogTheme: DialogThemeData(
-      barrierColor: barrierColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(containerBorderRadius),
-      ),
-      elevation: 0,
-    ),
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: surface1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(containerBorderRadius),
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      showDragHandle: true,
-      modalBarrierColor: barrierColor,
-      constraints: BoxConstraints(
-        maxWidth: 0.9 * AppTheme.screenMedium,
-      ),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(primaryColor),
-        foregroundColor: WidgetStateProperty.all(darkTextColor),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: sizeMedium, vertical: sizeSmall)),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(containerBorderRadius),
-        )),
-        textStyle: WidgetStateProperty.all(labelLarge),
-      ),
-    ),
-  );
+  // ThemeData definition (dynamic)
+  static ThemeData get themeData => _service.themeData;
 }

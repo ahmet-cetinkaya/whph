@@ -383,6 +383,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       size: DialogSize.medium,
       child: StatefulBuilder(
         builder: (context, setDialogState) {
+          final theme = Theme.of(context);
+
           return Padding(
             padding: const EdgeInsets.all(AppTheme.sizeLarge),
             child: Column(
@@ -396,7 +398,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Text(
                     _translationService.translate(TaskTranslationKeys.quickTaskLockDescription),
-                    style: AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
 
@@ -404,7 +408,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 Flexible(
                   child: BorderFadeOverlay(
                     fadeBorders: {FadeBorder.bottom},
-                    backgroundColor: AppTheme.surface1,
+                    backgroundColor: theme.colorScheme.surface,
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -428,7 +432,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           _buildLockOptionCheckboxTile(
                             title: _translationService.translate(TaskTranslationKeys.priorityLabel),
                             icon: TaskUiConstants.priorityOutlinedIcon,
-                            iconColor: TaskUiConstants.getPriorityColor(_selectedPriority),
+                            iconColor: _selectedPriority == null
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                                : TaskUiConstants.getPriorityColor(_selectedPriority),
                             value: _lockPriority,
                             onChanged: (bool? value) {
                               setDialogState(() {
@@ -555,6 +561,19 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     );
   }
 
+  String _getTagsTooltip() {
+    if (_selectedTags.isEmpty) {
+      return _translationService.translate(TaskTranslationKeys.tagsLabel);
+    }
+
+    final tagNames = _selectedTags.map((tag) => tag.label).where((name) => name.isNotEmpty).toList();
+    if (tagNames.isEmpty) {
+      return _translationService.translate(TaskTranslationKeys.tagsLabel);
+    }
+
+    return tagNames.join(', ');
+  }
+
   Future<void> _onClearAllFields() async {
     // Show confirmation dialog
     final confirmed = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -584,10 +603,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
+    final theme = Theme.of(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: theme.colorScheme.surface,
         // Use different border radius based on platform
         borderRadius: isDesktop
             ? BorderRadius.circular(AppTheme.containerBorderRadius)
@@ -609,10 +629,15 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                   children: [
                     Text(
                       _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
-                      style: AppTheme.headlineSmall,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: Icon(
+                        Icons.close,
+                        color: theme.colorScheme.onSurface,
+                      ),
                       onPressed: _closeDialog,
                     ),
                   ],
@@ -624,7 +649,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               controller: _titleController,
               focusNode: _focusNode,
               autofocus: true,
-              style: AppTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
               decoration: InputDecoration(
                 hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitleHint),
                 // Use same content padding for both platforms
@@ -632,7 +659,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 // Send button in the text field
                 suffixIcon: isDesktop
                     ? IconButton(
-                        icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send, color: AppTheme.primaryColor),
+                        icon: Icon(
+                          _isLoading ? Icons.hourglass_empty : Icons.send,
+                          color: theme.colorScheme.primary,
+                        ),
                         onPressed: _createTask,
                         tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
                       )
@@ -640,7 +670,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                         width: AppTheme.iconSizeLarge - 4.0,
                         height: AppTheme.iconSizeLarge - 4.0,
                         child: IconButton(
-                          icon: Icon(_isLoading ? Icons.hourglass_empty : Icons.send, color: AppTheme.primaryColor),
+                          icon: Icon(
+                            _isLoading ? Icons.hourglass_empty : Icons.send,
+                            color: theme.colorScheme.primary,
+                          ),
                           onPressed: _createTask,
                           iconSize: AppTheme.iconSizeMedium,
                           padding: EdgeInsets.zero,
@@ -672,13 +705,17 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   Widget _buildQuickActionButtons() {
     final iconSize = AppTheme.iconSizeMedium;
+    final theme = Theme.of(context);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Lock settings button
         IconButton(
-          icon: const Icon(Icons.lock_outline, color: AppTheme.secondaryTextColor),
+          icon: Icon(
+            Icons.lock_outline,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
           onPressed: _showLockSettingsDialog,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
           iconSize: iconSize,
@@ -689,10 +726,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           child: TagSelectDropdown(
             initialSelectedTags: _selectedTags,
             isMultiSelect: true,
-            tooltip: _translationService.translate(TaskTranslationKeys.tagsLabel),
+            tooltip: _getTagsTooltip(),
             onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
             iconSize: iconSize,
-            color: _selectedTags.isEmpty ? Colors.white : TaskUiConstants.tagColor,
+            color:
+                _selectedTags.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.7) : TaskUiConstants.tagColor,
           ),
           isLocked: _lockTags,
         ),
@@ -702,10 +740,12 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           child: IconButton(
             icon: Icon(
               _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
-              color: TaskUiConstants.getPriorityColor(_selectedPriority),
+              color: _selectedPriority == null
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                  : TaskUiConstants.getPriorityColor(_selectedPriority),
             ),
             onPressed: _togglePriority,
-            tooltip: _translationService.translate(TaskTranslationKeys.priorityNone),
+            tooltip: TaskUiConstants.getPriorityTooltip(_selectedPriority, _translationService),
             iconSize: iconSize,
           ),
           isLocked: _lockPriority,
@@ -715,10 +755,13 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         _buildActionButtonWithLock(
           child: IconButton(
             icon: _estimatedTime == null
-                ? Icon(TaskUiConstants.estimatedTimeOutlinedIcon)
+                ? Icon(
+                    TaskUiConstants.estimatedTimeOutlinedIcon,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  )
                 : Text(
                     SharedUiConstants.formatMinutes(_estimatedTime!),
-                    style: AppTheme.bodyMedium.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: TaskUiConstants.estimatedTimeColor,
                       fontWeight: FontWeight.bold,
                     ),
@@ -735,7 +778,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           child: IconButton(
             icon: Icon(
               _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
-              color: _plannedDate == null ? null : TaskUiConstants.plannedDateColor,
+              color: _plannedDate == null
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                  : TaskUiConstants.plannedDateColor,
             ),
             onPressed: _selectPlannedDate,
             tooltip: _getDateTooltip(false),
@@ -749,7 +794,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           child: IconButton(
             icon: Icon(
               _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
-              color: _deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
+              color: _deadlineDate == null
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                  : TaskUiConstants.deadlineDateColor,
             ),
             onPressed: _selectDeadlineDate,
             tooltip: _getDateTooltip(true),
@@ -760,7 +807,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
         // Clear all button
         IconButton(
-          icon: const Icon(Icons.close, color: AppTheme.secondaryTextColor),
+          icon: Icon(
+            Icons.close,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
           onPressed: _onClearAllFields,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskResetAll),
           iconSize: iconSize,
@@ -773,6 +823,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     required Widget child,
     required bool isLocked,
   }) {
+    final theme = Theme.of(context);
+
     return Stack(
       children: [
         child,
@@ -783,7 +835,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             child: Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
+                color: theme.colorScheme.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
@@ -796,7 +848,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               child: Icon(
                 Icons.lock,
                 size: 12,
-                color: AppTheme.primaryColor,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),

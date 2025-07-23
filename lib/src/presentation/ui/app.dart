@@ -10,6 +10,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/src/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/background_translation_service.dart';
 
 class App extends StatefulWidget {
@@ -29,6 +30,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final AppInitializationService _initializationService;
   late final AppLifecycleService _lifecycleService;
+  late final IThemeService _themeService;
 
   @override
   void initState() {
@@ -44,6 +46,8 @@ class _AppState extends State<App> {
     _lifecycleService = AppLifecycleService(
       widget.container.resolve<ISystemTrayService>(),
     );
+
+    _themeService = widget.container.resolve<IThemeService>();
 
     _lifecycleService.initialize();
     _initializeApp();
@@ -75,16 +79,21 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: widget.navigatorKey,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      title: AppInfo.name,
-      theme: AppTheme.themeData,
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: AppRoutes.onGenerateRoute,
-      home: AppRoutes.defaultRoute,
+    return StreamBuilder<void>(
+      stream: _themeService.themeChanges,
+      builder: (context, snapshot) {
+        return MaterialApp(
+          navigatorKey: widget.navigatorKey,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          title: AppInfo.name,
+          theme: AppTheme.themeData,
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+          home: AppRoutes.defaultRoute,
+        );
+      },
     );
   }
 }

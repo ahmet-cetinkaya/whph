@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
@@ -23,7 +24,6 @@ class AndroidFileService implements IFileService {
         withData: true,
       );
 
-      // ...existing code for pickFile...
       return result?.files.firstOrNull?.path;
     } catch (e) {
       Logger.error('File pick error: $e');
@@ -128,6 +128,70 @@ class AndroidFileService implements IFileService {
     } catch (e) {
       Logger.error('[AndroidFileService]: Failed to write file: $e');
       throw BusinessException('Failed to write file: $e', SharedTranslationKeys.fileWriteError);
+    }
+  }
+
+  @override
+  Future<Uint8List> readBinaryFile(String filePath) async {
+    try {
+      final file = File(filePath);
+      if (!await file.exists()) {
+        throw BusinessException('File does not exist: $filePath', SharedTranslationKeys.fileNotFoundError);
+      }
+      return await file.readAsBytes();
+    } catch (e) {
+      throw BusinessException('Failed to read binary file: $e', SharedTranslationKeys.fileReadError);
+    }
+  }
+
+  @override
+  Future<void> writeBinaryFile({
+    required String filePath,
+    required Uint8List data,
+  }) async {
+    try {
+      // Check storage permissions first
+      final storagePermission = await _checkStoragePermission();
+      if (!storagePermission) {
+        throw BusinessException(
+            'Storage permission is required to save files', SharedTranslationKeys.storagePermissionError);
+      }
+
+      final file = File(filePath);
+      final dir = path.dirname(filePath);
+
+      // Create directory if it doesn't exist
+      if (!await Directory(dir).exists()) {
+        await Directory(dir).create(recursive: true);
+      }
+
+      // Write the binary data
+      await file.writeAsBytes(data);
+
+      // Verify the file was actually written
+      if (!await file.exists()) {
+        throw BusinessException('Failed to save binary file: File does not exist after write operation',
+            SharedTranslationKeys.fileSaveError);
+      }
+
+      // Verify the content was written correctly by checking the file size
+      final writtenLength = await file.length();
+      if (writtenLength != data.length) {
+        throw BusinessException('Failed to save binary file: Data length mismatch after write operation',
+            SharedTranslationKeys.fileSaveError);
+      }
+
+      // Update file timestamp
+      try {
+        await file.setLastModified(DateTime.now());
+      } catch (e) {
+        Logger.error('[AndroidFileService]: Failed to update file timestamp: $e');
+      }
+
+      Logger.debug('[AndroidFileService]: Successfully saved binary file to: $filePath (${data.length} bytes)');
+    } catch (e) {
+      Logger.error('[AndroidFileService]: Failed to write binary file: $e');
+      throw BusinessException('Failed to write binary file: $e', SharedTranslationKeys.fileWriteError);
     }
   }
 

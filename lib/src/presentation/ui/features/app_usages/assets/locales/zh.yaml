@@ -74,7 +74,7 @@ app_usages:
     save: 保存
     saved: 已保存
   ignore_rules:
-    delete_confirm: "您确定要删除忽略规则 \"{pattern}\" 吗？"
+    delete_confirm: '您确定要删除忽略规则 "{pattern}" 吗？'
     delete_title: 删除规则
     delete_tooltip: 删除规则
     no_rules: 没有忽略规则
