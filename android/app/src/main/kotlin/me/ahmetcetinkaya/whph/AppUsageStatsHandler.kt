@@ -28,6 +28,11 @@ class AppUsageStatsHandler(private val context: Context) {
     
     companion object {
         private const val TAG = "AppUsageStatsHandler"
+        private const val MAX_DAILY_USAGE_MS = 16 * 60 * 60 * 1000L // 16 hours
+        private const val EVENT_STATS_RATIO_THRESHOLD = 1.5
+        private const val STATS_EVENT_RATIO_THRESHOLD = 0.67
+        private const val RATIO_LOWER_BOUND = 0.67
+        private const val RATIO_UPPER_BOUND = 1.5
     }
     
     /**
@@ -301,17 +306,17 @@ class AppUsageStatsHandler(private val context: Context) {
                     
                     val chosenTime = when {
                         // If event time is much higher than stats (>150%), likely event tracking error - use stats
-                        ratio > 1.5 -> {
+                        ratio > EVENT_STATS_RATIO_THRESHOLD -> {
                             Log.d(TAG, "Combined $packageName: events too high (${(ratio*100).toInt()}%), using stats=${statsTime/1000}s")
                             statsTime
                         }
                         // If stats time is much higher than events (>150%), likely stats includes background - use events
-                        ratio < 0.67 && statsTime > eventTime * 1.5 -> {
+                        ratio < STATS_EVENT_RATIO_THRESHOLD && statsTime > eventTime * EVENT_STATS_RATIO_THRESHOLD -> {
                             Log.d(TAG, "Combined $packageName: stats too high (${((1/ratio)*100).toInt()}%), using events=${eventTime/1000}s")
                             eventTime
                         }
                         // If they're reasonably close (within 50%), use the average for better accuracy
-                        ratio >= 0.67 && ratio <= 1.5 -> {
+                        ratio >= RATIO_LOWER_BOUND && ratio <= RATIO_UPPER_BOUND -> {
                             val averageTime = (statsTime + eventTime) / 2
                             Log.d(TAG, "Combined $packageName: stats=${statsTime/1000}s, events=${eventTime/1000}s -> average=${averageTime/1000}s (${(ratio*100).toInt()}%)")
                             averageTime
@@ -379,8 +384,7 @@ class AppUsageStatsHandler(private val context: Context) {
                         val totalTime = existingTime + foregroundTime
                         
                         // Apply reasonable maximum per day (16 hours max per app per day)
-                        val maxDailyUsage = 16 * 60 * 60 * 1000L // 16 hours
-                        val cappedTime = minOf(totalTime, maxDailyUsage)
+                        val cappedTime = minOf(totalTime, MAX_DAILY_USAGE_MS)
                         
                         usageMap[stats.packageName] = cappedTime
                         
