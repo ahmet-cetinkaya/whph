@@ -38,10 +38,6 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
             onDeleted: _handleNoteDeleted,
             buttonColor: AppTheme.primaryColor,
           ),
-          HelpMenu(
-            titleKey: NoteTranslationKeys.noteDetails,
-            markdownContentKey: NoteTranslationKeys.helpContent,
-          ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),

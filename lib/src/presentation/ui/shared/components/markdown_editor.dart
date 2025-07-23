@@ -127,6 +127,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final toolbarBgColor = widget.toolbarBackground ?? theme.cardTheme.color ?? theme.colorScheme.surface;
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: widget.height ?? 400,
@@ -136,15 +139,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
           // Toolbar Section (only show in editor mode)
           if (!_isPreviewMode)
             Container(
-              decoration: BoxDecoration(
-                color: widget.toolbarBackground ?? AppTheme.surface0,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.containerBorderRadius),
-                ),
-                border: Border.all(
-                  color: AppTheme.surface2,
-                  width: 1,
-                ),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Row(
                 children: [
@@ -155,25 +151,29 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       controller: widget.controller,
                       focusNode: _focusNode,
                       collapsable: false,
-                      backgroundColor: Colors.transparent,
-                      iconColor: Theme.of(context).colorScheme.onSurface,
+                      backgroundColor: toolbarBgColor,
+                      iconColor: theme.colorScheme.onSurface.withOpacity(0.8),
                       iconSize: 20,
                       width: 36,
                       height: 36,
                       spacing: 4,
                       runSpacing: 4,
-                      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      borderRadius: BorderRadius.circular(8),
                       showTooltips: true,
                       // Customize toolbar buttons
                       boldTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
                       italicTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
-                      strikethroughTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorStrikethroughTooltip),
+                      strikethroughTooltip:
+                          _translationService.translate(SharedTranslationKeys.markdownEditorStrikethroughTooltip),
                       linkTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorLinkTooltip),
                       codeTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorCodeTooltip),
-                      bulletedListTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBulletedListTooltip),
-                      numberedListTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorNumberedListTooltip),
+                      bulletedListTooltip:
+                          _translationService.translate(SharedTranslationKeys.markdownEditorBulletedListTooltip),
+                      numberedListTooltip:
+                          _translationService.translate(SharedTranslationKeys.markdownEditorNumberedListTooltip),
                       quoteTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorQuoteTooltip),
-                      horizontalRuleTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorHorizontalRuleTooltip),
+                      horizontalRuleTooltip:
+                          _translationService.translate(SharedTranslationKeys.markdownEditorHorizontalRuleTooltip),
                     ),
                   ),
                   // Preview Toggle Button
@@ -183,15 +183,25 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       icon: Icon(
                         _isPreviewMode ? Icons.edit : Icons.visibility,
                         size: 20,
+                        color: theme.colorScheme.onSurface.withOpacity(0.8),
                       ),
                       onPressed: _togglePreviewMode,
                       tooltip: _isPreviewMode
-                        ? _translationService.translate(SharedTranslationKeys.markdownEditorEditTooltip)
-                        : _translationService.translate(SharedTranslationKeys.markdownEditorPreviewTooltip),
+                          ? _translationService.translate(SharedTranslationKeys.markdownEditorEditTooltip)
+                          : _translationService.translate(SharedTranslationKeys.markdownEditorPreviewTooltip),
                       padding: const EdgeInsets.all(4),
                       constraints: const BoxConstraints(
                         minWidth: 32,
                         minHeight: 32,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: theme.colorScheme.onSurface.withOpacity(0.8),
+                        hoverColor: theme.colorScheme.onSurface.withOpacity(0.1),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     ),
                   ),
@@ -202,16 +212,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
           // Editor/Preview Section
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.vertical(
-                  top: _isPreviewMode ? const Radius.circular(AppTheme.containerBorderRadius) : Radius.zero,
-                  bottom: const Radius.circular(AppTheme.containerBorderRadius),
-                ),
-                border: Border.all(
-                  color: AppTheme.surface2,
-                  width: 1,
-                ),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Stack(
                 children: [
@@ -223,17 +225,14 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       right: 8,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: widget.toolbarBackground ?? AppTheme.surface0,
-                          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                          border: Border.all(
-                            color: AppTheme.surface2,
-                            width: 1,
-                          ),
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.edit,
                             size: 20,
+                            color: theme.colorScheme.onSurface.withOpacity(0.8),
                           ),
                           onPressed: _togglePreviewMode,
                           tooltip: _translationService.translate(SharedTranslationKeys.markdownEditorEditTooltip),
@@ -241,6 +240,15 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                           constraints: const BoxConstraints(
                             minWidth: 32,
                             minHeight: 32,
+                          ),
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: theme.colorScheme.onSurface.withOpacity(0.8),
+                            hoverColor: theme.colorScheme.onSurface.withOpacity(0.1),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                       ),
@@ -255,25 +263,33 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   }
 
   Widget _buildEditorTab() {
+    final theme = Theme.of(context);
+
     return TextField(
       controller: widget.controller,
       focusNode: _focusNode,
       maxLines: null,
       expands: true,
-      style: widget.style ?? AppTheme.bodyMedium,
+      style: widget.style ??
+          theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
       textAlignVertical: TextAlignVertical.top,
       decoration: InputDecoration(
         hintText: widget.hintText ?? _translationService.translate(SharedTranslationKeys.markdownEditorHint),
-        hintStyle: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurface.withOpacity(0.6),
         ),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
+        filled: false,
       ),
     );
   }
 
   Widget _buildPreviewTab() {
+    final theme = Theme.of(context);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: ValueListenableBuilder<TextEditingValue>(
@@ -287,81 +303,81 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             styleSheet: MarkdownStyleSheet(
-              p: TextStyle(
-                fontSize: AppTheme.fontSizeMedium,
-                color: value.text.isEmpty
-                    ? AppTheme.secondaryTextColor
-                    : AppTheme.textColor,
+              p: theme.textTheme.bodyMedium?.copyWith(
+                color: value.text.isEmpty ? theme.colorScheme.onSurface.withOpacity(0.6) : theme.colorScheme.onSurface,
                 height: 1.5,
               ),
-              h1: AppTheme.displayLarge.copyWith(
+              h1: theme.textTheme.displayLarge?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeXXLarge,
               ),
-              h2: AppTheme.headlineLarge.copyWith(
+              h2: theme.textTheme.headlineLarge?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeXLarge,
               ),
-              h3: AppTheme.headlineMedium.copyWith(
+              h3: theme.textTheme.headlineMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeLarge,
               ),
-              h4: AppTheme.headlineSmall.copyWith(
+              h4: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeMedium,
               ),
-              h5: AppTheme.headlineSmall.copyWith(
+              h5: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeSmall,
               ),
-              h6: AppTheme.headlineSmall.copyWith(
+              h6: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: AppTheme.fontSizeXSmall,
               ),
               a: TextStyle(
-                color: AppTheme.primaryColor,
+                color: theme.colorScheme.primary,
                 decoration: TextDecoration.underline,
               ),
               code: TextStyle(
-                backgroundColor: AppTheme.surface2,
-                color: AppTheme.textColor,
+                backgroundColor: theme.colorScheme.surfaceContainer,
+                color: theme.colorScheme.onSurface,
                 fontFamily: 'monospace',
                 fontSize: AppTheme.fontSizeSmall,
               ),
               codeblockDecoration: BoxDecoration(
-                color: AppTheme.surface2,
+                color: theme.colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
                 border: Border.all(
-                  color: AppTheme.surface3,
+                  color: theme.dividerColor.withOpacity(0.3),
                   width: 1,
                 ),
               ),
               listBullet: TextStyle(
                 fontSize: AppTheme.fontSizeLarge,
-                color: AppTheme.textColor,
+                color: theme.colorScheme.onSurface,
               ),
-              blockquote: TextStyle(
-                color: AppTheme.secondaryTextColor,
+              blockquote: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
                 fontStyle: FontStyle.italic,
-                fontSize: AppTheme.fontSizeMedium,
                 height: 1.5,
               ),
               blockquoteDecoration: BoxDecoration(
-                color: AppTheme.surface1,
+                color: theme.colorScheme.surface,
                 border: Border(
                   left: BorderSide(
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                     width: 4,
                   ),
                 ),
               ),
-              tableHead: TextStyle(
-                color: AppTheme.textColor,
-                fontSize: AppTheme.fontSizeMedium,
+              tableHead: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
                 height: 1.5,
               ),
-              tableBody: TextStyle(
-                color: AppTheme.textColor,
-                fontSize: AppTheme.fontSizeMedium,
+              tableBody: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
                 height: 1.5,
               ),
               tableBorder: TableBorder.all(
-                color: AppTheme.surface3,
+                color: theme.dividerColor.withOpacity(0.3),
                 width: 1,
                 borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
               ),

@@ -22,8 +22,10 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return ListTile(
-      tileColor: transparentCard ? Theme.of(context).cardColor.withValues(alpha: 0.8) : Theme.of(context).cardColor,
+      tileColor: transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
       visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
       contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
       shape: RoundedRectangleBorder(
@@ -33,7 +35,7 @@ class NoteCard extends StatelessWidget {
       leading: Icon(
         NoteUiConstants.noteIcon,
         size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-        color: Colors.white,
+        color: theme.colorScheme.onSurface.withOpacity(0.7),
       ),
       title: Text(
         note.title,
@@ -72,13 +74,13 @@ class NoteCard extends StatelessWidget {
                       Icon(
                         Icons.update,
                         size: AppTheme.iconSizeXSmall,
-                        color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
                       ),
                       const SizedBox(width: AppTheme.size3XSmall),
                       Text(
                         _formatDateTime(note.updatedAt ?? note.createdDate, context),
                         style: TextStyle(
-                          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                          color: theme.colorScheme.onSurface.withOpacity(0.5),
                         ),
                       ),
                     ],

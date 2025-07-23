@@ -142,3 +142,14 @@ settings:
     invalid_format_error: Formato file di backup non valido
     corrupted: Il file di backup è corrotto o danneggiato
     export_description: Crea un file di backup compresso contenente tutti i tuoi dati
+  theme:
+    title: Tema
+    description: Personalizza l'aspetto di WHPH
+    mode:
+      title: Modalità tema
+      light: Chiaro
+      dark: Scuro
+    dynamic_accent:
+      title: Colore accento dinamico
+      description: Usa colori dinamici dal tuo tema di sistema
+    error: Errore nel caricamento delle impostazioni del tema

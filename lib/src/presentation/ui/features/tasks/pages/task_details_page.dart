@@ -249,10 +249,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               buttonColor: AppTheme.primaryColor,
             ),
           ),
-          HelpMenu(
-            titleKey: TaskTranslationKeys.detailsHelpTitle,
-            markdownContentKey: TaskTranslationKeys.detailsHelpContent,
-          ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),

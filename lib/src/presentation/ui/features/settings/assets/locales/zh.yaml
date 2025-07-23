@@ -142,3 +142,14 @@ settings:
     invalid_format_error: 无效的备份文件格式
     corrupted: 备份文件已损坏或损坏
     export_description: 创建包含所有数据的压缩备份文件
+  theme:
+    title: 主题
+    description: 自定义WHPH的外观
+    mode:
+      title: 主题模式
+      light: 浅色
+      dark: 深色
+    dynamic_accent:
+      title: 动态强调色
+      description: 使用系统主题的动态颜色
+    error: 加载主题设置失败

@@ -141,3 +141,14 @@ settings:
     invalid_format_error: Formato de archivo de copia de seguridad inválido
     corrupted: El archivo de copia de seguridad está corrupto o dañado
     export_description: Crear un archivo de copia de seguridad comprimido que contenga todos sus datos
+  theme:
+    title: Tema
+    description: Personalizar la apariencia de WHPH
+    mode:
+      title: Modo de tema
+      light: Claro
+      dark: Oscuro
+    dynamic_accent:
+      title: Color de acento dinámico
+      description: Usar colores dinámicos de tu tema del sistema
+    error: Error al cargar la configuración del tema

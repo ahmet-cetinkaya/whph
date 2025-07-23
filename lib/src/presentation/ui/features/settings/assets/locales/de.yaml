@@ -141,3 +141,14 @@ settings:
     invalid_format_error: Ungültiges Sicherungsdateiformat
     corrupted: Sicherungsdatei ist beschädigt oder defekt
     export_description: Erstellen Sie eine komprimierte Sicherungsdatei mit all Ihren Daten
+  theme:
+    title: Design
+    description: Passen Sie das Erscheinungsbild von WHPH an
+    mode:
+      title: Design-Modus
+      light: Hell
+      dark: Dunkel
+    dynamic_accent:
+      title: Dynamische Akzentfarbe
+      description: Verwenden Sie dynamische Farben aus Ihrem Systemdesign
+    error: Fehler beim Laden der Design-Einstellungen

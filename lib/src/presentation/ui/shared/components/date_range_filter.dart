@@ -430,7 +430,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? Theme.of(context).primaryColor : Colors.white,
+              color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
               fontSize: 12,
             ),
           ),

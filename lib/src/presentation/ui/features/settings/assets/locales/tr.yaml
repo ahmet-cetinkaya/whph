@@ -141,3 +141,14 @@ settings:
     invalid_format_error: Geçersiz yedek dosya formatı
     corrupted: Yedek dosyası bozuk veya hasarlı
     export_description: Tüm verilerinizi içeren sıkıştırılmış yedek dosyası oluşturun
+  theme:
+    title: Tema
+    description: WHPH'nin görünümünü özelleştirin
+    mode:
+      title: Tema Modu
+      light: Açık
+      dark: Koyu
+    dynamic_accent:
+      title: Dinamik Vurgu Rengi
+      description: Sistem temanızdan dinamik renkler kullanın
+    error: Tema ayarları yüklenemedi

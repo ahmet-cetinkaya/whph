@@ -98,10 +98,6 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
               onDeleteSuccess: _onDeleteSuccess,
               buttonColor: AppTheme.primaryColor,
             ),
-            HelpMenu(
-              titleKey: AppUsageTranslationKeys.helpTitle,
-              markdownContentKey: AppUsageTranslationKeys.helpContent,
-            ),
           ],
         ),
         body: SingleChildScrollView(

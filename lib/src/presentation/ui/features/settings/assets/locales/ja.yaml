@@ -142,3 +142,14 @@ settings:
     invalid_format_error: 無効なバックアップファイル形式
     corrupted: バックアップファイルが破損しているか損傷しています
     export_description: すべてのデータを含む圧縮バックアップファイルを作成します
+  theme:
+    title: テーマ
+    description: WHPHの外観をカスタマイズ
+    mode:
+      title: テーマモード
+      light: ライト
+      dark: ダーク
+    dynamic_accent:
+      title: ダイナミックアクセントカラー
+      description: システムテーマからダイナミックカラーを使用
+    error: テーマ設定の読み込みに失敗しました
