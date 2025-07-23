@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:whph/src/presentation/ui/shared/utils/device_info_helper.dart';
 
 void main() {
@@ -9,6 +11,27 @@ void main() {
 
     setUp(() {
       methodCalls = [];
+
+      // Simulate Android platform for tests
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      
+      // Mock device_info_plus plugin
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        const MethodChannel('dev.fluttercommunity.plus/device_info'),
+        (MethodCall methodCall) async {
+          switch (methodCall.method) {
+            case 'getAndroidDeviceInfo':
+              return {
+                'brand': 'TestBrand',
+                'model': 'TestModel',
+                'isPhysicalDevice': true,
+              };
+            default:
+              return null;
+          }
+        },
+      );
       
       // Mock the method channel for app info
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -34,17 +57,15 @@ void main() {
         const MethodChannel('me.ahmetcetinkaya.whph/app_info'),
         null,
       );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        const MethodChannel('dev.fluttercommunity.plus/device_info'),
+        null,
+      );
+      debugDefaultTargetPlatformOverride = null;
     });
 
     testWidgets('getDeviceName should append (Work) suffix when in work profile', (WidgetTester tester) async {
-      // This test can only run on Android platform in a real environment
-      // For unit testing, we'll mock the platform check
-      
-      // Skip test if not on Android since work profile is Android-specific
-      if (!Platform.isAndroid) {
-        return;
-      }
-
       // Call getDeviceName
       final deviceName = await DeviceInfoHelper.getDeviceName();
       
@@ -74,11 +95,6 @@ void main() {
         },
       );
 
-      // Skip test if not on Android since work profile is Android-specific
-      if (!Platform.isAndroid) {
-        return;
-      }
-
       // Call getDeviceName
       final deviceName = await DeviceInfoHelper.getDeviceName();
       
@@ -107,11 +123,6 @@ void main() {
           }
         },
       );
-
-      // Skip test if not on Android since work profile is Android-specific
-      if (!Platform.isAndroid) {
-        return;
-      }
 
       // Call getDeviceName - should not throw an error
       final deviceName = await DeviceInfoHelper.getDeviceName();
