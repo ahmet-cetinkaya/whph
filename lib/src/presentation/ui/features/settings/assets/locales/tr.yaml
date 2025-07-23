@@ -148,6 +148,9 @@ settings:
       title: Tema Modu
       light: Açık
       dark: Koyu
+      auto:
+        title: Otomatik
+        description: Sistem tema ayarlarını takip et
     dynamic_accent:
       title: Dinamik Vurgu Rengi
       description: Sistem temanızdan dinamik renkler kullanın

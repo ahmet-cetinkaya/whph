@@ -149,6 +149,9 @@ settings:
       title: Modalità tema
       light: Chiaro
       dark: Scuro
+      auto:
+        title: Automatico
+        description: Segui le impostazioni del tema di sistema
     dynamic_accent:
       title: Colore accento dinamico
       description: Usa colori dinamici dal tuo tema di sistema

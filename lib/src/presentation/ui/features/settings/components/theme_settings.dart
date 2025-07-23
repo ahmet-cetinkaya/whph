@@ -96,9 +96,18 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   }
 
   String _getThemeDescription() {
-    final mode = _themeMode == AppThemeMode.light 
-        ? _translationService.translate(SettingsTranslationKeys.themeModeLight)
-        : _translationService.translate(SettingsTranslationKeys.themeModeDark);
+    String mode;
+    switch (_themeMode) {
+      case AppThemeMode.light:
+        mode = _translationService.translate(SettingsTranslationKeys.themeModeLight);
+        break;
+      case AppThemeMode.dark:
+        mode = _translationService.translate(SettingsTranslationKeys.themeModeDark);
+        break;
+      case AppThemeMode.auto:
+        mode = _translationService.translate(SettingsTranslationKeys.themeModeAuto);
+        break;
+    }
     
     final features = <String>[];
     if (_dynamicAccentColor) {
@@ -305,6 +314,36 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                         ),
                       ),
                       value: AppThemeMode.dark,
+                      groupValue: _themeMode,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          setState(() {
+                            _themeMode = value;
+                          });
+                          _updateTheme();
+                          await widget.onSaveThemeMode(value);
+                        }
+                      },
+                    ),
+                    Divider(
+                      height: 1,
+                      color: theme.dividerColor,
+                    ),
+                    RadioListTile<AppThemeMode>(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.themeModeAuto),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        _translationService.translate(SettingsTranslationKeys.themeModeAutoDescription),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        ),
+                      ),
+                      value: AppThemeMode.auto,
                       groupValue: _themeMode,
                       activeColor: theme.colorScheme.primary,
                       onChanged: (value) async {

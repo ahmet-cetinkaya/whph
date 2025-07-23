@@ -149,6 +149,9 @@ settings:
       title: Theme Mode
       light: Light
       dark: Dark
+      auto:
+        title: Auto
+        description: Follow system theme settings
     dynamic_accent:
       title: Dynamic Accent Color
       description: Use dynamic colors from your system theme

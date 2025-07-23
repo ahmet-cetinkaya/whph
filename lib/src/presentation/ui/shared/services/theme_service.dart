@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
@@ -13,7 +14,8 @@ class ThemeService implements IThemeService {
   final Mediator _mediator;
   final StreamController<void> _themeChangesController = StreamController<void>.broadcast();
 
-  AppThemeMode _currentThemeMode = AppThemeMode.dark;
+  AppThemeMode _currentThemeMode = AppThemeMode.auto;
+  AppThemeMode _storedThemeMode = AppThemeMode.auto; // The user's preference
   bool _isDynamicAccentColorEnabled = false;
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
@@ -22,7 +24,7 @@ class ThemeService implements IThemeService {
   ThemeService({required Mediator mediator}) : _mediator = mediator;
 
   @override
-  AppThemeMode get currentThemeMode => _currentThemeMode;
+  AppThemeMode get currentThemeMode => _storedThemeMode;
 
   @override
   bool get isDynamicAccentColorEnabled => _isDynamicAccentColorEnabled;
@@ -470,12 +472,30 @@ class ThemeService implements IThemeService {
 
   @override
   Future<void> setThemeMode(AppThemeMode mode) async {
-    _currentThemeMode = mode;
+    _storedThemeMode = mode;
+    
+    // Save the user's preference
+    String valueToSave;
+    switch (mode) {
+      case AppThemeMode.light:
+        valueToSave = 'light';
+        break;
+      case AppThemeMode.dark:
+        valueToSave = 'dark';
+        break;
+      case AppThemeMode.auto:
+        valueToSave = 'auto';
+        break;
+    }
+    
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.themeMode,
-      value: mode == AppThemeMode.light ? 'light' : 'dark',
+      value: valueToSave,
       valueType: SettingValueType.string,
     ));
+    
+    // Update the actual theme mode based on user preference
+    await _updateActualThemeMode();
     
     // Update primary color if dynamic colors are enabled
     if (_isDynamicAccentColorEnabled) {
@@ -515,15 +535,31 @@ class ThemeService implements IThemeService {
   }
 
   Future<void> _loadThemeSettings() async {
-    // Load theme mode
+    // Load theme mode preference
     try {
       final themeResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.themeMode),
       );
-      _currentThemeMode = themeResponse.value == 'light' ? AppThemeMode.light : AppThemeMode.dark;
+      
+      switch (themeResponse.value) {
+        case 'light':
+          _storedThemeMode = AppThemeMode.light;
+          break;
+        case 'dark':
+          _storedThemeMode = AppThemeMode.dark;
+          break;
+        case 'auto':
+          _storedThemeMode = AppThemeMode.auto;
+          break;
+        default:
+          _storedThemeMode = AppThemeMode.auto; // Default
+      }
     } catch (e) {
-      _currentThemeMode = AppThemeMode.dark; // Default
+      _storedThemeMode = AppThemeMode.auto; // Default
     }
+
+    // Update the actual theme mode based on user preference
+    await _updateActualThemeMode();
 
     // Load dynamic accent color
     try {
@@ -533,6 +569,42 @@ class ThemeService implements IThemeService {
       _isDynamicAccentColorEnabled = dynamicResponse.getValue<bool>();
     } catch (e) {
       _isDynamicAccentColorEnabled = false; // Default
+    }
+  }
+
+  /// Updates the actual theme mode based on user preference and system settings
+  Future<void> _updateActualThemeMode() async {
+    switch (_storedThemeMode) {
+      case AppThemeMode.light:
+        _currentThemeMode = AppThemeMode.light;
+        break;
+      case AppThemeMode.dark:
+        _currentThemeMode = AppThemeMode.dark;
+        break;
+      case AppThemeMode.auto:
+        // Get system theme mode
+        final systemBrightness = await _getSystemBrightness();
+        _currentThemeMode = systemBrightness == Brightness.dark 
+            ? AppThemeMode.dark 
+            : AppThemeMode.light;
+        break;
+    }
+  }
+
+  /// Gets the system brightness/theme mode
+  Future<Brightness> _getSystemBrightness() async {
+    try {
+      // Use MediaQuery to get system brightness
+      // This will be called from a context where MediaQuery is available
+      // For now, we'll use a platform channel to get system theme
+      final result = await SystemChannels.platform.invokeMethod<bool>('SystemChrome.systemUIOverlayStyle');
+      
+      // Fallback: try to get from window
+      final window = WidgetsBinding.instance.platformDispatcher;
+      return window.platformBrightness;
+    } catch (e) {
+      // Default to light if we can't determine system theme
+      return Brightness.light;
     }
   }
 
