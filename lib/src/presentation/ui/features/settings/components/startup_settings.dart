@@ -102,7 +102,7 @@ class _StartupSettingsState extends State<StartupSettings> {
       stream: _themeService.themeChanges,
       builder: (context, snapshot) {
         final theme = Theme.of(context);
-        
+
         return Card(
           child: ListTile(
             leading: Icon(
@@ -125,7 +125,7 @@ class _StartupSettingsState extends State<StartupSettings> {
                 : null,
             trailing: PlatformUtils.isMobile
                 ? Icon(
-                    Icons.arrow_forward_ios, 
+                    Icons.arrow_forward_ios,
                     size: AppTheme.fontSizeLarge,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   )

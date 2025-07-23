@@ -5,9 +5,8 @@ import 'widget_service.dart';
 class WidgetUpdateService {
   final WidgetService _widgetService;
   Timer? _updateTimer;
-  
-  WidgetUpdateService({required WidgetService widgetService}) 
-      : _widgetService = widgetService;
+
+  WidgetUpdateService({required WidgetService widgetService}) : _widgetService = widgetService;
 
   void startPeriodicUpdates() {
     // Update widget every 15 minutes
@@ -38,7 +37,7 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     switch (state) {
       case AppLifecycleState.resumed:
         // Update widget when app comes to foreground

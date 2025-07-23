@@ -52,7 +52,7 @@ void registerSettingsFeature(
 ) {
   // Register the import data migration service
   container.registerSingleton<IImportDataMigrationService>((_) => ImportDataMigrationService());
-  
+
   // Register the compression service
   container.registerSingleton<ICompressionService>((_) => CompressionService());
 

@@ -18,9 +18,11 @@ void main() {
 
       // Act
       final compressed = await compressionService.compressInBackground(inputData);
-      final decompressed = await compressionService.decompressStreamedInBackground(
-        Stream.value(compressed.toList()),
-      ).first;
+      final decompressed = await compressionService
+          .decompressStreamedInBackground(
+            Stream.value(compressed.toList()),
+          )
+          .first;
 
       // Assert
       expect(compressed.length, lessThan(inputData.length));
@@ -78,7 +80,7 @@ void main() {
       // Arrange
       const testJson = '{"test": "data"}';
       final whphFile = await compressionService.createWhphFile(testJson);
-      
+
       // Corrupt the file by changing a byte
       whphFile[whphFile.length - 1] = whphFile[whphFile.length - 1] ^ 0xFF;
 
@@ -96,9 +98,11 @@ void main() {
 
       // Act
       final compressed = await compressionService.compressInBackground(inputData);
-      final decompressed = await compressionService.decompressStreamedInBackground(
-        Stream.value(compressed.toList()),
-      ).first;
+      final decompressed = await compressionService
+          .decompressStreamedInBackground(
+            Stream.value(compressed.toList()),
+          )
+          .first;
 
       // Assert
       expect(compressed.length, lessThan(inputData.length));

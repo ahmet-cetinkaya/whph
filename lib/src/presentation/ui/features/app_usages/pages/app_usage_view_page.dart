@@ -162,13 +162,12 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             if (_isListVisible)
               Expanded(
                 child: AppUsageList(
-                  onOpenDetails: _openDetails,
-                  filterByTags: _filterState.tags,
-                  showNoTagsFilter: _filterState.showNoTagsFilter,
-                  filterStartDate: _filterState.startDate,
-                  filterEndDate: _filterState.endDate,
-                  filterByDevices: _filterState.devices
-                ),
+                    onOpenDetails: _openDetails,
+                    filterByTags: _filterState.tags,
+                    showNoTagsFilter: _filterState.showNoTagsFilter,
+                    filterStartDate: _filterState.startDate,
+                    filterEndDate: _filterState.endDate,
+                    filterByDevices: _filterState.devices),
               ),
           ],
         ],

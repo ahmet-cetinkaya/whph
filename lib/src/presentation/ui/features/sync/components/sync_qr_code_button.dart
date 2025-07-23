@@ -48,7 +48,7 @@ class SyncQrCodeButton extends StatelessWidget {
                 data: qrData,
                 version: QrVersions.auto,
                 size: 200.0,
-                eyeStyle:  QrEyeStyle(
+                eyeStyle: QrEyeStyle(
                   eyeShape: QrEyeShape.square,
                   color: AppTheme.textColor,
                 ),

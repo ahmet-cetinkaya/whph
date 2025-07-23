@@ -86,7 +86,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       stream: _themeService.themeChanges,
       builder: (context, snapshot) {
         final theme = Theme.of(context);
-        
+
         return Card(
           child: ListTile(
             leading: Icon(

@@ -23,9 +23,9 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagsRepository,
     required IHabitRecordRepository habitRecordRepository,
-  }) : _habitRepository = habitRepository,
-       _habitTagsRepository = habitTagsRepository,
-       _habitRecordRepository = habitRecordRepository;
+  })  : _habitRepository = habitRepository,
+        _habitTagsRepository = habitTagsRepository,
+        _habitRecordRepository = habitRecordRepository;
 
   @override
   Future<DeleteHabitCommandResponse> call(DeleteHabitCommand request) async {

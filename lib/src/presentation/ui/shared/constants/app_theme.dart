@@ -5,7 +5,7 @@ import 'package:whph/main.dart';
 
 class AppTheme {
   static IThemeService? _themeService;
-  
+
   static IThemeService get _service {
     _themeService ??= container.resolve<IThemeService>();
     return _themeService!;
@@ -83,60 +83,60 @@ class AppTheme {
 
   // Text Styles (dynamic)
   static TextStyle get label => TextStyle(
-    color: textColor,
-    fontSize: fontSizeMedium,
-    height: 1.5,
-  );
+        color: textColor,
+        fontSize: fontSizeMedium,
+        height: 1.5,
+      );
   static TextStyle get bodyXSmall => TextStyle(
-    color: textColor,
-    fontSize: fontSizeXSmall,
-    height: 1.5,
-  );
+        color: textColor,
+        fontSize: fontSizeXSmall,
+        height: 1.5,
+      );
   static TextStyle get bodySmall => TextStyle(
-    color: textColor,
-    fontSize: fontSizeSmall,
-    height: 1.5,
-  );
+        color: textColor,
+        fontSize: fontSizeSmall,
+        height: 1.5,
+      );
   static TextStyle get bodyMedium => TextStyle(
-    color: textColor,
-    fontSize: fontSizeMedium,
-    height: 1.5,
-  );
+        color: textColor,
+        fontSize: fontSizeMedium,
+        height: 1.5,
+      );
   static TextStyle get bodyLarge => TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    height: 1.5,
-    fontWeight: FontWeight.w500,
-  );
+        color: textColor,
+        fontSize: fontSizeLarge,
+        height: 1.5,
+        fontWeight: FontWeight.w500,
+      );
   static TextStyle get headlineSmall => TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    fontWeight: FontWeight.bold,
-    height: 1.3,
-  );
+        color: textColor,
+        fontSize: fontSizeLarge,
+        fontWeight: FontWeight.bold,
+        height: 1.3,
+      );
   static TextStyle get headlineMedium => TextStyle(
-    color: textColor,
-    fontSize: fontSizeXLarge,
-    fontWeight: FontWeight.bold,
-    height: 1.3,
-  );
+        color: textColor,
+        fontSize: fontSizeXLarge,
+        fontWeight: FontWeight.bold,
+        height: 1.3,
+      );
   static TextStyle get headlineLarge => TextStyle(
-    color: textColor,
-    fontSize: fontSizeXLarge + 8,
-    fontWeight: FontWeight.bold,
-    height: 1.2,
-  );
+        color: textColor,
+        fontSize: fontSizeXLarge + 8,
+        fontWeight: FontWeight.bold,
+        height: 1.2,
+      );
   static TextStyle get displaySmall => TextStyle(
-    color: textColor,
-    fontSize: fontSizeLarge,
-    fontWeight: FontWeight.bold,
-  );
+        color: textColor,
+        fontSize: fontSizeLarge,
+        fontWeight: FontWeight.bold,
+      );
   static TextStyle get displayLarge => TextStyle(
-    color: textColor,
-    fontSize: 48.0,
-    fontWeight: FontWeight.bold,
-    height: 1.1,
-  );
+        color: textColor,
+        fontSize: 48.0,
+        fontWeight: FontWeight.bold,
+        height: 1.1,
+      );
 
   // Sizes
   static const double size4XSmall = 1.0;

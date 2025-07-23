@@ -32,12 +32,12 @@ class ImportExportSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     final themeService = container.resolve<IThemeService>();
-    
+
     return StreamBuilder<void>(
       stream: themeService.themeChanges,
       builder: (context, snapshot) {
         final theme = Theme.of(context);
-        
+
         return Card(
           child: ListTile(
             leading: Icon(
@@ -51,7 +51,7 @@ class ImportExportSettings extends StatelessWidget {
               ),
             ),
             trailing: Icon(
-              Icons.arrow_forward_ios, 
+              Icons.arrow_forward_ios,
               size: AppTheme.fontSizeLarge,
               color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
@@ -126,7 +126,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
   Widget _buildMainPage(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,7 +163,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
   Widget _buildImportStrategyPage(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -224,7 +224,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
   Widget _buildExportOptionsPage(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -310,7 +310,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
             }
             return;
           }
-          
+
           setState(() {
             _selectedFilePath = filePath;
           });
@@ -341,7 +341,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         // Read backup file as binary data (only .whph files are supported)
         final backupData = await _fileService.readBinaryFile(_selectedFilePath!);
         final mediator = container.resolve<Mediator>();
-        
+
         // Execute import command for backup file
         return await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
           ImportDataCommand(backupData, strategy),
@@ -520,7 +520,7 @@ class _ImportExportActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     final theme = Theme.of(context);
-    
+
     return Card(
       child: ListTile(
         leading: Icon(
@@ -563,7 +563,7 @@ class _ImportStrategyOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     final theme = Theme.of(context);
-    
+
     return Card(
       child: ListTile(
         leading: Icon(
@@ -610,14 +610,12 @@ class _ExportOptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
     final theme = Theme.of(context);
-    final displayTitle = titleKey != null 
-        ? translationService.translate(titleKey!) 
-        : title!;
-        
+    final displayTitle = titleKey != null ? translationService.translate(titleKey!) : title!;
+
     return Card(
       child: ListTile(
         leading: Icon(
-          icon, 
+          icon,
           color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
         ),
         title: Text(

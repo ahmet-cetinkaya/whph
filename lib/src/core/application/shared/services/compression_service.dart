@@ -33,10 +33,10 @@ class CompressionService implements ICompressionService {
   @override
   bool validateHeader(Uint8List data) {
     if (data.length < _checksumOffset) return false;
-    
+
     final header = String.fromCharCodes(data.sublist(0, _headerFieldSize));
     final version = data.buffer.asByteData().getUint32(_versionOffset, Endian.little);
-    
+
     return header == _whphHeader && version == _version;
   }
 
@@ -75,38 +75,38 @@ class CompressionService implements ICompressionService {
   static Uint8List _createWhphFileIsolate(String jsonData) {
     final jsonBytes = utf8.encode(jsonData);
     final compressed = _compressData(Uint8List.fromList(jsonBytes));
-    
+
     // Calculate checksum using standard library CRC32
     final crc = getCrc32(compressed);
-    
+
     // Create header: WHPH (4 bytes) + version (4 bytes) + checksum (4 bytes) + data length (4 bytes)
     final result = Uint8List(_headerSize + compressed.length);
     final byteData = result.buffer.asByteData();
-    
+
     // Write header
     result.setRange(0, _headerFieldSize, _whphHeader.codeUnits);
     byteData.setUint32(_versionOffset, _version, Endian.little);
     byteData.setUint32(_checksumOffset, crc, Endian.little);
     byteData.setUint32(_dataLengthOffset, compressed.length, Endian.little);
-    
+
     // Write compressed data
     result.setRange(_headerSize, _headerSize + compressed.length, compressed);
-    
+
     return result;
   }
 
   static String _extractFromWhphFileIsolate(Uint8List whphData) {
     final headerInfo = _parseWhphHeader(whphData);
-    
+
     // Extract compressed data
     final compressedData = whphData.sublist(_headerSize, _headerSize + headerInfo.dataLength);
-    
+
     // Validate checksum
     final calculatedChecksum = getCrc32(compressedData);
     if (calculatedChecksum != headerInfo.storedChecksum) {
       throw Exception('Invalid .whph file: checksum mismatch');
     }
-    
+
     // Decompress data
     final decompressed = _decompressData(compressedData);
     return utf8.decode(decompressed);
@@ -117,7 +117,7 @@ class CompressionService implements ICompressionService {
       final headerInfo = _parseWhphHeader(whphData);
       final compressedData = whphData.sublist(_headerSize, _headerSize + headerInfo.dataLength);
       final calculatedChecksum = getCrc32(compressedData);
-      
+
       return calculatedChecksum == headerInfo.storedChecksum;
     } catch (e) {
       return false;
@@ -129,28 +129,28 @@ class CompressionService implements ICompressionService {
     if (whphData.length < _headerSize) {
       throw Exception('Invalid .whph file: too small');
     }
-    
+
     final byteData = whphData.buffer.asByteData();
-    
+
     // Parse header fields
     final header = String.fromCharCodes(whphData.sublist(0, _headerFieldSize));
     final version = byteData.getUint32(_versionOffset, Endian.little);
     final storedChecksum = byteData.getUint32(_checksumOffset, Endian.little);
     final dataLength = byteData.getUint32(_dataLengthOffset, Endian.little);
-    
+
     // Validate header
     if (header != _whphHeader) {
       throw Exception('Invalid .whph file: wrong header');
     }
-    
+
     if (version != _version) {
       throw Exception('Unsupported .whph file version: $version');
     }
-    
+
     if (whphData.length < _headerSize + dataLength) {
       throw Exception('Invalid .whph file: incomplete data');
     }
-    
+
     return _WhphHeaderInfo(
       storedChecksum: storedChecksum,
       dataLength: dataLength,
@@ -162,7 +162,7 @@ class CompressionService implements ICompressionService {
 class _WhphHeaderInfo {
   final int storedChecksum;
   final int dataLength;
-  
+
   _WhphHeaderInfo({
     required this.storedChecksum,
     required this.dataLength,

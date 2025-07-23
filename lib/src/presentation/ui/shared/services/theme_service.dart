@@ -109,10 +109,10 @@ class ThemeService implements IThemeService {
   @override
   ThemeData get themeData {
     final isDark = _currentThemeMode == AppThemeMode.dark;
-    
+
     // Create color scheme with consistent surface colors
     ColorScheme colorScheme;
-    
+
     if (_isDynamicAccentColorEnabled) {
       final dynamicScheme = isDark ? _dynamicDarkColorScheme : _dynamicLightColorScheme;
       if (dynamicScheme != null) {
@@ -472,7 +472,7 @@ class ThemeService implements IThemeService {
   @override
   Future<void> setThemeMode(AppThemeMode mode) async {
     _storedThemeMode = mode;
-    
+
     // Save the user's preference
     String valueToSave;
     switch (mode) {
@@ -486,21 +486,21 @@ class ThemeService implements IThemeService {
         valueToSave = 'auto';
         break;
     }
-    
+
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.themeMode,
       value: valueToSave,
       valueType: SettingValueType.string,
     ));
-    
+
     // Update the actual theme mode based on user preference
     await _updateActualThemeMode();
-    
+
     // Update primary color if dynamic colors are enabled
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
     }
-    
+
     _notifyThemeChanged();
   }
 
@@ -539,7 +539,7 @@ class ThemeService implements IThemeService {
       final themeResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.themeMode),
       );
-      
+
       switch (themeResponse.value) {
         case 'light':
           _storedThemeMode = AppThemeMode.light;
@@ -583,9 +583,7 @@ class ThemeService implements IThemeService {
       case AppThemeMode.auto:
         // Get system theme mode
         final systemBrightness = await _getSystemBrightness();
-        _currentThemeMode = systemBrightness == Brightness.dark 
-            ? AppThemeMode.dark 
-            : AppThemeMode.light;
+        _currentThemeMode = systemBrightness == Brightness.dark ? AppThemeMode.dark : AppThemeMode.light;
         break;
     }
   }
@@ -596,7 +594,7 @@ class ThemeService implements IThemeService {
       // Use MediaQuery to get system brightness
       // This will be called from a context where MediaQuery is available
       // For now, we'll use a platform channel to get system theme
-      
+
       // Fallback: try to get from window
       final window = WidgetsBinding.instance.platformDispatcher;
       return window.platformBrightness;
@@ -613,54 +611,50 @@ class ThemeService implements IThemeService {
         seedColor: domain.AppTheme.primaryColor,
         brightness: Brightness.light,
       );
-      
+
       final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
         seedColor: domain.AppTheme.primaryColor,
         brightness: Brightness.dark,
       );
-      
+
       // Get dynamic color schemes from the system using Material You
-      final Map<Brightness, ColorScheme>? colorSchemes = await DynamicColorPlugin.getCorePalette()
-          .then((corePalette) => corePalette != null
+      final Map<Brightness, ColorScheme>? colorSchemes =
+          await DynamicColorPlugin.getCorePalette().then((corePalette) => corePalette != null
               ? {
                   Brightness.light: corePalette.toColorScheme(brightness: Brightness.light),
                   Brightness.dark: corePalette.toColorScheme(brightness: Brightness.dark),
                 }
               : null);
-      
-      if (colorSchemes != null && 
-          colorSchemes.containsKey(Brightness.light) && 
+
+      if (colorSchemes != null &&
+          colorSchemes.containsKey(Brightness.light) &&
           colorSchemes.containsKey(Brightness.dark)) {
-        
         // Extract color schemes with explicit typing and null safety
         final ColorScheme lightColorScheme = colorSchemes[Brightness.light]!;
         final ColorScheme darkColorScheme = colorSchemes[Brightness.dark]!;
-        
+
         // Store the dynamic color schemes directly
         // We'll override their surface colors when building the theme
         _dynamicLightColorScheme = lightColorScheme;
         _dynamicDarkColorScheme = darkColorScheme;
-        
+
         // Use the appropriate primary color based on current theme mode
-        _primaryColor = _currentThemeMode == AppThemeMode.light 
-            ? lightColorScheme.primary 
-            : darkColorScheme.primary;
+        _primaryColor = _currentThemeMode == AppThemeMode.light ? lightColorScheme.primary : darkColorScheme.primary;
       } else {
         // Use the default color schemes we created
         _dynamicLightColorScheme = defaultLightScheme;
         _dynamicDarkColorScheme = defaultDarkScheme;
-        
+
         // Set primary color based on the default schemes
-        _primaryColor = _currentThemeMode == AppThemeMode.light 
-            ? defaultLightScheme.primary 
-            : defaultDarkScheme.primary;
+        _primaryColor =
+            _currentThemeMode == AppThemeMode.light ? defaultLightScheme.primary : defaultDarkScheme.primary;
       }
     } catch (e) {
       // Fallback to default color on any error
       _resetToDefaultColors();
     }
   }
-  
+
   // Helper method to create a color scheme with fixed surface colors
   ColorScheme _createFixedColorScheme(bool isDark, Color primaryColor) {
     return isDark
@@ -706,16 +700,16 @@ class ThemeService implements IThemeService {
       seedColor: domain.AppTheme.primaryColor,
       brightness: Brightness.light,
     );
-    
+
     final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
       seedColor: domain.AppTheme.primaryColor,
       brightness: Brightness.dark,
     );
-    
+
     // Set default color schemes but don't use their surface colors
     _dynamicLightColorScheme = defaultLightScheme;
     _dynamicDarkColorScheme = defaultDarkScheme;
-    
+
     // Reset to default primary color
     _primaryColor = domain.AppTheme.primaryColor;
   }

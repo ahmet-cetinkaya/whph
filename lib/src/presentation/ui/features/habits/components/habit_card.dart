@@ -76,11 +76,11 @@ class _HabitCardState extends State<HabitCard> {
 
   void _handleHabitRecordChange() {
     if (!mounted) return;
-    
+
     // Check if the event is for this specific habit
     final addedHabitId = _habitsService.onHabitRecordAdded.value;
     final removedHabitId = _habitsService.onHabitRecordRemoved.value;
-    
+
     if (addedHabitId == widget.habit.id || removedHabitId == widget.habit.id) {
       _refreshHabitRecords();
     }

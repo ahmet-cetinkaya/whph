@@ -7,9 +7,9 @@ import 'services/widget_event_handler.dart';
 void registerWidgetFeature(IContainer container, Mediator mediator) {
   container.registerSingleton<WidgetService>((c) => WidgetService(mediator: mediator));
   container.registerSingleton<WidgetUpdateService>((c) => WidgetUpdateService(
-    widgetService: c.resolve<WidgetService>(),
-  ));
+        widgetService: c.resolve<WidgetService>(),
+      ));
   container.registerSingleton<WidgetEventHandler>((c) => WidgetEventHandler(
-    widgetService: c.resolve<WidgetService>(),
-  ));
+        widgetService: c.resolve<WidgetService>(),
+      ));
 }

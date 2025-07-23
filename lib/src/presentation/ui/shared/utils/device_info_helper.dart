@@ -12,7 +12,7 @@ class DeviceInfoHelper {
       if (Platform.isAndroid) {
         final androidInfo = await _deviceInfo.androidInfo;
         String deviceName = '${androidInfo.brand.toUpperCase()} ${androidInfo.model}';
-        
+
         // Check if running in work profile and add (Work) suffix
         try {
           final isWorkProfile = await _appInfoChannel.invokeMethod<bool>('isRunningInWorkProfile') ?? false;
@@ -23,7 +23,7 @@ class DeviceInfoHelper {
           Logger.error('Failed to check work profile status: $e');
           // Continue without work profile detection if it fails
         }
-        
+
         return deviceName;
       }
 

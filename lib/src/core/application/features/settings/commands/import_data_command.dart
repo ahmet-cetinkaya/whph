@@ -207,7 +207,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         SettingTranslationKeys.backupInvalidFormatError,
       );
     }
-    
+
     // Validate checksum
     final isValidChecksum = await compressionService.validateChecksum(request.backupData);
     if (!isValidChecksum) {
@@ -216,7 +216,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         SettingTranslationKeys.backupCorruptedError,
       );
     }
-    
+
     // Extract and decompress data
     final jsonString = await compressionService.extractFromWhphFile(request.backupData);
     Map<String, dynamic> data = json.decode(jsonString);

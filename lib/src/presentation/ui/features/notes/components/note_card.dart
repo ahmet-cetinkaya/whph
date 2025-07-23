@@ -23,7 +23,7 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return ListTile(
       tileColor: transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
       visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,

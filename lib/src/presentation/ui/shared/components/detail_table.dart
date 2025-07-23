@@ -38,7 +38,7 @@ class DetailTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
@@ -83,7 +83,7 @@ class DetailTable extends StatelessWidget {
           if (data.hintText != null)
             Padding(
               padding: const EdgeInsets.only(
-                left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall, 
+                left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall,
                 right: AppTheme.sizeMedium,
                 top: AppTheme.size2XSmall,
               ),
@@ -97,7 +97,7 @@ class DetailTable extends StatelessWidget {
           const SizedBox(height: AppTheme.size3XSmall),
           // Content kısmı - minimal padding ile
           Padding(
-            padding: data.removePadding 
+            padding: data.removePadding
                 ? const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall)
                 : const EdgeInsets.only(
                     left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall,
@@ -174,9 +174,10 @@ class DetailTable extends StatelessWidget {
       alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
       child: DefaultTextStyle(
         style: theme.textTheme.bodyMedium?.copyWith(
-          overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
-          color: theme.colorScheme.onSurface,
-        ) ?? const TextStyle(),
+              overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
+              color: theme.colorScheme.onSurface,
+            ) ??
+            const TextStyle(),
         child: data.widget,
       ),
     );
