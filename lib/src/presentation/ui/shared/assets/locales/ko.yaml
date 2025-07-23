@@ -154,17 +154,17 @@ shared:
   none_option: "태그 없음"
   regex_help:
     examples:
-      chat: "\"Slack\" 또는 \"Discord\"와 일치"
-      chrome: "\"Chrome\"을 포함하는 창 제목과 일치"
-      exact_chrome: "정확히 \"Chrome\"과 일치"
+      chat: '"Slack" 또는 "Discord"와 일치'
+      chrome: '"Chrome"을 포함하는 창 제목과 일치'
+      exact_chrome: '정확히 "Chrome"과 일치'
       pdf: 모든 PDF 파일과 일치
       vscode: 모든 VS Code 창과 일치
     tips:
-      any_chars: "\".*\"로 모든 문자와 일치"
+      any_chars: '".*"로 모든 문자와 일치'
       dot: "\"\\.\"로 점과 일치"
-      end: "\"$\"로 텍스트 끝과 일치"
-      or: "\"|\"는 OR 연산자"
-      start: "\"^\"로 텍스트 시작과 일치"
+      end: '"$"로 텍스트 끝과 일치'
+      or: '"|"는 OR 연산자'
+      start: '"^"로 텍스트 시작과 일치'
     tips_title: 💡 팁
     title: 패턴 예제
   report_error: 오류 보고

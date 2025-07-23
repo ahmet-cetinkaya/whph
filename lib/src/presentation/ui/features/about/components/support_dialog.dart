@@ -46,7 +46,7 @@ class SupportDialog extends StatelessWidget {
                 ),
                 Stack(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.coffee,
                       size: AppTheme.iconSize2XLarge,
                       color: AppTheme.primaryColor,

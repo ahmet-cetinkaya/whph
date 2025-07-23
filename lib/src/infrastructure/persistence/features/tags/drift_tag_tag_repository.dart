@@ -64,7 +64,8 @@ class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTa
 
   @override
   Future<List<TagTag>> getBySecondaryTagId(String secondaryTagId) async {
-    return (database.select(table)..where((t) => t.secondaryTagId.equals(secondaryTagId) & t.deletedDate.isNull())).get();
+    return (database.select(table)..where((t) => t.secondaryTagId.equals(secondaryTagId) & t.deletedDate.isNull()))
+        .get();
   }
 
   @override

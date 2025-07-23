@@ -39,15 +39,16 @@ import 'package:whph/src/core/domain/features/notes/note_tag.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/core/application/features/settings/constants/setting_translation_keys.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:flutter/foundation.dart';
 
 enum ImportStrategy { replace, merge }
 
 class ImportDataCommand implements IRequest<ImportDataCommandResponse> {
-  final String fileContent;
+  final Uint8List backupData;
   final ImportStrategy strategy;
 
-  ImportDataCommand(this.fileContent, this.strategy);
+  ImportDataCommand(this.backupData, this.strategy);
 }
 
 class ImportDataCommandResponse {}
@@ -83,6 +84,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final INoteRepository noteRepository;
   final INoteTagRepository noteTagRepository;
   final IImportDataMigrationService migrationService;
+  final ICompressionService compressionService;
 
   late final List<ImportConfig> _importConfigs;
 
@@ -105,6 +107,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.noteRepository,
     required this.noteTagRepository,
     required this.migrationService,
+    required this.compressionService,
   }) {
     _importConfigs = [
       ImportConfig<Tag>(
@@ -197,7 +200,26 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
   @override
   Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
-    Map<String, dynamic> data = json.decode(request.fileContent);
+    // Validate header
+    if (!compressionService.validateHeader(request.backupData)) {
+      throw BusinessException(
+        'Invalid backup file format',
+        SettingTranslationKeys.backupInvalidFormatError,
+      );
+    }
+
+    // Validate checksum
+    final isValidChecksum = await compressionService.validateChecksum(request.backupData);
+    if (!isValidChecksum) {
+      throw BusinessException(
+        'Backup file is corrupted',
+        SettingTranslationKeys.backupCorruptedError,
+      );
+    }
+
+    // Extract and decompress data
+    final jsonString = await compressionService.extractFromWhphFile(request.backupData);
+    Map<String, dynamic> data = json.decode(jsonString);
 
     // Get the imported version
     final importedVersion = data['appInfo']?['version'] as String?;

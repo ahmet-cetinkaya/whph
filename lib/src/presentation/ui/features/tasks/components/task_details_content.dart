@@ -989,7 +989,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 ),
               ),
               // Edit Icon Section
-              const Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
+              Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
             ],
           ),
         ),
@@ -1004,7 +1004,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             widget: MarkdownEditor(
               controller: _descriptionController,
               onChanged: _onDescriptionChanged,
-              toolbarBackground: AppTheme.surface1,
               height: 250,
             ),
             removePadding: true,
@@ -1098,7 +1097,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 ),
               ),
               // Navigate Icon Section
-              const Icon(
+              Icon(
                 Icons.open_in_new,
                 size: AppTheme.iconSizeSmall,
                 color: AppTheme.secondaryTextColor,

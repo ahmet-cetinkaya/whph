@@ -227,24 +227,47 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     List<CustomOrder>? customOrder,
   }) async {
     List<String> whereClauses = [
+      // NOTE: CustomWhereFilter should use fully qualified column names (e.g., 'task_table.created_date')
+      // to avoid ambiguity when referencing columns that exist in both joined tables
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'task_table.deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) => 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
 
     final baseQuery = '''
       SELECT 
-        task_table.*,
+        task_table.id,
+        task_table.parent_task_id,
+        task_table.title,
+        task_table.description,
+        task_table.priority,
+        task_table.planned_date,
+        task_table.deadline_date,
+        task_table.estimated_time,
+        task_table.is_completed,
+        task_table.created_date,
+        task_table.modified_date,
+        task_table.deleted_date,
+        task_table."order",
+        task_table.planned_date_reminder_time,
+        task_table.deadline_date_reminder_time,
+        task_table.recurrence_type,
+        task_table.recurrence_interval,
+        task_table.recurrence_days_string,
+        task_table.recurrence_start_date,
+        task_table.recurrence_end_date,
+        task_table.recurrence_count,
+        task_table.recurrence_parent_id,
         COALESCE(SUM(task_time_record_table.duration), 0) as total_duration
       FROM ${table.actualTableName} task_table
       LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
         AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id
+      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.is_completed, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';

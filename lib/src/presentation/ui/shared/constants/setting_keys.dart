@@ -38,4 +38,8 @@ class SettingKeys {
 
   // Locale Persistence for Notifications
   static const String currentLocale = 'CURRENT_LOCALE';
+
+  // Theme Settings
+  static const String themeMode = 'THEME_MODE';
+  static const String dynamicAccentColor = 'DYNAMIC_ACCENT_COLOR';
 }

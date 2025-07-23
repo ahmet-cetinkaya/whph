@@ -7,6 +7,7 @@ import 'package:whph/src/presentation/ui/features/settings/components/sync_devic
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/startup_settings.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/notification_settings.dart';
+import 'package:whph/src/presentation/ui/features/settings/components/theme_settings.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
@@ -38,6 +39,9 @@ class SettingsPage extends StatelessWidget {
 
                 // Notification
                 const NotificationSettings(),
+
+                // Theme Settings
+                const ThemeSettings(),
 
                 // Permissions
                 if (PlatformUtils.isMobile) PermissionSettings(),

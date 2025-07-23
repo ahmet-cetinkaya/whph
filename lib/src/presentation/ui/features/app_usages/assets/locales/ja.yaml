@@ -74,7 +74,7 @@ app_usages:
     save: 保存
     saved: 保存済み
   ignore_rules:
-    delete_confirm: "無視ルール\"{pattern}\"を削除してもよろしいですか？"
+    delete_confirm: '無視ルール"{pattern}"を削除してもよろしいですか？'
     delete_title: ルールを削除
     delete_tooltip: ルールを削除
     no_rules: 無視ルールがありません

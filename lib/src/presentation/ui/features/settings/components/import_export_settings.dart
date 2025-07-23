@@ -6,15 +6,16 @@ import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
+import 'dart:typed_data';
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
@@ -30,16 +31,34 @@ class ImportExportSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.import_export),
-        title: Text(
-          translationService.translate(SettingsTranslationKeys.importExportTitle),
-          style: AppTheme.bodyMedium,
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
-        onTap: () => _showImportExportDialog(context),
-      ),
+    final themeService = container.resolve<IThemeService>();
+
+    return StreamBuilder<void>(
+      stream: themeService.themeChanges,
+      builder: (context, snapshot) {
+        final theme = Theme.of(context);
+
+        return Card(
+          child: ListTile(
+            leading: Icon(
+              Icons.import_export,
+              color: theme.colorScheme.onSurface,
+            ),
+            title: Text(
+              translationService.translate(SettingsTranslationKeys.importExportTitle),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: AppTheme.fontSizeLarge,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+            onTap: () => _showImportExportDialog(context),
+          ),
+        );
+      },
     );
   }
 }
@@ -54,6 +73,7 @@ class _ImportExportActionsDialog extends StatefulWidget {
 class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> {
   final _translationService = container.resolve<ITranslationService>();
   final _fileService = container.resolve<IFileService>();
+  final _themeService = container.resolve<IThemeService>();
   final PageController _pageController = PageController();
   String? _selectedFilePath;
   ExportDataFileOptions? _selectedExportOption;
@@ -75,35 +95,47 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _translationService.translate(SettingsTranslationKeys.importExportTitle),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeMedium),
-        child: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _buildMainPage(context),
-            if (_selectedFilePath != null) _buildImportStrategyPage(context),
-            if (_selectedExportOption == null) _buildExportOptionsPage(context),
-          ],
-        ),
-      ),
+    return StreamBuilder<void>(
+      stream: _themeService.themeChanges,
+      builder: (context, snapshot) {
+        return Theme(
+          data: _themeService.themeData,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                _translationService.translate(SettingsTranslationKeys.importExportTitle),
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeMedium),
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildMainPage(context),
+                  if (_selectedFilePath != null) _buildImportStrategyPage(context),
+                  if (_selectedExportOption == null) _buildExportOptionsPage(context),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildMainPage(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Description Section
         Text(
           _translationService.translate(SettingsTranslationKeys.importExportDescription),
-          style: AppTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: AppTheme.sizeMedium),
 
@@ -130,13 +162,17 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   Widget _buildImportStrategyPage(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header Section
         Text(
           _translationService.translate(SettingsTranslationKeys.importStrategyTitle),
-          style: AppTheme.bodyLarge,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: AppTheme.sizeMedium),
 
@@ -187,19 +223,32 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   Widget _buildExportOptionsPage(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header Section
         Text(
           _translationService.translate(SettingsTranslationKeys.exportSelectType),
-          style: AppTheme.bodyLarge,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: AppTheme.sizeMedium),
 
         // Export Options Section
         Column(
           children: [
+            _ExportOptionTile(
+              icon: Icons.backup,
+              titleKey: SettingsTranslationKeys.backupExportTitle,
+              descriptionKey: SettingsTranslationKeys.backupExportDescription,
+              fileOption: ExportDataFileOptions.backup,
+              onSelect: () => _handleExportOptionSelect(ExportDataFileOptions.backup, context),
+              isDisabled: _isProcessing,
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
             _ExportOptionTile(
               icon: Icons.code,
               title: 'JSON',
@@ -243,13 +292,25 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
-        // Pick JSON file
+        // Pick backup file (.whph only) - show all files since .whph is not supported by file picker
         final filePath = await _fileService.pickFile(
-          allowedExtensions: ['json'],
+          allowedExtensions: null, // Show all files
           dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
         );
 
         if (filePath != null && mounted) {
+          // Validate that the selected file is a .whph backup file
+          if (!filePath.toLowerCase().endsWith('.whph')) {
+            if (context.mounted) {
+              OverlayNotificationHelper.showError(
+                context: context,
+                message: _translationService.translate(SettingsTranslationKeys.backupInvalidFormatError),
+                duration: const Duration(seconds: 4),
+              );
+            }
+            return;
+          }
+
           setState(() {
             _selectedFilePath = filePath;
           });
@@ -277,13 +338,13 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
-        // Read file content
-        final content = await _fileService.readFile(_selectedFilePath!);
+        // Read backup file as binary data (only .whph files are supported)
+        final backupData = await _fileService.readBinaryFile(_selectedFilePath!);
         final mediator = container.resolve<Mediator>();
 
-        // Execute import command
+        // Execute import command for backup file
         return await mediator.send<ImportDataCommand, ImportDataCommandResponse>(
-          ImportDataCommand(content, strategy),
+          ImportDataCommand(backupData, strategy),
         );
       },
       onSuccess: (_) {
@@ -366,17 +427,10 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           ExportDataCommand(option),
         );
 
-        // Get save path
-        final extension = option == ExportDataFileOptions.json ? 'json' : 'csv';
-        final version = AppInfo.version;
-        final now = DateTime.now();
-        final fileName = 'whph_export_${version}_'
-            '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_'
-            '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$extension';
-
+        // Get save path using the filename from response
         String? savePath = await _fileService.getSavePath(
-          fileName: fileName,
-          allowedExtensions: [extension],
+          fileName: response.fileName,
+          allowedExtensions: [response.fileExtension],
           dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
         );
 
@@ -392,11 +446,26 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           return;
         }
 
-        // Write file
-        await _fileService.writeFile(
-          filePath: savePath,
-          content: response.fileContent,
-        );
+        // Write file based on content type
+        if (option == ExportDataFileOptions.backup) {
+          if (response.fileContent is! Uint8List) {
+            throw Exception('Invalid content type for backup file. Expected Uint8List.');
+          }
+          // Write binary data for backup files
+          await _fileService.writeBinaryFile(
+            filePath: savePath,
+            data: response.fileContent as Uint8List,
+          );
+        } else {
+          if (response.fileContent is! String) {
+            throw Exception('Invalid content type for export file. Expected String.');
+          }
+          // Write string data for JSON/CSV files
+          await _fileService.writeFile(
+            filePath: savePath,
+            content: response.fileContent as String,
+          );
+        }
 
         if (context.mounted) {
           // Hide loading overlay and show success overlay notification with file path
@@ -450,21 +519,23 @@ class _ImportExportActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
+    final theme = Theme.of(context);
+
     return Card(
       child: ListTile(
         leading: Icon(
           icon,
-          color: isDisabled ? Theme.of(context).disabledColor : null,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
         ),
         title: Text(
           translationService.translate(titleKey),
-          style: AppTheme.bodyMedium.copyWith(
-            color: isDisabled ? Theme.of(context).disabledColor : null,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? Theme.of(context).disabledColor : null,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: isDisabled ? null : onTap,
         enabled: !isDisabled,
@@ -491,21 +562,23 @@ class _ImportStrategyOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
+    final theme = Theme.of(context);
+
     return Card(
       child: ListTile(
         leading: Icon(
           icon,
-          color: isDisabled ? Theme.of(context).disabledColor : null,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
         ),
         title: Text(
           translationService.translate(translationKey),
-          style: AppTheme.bodyMedium.copyWith(
-            color: isDisabled ? Theme.of(context).disabledColor : null,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? Theme.of(context).disabledColor : null,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: isDisabled ? null : onSelect,
         enabled: !isDisabled,
@@ -516,7 +589,8 @@ class _ImportStrategyOption extends StatelessWidget {
 
 class _ExportOptionTile extends StatelessWidget {
   final IconData icon;
-  final String title;
+  final String? title;
+  final String? titleKey;
   final String descriptionKey;
   final ExportDataFileOptions fileOption;
   final VoidCallback onSelect;
@@ -524,30 +598,41 @@ class _ExportOptionTile extends StatelessWidget {
 
   const _ExportOptionTile({
     required this.icon,
-    required this.title,
+    this.title,
+    this.titleKey,
     required this.descriptionKey,
     required this.fileOption,
     required this.onSelect,
     this.isDisabled = false,
-  });
+  }) : assert(title != null || titleKey != null, 'Either title or titleKey must be provided');
 
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
+    final theme = Theme.of(context);
+    final displayTitle = titleKey != null ? translationService.translate(titleKey!) : title!;
+
     return Card(
       child: ListTile(
-        leading: Icon(icon, color: isDisabled ? Theme.of(context).disabledColor : null),
-        title: Text(title,
-            style: AppTheme.bodyMedium.copyWith(
-              color: isDisabled ? Theme.of(context).disabledColor : null,
-            )),
-        subtitle: Text(translationService.translate(descriptionKey),
-            style: AppTheme.bodySmall.copyWith(
-              color: isDisabled ? Theme.of(context).disabledColor : null,
-            )),
+        leading: Icon(
+          icon,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
+        ),
+        title: Text(
+          displayTitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
+          ),
+        ),
+        subtitle: Text(
+          translationService.translate(descriptionKey),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? Theme.of(context).disabledColor : null,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: !isDisabled ? onSelect : null,
         enabled: !isDisabled,
