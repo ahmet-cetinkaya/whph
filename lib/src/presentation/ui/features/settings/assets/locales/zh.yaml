@@ -155,4 +155,5 @@ settings:
     dynamic_accent:
       title: 动态强调色
       description: 使用系统主题的动态颜色
+      feature: 动态
     error: 加载主题设置失败

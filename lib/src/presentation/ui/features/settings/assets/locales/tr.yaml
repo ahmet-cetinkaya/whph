@@ -154,4 +154,5 @@ settings:
     dynamic_accent:
       title: Dinamik Vurgu Rengi
       description: Sistem temanızdan dinamik renkler kullanın
+      feature: Dinamik
     error: Tema ayarları yüklenemedi

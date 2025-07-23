@@ -155,4 +155,5 @@ settings:
     dynamic_accent:
       title: Colore accento dinamico
       description: Usa colori dinamici dal tuo tema di sistema
+      feature: Dinamico
     error: Errore nel caricamento delle impostazioni del tema

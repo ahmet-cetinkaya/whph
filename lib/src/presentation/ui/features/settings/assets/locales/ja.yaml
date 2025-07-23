@@ -155,4 +155,5 @@ settings:
     dynamic_accent:
       title: ダイナミックアクセントカラー
       description: システムテーマからダイナミックカラーを使用
+      feature: ダイナミック
     error: テーマ設定の読み込みに失敗しました
