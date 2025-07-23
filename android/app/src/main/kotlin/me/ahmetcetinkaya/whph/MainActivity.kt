@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.os.Build
+import android.os.UserManager
 import android.provider.Settings
 import android.app.AlarmManager
 import android.util.Log
@@ -407,6 +408,15 @@ class MainActivity : FlutterActivity() {
                 "getInstalledApps" -> {
                     val installedApps = AppInfo().getInstalledAppNames()
                     result.success(installedApps)
+                }
+                "isRunningInWorkProfile" -> {
+                    try {
+                        val isWorkProfile = isRunningInWorkProfile()
+                        result.success(isWorkProfile)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error checking work profile status: ${e.message}", e)
+                        result.error("WORK_PROFILE_ERROR", e.message, null)
+                    }
                 }
                 else -> {
                     result.notImplemented()
@@ -1065,6 +1075,38 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+        }
+    }
+
+    /**
+     * Detects if the app is running in a work profile.
+     * Uses UserManager and UserHandle APIs to determine profile context.
+     */
+    private fun isRunningInWorkProfile(): Boolean {
+        return try {
+            val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+            val currentUser = android.os.Process.myUserHandle()
+            val userProfiles = userManager.userProfiles
+            
+            Log.d(TAG, "Current user: $currentUser")
+            Log.d(TAG, "User profiles: $userProfiles")
+            
+            // Find the main user (typically UserHandle{0})
+            val mainUser = userProfiles.firstOrNull { 
+                userManager.isUserRunning(it) && it.hashCode() == 0 
+            }
+            
+            Log.d(TAG, "Main user: $mainUser")
+            
+            // If we have multiple profiles and current user is not the main user, we're in work profile
+            val isWorkProfile = currentUser != mainUser && userProfiles.size > 1
+            
+            Log.d(TAG, "Is running in work profile: $isWorkProfile")
+            return isWorkProfile
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error detecting work profile: ${e.message}", e)
+            false
         }
     }
 
