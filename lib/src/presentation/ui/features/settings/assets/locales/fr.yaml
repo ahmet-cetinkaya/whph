@@ -141,3 +141,18 @@ settings:
     invalid_format_error: Format de fichier de sauvegarde invalide
     corrupted: Le fichier de sauvegarde est corrompu ou endommagé
     export_description: Créer un fichier de sauvegarde compressé contenant toutes vos données
+  theme:
+    title: Thème
+    description: Personnaliser l'apparence de WHPH
+    mode:
+      title: Mode de thème
+      light: Clair
+      dark: Sombre
+      auto:
+        title: Automatique
+        description: Suivre les paramètres du thème système
+    dynamic_accent:
+      title: Couleur d'accent dynamique
+      description: Utiliser les couleurs dynamiques de votre thème système
+      feature: Dynamique
+    error: Échec du chargement des paramètres de thème

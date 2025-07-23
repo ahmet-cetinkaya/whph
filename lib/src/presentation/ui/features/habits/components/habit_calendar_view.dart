@@ -211,12 +211,21 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       backgroundColor = AppTheme.surface1.withValues(alpha: 0.5);
     }
 
+    // Determine border color based on state
+    Color borderColor = AppTheme.dividerColor.withValues(alpha: 0.3);
+    if (!isCurrentMonth) {
+      borderColor = AppTheme.dividerColor.withValues(alpha: 0.1);
+    }
+    if (isFutureDate) {
+      borderColor = AppTheme.dividerColor.withValues(alpha: 0.1);
+    }
+
     HabitRecordListItem? recordForDay;
     if (hasRecord) {
       recordForDay = widget.records.firstWhere((record) => _isSameDay(record.date, date));
     }
 
-    return ElevatedButton(
+    return OutlinedButton(
       onPressed: isFutureDate
           ? null
           : () async {
@@ -228,12 +237,16 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
               }
               widget.onRecordChanged?.call();
             },
-      style: ElevatedButton.styleFrom(
+      style: OutlinedButton.styleFrom(
         foregroundColor: AppTheme.textColor,
         backgroundColor: backgroundColor,
         disabledBackgroundColor:
             isCurrentMonth ? AppTheme.surface2.withValues(alpha: 0.3) : AppTheme.surface2.withValues(alpha: 0.1),
         padding: EdgeInsets.zero,
+        side: BorderSide(
+          color: borderColor,
+          width: 1.0,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

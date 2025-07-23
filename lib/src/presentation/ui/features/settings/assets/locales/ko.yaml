@@ -142,3 +142,18 @@ settings:
     invalid_format_error: 잘못된 백업 파일 형식
     corrupted: 백업 파일이 손상되었거나 깨졌습니다
     export_description: 모든 데이터를 포함하는 압축된 백업 파일을 생성합니다
+  theme:
+    title: 테마
+    description: WHPH의 외관을 사용자 정의
+    mode:
+      title: 테마 모드
+      light: 밝음
+      dark: 어두움
+      auto:
+        title: 자동
+        description: 시스템 테마 설정을 따름
+    dynamic_accent:
+      title: 동적 강조 색상
+      description: 시스템 테마의 동적 색상 사용
+      feature: 동적
+    error: 테마 설정 로드에 실패했습니다

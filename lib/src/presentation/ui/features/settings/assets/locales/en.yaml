@@ -142,3 +142,18 @@ settings:
     invalid_format_error: Invalid backup file format
     corrupted: Backup file is corrupted or damaged
     export_description: Create a compressed backup file containing all your data
+  theme:
+    title: Theme
+    description: Customize the appearance of WHPH
+    mode:
+      title: Theme Mode
+      light: Light
+      dark: Dark
+      auto:
+        title: Auto
+        description: Follow system theme settings
+    dynamic_accent:
+      title: Dynamic Accent Color
+      description: Use dynamic colors from your system theme
+      feature: Dynamic
+    error: Failed to load theme settings

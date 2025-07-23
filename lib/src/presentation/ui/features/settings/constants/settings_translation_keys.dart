@@ -118,4 +118,17 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String backupStrategyMerge = 'settings.backup.import.strategy.merge';
   static const String backupCanceled = 'settings.backup.canceled';
   static const String backupInvalidFormatError = 'settings.backup.invalid_format_error';
+
+  // Theme Settings
+  static const String themeTitle = 'settings.theme.title';
+  static const String themeDescription = 'settings.theme.description';
+  static const String themeModeTitle = 'settings.theme.mode.title';
+  static const String themeModeLight = 'settings.theme.mode.light';
+  static const String themeModeDark = 'settings.theme.mode.dark';
+  static const String themeModeAuto = 'settings.theme.mode.auto.title';
+  static const String themeModeAutoDescription = 'settings.theme.mode.auto.description';
+  static const String dynamicAccentColorTitle = 'settings.theme.dynamic_accent.title';
+  static const String dynamicAccentColorDescription = 'settings.theme.dynamic_accent.description';
+  static const String dynamicAccentColorFeature = 'settings.theme.dynamic_accent.feature';
+  static const String themeSettingsError = 'settings.theme.error';
 }
