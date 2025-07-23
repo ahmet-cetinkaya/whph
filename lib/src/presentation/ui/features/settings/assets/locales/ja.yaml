@@ -149,6 +149,9 @@ settings:
       title: テーマモード
       light: ライト
       dark: ダーク
+      auto:
+        title: 自動
+        description: システムテーマ設定に従う
     dynamic_accent:
       title: ダイナミックアクセントカラー
       description: システムテーマからダイナミックカラーを使用

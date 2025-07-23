@@ -149,6 +149,9 @@ settings:
       title: 테마 모드
       light: 밝음
       dark: 어두움
+      auto:
+        title: 자동
+        description: 시스템 테마 설정을 따름
     dynamic_accent:
       title: 동적 강조 색상
       description: 시스템 테마의 동적 색상 사용

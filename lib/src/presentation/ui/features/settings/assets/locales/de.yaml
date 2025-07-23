@@ -148,6 +148,9 @@ settings:
       title: Design-Modus
       light: Hell
       dark: Dunkel
+      auto:
+        title: Automatisch
+        description: Systemdesign-Einstellungen folgen
     dynamic_accent:
       title: Dynamische Akzentfarbe
       description: Verwenden Sie dynamische Farben aus Ihrem Systemdesign

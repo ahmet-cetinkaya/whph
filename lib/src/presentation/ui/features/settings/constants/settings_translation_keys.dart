@@ -125,6 +125,8 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String themeModeTitle = 'settings.theme.mode.title';
   static const String themeModeLight = 'settings.theme.mode.light';
   static const String themeModeDark = 'settings.theme.mode.dark';
+  static const String themeModeAuto = 'settings.theme.mode.auto.title';
+  static const String themeModeAutoDescription = 'settings.theme.mode.auto.description';
   static const String dynamicAccentColorTitle = 'settings.theme.dynamic_accent.title';
   static const String dynamicAccentColorDescription = 'settings.theme.dynamic_accent.description';
   static const String themeSettingsError = 'settings.theme.error';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum AppThemeMode { light, dark }
+enum AppThemeMode { light, dark, auto }
 
 abstract class IThemeService {
   /// Gets the current theme mode
