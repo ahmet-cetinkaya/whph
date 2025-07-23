@@ -154,4 +154,5 @@ settings:
     dynamic_accent:
       title: Couleur d'accent dynamique
       description: Utiliser les couleurs dynamiques de votre thème système
+      feature: Dynamique
     error: Échec du chargement des paramètres de thème

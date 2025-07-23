@@ -111,7 +111,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     
     final features = <String>[];
     if (_dynamicAccentColor) {
-      features.add('Dynamic');
+      features.add(_translationService.translate(SettingsTranslationKeys.dynamicAccentColorFeature));
     }
     
     if (features.isNotEmpty) {

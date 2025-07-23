@@ -154,4 +154,5 @@ settings:
     dynamic_accent:
       title: Dynamische Akzentfarbe
       description: Verwenden Sie dynamische Farben aus Ihrem Systemdesign
+      feature: Dynamisch
     error: Fehler beim Laden der Design-Einstellungen

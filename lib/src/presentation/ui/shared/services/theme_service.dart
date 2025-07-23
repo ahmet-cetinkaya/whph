@@ -668,7 +668,7 @@ class ThemeService implements IThemeService {
     return isDark
         ? ColorScheme.dark(
             primary: primaryColor,
-            onPrimary: darkTextColor,
+            onPrimary: lightTextColor, // Light text on dark theme primary
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,
@@ -685,7 +685,7 @@ class ThemeService implements IThemeService {
           )
         : ColorScheme.light(
             primary: primaryColor,
-            onPrimary: lightTextColor,
+            onPrimary: darkTextColor, // Dark text on light theme primary
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,

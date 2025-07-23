@@ -155,4 +155,5 @@ settings:
     dynamic_accent:
       title: 동적 강조 색상
       description: 시스템 테마의 동적 색상 사용
+      feature: 동적
     error: 테마 설정 로드에 실패했습니다
