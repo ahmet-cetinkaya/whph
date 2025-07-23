@@ -30,6 +30,8 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   bool isHovered = false;
 
   void _showPrioritySelection(BuildContext context) {
+    final theme = Theme.of(context);
+    
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: Padding(
@@ -42,7 +44,9 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
               padding: const EdgeInsets.only(bottom: AppTheme.sizeLarge),
               child: Text(
                 _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
-                style: AppTheme.headlineSmall,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
             Flexible(
@@ -61,8 +65,11 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   }
 
   Widget _buildPriorityOption(BuildContext context, DropdownOption<EisenhowerPriority?> option) {
+    final theme = Theme.of(context);
     final isSelected = widget.value == option.value;
-    final textColor = option.value != null ? TaskUiConstants.getPriorityColor(option.value) : AppTheme.lightTextColor;
+    final textColor = option.value != null 
+        ? TaskUiConstants.getPriorityColor(option.value) 
+        : theme.colorScheme.onSurface.withValues(alpha: 0.7);
 
     return InkWell(
       onTap: () {
@@ -72,23 +79,31 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeLarge),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.surface3 : null,
+          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
           borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
         ),
         child: Row(
           children: [
-            Icon(TaskUiConstants.priorityIcon, color: textColor, size: AppTheme.fontSizeLarge),
+            Icon(
+              TaskUiConstants.priorityIcon, 
+              color: textColor, 
+              size: AppTheme.fontSizeLarge,
+            ),
             const SizedBox(width: AppTheme.sizeSmall),
             Text(
               option.label,
-              style: AppTheme.bodySmall.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                 color: textColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
             if (isSelected) ...[
               const Spacer(),
-              const Icon(Icons.check, size: AppTheme.fontSizeLarge),
+              Icon(
+                Icons.check, 
+                size: AppTheme.fontSizeLarge,
+                color: theme.colorScheme.primary,
+              ),
             ],
           ],
         ),
@@ -98,6 +113,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final selectedOption = widget.options.firstWhere(
       (option) => option.value == widget.value,
       orElse: () => widget.options.first,
@@ -112,7 +128,9 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         child: Container(
           height: 36,
           decoration: BoxDecoration(
-            color: isHovered ? AppTheme.surface2.withAlpha((255 * 0.5).toInt()) : AppTheme.surface1,
+            color: isHovered 
+                ? theme.colorScheme.onSurface.withValues(alpha: 0.1)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -120,13 +138,18 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
               Expanded(
                 child: Text(
                   selectedOption.label,
-                  style: AppTheme.bodySmall.copyWith(
-                    color:
-                        widget.value != null ? TaskUiConstants.getPriorityColor(widget.value) : AppTheme.lightTextColor,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: widget.value != null 
+                        ? TaskUiConstants.getPriorityColor(widget.value) 
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ),
-              const Icon(Icons.arrow_drop_down, size: AppTheme.fontSizeLarge),
+              Icon(
+                Icons.arrow_drop_down, 
+                size: AppTheme.fontSizeLarge,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ],
           ),
         ),

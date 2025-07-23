@@ -15,15 +15,15 @@ import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dar
 class TagArchiveButton extends StatefulWidget {
   final String tagId;
   final VoidCallback? onArchiveSuccess;
-  final Color buttonColor;
-  final Color buttonBackgroundColor;
+  final Color? buttonColor;
+  final Color? buttonBackgroundColor;
   final String? tooltip;
 
   const TagArchiveButton({
     super.key,
     required this.tagId,
     this.onArchiveSuccess,
-    this.buttonColor = AppTheme.primaryColor,
+    this.buttonColor,
     this.buttonBackgroundColor = Colors.transparent,
     this.tooltip,
   });
@@ -133,7 +133,7 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
             _isArchived! ? TagTranslationKeys.unarchiveTagTooltip : TagTranslationKeys.archiveTagTooltip,
           ),
       onPressed: _toggleArchiveStatus,
-      color: widget.buttonColor,
+      color: widget.buttonColor ?? AppTheme.primaryColor,
       style: IconButton.styleFrom(
         backgroundColor: widget.buttonBackgroundColor,
       ),

@@ -3,9 +3,9 @@ import 'package:whph/src/core/application/features/settings/services/abstraction
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/core/application/shared/utils/key_helper.dart';
 import 'package:whph/main.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
@@ -21,6 +21,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
   final _notificationService = container.resolve<INotificationService>();
   final _settingRepository = container.resolve<ISettingRepository>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   bool _isEnabled = false;
   bool _isLoading = true;
@@ -81,25 +82,38 @@ class _NotificationSettingsState extends State<NotificationSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.notifications),
-        title: Text(
-          _translationService.translate(SettingsTranslationKeys.notificationsTitle),
-          style: AppTheme.bodyMedium,
-        ),
-        trailing: _isLoading || _isUpdating
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Switch(
-                value: _isEnabled,
-                onChanged: _toggleNotifications,
+    return StreamBuilder<void>(
+      stream: _themeService.themeChanges,
+      builder: (context, snapshot) {
+        final theme = Theme.of(context);
+        
+        return Card(
+          child: ListTile(
+            leading: Icon(
+              Icons.notifications,
+              color: theme.colorScheme.onSurface,
+            ),
+            title: Text(
+              _translationService.translate(SettingsTranslationKeys.notificationsTitle),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
               ),
-        onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
-      ),
+            ),
+            trailing: _isLoading || _isUpdating
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Switch(
+                    value: _isEnabled,
+                    onChanged: _toggleNotifications,
+                    activeColor: theme.colorScheme.primary,
+                  ),
+            onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
+          ),
+        );
+      },
     );
   }
 }
