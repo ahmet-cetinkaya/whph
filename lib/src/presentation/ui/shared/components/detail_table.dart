@@ -90,7 +90,7 @@ class DetailTable extends StatelessWidget {
               child: Text(
                 data.hintText!,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ),
@@ -131,7 +131,7 @@ class DetailTable extends StatelessWidget {
         Icon(
           data.icon,
           size: AppTheme.iconSizeSmall,
-          color: theme.colorScheme.onSurface.withOpacity(0.8),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
         ),
         const SizedBox(width: AppTheme.size2XSmall),
         Flexible(
@@ -143,7 +143,7 @@ class DetailTable extends StatelessWidget {
                   data.label,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: theme.colorScheme.onSurface.withOpacity(0.8),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -155,7 +155,7 @@ class DetailTable extends StatelessWidget {
                   child: Icon(
                     SharedUiConstants.helpIcon,
                     size: AppTheme.iconSizeXSmall,
-                    color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ],

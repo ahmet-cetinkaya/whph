@@ -53,7 +53,7 @@ class ImportExportSettings extends StatelessWidget {
             trailing: Icon(
               Icons.arrow_forward_ios, 
               size: AppTheme.fontSizeLarge,
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             onTap: () => _showImportExportDialog(context),
           ),
@@ -535,7 +535,7 @@ class _ImportExportActionTile extends StatelessWidget {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withOpacity(0.7),
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: isDisabled ? null : onTap,
         enabled: !isDisabled,
@@ -578,7 +578,7 @@ class _ImportStrategyOption extends StatelessWidget {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withOpacity(0.7),
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: isDisabled ? null : onSelect,
         enabled: !isDisabled,
@@ -629,12 +629,12 @@ class _ExportOptionTile extends StatelessWidget {
         subtitle: Text(
           translationService.translate(descriptionKey),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withOpacity(0.7),
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withOpacity(0.7),
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
         ),
         onTap: !isDisabled ? onSelect : null,
         enabled: !isDisabled,

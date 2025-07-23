@@ -152,7 +152,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       focusNode: _focusNode,
                       collapsable: false,
                       backgroundColor: toolbarBgColor,
-                      iconColor: theme.colorScheme.onSurface.withOpacity(0.8),
+                      iconColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                       iconSize: 20,
                       width: 36,
                       height: 36,
@@ -183,7 +183,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       icon: Icon(
                         _isPreviewMode ? Icons.edit : Icons.visibility,
                         size: 20,
-                        color: theme.colorScheme.onSurface.withOpacity(0.8),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                       ),
                       onPressed: _togglePreviewMode,
                       tooltip: _isPreviewMode
@@ -196,8 +196,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       ),
                       style: IconButton.styleFrom(
                         backgroundColor: Colors.transparent,
-                        foregroundColor: theme.colorScheme.onSurface.withOpacity(0.8),
-                        hoverColor: theme.colorScheme.onSurface.withOpacity(0.1),
+                        foregroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                        hoverColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -232,7 +232,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                           icon: Icon(
                             Icons.edit,
                             size: 20,
-                            color: theme.colorScheme.onSurface.withOpacity(0.8),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                           ),
                           onPressed: _togglePreviewMode,
                           tooltip: _translationService.translate(SharedTranslationKeys.markdownEditorEditTooltip),
@@ -243,8 +243,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                           ),
                           style: IconButton.styleFrom(
                             backgroundColor: Colors.transparent,
-                            foregroundColor: theme.colorScheme.onSurface.withOpacity(0.8),
-                            hoverColor: theme.colorScheme.onSurface.withOpacity(0.1),
+                            foregroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                            hoverColor: theme.colorScheme.onSurface.withValues(alpha: 0.1),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -278,7 +278,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
       decoration: InputDecoration(
         hintText: widget.hintText ?? _translationService.translate(SharedTranslationKeys.markdownEditorHint),
         hintStyle: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurface.withOpacity(0.6),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
         ),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
@@ -304,7 +304,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             physics: const NeverScrollableScrollPhysics(),
             styleSheet: MarkdownStyleSheet(
               p: theme.textTheme.bodyMedium?.copyWith(
-                color: value.text.isEmpty ? theme.colorScheme.onSurface.withOpacity(0.6) : theme.colorScheme.onSurface,
+                color: value.text.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.6) : theme.colorScheme.onSurface,
                 height: 1.5,
               ),
               h1: theme.textTheme.displayLarge?.copyWith(
@@ -345,7 +345,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 color: theme.colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
                 border: Border.all(
-                  color: theme.dividerColor.withOpacity(0.3),
+                  color: theme.dividerColor.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -354,7 +354,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 color: theme.colorScheme.onSurface,
               ),
               blockquote: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 fontStyle: FontStyle.italic,
                 height: 1.5,
               ),
@@ -377,7 +377,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 height: 1.5,
               ),
               tableBorder: TableBorder.all(
-                color: theme.dividerColor.withOpacity(0.3),
+                color: theme.dividerColor.withValues(alpha: 0.3),
                 width: 1,
                 borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
               ),

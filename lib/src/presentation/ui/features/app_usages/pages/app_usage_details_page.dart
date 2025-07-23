@@ -5,8 +5,6 @@ import 'package:whph/src/presentation/ui/features/app_usages/components/app_usag
 import 'package:whph/src/presentation/ui/features/app_usages/components/app_usage_statistics_view.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
-import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 

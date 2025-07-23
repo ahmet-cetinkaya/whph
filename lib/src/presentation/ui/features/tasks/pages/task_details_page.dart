@@ -11,7 +11,6 @@ import 'package:whph/src/presentation/ui/features/tasks/components/tasks_list.da
 import 'package:whph/src/presentation/ui/features/tasks/components/task_details_content.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';

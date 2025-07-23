@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
@@ -597,7 +596,6 @@ class ThemeService implements IThemeService {
       // Use MediaQuery to get system brightness
       // This will be called from a context where MediaQuery is available
       // For now, we'll use a platform channel to get system theme
-      final result = await SystemChannels.platform.invokeMethod<bool>('SystemChrome.systemUIOverlayStyle');
       
       // Fallback: try to get from window
       final window = WidgetsBinding.instance.platformDispatcher;

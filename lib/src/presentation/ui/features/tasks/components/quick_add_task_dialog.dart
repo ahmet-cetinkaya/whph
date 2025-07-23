@@ -399,7 +399,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                   child: Text(
                     _translationService.translate(TaskTranslationKeys.quickTaskLockDescription),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ),
@@ -433,7 +433,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                             title: _translationService.translate(TaskTranslationKeys.priorityLabel),
                             icon: TaskUiConstants.priorityOutlinedIcon,
                             iconColor: _selectedPriority == null 
-                                ? theme.colorScheme.onSurface.withOpacity(0.7)
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                                 : TaskUiConstants.getPriorityColor(_selectedPriority),
                             value: _lockPriority,
                             onChanged: (bool? value) {
@@ -714,7 +714,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         IconButton(
           icon: Icon(
             Icons.lock_outline, 
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _showLockSettingsDialog,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
@@ -730,7 +730,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
             iconSize: iconSize,
             color: _selectedTags.isEmpty 
-                ? theme.colorScheme.onSurface.withOpacity(0.7)
+                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                 : TaskUiConstants.tagColor,
           ),
           isLocked: _lockTags,
@@ -742,7 +742,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             icon: Icon(
               _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
               color: _selectedPriority == null 
-                  ? theme.colorScheme.onSurface.withOpacity(0.7)
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.getPriorityColor(_selectedPriority),
             ),
             onPressed: _togglePriority,
@@ -758,7 +758,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             icon: _estimatedTime == null
                 ? Icon(
                     TaskUiConstants.estimatedTimeOutlinedIcon,
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   )
                 : Text(
                     SharedUiConstants.formatMinutes(_estimatedTime!),
@@ -780,7 +780,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             icon: Icon(
               _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
               color: _plannedDate == null 
-                  ? theme.colorScheme.onSurface.withOpacity(0.7)
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.plannedDateColor,
             ),
             onPressed: _selectPlannedDate,
@@ -796,7 +796,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             icon: Icon(
               _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
               color: _deadlineDate == null 
-                  ? theme.colorScheme.onSurface.withOpacity(0.7)
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.deadlineDateColor,
             ),
             onPressed: _selectDeadlineDate,
@@ -810,7 +810,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         IconButton(
           icon: Icon(
             Icons.close, 
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _onClearAllFields,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskResetAll),
