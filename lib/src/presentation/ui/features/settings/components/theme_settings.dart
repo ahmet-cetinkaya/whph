@@ -263,7 +263,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               Text(
                 _translationService.translate(SettingsTranslationKeys.themeDescription),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: AppTheme.sizeLarge),
@@ -340,7 +340,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                       subtitle: Text(
                         _translationService.translate(SettingsTranslationKeys.themeModeAutoDescription),
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                       value: AppThemeMode.auto,
@@ -384,7 +384,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                   subtitle: Text(
                     _translationService.translate(SettingsTranslationKeys.dynamicAccentColorDescription),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   value: _dynamicAccentColor,

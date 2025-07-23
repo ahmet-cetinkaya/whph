@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/src/presentation/ui/features/notes/components/note_delete_button.dart';
 import 'package:whph/src/presentation/ui/features/notes/components/note_details_content.dart';
-import 'package:whph/src/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 
 class NoteDetailsPage extends StatefulWidget {
   static const String route = '/notes/details';

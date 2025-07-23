@@ -69,7 +69,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
     final isSelected = widget.value == option.value;
     final textColor = option.value != null 
         ? TaskUiConstants.getPriorityColor(option.value) 
-        : theme.colorScheme.onSurface.withOpacity(0.7);
+        : theme.colorScheme.onSurface.withValues(alpha: 0.7);
 
     return InkWell(
       onTap: () {
@@ -79,7 +79,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeLarge),
         decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary.withOpacity(0.1) : null,
+          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
           borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
         ),
         child: Row(
@@ -129,7 +129,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           height: 36,
           decoration: BoxDecoration(
             color: isHovered 
-                ? theme.colorScheme.onSurface.withOpacity(0.1)
+                ? theme.colorScheme.onSurface.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
@@ -141,14 +141,14 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: widget.value != null 
                         ? TaskUiConstants.getPriorityColor(widget.value) 
-                        : theme.colorScheme.onSurface.withOpacity(0.7),
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ),
               Icon(
                 Icons.arrow_drop_down, 
                 size: AppTheme.fontSizeLarge,
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ],
           ),

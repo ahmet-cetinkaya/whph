@@ -119,7 +119,7 @@ class _StartupSettingsState extends State<StartupSettings> {
                 ? Text(
                     _translationService.translate(SettingsTranslationKeys.startupSubtitle),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   )
                 : null,
@@ -127,7 +127,7 @@ class _StartupSettingsState extends State<StartupSettings> {
                 ? Icon(
                     Icons.arrow_forward_ios, 
                     size: AppTheme.fontSizeLarge,
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   )
                 : _isLoading || _isUpdating
                     ? const SizedBox(

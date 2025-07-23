@@ -19,7 +19,6 @@ import 'package:whph/src/presentation/ui/features/tags/components/tag_details_co
 import 'package:whph/src/presentation/ui/features/tags/components/tag_time_bar_chart.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/shared/components/border_fade_overlay.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
