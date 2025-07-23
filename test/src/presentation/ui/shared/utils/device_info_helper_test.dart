@@ -303,14 +303,8 @@ void main() {
 
     // Test that verifies the Android work profile functionality works with mocked data
     test('Android work profile functionality should work with mocked device info', () async {
-      // This test simulates what would happen on Android by testing the logic
-      // without relying on Platform.isAndroid
-      
       // Reset method calls to track this test specifically
       methodCalls.clear();
-      
-      // Since we can't easily mock Platform.isAndroid, we test the components
-      // that would be called on Android
       
       // Test that the app info channel mock is working
       try {
