@@ -76,6 +76,7 @@ dependencies:
   # UI
   calendar_date_picker2: ^2.0.0
   cupertino_icons: ^1.0.8
+  dynamic_color: ^1.7.0
   easy_localization: ^3.0.7
   easy_localization_multi: ^0.2.0
   easy_localization_yaml: ^0.1.2
