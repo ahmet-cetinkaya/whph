@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:whph/src/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/src/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/src/core/domain/features/settings/setting.dart';
@@ -15,6 +16,8 @@ class ThemeService implements IThemeService {
   AppThemeMode _currentThemeMode = AppThemeMode.dark;
   bool _isDynamicAccentColorEnabled = false;
   Color _primaryColor = domain.AppTheme.primaryColor;
+  ColorScheme? _dynamicLightColorScheme;
+  ColorScheme? _dynamicDarkColorScheme;
 
   ThemeService({required Mediator mediator}) : _mediator = mediator;
 
@@ -105,38 +108,33 @@ class ThemeService implements IThemeService {
   @override
   ThemeData get themeData {
     final isDark = _currentThemeMode == AppThemeMode.dark;
+    
+    // Create color scheme with consistent surface colors
+    ColorScheme colorScheme;
+    
+    if (_isDynamicAccentColorEnabled) {
+      final dynamicScheme = isDark ? _dynamicDarkColorScheme : _dynamicLightColorScheme;
+      if (dynamicScheme != null) {
+        // Use ONLY the primary color from dynamic scheme, keep everything else fixed
+        colorScheme = _createFixedColorScheme(isDark, dynamicScheme.primary);
+      } else {
+        // Fallback if dynamic scheme is null
+        colorScheme = _createFixedColorScheme(isDark, _primaryColor);
+      }
+    } else {
+      // Not using dynamic colors, create fixed scheme
+      colorScheme = _createFixedColorScheme(isDark, _primaryColor);
+    }
 
     return ThemeData(
       useMaterial3: true,
       brightness: isDark ? Brightness.dark : Brightness.light,
-      colorScheme: isDark
-          ? ColorScheme.dark(
-              primary: _primaryColor,
-              onPrimary: darkTextColor,
-              surface: surface1,
-              onSurface: textColor,
-              secondary: surface3,
-              onSecondary: textColor,
-              outline: dividerColor,
-              outlineVariant: dividerColor.withValues(alpha: 0.5),
-            )
-          : ColorScheme.light(
-              primary: _primaryColor,
-              onPrimary: lightTextColor,
-              surface: surface1,
-              onSurface: textColor,
-              secondary: surface3,
-              onSecondary: textColor,
-              outline: dividerColor,
-              outlineVariant: dividerColor.withValues(alpha: 0.5),
-              surfaceContainerLowest: surface0,
-              surfaceContainerLow: surface1,
-              surfaceContainer: surface2,
-              surfaceContainerHigh: surface3,
-              surfaceContainerHighest: surface3,
-            ),
+      colorScheme: colorScheme,
       primaryColor: _primaryColor,
+      // Explicitly set all background and surface colors
       scaffoldBackgroundColor: surface0,
+      canvasColor: surface0,
+      cardColor: surface2,
       highlightColor: surface3,
       cardTheme: CardThemeData(
         color: surface2,
@@ -478,10 +476,15 @@ class ThemeService implements IThemeService {
       value: mode == AppThemeMode.light ? 'light' : 'dark',
       valueType: SettingValueType.string,
     ));
+    
+    // Update primary color if dynamic colors are enabled
+    if (_isDynamicAccentColorEnabled) {
+      await _loadDynamicAccentColor();
+    }
+    
     _notifyThemeChanged();
   }
 
-  
   @override
   Future<void> setDynamicAccentColor(bool enabled) async {
     _isDynamicAccentColorEnabled = enabled;
@@ -495,6 +498,8 @@ class ThemeService implements IThemeService {
       await _loadDynamicAccentColor();
     } else {
       _primaryColor = domain.AppTheme.primaryColor;
+      _dynamicLightColorScheme = null;
+      _dynamicDarkColorScheme = null;
     }
 
     _notifyThemeChanged();
@@ -533,18 +538,116 @@ class ThemeService implements IThemeService {
 
   Future<void> _loadDynamicAccentColor() async {
     try {
-      // Try to get system accent color on supported platforms
-      if (Theme.of(WidgetsBinding.instance.rootElement!).platform == TargetPlatform.android ||
-          Theme.of(WidgetsBinding.instance.rootElement!).platform == TargetPlatform.iOS) {
-        // For now, we'll use the default color
-        // In a real implementation, you might use platform channels to get the system accent color
-        _primaryColor = domain.AppTheme.primaryColor;
+      // Create default color schemes as fallbacks
+      final ColorScheme defaultLightScheme = ColorScheme.fromSeed(
+        seedColor: domain.AppTheme.primaryColor,
+        brightness: Brightness.light,
+      );
+      
+      final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
+        seedColor: domain.AppTheme.primaryColor,
+        brightness: Brightness.dark,
+      );
+      
+      // Get dynamic color schemes from the system using Material You
+      final Map<Brightness, ColorScheme>? colorSchemes = await DynamicColorPlugin.getCorePalette()
+          .then((corePalette) => corePalette != null
+              ? {
+                  Brightness.light: corePalette.toColorScheme(brightness: Brightness.light),
+                  Brightness.dark: corePalette.toColorScheme(brightness: Brightness.dark),
+                }
+              : null);
+      
+      if (colorSchemes != null && 
+          colorSchemes.containsKey(Brightness.light) && 
+          colorSchemes.containsKey(Brightness.dark)) {
+        
+        // Extract color schemes with explicit typing and null safety
+        final ColorScheme lightColorScheme = colorSchemes[Brightness.light]!;
+        final ColorScheme darkColorScheme = colorSchemes[Brightness.dark]!;
+        
+        // Store the dynamic color schemes directly
+        // We'll override their surface colors when building the theme
+        _dynamicLightColorScheme = lightColorScheme;
+        _dynamicDarkColorScheme = darkColorScheme;
+        
+        // Use the appropriate primary color based on current theme mode
+        _primaryColor = _currentThemeMode == AppThemeMode.light 
+            ? lightColorScheme.primary 
+            : darkColorScheme.primary;
       } else {
-        _primaryColor = domain.AppTheme.primaryColor;
+        // Use the default color schemes we created
+        _dynamicLightColorScheme = defaultLightScheme;
+        _dynamicDarkColorScheme = defaultDarkScheme;
+        
+        // Set primary color based on the default schemes
+        _primaryColor = _currentThemeMode == AppThemeMode.light 
+            ? defaultLightScheme.primary 
+            : defaultDarkScheme.primary;
       }
     } catch (e) {
-      _primaryColor = domain.AppTheme.primaryColor;
+      // Fallback to default color on any error
+      _resetToDefaultColors();
     }
+  }
+  
+  // Helper method to create a color scheme with fixed surface colors
+  ColorScheme _createFixedColorScheme(bool isDark, Color primaryColor) {
+    return isDark
+        ? ColorScheme.dark(
+            primary: primaryColor,
+            onPrimary: darkTextColor,
+            surface: surface1,
+            onSurface: textColor,
+            secondary: surface3,
+            onSecondary: textColor,
+            outline: dividerColor,
+            outlineVariant: dividerColor.withValues(alpha: 0.5),
+            surfaceTint: Colors.transparent, // Disable surface tinting
+            surfaceContainerLowest: surface0,
+            surfaceContainerLow: surface1,
+            surfaceContainer: surface2,
+            surfaceContainerHigh: surface3,
+            surfaceContainerHighest: surface3,
+            inverseSurface: const Color(0xFFFFFBFF),
+          )
+        : ColorScheme.light(
+            primary: primaryColor,
+            onPrimary: lightTextColor,
+            surface: surface1,
+            onSurface: textColor,
+            secondary: surface3,
+            onSecondary: textColor,
+            outline: dividerColor,
+            outlineVariant: dividerColor.withValues(alpha: 0.5),
+            surfaceTint: Colors.transparent, // Disable surface tinting
+            surfaceContainerLowest: surface0,
+            surfaceContainerLow: surface1,
+            surfaceContainer: surface2,
+            surfaceContainerHigh: surface3,
+            surfaceContainerHighest: surface3,
+            inverseSurface: const Color(0xFF121212),
+          );
+  }
+
+  void _resetToDefaultColors() {
+    // Create default color schemes
+    final ColorScheme defaultLightScheme = ColorScheme.fromSeed(
+      seedColor: domain.AppTheme.primaryColor,
+      brightness: Brightness.light,
+    );
+    
+    final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
+      seedColor: domain.AppTheme.primaryColor,
+      brightness: Brightness.dark,
+    );
+    
+    // Set default color schemes but don't use their surface colors
+    _dynamicLightColorScheme = defaultLightScheme;
+    _dynamicDarkColorScheme = defaultDarkScheme;
+    
+    // Reset to default primary color
+    _primaryColor = domain.AppTheme.primaryColor;
   }
 
   void _notifyThemeChanged() {
