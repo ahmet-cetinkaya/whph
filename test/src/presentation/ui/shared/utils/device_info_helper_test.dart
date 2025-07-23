@@ -24,21 +24,125 @@ void main() {
                 'brand': 'TestBrand',
                 'model': 'TestModel',
                 'isPhysicalDevice': true,
+                'version': <String, dynamic>{
+                  'release': '11',
+                  'sdkInt': 30,
+                },
+                'fingerprint': 'test-fingerprint',
+                'hardware': 'test-hardware',
+                'id': 'test-id',
+                'manufacturer': 'TestManufacturer',
+                'product': 'test-product',
+                'supported32BitAbis': <String>[],
+                'supported64BitAbis': <String>[],
+                'supportedAbis': <String>[],
+                'tags': 'test-tags',
+                'type': 'user',
+                'isLowRamDevice': false,
+                'systemFeatures': <String>[],
+                'displayMetrics': <String, dynamic>{
+                  'widthPx': 1080.0,
+                  'heightPx': 1920.0,
+                  'xDpi': 420.0,
+                  'yDpi': 420.0,
+                },
+                'serialNumber': 'unknown',
               };
             case 'getLinuxDeviceInfo':
               return {
+                'name': 'Test Linux',
+                'version': '20.04',
+                'id': 'ubuntu',
+                'idLike': <String>['debian'],
+                'versionCodename': 'focal',
+                'versionId': '20.04',
                 'prettyName': 'Test Linux',
+                'buildId': 'test-build',
+                'variant': 'test-variant',
+                'variantId': 'test-variant-id',
+                'machineId': 'test-machine-id',
               };
             case 'getWindowsDeviceInfo':
               return {
                 'computerName': 'Test Windows',
+                'numberOfCores': 4,
+                'systemMemoryInMegabytes': 8192,
+                'userName': 'testuser',
+                'majorVersion': 10,
+                'minorVersion': 0,
+                'buildNumber': 19041,
+                'platformId': 2,
+                'csdVersion': '',
+                'servicePackMajor': 0,
+                'servicePackMinor': 0,
+                'suitMask': 256,
+                'productType': 1,
+                'reserved': 0,
+                'buildLab': 'test-build-lab',
+                'buildLabEx': 'test-build-lab-ex',
+                'digitalProductId': <int>[],
+                'displayVersion': '20H2',
+                'editionId': 'Professional',
+                'installDate': DateTime.now().toIso8601String(),
+                'productId': 'test-product-id',
+                'productName': 'Windows 10 Pro',
+                'registeredOwner': 'Test Owner',
+                'releaseId': '2009',
+                'deviceId': 'test-device-id',
               };
             case 'getMacOsDeviceInfo':
               return {
                 'computerName': 'Test macOS',
+                'hostName': 'test-host',
+                'arch': 'x86_64',
+                'model': 'MacBookPro16,1',
+                'kernelVersion': 'Darwin Kernel Version 20.6.0',
+                'majorVersion': 11,
+                'minorVersion': 6,
+                'patchVersion': 0,
+                'osRelease': '20G165',
+                'activeCPUs': 8,
+                'memorySize': 17179869184,
+                'cpuFrequency': 2600000000,
+                'systemGUID': 'test-system-guid',
+              };
+            case 'getIosDeviceInfo':
+              return {
+                'name': 'Test iPhone',
+                'systemName': 'iOS',
+                'systemVersion': '15.0',
+                'model': 'iPhone',
+                'localizedModel': 'iPhone',
+                'identifierForVendor': 'test-identifier',
+                'isPhysicalDevice': true,
+                'utsname': <String, dynamic>{
+                  'sysname': 'Darwin',
+                  'nodename': 'test-node',
+                  'release': '21.0.0',
+                  'version': 'Darwin Kernel Version 21.0.0',
+                  'machine': 'arm64',
+                },
+              };
+            case 'getWebBrowserInfo':
+              return {
+                'browserName': 'chrome',
+                'appCodeName': 'Mozilla',
+                'appName': 'Netscape',
+                'appVersion': '5.0 (Test)',
+                'deviceMemory': 8,
+                'language': 'en-US',
+                'languages': <String>['en-US', 'en'],
+                'platform': 'Linux x86_64',
+                'product': 'Gecko',
+                'productSub': '20030107',
+                'userAgent': 'Mozilla/5.0 (Test) Chrome/95.0.4638.69 Safari/537.36',
+                'vendor': 'Google Inc.',
+                'vendorSub': '',
+                'hardwareConcurrency': 8,
+                'maxTouchPoints': 0,
               };
             default:
-              return null;
+              return <String, dynamic>{};
           }
         },
       );
