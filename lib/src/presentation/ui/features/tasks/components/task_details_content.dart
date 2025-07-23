@@ -1004,7 +1004,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             widget: MarkdownEditor(
               controller: _descriptionController,
               onChanged: _onDescriptionChanged,
-              
               height: 250,
             ),
             removePadding: true,

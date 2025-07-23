@@ -44,18 +44,22 @@ class WidgetData {
 
   Map<String, dynamic> toJson() {
     return {
-      'tasks': tasks.map((t) => {
-        'id': t.id,
-        'title': t.title,
-        'isCompleted': t.isCompleted,
-        'plannedDate': t.plannedDate?.toIso8601String(),
-        'deadlineDate': t.deadlineDate?.toIso8601String(),
-      }).toList(),
-      'habits': habits.map((h) => {
-        'id': h.id,
-        'name': h.name,
-        'isCompletedToday': h.isCompletedToday,
-      }).toList(),
+      'tasks': tasks
+          .map((t) => {
+                'id': t.id,
+                'title': t.title,
+                'isCompleted': t.isCompleted,
+                'plannedDate': t.plannedDate?.toIso8601String(),
+                'deadlineDate': t.deadlineDate?.toIso8601String(),
+              })
+          .toList(),
+      'habits': habits
+          .map((h) => {
+                'id': h.id,
+                'name': h.name,
+                'isCompletedToday': h.isCompletedToday,
+              })
+          .toList(),
       'lastUpdated': lastUpdated.toIso8601String(),
     };
   }

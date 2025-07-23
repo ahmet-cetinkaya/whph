@@ -156,19 +156,18 @@ class AppUsageListState extends State<AppUsageList> {
 
   Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
-      pageIndex: pageIndex,
-      pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
-          ? _appUsageList?.items.length ?? widget.pageSize
-          : widget.pageSize,
-      filterByTags: _currentFilters.filterByTags,
-      showNoTagsFilter: _currentFilters.showNoTagsFilter,
-      startDate: _currentFilters.filterStartDate != null
-          ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
-          : null,
-      endDate:
-          _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
-      filterByDevices: _currentFilters.filterByDevices
-    );
+        pageIndex: pageIndex,
+        pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
+            ? _appUsageList?.items.length ?? widget.pageSize
+            : widget.pageSize,
+        filterByTags: _currentFilters.filterByTags,
+        showNoTagsFilter: _currentFilters.showNoTagsFilter,
+        startDate: _currentFilters.filterStartDate != null
+            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
+            : null,
+        endDate:
+            _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
+        filterByDevices: _currentFilters.filterByDevices);
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
       context: context,

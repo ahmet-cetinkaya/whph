@@ -103,7 +103,8 @@ void registerAppUsagesFeature(
     ..registerHandler<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse, GetAppUsageStatisticsQueryHandler>(
       () => GetAppUsageStatisticsQueryHandler(appUsageTimeRecordRepository: appUsageTimeRecordRepository),
     )
-    ..registerHandler<GetDistinctDeviceNamesQuery, GetDistinctDeviceNamesQueryResponse, GetDistinctDeviceNamesQueryHandler>(
+    ..registerHandler<GetDistinctDeviceNamesQuery, GetDistinctDeviceNamesQueryResponse,
+        GetDistinctDeviceNamesQueryHandler>(
       () => GetDistinctDeviceNamesQueryHandler(timeRecordRepository: appUsageTimeRecordRepository),
     );
 }

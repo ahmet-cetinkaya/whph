@@ -34,10 +34,11 @@ void main() {
       expect(true, isTrue);
     });
 
-    testWidgets('widgetBackgroundCallback should handle container initialization failure gracefully', (WidgetTester tester) async {
+    testWidgets('widgetBackgroundCallback should handle container initialization failure gracefully',
+        (WidgetTester tester) async {
       // Test with a valid action but expect graceful handling of container issues
       final uri = Uri.parse('whph://widget?action=toggle_task&itemId=test123');
-      
+
       // The callback should handle the initialization failure gracefully
       // and not throw exceptions even when dependencies are not available
       // We add a timeout to prevent the test from hanging
@@ -60,7 +61,7 @@ void main() {
     testWidgets('widgetBackgroundCallback should handle habit action gracefully', (WidgetTester tester) async {
       // Test with a habit action but expect graceful handling of container issues
       final uri = Uri.parse('whph://widget?action=toggle_habit&itemId=habit123');
-      
+
       // The callback should handle the initialization failure gracefully
       // and not throw exceptions even when dependencies are not available
       // We add a timeout to prevent the test from hanging

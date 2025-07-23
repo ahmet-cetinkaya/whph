@@ -57,10 +57,10 @@ void main() async {
     // Initialize widget service
     final widgetService = container.resolve<WidgetService>();
     final widgetUpdateService = container.resolve<WidgetUpdateService>();
-    
+
     await widgetService.initialize();
     await widgetService.updateWidget();
-    
+
     widgetUpdateService.setupAppLifecycleListener();
     widgetUpdateService.startPeriodicUpdates();
   }, (error, stack) {

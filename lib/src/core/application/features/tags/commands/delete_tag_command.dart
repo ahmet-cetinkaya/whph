@@ -32,12 +32,12 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
     required IHabitTagsRepository habitTagsRepository,
     required INoteTagRepository noteTagRepository,
     required IAppUsageTagRepository appUsageTagRepository,
-  }) : _tagRepository = tagRepository,
-       _tagTagRepository = tagTagRepository,
-       _taskTagRepository = taskTagRepository,
-       _habitTagsRepository = habitTagsRepository,
-       _noteTagRepository = noteTagRepository,
-       _appUsageTagRepository = appUsageTagRepository;
+  })  : _tagRepository = tagRepository,
+        _tagTagRepository = tagTagRepository,
+        _taskTagRepository = taskTagRepository,
+        _habitTagsRepository = habitTagsRepository,
+        _noteTagRepository = noteTagRepository,
+        _appUsageTagRepository = appUsageTagRepository;
 
   @override
   Future<DeleteTagCommandResponse> call(DeleteTagCommand request) async {

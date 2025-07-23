@@ -23,9 +23,9 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
     required ITaskRepository taskRepository,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
-  }) : _taskRepository = taskRepository,
-       _taskTagRepository = taskTagRepository,
-       _taskTimeRecordRepository = taskTimeRecordRepository;
+  })  : _taskRepository = taskRepository,
+        _taskTagRepository = taskTagRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<DeleteTaskCommandResponse> call(DeleteTaskCommand request) async {

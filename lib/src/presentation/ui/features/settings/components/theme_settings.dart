@@ -67,7 +67,6 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     await _themeService.setThemeMode(mode);
   }
 
-  
   Future<void> _saveDynamicAccentColor(bool enabled) async {
     await _themeService.setDynamicAccentColor(enabled);
   }
@@ -108,12 +107,12 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         mode = _translationService.translate(SettingsTranslationKeys.themeModeAuto);
         break;
     }
-    
+
     final features = <String>[];
     if (_dynamicAccentColor) {
       features.add(_translationService.translate(SettingsTranslationKeys.dynamicAccentColorFeature));
     }
-    
+
     if (features.isNotEmpty) {
       return '$mode (${features.join(', ')})';
     }
@@ -129,8 +128,8 @@ class _ThemeSettingsState extends State<ThemeSettings> {
           _translationService.translate(SettingsTranslationKeys.themeTitle),
           style: AppTheme.bodyMedium,
         ),
-        subtitle: _isLoading 
-            ? null 
+        subtitle: _isLoading
+            ? null
             : Text(
                 _getThemeDescription(),
                 style: AppTheme.bodySmall.copyWith(
@@ -168,7 +167,7 @@ class _ThemeDialogWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeService = container.resolve<IThemeService>();
-    
+
     return StreamBuilder<void>(
       stream: themeService.themeChanges,
       builder: (context, snapshot) {
@@ -213,7 +212,7 @@ class _ThemeDialog extends StatefulWidget {
 class _ThemeDialogState extends State<_ThemeDialog> {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  
+
   late AppThemeMode _themeMode;
   late bool _dynamicAccentColor;
 
@@ -241,7 +240,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -277,7 +276,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                 ),
               ),
               const SizedBox(height: AppTheme.sizeSmall),
-              
+
               Card(
                 color: theme.cardTheme.color,
                 child: Column(
@@ -371,7 +370,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                 ),
               ),
               const SizedBox(height: AppTheme.sizeSmall),
-              
+
               Card(
                 color: theme.cardTheme.color,
                 child: SwitchListTile(

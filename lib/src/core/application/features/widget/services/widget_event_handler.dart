@@ -4,8 +4,7 @@ import 'widget_service.dart';
 class WidgetEventHandler {
   final WidgetService _widgetService;
 
-  WidgetEventHandler({required WidgetService widgetService}) 
-      : _widgetService = widgetService;
+  WidgetEventHandler({required WidgetService widgetService}) : _widgetService = widgetService;
 
   /// Call this method after task operations to update the widget
   Future<void> onTaskChanged() async {

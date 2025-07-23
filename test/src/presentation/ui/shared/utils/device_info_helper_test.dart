@@ -12,10 +12,9 @@ void main() {
 
     setUp(() {
       methodCalls = [];
-      
+
       // Mock device_info_plus plugin for all platforms
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         const MethodChannel('dev.fluttercommunity.plus/device_info'),
         (MethodCall methodCall) async {
           switch (methodCall.method) {
@@ -146,14 +145,13 @@ void main() {
           }
         },
       );
-      
+
       // Mock the method channel for app info
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         const MethodChannel('me.ahmetcetinkaya.whph/app_info'),
         (MethodCall methodCall) async {
           methodCalls.add(methodCall);
-          
+
           switch (methodCall.method) {
             case 'isRunningInWorkProfile':
               // Return true to simulate work profile
@@ -166,13 +164,11 @@ void main() {
     });
 
     tearDown(() {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         const MethodChannel('me.ahmetcetinkaya.whph/app_info'),
         null,
       );
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         const MethodChannel('dev.fluttercommunity.plus/device_info'),
         null,
       );
@@ -189,11 +185,11 @@ void main() {
       if (Platform.isAndroid) {
         // Call getDeviceName
         final deviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Verify that the method channel was called
         expect(methodCalls.length, greaterThan(0));
         expect(methodCalls.any((call) => call.method == 'isRunningInWorkProfile'), isTrue);
-        
+
         // Verify that the device name contains (Work) suffix
         expect(deviceName, contains('(Work)'));
       } else {
@@ -209,14 +205,13 @@ void main() {
       if (Platform.isAndroid) {
         // Reset method calls
         methodCalls.clear();
-        
+
         // Mock the method channel to return false for work profile
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
           const MethodChannel('me.ahmetcetinkaya.whph/app_info'),
           (MethodCall methodCall) async {
             methodCalls.add(methodCall);
-            
+
             switch (methodCall.method) {
               case 'isRunningInWorkProfile':
                 // Return false to simulate main profile
@@ -229,11 +224,11 @@ void main() {
 
         // Call getDeviceName
         final deviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Verify that the method channel was called
         expect(methodCalls.length, greaterThan(0));
         expect(methodCalls.any((call) => call.method == 'isRunningInWorkProfile'), isTrue);
-        
+
         // Verify that the device name does not contain (Work) suffix
         expect(deviceName, isNot(contains('(Work)')));
       } else {
@@ -248,14 +243,13 @@ void main() {
       if (Platform.isAndroid) {
         // Reset method calls
         methodCalls.clear();
-        
+
         // Mock the method channel to throw an error
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
           const MethodChannel('me.ahmetcetinkaya.whph/app_info'),
           (MethodCall methodCall) async {
             methodCalls.add(methodCall);
-            
+
             switch (methodCall.method) {
               case 'isRunningInWorkProfile':
                 // Throw an error to simulate failure
@@ -268,11 +262,11 @@ void main() {
 
         // Call getDeviceName - should not throw an error
         final deviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Verify that the method channel was called
         expect(methodCalls.length, greaterThan(0));
         expect(methodCalls.any((call) => call.method == 'isRunningInWorkProfile'), isTrue);
-        
+
         // Verify that a device name is still returned (without Work suffix due to error)
         expect(deviceName, isNotEmpty);
         expect(deviceName, isNot(equals('Unknown Device')));
@@ -288,10 +282,10 @@ void main() {
       if (!Platform.isAndroid) {
         // Call getDeviceName on non-Android platform
         final deviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Should return a valid device name without crashing
         expect(deviceName, isNotEmpty);
-        
+
         // Work profile method should not be called on non-Android platforms
         expect(methodCalls.where((call) => call.method == 'isRunningInWorkProfile'), isEmpty);
       } else {
@@ -305,7 +299,7 @@ void main() {
     test('Android work profile functionality should work with mocked device info', () async {
       // Reset method calls to track this test specifically
       methodCalls.clear();
-      
+
       // Test that the app info channel mock is working
       try {
         const channel = MethodChannel('me.ahmetcetinkaya.whph/app_info');

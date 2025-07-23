@@ -53,10 +53,10 @@ settings:
       description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
       instructions: "说明："
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的使用访问设置界面中，从列表中找到\"{appName}\""
-        step3: "点击\"{appName}\""
-        step4: "启用\"允许使用访问\"或将开关切换到开启"
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的使用访问设置界面中，从列表中找到"{appName}"'
+        step3: '点击"{appName}"'
+        step4: '启用"允许使用访问"或将开关切换到开启'
       title: 应用使用权限
     battery_optimization:
       description: 为了可靠的通知，此应用需要从电池优化中排除。没有这个，提醒可能会延迟或根本不会送达。
@@ -64,12 +64,12 @@ settings:
       instructions: "说明："
       not_disabled: 电池优化仍然启用。请提供权限以使相关功能正常工作。
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的设置界面中找到\"{appName}\""
-        step3: "点击\"{appName}\""
-        step4: "确保在打开的页面上启用\"允许后台使用\""
-        step5: "点击\"允许后台使用\""
-        step6: "选择\"无限制\""
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的设置界面中找到"{appName}"'
+        step3: '点击"{appName}"'
+        step4: '确保在打开的页面上启用"允许后台使用"'
+        step5: '点击"允许后台使用"'
+        step6: '选择"无限制"'
       title: 电池优化
     exact_alarm:
       description: Android 12+ 需要权限来安排精确闹钟以使提醒正常工作。
@@ -78,8 +78,8 @@ settings:
         android12plus:
           step2: 转到闹钟和提醒并启用权限
           step3: 确认精确闹钟权限
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的 {appName} 应用的闹钟和提醒页面中，启用\"允许设置闹钟和提醒\""
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的 {appName} 应用的闹钟和提醒页面中，启用"允许设置闹钟和提醒"'
       title: 精确闹钟权限
     fix_it: 修复
     granted: 权限已授予
@@ -89,10 +89,10 @@ settings:
       instructions: "说明："
       steps:
         android:
-          step1: "按下\"打开设置\"按钮"
+          step1: '按下"打开设置"按钮'
           step2: 出现提示时允许通知
         ios:
-          step1: "按下\"打开设置\"按钮"
+          step1: '按下"打开设置"按钮'
           step2: 出现提示时允许通知
       title: 通知权限
     open_settings: 打开设置
@@ -101,9 +101,9 @@ settings:
       importance: 自动启动设置位置因设备制造商而异或可能不存在。
       instructions: "说明："
       steps:
-        step1: "按下\"打开设置\"按钮"
-        step2: "在打开的设置界面中找到\"{appName}\"应用"
-        step3: "启用\"自动启动\"、\"自动运行\"、\"开机启动\"或类似权限"
+        step1: '按下"打开设置"按钮'
+        step2: '在打开的设置界面中找到"{appName}"应用'
+        step3: '启用"自动启动"、"自动运行"、"开机启动"或类似权限'
       title: 自动启动权限
     title: 权限
   startup:

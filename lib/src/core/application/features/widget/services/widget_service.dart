@@ -56,7 +56,7 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
         try {
           final containerInstance = Container().instance;
           container = containerInstance;
-                } catch (containerError) {
+        } catch (containerError) {
           Logger.error('Failed to get existing container instance: $containerError');
           return;
         }

@@ -5,7 +5,7 @@ class SettingTranslationKeys {
   static const String exportFailedError = 'settings.export.error';
   static const String migrationFailedError = 'settings.import.migration_failed';
   static const String unsupportedVersionError = 'settings.import.unsupported_version';
-  
+
   // Backup-specific errors
   static const String backupExportFailedError = 'settings.backup.export_failed';
   static const String backupImportFailedError = 'settings.backup.import_failed';
