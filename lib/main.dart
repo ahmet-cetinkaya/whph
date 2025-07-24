@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/src/presentation/ui/app.dart';
@@ -55,14 +57,16 @@ void main() async {
     NotificationPayloadService.handleInitialNotificationPayload(payloadHandler);
 
     // Initialize widget service
-    final widgetService = container.resolve<WidgetService>();
-    final widgetUpdateService = container.resolve<WidgetUpdateService>();
+    if (Platform.isAndroid || Platform.isIOS) {
+      final widgetService = container.resolve<WidgetService>();
+      final widgetUpdateService = container.resolve<WidgetUpdateService>();
 
-    await widgetService.initialize();
-    await widgetService.updateWidget();
+      await widgetService.initialize();
+      await widgetService.updateWidget();
 
-    widgetUpdateService.setupAppLifecycleListener();
-    widgetUpdateService.startPeriodicUpdates();
+      widgetUpdateService.setupAppLifecycleListener();
+      widgetUpdateService.startPeriodicUpdates();
+    }
   }, (error, stack) {
     // Global error handling for uncaught exceptions
     GlobalErrorHandlerService.handleZoneError(error, stack, navigatorKey);
