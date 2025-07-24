@@ -176,6 +176,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
         leading: widget.appBarLeading ??
             (widget.showBackButton
                 ? IconButton(
