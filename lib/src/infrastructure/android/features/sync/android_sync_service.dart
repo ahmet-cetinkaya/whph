@@ -30,8 +30,11 @@ class AndroidSyncService extends SyncService {
       Logger.error('Failed to start Android periodic sync');
     }
 
-    // For Android, we still want to do an initial sync
-    await runSync();
+    // For Android, we still want to do an initial sync, but delay it by 60 seconds to improve app startup performance
+    Timer(const Duration(seconds: 60), () async {
+      Logger.info('Running delayed initial sync after 60 seconds');
+      await runSync();
+    });
   }
 
   @override
