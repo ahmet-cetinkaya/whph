@@ -50,3 +50,6 @@ android/app/release
 .claude/
 .qodo/
 .zencoder/
+
+# FVM Version Cache
+.fvm/
