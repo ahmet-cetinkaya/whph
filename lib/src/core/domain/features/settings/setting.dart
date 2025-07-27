@@ -33,4 +33,24 @@ class Setting extends BaseEntity<String> {
         return value as T;
     }
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        'key': key,
+        'value': value,
+        'valueType': valueType.toString(),
+      };
+
+  factory Setting.fromJson(Map<String, dynamic> json) {
+    return Setting(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      key: json['key'] as String,
+      value: json['value'] as String,
+      valueType: SettingValueType.values.firstWhere((e) => e.toString() == json['valueType']),
+    );
+  }
 }

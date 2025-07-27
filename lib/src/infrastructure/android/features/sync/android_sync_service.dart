@@ -19,7 +19,7 @@ class AndroidSyncService extends SyncService {
     // Setup listener for WorkManager triggers first
     _setupSyncListener(() async {
       Logger.info('Sync triggered by Android WorkManager');
-      await runSync();
+      await _runSync();
     });
 
     // Start WorkManager periodic sync (30 minutes interval)
@@ -30,11 +30,33 @@ class AndroidSyncService extends SyncService {
       Logger.error('Failed to start Android periodic sync');
     }
 
-    // For Android, we still want to do an initial sync, but delay it by 60 seconds to improve app startup performance
+    // For Android, delay initial sync and use UI-optimized version
     Timer(const Duration(seconds: 60), () async {
-      Logger.info('Running delayed initial sync after 60 seconds');
-      await runSync();
+      Logger.info('Running delayed initial sync with UI optimization after 60 seconds');
+      await _runSync();
     });
+  }
+  
+  /// Run sync with UI thread optimization to prevent frame drops
+  Future<void> _runSync() async {
+    try {
+      // Use scheduleMicrotask to ensure sync doesn't block UI
+      final syncCompleter = Completer<void>();
+      
+      scheduleMicrotask(() async {
+        try {
+          await runPaginatedSync();
+          syncCompleter.complete();
+        } catch (e) {
+          syncCompleter.completeError(e);
+        }
+      });
+      
+      await syncCompleter.future;
+    } catch (e) {
+      Logger.error('UI-optimized sync failed: $e');
+      rethrow;
+    }
   }
 
   @override

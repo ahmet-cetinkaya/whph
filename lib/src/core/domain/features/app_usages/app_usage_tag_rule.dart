@@ -16,4 +16,24 @@ class AppUsageTagRule extends BaseEntity<String> {
     required this.tagId,
     this.description,
   });
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        'pattern': pattern,
+        'tagId': tagId,
+        'description': description,
+      };
+
+  factory AppUsageTagRule.fromJson(Map<String, dynamic> json) {
+    return AppUsageTagRule(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      pattern: json['pattern'] as String,
+      tagId: json['tagId'] as String,
+      description: json['description'] as String?,
+    );
+  }
 }

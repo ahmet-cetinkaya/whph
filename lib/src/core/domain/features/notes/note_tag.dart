@@ -17,4 +17,24 @@ class NoteTag extends BaseEntity<String> {
     required this.tagId,
     this.tag,
   });
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        'noteId': noteId,
+        'tagId': tagId,
+        'tag': tag?.toJson(),
+      };
+
+  factory NoteTag.fromJson(Map<String, dynamic> json) {
+    return NoteTag(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      noteId: json['noteId'] as String,
+      tagId: json['tagId'] as String,
+      tag: json['tag'] != null ? Tag.fromJson(json['tag'] as Map<String, dynamic>) : null,
+    );
+  }
 }

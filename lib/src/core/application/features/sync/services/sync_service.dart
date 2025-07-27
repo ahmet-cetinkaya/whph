@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
-import 'package:whph/src/core/application/shared/models/websocket_request.dart';
+import 'package:whph/src/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/src/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 import 'abstraction/i_sync_service.dart';
@@ -22,6 +21,11 @@ class SyncService implements ISyncService {
   @override
   Stream<bool> get onSyncComplete => _syncCompleteController.stream;
   bool get isConnected => _isConnected;
+
+  // Progress tracking for paginated sync
+  final _progressController = StreamController<SyncProgress>.broadcast();
+  @override
+  Stream<SyncProgress> get progressStream => _progressController.stream;
 
   SyncService(this._mediator);
 
@@ -49,25 +53,6 @@ class SyncService implements ISyncService {
     _reconnectTimer?.cancel();
   }
 
-  void _forceCloseConnection() {
-    Logger.debug('Force closing WebSocket connection');
-    if (_isConnected) {
-      // Mark last sync time before closing
-      _lastSyncTime = DateTime.now();
-
-      // Send a close frame before closing
-      _channel?.sink.add(
-          JsonMapper.serialize(WebSocketMessage(type: 'close', data: {'timestamp': DateTime.now().toIso8601String()})));
-
-      // Close immediately
-      _channel?.sink.close();
-      _channel = null;
-      _isConnected = false;
-
-      // Notify sync completion
-      notifySyncComplete();
-    }
-  }
 
   @override
   Future<void> startSync() async {
@@ -78,22 +63,27 @@ class SyncService implements ISyncService {
 
   @override
   Future<void> runSync() async {
+    // Redirect to paginated sync - this is now the default and only sync method
+    await runPaginatedSync();
+  }
+
+  /// Runs paginated sync operation - this is now the primary sync method
+  @override
+  Future<void> runPaginatedSync() async {
     try {
-      Logger.debug('Starting sync process at ${DateTime.now()}...');
-      await _mediator.send(SyncCommand());
+      Logger.debug('Starting paginated sync process at ${DateTime.now()}...');
+
+      // Create paginated sync command handler and listen to progress
+      final command = PaginatedSyncCommand();
+      await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
       // Reset the attempt count on successful sync
       _reconnectAttempts = 0;
 
-      // After a successful sync, wait for a sufficient time and close the connection
-      Timer(const Duration(seconds: 1), () {
-        if (_isConnected) {
-          Logger.debug('Sync completed, closing connection');
-          _forceCloseConnection();
-        }
-      });
+      Logger.info('✅ Paginated sync completed successfully');
+      notifySyncComplete();
     } catch (e) {
-      Logger.error('Sync failed: $e');
+      Logger.error('Paginated sync failed: $e');
       _handleDisconnection();
     }
   }
@@ -114,5 +104,6 @@ class SyncService implements ISyncService {
     stopSync();
     _channel?.sink.close();
     _syncCompleteController.close();
+    _progressController.close();
   }
 }
