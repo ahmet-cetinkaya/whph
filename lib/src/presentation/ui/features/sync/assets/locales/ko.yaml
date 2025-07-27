@@ -62,3 +62,4 @@ sync:
     dialog_title: QR 코드를 스캔하여 동기화
   scanner:
     title: QR 코드 스캔
+    instruction: QR 코드를 프레임 안에 위치시키세요

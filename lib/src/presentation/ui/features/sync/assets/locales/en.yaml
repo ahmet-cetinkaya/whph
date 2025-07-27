@@ -62,3 +62,4 @@ sync:
     dialog_title: Scan QR Code to Sync
   scanner:
     title: Scan QR Code
+    instruction: Position QR code within the frame

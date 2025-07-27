@@ -62,3 +62,4 @@ sync:
     dialog_title: QRコードをスキャンして同期
   scanner:
     title: QRコードをスキャン
+    instruction: QRコードをフレーム内に配置してください

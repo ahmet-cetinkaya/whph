@@ -62,3 +62,4 @@ sync:
     dialog_title: 扫描二维码进行同步
   scanner:
     title: 扫描二维码
+    instruction: 将二维码放置在框架内

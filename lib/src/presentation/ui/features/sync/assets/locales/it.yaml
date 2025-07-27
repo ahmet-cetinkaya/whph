@@ -62,3 +62,4 @@ sync:
     dialog_title: Scansiona codice QR per sincronizzare
   scanner:
     title: Scansiona codice QR
+    instruction: Posiziona il codice QR all'interno della cornice

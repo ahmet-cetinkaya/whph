@@ -64,3 +64,4 @@ sync:
     dialog_title: QR-Code scannen zum Synchronisieren
   scanner:
     title: QR-Code scannen
+    instruction: QR-Code im Rahmen positionieren
