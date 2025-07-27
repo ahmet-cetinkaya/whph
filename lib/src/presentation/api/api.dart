@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/src/presentation/api/controllers/sync_controller.dart';
+import 'package:whph/src/presentation/api/controllers/paginated_sync_controller.dart';
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
-import 'package:whph/src/core/application/features/sync/models/sync_data_dto.dart';
+import 'package:whph/src/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 const int webSocketPort = 44040;
@@ -89,33 +89,113 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'sync':
-        Logger.info('🔄 Processing sync request...');
-        final syncData = parsedMessage.data;
-        if (syncData == null) {
-          throw FormatException('Sync message missing data');
+        // Legacy sync endpoint is no longer supported - redirect to paginated sync
+        Logger.warning('⚠️ Legacy sync endpoint called - this is deprecated');
+        WebSocketMessage deprecationMessage = WebSocketMessage(type: 'sync_deprecated', data: {
+          'success': false,
+          'message': 'Legacy sync is deprecated. Please use paginated_sync endpoint.',
+          'timestamp': DateTime.now().toIso8601String()
+        });
+        socket.add(JsonMapper.serialize(deprecationMessage));
+        await socket.close();
+        break;
+
+      case 'paginated_sync':
+        Logger.info('🔄 Processing paginated sync request...');
+        final paginatedSyncData = parsedMessage.data;
+        if (paginatedSyncData == null) {
+          throw FormatException('Paginated sync message missing data');
         }
 
-        Logger.debug('📊 Sync data received with keys: ${(syncData as Map<String, dynamic>).keys.join(', ')}');
-        final controller = SyncController();
+        Logger.debug(
+            '📊 Paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
+        final paginatedController = PaginatedSyncController();
         try {
-          final response = await controller.sync(SyncDataDto.fromJson(syncData));
-          Logger.info('✅ Sync processing completed successfully');
+          final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
+          Logger.info('✅ Paginated sync processing completed successfully');
 
-          WebSocketMessage responseMessage = WebSocketMessage(type: 'sync_complete', data: {
-            'syncDataDto': response.syncDataDto,
+          WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
+            'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
             'success': true,
+            'isComplete': response.isComplete,
             'timestamp': DateTime.now().toIso8601String()
           });
           socket.add(JsonMapper.serialize(responseMessage));
-          Logger.info('📤 Sync response sent to client');
+          Logger.info('📤 Paginated sync response sent to client');
 
           // Add a small delay before closing the connection
-          await Future.delayed(const Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 200));
           await socket.close();
-        } catch (e) {
-          Logger.error('Sync processing failed: $e');
-          WebSocketMessage errorMessage =
-              WebSocketMessage(type: 'sync_error', data: {'success': false, 'message': e.toString()});
+        } catch (e, stackTrace) {
+          Logger.error('Paginated sync processing failed: $e');
+          Logger.error('Stack trace: $stackTrace');
+          
+          // Enhanced error response with detailed debugging information
+          final errorData = <String, dynamic>{
+            'success': false,
+            'message': e.toString(),
+            'type': e.runtimeType.toString(),
+            'stackTrace': stackTrace.toString(),
+            'timestamp': DateTime.now().toIso8601String(),
+            'entityType': (parsedMessage.data as Map<String, dynamic>?)?.containsKey('entityType') == true
+                ? (parsedMessage.data as Map<String, dynamic>)['entityType']
+                : 'unknown',
+            'metadata': <String, dynamic>{},
+          };
+          
+          // Add specific error details based on error type
+          if (e is FormatException) {
+            errorData['metadata']['errorCategory'] = 'JSON_PARSING';
+            errorData['metadata']['source'] = e.source;
+            errorData['metadata']['offset'] = e.offset;
+          } else if (e is ArgumentError) {
+            errorData['metadata']['errorCategory'] = 'ARGUMENT_ERROR';
+            errorData['metadata']['invalidValue'] = e.invalidValue?.toString();
+            errorData['metadata']['name'] = e.name;
+          } else if (e is StateError) {
+            errorData['metadata']['errorCategory'] = 'STATE_ERROR';
+          } else if (e.toString().contains('Unable to instantiate')) {
+            errorData['metadata']['errorCategory'] = 'ENTITY_INSTANTIATION';
+            // Try to extract entity name and missing arguments
+            final instantiationMatch = RegExp(r"Unable to instantiate class '(\w+)'").firstMatch(e.toString());
+            if (instantiationMatch != null) {
+              errorData['metadata']['failedEntityClass'] = instantiationMatch.group(1);
+            }
+            final argumentsMatch = RegExp(r'with null named arguments \[(.*?)\]').firstMatch(e.toString());
+            if (argumentsMatch != null) {
+              errorData['metadata']['missingArguments'] = argumentsMatch.group(1)?.split(', ');
+            }
+          } else {
+            errorData['metadata']['errorCategory'] = 'UNKNOWN';
+          }
+          
+          // Try to capture the problematic entity data if available
+          try {
+            final paginatedSyncData = parsedMessage.data;
+            if (paginatedSyncData is Map<String, dynamic>) {
+              errorData['metadata']['pageIndex'] = paginatedSyncData['pageIndex'];
+              errorData['metadata']['pageSize'] = paginatedSyncData['pageSize'];
+              errorData['metadata']['totalItems'] = paginatedSyncData['totalItems'];
+              
+              // Try to identify the first problematic entity
+              final entityTypeKey = '${paginatedSyncData['entityType']}sSyncData';
+              final syncDataMap = paginatedSyncData[entityTypeKey] as Map<String, dynamic>?;
+              if (syncDataMap?['data'] is Map<String, dynamic>) {
+                final dataMap = syncDataMap!['data'] as Map<String, dynamic>;
+                for (final listKey in ['createSync', 'updateSync', 'deleteSync']) {
+                  final entityList = dataMap[listKey] as List?;
+                  if (entityList != null && entityList.isNotEmpty) {
+                    errorData['metadata']['sampleEntityData'] = entityList.first;
+                    break;
+                  }
+                }
+              }
+            }
+          } catch (metadataError) {
+            errorData['metadata']['metadataExtractionError'] = metadataError.toString();
+          }
+          
+          WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
           socket.add(JsonMapper.serialize(errorMessage));
           await socket.close();
         }
