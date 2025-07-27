@@ -9,5 +9,8 @@ icons_launcher:
       adaptive_foreground_image: "lib/src/core/domain/shared/assets/images/whph_logo_adaptive_fg.png"
       adaptive_round_image: "lib/src/core/domain/shared/assets/images/whph_logo_adaptive_round.png"
       adaptive_monochrome_image: "lib/src/core/domain/shared/assets/images/whph_logo_adaptive_mono.png"
+      # Enhanced themed icon support for Android 12+ Material You
+      themed_icon_support: true
+      generate_monochrome_vector: true
     windows:
       enable: true
