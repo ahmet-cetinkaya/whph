@@ -3,6 +3,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph/src/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 import 'abstraction/i_sync_service.dart';
@@ -26,6 +27,23 @@ class SyncService implements ISyncService {
   final _progressController = StreamController<SyncProgress>.broadcast();
   @override
   Stream<SyncProgress> get progressStream => _progressController.stream;
+
+  // Sync status tracking
+  final _syncStatusController = StreamController<SyncStatus>.broadcast();
+  SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
+
+  @override
+  Stream<SyncStatus> get syncStatusStream => _syncStatusController.stream;
+  
+  @override
+  SyncStatus get currentSyncStatus => _currentSyncStatus;
+
+  @override
+  void updateSyncStatus(SyncStatus status) {
+    _currentSyncStatus = status;
+    _syncStatusController.add(status);
+    Logger.debug('Sync status updated: $status');
+  }
 
   SyncService(this._mediator);
 
@@ -62,16 +80,23 @@ class SyncService implements ISyncService {
   }
 
   @override
-  Future<void> runSync() async {
+  Future<void> runSync({bool isManual = false}) async {
     // Redirect to paginated sync - this is now the default and only sync method
-    await runPaginatedSync();
+    await runPaginatedSync(isManual: isManual);
   }
 
   /// Runs paginated sync operation - this is now the primary sync method
   @override
-  Future<void> runPaginatedSync() async {
+  Future<void> runPaginatedSync({bool isManual = false}) async {
     try {
-      Logger.debug('Starting paginated sync process at ${DateTime.now()}...');
+      // Update sync status to syncing
+      updateSyncStatus(SyncStatus(
+        state: SyncState.syncing,
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+
+      Logger.debug('Starting paginated sync process at ${DateTime.now()}... (manual: $isManual)');
 
       // Create paginated sync command handler and listen to progress
       final command = PaginatedSyncCommand();
@@ -81,10 +106,43 @@ class SyncService implements ISyncService {
       _reconnectAttempts = 0;
 
       Logger.info('✅ Paginated sync completed successfully');
+      
+      // Update sync status to completed
+      updateSyncStatus(SyncStatus(
+        state: SyncState.completed,
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+
       notifySyncComplete();
+      
+      // Reset to idle after a short delay
+      Timer(const Duration(seconds: 2), () {
+        updateSyncStatus(SyncStatus(
+          state: SyncState.idle,
+          lastSyncTime: DateTime.now(),
+        ));
+      });
     } catch (e) {
       Logger.error('Paginated sync failed: $e');
+      
+      // Update sync status to error
+      updateSyncStatus(SyncStatus(
+        state: SyncState.error,
+        errorMessage: e.toString(),
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+      
       _handleDisconnection();
+      
+      // Reset to idle after error delay
+      Timer(const Duration(seconds: 5), () {
+        updateSyncStatus(SyncStatus(
+          state: SyncState.idle,
+          lastSyncTime: DateTime.now(),
+        ));
+      });
     }
   }
 
@@ -105,5 +163,6 @@ class SyncService implements ISyncService {
     _channel?.sink.close();
     _syncCompleteController.close();
     _progressController.close();
+    _syncStatusController.close();
   }
 }
