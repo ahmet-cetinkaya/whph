@@ -129,7 +129,7 @@ class SyncQrScanButton extends StatelessWidget {
           toIP: toIP,
           fromDeviceId: syncQrCodeMessageFromIP.deviceId,
           toDeviceId: localDeviceId,
-          name: "${syncQrCodeMessageFromIP.deviceName} > $localDeviceName",
+          name: "${syncQrCodeMessageFromIP.deviceName} - $localDeviceName",
         );
 
         if (context.mounted) {

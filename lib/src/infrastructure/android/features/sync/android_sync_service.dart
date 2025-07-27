@@ -45,7 +45,8 @@ class AndroidSyncService extends SyncService {
       
       scheduleMicrotask(() async {
         try {
-          await runPaginatedSync();
+          // Pass isManual: false for automatic WorkManager sync
+          await runPaginatedSync(isManual: false);
           syncCompleter.complete();
         } catch (e) {
           syncCompleter.completeError(e);
