@@ -25,6 +25,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // QR Scanner
   static const String scannerTitle = 'sync.scanner.title';
+  static const String scannerInstruction = 'sync.scanner.instruction';
 
   // Sync Devices Page
   static const String pageTitle = 'sync.devices.title';

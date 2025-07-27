@@ -31,9 +31,9 @@ class SyncQrCodeButton extends StatelessWidget {
       deviceId: deviceId,
     );
 
-    Logger.debug('Sync QR Code Message: ${JsonMapper.serialize(syncQrCodeMessage)}');
+    Logger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');
 
-    final qrData = JsonMapper.serialize(syncQrCodeMessage);
+    final qrData = syncQrCodeMessage.toCsv();
 
     if (context.mounted) {
       ResponsiveDialogHelper.showResponsiveDialog(

@@ -43,7 +43,19 @@ class SyncQrScanButton extends StatelessWidget {
       onSuccess: (scannedMessage) async {
         if (scannedMessage == null || !context.mounted) return;
 
-        final parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
+        SyncQrCodeMessage? parsedMessage;
+        try {
+          // Try CSV format first
+          parsedMessage = SyncQrCodeMessage.fromCsv(scannedMessage);
+        } catch (e) {
+          // Fallback to JSON format for backward compatibility
+          try {
+            parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
+          } catch (e) {
+            throw BusinessException('Failed to parse QR code message', SyncTranslationKeys.parseError);
+          }
+        }
+
         if (parsedMessage == null) {
           throw BusinessException('Failed to parse QR code message', SyncTranslationKeys.parseError);
         }

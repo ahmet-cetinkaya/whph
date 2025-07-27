@@ -64,3 +64,4 @@ sync:
     dialog_title: Отсканируйте QR-код для синхронизации
   scanner:
     title: Сканировать QR-код
+    instruction: Расположите QR-код в рамке

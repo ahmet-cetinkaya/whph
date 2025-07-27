@@ -64,3 +64,4 @@ sync:
     dialog_title: Senkronize Etmek için QR Kodu Tarayın
   scanner:
     title: QR Kodu Tara
+    instruction: QR kodunu çerçeve içinde konumlandırın
