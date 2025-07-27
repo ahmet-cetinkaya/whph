@@ -225,12 +225,12 @@ class _HabitCardState extends State<HabitCard> {
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
       contentPadding: EdgeInsets.only(
-        left: AppTheme.sizeMedium,
-        right: widget.isMiniLayout ? AppTheme.sizeMedium : 0,
+        left: isCompactView ? AppTheme.size2XSmall : AppTheme.sizeMedium,
+        right: isCompactView ? AppTheme.size2XSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
       ),
       onTap: widget.onOpenDetails,
       dense: widget.isDense,
-      leading: _buildLeading(),
+      leading: _buildLeading(isCompactView),
       title: _buildTitle(),
       subtitle: _buildSubtitle(),
       trailing: _buildTrailing(isCompactView),
@@ -238,10 +238,14 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   // Helper method to build the leading widget (habit icon)
-  Widget _buildLeading() {
+  Widget _buildLeading(bool isCompactView) {
     return Icon(
       HabitUiConstants.habitIcon,
-      size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
+      size: widget.isDense 
+          ? AppTheme.iconSizeSmall 
+          : isCompactView 
+              ? AppTheme.iconSizeSmall  // Smaller icon in compact view (16.0 instead of 20.0)
+              : AppTheme.fontSizeXLarge,
     );
   }
 
@@ -481,14 +485,19 @@ class _HabitCardState extends State<HabitCard> {
     final today = DateTime.now();
     final isDisabled = _isDateDisabled(today);
     final hasRecordToday = _hasRecordForDate(today);
+    final isCompactView = widget.isMiniLayout ||
+        (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
 
     return IconButton(
       padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: AppTheme.buttonSizeSmall, minHeight: AppTheme.buttonSizeSmall),
+      constraints: BoxConstraints(
+        minWidth: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall, 
+        minHeight: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall
+      ),
       onPressed: isDisabled ? null : _onCheckboxTap,
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,
-        size: AppTheme.fontSizeLarge,
+        size: isCompactView ? AppTheme.fontSizeMedium : AppTheme.fontSizeLarge,
         color: isDisabled
             ? AppTheme.textColor.withValues(alpha: 0.3)
             : hasRecordToday
