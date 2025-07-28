@@ -59,50 +59,38 @@ class SyncData<T extends BaseEntity<dynamic>> {
     );
   }
 
+  /// Type-safe deserialization map to avoid issues with minified builds
+  static final Map<Type, dynamic Function(Map<String, dynamic>)> _deserializationMap = {
+    Task: (json) => Task.fromJson(json),
+    AppUsage: (json) => AppUsage.fromJson(json),
+    AppUsageTag: (json) => AppUsageTag.fromJson(json),
+    AppUsageTimeRecord: (json) => AppUsageTimeRecord.fromJson(json),
+    AppUsageTagRule: (json) => AppUsageTagRule.fromJson(json),
+    AppUsageIgnoreRule: (json) => AppUsageIgnoreRule.fromJson(json),
+    Habit: (json) => Habit.fromJson(json),
+    HabitRecord: (json) => HabitRecord.fromJson(json),
+    HabitTag: (json) => HabitTag.fromJson(json),
+    Tag: (json) => Tag.fromJson(json),
+    TagTag: (json) => TagTag.fromJson(json),
+    TaskTag: (json) => TaskTag.fromJson(json),
+    TaskTimeRecord: (json) => TaskTimeRecord.fromJson(json),
+    Setting: (json) => Setting.fromJson(json),
+    SyncDevice: (json) => SyncDevice.fromJson(json),
+    Note: (json) => Note.fromJson(json),
+    NoteTag: (json) => NoteTag.fromJson(json),
+  };
+
   /// Helper method to deserialize entities using their fromJson factory constructors
   static T? _deserializeEntity<T>(Map<String, dynamic> json, Type type) {
     try {
-      // Use the entity's own fromJson method instead of JsonMapper.deserialize
-      // This ensures proper type conversion handling (e.g., int to double)
-      switch (type.toString()) {
-        case 'Task':
-          return Task.fromJson(json) as T?;
-        case 'AppUsage':
-          return AppUsage.fromJson(json) as T?;
-        case 'AppUsageTag':
-          return AppUsageTag.fromJson(json) as T?;
-        case 'AppUsageTimeRecord':
-          return AppUsageTimeRecord.fromJson(json) as T?;
-        case 'AppUsageTagRule':
-          return AppUsageTagRule.fromJson(json) as T?;
-        case 'AppUsageIgnoreRule':
-          return AppUsageIgnoreRule.fromJson(json) as T?;
-        case 'Habit':
-          return Habit.fromJson(json) as T?;
-        case 'HabitRecord':
-          return HabitRecord.fromJson(json) as T?;
-        case 'HabitTag':
-          return HabitTag.fromJson(json) as T?;
-        case 'Tag':
-          return Tag.fromJson(json) as T?;
-        case 'TagTag':
-          return TagTag.fromJson(json) as T?;
-        case 'TaskTag':
-          return TaskTag.fromJson(json) as T?;
-        case 'TaskTimeRecord':
-          return TaskTimeRecord.fromJson(json) as T?;
-        case 'Setting':
-          return Setting.fromJson(json) as T?;
-        case 'SyncDevice':
-          return SyncDevice.fromJson(json) as T?;
-        case 'Note':
-          return Note.fromJson(json) as T?;
-        case 'NoteTag':
-          return NoteTag.fromJson(json) as T?;
-        default:
-          // Fallback to JsonMapper.deserialize for unknown types
-          return JsonMapper.deserialize<T>(json);
+      // Use type-safe deserialization map instead of type.toString() to avoid minification issues
+      final deserializer = _deserializationMap[type];
+      if (deserializer != null) {
+        return deserializer(json) as T?;
       }
+      
+      // Fallback to JsonMapper.deserialize for unknown types
+      return JsonMapper.deserialize<T>(json);
     } catch (e) {
       // Log the error but continue processing other entities
       Logger.error('Error deserializing ${type.toString()}: $e');

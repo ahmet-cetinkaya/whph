@@ -189,22 +189,25 @@ class PaginatedSyncDataDto {
 
   /// Helper method to get the populated sync data regardless of type
   PaginatedSyncData<dynamic>? getPopulatedSyncData() {
-    return appUsagesSyncData ??
-        appUsageTagsSyncData ??
-        appUsageTimeRecordsSyncData ??
-        appUsageTagRulesSyncData ??
-        appUsageIgnoreRulesSyncData ??
-        habitsSyncData ??
-        habitRecordsSyncData ??
-        habitTagsSyncData ??
-        tagsSyncData ??
-        tagTagsSyncData ??
-        tasksSyncData ??
-        taskTagsSyncData ??
-        taskTimeRecordsSyncData ??
-        settingsSyncData ??
-        syncDevicesSyncData ??
-        notesSyncData ??
-        noteTagsSyncData;
+    final dataFields = [
+      appUsagesSyncData,
+      appUsageTagsSyncData,
+      appUsageTimeRecordsSyncData,
+      appUsageTagRulesSyncData,
+      appUsageIgnoreRulesSyncData,
+      habitsSyncData,
+      habitRecordsSyncData,
+      habitTagsSyncData,
+      tagsSyncData,
+      tagTagsSyncData,
+      tasksSyncData,
+      taskTagsSyncData,
+      taskTimeRecordsSyncData,
+      settingsSyncData,
+      syncDevicesSyncData,
+      notesSyncData,
+      noteTagsSyncData,
+    ];
+    return dataFields.firstWhere((data) => data != null, orElse: () => null);
   }
 }
