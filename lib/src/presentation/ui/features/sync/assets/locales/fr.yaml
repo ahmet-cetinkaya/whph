@@ -65,3 +65,12 @@ sync:
   scanner:
     title: Scanner le code QR
     instruction: Positionnez le code QR dans le cadre
+  server:
+    starting: Démarrage du mode serveur...
+    active: Mode serveur actif - Montrez le code QR aux autres appareils
+    stopped: Mode serveur arrêté - L'appareil est maintenant en mode client
+    start_failed: Impossible de démarrer le mode serveur - Vérifiez si le port 44040 est disponible
+    start_tooltip: Démarrer le mode serveur
+    stop_tooltip: Arrêter le mode serveur
+    error: Erreur
+    device_became_server: Cet appareil est maintenant le serveur de synchronisation

@@ -2,7 +2,6 @@ import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:whph/main.dart';
@@ -14,16 +13,17 @@ import 'package:whph/src/presentation/ui/features/sync/constants/sync_translatio
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
 class SyncQrCodeButton extends StatelessWidget {
-  final _translationService = container.resolve<ITranslationService>();
-  final _deviceIdService = container.resolve<IDeviceIdService>();
+  const SyncQrCodeButton({super.key});
 
-  SyncQrCodeButton({super.key});
-
-  void _showQrCodeModal(BuildContext context) async {
+  /// Static method to show QR code modal from anywhere
+  static void showQrCodeModal(BuildContext context) async {
+    final translationService = container.resolve<ITranslationService>();
+    final deviceIdService = container.resolve<IDeviceIdService>();
+    
     String? ipAddress = await NetworkUtils.getLocalIpAddress();
 
     final deviceName = await DeviceInfoHelper.getDeviceName();
-    final deviceId = await _deviceIdService.getDeviceId();
+    final deviceId = await deviceIdService.getDeviceId();
 
     SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(
       localIP: ipAddress ?? 'Unknown IP',
@@ -39,7 +39,7 @@ class SyncQrCodeButton extends StatelessWidget {
       ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
         child: AlertDialog(
-          title: Text(_translationService.translate(SyncTranslationKeys.qrDialogTitle)),
+          title: Text(translationService.translate(SyncTranslationKeys.qrDialogTitle)),
           content: SizedBox(
             width: 200.0,
             height: 200.0,
@@ -61,7 +61,7 @@ class SyncQrCodeButton extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(_translationService.translate(SyncTranslationKeys.qrDialogCloseButton)),
+              child: Text(translationService.translate(SyncTranslationKeys.qrDialogCloseButton)),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -69,6 +69,10 @@ class SyncQrCodeButton extends StatelessWidget {
         size: DialogSize.min,
       );
     }
+  }
+
+  void _showQrCodeModal(BuildContext context) {
+    SyncQrCodeButton.showQrCodeModal(context);
   }
 
   @override

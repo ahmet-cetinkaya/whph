@@ -21,6 +21,7 @@ import 'package:whph/src/infrastructure/desktop/features/sync/desktop_sync_servi
 import 'package:whph/src/infrastructure/linux/features/setup/linux_setup_service.dart';
 import 'package:whph/src/infrastructure/android/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
+import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/src/infrastructure/linux/features/app_usages/linux_app_usage_service.dart';
 import 'package:whph/src/infrastructure/linux/features/window/linux_window_manager.dart';
 import 'package:whph/src/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
@@ -181,5 +182,11 @@ void registerInfrastructure(IContainer container) {
     }
 
     throw Exception('Unsupported platform for sync service.');
+  });
+
+  // Register AndroidServerSyncService as a separate service for mobile server mode
+  container.registerSingleton<AndroidServerSyncService>((_) {
+    final mediator = container.resolve<Mediator>();
+    return AndroidServerSyncService(mediator);
   });
 }

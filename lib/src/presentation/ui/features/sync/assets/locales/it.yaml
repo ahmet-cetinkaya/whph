@@ -63,3 +63,12 @@ sync:
   scanner:
     title: Scansiona codice QR
     instruction: Posiziona il codice QR all'interno della cornice
+  server:
+    starting: Avvio modalità server...
+    active: Modalità server attiva - Mostra il codice QR ad altri dispositivi
+    stopped: Modalità server fermata - Il dispositivo è ora in modalità client
+    start_failed: Impossibile avviare modalità server - Controlla se la porta 44040 è disponibile
+    start_tooltip: Avvia modalità server
+    stop_tooltip: Ferma modalità server
+    error: Errore
+    device_became_server: Questo dispositivo è ora il server di sincronizzazione
