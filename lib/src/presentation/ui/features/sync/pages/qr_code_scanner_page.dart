@@ -40,6 +40,9 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
   void _onQRViewCreated(BuildContext context, QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
+      // Prevent multiple scan results from triggering the logic
+      if (_qrCodeDetected) return;
+      
       setState(() {
         _qrCodeDetected = true;
       });

@@ -130,12 +130,11 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           Logger.error('Paginated sync processing failed: $e');
           Logger.error('Stack trace: $stackTrace');
           
-          // Enhanced error response with detailed debugging information
+          // Enhanced error response with debugging information (excluding stack trace for security)
           final errorData = <String, dynamic>{
             'success': false,
             'message': e.toString(),
             'type': e.runtimeType.toString(),
-            'stackTrace': stackTrace.toString(),
             'timestamp': DateTime.now().toIso8601String(),
             'entityType': (parsedMessage.data as Map<String, dynamic>?)?.containsKey('entityType') == true
                 ? (parsedMessage.data as Map<String, dynamic>)['entityType']
