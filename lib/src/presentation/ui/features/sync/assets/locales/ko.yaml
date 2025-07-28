@@ -63,3 +63,12 @@ sync:
   scanner:
     title: QR 코드 스캔
     instruction: QR 코드를 프레임 안에 위치시키세요
+  server:
+    starting: 서버 모드 시작 중...
+    active: 서버 모드 활성화 - 다른 기기에 QR 코드 표시
+    stopped: 서버 모드 중지됨 - 기기가 클라이언트 모드로 전환됨
+    start_failed: 서버 모드 시작 실패 - 포트 44040이 사용 가능한지 확인하세요
+    start_tooltip: 서버 모드 시작
+    stop_tooltip: 서버 모드 중지
+    error: 오류
+    device_became_server: 이 기기가 동기화 서버가 되었습니다

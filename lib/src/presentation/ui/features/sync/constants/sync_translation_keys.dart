@@ -27,6 +27,16 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String scannerTitle = 'sync.scanner.title';
   static const String scannerInstruction = 'sync.scanner.instruction';
 
+  // Mobile Server Mode
+  static const String serverModeStarting = 'sync.server.starting';
+  static const String serverModeActive = 'sync.server.active';
+  static const String serverModeStopped = 'sync.server.stopped';
+  static const String serverModeStartFailed = 'sync.server.start_failed';
+  static const String serverModeStartTooltip = 'sync.server.start_tooltip';
+  static const String serverModeStopTooltip = 'sync.server.stop_tooltip';
+  static const String serverModeError = 'sync.server.error';
+  static const String deviceBecameServer = 'sync.server.device_became_server';
+
   // Sync Devices Page
   static const String pageTitle = 'sync.devices.title';
   static const String syncTooltip = 'sync.devices.sync_tooltip';

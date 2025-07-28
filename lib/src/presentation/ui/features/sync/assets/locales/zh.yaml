@@ -63,3 +63,12 @@ sync:
   scanner:
     title: 扫描二维码
     instruction: 将二维码放置在框架内
+  server:
+    starting: 正在启动服务器模式...
+    active: 服务器模式已激活 - 向其他设备展示二维码
+    stopped: 服务器模式已停止 - 设备现在处于客户端模式
+    start_failed: 启动服务器模式失败 - 请检查端口44040是否可用
+    start_tooltip: 启动服务器模式
+    stop_tooltip: 停止服务器模式
+    error: 错误
+    device_became_server: 此设备现在是同步服务器

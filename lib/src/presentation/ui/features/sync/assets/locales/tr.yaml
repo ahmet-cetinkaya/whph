@@ -65,3 +65,12 @@ sync:
   scanner:
     title: QR Kodu Tara
     instruction: QR kodunu çerçeve içinde konumlandırın
+  server:
+    starting: Sunucu modu başlatılıyor...
+    active: Sunucu modu aktif - QR kodunu diğer cihazlara gösterin
+    stopped: Sunucu modu durduruldu - Cihaz artık istemci modunda
+    start_failed: Sunucu modu başlatılamadı - 44040 portunun müsait olup olmadığını kontrol edin
+    start_tooltip: Sunucu Modunu Başlat
+    stop_tooltip: Sunucu Modunu Durdur
+    error: Hata
+    device_became_server: Bu cihaz artık senkronizasyon sunucusu
