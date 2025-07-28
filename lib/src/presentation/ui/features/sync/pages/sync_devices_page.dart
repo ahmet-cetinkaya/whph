@@ -359,7 +359,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
           // Only Android can initiate sync, desktop is passive
-          if (Platform.isAndroid)
+          // Hide sync button when device is in server mode
+          if (Platform.isAndroid && !_isServerMode)
             IconButton(
               onPressed: _currentSyncStatus.isSyncing ? null : _sync,
               icon: _currentSyncStatus.isSyncing
