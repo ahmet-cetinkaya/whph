@@ -35,7 +35,7 @@ class SyncDevicesPage extends StatefulWidget {
 
 class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
   static const String _serverModeSettingKey = 'sync_server_mode_enabled';
-  
+
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _settingRepository = container.resolve<ISettingRepository>();
@@ -69,7 +69,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     try {
       // Check if server is already running (started by platform initialization)
       final isServerRunning = _serverSyncService!.isServerMode;
-      
+
       if (isServerRunning && mounted) {
         setState(() {
           _isServerMode = true;
@@ -96,7 +96,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
 
     try {
       final success = await _serverSyncService!.startAsServer();
-      
+
       if (success && mounted) {
         setState(() {
           _isServerMode = true;
@@ -193,7 +193,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     try {
       // Simulate device-specific sync progress for UI feedback
       _simulateDeviceSpecificSync();
-      
+
       // Use the centralized sync service for manual sync trigger
       await _syncService.runSync(isManual: true);
     } catch (e) {
@@ -205,7 +205,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     if (list == null || list!.items.isEmpty) return;
 
     int currentDeviceIndex = 0;
-    
+
     // Start with first device
     if (list!.items.isNotEmpty) {
       _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
@@ -263,14 +263,14 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         // Stop server mode
         Logger.info('🛑 Stopping mobile sync server mode...');
         await _serverSyncService!.stopServer();
-        
+
         // Save preference: server mode disabled
         await _saveServerModePreference(false);
-        
+
         setState(() {
           _isServerMode = false;
         });
-        
+
         if (mounted) {
           OverlayNotificationHelper.showInfo(
             context: context,
@@ -281,7 +281,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       } else {
         // Start server mode
         Logger.info('🚀 Starting mobile sync server mode...');
-        
+
         if (mounted) {
           OverlayNotificationHelper.showLoading(
             context: context,
@@ -291,18 +291,18 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         }
 
         final success = await _serverSyncService!.startAsServer();
-        
+
         if (mounted) {
           OverlayNotificationHelper.hideNotification();
-          
+
           if (success) {
             // Save preference: server mode enabled
             await _saveServerModePreference(true);
-            
+
             setState(() {
               _isServerMode = true;
             });
-            
+
             if (mounted) {
               OverlayNotificationHelper.showSuccess(
                 context: context,
@@ -340,7 +340,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         value: enabled.toString(),
         valueType: SettingValueType.bool,
       );
-      
+
       await _mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(command);
       Logger.debug('📝 Server mode preference saved: $enabled');
     } catch (e) {
@@ -376,7 +376,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
               color: Theme.of(context).colorScheme.primary,
               tooltip: _translationService.translate(SyncTranslationKeys.syncTooltip),
             ),
-          
+
           // Mobile sync mode controls
           if (Platform.isAndroid) ...[
             // Direct server mode toggle button
@@ -386,11 +386,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
                 _isServerMode ? Icons.stop : Icons.wifi_tethering,
               ),
               color: _isServerMode ? Colors.red : Theme.of(context).colorScheme.primary,
-              tooltip: _isServerMode 
+              tooltip: _isServerMode
                   ? _translationService.translate(SyncTranslationKeys.serverModeStopTooltip)
                   : _translationService.translate(SyncTranslationKeys.serverModeStartTooltip),
             ),
-            
+
             // Show QR code if in server mode, otherwise show scanner
             if (_isServerMode)
               SyncQrCodeButton()
@@ -399,7 +399,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
                 onSyncComplete: refresh,
               ),
           ],
-          
+
           // Desktop QR code (existing behavior)
           if (PlatformUtils.isDesktop) SyncQrCodeButton(),
           HelpMenu(
@@ -424,7 +424,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
                   key: ValueKey(list!.items[index].id),
                   item: list!.items[index],
                   onRemove: _removeDevice,
-                  isBeingSynced: _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == list!.items[index].id,
+                  isBeingSynced:
+                      _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == list!.items[index].id,
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(height: AppTheme.sizeSmall),

@@ -19,7 +19,7 @@ class SyncQrCodeButton extends StatelessWidget {
   static void showQrCodeModal(BuildContext context) async {
     final translationService = container.resolve<ITranslationService>();
     final deviceIdService = container.resolve<IDeviceIdService>();
-    
+
     String? ipAddress = await NetworkUtils.getLocalIpAddress();
 
     final deviceName = await DeviceInfoHelper.getDeviceName();

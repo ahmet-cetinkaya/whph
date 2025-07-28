@@ -241,10 +241,10 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildLeading(bool isCompactView) {
     return Icon(
       HabitUiConstants.habitIcon,
-      size: widget.isDense 
-          ? AppTheme.iconSizeSmall 
-          : isCompactView 
-              ? AppTheme.iconSizeSmall  // Smaller icon in compact view (16.0 instead of 20.0)
+      size: widget.isDense
+          ? AppTheme.iconSizeSmall
+          : isCompactView
+              ? AppTheme.iconSizeSmall // Smaller icon in compact view (16.0 instead of 20.0)
               : AppTheme.fontSizeXLarge,
     );
   }
@@ -491,9 +491,8 @@ class _HabitCardState extends State<HabitCard> {
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: BoxConstraints(
-        minWidth: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall, 
-        minHeight: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall
-      ),
+          minWidth: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall,
+          minHeight: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall),
       onPressed: isDisabled ? null : _onCheckboxTap,
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,

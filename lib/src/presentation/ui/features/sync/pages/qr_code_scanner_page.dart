@@ -42,11 +42,11 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
     controller.scannedDataStream.listen((scanData) {
       // Prevent multiple scan results from triggering the logic
       if (_qrCodeDetected) return;
-      
+
       setState(() {
         _qrCodeDetected = true;
       });
-      
+
       _pulseAnimationController.forward().then((_) {
         controller.stopCamera();
         if (context.mounted) Navigator.of(context).pop(scanData.code);
@@ -103,7 +103,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
   Widget _buildScannerOverlay(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final scanAreaSize = screenSize.width * 0.7; // 70% of screen width
-    
+
     return Positioned.fill(
       child: Stack(
         children: [
@@ -129,10 +129,8 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
   Widget _buildCornerIndicators(BuildContext context, double scanAreaSize) {
     const cornerLength = 30.0;
     const cornerWidth = 4.0;
-    final cornerColor = _qrCodeDetected 
-        ? Colors.green 
-        : Theme.of(context).colorScheme.primary;
-    
+    final cornerColor = _qrCodeDetected ? Colors.green : Theme.of(context).colorScheme.primary;
+
     return Center(
       child: SizedBox(
         width: scanAreaSize,
@@ -243,23 +241,21 @@ class _ScannerOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = overlayColor;
-    
+
     // Calculate the position of the scan area (centered)
     final left = (size.width - scanAreaSize) / 2;
     final top = (size.height - scanAreaSize) / 2;
     final scanRect = Rect.fromLTWH(left, top, scanAreaSize, scanAreaSize);
-    
+
     // Create path for the overlay with cut-out
-    final overlayPath = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-    
+    final overlayPath = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
     // Create rounded rectangle for the scan area
-    final scanAreaPath = Path()
-      ..addRRect(RRect.fromRectAndRadius(scanRect, const Radius.circular(12)));
-    
+    final scanAreaPath = Path()..addRRect(RRect.fromRectAndRadius(scanRect, const Radius.circular(12)));
+
     // Subtract scan area from overlay
     final finalPath = Path.combine(PathOperation.difference, overlayPath, scanAreaPath);
-    
+
     canvas.drawPath(finalPath, paint);
   }
 
