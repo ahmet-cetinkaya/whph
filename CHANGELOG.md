@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2025-07-29
+
+### Added
+- Add support for mobile-to-mobile sync
+- Add syncing indicator to sync devices page
+- Improve qr code scan ui
+- Add auto theme mode support
+- Integrate dynamic color support
+- Add light mode support
+- Enhance accuracy with hybrid data approach
+- Add work profile detection to device name
+- Implement backup and restore functionality with .whph format
+- Add widget support for tasks and habits
+- Sort languages in menu
+- Add Chinese localization support across multiple features
+- Add Korean localization support across multiple features
+- Add Japanese localization support across various features
+- Add Italian localization support across multiple features
+- Add Russian localization support across multiple features
+- Add Spanish localization support across multiple features
+- Add French localization support across multiple features
+- Add German localization for notes, settings, sync, tags, tasks, and shared components
+
+### Changed
+- Add pagination to synced data and thread isolation
+
+### Fixed
+- Hide sync button when server node mode
+- Address code review comments from PR #16
+- Improve compact habit list view in today page
+- Add monochrome icon support
+- Delay initial sync by 60 seconds for performance
+- Add background to appbar
+- Init widget services in only Android
+- Add dynamic accent color feature translations
+- Improve container initialization and error handling
+- Initialize test binding and improve platform handling
+- Make device info helper tests platform-agnostic
+- Replace magic numbers with named constants Add constants for ratio thresholds and daily usage limits to improve code maintainability and readability. This addresses the code review feedback about using magic numbers in the usage calculation logic.
+- Improve work profile detection logic
+- Use fully qualified column names in queries
+- Address second code review feedback
+- Address code review feedback
+- Remove unnecessary SizedBox in habits page
+- Add event listeners for habit record changes
+- Improve tags tooltip logic
+
 ## [0.10.1] - 2025-07-17
 
 ### Added
