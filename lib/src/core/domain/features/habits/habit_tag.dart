@@ -14,4 +14,22 @@ class HabitTag extends BaseEntity<String> {
     required this.habitId,
     required this.tagId,
   });
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        'habitId': habitId,
+        'tagId': tagId,
+      };
+
+  factory HabitTag.fromJson(Map<String, dynamic> json) {
+    return HabitTag(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      habitId: json['habitId'] as String,
+      tagId: json['tagId'] as String,
+    );
+  }
 }
