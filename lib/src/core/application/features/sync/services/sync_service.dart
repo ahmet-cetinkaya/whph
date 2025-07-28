@@ -34,7 +34,7 @@ class SyncService implements ISyncService {
 
   @override
   Stream<SyncStatus> get syncStatusStream => _syncStatusController.stream;
-  
+
   @override
   SyncStatus get currentSyncStatus => _currentSyncStatus;
 
@@ -71,7 +71,6 @@ class SyncService implements ISyncService {
     _reconnectTimer?.cancel();
   }
 
-
   @override
   Future<void> startSync() async {
     // Default implementation - can be overridden by platform-specific services
@@ -106,7 +105,7 @@ class SyncService implements ISyncService {
       _reconnectAttempts = 0;
 
       Logger.info('✅ Paginated sync completed successfully');
-      
+
       // Update sync status to completed
       updateSyncStatus(SyncStatus(
         state: SyncState.completed,
@@ -115,7 +114,7 @@ class SyncService implements ISyncService {
       ));
 
       notifySyncComplete();
-      
+
       // Reset to idle after a short delay
       Timer(const Duration(seconds: 2), () {
         updateSyncStatus(SyncStatus(
@@ -125,7 +124,7 @@ class SyncService implements ISyncService {
       });
     } catch (e) {
       Logger.error('Paginated sync failed: $e');
-      
+
       // Update sync status to error
       updateSyncStatus(SyncStatus(
         state: SyncState.error,
@@ -133,9 +132,9 @@ class SyncService implements ISyncService {
         isManual: isManual,
         lastSyncTime: DateTime.now(),
       ));
-      
+
       _handleDisconnection();
-      
+
       // Reset to idle after error delay
       Timer(const Duration(seconds: 5), () {
         updateSyncStatus(SyncStatus(

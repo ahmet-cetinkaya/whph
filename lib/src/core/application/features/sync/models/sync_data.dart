@@ -88,7 +88,7 @@ class SyncData<T extends BaseEntity<dynamic>> {
       if (deserializer != null) {
         return deserializer(json) as T?;
       }
-      
+
       // Fallback to JsonMapper.deserialize for unknown types
       return JsonMapper.deserialize<T>(json);
     } catch (e) {

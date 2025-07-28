@@ -129,7 +129,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         } catch (e, stackTrace) {
           Logger.error('Paginated sync processing failed: $e');
           Logger.error('Stack trace: $stackTrace');
-          
+
           // Enhanced error response with debugging information (excluding stack trace for security)
           final errorData = <String, dynamic>{
             'success': false,
@@ -141,7 +141,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
                 : 'unknown',
             'metadata': <String, dynamic>{},
           };
-          
+
           // Add specific error details based on error type
           if (e is FormatException) {
             errorData['metadata']['errorCategory'] = 'JSON_PARSING';
@@ -167,7 +167,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           } else {
             errorData['metadata']['errorCategory'] = 'UNKNOWN';
           }
-          
+
           // Try to capture the problematic entity data if available
           try {
             final paginatedSyncData = parsedMessage.data;
@@ -175,7 +175,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
               errorData['metadata']['pageIndex'] = paginatedSyncData['pageIndex'];
               errorData['metadata']['pageSize'] = paginatedSyncData['pageSize'];
               errorData['metadata']['totalItems'] = paginatedSyncData['totalItems'];
-              
+
               // Try to identify the first problematic entity
               final entityTypeKey = '${paginatedSyncData['entityType']}sSyncData';
               final syncDataMap = paginatedSyncData[entityTypeKey] as Map<String, dynamic>?;
@@ -193,7 +193,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           } catch (metadataError) {
             errorData['metadata']['metadataExtractionError'] = metadataError.toString();
           }
-          
+
           WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
           socket.add(JsonMapper.serialize(errorMessage));
           await socket.close();

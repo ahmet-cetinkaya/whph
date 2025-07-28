@@ -173,7 +173,6 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     ));
   }
 
-
   /// Gets paginated sync data for efficient memory usage and network transmission
   @override
   Future<PaginatedSyncData<TEntity>> getPaginatedSyncData(

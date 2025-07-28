@@ -9,7 +9,7 @@ abstract class ISyncService {
   Future<void> runPaginatedSync({bool isManual = false});
   Stream<bool> get onSyncComplete;
   Stream<SyncProgress> get progressStream;
-  
+
   // Sync status tracking
   Stream<SyncStatus> get syncStatusStream;
   SyncStatus get currentSyncStatus;

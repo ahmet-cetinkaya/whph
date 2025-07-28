@@ -36,13 +36,13 @@ class AndroidSyncService extends SyncService {
       await _runSync();
     });
   }
-  
+
   /// Run sync with UI thread optimization to prevent frame drops
   Future<void> _runSync() async {
     try {
       // Use scheduleMicrotask to ensure sync doesn't block UI
       final syncCompleter = Completer<void>();
-      
+
       scheduleMicrotask(() async {
         try {
           // Pass isManual: false for automatic WorkManager sync
@@ -52,7 +52,7 @@ class AndroidSyncService extends SyncService {
           syncCompleter.completeError(e);
         }
       });
-      
+
       await syncCompleter.future;
     } catch (e) {
       Logger.error('UI-optimized sync failed: $e');

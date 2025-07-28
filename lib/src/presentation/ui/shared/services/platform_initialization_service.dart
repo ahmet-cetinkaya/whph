@@ -73,7 +73,7 @@ class PlatformInitializationService {
       final mediator = container.resolve<Mediator>();
       final androidSyncService = AndroidSyncService(mediator);
       await androidSyncService.startSync();
-      
+
       // Always start server mode for Android devices
       await _initializeAndroidServerMode(container);
     }
@@ -137,23 +137,24 @@ class PlatformInitializationService {
   /// Initialize server mode for Android devices (only if enabled by user preference)
   static Future<void> _initializeAndroidServerMode(IContainer container) async {
     const String serverModeSettingKey = 'sync_server_mode_enabled';
-    
+
     try {
       // Check if user has enabled server mode preference
       final settingRepository = container.resolve<ISettingRepository>();
       final setting = await settingRepository.getByKey(serverModeSettingKey);
       final isServerModeEnabled = setting?.getValue<bool>() ?? false;
-      
+
       if (!isServerModeEnabled) {
         Logger.debug('PlatformInitializationService: Server mode not enabled by user, skipping auto-start');
         return;
       }
-      
-      Logger.info('PlatformInitializationService: Starting server mode for Android device (enabled by user preference)...');
-      
+
+      Logger.info(
+          'PlatformInitializationService: Starting server mode for Android device (enabled by user preference)...');
+
       final serverSyncService = container.resolve<AndroidServerSyncService>();
       final success = await serverSyncService.startAsServer();
-      
+
       if (success) {
         Logger.info('✅ PlatformInitializationService: Android server mode started successfully for background sync');
       } else {

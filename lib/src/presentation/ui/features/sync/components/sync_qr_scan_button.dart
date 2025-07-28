@@ -28,7 +28,7 @@ class SyncQrScanButton extends StatelessWidget {
   final _translationService = container.resolve<ITranslationService>();
   final _deviceIdService = container.resolve<IDeviceIdService>();
   final VoidCallback? onSyncComplete;
-  
+
   late final MobileSyncManager _mobileSyncManager;
 
   SyncQrScanButton({
@@ -91,24 +91,24 @@ class SyncQrScanButton extends StatelessWidget {
 
         // For mobile-to-mobile sync, determine our role
         String targetIp = syncQrCodeMessageFromIP.localIP;
-        
+
         if (Platform.isAndroid) {
           Logger.info('🤝 Initiating mobile-to-mobile sync...');
-          
+
           // Negotiate sync role
           final syncRole = await _mobileSyncManager.negotiateRole(syncQrCodeMessageFromIP);
           Logger.info('📱 Negotiated role: $syncRole');
-          
+
           if (syncRole == SyncRole.server) {
             // We become the server
             final serverService = container.resolve<AndroidServerSyncService>();
             final serverStarted = await _mobileSyncManager.tryStartAsServer(serverService);
-            
+
             if (serverStarted) {
               Logger.info('📱 Successfully started as mobile sync server');
               // Use our local IP since we're the server
               targetIp = localIp;
-              
+
               if (context.mounted) {
                 OverlayNotificationHelper.showInfo(
                   context: context,
@@ -138,7 +138,8 @@ class SyncQrScanButton extends StatelessWidget {
         );
 
         if (!canConnect) {
-          throw BusinessException('Cannot connect to sync target: $targetIp', SyncTranslationKeys.connectionFailedError);
+          throw BusinessException(
+              'Cannot connect to sync target: $targetIp', SyncTranslationKeys.connectionFailedError);
         }
 
         return localIp;
@@ -166,14 +167,14 @@ class SyncQrScanButton extends StatelessWidget {
 
         // Save device and start sync
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Determine the correct IP assignment based on sync role
         String fromIP, toIP;
         if (Platform.isAndroid) {
           // For mobile-to-mobile sync, we need to determine which device is server vs client
           final localDeviceId = await _deviceIdService.getDeviceId();
           final isLocalServer = localDeviceId.compareTo(syncQrCodeMessageFromIP.deviceId) < 0;
-          
+
           if (isLocalServer) {
             // We are server, remote is client
             fromIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
@@ -188,7 +189,7 @@ class SyncQrScanButton extends StatelessWidget {
           fromIP = syncQrCodeMessageFromIP.localIP;
           toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
         }
-        
+
         final saveCommand = SaveSyncDeviceCommand(
           fromIP: fromIP,
           toIP: toIP,

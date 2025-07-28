@@ -1,10 +1,10 @@
 enum SyncRole {
   /// Device acts as WebSocket server
   server,
-  
+
   /// Device acts as WebSocket client
   client,
-  
+
   /// Automatically determine role based on device characteristics
   auto,
 }
@@ -20,7 +20,7 @@ extension SyncRoleExtension on SyncRole {
         return 'Auto';
     }
   }
-  
+
   String get description {
     switch (this) {
       case SyncRole.server:

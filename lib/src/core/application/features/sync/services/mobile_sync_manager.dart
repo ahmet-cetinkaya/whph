@@ -6,7 +6,7 @@ import 'package:whph/src/core/application/features/sync/services/abstraction/i_d
 
 class MobileSyncManager {
   final IDeviceIdService _deviceIdService;
-  
+
   MobileSyncManager(this._deviceIdService);
 
   /// Negotiate sync role between two mobile devices
@@ -14,14 +14,14 @@ class MobileSyncManager {
   Future<SyncRole> negotiateRole(SyncQrCodeMessage remoteDevice) async {
     try {
       final localDeviceId = await _deviceIdService.getDeviceId();
-      
+
       Logger.debug('🤝 Negotiating sync role:');
       Logger.debug('   Local device ID: $localDeviceId');
       Logger.debug('   Remote device ID: ${remoteDevice.deviceId}');
-      
+
       // Use string comparison to determine role
       final comparison = localDeviceId.compareTo(remoteDevice.deviceId);
-      
+
       if (comparison < 0) {
         Logger.info('📱 Local device selected as SERVER (ID comparison: $comparison)');
         return SyncRole.server;
@@ -44,9 +44,9 @@ class MobileSyncManager {
   Future<bool> tryStartAsServer(AndroidServerSyncService serverService) async {
     try {
       Logger.info('🚀 Attempting to start mobile device as sync server...');
-      
+
       final success = await serverService.startAsServer();
-      
+
       if (success) {
         Logger.info('✅ Mobile device successfully started as sync server');
         Logger.info('🌐 Server is listening on port 44040');
@@ -69,10 +69,10 @@ class MobileSyncManager {
     AndroidServerSyncService? serverService,
   ) async {
     final negotiatedRole = await negotiateRole(remoteDevice);
-    
+
     if (negotiatedRole == SyncRole.server && serverService != null) {
       final serverStarted = await tryStartAsServer(serverService);
-      
+
       if (serverStarted) {
         return MobileSyncStrategy(
           role: SyncRole.server,
@@ -88,7 +88,7 @@ class MobileSyncManager {
         );
       }
     }
-    
+
     return MobileSyncStrategy(
       role: SyncRole.client,
       serverService: null,
@@ -101,16 +101,16 @@ class MobileSyncStrategy {
   final SyncRole role;
   final AndroidServerSyncService? serverService;
   final bool isServerActive;
-  
+
   MobileSyncStrategy({
     required this.role,
     required this.serverService,
     required this.isServerActive,
   });
-  
+
   bool get isServer => role == SyncRole.server && isServerActive;
   bool get isClient => role == SyncRole.client || !isServerActive;
-  
+
   @override
   String toString() {
     return 'MobileSyncStrategy(role: $role, isServerActive: $isServerActive)';

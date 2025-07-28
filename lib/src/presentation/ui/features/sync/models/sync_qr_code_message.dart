@@ -37,7 +37,7 @@ class SyncQrCodeMessage {
     if (parts.length != 3) {
       throw ArgumentError('Invalid CSV format. Expected 3 parts separated by commas.');
     }
-    
+
     return SyncQrCodeMessage(
       localIP: parts[0].trim(),
       deviceName: parts[1].trim(),
