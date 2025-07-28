@@ -64,3 +64,13 @@ sync:
     dialog_title: QR-Code scannen zum Synchronisieren
   scanner:
     title: QR-Code scannen
+    instruction: QR-Code im Rahmen positionieren
+  server:
+    starting: Server-Modus wird gestartet...
+    active: Server-Modus aktiv - QR-Code anderen Geräten zeigen
+    stopped: Server-Modus gestoppt - Gerät ist jetzt im Client-Modus
+    start_failed: Server-Modus konnte nicht gestartet werden - Prüfen Sie, ob Port 44040 verfügbar ist
+    start_tooltip: Server-Modus starten
+    stop_tooltip: Server-Modus stoppen
+    error: Fehler
+    device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver

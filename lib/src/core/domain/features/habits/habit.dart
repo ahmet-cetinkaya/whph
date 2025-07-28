@@ -154,4 +154,38 @@ class Habit extends BaseEntity<String> {
   DateTime? getLocalArchivedDate() {
     return archivedDate != null ? DateTimeHelper.toLocalDateTime(archivedDate!) : null;
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        ...super.toJson(),
+        'name': name,
+        'description': description,
+        'estimatedTime': estimatedTime,
+        'archivedDate': archivedDate?.toIso8601String(),
+        'hasReminder': hasReminder,
+        'reminderTime': reminderTime,
+        'reminderDays': reminderDays,
+        'hasGoal': hasGoal,
+        'targetFrequency': targetFrequency,
+        'periodDays': periodDays,
+      };
+
+  factory Habit.fromJson(Map<String, dynamic> json) {
+    return Habit(
+      id: json['id'] as String,
+      createdDate: DateTime.parse(json['createdDate'] as String),
+      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      estimatedTime: json['estimatedTime'] as int?,
+      archivedDate: json['archivedDate'] != null ? DateTime.parse(json['archivedDate'] as String) : null,
+      hasReminder: json['hasReminder'] as bool? ?? false,
+      reminderTime: json['reminderTime'] as String?,
+      reminderDays: json['reminderDays'] as String? ?? '',
+      hasGoal: json['hasGoal'] as bool? ?? false,
+      targetFrequency: json['targetFrequency'] as int? ?? 1,
+      periodDays: json['periodDays'] as int? ?? 7,
+    );
+  }
 }

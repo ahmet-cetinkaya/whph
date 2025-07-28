@@ -38,6 +38,7 @@ class SyncDevice extends BaseEntity<String> {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => {
         'id': id,
         'createdDate': createdDate.toIso8601String(),

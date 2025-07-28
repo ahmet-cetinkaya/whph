@@ -4,7 +4,7 @@ import 'package:whph/src/core/application/features/sync/commands/delete_sync_com
 import 'package:whph/src/core/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/commands/stop_sync_command.dart';
-import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
+import 'package:whph/src/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
@@ -75,8 +75,8 @@ void registerSyncFeature(
     ..registerHandler<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?, GetSyncDeviceQueryHandler>(
       () => GetSyncDeviceQueryHandler(syncDeviceRepository: syncDeviceRepository),
     )
-    ..registerHandler<SyncCommand, SyncCommandResponse, SyncCommandHandler>(
-      () => SyncCommandHandler(
+    ..registerHandler<PaginatedSyncCommand, PaginatedSyncCommandResponse, PaginatedSyncCommandHandler>(
+      () => PaginatedSyncCommandHandler(
         appUsageIgnoreRuleRepository: appUsageIgnoreRuleRepository,
         appUsageRepository: appUsageRepository,
         appUsageTagRepository: appUsageTagRepository,

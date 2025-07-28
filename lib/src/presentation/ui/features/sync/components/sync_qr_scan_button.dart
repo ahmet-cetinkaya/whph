@@ -16,18 +16,27 @@ import 'package:whph/src/presentation/ui/features/sync/pages/qr_code_scanner_pag
 import 'package:whph/src/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/src/core/application/features/sync/services/mobile_sync_manager.dart';
+import 'package:whph/src/core/application/features/sync/models/sync_role.dart';
+import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'dart:async';
+import 'dart:io';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _deviceIdService = container.resolve<IDeviceIdService>();
   final VoidCallback? onSyncComplete;
+  
+  late final MobileSyncManager _mobileSyncManager;
 
   SyncQrScanButton({
     super.key,
     this.onSyncComplete,
-  });
+  }) {
+    _mobileSyncManager = MobileSyncManager(_deviceIdService);
+  }
 
   Future<void> _openQRScanner(BuildContext context) async {
     await AsyncErrorHandler.execute<String?>(
@@ -43,7 +52,19 @@ class SyncQrScanButton extends StatelessWidget {
       onSuccess: (scannedMessage) async {
         if (scannedMessage == null || !context.mounted) return;
 
-        final parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
+        SyncQrCodeMessage? parsedMessage;
+        try {
+          // Try CSV format first
+          parsedMessage = SyncQrCodeMessage.fromCsv(scannedMessage);
+        } catch (e) {
+          // Fallback to JSON format for backward compatibility
+          try {
+            parsedMessage = JsonMapper.deserialize<SyncQrCodeMessage>(scannedMessage);
+          } catch (e) {
+            throw BusinessException('Failed to parse QR code message', SyncTranslationKeys.parseError);
+          }
+        }
+
         if (parsedMessage == null) {
           throw BusinessException('Failed to parse QR code message', SyncTranslationKeys.parseError);
         }
@@ -68,6 +89,39 @@ class SyncQrScanButton extends StatelessWidget {
           throw BusinessException('Local IP address could not be determined', SyncTranslationKeys.ipAddressError);
         }
 
+        // For mobile-to-mobile sync, determine our role
+        String targetIp = syncQrCodeMessageFromIP.localIP;
+        
+        if (Platform.isAndroid) {
+          Logger.info('🤝 Initiating mobile-to-mobile sync...');
+          
+          // Negotiate sync role
+          final syncRole = await _mobileSyncManager.negotiateRole(syncQrCodeMessageFromIP);
+          Logger.info('📱 Negotiated role: $syncRole');
+          
+          if (syncRole == SyncRole.server) {
+            // We become the server
+            final serverService = container.resolve<AndroidServerSyncService>();
+            final serverStarted = await _mobileSyncManager.tryStartAsServer(serverService);
+            
+            if (serverStarted) {
+              Logger.info('📱 Successfully started as mobile sync server');
+              // Use our local IP since we're the server
+              targetIp = localIp;
+              
+              if (context.mounted) {
+                OverlayNotificationHelper.showInfo(
+                  context: context,
+                  message: _translationService.translate(SyncTranslationKeys.deviceBecameServer),
+                  duration: const Duration(seconds: 3),
+                );
+              }
+            } else {
+              Logger.warning('❌ Failed to start as server, falling back to client mode');
+            }
+          }
+        }
+
         // Show testing connection message
         if (context.mounted) {
           OverlayNotificationHelper.showLoading(
@@ -77,14 +131,14 @@ class SyncQrScanButton extends StatelessWidget {
           );
         }
 
-        // Test connection
+        // Test connection to the target IP
         final canConnect = await NetworkUtils.testWebSocketConnection(
-          syncQrCodeMessageFromIP.localIP,
+          targetIp,
           timeout: const Duration(seconds: 10),
         );
 
         if (!canConnect) {
-          throw BusinessException('Cannot connect to remote device', SyncTranslationKeys.connectionFailedError);
+          throw BusinessException('Cannot connect to sync target: $targetIp', SyncTranslationKeys.connectionFailedError);
         }
 
         return localIp;
@@ -112,12 +166,35 @@ class SyncQrScanButton extends StatelessWidget {
 
         // Save device and start sync
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
+        
+        // Determine the correct IP assignment based on sync role
+        String fromIP, toIP;
+        if (Platform.isAndroid) {
+          // For mobile-to-mobile sync, we need to determine which device is server vs client
+          final localDeviceId = await _deviceIdService.getDeviceId();
+          final isLocalServer = localDeviceId.compareTo(syncQrCodeMessageFromIP.deviceId) < 0;
+          
+          if (isLocalServer) {
+            // We are server, remote is client
+            fromIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
+            toIP = syncQrCodeMessageFromIP.localIP;
+          } else {
+            // We are client, remote is server
+            fromIP = syncQrCodeMessageFromIP.localIP;
+            toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
+          }
+        } else {
+          // Desktop-mobile sync (existing logic)
+          fromIP = syncQrCodeMessageFromIP.localIP;
+          toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
+        }
+        
         final saveCommand = SaveSyncDeviceCommand(
-          fromIP: syncQrCodeMessageFromIP.localIP,
+          fromIP: fromIP,
           toIP: toIP,
           fromDeviceId: syncQrCodeMessageFromIP.deviceId,
           toDeviceId: localDeviceId,
-          name: "${syncQrCodeMessageFromIP.deviceName} > $localDeviceName",
+          name: "${syncQrCodeMessageFromIP.deviceName} ↔ $localDeviceName",
         );
 
         if (context.mounted) {

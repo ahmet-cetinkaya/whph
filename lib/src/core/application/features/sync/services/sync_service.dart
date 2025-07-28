@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/src/core/application/features/sync/commands/sync_command.dart';
-import 'package:whph/src/core/application/shared/models/websocket_request.dart';
+import 'package:whph/src/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/src/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph/src/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 import 'abstraction/i_sync_service.dart';
@@ -22,6 +22,28 @@ class SyncService implements ISyncService {
   @override
   Stream<bool> get onSyncComplete => _syncCompleteController.stream;
   bool get isConnected => _isConnected;
+
+  // Progress tracking for paginated sync
+  final _progressController = StreamController<SyncProgress>.broadcast();
+  @override
+  Stream<SyncProgress> get progressStream => _progressController.stream;
+
+  // Sync status tracking
+  final _syncStatusController = StreamController<SyncStatus>.broadcast();
+  SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
+
+  @override
+  Stream<SyncStatus> get syncStatusStream => _syncStatusController.stream;
+  
+  @override
+  SyncStatus get currentSyncStatus => _currentSyncStatus;
+
+  @override
+  void updateSyncStatus(SyncStatus status) {
+    _currentSyncStatus = status;
+    _syncStatusController.add(status);
+    Logger.debug('Sync status updated: $status');
+  }
 
   SyncService(this._mediator);
 
@@ -49,25 +71,6 @@ class SyncService implements ISyncService {
     _reconnectTimer?.cancel();
   }
 
-  void _forceCloseConnection() {
-    Logger.debug('Force closing WebSocket connection');
-    if (_isConnected) {
-      // Mark last sync time before closing
-      _lastSyncTime = DateTime.now();
-
-      // Send a close frame before closing
-      _channel?.sink.add(
-          JsonMapper.serialize(WebSocketMessage(type: 'close', data: {'timestamp': DateTime.now().toIso8601String()})));
-
-      // Close immediately
-      _channel?.sink.close();
-      _channel = null;
-      _isConnected = false;
-
-      // Notify sync completion
-      notifySyncComplete();
-    }
-  }
 
   @override
   Future<void> startSync() async {
@@ -77,24 +80,69 @@ class SyncService implements ISyncService {
   }
 
   @override
-  Future<void> runSync() async {
+  Future<void> runSync({bool isManual = false}) async {
+    // Redirect to paginated sync - this is now the default and only sync method
+    await runPaginatedSync(isManual: isManual);
+  }
+
+  /// Runs paginated sync operation - this is now the primary sync method
+  @override
+  Future<void> runPaginatedSync({bool isManual = false}) async {
     try {
-      Logger.debug('Starting sync process at ${DateTime.now()}...');
-      await _mediator.send(SyncCommand());
+      // Update sync status to syncing
+      updateSyncStatus(SyncStatus(
+        state: SyncState.syncing,
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+
+      Logger.debug('Starting paginated sync process at ${DateTime.now()}... (manual: $isManual)');
+
+      // Create paginated sync command handler and listen to progress
+      final command = PaginatedSyncCommand();
+      await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
       // Reset the attempt count on successful sync
       _reconnectAttempts = 0;
 
-      // After a successful sync, wait for a sufficient time and close the connection
-      Timer(const Duration(seconds: 1), () {
-        if (_isConnected) {
-          Logger.debug('Sync completed, closing connection');
-          _forceCloseConnection();
-        }
+      Logger.info('✅ Paginated sync completed successfully');
+      
+      // Update sync status to completed
+      updateSyncStatus(SyncStatus(
+        state: SyncState.completed,
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+
+      notifySyncComplete();
+      
+      // Reset to idle after a short delay
+      Timer(const Duration(seconds: 2), () {
+        updateSyncStatus(SyncStatus(
+          state: SyncState.idle,
+          lastSyncTime: DateTime.now(),
+        ));
       });
     } catch (e) {
-      Logger.error('Sync failed: $e');
+      Logger.error('Paginated sync failed: $e');
+      
+      // Update sync status to error
+      updateSyncStatus(SyncStatus(
+        state: SyncState.error,
+        errorMessage: e.toString(),
+        isManual: isManual,
+        lastSyncTime: DateTime.now(),
+      ));
+      
       _handleDisconnection();
+      
+      // Reset to idle after error delay
+      Timer(const Duration(seconds: 5), () {
+        updateSyncStatus(SyncStatus(
+          state: SyncState.idle,
+          lastSyncTime: DateTime.now(),
+        ));
+      });
     }
   }
 
@@ -114,5 +162,7 @@ class SyncService implements ISyncService {
     stopSync();
     _channel?.sink.close();
     _syncCompleteController.close();
+    _progressController.close();
+    _syncStatusController.close();
   }
 }
