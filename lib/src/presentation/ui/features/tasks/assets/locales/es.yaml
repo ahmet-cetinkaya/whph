@@ -246,11 +246,14 @@ tasks:
       urgent_not_important: Urgente pero no importante
   quick_task:
     create_error: Error al crear la tarea
-    lock_description: Bloquea propiedades para retener sus valores al crear múltiples tareas similares. Las propiedades bloqueadas no se limpiarán cuando reinicies el formulario.
+    lock_description: Bloquea propiedades para retener sus valores al crear 
+      múltiples tareas similares. Las propiedades bloqueadas no se limpiarán 
+      cuando reinicies el formulario.
     lock_settings: Configuración de bloqueo
     reset_all: Reiniciar todos los campos
     reset_confirm:
-      message: ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción no se puede deshacer.
+      message: ¿Estás seguro de que quieres reiniciar todos los campos? Esta 
+        acción no se puede deshacer.
       title: Reiniciar todos los campos
     title: Tarea rápida
     title_hint: Título de la tarea
