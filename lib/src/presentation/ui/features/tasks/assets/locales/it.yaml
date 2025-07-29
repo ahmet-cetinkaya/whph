@@ -9,7 +9,8 @@ tasks:
     tooltips:
       schedule: Programma attività
   complete:
-    error: Errore imprevisto durante il salvataggio del completamento dell'attività.
+    error: Errore imprevisto durante il salvataggio del completamento 
+      dell'attività.
   date_selection:
     deadline_date_title: Seleziona data di scadenza
     planned_date_title: Seleziona data pianificata
@@ -246,11 +247,14 @@ tasks:
       urgent_not_important: Urgente ma non importante
   quick_task:
     create_error: Errore nella creazione dell'attività
-    lock_description: Blocca le proprietà per mantenere i loro valori quando crei più attività simili. Le proprietà bloccate non verranno cancellate quando resetti il modulo.
+    lock_description: Blocca le proprietà per mantenere i loro valori quando 
+      crei più attività simili. Le proprietà bloccate non verranno cancellate 
+      quando resetti il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
     reset_confirm:
-      message: Sei sicuro di voler reimpostare tutti i campi? Questa azione non può essere annullata.
+      message: Sei sicuro di voler reimpostare tutti i campi? Questa azione non 
+        può essere annullata.
       title: Reimposta tutti i campi
     title: Attività rapida
     title_hint: Titolo attività
