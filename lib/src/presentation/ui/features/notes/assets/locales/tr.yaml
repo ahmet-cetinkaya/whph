@@ -84,6 +84,7 @@ notes:
     tooltips:
       filter_by_tags: Etiketlere göre filtrele
   new_note: Yeni Not
+  title_placeholder: Açıklayıcı bir not başlığı girin...
   no_notes: Not yok
   note_details: Not Detayları
   notes: Notlar

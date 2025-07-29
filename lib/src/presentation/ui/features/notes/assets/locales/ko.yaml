@@ -85,6 +85,7 @@ notes:
     tooltips:
       filter_by_tags: 태그로 필터링
   new_note: 새 노트
+  title_placeholder: 설명적인 노트 제목을 입력하세요...
   no_notes: 노트 없음
   note_details: 노트 세부 정보
   notes: 노트

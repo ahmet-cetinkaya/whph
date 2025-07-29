@@ -246,14 +246,15 @@ tasks:
       urgent_not_important: 緊急だが重要でない
   quick_task:
     create_error: タスク作成エラー
-    lock_description: 複数の類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
+    lock_description: 複数��類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
     lock_settings: ロック設定
     reset_all: すべてのフィールドをリセット
     reset_confirm:
       message: すべてのフィールドをリセットしてもよろしいですか？この操作は元に戻せません。
       title: すべてのフィールドをリセット
     title: クイックタスク
-    title_hint: タスクのタイトル
+    title_hint: 分かりやすいタスクタイトルを入力してください...
+    title_placeholder: 何をする必要がありますか？
     tooltips:
       deadline_date: "期限: {date}"
       deadline_date_not_set: "期限: 未設定"

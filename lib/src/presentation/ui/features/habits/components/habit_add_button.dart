@@ -58,7 +58,7 @@ class _HabitAddButtonState extends State<HabitAddButton> {
       errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () async {
         final command = SaveHabitCommand(
-          name: widget.initialName ?? _translationService.translate(HabitTranslationKeys.newHabit),
+          name: widget.initialName ?? "",
           description: widget.initialDescription ?? "",
           archivedDate: widget.initialArchived == true ? DateTime.now() : null,
         );

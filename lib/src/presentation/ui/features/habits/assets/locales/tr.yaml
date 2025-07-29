@@ -129,6 +129,7 @@ habits:
     all_habits_done: Tüm alışkanlıklar tamamlandı!
     no_habits_found: Alışkanlık yok
   new_habit: Yeni Alışkanlık
+  name_placeholder: Anlamlı bir alışkanlık adı girin...
   notifications:
     reminder_message: "Alışkanlığınızı tamamlamayı unutmayın: {name}"
     reminder_title: "Alışkanlık Hatırlatıcı: {name}"

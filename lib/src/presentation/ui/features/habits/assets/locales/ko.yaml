@@ -128,6 +128,7 @@ habits:
     all_habits_done: 모든 습관이 완료되었습니다!
     no_habits_found: 습관 없음
   new_habit: 새 습관
+  name_placeholder: 의미 있는 습관 이름을 입력하세요...
   notifications:
     reminder_message: "습관을 완료하는 것을 잊지 마세요: {name}"
     reminder_title: "습관 알림: {name}"

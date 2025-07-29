@@ -95,6 +95,7 @@ tags:
     confirm_unarchive: Sei sicuro di voler desarchiviare questo tag?
     unarchive_confirm: Sei sicuro di voler desarchiviare questo tag?
   new_tag: Nuovo tag
+  name_placeholder: Inserisci un nome di tag descrittivo...
   no_tags: Nessun tag
   none_option: Nessuno
   search:

@@ -95,6 +95,7 @@ tags:
     confirm_unarchive: 您确定要取消归档此标签吗？
     unarchive_confirm: 您确定要取消归档此标签吗？
   new_tag: 新标签
+  name_placeholder: 请输入描述性的标签名称...
   no_tags: 没有标签
   none_option: 无
   search:

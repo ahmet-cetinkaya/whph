@@ -250,10 +250,11 @@ tasks:
     lock_settings: 锁定设置
     reset_all: 重置所有字段
     reset_confirm:
-      message: 您确定要重置所有字段吗？此操作无法撤销。
+      message: 您��定要重置所有字段吗？此操作无法撤销。
       title: 重置所有字段
     title: 快速任务
-    title_hint: 任务标题
+    title_hint: 请输入描述性的任务标题...
+    title_placeholder: 需要做什么？
     tooltips:
       deadline_date: "截止日期：{date}"
       deadline_date_not_set: "截止日期：未设置"

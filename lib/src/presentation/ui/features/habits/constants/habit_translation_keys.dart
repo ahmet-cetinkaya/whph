@@ -2,6 +2,7 @@ import 'package:whph/src/core/application/features/habits/constants/habit_transl
 
 class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String newHabit = 'habits.new_habit';
+  static const String namePlaceholder = 'habits.name_placeholder';
   static const String loadingRecordsError = 'habits.errors.loading_records';
   static const String creatingRecordError = 'habits.errors.creating_record';
   static const String deletingRecordError = 'habits.errors.deleting_record';

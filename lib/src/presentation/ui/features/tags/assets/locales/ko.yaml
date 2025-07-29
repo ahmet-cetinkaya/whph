@@ -95,6 +95,7 @@ tags:
     confirm_unarchive: 이 태그의 보관을 해제하시겠습니까?
     unarchive_confirm: 이 태그의 보관을 해제하시겠습니까?
   new_tag: 새 태그
+  name_placeholder: 설명적인 태그 이름을 입력하세요...
   no_tags: 태그 없음
   none_option: 없음
   search:

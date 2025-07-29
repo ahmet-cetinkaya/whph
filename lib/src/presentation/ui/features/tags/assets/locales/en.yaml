@@ -95,6 +95,7 @@ tags:
     confirm_unarchive: Are you sure you want to unarchive this tag?
     unarchive_confirm: Are you sure you want to unarchive this tag?
   new_tag: New Tag
+  name_placeholder: Enter a descriptive tag name...
   no_tags: No tags
   none_option: None
   search:

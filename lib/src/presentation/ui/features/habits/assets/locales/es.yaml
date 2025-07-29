@@ -128,6 +128,7 @@ habits:
     all_habits_done: ¡Todos los hábitos completados!
     no_habits_found: Sin hábitos
   new_habit: Nuevo hábito
+  name_placeholder: Ingrese un nombre de hábito significativo...
   notifications:
     reminder_message: "Recuerda completar tu hábito: {name}"
     reminder_title: "Recordatorio de hábito: {name}"

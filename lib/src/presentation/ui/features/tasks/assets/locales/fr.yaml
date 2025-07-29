@@ -254,6 +254,7 @@ tasks:
       title: Réinitialiser tous les champs
     title: Tâche rapide
     title_hint: Titre de la tâche
+    title_placeholder: Que faut-il faire ?
     tooltips:
       deadline_date: "Échéance : {date}"
       deadline_date_not_set: "Échéance : Non définie"

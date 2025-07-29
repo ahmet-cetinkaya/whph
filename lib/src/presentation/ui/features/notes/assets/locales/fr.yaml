@@ -85,6 +85,7 @@ notes:
     tooltips:
       filter_by_tags: Filtrer par tags
   new_note: Nouvelle note
+  title_placeholder: Entrez un titre de note descriptif...
   no_notes: Aucune note
   note_details: Détails de la note
   notes: Notes

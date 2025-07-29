@@ -254,6 +254,7 @@ tasks:
       title: Reiniciar todos los campos
     title: Tarea rápida
     title_hint: Título de la tarea
+    title_placeholder: ¿Qué necesita ser hecho?
     tooltips:
       deadline_date: "Fecha límite: {date}"
       deadline_date_not_set: "Fecha límite: No establecida"

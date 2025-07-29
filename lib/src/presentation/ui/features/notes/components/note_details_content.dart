@@ -377,6 +377,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              hintText: _translationService.translate(NoteTranslationKeys.titlePlaceholder),
               suffixIcon: Tooltip(
                 message: _translationService.translate(NoteTranslationKeys.editNameTooltip),
                 child: const Icon(Icons.edit, size: AppTheme.iconSizeSmall),

@@ -85,6 +85,7 @@ notes:
     tooltips:
       filter_by_tags: 按标签筛选
   new_note: 新笔记
+  title_placeholder: 请输入描述性的笔记标题...
   no_notes: 没有笔记
   note_details: 笔记详情
   notes: 笔记

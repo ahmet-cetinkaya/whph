@@ -653,7 +653,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 color: theme.colorScheme.onSurface,
               ),
               decoration: InputDecoration(
-                hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitleHint),
+                hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitlePlaceholder),
                 // Use same content padding for both platforms
                 contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
                 // Send button in the text field

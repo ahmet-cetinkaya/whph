@@ -48,6 +48,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Quick Task
   static const String quickTaskTitle = 'tasks.quick_task.title';
   static const String quickTaskTitleHint = 'tasks.quick_task.title_hint';
+  static const String quickTaskTitlePlaceholder = 'tasks.quick_task.title_placeholder';
   static const String quickTaskCreateError = 'tasks.quick_task.create_error';
   static const String quickTaskResetAll = 'tasks.quick_task.reset_all';
   static const String quickTaskLockSettings = 'tasks.quick_task.lock_settings';

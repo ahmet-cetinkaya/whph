@@ -95,6 +95,7 @@ tags:
     confirm_unarchive: このタグのアーカイブを解除してもよろしいですか？
     unarchive_confirm: このタグのアーカイブを解除してもよろしいですか？
   new_tag: 新しいタグ
+  name_placeholder: 分かりやすいタグ名を入力してください...
   no_tags: タグがありません
   none_option: なし
   search:
