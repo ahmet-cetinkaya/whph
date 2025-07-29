@@ -963,6 +963,47 @@ class MainActivity : FlutterActivity() {
                         result.error("USAGE_ERROR", e.message, null)
                     }
                 }
+                "getTodayForegroundUsage" -> {
+                    try {
+                        Log.d("AppUsageStats", "Getting today's foreground usage (PRECISION Digital Wellbeing compatible)")
+                        
+                        val usageHandler = AppUsageStatsHandler(this@MainActivity)
+                        val usageMap = usageHandler.getTodayForegroundUsage()
+                        
+                        // Convert to Flutter-compatible format with precision metadata
+                        val resultMap = mutableMapOf<String, Any>()
+                        var totalUsageSeconds = 0
+                        
+                        usageMap.forEach { (packageName, usageTimeMs) ->
+                            val usageSeconds = (usageTimeMs / 1000).toInt()
+                            totalUsageSeconds += usageSeconds
+                            
+                            resultMap[packageName] = mapOf(
+                                "packageName" to packageName,
+                                "appName" to usageHandler.getAppDisplayName(packageName),
+                                "usageTimeSeconds" to usageSeconds,
+                                "usageTimeMs" to usageTimeMs,
+                                "precisionMode" to true,
+                                "digitalWellbeingCompatible" to true
+                            )
+                        }
+                        
+                        // Add metadata for debugging precision
+                        resultMap["_metadata"] = mapOf(
+                            "totalApps" to resultMap.size,
+                            "totalUsageSeconds" to totalUsageSeconds,
+                            "totalUsageMinutes" to (totalUsageSeconds / 60),
+                            "precisionAlgorithm" to "DigitalWellbeingExact",
+                            "timestamp" to System.currentTimeMillis()
+                        )
+                        
+                        Log.d("AppUsageStats", "PRECISION RESULT: ${resultMap.size-1} apps, ${totalUsageSeconds/60}m total")
+                        result.success(resultMap)
+                    } catch (e: Exception) {
+                        Log.e("AppUsageStats", "Error getting precision today's usage: ${e.message}", e)
+                        result.error("PRECISION_USAGE_ERROR", e.message, null)
+                    }
+                }
                 else -> {
                     result.notImplemented()
                 }

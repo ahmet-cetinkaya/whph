@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
 import 'package:whph/src/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
@@ -35,8 +36,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
     final oneHourAgo = now.subtract(const Duration(hours: 1));
     await compareUsageMethods(oneHourAgo, now);
 
-    // Initial fetch for the current partial hour to capture immediate usage.
-    await _fetchAndSaveCurrentHourUsage();
+    // Initial fetch - use direct today collection instead of hour-by-hour
+    await collectTodayUsageDirectly();
 
     // Start WorkManager periodic work for background collection
     await _startWorkManagerTracking();
@@ -60,8 +61,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
   void _setupWorkManagerListener() {
     appUsageStatsChannel.setMethodCallHandler((call) async {
       if (call.method == 'triggerCollection') {
-        Logger.info('WorkManager triggered app usage collection');
-        await _fetchAndSaveCurrentHourUsage();
+        Logger.info('WorkManager triggered app usage collection - using DIRECT today method');
+        await collectTodayUsageDirectly();
       }
     });
   }
@@ -151,6 +152,19 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
       Logger.info('Collecting usage data for hour: $hourStart to $hourEnd');
 
+      // Check if we already have complete data for this exact hour to prevent duplication
+      final existingRecords = await appUsageTimeRecordRepository.getAll(
+        customWhereFilter: CustomWhereFilter(
+          'usage_date = ? AND deleted_date IS NULL',
+          [hourStart.toUtc()],
+        ),
+      );
+
+      if (existingRecords.isNotEmpty) {
+        Logger.info('Skipping hour $hourStart - already has ${existingRecords.length} existing records');
+        return;
+      }
+
       // Use the new accurate method that filters for foreground activity only
       final usageMap =
           await _getAccurateForegroundUsage(hourStart.millisecondsSinceEpoch, hourEnd.millisecondsSinceEpoch);
@@ -173,11 +187,11 @@ class AndroidAppUsageService extends BaseAppUsageService {
           continue;
         }
 
-        // Save the usage directly for this hour
+        // Save the usage directly for this hour with strict duplication prevention
         await saveTimeRecord(
           appName,
           usageTimeSeconds,
-          overwrite: true, // Overwrite any existing data for this hour
+          overwrite: false, // Don't overwrite - we already checked for existing records
           customDateTime: hourStart,
         );
 
@@ -220,6 +234,37 @@ class AndroidAppUsageService extends BaseAppUsageService {
       return typedResult;
     } catch (e) {
       Logger.error('Error getting accurate foreground usage: $e');
+      return {};
+    }
+  }
+
+  /// Gets TODAY'S usage directly from Android without hour-by-hour collection.
+  /// This bypasses the accumulation issue and matches Digital Wellbeing's approach.
+  Future<Map<String, dynamic>> _getTodayUsageDirectly() async {
+    try {
+      Logger.info('Getting TODAY\'S usage directly from Android (bypassing hour collection)');
+      
+      final result = await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
+        'getTodayForegroundUsage',
+      );
+
+      if (result == null) {
+        Logger.warning('No today usage data returned from native method');
+        return {};
+      }
+
+      // Convert to proper type
+      final Map<String, dynamic> typedResult = {};
+      result.forEach((key, value) {
+        if (key is String && value is Map) {
+          typedResult[key] = Map<String, dynamic>.from(value);
+        }
+      });
+
+      Logger.info('Retrieved TODAY\'S usage data for ${typedResult.length} apps (direct method)');
+      return typedResult;
+    } catch (e) {
+      Logger.error('Error getting today\'s usage directly: $e');
       return {};
     }
   }
@@ -327,6 +372,85 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.info('=== END DIAGNOSTIC ===');
     } catch (e) {
       Logger.error('Error in usage diagnostic: $e');
+    }
+  }
+
+  /// Gets TODAY'S usage without any hour-by-hour accumulation.
+  /// This method directly queries Android for today's data and stores it as a single record.
+  Future<void> collectTodayUsageDirectly() async {
+    try {
+      Logger.info('=== COLLECTING TODAY\'S USAGE DIRECTLY (NO HOUR ACCUMULATION) ===');
+      
+      // Get today's usage directly from Android
+      final todayUsageMap = await _getTodayUsageDirectly();
+
+      if (todayUsageMap.isEmpty) {
+        Logger.info('No usage data found for today (direct method)');
+        return;
+      }
+
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
+
+      // Clear any existing records for today to prevent accumulation
+      await _clearTodayRecords(todayStart);
+
+      int recordsSaved = 0;
+
+      // Save each app's TOTAL usage for today as a single record
+      for (final entry in todayUsageMap.entries) {
+        final packageName = entry.key;
+        final usageData = entry.value as Map<String, dynamic>;
+        final usageTimeSeconds = usageData['usageTimeSeconds'] as int;
+        final appName = usageData['appName'] as String;
+
+        if (usageTimeSeconds <= 0) {
+          continue;
+        }
+
+        // Apply reasonable daily cap (12 hours max)
+        final cappedSeconds = usageTimeSeconds > (12 * 60 * 60) ? (12 * 60 * 60) : usageTimeSeconds;
+
+        // Save as a single record for today
+        await saveTimeRecord(
+          appName,
+          cappedSeconds,
+          overwrite: true,
+          customDateTime: todayStart,
+        );
+
+        recordsSaved++;
+        Logger.info('Saved TODAY\'S usage: $appName = ${cappedSeconds}s (${(cappedSeconds/60).toInt()}m) - DIRECT');
+      }
+
+      Logger.info('=== COMPLETED: Saved $recordsSaved direct today records ===');
+    } catch (e) {
+      Logger.error('Error collecting today\'s usage directly: $e');
+    }
+  }
+
+  /// Clears existing records for today to prevent accumulation
+  Future<void> _clearTodayRecords(DateTime todayStart) async {
+    try {
+      final todayEnd = todayStart.add(const Duration(days: 1));
+      
+      final existingRecords = await appUsageTimeRecordRepository.getAll(
+        customWhereFilter: CustomWhereFilter(
+          'usage_date >= ? AND usage_date < ? AND deleted_date IS NULL',
+          [todayStart.toUtc(), todayEnd.toUtc()],
+        ),
+      );
+
+      if (existingRecords.isNotEmpty) {
+        Logger.info('Clearing ${existingRecords.length} existing records for today before direct collection');
+        
+        for (final record in existingRecords) {
+          record.deletedDate = DateTime.now().toUtc();
+          await appUsageTimeRecordRepository.update(record);
+        }
+      }
+    } catch (e) {
+      Logger.error('Error clearing today\'s records: $e');
     }
   }
 
