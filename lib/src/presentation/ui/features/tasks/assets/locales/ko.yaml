@@ -246,7 +246,8 @@ tasks:
       urgent_not_important: 긴급하지만 중요하지 않음
   quick_task:
     create_error: 작업 생성 오류
-    lock_description: 여러 유사한 작업을 생성할 때 값을 유지하기 위해 속성을 잠그세요. 잠긴 속성은 양식을 재설정할 때 지워지지 않습니다.
+    lock_description: 여러 유사한 작업을 생성할 때 값을 유지하기 위해 속성을 잠그세요. 잠긴 속성은 양식을 재설정할 때 
+      지워지지 않습니다.
     lock_settings: 잠금 설정
     reset_all: 모든 필드 재설정
     reset_confirm:
