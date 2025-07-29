@@ -599,8 +599,8 @@ class ThemeService implements IThemeService {
       final window = WidgetsBinding.instance.platformDispatcher;
       return window.platformBrightness;
     } catch (e) {
-      // Default to light if we can't determine system theme
-      return Brightness.light;
+      // Default to dark if we can't determine system theme
+      return Brightness.dark;
     }
   }
 
