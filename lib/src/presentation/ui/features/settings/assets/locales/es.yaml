@@ -153,6 +153,6 @@ settings:
         description: Seguir la configuración del tema del sistema
     dynamic_accent:
       title: Color de acento dinámico
-      description: Usar colores dinámicos de tu tema del sistema
+      description: Si tu sistema lo admite, el color primario se adaptará basándose en el esquema de colores dinámico del sistema
       feature: Dinámico
     error: Error al cargar la configuración del tema

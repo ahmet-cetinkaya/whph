@@ -153,6 +153,6 @@ settings:
         description: Systemdesign-Einstellungen folgen
     dynamic_accent:
       title: Dynamische Akzentfarbe
-      description: Verwenden Sie dynamische Farben aus Ihrem Systemdesign
+      description: Falls Ihr System es unterstützt, wird sich die Primärfarbe basierend auf dem dynamischen Farbschema des Systems anpassen
       feature: Dynamisch
     error: Fehler beim Laden der Design-Einstellungen

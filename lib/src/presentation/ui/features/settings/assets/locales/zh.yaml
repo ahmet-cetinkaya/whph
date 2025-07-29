@@ -154,6 +154,6 @@ settings:
         description: 跟随系统主题设置
     dynamic_accent:
       title: 动态强调色
-      description: 使用系统主题的动态颜色
+      description: 如果您的系统支持，主色调将根据系统的动态颜色方案进行调整
       feature: 动态
     error: 加载主题设置失败

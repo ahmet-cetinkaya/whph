@@ -154,6 +154,6 @@ settings:
         description: Follow system theme settings
     dynamic_accent:
       title: Dynamic Accent Color
-      description: Use dynamic colors from your system theme
+      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
       feature: Dynamic
     error: Failed to load theme settings
