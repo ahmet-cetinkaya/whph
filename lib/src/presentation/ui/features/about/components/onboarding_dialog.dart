@@ -224,6 +224,9 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                 // Next/Start button
                 FilledButton(
                   onPressed: _nextPage,
+                  style: FilledButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
                   child: Text(
                     _translationService.translate(
                       _currentPage == _steps.length - 1
