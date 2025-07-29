@@ -27,6 +27,10 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IAppUsageTagRepository _appUsageTagRepository;
   final IAppUsageIgnoreRuleRepository _appUsageIgnoreRuleRepository;
 
+  // Protected getter for subclasses
+  @protected
+  IAppUsageTimeRecordRepository get appUsageTimeRecordRepository => _appUsageTimeRecordRepository;
+
   static final List<Color> _chartColors = [
     AppTheme.chartColor1,
     AppTheme.chartColor2,
