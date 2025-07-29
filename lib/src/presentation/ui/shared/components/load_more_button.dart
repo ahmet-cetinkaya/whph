@@ -26,7 +26,7 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
   Widget build(BuildContext context) {
     final isSmallScreen = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
     final buttonText = _translationService.translate(SharedTranslationKeys.loadMoreButton);
-    
+
     // For very small screens, use a more compact layout
     if (isSmallScreen) {
       return TextButton(
@@ -67,7 +67,7 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
         ),
       );
     }
-    
+
     // For larger screens, use the original layout
     return TextButton.icon(
       icon: const Icon(Icons.expand_more),

@@ -7,6 +7,8 @@ import 'package:whph/src/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
+import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
@@ -71,6 +73,9 @@ class PlatformInitializationService {
       final mediator = container.resolve<Mediator>();
       final androidSyncService = AndroidSyncService(mediator);
       await androidSyncService.startSync();
+
+      // Always start server mode for Android devices
+      await _initializeAndroidServerMode(container);
     }
 
     Logger.info('PlatformInitializationService: Mobile initialization completed on $platformName');
@@ -126,6 +131,37 @@ class PlatformInitializationService {
     } else {
       await windowManager.show();
       Logger.debug('PlatformInitializationService: Window shown');
+    }
+  }
+
+  /// Initialize server mode for Android devices (only if enabled by user preference)
+  static Future<void> _initializeAndroidServerMode(IContainer container) async {
+    const String serverModeSettingKey = 'sync_server_mode_enabled';
+
+    try {
+      // Check if user has enabled server mode preference
+      final settingRepository = container.resolve<ISettingRepository>();
+      final setting = await settingRepository.getByKey(serverModeSettingKey);
+      final isServerModeEnabled = setting?.getValue<bool>() ?? false;
+
+      if (!isServerModeEnabled) {
+        Logger.debug('PlatformInitializationService: Server mode not enabled by user, skipping auto-start');
+        return;
+      }
+
+      Logger.info(
+          'PlatformInitializationService: Starting server mode for Android device (enabled by user preference)...');
+
+      final serverSyncService = container.resolve<AndroidServerSyncService>();
+      final success = await serverSyncService.startAsServer();
+
+      if (success) {
+        Logger.info('✅ PlatformInitializationService: Android server mode started successfully for background sync');
+      } else {
+        Logger.warning('❌ PlatformInitializationService: Failed to start Android server mode');
+      }
+    } catch (e) {
+      Logger.error('PlatformInitializationService: Error initializing Android server mode: $e');
     }
   }
 }

@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/src/core/application/features/sync/models/sync_data.dart';
+import 'package:whph/src/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/src/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:whph/src/core/shared/utils/logger.dart';
 
 abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
@@ -171,68 +173,133 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     ));
   }
 
+  /// Gets paginated sync data for efficient memory usage and network transmission
   @override
-  Future<SyncData<TEntity>> getSyncData(DateTime lastSyncDate) async {
-    Future<List<TEntity>> queryForCreateSync() async {
-      final query = 'SELECT * FROM ${table.actualTableName} WHERE created_date > ?';
+  Future<PaginatedSyncData<TEntity>> getPaginatedSyncData(
+    DateTime lastSyncDate, {
+    int pageIndex = 0,
+    int pageSize = SyncPaginationConfig.defaultDatabasePageSize,
+    String? entityType,
+  }) async {
+    Logger.debug('📄 Getting paginated sync data for ${table.actualTableName} - Page $pageIndex, Size $pageSize');
 
-      final a = database.customSelect(
-        query,
-        variables: [Variable.withDateTime(lastSyncDate)],
-        readsFrom: {table},
-      );
-      final b = a.map((row) => table.map(row.data));
-      final c = b.asyncMap(
-        (entity) async => entity is Future<TEntity> ? await entity : entity,
-      );
-      final d = await c.get();
+    // Ensure page size doesn't exceed maximum
+    pageSize = pageSize > SyncPaginationConfig.maxPageSize ? SyncPaginationConfig.maxPageSize : pageSize;
 
-      return d;
-    }
-
-    Future<List<TEntity>> queryForUpdateSync() async {
-      // Include only records that were explicitly modified after sync
-      // Exclude records that were just created (they should only be in createSync)
-      final query = 'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?';
-
-      final a = database.customSelect(
-        query,
-        variables: [Variable.withDateTime(lastSyncDate)],
-        readsFrom: {table},
-      );
-      final b = a.map((row) => table.map(row.data));
-      final c = b.asyncMap(
-        (entity) async => entity is Future<TEntity> ? await entity : entity,
-      );
-      final d = await c.get();
-
-      return d;
-    }
-
-    Future<List<TEntity>> queryForDeleteSync() async {
-      // Include only records that were actually deleted after the last sync
-      // deleted_date > lastSyncDate AND deleted_date IS NOT NULL
-      final query = 'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?';
-
-      final a = database.customSelect(
-        query,
-        variables: [Variable.withDateTime(lastSyncDate)],
-        readsFrom: {table},
-      );
-      final b = a.map((row) => table.map(row.data));
-      final c = b.asyncMap(
-        (entity) async => entity is Future<TEntity> ? await entity : entity,
-      );
-      final d = await c.get();
-
-      return d;
-    }
-
-    return SyncData(
-      createSync: await queryForCreateSync(),
-      updateSync: await queryForUpdateSync(),
-      deleteSync: await queryForDeleteSync(),
+    // Get counts for each operation type
+    final createCount = await _getCountForQuery(
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ?',
+      [Variable.withDateTime(lastSyncDate)],
     );
+
+    final updateCount = await _getCountForQuery(
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?',
+      [Variable.withDateTime(lastSyncDate)],
+    );
+
+    final deleteCount = await _getCountForQuery(
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
+      [Variable.withDateTime(lastSyncDate)],
+    );
+
+    final totalItems = createCount + updateCount + deleteCount;
+    final totalPages = totalItems > 0 ? ((totalItems / pageSize).ceil()) : 1;
+    final isLastPage = pageIndex >= totalPages - 1;
+
+    Logger.debug(
+        '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems');
+
+    // Calculate which items to fetch for this page
+    final offset = pageIndex * pageSize;
+    var remainingItems = pageSize;
+
+    List<TEntity> createSync = [];
+    List<TEntity> updateSync = [];
+    List<TEntity> deleteSync = [];
+
+    // Distribute items across create, update, delete operations
+    if (offset < createCount && remainingItems > 0) {
+      final createOffset = offset;
+      final createLimit = remainingItems > (createCount - createOffset) ? (createCount - createOffset) : remainingItems;
+
+      createSync = await _getPaginatedQueryResults(
+        'SELECT * FROM ${table.actualTableName} WHERE created_date > ? ORDER BY created_date ASC LIMIT ? OFFSET ?',
+        [Variable.withDateTime(lastSyncDate), Variable.withInt(createLimit), Variable.withInt(createOffset)],
+      );
+      remainingItems -= createSync.length;
+    }
+
+    if (offset + pageSize > createCount && remainingItems > 0) {
+      final updateOffset = offset > createCount ? offset - createCount : 0;
+      final updateLimit = remainingItems > (updateCount - updateOffset) ? (updateCount - updateOffset) : remainingItems;
+
+      if (updateLimit > 0) {
+        updateSync = await _getPaginatedQueryResults(
+          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? ORDER BY modified_date ASC LIMIT ? OFFSET ?',
+          [Variable.withDateTime(lastSyncDate), Variable.withInt(updateLimit), Variable.withInt(updateOffset)],
+        );
+        remainingItems -= updateSync.length;
+      }
+    }
+
+    if (offset + pageSize > createCount + updateCount && remainingItems > 0) {
+      final deleteOffset = offset > (createCount + updateCount) ? offset - (createCount + updateCount) : 0;
+      final deleteLimit = remainingItems > (deleteCount - deleteOffset) ? (deleteCount - deleteOffset) : remainingItems;
+
+      if (deleteLimit > 0) {
+        deleteSync = await _getPaginatedQueryResults(
+          'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ? ORDER BY deleted_date ASC LIMIT ? OFFSET ?',
+          [Variable.withDateTime(lastSyncDate), Variable.withInt(deleteLimit), Variable.withInt(deleteOffset)],
+        );
+      }
+    }
+
+    final syncData = SyncData<TEntity>(
+      createSync: createSync,
+      updateSync: updateSync,
+      deleteSync: deleteSync,
+    );
+
+    Logger.debug(
+        '📦 Page $pageIndex result: ${createSync.length} creates, ${updateSync.length} updates, ${deleteSync.length} deletes');
+
+    return PaginatedSyncData<TEntity>(
+      data: syncData,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalPages: totalPages,
+      totalItems: totalItems,
+      isLastPage: isLastPage,
+      entityType: entityType ?? TEntity.toString(),
+    );
+  }
+
+  /// Helper method to get count from a query
+  Future<int> _getCountForQuery(String query, List<Variable> variables) async {
+    final result = await database
+        .customSelect(
+          query,
+          variables: variables,
+        )
+        .getSingleOrNull();
+
+    return result?.data['count'] as int? ?? 0;
+  }
+
+  /// Helper method to get paginated query results
+  Future<List<TEntity>> _getPaginatedQueryResults(String query, List<Variable> variables) async {
+    final a = database.customSelect(
+      query,
+      variables: variables,
+      readsFrom: {table},
+    );
+    final b = a.map((row) => table.map(row.data));
+    final c = b.asyncMap(
+      (entity) async => entity is Future<TEntity> ? await entity : entity,
+    );
+    final d = await c.get();
+
+    return d;
   }
 
   Variable<Object> _convertToQueryVariable(dynamic object) {

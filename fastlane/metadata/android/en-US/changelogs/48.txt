@@ -1,0 +1,6 @@
+• Add support for mobile-to-mobile sync
+• Add syncing indicator to sync devices page
+• Improve qr code scan ui
+• Add auto theme mode support
+• Integrate dynamic color support
+• Add light mode support

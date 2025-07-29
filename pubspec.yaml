@@ -1,7 +1,7 @@
 name: whph
 description: A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
 publish_to: "none"
-version: 0.10.1+47
+version: 0.11.0+48
 
 environment:
   sdk: ^3.5.3
@@ -53,7 +53,7 @@ dependencies:
   archive: ^4.0.5
   audioplayers: ^6.1.0
   csv: ^6.0.0
-  dart_json_mapper: ^2.2.13
+  dart_json_mapper: ^2.2.16
   device_info_plus: ^11.4.0
   file_picker: ^10.0.0
   file_saver: ^0.2.12

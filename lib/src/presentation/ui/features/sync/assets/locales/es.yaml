@@ -64,3 +64,13 @@ sync:
     dialog_title: Escanear código QR para sincronizar
   scanner:
     title: Escanear código QR
+    instruction: Posicione el código QR dentro del marco
+  server:
+    starting: Iniciando modo servidor...
+    active: Modo servidor activo - Muestra el código QR a otros dispositivos
+    stopped: Modo servidor detenido - El dispositivo ahora está en modo cliente
+    start_failed: No se pudo iniciar el modo servidor - Verifica si el puerto 44040 está disponible
+    start_tooltip: Iniciar modo servidor
+    stop_tooltip: Detener modo servidor
+    error: Error
+    device_became_server: Este dispositivo es ahora el servidor de sincronización

@@ -62,3 +62,13 @@ sync:
     dialog_title: QRコードをスキャンして同期
   scanner:
     title: QRコードをスキャン
+    instruction: QRコードをフレーム内に配置してください
+  server:
+    starting: サーバーモードを開始中...
+    active: サーバーモードがアクティブ - 他のデバイスにQRコードを表示
+    stopped: サーバーモードが停止 - デバイスはクライアントモードになりました
+    start_failed: サーバーモードの開始に失敗 - ポート44040が利用可能か確認してください
+    start_tooltip: サーバーモードを開始
+    stop_tooltip: サーバーモードを停止
+    error: エラー
+    device_became_server: このデバイスは同期サーバーになりました
