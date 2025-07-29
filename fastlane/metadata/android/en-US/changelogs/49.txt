@@ -1,0 +1,6 @@
+• Implement Digital Wellbeing-compatible usage tracking with precision algorithms
+• Add clearer description for dynamic color usage
+• Set fallback theme to dark
+• Remove initial titles and add placeholders for task, habit, note, and tag inputs
+• Prevent UI flicker during permission check and data loading
+• Use theme color for onboarding next button text

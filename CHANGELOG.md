@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2025-07-29
+
+### Added
+- Implement Digital Wellbeing-compatible usage tracking with precision algorithms
+- Add clearer description for dynamic color usage
+- Set fallback theme to dark
+- Remove initial titles and add placeholders for task, habit, note, and tag inputs
+
+### Fixed
+- Prevent UI flicker during permission check and data loading
+- Use theme color for onboarding next button text
+
 ## [0.11.0] - 2025-07-29
 
 ### Added
