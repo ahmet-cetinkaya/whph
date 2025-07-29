@@ -37,6 +37,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
   bool _isListVisible = false;
+  bool _isCheckingPermission = true;
 
   @override
   void initState() {
@@ -58,10 +59,22 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   Future<void> _checkPermission() async {
-    final hasPermission = await _deviceAppUsageService.checkUsageStatsPermission();
-    setState(() {
-      _hasPermission = hasPermission;
-    });
+    try {
+      final hasPermission = await _deviceAppUsageService.checkUsageStatsPermission();
+      if (mounted) {
+        setState(() {
+          _hasPermission = hasPermission;
+          _isCheckingPermission = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasPermission = false;
+          _isCheckingPermission = false;
+        });
+      }
+    }
   }
 
   Future<void> _openDetails(String id) async {
@@ -141,13 +154,20 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       builder: (context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!_hasPermission)
+          // Show loading indicator while checking permission
+          if (_isCheckingPermission)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          // Show permission card only if permission check is complete and permission is not granted
+          else if (!_hasPermission)
             AppUsagePermission(
               onPermissionGranted: _onPermissionGranted,
-            ),
-
-          // Filters
-          if (_hasPermission) ...[
+            )
+          // Show filters and list if permission is granted
+          else ...[
             AppUsageListOptions(
               initialState: _filterState,
               onFiltersChanged: _handleFiltersChanged,

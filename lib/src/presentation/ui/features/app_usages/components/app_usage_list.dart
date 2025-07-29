@@ -68,6 +68,7 @@ class AppUsageListState extends State<AppUsageList> {
   late FilterContext _currentFilters;
   Timer? _refreshDebounce;
   double? _savedScrollPosition;
+  bool _isInitialLoading = true;
 
   @override
   void initState() {
@@ -189,6 +190,8 @@ class AppUsageListState extends State<AppUsageList> {
                 totalItemCount: data.totalItemCount,
               );
             }
+            // Mark initial loading as complete
+            _isInitialLoading = false;
           });
         }
       },
@@ -222,6 +225,12 @@ class AppUsageListState extends State<AppUsageList> {
 
   @override
   Widget build(BuildContext context) {
+    // Show nothing while initial data is being fetched to prevent flickering
+    if (_isInitialLoading) {
+      return const SizedBox.shrink();
+    }
+
+    // Show empty message only after initial loading is complete and list is actually empty
     if (_appUsageList?.items.isEmpty ?? true) {
       return Padding(
         padding: const EdgeInsets.all(AppTheme.sizeMedium),
