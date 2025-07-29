@@ -246,11 +246,14 @@ tasks:
       urgent_not_important: Dringend aber nicht wichtig
   quick_task:
     create_error: Fehler beim Erstellen der Aufgabe
-    lock_description: Eigenschaften sperren, um ihre Werte beim Erstellen mehrerer ähnlicher Aufgaben beizubehalten. Gesperrte Eigenschaften werden beim Zurücksetzen des Formulars nicht gelöscht.
+    lock_description: Eigenschaften sperren, um ihre Werte beim Erstellen 
+      mehrerer ähnlicher Aufgaben beizubehalten. Gesperrte Eigenschaften werden 
+      beim Zurücksetzen des Formulars nicht gelöscht.
     lock_settings: Sperreinstellungen
     reset_all: Alle Felder zurücksetzen
     reset_confirm:
-      message: Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+      message: Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese
+        Aktion kann nicht rückgängig gemacht werden.
       title: Alle Felder zurücksetzen
     title: Schnellaufgabe
     title_hint: Aufgabentitel
