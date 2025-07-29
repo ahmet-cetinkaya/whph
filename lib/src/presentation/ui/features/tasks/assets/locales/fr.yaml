@@ -9,7 +9,8 @@ tasks:
     tooltips:
       schedule: Planifier la tâche
   complete:
-    error: Erreur inattendue lors de l'enregistrement de l'achèvement de la tâche.
+    error: Erreur inattendue lors de l'enregistrement de l'achèvement de la 
+      tâche.
   date_selection:
     deadline_date_title: Sélectionner la date d'échéance
     planned_date_title: Sélectionner la date prévue
@@ -246,11 +247,15 @@ tasks:
       urgent_not_important: Urgent mais pas important
   quick_task:
     create_error: Erreur lors de la création de la tâche
-    lock_description: Verrouillez les propriétés pour conserver leurs valeurs lors de la création de plusieurs tâches similaires. Les propriétés verrouillées ne seront pas effacées lors de la réinitialisation du formulaire.
+    lock_description: Verrouillez les propriétés pour conserver leurs valeurs 
+      lors de la création de plusieurs tâches similaires. Les propriétés 
+      verrouillées ne seront pas effacées lors de la réinitialisation du 
+      formulaire.
     lock_settings: Paramètres de verrouillage
     reset_all: Réinitialiser tous les champs
     reset_confirm:
-      message: Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action ne peut pas être annulée.
+      message: Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette 
+        action ne peut pas être annulée.
       title: Réinitialiser tous les champs
     title: Tâche rapide
     title_hint: Titre de la tâche
