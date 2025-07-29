@@ -85,6 +85,7 @@ notes:
     tooltips:
       filter_by_tags: Фильтровать по тегам
   new_note: Новая заметка
+  title_placeholder: Введите описательный заголовок заметки...
   no_notes: Нет заметок
   note_details: Детали заметки
   notes: Заметки

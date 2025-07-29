@@ -653,8 +653,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           Row(
             children: [
               // Daily Record Button
-              _buildDailyRecordButton(),
-              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: _buildDailyRecordButton(),
+              ),
 
               // Habit Name
               Expanded(
@@ -665,6 +667,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    hintText: _translationService.translate(HabitTranslationKeys.namePlaceholder),
                     suffixIcon: Tooltip(
                       message: _translationService.translate(HabitTranslationKeys.editNameTooltip),
                       child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),

@@ -108,6 +108,7 @@ tags:
     confirm_unarchive: Вы уверены, что хотите разархивировать этот тег?
     unarchive_confirm: Вы уверены, что хотите разархивировать этот тег?
   new_tag: Новый тег
+  name_placeholder: Введите описательное название тега...
   no_tags: Нет тегов
   none_option: Нет
   search:

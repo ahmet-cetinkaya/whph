@@ -64,7 +64,7 @@ class _NoteAddButtonState extends State<NoteAddButton> {
       errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
       operation: () async {
         final command = SaveNoteCommand(
-          title: widget.initialTitle ?? _translationService.translate(NoteTranslationKeys.newNote),
+          title: widget.initialTitle ?? "",
           content: '',
         );
 

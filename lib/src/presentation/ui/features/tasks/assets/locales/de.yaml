@@ -254,6 +254,7 @@ tasks:
       title: Alle Felder zurücksetzen
     title: Schnellaufgabe
     title_hint: Aufgabentitel
+    title_placeholder: Was muss erledigt werden?
     tooltips:
       deadline_date: "Frist: {date}"
       deadline_date_not_set: "Frist: Nicht festgelegt"

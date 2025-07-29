@@ -254,6 +254,7 @@ tasks:
       title: Reimposta tutti i campi
     title: Attività rapida
     title_hint: Titolo attività
+    title_placeholder: Cosa deve essere fatto?
     tooltips:
       deadline_date: "Scadenza: {date}"
       deadline_date_not_set: "Scadenza: Non impostata"

@@ -321,6 +321,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              hintText: _translationService.translate(TagTranslationKeys.namePlaceholder),
               suffixIcon: Tooltip(
                 message: _translationService.translate(TagTranslationKeys.editNameTooltip),
                 child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),

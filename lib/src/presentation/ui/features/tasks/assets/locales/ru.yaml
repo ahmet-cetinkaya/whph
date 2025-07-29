@@ -258,6 +258,7 @@ tasks:
       title: Сбросить все поля
     title: Быстрая задача
     title_hint: Заголовок задачи
+    title_placeholder: Что нужно сделать?
     tooltips:
       deadline_date: "Дедлайн: {date}"
       deadline_date_not_set: "Дедлайн: Не установлен"

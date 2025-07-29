@@ -51,7 +51,7 @@ class _TagAddButtonState extends State<TagAddButton> {
       errorMessage: _translationService.translate(TagTranslationKeys.errorSaving),
       operation: () async {
         final command = SaveTagCommand(
-          name: widget.initialName ?? _translationService.translate(TagTranslationKeys.newTag),
+          name: widget.initialName ?? "",
           isArchived: widget.initialArchived == true,
         );
         return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);

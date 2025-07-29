@@ -85,6 +85,7 @@ notes:
     tooltips:
       filter_by_tags: タグでフィルター
   new_note: 新しいノート
+  title_placeholder: 分かりやすいノートタイトルを入力してください...
   no_notes: ノートがありません
   note_details: ノートの詳細
   notes: ノート

@@ -268,6 +268,7 @@ tasks:
       title: Tüm Alanları Sıfırla
     title: Hızlı Görev
     title_hint: Görev başlığı
+    title_placeholder: Ne yapılması gerekiyor?
     tooltips:
       deadline_date: "Son Tarih: {date}"
       deadline_date_not_set: "Son Tarih: Ayarlanmadı"

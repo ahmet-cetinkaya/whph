@@ -108,6 +108,7 @@ tags:
     confirm_unarchive: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
     unarchive_confirm: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
   new_tag: Neues Tag
+  name_placeholder: Geben Sie einen beschreibenden Tag-Namen ein...
   no_tags: Keine Tags
   none_option: Keine
   search:

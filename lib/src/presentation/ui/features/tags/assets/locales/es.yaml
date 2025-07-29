@@ -108,6 +108,7 @@ tags:
     confirm_unarchive: ¿Estás seguro de que quieres desarchivar esta etiqueta?
     unarchive_confirm: ¿Estás seguro de que quieres desarchivar esta etiqueta?
   new_tag: Nueva etiqueta
+  name_placeholder: Ingrese un nombre de etiqueta descriptivo...
   no_tags: Sin etiquetas
   none_option: Ninguna
   search:

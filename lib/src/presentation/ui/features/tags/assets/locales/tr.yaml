@@ -108,6 +108,7 @@ tags:
     confirm_unarchive: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
     unarchive_confirm: Bu etiketi arşivden çıkarmak istediğinize emin misiniz?
   new_tag: Yeni Etiket
+  name_placeholder: Açıklayıcı bir etiket adı girin...
   no_tags: Etiket yok
   none_option: Hiçbiri
   search:

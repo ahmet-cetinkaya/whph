@@ -131,6 +131,7 @@ habits:
     all_habits_done: Все привычки выполнены!
     no_habits_found: Нет привычек
   new_habit: Новая привычка
+  name_placeholder: Введите осмысленное название привычки...
   notifications:
     reminder_message: "Не забудьте выполнить свою привычку: {name}"
     reminder_title: "Напоминание о привычке: {name}"

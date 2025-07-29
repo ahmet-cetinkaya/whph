@@ -254,6 +254,7 @@ tasks:
       title: 모든 필드 재설정
     title: 빠른 작업
     title_hint: 작업 제목
+    title_placeholder: 무엇을 해야 하나요?
     tooltips:
       deadline_date: "마감일: {date}"
       deadline_date_not_set: "마감일: 설정되지 않음"

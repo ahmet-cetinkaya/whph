@@ -253,7 +253,8 @@ tasks:
       message: Are you sure you want to reset all fields? This action cannot be undone.
       title: Reset All Fields
     title: Quick Task
-    title_hint: Task title
+    title_hint: Enter a descriptive task title...
+    title_placeholder: What needs to be done?
     tooltips:
       deadline_date: "Deadline: {date}"
       deadline_date_not_set: "Deadline: Not set"

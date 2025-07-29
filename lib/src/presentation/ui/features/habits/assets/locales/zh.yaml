@@ -128,6 +128,7 @@ habits:
     all_habits_done: 所有习惯已完成！
     no_habits_found: 没有习惯
   new_habit: 新习惯
+  name_placeholder: 请输入有意义的习惯名称...
   notifications:
     reminder_message: "记得完成您的习惯：{name}"
     reminder_title: "习惯提醒：{name}"

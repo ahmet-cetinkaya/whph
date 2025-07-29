@@ -38,6 +38,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String descriptionLabel = 'tags.labels.description';
   static const String tagsLabel = 'tags.labels.tags';
   static const String newTag = 'tags.new_tag';
+  static const String namePlaceholder = 'tags.name_placeholder';
 
   // Help
   static const String helpTitle = 'tags.help.title';

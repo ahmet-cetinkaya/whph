@@ -3,6 +3,7 @@ import 'package:whph/src/core/application/features/notes/constants/note_translat
 class NoteTranslationKeys extends application.NoteTranslationKeys {
   static const String notesLabel = 'notes.title';
   static const String newNote = 'notes.new_note';
+  static const String titlePlaceholder = 'notes.title_placeholder';
   static const String noteDetails = 'notes.note_details';
   static const String noNotes = 'notes.no_notes';
   static const String notes = 'notes.notes';
