@@ -154,6 +154,6 @@ settings:
         description: 시스템 테마 설정을 따름
     dynamic_accent:
       title: 동적 강조 색상
-      description: 시스템 테마의 동적 색상 사용
+      description: 시스템이 지원하는 경우 기본 색상이 시스템의 동적 색상 체계에 따라 적응됩니다
       feature: 동적
     error: 테마 설정 로드에 실패했습니다

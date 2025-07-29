@@ -154,6 +154,6 @@ settings:
         description: システムテーマ設定に従う
     dynamic_accent:
       title: ダイナミックアクセントカラー
-      description: システムテーマからダイナミックカラーを使用
+      description: システムがサポートしている場合、プライマリカラーはシステムのダイナミックカラースキームに基づいて適応されます
       feature: ダイナミック
     error: テーマ設定の読み込みに失敗しました

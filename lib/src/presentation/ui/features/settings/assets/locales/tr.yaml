@@ -153,6 +153,6 @@ settings:
         description: Sistem tema ayarlarını takip et
     dynamic_accent:
       title: Dinamik Vurgu Rengi
-      description: Sistem temanızdan dinamik renkler kullanın
+      description: Sisteminiz destekliyorsa, ana renk sistem dinamik renk şemasına göre uyarlanacaktır
       feature: Dinamik
     error: Tema ayarları yüklenemedi
