@@ -25,4 +25,23 @@ class SyncQrCodeMessage {
         'deviceName': deviceName,
         'deviceId': deviceId,
       };
+
+  /// Convert to CSV format: localIP,deviceName,deviceId
+  String toCsv() {
+    return '$localIP,$deviceName,$deviceId';
+  }
+
+  /// Parse from CSV format: localIP,deviceName,deviceId
+  factory SyncQrCodeMessage.fromCsv(String csv) {
+    final parts = csv.split(',');
+    if (parts.length != 3) {
+      throw ArgumentError('Invalid CSV format. Expected 3 parts separated by commas.');
+    }
+
+    return SyncQrCodeMessage(
+      localIP: parts[0].trim(),
+      deviceName: parts[1].trim(),
+      deviceId: parts[2].trim(),
+    );
+  }
 }

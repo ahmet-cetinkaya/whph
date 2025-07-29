@@ -62,3 +62,13 @@ sync:
     dialog_title: Scan QR Code to Sync
   scanner:
     title: Scan QR Code
+    instruction: Position QR code within the frame
+  server:
+    starting: Starting server mode...
+    active: Server mode active - Show QR code to other devices
+    stopped: Server mode stopped - Device is now in client mode
+    start_failed: Failed to start server mode - Check if port 44040 is available
+    start_tooltip: Start Server Mode
+    stop_tooltip: Stop Server Mode
+    error: Error
+    device_became_server: This device is now the sync server
