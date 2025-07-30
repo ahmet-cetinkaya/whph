@@ -86,6 +86,8 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).cardColor,
+          elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: _navigateBack,

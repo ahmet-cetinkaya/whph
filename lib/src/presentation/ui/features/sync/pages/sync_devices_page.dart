@@ -356,6 +356,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     // This makes the page more compatible when displayed in dialogs/bottom sheets
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
           // Only Android can initiate sync, desktop is passive
