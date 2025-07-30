@@ -233,6 +233,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
         leading: widget.hideSidebar
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),

@@ -83,6 +83,8 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
         title: const Text('App Usage Debug'),
       ),
       body: Padding(
