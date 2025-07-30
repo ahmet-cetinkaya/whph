@@ -15,7 +15,6 @@ class AndroidAppUsageDebugPage extends StatefulWidget {
           container.resolve(),
           container.resolve(),
           container.resolve(),
-          container.resolve(),
         );
 
   @override

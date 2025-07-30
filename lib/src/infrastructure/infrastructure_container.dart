@@ -110,7 +110,7 @@ void registerInfrastructure(IContainer container) {
 
     if (Platform.isAndroid) {
       return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, appUsageIgnoreRuleRepository, settingRepository);
+          appUsageTagRepository, appUsageIgnoreRuleRepository);
     }
 
     throw Exception('Unsupported platform for app usage service.');
