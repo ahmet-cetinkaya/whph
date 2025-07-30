@@ -1,0 +1,150 @@
+app-id: me.ahmetcetinkaya.whph
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: whph
+separate-locales: false
+
+finish-args:
+  # X11 + XShm access for GUI
+  - --share=ipc
+  - --socket=x11
+  - --socket=fallback-x11
+  
+  # Wayland access
+  - --socket=wayland
+  
+  # Audio access for notifications
+  - --socket=pulseaudio
+  
+  # Network access for sync features
+  - --share=network
+  
+  # File system access
+  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  
+  # D-Bus access for desktop integration
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.gtk.vfs.*
+  - --filesystem=xdg-run/gvfsd
+  
+  # System tray support
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.portal.Desktop
+  - --talk-name=org.freedesktop.portal.FileChooser
+  
+  # Theme access
+  - --filesystem=xdg-config/gtk-3.0:ro
+  - --filesystem=xdg-config/gtk-4.0:ro
+  
+  # Device access for app usage tracking (if needed)
+  - --device=dri
+  
+  # App usage tracking permissions
+  - --filesystem=/proc:ro
+  - --talk-name=org.gnome.Shell
+  - --talk-name=org.kde.KWin
+  - --talk-name=org.kde.kwin
+  - --talk-name=org.freedesktop.DBus
+  - --system-talk-name=org.freedesktop.login1
+  
+  # Window manager tools access (for X11/Wayland detection)
+  - --talk-name=org.freedesktop.portal.*
+
+modules:
+  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+  
+  - name: xprop
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://www.x.org/archive/individual/app/xprop-1.2.7.tar.xz
+        sha256: 4436e3148bb91e162406230d9f736a49ca8b50b74790015dc15d78d6ce8e825f
+
+  - name: wmctrl
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://sites.ibiblio.org/pub/linux/X11/libs/wmctrl-1.07.tar.gz
+        sha256: d78a1afc6bb7c8b9b1b1b1b43a62b0405e3e27cd29a92ed5b58af6dce1c2fea4
+
+  - name: flutter-sdk
+    buildsystem: simple
+    build-commands:
+      - ls -la
+      - mkdir -p /app/flutter
+      - cp -r . /app/flutter/
+      - /app/flutter/bin/flutter --version
+      - /app/flutter/bin/flutter config --no-analytics
+      - /app/flutter/bin/flutter precache --linux
+    sources:
+      - type: archive
+        url: https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.0-stable.tar.xz
+        sha256: a7ee8b11b6feaffa0adc06f82c7147aaa314fedb0499348aa5ff4db468837af0
+
+  - name: libsecret
+    buildsystem: meson
+    config-opts:
+      - -Dmanpage=false
+      - -Dvapi=false
+      - -Dgir=false
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libsecret/0.21/libsecret-0.21.4.tar.xz
+        sha256: 163d08d783be6d4ab9a979ceb5a4fecbc1d9660d3c34168c581301cd53912b20
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/man
+
+  - name: whph
+    buildsystem: simple
+    build-options:
+      append-path: /app/flutter/bin
+      env:
+        FLUTTER_ROOT: /app/flutter
+        PUB_CACHE: .pub_cache
+        PATH: /app/flutter/bin:/usr/bin:/bin
+    build-commands:
+      # Verify Flutter installation
+      - flutter --version
+      - flutter doctor || true
+      
+      # Get Flutter dependencies
+      - flutter pub get
+      
+      # Build the Linux application
+      - flutter build linux --release
+      
+      # Install the application
+      - mkdir -p /app/bin
+      - cp -r build/linux/x64/release/bundle/* /app/
+      - ln -sf /app/whph /app/bin/whph
+      
+      # Install desktop file
+      - mkdir -p /app/share/applications
+      - cp linux/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
+      - sed -i 's/Exec=whph/Exec=\/app\/bin\/whph/' /app/share/applications/me.ahmetcetinkaya.whph.desktop
+      - sed -i 's/Icon=\${ICON_PATH}/Icon=me.ahmetcetinkaya.whph/' /app/share/applications/me.ahmetcetinkaya.whph.desktop
+      
+      # Install icon
+      - mkdir -p /app/share/icons/hicolor/512x512/apps
+      - cp lib/src/core/domain/shared/assets/images/whph_logo.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.png
+      
+      # Install metainfo
+      - mkdir -p /app/share/metainfo
+      - cp linux/flatpak/me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/
+    
+    sources:
+      - type: dir
+        path: project-source
+        dest: .
+        
+    cleanup:
+      - /app/flutter
+      - /include
+      - /lib/pkgconfig
+      - /share/man

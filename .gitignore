@@ -53,3 +53,14 @@ android/app/release
 
 # FVM Version Cache
 .fvm/
+
+# Flatpak build artifacts
+linux/flatpak/.flatpak-builder/
+linux/flatpak/build-dir/
+linux/flatpak/bundle-staging/
+linux/flatpak/repo/
+linux/flatpak/shared-modules/
+linux/flatpak/project-source
+linux/flatpak/*.flatpak
+linux/flatpak/*_512.png
+linux/flatpak/me.ahmetcetinkaya.whph.simple.yml

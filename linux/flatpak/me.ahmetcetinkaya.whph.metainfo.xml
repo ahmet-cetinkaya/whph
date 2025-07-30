@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>me.ahmetcetinkaya.whph</id>
+  <name>Work Hard Play Hard</name>
+  <summary>A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time</summary>
+  
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  
+  <description>
+    <p>
+      WHPH (Work Hard Play Hard) is a comprehensive productivity application that helps you manage your daily tasks, develop new habits, and optimize your time effectively. Built with Flutter for cross-platform compatibility, it offers a clean and intuitive interface for productivity management.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Task management with tags and time tracking</li>
+      <li>Habit tracking and development</li>
+      <li>Notes organization with markdown support</li>
+      <li>App usage monitoring and statistics</li>
+      <li>Calendar integration</li>
+      <li>Data synchronization across devices</li>
+      <li>Customizable themes and settings</li>
+      <li>Export and import functionality</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">me.ahmetcetinkaya.whph.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main application interface</caption>
+      <image>file:///app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.png</image>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/ahmet-cetinkaya/whph</url>
+  <url type="bugtracker">https://github.com/ahmet-cetinkaya/whph/issues</url>
+  
+  <developer_name>Ahmet Çetinkaya</developer_name>
+  
+  <categories>
+    <category>Utility</category>
+    <category>Office</category>
+    <category>ProjectManagement</category>
+  </categories>
+  
+  <keywords>
+    <keyword>productivity</keyword>
+    <keyword>tasks</keyword>
+    <keyword>habits</keyword>
+    <keyword>time-management</keyword>
+    <keyword>notes</keyword>
+    <keyword>organization</keyword>
+  </keywords>
+  
+  <content_rating type="oars-1.1" />
+  
+  <releases>
+    <release version="0.11.1" date="2024-01-01">
+      <description>
+        <p>Latest release with improved features and bug fixes.</p>
+      </description>
+    </release>
+  </releases>
+  
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+</component>
