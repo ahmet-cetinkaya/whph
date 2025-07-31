@@ -13,6 +13,8 @@ import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:acore/acore.dart' hide Container;
 
 class AppUsageTagRuleForm extends StatefulWidget {
   final Function()? onSave;
@@ -30,6 +32,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
+  final _themeService = container.resolve<IThemeService>();
 
   final _formKey = GlobalKey<FormState>();
   final _patternController = TextEditingController();
@@ -278,9 +281,9 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               if (widget.onSave != null)
                 TextButton.icon(
                   onPressed: widget.onSave,
-                  icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: AppTheme.darkTextColor),
+                  icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: _themeService.primaryColor),
                   label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
-                      style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                      style: AppTheme.bodySmall.copyWith(color: _themeService.primaryColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
@@ -288,13 +291,13 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                 icon: Icon(
                   _isSubmitting ? SharedUiConstants.checkIcon : SharedUiConstants.saveIcon,
                   size: AppTheme.iconSizeSmall,
-                  color: AppTheme.darkTextColor,
+                  color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor),
                 ),
                 label: Text(
                   _isSubmitting
                       ? _translationService.translate(SharedTranslationKeys.savedButton)
                       : _translationService.translate(SharedTranslationKeys.saveButton),
-                  style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor),
+                  style: AppTheme.bodySmall.copyWith(color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor)),
                 ),
               ),
             ],

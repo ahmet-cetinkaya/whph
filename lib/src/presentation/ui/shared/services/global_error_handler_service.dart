@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show BusinessException;
+import 'package:acore/acore.dart' show BusinessException, ColorContrastHelper;
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
@@ -60,12 +60,12 @@ class GlobalErrorHandlerService {
       textDirection: TextDirection.ltr,
       child: Material(
         child: Container(
-          color: Colors.red,
+          color: AppTheme.errorColor,
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.sizeLarge),
             child: Text(
               'Error: ${details.exception}',
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: ColorContrastHelper.getContrastingTextColor(AppTheme.errorColor)),
             ),
           ),
         ),

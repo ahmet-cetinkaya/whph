@@ -155,4 +155,8 @@ settings:
       title: Dynamische Akzentfarbe
       description: Falls Ihr System es unterstützt, wird sich die Primärfarbe basierend auf dem dynamischen Farbschema des Systems anpassen
       feature: Dynamisch
+    custom_accent:
+      title: Benutzerdefinierte Akzentfarbe
+      description: Wählen Sie eine benutzerdefinierte Akzentfarbe, um das Erscheinungsbild Ihrer App zu personalisieren
+      feature: Benutzerdefiniert
     error: Fehler beim Laden der Design-Einstellungen

@@ -156,4 +156,8 @@ settings:
       title: Colore accento dinamico
       description: Se il tuo sistema lo supporta, il colore primario si adatterà in base allo schema di colori dinamico del sistema
       feature: Dinamico
+    custom_accent:
+      title: Colore accento personalizzato
+      description: Scegli un colore accento personalizzato per personalizzare l'aspetto della tua applicazione
+      feature: Personalizzato
     error: Errore nel caricamento delle impostazioni del tema

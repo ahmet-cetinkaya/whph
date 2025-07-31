@@ -937,7 +937,6 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       // CRITICAL FIX: Find the server's own sync device record to use its lastSyncDate
       // This ensures bidirectional sync works correctly - server sends its data based on its own sync state
-      final localDeviceId = await deviceIdService.getDeviceId();
       final allSyncDevices = await syncDeviceRepository.getAll();
       final serverSyncDevice = allSyncDevices.firstWhere(
         (device) => device.id == incomingDto.syncDevice.id,

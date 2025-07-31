@@ -238,7 +238,6 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
               widget.onRecordChanged?.call();
             },
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppTheme.textColor,
         backgroundColor: backgroundColor,
         disabledBackgroundColor:
             isCurrentMonth ? AppTheme.surface2.withValues(alpha: 0.3) : AppTheme.surface2.withValues(alpha: 0.1),

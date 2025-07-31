@@ -205,6 +205,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     final bool isDisabled = _currentConfig.useCustomOrder;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).cardColor,
         title: Text(widget.translationService.translate(SharedTranslationKeys.sort)),
         leading: IconButton(
           icon: const Icon(Icons.close),

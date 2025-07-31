@@ -7,6 +7,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_ser
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/src/presentation/ui/shared/components/color_picker.dart';
 import 'package:whph/main.dart';
 
 class ThemeSettings extends StatefulWidget {
@@ -22,6 +23,8 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 
   AppThemeMode _themeMode = AppThemeMode.dark;
   bool _dynamicAccentColor = false;
+  bool _customAccentColor = false;
+  Color? _customAccentColorValue;
   bool _isLoading = true;
   StreamSubscription<void>? _themeSubscription;
 
@@ -58,6 +61,8 @@ class _ThemeSettingsState extends State<ThemeSettings> {
       operation: () async {
         _themeMode = _themeService.currentThemeMode;
         _dynamicAccentColor = _themeService.isDynamicAccentColorEnabled;
+        _customAccentColor = _themeService.isCustomAccentColorEnabled;
+        _customAccentColorValue = _themeService.customAccentColor;
         return true;
       },
     );
@@ -71,6 +76,10 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     await _themeService.setDynamicAccentColor(enabled);
   }
 
+  Future<void> _saveCustomAccentColor(Color? color) async {
+    await _themeService.setCustomAccentColor(color);
+  }
+
   void _showThemeModal() {
     if (!mounted) return;
 
@@ -79,16 +88,21 @@ class _ThemeSettingsState extends State<ThemeSettings> {
       child: _ThemeDialogWrapper(
         currentThemeMode: _themeMode,
         currentDynamicAccentColor: _dynamicAccentColor,
-        onThemeChanged: (mode, dynamic) {
+        currentCustomAccentColor: _customAccentColor,
+        currentCustomAccentColorValue: _customAccentColorValue,
+        onThemeChanged: (mode, dynamic, custom, customColor) {
           if (mounted) {
             setState(() {
               _themeMode = mode;
               _dynamicAccentColor = dynamic;
+              _customAccentColor = custom;
+              _customAccentColorValue = customColor;
             });
           }
         },
         onSaveThemeMode: _saveThemeMode,
         onSaveDynamicAccentColor: _saveDynamicAccentColor,
+        onSaveCustomAccentColor: _saveCustomAccentColor,
       ),
       size: DialogSize.medium,
     );
@@ -111,6 +125,9 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     final features = <String>[];
     if (_dynamicAccentColor) {
       features.add(_translationService.translate(SettingsTranslationKeys.dynamicAccentColorFeature));
+    }
+    if (_customAccentColor) {
+      features.add(_translationService.translate(SettingsTranslationKeys.customAccentColorFeature));
     }
 
     if (features.isNotEmpty) {
@@ -152,16 +169,22 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 class _ThemeDialogWrapper extends StatelessWidget {
   final AppThemeMode currentThemeMode;
   final bool currentDynamicAccentColor;
-  final Function(AppThemeMode, bool) onThemeChanged;
+  final bool currentCustomAccentColor;
+  final Color? currentCustomAccentColorValue;
+  final Function(AppThemeMode, bool, bool, Color?) onThemeChanged;
   final Future<void> Function(AppThemeMode) onSaveThemeMode;
   final Future<void> Function(bool) onSaveDynamicAccentColor;
+  final Future<void> Function(Color?) onSaveCustomAccentColor;
 
   const _ThemeDialogWrapper({
     required this.currentThemeMode,
     required this.currentDynamicAccentColor,
+    required this.currentCustomAccentColor,
+    required this.currentCustomAccentColorValue,
     required this.onThemeChanged,
     required this.onSaveThemeMode,
     required this.onSaveDynamicAccentColor,
+    required this.onSaveCustomAccentColor,
   });
 
   @override
@@ -178,9 +201,12 @@ class _ThemeDialogWrapper extends StatelessWidget {
               return _ThemeDialog(
                 currentThemeMode: currentThemeMode,
                 currentDynamicAccentColor: currentDynamicAccentColor,
+                currentCustomAccentColor: currentCustomAccentColor,
+                currentCustomAccentColorValue: currentCustomAccentColorValue,
                 onThemeChanged: onThemeChanged,
                 onSaveThemeMode: onSaveThemeMode,
                 onSaveDynamicAccentColor: onSaveDynamicAccentColor,
+                onSaveCustomAccentColor: onSaveCustomAccentColor,
               );
             },
           ),
@@ -193,16 +219,22 @@ class _ThemeDialogWrapper extends StatelessWidget {
 class _ThemeDialog extends StatefulWidget {
   final AppThemeMode currentThemeMode;
   final bool currentDynamicAccentColor;
-  final Function(AppThemeMode, bool) onThemeChanged;
+  final bool currentCustomAccentColor;
+  final Color? currentCustomAccentColorValue;
+  final Function(AppThemeMode, bool, bool, Color?) onThemeChanged;
   final Future<void> Function(AppThemeMode) onSaveThemeMode;
   final Future<void> Function(bool) onSaveDynamicAccentColor;
+  final Future<void> Function(Color?) onSaveCustomAccentColor;
 
   const _ThemeDialog({
     required this.currentThemeMode,
     required this.currentDynamicAccentColor,
+    required this.currentCustomAccentColor,
+    required this.currentCustomAccentColorValue,
     required this.onThemeChanged,
     required this.onSaveThemeMode,
     required this.onSaveDynamicAccentColor,
+    required this.onSaveCustomAccentColor,
   });
 
   @override
@@ -215,6 +247,8 @@ class _ThemeDialogState extends State<_ThemeDialog> {
 
   late AppThemeMode _themeMode;
   late bool _dynamicAccentColor;
+  late bool _customAccentColor;
+  late Color? _customAccentColorValue;
 
   @override
   void initState() {
@@ -231,10 +265,12 @@ class _ThemeDialogState extends State<_ThemeDialog> {
   void _updateFromService() {
     _themeMode = _themeService.currentThemeMode;
     _dynamicAccentColor = _themeService.isDynamicAccentColorEnabled;
+    _customAccentColor = _themeService.isCustomAccentColorEnabled;
+    _customAccentColorValue = _themeService.customAccentColor;
   }
 
   void _updateTheme() {
-    widget.onThemeChanged(_themeMode, _dynamicAccentColor);
+    widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue);
   }
 
   @override
@@ -391,10 +427,83 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                   onChanged: (value) async {
                     setState(() {
                       _dynamicAccentColor = value;
+                      if (value) {
+                        _customAccentColor = false;
+                        _customAccentColorValue = null;
+                      }
                     });
                     _updateTheme();
                     await widget.onSaveDynamicAccentColor(value);
                   },
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.sizeLarge),
+
+              // Custom Accent Color
+              Text(
+                _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: AppTheme.sizeSmall),
+
+              Card(
+                color: theme.cardTheme.color,
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        _translationService.translate(SettingsTranslationKeys.customAccentColorDescription),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      value: _customAccentColor,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        setState(() {
+                          _customAccentColor = value;
+                          if (!value) {
+                            _customAccentColorValue = null;
+                          } else {
+                            _dynamicAccentColor = false;
+                            // Set default color if none selected
+                            _customAccentColorValue ??= theme.colorScheme.primary;
+                          }
+                        });
+                        _updateTheme();
+                        await widget.onSaveCustomAccentColor(value ? _customAccentColorValue : null);
+                      },
+                    ),
+                    if (_customAccentColor) ...[
+                      Divider(height: 1, color: theme.dividerColor),
+                      Padding(
+                        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                        child: SizedBox(
+                          height: 300,
+                          child: ColorPicker(
+                            pickerColor: _customAccentColorValue ?? theme.colorScheme.primary,
+                            onChangeColor: (color) async {
+                              setState(() {
+                                _customAccentColorValue = color;
+                              });
+                              _updateTheme();
+                              await widget.onSaveCustomAccentColor(color);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ],

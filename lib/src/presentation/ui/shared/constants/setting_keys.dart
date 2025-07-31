@@ -42,4 +42,5 @@ class SettingKeys {
   // Theme Settings
   static const String themeMode = 'THEME_MODE';
   static const String dynamicAccentColor = 'DYNAMIC_ACCENT_COLOR';
+  static const String customAccentColor = 'CUSTOM_ACCENT_COLOR';
 }

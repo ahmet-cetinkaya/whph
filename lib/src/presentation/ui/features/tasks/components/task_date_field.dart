@@ -76,7 +76,7 @@ class TaskDateField extends StatelessWidget {
           PopupMenuButton<ReminderTime>(
             icon: Icon(
               Icons.notifications,
-              color: hasReminder ? Theme.of(context).colorScheme.primary : Colors.grey,
+              color: hasReminder ? Theme.of(context).colorScheme.primary : AppTheme.secondaryTextColor,
               size: AppTheme.iconSizeSmall,
             ),
             tooltip: translationService.translate(TaskTranslationKeys.setReminderTooltip),

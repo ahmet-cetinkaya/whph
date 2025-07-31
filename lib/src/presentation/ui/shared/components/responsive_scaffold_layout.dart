@@ -438,6 +438,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               ),
             ),
             const Divider(),
+            const SizedBox(height: AppTheme.sizeSmall),
+
             // Remaining top navigation items
             ...moreItems.map((item) => _buildMoreMenuItem(context, item, currentRoute)),
 

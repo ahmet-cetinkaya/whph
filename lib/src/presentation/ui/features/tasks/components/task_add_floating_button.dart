@@ -3,12 +3,12 @@ import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/quick_add_task_dialog.dart';
 import 'package:whph/src/presentation/ui/features/tasks/models/task_data.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:acore/acore.dart';
 
 /// A floating action button specifically designed for adding tasks.
 /// This component provides a consistent way to add tasks across different pages.
@@ -73,10 +73,14 @@ class TaskAddFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final buttonBackgroundColor = backgroundColor ?? _themeService.primaryColor;
+    final buttonForegroundColor = foregroundColor ?? 
+        ColorContrastHelper.getContrastingTextColor(buttonBackgroundColor);
+    
     return FloatingActionButton(
       onPressed: () => _showTaskCreationDialog(context),
-      backgroundColor: backgroundColor ?? _themeService.primaryColor,
-      foregroundColor: foregroundColor ?? AppTheme.darkTextColor,
+      backgroundColor: buttonBackgroundColor,
+      foregroundColor: buttonForegroundColor,
       tooltip: tooltip ?? _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
       child: Icon(icon ?? Icons.add),
     );

@@ -156,4 +156,8 @@ settings:
       title: Dynamic Accent Color
       description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
       feature: Dynamic
+    custom_accent:
+      title: Custom Accent Color
+      description: Choose a custom accent color to personalize your app's appearance
+      feature: Custom
     error: Failed to load theme settings

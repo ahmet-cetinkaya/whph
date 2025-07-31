@@ -214,7 +214,7 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                                 Expanded(
                                   child: Text(
                                     rule.pattern,
-                                    style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace', color: Colors.white),
+                                    style: AppTheme.bodyMedium.copyWith(fontFamily: 'monospace'),
                                   ),
                                 ),
                               ],

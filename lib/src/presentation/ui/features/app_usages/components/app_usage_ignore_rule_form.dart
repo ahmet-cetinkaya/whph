@@ -11,6 +11,8 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:acore/acore.dart';
 
 class AppUsageIgnoreRuleForm extends StatefulWidget {
   final Function()? onSave;
@@ -28,6 +30,7 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
+  final _themeService = container.resolve<IThemeService>();
 
   final _formKey = GlobalKey<FormState>();
   final _patternController = TextEditingController();
@@ -178,9 +181,9 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
               if (widget.onSave != null)
                 TextButton.icon(
                   onPressed: widget.onSave,
-                  icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: AppTheme.darkTextColor),
+                  icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: _themeService.primaryColor),
                   label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
-                      style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor)),
+                      style: AppTheme.bodySmall.copyWith(color: _themeService.primaryColor)),
                 ),
               const SizedBox(width: 8),
               FilledButton.icon(
@@ -188,13 +191,13 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                 icon: Icon(
                   _isSubmitting ? SharedUiConstants.checkIcon : SharedUiConstants.saveIcon,
                   size: AppTheme.iconSizeSmall,
-                  color: AppTheme.darkTextColor,
+                  color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor),
                 ),
                 label: Text(
                   _isSubmitting
                       ? _translationService.translate(SharedTranslationKeys.savedButton)
                       : _translationService.translate(SharedTranslationKeys.saveButton),
-                  style: AppTheme.bodySmall.copyWith(color: AppTheme.darkTextColor),
+                  style: AppTheme.bodySmall.copyWith(color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor)),
                 ),
               ),
             ],

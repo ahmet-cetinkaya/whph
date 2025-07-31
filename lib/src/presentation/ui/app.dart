@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:whph/src/core/domain/shared/constants/app_info.dart';
 import 'package:whph/src/presentation/ui/app/services/app_initialization_service.dart';
 import 'package:whph/src/presentation/ui/app/services/app_lifecycle_service.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_routes.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
@@ -88,7 +87,7 @@ class _AppState extends State<App> {
           supportedLocales: context.supportedLocales,
           locale: context.locale,
           title: AppInfo.name,
-          theme: AppTheme.themeData,
+          theme: _themeService.themeData,
           debugShowCheckedModeBanner: false,
           onGenerateRoute: AppRoutes.onGenerateRoute,
           home: AppRoutes.defaultRoute,

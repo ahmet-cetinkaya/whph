@@ -155,4 +155,8 @@ settings:
       title: Dinamik Vurgu Rengi
       description: Sisteminiz destekliyorsa, ana renk sistem dinamik renk şemasına göre uyarlanacaktır
       feature: Dinamik
+    custom_accent:
+      title: Özel Vurgu Rengi
+      description: Uygulamanızın görünümünü kişiselleştirmek için özel bir vurgu rengi seçin
+      feature: Özel
     error: Tema ayarları yüklenemedi

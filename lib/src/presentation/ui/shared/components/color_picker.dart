@@ -3,7 +3,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart' as flutter_colorpi
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import '../constants/shared_translation_keys.dart';
-import 'border_fade_overlay.dart';
 
 class ColorPicker extends StatelessWidget {
   final Color pickerColor;
@@ -20,13 +19,11 @@ class ColorPicker extends StatelessWidget {
       child: Column(
         children: [
           // Tab Bar Section
-          BorderFadeOverlay(
-            fadeBorders: {FadeBorder.right},
-            child: TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              dividerColor: Colors.transparent,
-              tabs: [
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            dividerColor: Colors.transparent,
+            tabs: [
                 Tab(
                   key: const Key('color_picker_palette_tab'),
                   child: Row(
@@ -50,7 +47,6 @@ class ColorPicker extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
           ),
 
           // Tab View Section

@@ -428,6 +428,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         builder: (BuildContext context, StateSetter setState) {
           return Scaffold(
             appBar: AppBar(
+              backgroundColor: Theme.of(context).cardColor,
               title: Text(_translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel)),
               automaticallyImplyLeading: false,
               actions: [
