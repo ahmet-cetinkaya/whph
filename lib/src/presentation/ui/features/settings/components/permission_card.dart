@@ -4,11 +4,13 @@ import 'package:whph/src/presentation/ui/features/settings/constants/settings_tr
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 /// A shared card component for displaying permission settings with consistent UI
 class PermissionCard extends StatelessWidget {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   /// Icon to display for this permission
   final IconData icon;
@@ -84,7 +86,7 @@ class PermissionCard extends StatelessWidget {
                     width: AppTheme.iconSizeMedium,
                     height: AppTheme.iconSizeMedium,
                     child: CircularProgressIndicator(
-                      color: AppTheme.primaryColor,
+                      color: _themeService.primaryColor,
                       strokeWidth: 2.0,
                     ),
                   )

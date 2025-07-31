@@ -8,6 +8,7 @@ import 'package:whph/src/core/domain/features/settings/setting.dart';
 import 'package:whph/src/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:acore/acore.dart' hide Container;
 
 class ThemeService implements IThemeService {
   final Mediator _mediator;
@@ -21,6 +22,16 @@ class ThemeService implements IThemeService {
   ColorScheme? _dynamicDarkColorScheme;
 
   ThemeService({required Mediator mediator}) : _mediator = mediator;
+
+  /// Calculates the appropriate text color for a given background color
+  /// using the theme's light and dark text colors instead of standard black/white
+  Color _getContrastingTextColor(Color backgroundColor) {
+    // Use ColorContrastHelper to determine if we need light or dark text
+    Color standardColor = ColorContrastHelper.getContrastingTextColor(backgroundColor);
+    
+    // Return theme-appropriate colors instead of standard black/white
+    return standardColor == Colors.white ? lightTextColor : darkTextColor;
+  }
 
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
@@ -208,7 +219,12 @@ class ThemeService implements IThemeService {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       ),
       checkboxTheme: CheckboxThemeData(
-        checkColor: WidgetStateProperty.all(lightTextColor),
+        checkColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _getContrastingTextColor(_primaryColor);
+          }
+          return lightTextColor;
+        }),
         fillColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return _primaryColor;
@@ -360,7 +376,8 @@ class ThemeService implements IThemeService {
             if (states.contains(WidgetState.disabled)) {
               return secondaryTextColor;
             }
-            return lightTextColor;
+            // Use contrast calculation to determine the best text color for the primary background
+            return _getContrastingTextColor(_primaryColor);
           }),
           padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
@@ -660,7 +677,7 @@ class ThemeService implements IThemeService {
     return isDark
         ? ColorScheme.dark(
             primary: primaryColor,
-            onPrimary: lightTextColor, // Light text on dark theme primary
+            onPrimary: _getContrastingTextColor(primaryColor), // Use contrast calculation
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,
@@ -677,7 +694,7 @@ class ThemeService implements IThemeService {
           )
         : ColorScheme.light(
             primary: primaryColor,
-            onPrimary: darkTextColor, // Dark text on light theme primary
+            onPrimary: _getContrastingTextColor(primaryColor), // Use contrast calculation
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,

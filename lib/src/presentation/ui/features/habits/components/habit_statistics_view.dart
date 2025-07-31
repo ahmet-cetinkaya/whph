@@ -10,6 +10,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
@@ -30,6 +31,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final _mediator = container.resolve<Mediator>();
+  final _themeService = container.resolve<IThemeService>();
 
   GetHabitQueryResponse? _habit;
   GetListHabitRecordsQueryResponse? _habitRecords;
@@ -268,7 +270,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     flex: (percentage * 100).toInt(),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                        color: _themeService.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -375,13 +377,13 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                         .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
                         .toList(),
                     isCurved: true,
-                    color: AppTheme.primaryColor,
+                    color: _themeService.primaryColor,
                     barWidth: 3,
                     isStrokeCapRound: true,
                     dotData: FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: AppTheme.primaryColor.withAlpha((255 * 0.2).toInt()),
+                      color: _themeService.primaryColor.withAlpha((255 * 0.2).toInt()),
                     ),
                   ),
                 ],
@@ -439,13 +441,13 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
               Icon(
                 Icons.timeline,
                 size: 48,
-                color: AppTheme.primaryColor.withValues(alpha: 0.5),
+                color: _themeService.primaryColor.withValues(alpha: 0.5),
               ),
               const SizedBox(height: AppTheme.sizeSmall),
               Text(
                 _translationService.translate(HabitTranslationKeys.noStreaksYet),
                 style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.7),
+                  color: _themeService.primaryColor.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -490,7 +492,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                               width: (constraints.maxWidth / 2) * value,
                               height: 24,
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryColor,
+                                color: _themeService.primaryColor,
                                 borderRadius: BorderRadius.horizontal(left: Radius.circular(4)),
                               ),
                             );
@@ -504,7 +506,7 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                               width: (constraints.maxWidth / 2) * value,
                               height: 24,
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryColor,
+                                color: _themeService.primaryColor,
                                 borderRadius: BorderRadius.horizontal(right: Radius.circular(4)),
                               ),
                             );

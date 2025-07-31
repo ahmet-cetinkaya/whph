@@ -15,6 +15,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
@@ -43,6 +44,7 @@ class TagTimeBarChart extends StatefulWidget {
 class TagTimeBarChartState extends State<TagTimeBarChart> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   GetElementsByTimeQueryResponse? _elementTimeData;
   bool _isLoading = true;
@@ -218,7 +220,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       case TagTimeCategory.habits:
         return Colors.green;
       default:
-        return AppTheme.primaryColor;
+        return _themeService.primaryColor;
     }
   }
 }

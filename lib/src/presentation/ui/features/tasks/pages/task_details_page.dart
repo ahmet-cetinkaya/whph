@@ -16,6 +16,7 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 class TaskDetailsPage extends StatefulWidget {
@@ -45,6 +46,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   Timer? _completedTasksHideTimer;
   Key _listRebuildKey = UniqueKey();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   // Task filter options
   String? _searchQuery;
@@ -247,7 +249,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
             child: TaskDeleteButton(
               taskId: widget.taskId,
               onDeleteSuccess: _onTaskDeleteSuccess,
-              buttonColor: AppTheme.primaryColor,
+              buttonColor: _themeService.primaryColor,
             ),
           ),
           const SizedBox(width: AppTheme.sizeSmall),

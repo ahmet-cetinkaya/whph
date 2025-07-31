@@ -6,6 +6,7 @@ import 'package:whph/src/presentation/ui/features/habits/components/habit_detail
 import 'package:whph/src/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 class HabitDetailsPage extends StatefulWidget {
   static const String route = '/habits/details';
@@ -19,6 +20,7 @@ class HabitDetailsPage extends StatefulWidget {
 
 class _HabitDetailsPageState extends State<HabitDetailsPage> {
   final _habitsService = container.resolve<HabitsService>();
+  final _themeService = container.resolve<IThemeService>();
   bool _isDeleted = false;
 
   void _goBack() {
@@ -64,14 +66,14 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
         actions: [
           HabitArchiveButton(
             habitId: widget.habitId,
-            buttonColor: AppTheme.primaryColor,
+            buttonColor: _themeService.primaryColor,
             onArchiveSuccess: () {
               _habitsService.notifyHabitUpdated(widget.habitId);
             },
           ),
           HabitDeleteButton(
             habitId: widget.habitId,
-            buttonColor: AppTheme.primaryColor,
+            buttonColor: _themeService.primaryColor,
             onDeleteSuccess: () {
               _habitsService.notifyHabitDeleted(widget.habitId);
             },

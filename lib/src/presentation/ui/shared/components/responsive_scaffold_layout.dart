@@ -10,6 +10,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 /// Configuration options for route rendering
 class RouteOptions {
@@ -91,6 +92,7 @@ class ResponsiveScaffoldLayout extends StatefulWidget {
 
 class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _themeService = container.resolve<IThemeService>();
 
   @override
   void didChangeDependencies() {
@@ -311,19 +313,19 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.sizeLarge)),
       selected: isActive,
-      selectedTileColor: AppTheme.primaryColor.withValues(alpha: 0.1),
+      selectedTileColor: _themeService.primaryColor.withValues(alpha: 0.1),
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
       contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge),
       leading: navItem.icon != null
-          ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge, color: isActive ? AppTheme.primaryColor : null)
+          ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge, color: isActive ? _themeService.primaryColor : null)
           : null,
       title: navItem.widget ??
           Text(
             translationService.translate(navItem.titleKey),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   fontSize: AppTheme.fontSizeMedium,
-                  color: isActive ? AppTheme.primaryColor : null,
+                  color: isActive ? _themeService.primaryColor : null,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                 ),
           ),
@@ -371,7 +373,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         }
       },
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppTheme.primaryColor,
+      selectedItemColor: _themeService.primaryColor,
       unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
       backgroundColor: Theme.of(context).cardColor,
       elevation: 8,
@@ -467,16 +469,16 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.sizeLarge)),
         leading: item.icon != null
-            ? Icon(item.icon, color: isActive ? AppTheme.primaryColor : Theme.of(context).iconTheme.color)
+            ? Icon(item.icon, color: isActive ? _themeService.primaryColor : Theme.of(context).iconTheme.color)
             : null,
         title: Text(
           translationService.translate(item.titleKey),
           style: TextStyle(
-            color: isActive ? AppTheme.primaryColor : Theme.of(context).textTheme.bodyMedium?.color,
+            color: isActive ? _themeService.primaryColor : Theme.of(context).textTheme.bodyMedium?.color,
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
           ),
         ),
-        tileColor: isActive ? AppTheme.primaryColor.withValues(alpha: 0.1) : null,
+        tileColor: isActive ? _themeService.primaryColor.withValues(alpha: 0.1) : null,
         onTap: () {
           Navigator.pop(context); // Close bottom sheet
           _onClickNavItem(item);

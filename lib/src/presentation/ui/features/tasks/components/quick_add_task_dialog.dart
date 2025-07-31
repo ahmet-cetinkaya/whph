@@ -16,6 +16,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.da
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
@@ -52,6 +53,7 @@ class QuickAddTaskDialog extends StatefulWidget {
 
 class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   final _titleController = TextEditingController();
+  final _themeService = container.resolve<IThemeService>();
   final _plannedDateController = TextEditingController();
   final _deadlineDateController = TextEditingController();
   final _mediator = container.resolve<Mediator>();
@@ -417,7 +419,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           _buildLockOptionCheckboxTile(
                             title: _translationService.translate(TaskTranslationKeys.tagsLabel),
                             icon: TagUiConstants.tagIcon,
-                            iconColor: TaskUiConstants.tagColor,
+                            iconColor: TaskUiConstants.getTagColor(_themeService),
                             value: _lockTags,
                             onChanged: (bool? value) {
                               setDialogState(() {
@@ -730,7 +732,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
             iconSize: iconSize,
             color:
-                _selectedTags.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.7) : TaskUiConstants.tagColor,
+                _selectedTags.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.7) : TaskUiConstants.getTagColor(_themeService),
           ),
           isLocked: _lockTags,
         ),

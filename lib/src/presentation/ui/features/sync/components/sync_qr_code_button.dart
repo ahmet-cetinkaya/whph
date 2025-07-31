@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -15,7 +16,9 @@ import 'package:whph/src/core/application/features/sync/services/abstraction/i_d
 import 'package:acore/acore.dart';
 
 class SyncQrCodeButton extends StatelessWidget {
-  const SyncQrCodeButton({super.key});
+  final _themeService = container.resolve<IThemeService>();
+
+  SyncQrCodeButton({super.key});
 
   /// Static method to show QR code modal from anywhere
   static void showQrCodeModal(BuildContext context) async {
@@ -95,7 +98,7 @@ class SyncQrCodeButton extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.qr_code),
       onPressed: () => _showQrCodeModal(context),
-      color: AppTheme.primaryColor,
+      color: _themeService.primaryColor,
     );
   }
 }

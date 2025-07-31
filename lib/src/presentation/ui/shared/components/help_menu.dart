@@ -5,6 +5,7 @@ import 'package:whph/src/presentation/ui/shared/constants/shared_translation_key
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 
@@ -13,6 +14,7 @@ class HelpMenu extends StatelessWidget {
   final String markdownContentKey;
 
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   HelpMenu({
     super.key,
@@ -43,7 +45,7 @@ class HelpMenu extends StatelessWidget {
     return IconButton(
         icon: const Icon(SharedUiConstants.helpIcon),
         onPressed: () => _showHelpModal(context),
-        color: AppTheme.primaryColor,
+        color: _themeService.primaryColor,
         tooltip: _translationService.translate(SharedTranslationKeys.helpTooltip));
   }
 }

@@ -31,6 +31,7 @@ import 'package:whph/src/presentation/ui/features/habits/components/habit_calend
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 
 class HabitDetailsContent extends StatefulWidget {
@@ -53,6 +54,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final _mediator = container.resolve<Mediator>();
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   final _soundPlayer = container.resolve<ISoundPlayer>();
 
   GetHabitQueryResponse? _habit;
@@ -1030,7 +1032,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppTheme.primaryColor.withValues(alpha: isArchived ? 0.05 : 0.1),
+        color: _themeService.primaryColor.withValues(alpha: isArchived ? 0.05 : 0.1),
       ),
       child: IconButton(
         icon: Icon(

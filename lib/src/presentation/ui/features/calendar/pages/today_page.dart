@@ -25,6 +25,7 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_confetti_animation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
 
@@ -40,6 +41,7 @@ class TodayPage extends StatefulWidget {
 class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
   final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   // Main list options state
   List<String>? _selectedTagFilter;
@@ -210,7 +212,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         IconButton(
           icon: const Icon(Icons.timer),
           onPressed: () => _openMarathonPage(context),
-          color: AppTheme.primaryColor,
+          color: _themeService.primaryColor,
           tooltip: _translationService.translate(TaskTranslationKeys.marathon),
         ),
         HelpMenu(

@@ -21,6 +21,7 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -113,6 +114,7 @@ class TaskListOptions extends PersistentListOptionsBase {
 
 class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptions> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   @override
   void initSettingKey() {
@@ -335,7 +337,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     icon: TagUiConstants.tagIcon,
                     iconSize: AppTheme.iconSizeMedium,
                     color: (widget.selectedTagIds?.isNotEmpty ?? false) || widget.showNoTagsFilter
-                        ? AppTheme.primaryColor
+                        ? _themeService.primaryColor
                         : Colors.grey,
                     tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
                     showLength: true,
@@ -354,7 +356,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     selectedEndDate: widget.selectedEndDate,
                     onDateFilterChange: widget.onDateFilterChange!,
                     iconColor: (widget.selectedStartDate != null || widget.selectedEndDate != null)
-                        ? AppTheme.primaryColor
+                        ? _themeService.primaryColor
                         : Colors.grey,
                   ),
 
@@ -368,7 +370,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
                     iconSize: AppTheme.iconSizeMedium,
                     iconColor:
-                        (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? AppTheme.primaryColor : Colors.grey,
+                        (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? _themeService.primaryColor : Colors.grey,
                     expandedWidth: 200,
                     isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),

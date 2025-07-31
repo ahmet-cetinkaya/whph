@@ -16,6 +16,7 @@ import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 
 class HabitCard extends StatefulWidget {
@@ -49,6 +50,7 @@ class _HabitCardState extends State<HabitCard> {
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
@@ -434,7 +436,7 @@ class _HabitCardState extends State<HabitCard> {
                 child: Text(
                   DateTimeHelper.getWeekday(localDate.weekday),
                   style: AppTheme.bodySmall.copyWith(
-                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                    color: isToday ? _themeService.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
                   ),
                 ),
               ),
@@ -446,7 +448,7 @@ class _HabitCardState extends State<HabitCard> {
                 child: Text(
                   localDate.day.toString(),
                   style: AppTheme.bodySmall.copyWith(
-                    color: isToday ? AppTheme.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                    color: isToday ? _themeService.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
                   ),
                 ),
               ),

@@ -13,6 +13,7 @@ import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'dart:async';
 
@@ -69,6 +70,7 @@ class AppUsageListOptions extends PersistentListOptionsBase {
 
 class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListOptions> {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   late AppUsageFilterState _currentState;
 
   @override
@@ -252,7 +254,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
             icon: TagUiConstants.tagIcon,
             iconSize: AppTheme.iconSizeMedium,
             color: (_currentState.tags?.isNotEmpty ?? false) || _currentState.showNoTagsFilter
-                ? AppTheme.primaryColor
+                ? _themeService.primaryColor
                 : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterTagsButton),
           ),
@@ -272,7 +274,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
             initialNoneSelected: false,
             icon: Icons.devices,
             iconSize: AppTheme.iconSizeMedium,
-            color: (_currentState.devices?.isNotEmpty ?? false) ? AppTheme.primaryColor : Colors.grey,
+            color: (_currentState.devices?.isNotEmpty ?? false) ? _themeService.primaryColor : Colors.grey,
             tooltip: _translationService.translate(AppUsageTranslationKeys.filterDevicesButton),
           ),
 

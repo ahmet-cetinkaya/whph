@@ -3,6 +3,7 @@ import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 class TaskUiConstants {
   // Task-specific Icons
@@ -29,7 +30,7 @@ class TaskUiConstants {
   static const Color plannedDateColor = Colors.green;
   static const Color deadlineDateColor = Colors.orange;
   static const Color tagsColor = Colors.grey;
-  static Color tagColor = AppTheme.primaryColor;
+  static Color getTagColor(IThemeService themeService) => themeService.primaryColor;
   static const Color totalElapsedTimeColor = Colors.purple;
 
   // Time options

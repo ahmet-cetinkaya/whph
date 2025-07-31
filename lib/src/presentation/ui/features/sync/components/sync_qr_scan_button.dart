@@ -6,8 +6,8 @@ import 'package:whph/src/core/application/features/sync/queries/get_sync_query.d
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/network_utils.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
@@ -27,6 +27,7 @@ class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _deviceIdService = container.resolve<IDeviceIdService>();
+  final _themeService = container.resolve<IThemeService>();
   final VoidCallback? onSyncComplete;
 
   late final MobileSyncManager _mobileSyncManager;
@@ -284,7 +285,7 @@ class SyncQrScanButton extends StatelessWidget {
     return IconButton(
       onPressed: () => _openQRScanner(context),
       icon: const Icon(Icons.qr_code_scanner),
-      color: AppTheme.primaryColor,
+      color: _themeService.primaryColor,
     );
   }
 }
