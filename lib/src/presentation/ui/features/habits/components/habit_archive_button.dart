@@ -7,10 +7,10 @@ import 'package:whph/src/core/application/features/habits/queries/get_habit_quer
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
@@ -37,6 +37,7 @@ class HabitArchiveButton extends StatefulWidget {
 class _HabitArchiveButtonState extends State<HabitArchiveButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   final _habitsService = container.resolve<HabitsService>();
   bool? _isArchived;
 
@@ -152,7 +153,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
             _isArchived! ? HabitTranslationKeys.unarchiveHabitTooltip : HabitTranslationKeys.archiveHabitTooltip,
           ),
       onPressed: _toggleArchiveStatus,
-      color: widget.buttonColor ?? AppTheme.primaryColor,
+      color: widget.buttonColor ?? _themeService.primaryColor,
       style: IconButton.styleFrom(
         backgroundColor: widget.buttonBackgroundColor,
       ),

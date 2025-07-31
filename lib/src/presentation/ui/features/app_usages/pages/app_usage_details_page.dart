@@ -6,6 +6,7 @@ import 'package:whph/src/presentation/ui/features/app_usages/components/app_usag
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class AppUsageDetailsPage extends StatefulWidget {
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
   final _appUsagesService = container.resolve<AppUsagesService>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   bool _hasChanges = false;
 
@@ -96,7 +98,7 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
             AppUsageDeleteButton(
               appUsageId: widget.appUsageId,
               onDeleteSuccess: _onDeleteSuccess,
-              buttonColor: AppTheme.primaryColor,
+              buttonColor: _themeService.primaryColor,
             ),
           ],
         ),

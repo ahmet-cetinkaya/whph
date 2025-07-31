@@ -7,11 +7,14 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 /// A floating action button specifically designed for adding tasks.
 /// This component provides a consistent way to add tasks across different pages.
 class TaskAddFloatingButton extends StatelessWidget {
+  final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   /// Callback function called when a task is successfully created
   final Function(String taskId, TaskData taskData)? onTaskCreated;
 
@@ -51,7 +54,7 @@ class TaskAddFloatingButton extends StatelessWidget {
   /// Custom icon for the floating action button
   final IconData? icon;
 
-  const TaskAddFloatingButton({
+  TaskAddFloatingButton({
     super.key,
     this.onTaskCreated,
     this.initialTagIds,
@@ -70,13 +73,11 @@ class TaskAddFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final translationService = container.resolve<ITranslationService>();
-
     return FloatingActionButton(
       onPressed: () => _showTaskCreationDialog(context),
-      backgroundColor: backgroundColor ?? AppTheme.primaryColor,
+      backgroundColor: backgroundColor ?? _themeService.primaryColor,
       foregroundColor: foregroundColor ?? AppTheme.darkTextColor,
-      tooltip: tooltip ?? translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
+      tooltip: tooltip ?? _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
       child: Icon(icon ?? Icons.add),
     );
   }

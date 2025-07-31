@@ -18,6 +18,7 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class TagsPage extends StatefulWidget {
@@ -31,6 +32,7 @@ class TagsPage extends StatefulWidget {
 
 class _TagsPageState extends State<TagsPage> {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   // Main List Options
   static const String _mainSettingKeyVariantSuffix = 'MAIN';
@@ -147,7 +149,7 @@ class _TagsPageState extends State<TagsPage> {
           onTagCreated: (tagId) {
             _openDetails(tagId);
           },
-          buttonColor: AppTheme.primaryColor,
+          buttonColor: _themeService.primaryColor,
           tooltip: _translationService.translate(TagTranslationKeys.addTagTooltip),
           initialName: _searchFilterQuery,
           initialArchived: _showArchived,

@@ -3,6 +3,7 @@ import 'package:whph/src/presentation/ui/features/habits/constants/habit_transla
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:acore/acore.dart' hide Container;
 
 /// A widget for selecting reminder options for a habit
 class HabitReminderSelector extends StatefulWidget {
@@ -307,7 +308,9 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
                 child: Text(
                   _getDayName(day).substring(0, 1),
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
+                    color: isSelected 
+                        ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
+                        : Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                     fontSize: fontSize,
                   ),

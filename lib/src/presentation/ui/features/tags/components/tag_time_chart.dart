@@ -232,7 +232,7 @@ class TagTimeChartState extends State<TagTimeChart> {
           ? Color(int.parse('FF${item.tagColor!}', radix: 16))
           : Colors.primaries[i % Colors.primaries.length];
 
-      final titleColor = ColorHelper.getContrastingTextColor(sectionColor);
+      final titleColor = ColorContrastHelper.getContrastingTextColor(sectionColor);
 
       sections.add(PieChartSectionData(
         color: sectionColor,
@@ -256,7 +256,7 @@ class TagTimeChartState extends State<TagTimeChart> {
       final otherPercent = smallTags.fold<double>(0, (sum, item) => sum + item.$2);
 
       const otherSectionColor = Colors.grey;
-      final otherTitleColor = ColorHelper.getContrastingTextColor(otherSectionColor);
+      final otherTitleColor = ColorContrastHelper.getContrastingTextColor(otherSectionColor);
 
       sections.add(PieChartSectionData(
         color: otherSectionColor,

@@ -22,6 +22,7 @@ import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation
 import 'package:whph/src/presentation/ui/shared/components/border_fade_overlay.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
@@ -39,6 +40,7 @@ class TagDetailsPage extends StatefulWidget {
 
 class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   // Note list options state
   bool _isNoteListVisible = false;
@@ -90,13 +92,13 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
           TagArchiveButton(
             tagId: widget.tagId,
             onArchiveSuccess: _goBack,
-            buttonColor: AppTheme.primaryColor,
+            buttonColor: _themeService.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.archiveTagTooltip),
           ),
           TagDeleteButton(
             tagId: widget.tagId,
             onDeleteSuccess: _goBack,
-            buttonColor: AppTheme.primaryColor,
+            buttonColor: _themeService.primaryColor,
             tooltip: _translationService.translate(TagTranslationKeys.deleteTagTooltip),
           ),
         ],

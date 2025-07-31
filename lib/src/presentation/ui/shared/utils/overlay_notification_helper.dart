@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show ColorHelper;
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/main.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 /// A helper class for showing overlay notifications that appear above all content,
@@ -93,10 +95,11 @@ class OverlayNotificationHelper {
     VoidCallback? onTap,
     Widget? actionWidget,
   }) {
+    final themeService = container.resolve<IThemeService>();
     showNotification(
       context: context,
       message: message,
-      backgroundColor: AppTheme.primaryColor,
+      backgroundColor: themeService.primaryColor,
       icon: Icons.info_outline,
       duration: duration,
       onTap: onTap,
@@ -112,10 +115,11 @@ class OverlayNotificationHelper {
     VoidCallback? onTap,
     Widget? actionWidget,
   }) {
+    final themeService = container.resolve<IThemeService>();
     showNotification(
       context: context,
       message: message,
-      backgroundColor: AppTheme.primaryColor,
+      backgroundColor: themeService.primaryColor,
       icon: null, // We'll add a custom loading widget
       duration: duration,
       onTap: onTap,
@@ -125,8 +129,7 @@ class OverlayNotificationHelper {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(ColorHelper.getContrastingTextColor(AppTheme.primaryColor,
-                  darkColor: AppTheme.darkTextColor, lightColor: AppTheme.lightTextColor)),
+              valueColor: AlwaysStoppedAnimation<Color>(ColorContrastHelper.getContrastingTextColor(themeService.primaryColor)),
             ),
           ),
     );
@@ -200,8 +203,7 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
 
   @override
   Widget build(BuildContext context) {
-    final contrastingTextColor = ColorHelper.getContrastingTextColor(widget.backgroundColor,
-        darkColor: AppTheme.darkTextColor, lightColor: AppTheme.lightTextColor);
+    final contrastingTextColor = ColorContrastHelper.getContrastingTextColor(widget.backgroundColor);
 
     return Positioned(
       left: 0,

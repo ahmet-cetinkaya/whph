@@ -15,6 +15,7 @@ import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constant
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class OnboardingDialog extends StatefulWidget {
@@ -26,6 +27,7 @@ class OnboardingDialog extends StatefulWidget {
 
 class _OnboardingDialogState extends State<OnboardingDialog> {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   final _mediator = container.resolve<Mediator>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -162,7 +164,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                         Icon(
                           step.icon,
                           size: 64,
-                          color: AppTheme.primaryColor,
+                          color: _themeService.primaryColor,
                         ),
                       const SizedBox(height: 24),
                       Text(
@@ -203,7 +205,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPage == index ? AppTheme.primaryColor : AppTheme.primaryColor.withValues(alpha: 0.2),
+                    color: _currentPage == index ? _themeService.primaryColor : _themeService.primaryColor.withValues(alpha: 0.2),
                   ),
                 ),
               ),

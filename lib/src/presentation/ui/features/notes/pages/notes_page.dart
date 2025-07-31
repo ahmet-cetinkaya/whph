@@ -8,10 +8,10 @@ import 'package:whph/src/presentation/ui/features/notes/constants/note_translati
 import 'package:whph/src/presentation/ui/features/notes/pages/note_details_page.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class NotesPage extends StatefulWidget {
@@ -25,6 +25,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   bool _isListVisible = false;
   List<String>? _selectedTagIds;
@@ -82,7 +83,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             NoteAddButton(
               mini: true,
               onNoteCreated: _handleNoteCreated,
-              buttonColor: AppTheme.primaryColor,
+              buttonColor: _themeService.primaryColor,
               initialTitle: _searchQuery,
               initialTagIds: _selectedTagIds,
             ),

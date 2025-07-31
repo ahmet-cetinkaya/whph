@@ -3,11 +3,11 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/tags/services/tags_service.dart';
@@ -35,6 +35,7 @@ class TagArchiveButton extends StatefulWidget {
 class _TagArchiveButtonState extends State<TagArchiveButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
   final _tagsService = container.resolve<TagsService>();
   bool? _isArchived;
 
@@ -133,7 +134,7 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
             _isArchived! ? TagTranslationKeys.unarchiveTagTooltip : TagTranslationKeys.archiveTagTooltip,
           ),
       onPressed: _toggleArchiveStatus,
-      color: widget.buttonColor ?? AppTheme.primaryColor,
+      color: widget.buttonColor ?? _themeService.primaryColor,
       style: IconButton.styleFrom(
         backgroundColor: widget.buttonBackgroundColor,
       ),

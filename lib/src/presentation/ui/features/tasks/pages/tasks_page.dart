@@ -3,7 +3,6 @@ import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_add_button.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/src/presentation/ui/features/tasks/components/tasks_list.dart';
@@ -15,6 +14,7 @@ import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class TasksPage extends StatefulWidget {
@@ -28,6 +28,7 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
+  final _themeService = container.resolve<IThemeService>();
 
   bool _isTaskListVisible = false;
 
@@ -159,7 +160,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               onTaskCreated: (taskId, taskData) {
                 // The task will be added through the event system
               },
-              buttonColor: AppTheme.primaryColor,
+              buttonColor: _themeService.primaryColor,
               initialTagIds: _showNoTagsFilter ? [] : _selectedTagIds,
               initialTitle: _searchQuery,
               initialPlannedDate: _filterStartDate,

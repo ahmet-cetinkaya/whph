@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/notes/components/note_delete_button.dart';
 import 'package:whph/src/presentation/ui/features/notes/components/note_details_content.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 class NoteDetailsPage extends StatefulWidget {
   static const String route = '/notes/details';
@@ -14,6 +16,7 @@ class NoteDetailsPage extends StatefulWidget {
 }
 
 class _NoteDetailsPageState extends State<NoteDetailsPage> {
+  final _themeService = container.resolve<IThemeService>();
   void _handleNoteDeleted() {
     Navigator.of(context).pop();
   }
@@ -36,7 +39,7 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
           NoteDeleteButton(
             noteId: widget.noteId,
             onDeleted: _handleNoteDeleted,
-            buttonColor: AppTheme.primaryColor,
+            buttonColor: _themeService.primaryColor,
           ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],

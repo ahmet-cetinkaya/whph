@@ -10,11 +10,11 @@ import 'package:whph/src/presentation/ui/features/app_usages/pages/app_usage_det
 import 'package:whph/src/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
-import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
@@ -33,6 +33,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   final _translationService = container.resolve<ITranslationService>();
   final _deviceAppUsageService = container.resolve<IAppUsageService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
+  final _themeService = container.resolve<IThemeService>();
 
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
@@ -131,19 +132,19 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           IconButton(
             icon: const Icon(Icons.bug_report),
             onPressed: _showAndroidDebugScreen,
-            color: AppTheme.primaryColor,
+            color: _themeService.primaryColor,
             tooltip: 'Debug Usage Statistics',
           ),
         IconButton(
           icon: const Icon(Icons.settings),
           onPressed: _showTagRulesSettings,
-          color: AppTheme.primaryColor,
+          color: _themeService.primaryColor,
           tooltip: _translationService.translate(AppUsageTranslationKeys.tagRulesButton),
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: _onRefresh,
-          color: AppTheme.primaryColor,
+          color: _themeService.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
         HelpMenu(
