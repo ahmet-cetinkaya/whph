@@ -388,7 +388,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     // Track sync failures for detailed error reporting
     final List<String> failedEntities = [];
-    
+
     // Sync each entity type with pagination
     for (int configIndex = 0; configIndex < _syncConfigs.length; configIndex++) {
       final config = _syncConfigs[configIndex];
@@ -670,27 +670,28 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 bool responseProcessingSuccess = true;
                 if (messageData['paginatedSyncDataDto'] != null && isComplete) {
                   Logger.info('📥 Server returned response data - processing desktop data sync to mobile');
-                  
+
                   Map<String, dynamic>? responseDataMap;
                   try {
                     // Parse the server response data
                     responseDataMap = messageData['paginatedSyncDataDto'] as Map<String, dynamic>;
-                    
+
                     // Fix potential type casting issues by normalizing numeric fields
                     _normalizeJsonNumericTypes(responseDataMap);
-                    
+
                     // Manual deserialization to avoid generic type issues with JsonMapper
                     final responseDto = _deserializePaginatedSyncDataDto(responseDataMap);
-                    
+
                     if (responseDto == null) {
                       Logger.error('❌ Failed to deserialize server response data');
                       responseProcessingSuccess = false;
                     } else {
-                      Logger.debug('📋 Processing ${responseDto.entityType} data from server (${responseDto.totalItems} items)');
-                      
+                      Logger.debug(
+                          '📋 Processing ${responseDto.entityType} data from server (${responseDto.totalItems} items)');
+
                       // Process the incoming data using the same method used for server-side processing
                       final processSuccess = await processIncomingPaginatedData(responseDto);
-                      
+
                       if (processSuccess) {
                         Logger.info('✅ Successfully processed server response data for ${responseDto.entityType}');
                       } else {
@@ -706,7 +707,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                     responseProcessingSuccess = false;
                   }
                 }
-                
+
                 // Only complete successfully if both server response AND response processing succeeded
                 completer.complete(responseProcessingSuccess);
                 break;
@@ -866,7 +867,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       // CRITICAL FIX: Check if this is a legitimate empty sync vs a deserialization failure
       // If the DTO contains sync data but paginatedData is null, this indicates a deserialization error
       final bool hasActualSyncData = _dtoContainsSyncData(dto);
-      
+
       if (hasActualSyncData) {
         // DTO contains data but deserialization failed - this is an error
         Logger.error('❌ ${dto.entityType} deserialization failed despite having sync data - marking as failed');
@@ -891,11 +892,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         case 'AppUsageTag':
           return dto.appUsageTagsSyncData != null && dto.appUsageTagsSyncData!.data.getTotalItemCount() > 0;
         case 'AppUsageTimeRecord':
-          return dto.appUsageTimeRecordsSyncData != null && dto.appUsageTimeRecordsSyncData!.data.getTotalItemCount() > 0;
+          return dto.appUsageTimeRecordsSyncData != null &&
+              dto.appUsageTimeRecordsSyncData!.data.getTotalItemCount() > 0;
         case 'AppUsageTagRule':
           return dto.appUsageTagRulesSyncData != null && dto.appUsageTagRulesSyncData!.data.getTotalItemCount() > 0;
         case 'AppUsageIgnoreRule':
-          return dto.appUsageIgnoreRulesSyncData != null && dto.appUsageIgnoreRulesSyncData!.data.getTotalItemCount() > 0;
+          return dto.appUsageIgnoreRulesSyncData != null &&
+              dto.appUsageIgnoreRulesSyncData!.data.getTotalItemCount() > 0;
         case 'Habit':
           return dto.habitsSyncData != null && dto.habitsSyncData!.data.getTotalItemCount() > 0;
         case 'HabitRecord':
@@ -958,8 +961,9 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       // CRITICAL FIX: Use server's own lastSyncDate to determine what data to send back
       // This enables proper bidirectional sync - server sends its data regardless of client's sync state
       final serverLastSyncDate = serverSyncDevice.lastSyncDate ?? DateTime(1900, 1, 1);
-      Logger.debug('🔄 Server preparing response using its own lastSyncDate: $serverLastSyncDate for ${incomingDto.entityType}');
-      
+      Logger.debug(
+          '🔄 Server preparing response using its own lastSyncDate: $serverLastSyncDate for ${incomingDto.entityType}');
+
       final responseData = await config.getPaginatedSyncData(
         serverLastSyncDate,
         incomingDto.pageIndex,
@@ -1109,7 +1113,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       final totalPages = json['totalPages'] as int;
       final totalItems = json['totalItems'] as int;
       final isLastPage = json['isLastPage'] as bool;
-      
+
       // Deserialize sync device
       final syncDeviceMap = json['syncDevice'] as Map<String, dynamic>;
       final syncDevice = JsonMapper.deserialize<SyncDevice>(syncDeviceMap);
@@ -1117,18 +1121,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         Logger.error('❌ Failed to deserialize SyncDevice');
         return null;
       }
-      
+
       // Deserialize progress if present
       SyncProgress? progress;
       if (json['progress'] != null) {
         final progressMap = json['progress'] as Map<String, dynamic>;
         progress = JsonMapper.deserialize<SyncProgress>(progressMap);
       }
-      
+
       // Deserialize the specific entity sync data based on entityType
       PaginatedSyncData? entitySyncData;
       final String syncDataKey = _getEntityDataKey(entityType);
-      
+
       Logger.debug('🔍 Looking for sync data key: $syncDataKey');
       if (json[syncDataKey] != null) {
         final syncDataMap = json[syncDataKey] as Map<String, dynamic>;
@@ -1142,7 +1146,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       } else {
         Logger.debug('⚠️ No $syncDataKey found in response data');
       }
-      
+
       // Create the DTO using constructor
       return _createPaginatedSyncDataDtoFromDeserialized(
         appVersion: appVersion,
@@ -1188,7 +1192,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       final totalPages = json['totalPages'] as int;
       final totalItems = json['totalItems'] as int;
       final isLastPage = json['isLastPage'] as bool;
-      
+
       // Deserialize the SyncData based on entity type
       SyncData? syncData;
       switch (entityType) {
@@ -1209,15 +1213,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<Setting>()
               .toList();
-          
-          Logger.debug('📊 Deserialized Settings: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized Settings: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<Setting>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           // Return properly typed PaginatedSyncData for Settings
           final result = PaginatedSyncData<Setting>(
             data: syncData as SyncData<Setting>,
@@ -1230,7 +1235,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           );
           Logger.debug('✅ Created PaginatedSyncData<Setting> (${result.runtimeType})');
           return result;
-        
+
         case 'SyncDevice':
           Logger.debug('🔍 Deserializing SyncDevice entities...');
           final createSync = (dataMap['createSync'] as List? ?? [])
@@ -1248,15 +1253,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<SyncDevice>()
               .toList();
-          
-          Logger.debug('📊 Deserialized SyncDevices: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized SyncDevices: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<SyncDevice>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           // Return properly typed PaginatedSyncData for SyncDevices
           final result = PaginatedSyncData<SyncDevice>(
             data: syncData as SyncData<SyncDevice>,
@@ -1269,7 +1275,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           );
           Logger.debug('✅ Created PaginatedSyncData<SyncDevice> (${result.runtimeType})');
           return result;
-        
+
         case 'Task':
           Logger.debug('🔍 Deserializing Task entities...');
           final createSync = (dataMap['createSync'] as List? ?? [])
@@ -1287,15 +1293,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<Task>()
               .toList();
-          
-          Logger.debug('📊 Deserialized Tasks: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized Tasks: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<Task>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<Task>(
             data: syncData as SyncData<Task>,
             pageIndex: pageIndex,
@@ -1325,15 +1332,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<Note>()
               .toList();
-          
-          Logger.debug('📊 Deserialized Notes: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized Notes: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<Note>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<Note>(
             data: syncData as SyncData<Note>,
             pageIndex: pageIndex,
@@ -1363,15 +1371,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<Habit>()
               .toList();
-          
-          Logger.debug('📊 Deserialized Habits: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized Habits: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<Habit>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<Habit>(
             data: syncData as SyncData<Habit>,
             pageIndex: pageIndex,
@@ -1401,15 +1410,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<Tag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized Tags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized Tags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<Tag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<Tag>(
             data: syncData as SyncData<Tag>,
             pageIndex: pageIndex,
@@ -1439,15 +1449,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<AppUsage>()
               .toList();
-          
-          Logger.debug('📊 Deserialized AppUsages: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized AppUsages: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<AppUsage>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<AppUsage>(
             data: syncData as SyncData<AppUsage>,
             pageIndex: pageIndex,
@@ -1477,15 +1488,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<TaskTag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized TaskTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized TaskTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<TaskTag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<TaskTag>(
             data: syncData as SyncData<TaskTag>,
             pageIndex: pageIndex,
@@ -1515,15 +1527,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<TaskTimeRecord>()
               .toList();
-          
-          Logger.debug('📊 Deserialized TaskTimeRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized TaskTimeRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<TaskTimeRecord>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<TaskTimeRecord>(
             data: syncData as SyncData<TaskTimeRecord>,
             pageIndex: pageIndex,
@@ -1553,15 +1566,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<HabitTag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized HabitTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized HabitTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<HabitTag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<HabitTag>(
             data: syncData as SyncData<HabitTag>,
             pageIndex: pageIndex,
@@ -1591,15 +1605,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<NoteTag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized NoteTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized NoteTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<NoteTag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<NoteTag>(
             data: syncData as SyncData<NoteTag>,
             pageIndex: pageIndex,
@@ -1629,15 +1644,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<AppUsageTag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized AppUsageTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized AppUsageTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<AppUsageTag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<AppUsageTag>(
             data: syncData as SyncData<AppUsageTag>,
             pageIndex: pageIndex,
@@ -1667,15 +1683,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<AppUsageTagRule>()
               .toList();
-          
-          Logger.debug('📊 Deserialized AppUsageTagRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized AppUsageTagRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<AppUsageTagRule>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<AppUsageTagRule>(
             data: syncData as SyncData<AppUsageTagRule>,
             pageIndex: pageIndex,
@@ -1705,15 +1722,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<TagTag>()
               .toList();
-          
-          Logger.debug('📊 Deserialized TagTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized TagTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<TagTag>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<TagTag>(
             data: syncData as SyncData<TagTag>,
             pageIndex: pageIndex,
@@ -1743,15 +1761,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               .where((item) => item != null)
               .cast<AppUsageIgnoreRule>()
               .toList();
-          
-          Logger.debug('📊 Deserialized AppUsageIgnoreRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
-          
+
+          Logger.debug(
+              '📊 Deserialized AppUsageIgnoreRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
           syncData = SyncData<AppUsageIgnoreRule>(
             createSync: createSync,
             updateSync: updateSync,
             deleteSync: deleteSync,
           );
-          
+
           final result = PaginatedSyncData<AppUsageIgnoreRule>(
             data: syncData as SyncData<AppUsageIgnoreRule>,
             pageIndex: pageIndex,
@@ -1807,9 +1826,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       settingsSyncData: entityType == 'Setting' ? entitySyncData as PaginatedSyncData<Setting>? : null,
       appUsagesSyncData: entityType == 'AppUsage' ? entitySyncData as PaginatedSyncData<AppUsage>? : null,
       appUsageTagsSyncData: entityType == 'AppUsageTag' ? entitySyncData as PaginatedSyncData<AppUsageTag>? : null,
-      appUsageTimeRecordsSyncData: entityType == 'AppUsageTimeRecord' ? entitySyncData as PaginatedSyncData<AppUsageTimeRecord>? : null,
-      appUsageTagRulesSyncData: entityType == 'AppUsageTagRule' ? entitySyncData as PaginatedSyncData<AppUsageTagRule>? : null,
-      appUsageIgnoreRulesSyncData: entityType == 'AppUsageIgnoreRule' ? entitySyncData as PaginatedSyncData<AppUsageIgnoreRule>? : null,
+      appUsageTimeRecordsSyncData:
+          entityType == 'AppUsageTimeRecord' ? entitySyncData as PaginatedSyncData<AppUsageTimeRecord>? : null,
+      appUsageTagRulesSyncData:
+          entityType == 'AppUsageTagRule' ? entitySyncData as PaginatedSyncData<AppUsageTagRule>? : null,
+      appUsageIgnoreRulesSyncData:
+          entityType == 'AppUsageIgnoreRule' ? entitySyncData as PaginatedSyncData<AppUsageIgnoreRule>? : null,
       habitsSyncData: entityType == 'Habit' ? entitySyncData as PaginatedSyncData<Habit>? : null,
       habitRecordsSyncData: entityType == 'HabitRecord' ? entitySyncData as PaginatedSyncData<HabitRecord>? : null,
       habitTagsSyncData: entityType == 'HabitTag' ? entitySyncData as PaginatedSyncData<HabitTag>? : null,
@@ -1817,7 +1839,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       tagTagsSyncData: entityType == 'TagTag' ? entitySyncData as PaginatedSyncData<TagTag>? : null,
       tasksSyncData: entityType == 'Task' ? entitySyncData as PaginatedSyncData<Task>? : null,
       taskTagsSyncData: entityType == 'TaskTag' ? entitySyncData as PaginatedSyncData<TaskTag>? : null,
-      taskTimeRecordsSyncData: entityType == 'TaskTimeRecord' ? entitySyncData as PaginatedSyncData<TaskTimeRecord>? : null,
+      taskTimeRecordsSyncData:
+          entityType == 'TaskTimeRecord' ? entitySyncData as PaginatedSyncData<TaskTimeRecord>? : null,
       syncDevicesSyncData: entityType == 'SyncDevice' ? entitySyncData as PaginatedSyncData<SyncDevice>? : null,
       notesSyncData: entityType == 'Note' ? entitySyncData as PaginatedSyncData<Note>? : null,
       noteTagsSyncData: entityType == 'NoteTag' ? entitySyncData as PaginatedSyncData<NoteTag>? : null,

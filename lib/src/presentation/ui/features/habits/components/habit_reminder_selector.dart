@@ -308,7 +308,7 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
                 child: Text(
                   _getDayName(day).substring(0, 1),
                   style: TextStyle(
-                    color: isSelected 
+                    color: isSelected
                         ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
                         : Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,

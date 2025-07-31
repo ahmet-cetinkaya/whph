@@ -1,39 +1,39 @@
-name: 'Get Application Version'
-description: 'Extracts application version from pubspec.yaml'
+name: "Get Application Version"
+description: "Extracts application version from pubspec.yaml"
 outputs:
   version:
-    description: 'The application version'
+    description: "The application version"
     value: ${{ steps.extract-version.outputs.version }}
   version-number:
-    description: 'The version number without build number'
+    description: "The version number without build number"
     value: ${{ steps.extract-version.outputs.version-number }}
   build-number:
-    description: 'The build number'
+    description: "The build number"
     value: ${{ steps.extract-version.outputs.build-number }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Extract version from pubspec.yaml
       id: extract-version
       shell: bash
       run: |
         echo "Extracting version from pubspec.yaml..."
-        
+
         # Get full version (e.g., "0.11.1+49")
         FULL_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
         echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
         echo "Full version: $FULL_VERSION"
-        
+
         # Split version and build number
         VERSION_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f1)
         BUILD_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f2)
-        
+
         echo "version-number=$VERSION_NUMBER" >> $GITHUB_OUTPUT
         echo "build-number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
-        
+
         echo "Version number: $VERSION_NUMBER"
         echo "Build number: $BUILD_NUMBER"
-        
+
         # Set environment variables for backward compatibility
         echo "APP_VERSION=$FULL_VERSION" >> $GITHUB_ENV

@@ -1,26 +1,26 @@
-name: 'Upload Build Artifact'
-description: 'Uploads build artifacts with consistent naming and versioning'
+name: "Upload Build Artifact"
+description: "Uploads build artifacts with consistent naming and versioning"
 inputs:
   artifact-name:
-    description: 'Name of the artifact (e.g., android, linux, windows-portable)'
+    description: "Name of the artifact (e.g., android, linux, windows-portable)"
     required: true
   artifact-path:
-    description: 'Path to the artifact files'
+    description: "Path to the artifact files"
     required: true
   app-version:
-    description: 'Application version for naming'
+    description: "Application version for naming"
     required: true
   compression-level:
-    description: 'Compression level for the artifact'
+    description: "Compression level for the artifact"
     required: false
-    default: '6'
+    default: "6"
   if-no-files-found:
-    description: 'What to do if no files are found'
+    description: "What to do if no files are found"
     required: false
-    default: 'error'
+    default: "error"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Upload artifact
       uses: actions/upload-artifact@v4

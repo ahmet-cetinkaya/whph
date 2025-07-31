@@ -24,29 +24,29 @@ class ColorPicker extends StatelessWidget {
             tabAlignment: TabAlignment.start,
             dividerColor: Colors.transparent,
             tabs: [
-                Tab(
-                  key: const Key('color_picker_palette_tab'),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.palette),
-                      const SizedBox(width: 8),
-                      Text(translationService.translate(SharedTranslationKeys.colorPickerPaletteTab)),
-                    ],
-                  ),
+              Tab(
+                key: const Key('color_picker_palette_tab'),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.palette),
+                    const SizedBox(width: 8),
+                    Text(translationService.translate(SharedTranslationKeys.colorPickerPaletteTab)),
+                  ],
                 ),
-                Tab(
-                  key: const Key('color_picker_custom_tab'),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.gradient),
-                      const SizedBox(width: 8),
-                      Text(translationService.translate(SharedTranslationKeys.colorPickerCustomTab)),
-                    ],
-                  ),
+              ),
+              Tab(
+                key: const Key('color_picker_custom_tab'),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.gradient),
+                    const SizedBox(width: 8),
+                    Text(translationService.translate(SharedTranslationKeys.colorPickerCustomTab)),
+                  ],
                 ),
-              ],
+              ),
+            ],
           ),
 
           // Tab View Section

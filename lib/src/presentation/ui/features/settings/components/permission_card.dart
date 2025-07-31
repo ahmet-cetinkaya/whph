@@ -115,9 +115,7 @@ class PermissionCard extends StatelessWidget {
                     onPressed: () => _showLearnMoreDialog(context),
                     icon: const Icon(Icons.settings),
                     label: Text(_translationService.translate(SettingsTranslationKeys.permissionFixIt)),
-                    style: FilledButton.styleFrom(
-                        alignment: Alignment.centerLeft,
-                        minimumSize: const Size(0, 36)),
+                    style: FilledButton.styleFrom(alignment: Alignment.centerLeft, minimumSize: const Size(0, 36)),
                   ),
                 ],
               ),

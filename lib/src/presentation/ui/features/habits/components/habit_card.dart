@@ -436,7 +436,9 @@ class _HabitCardState extends State<HabitCard> {
                 child: Text(
                   DateTimeHelper.getWeekday(localDate.weekday),
                   style: AppTheme.bodySmall.copyWith(
-                    color: isToday ? _themeService.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                    color: isToday
+                        ? _themeService.primaryColor
+                        : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
                   ),
                 ),
               ),
@@ -448,7 +450,9 @@ class _HabitCardState extends State<HabitCard> {
                 child: Text(
                   localDate.day.toString(),
                   style: AppTheme.bodySmall.copyWith(
-                    color: isToday ? _themeService.primaryColor : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
+                    color: isToday
+                        ? _themeService.primaryColor
+                        : AppTheme.textColor.withValues(alpha: isDisabled ? 0.5 : 1),
                   ),
                 ),
               ),

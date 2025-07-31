@@ -1,8 +1,8 @@
-name: 'Initialize Submodules'
-description: 'Initializes required submodules for the project'
+name: "Initialize Submodules"
+description: "Initializes required submodules for the project"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Initialize acore submodule
       shell: bash

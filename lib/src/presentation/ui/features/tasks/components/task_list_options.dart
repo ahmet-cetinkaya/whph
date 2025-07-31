@@ -369,8 +369,9 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),
                     iconSize: AppTheme.iconSizeMedium,
-                    iconColor:
-                        (lastSearchQuery != null && lastSearchQuery!.isNotEmpty) ? _themeService.primaryColor : Colors.grey,
+                    iconColor: (lastSearchQuery != null && lastSearchQuery!.isNotEmpty)
+                        ? _themeService.primaryColor
+                        : Colors.grey,
                     expandedWidth: 200,
                     isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
