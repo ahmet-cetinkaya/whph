@@ -5,7 +5,7 @@ trap 'echo "> ❌ Clean failed!"; exit 1' ERR
 
 # Clean Flutter build artifacts
 echo "> 🧹 Cleaning Flutter build..."
-flutter clean
+fvm flutter clean
 
 # Remove all contents of android/fdroid/build except extlib
 echo "> 🗑️  Cleaning android/fdroid/build except extlib..."
@@ -33,7 +33,7 @@ fi
 
 # Repair and get pub packages
 echo "> 🔧 Repairing and fetching pub packages..."
-flutter pub cache repair || echo "  ⚠️  Warning: pub cache repair failed, continuing..."
-flutter pub get
+fvm flutter pub cache repair || echo "  ⚠️  Warning: pub cache repair failed, continuing..."
+fvm flutter pub get
 
 echo "> ✅ Clean completed."
