@@ -1,20 +1,20 @@
-name: 'Setup Flutter with FVM'
-description: 'Sets up Flutter using FVM (Flutter Version Management) with caching'
+name: "Setup Flutter with FVM"
+description: "Sets up Flutter using FVM (Flutter Version Management) with caching"
 inputs:
   cache-key-suffix:
-    description: 'Additional suffix for cache key'
+    description: "Additional suffix for cache key"
     required: false
-    default: ''
+    default: ""
 outputs:
   flutter-version:
-    description: 'The Flutter version that was installed'
+    description: "The Flutter version that was installed"
     value: ${{ steps.get-version.outputs.version }}
   cache-hit:
-    description: 'Whether the cache was hit'
+    description: "Whether the cache was hit"
     value: ${{ steps.cache-fvm.outputs.cache-hit }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Get Flutter version from .fvmrc
       id: get-version

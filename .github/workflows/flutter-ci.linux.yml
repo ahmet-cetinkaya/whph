@@ -22,7 +22,7 @@ jobs:
       - name: Setup Flutter with FVM
         uses: ./.github/actions/setup-fvm
         with:
-          cache-key-suffix: 'linux'
+          cache-key-suffix: "linux"
 
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps

@@ -205,7 +205,9 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPage == index ? _themeService.primaryColor : _themeService.primaryColor.withValues(alpha: 0.2),
+                    color: _currentPage == index
+                        ? _themeService.primaryColor
+                        : _themeService.primaryColor.withValues(alpha: 0.2),
                   ),
                 ),
               ),

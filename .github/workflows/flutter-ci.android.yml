@@ -22,7 +22,7 @@ jobs:
       - name: Setup Flutter with FVM
         uses: ./.github/actions/setup-fvm
         with:
-          cache-key-suffix: 'android'
+          cache-key-suffix: "android"
 
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
@@ -66,4 +66,4 @@ jobs:
           artifact-name: android
           artifact-path: build/app/outputs/flutter-apk/app-release.apk
           app-version: ${{ steps.app_version.outputs.version }}
-          compression-level: '0'
+          compression-level: "0"

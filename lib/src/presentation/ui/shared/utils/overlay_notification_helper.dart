@@ -129,7 +129,8 @@ class OverlayNotificationHelper {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(ColorContrastHelper.getContrastingTextColor(themeService.primaryColor)),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(ColorContrastHelper.getContrastingTextColor(themeService.primaryColor)),
             ),
           ),
     );

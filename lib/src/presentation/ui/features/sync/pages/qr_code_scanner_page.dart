@@ -91,8 +91,8 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
               Text(
                 'Debug QR Input',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),

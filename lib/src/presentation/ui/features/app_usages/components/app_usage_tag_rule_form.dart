@@ -281,7 +281,8 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
               if (widget.onSave != null)
                 TextButton.icon(
                   onPressed: widget.onSave,
-                  icon: Icon(SharedUiConstants.closeIcon, size: AppTheme.iconSizeSmall, color: _themeService.primaryColor),
+                  icon: Icon(SharedUiConstants.closeIcon,
+                      size: AppTheme.iconSizeSmall, color: _themeService.primaryColor),
                   label: Text(_translationService.translate(SharedTranslationKeys.cancelButton),
                       style: AppTheme.bodySmall.copyWith(color: _themeService.primaryColor)),
                 ),
@@ -297,7 +298,8 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   _isSubmitting
                       ? _translationService.translate(SharedTranslationKeys.savedButton)
                       : _translationService.translate(SharedTranslationKeys.saveButton),
-                  style: AppTheme.bodySmall.copyWith(color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor)),
+                  style: AppTheme.bodySmall
+                      .copyWith(color: ColorContrastHelper.getContrastingTextColor(_themeService.primaryColor)),
                 ),
               ),
             ],

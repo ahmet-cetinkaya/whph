@@ -1,13 +1,13 @@
-name: 'Install Flutter Dependencies'
-description: 'Installs Flutter dependencies and sets up pub cache'
+name: "Install Flutter Dependencies"
+description: "Installs Flutter dependencies and sets up pub cache"
 inputs:
   enable-platform:
-    description: 'Platform to enable (e.g., windows-desktop)'
+    description: "Platform to enable (e.g., windows-desktop)"
     required: false
-    default: ''
+    default: ""
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Set PUB_CACHE (Unix)
       if: runner.os != 'Windows'

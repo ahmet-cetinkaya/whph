@@ -119,7 +119,7 @@ class SyncService implements ISyncService {
       } else {
         // Sync failed or was incomplete
         Logger.error('❌ Paginated sync failed or was incomplete');
-        
+
         // Update sync status to error
         updateSyncStatus(SyncStatus(
           state: SyncState.error,
@@ -129,7 +129,7 @@ class SyncService implements ISyncService {
         ));
 
         _handleDisconnection();
-        
+
         // Reset to idle after error delay
         Timer(const Duration(seconds: 5), () {
           updateSyncStatus(SyncStatus(

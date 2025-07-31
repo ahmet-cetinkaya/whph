@@ -22,7 +22,7 @@ jobs:
       - name: Setup Flutter with FVM
         uses: ./.github/actions/setup-fvm
         with:
-          cache-key-suffix: 'windows'
+          cache-key-suffix: "windows"
 
       - name: Setup Visual Studio tools
         uses: microsoft/setup-msbuild@v2
@@ -336,7 +336,7 @@ jobs:
           artifact-name: windows-installer
           artifact-path: build\windows\installer\whph-setup.exe
           app-version: ${{ steps.app_version.outputs.version }}
-          compression-level: '0'
+          compression-level: "0"
 
       - name: Verify installer artifact exists
         run: |

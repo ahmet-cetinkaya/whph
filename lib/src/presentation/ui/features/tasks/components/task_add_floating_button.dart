@@ -15,6 +15,7 @@ import 'package:acore/acore.dart';
 class TaskAddFloatingButton extends StatelessWidget {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+
   /// Callback function called when a task is successfully created
   final Function(String taskId, TaskData taskData)? onTaskCreated;
 
@@ -74,9 +75,8 @@ class TaskAddFloatingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final buttonBackgroundColor = backgroundColor ?? _themeService.primaryColor;
-    final buttonForegroundColor = foregroundColor ?? 
-        ColorContrastHelper.getContrastingTextColor(buttonBackgroundColor);
-    
+    final buttonForegroundColor = foregroundColor ?? ColorContrastHelper.getContrastingTextColor(buttonBackgroundColor);
+
     return FloatingActionButton(
       onPressed: () => _showTaskCreationDialog(context),
       backgroundColor: buttonBackgroundColor,

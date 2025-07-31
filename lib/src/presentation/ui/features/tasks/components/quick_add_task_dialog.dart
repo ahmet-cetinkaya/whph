@@ -731,8 +731,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             tooltip: _getTagsTooltip(),
             onTagsSelected: (tags, _) => setState(() => _selectedTags = tags),
             iconSize: iconSize,
-            color:
-                _selectedTags.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.7) : TaskUiConstants.getTagColor(_themeService),
+            color: _selectedTags.isEmpty
+                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                : TaskUiConstants.getTagColor(_themeService),
           ),
           isLocked: _lockTags,
         ),
