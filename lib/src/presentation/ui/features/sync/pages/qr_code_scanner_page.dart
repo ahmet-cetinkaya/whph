@@ -18,6 +18,7 @@ class QRCodeScannerPage extends StatefulWidget {
 class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QRCodeScannerPage');
   final _translationService = container.resolve<ITranslationService>();
+  final _debugInputController = TextEditingController();
   QRViewController? controller;
   bool _qrCodeDetected = false;
   late AnimationController _pulseAnimationController;
@@ -34,6 +35,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
   @override
   void dispose() {
     _pulseAnimationController.dispose();
+    _debugInputController.dispose();
     super.dispose();
   }
 
@@ -54,37 +56,109 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
     });
   }
 
+  void _showDebugModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Title
+              Text(
+                'Debug QR Input',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              // Debug input field
+              TextField(
+                controller: _debugInputController,
+                decoration: InputDecoration(
+                  labelText: '${_translationService.translate(SyncTranslationKeys.scannerTitle)} (Debug Input)',
+                  hintText: 'Enter QR code data manually...',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.bug_report),
+                ),
+                maxLines: 3,
+                onSubmitted: (value) => _submitDebugInput(context, value),
+              ),
+              const SizedBox(height: 20),
+              // Action buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _submitDebugInput(context, _debugInputController.text),
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _submitDebugInput(BuildContext context, String value) {
+    if (value.trim().isNotEmpty) {
+      Navigator.of(context).pop(); // Close modal
+      Navigator.of(context).pop(value.trim()); // Return to previous screen with value
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SecondaryAppBar(
         context: context,
         title: Text(_translationService.translate(SyncTranslationKeys.scannerTitle)),
-      ),
-      body: kDebugMode
-          ? Column(
-              children: [
-                // Debug Input Section
-                if (kDebugMode)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: '${_translationService.translate(SyncTranslationKeys.scannerTitle)} (Debug Input)',
-                      ),
-                      onSubmitted: (value) {
-                        if (context.mounted) Navigator.of(context).pop(value);
-                      },
-                    ),
-                  ),
-                // QR Scanner Section
-                SizedBox(
-                  height: MediaQuery.of(context).size.height - 100,
-                  child: _buildQRCamera(context),
+        actions: kDebugMode
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.bug_report),
+                  tooltip: 'Debug Input',
+                  onPressed: () => _showDebugModal(context),
                 ),
-              ],
-            )
-          : _buildQRCamera(context),
+              ]
+            : null,
+      ),
+      body: _buildQRCamera(context),
     );
   }
 

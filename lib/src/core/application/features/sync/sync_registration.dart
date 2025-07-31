@@ -5,6 +5,7 @@ import 'package:whph/src/core/application/features/sync/commands/save_sync_comma
 import 'package:whph/src/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/commands/stop_sync_command.dart';
 import 'package:whph/src/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/src/core/application/features/sync/commands/update_sync_device_ip_command.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/src/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
@@ -102,5 +103,8 @@ void registerSyncFeature(
     )
     ..registerHandler<StopSyncCommand, StopSyncCommandResponse, StopSyncCommandHandler>(
       () => StopSyncCommandHandler(syncService),
+    )
+    ..registerHandler<UpdateSyncDeviceIpCommand, UpdateSyncDeviceIpCommandResponse, UpdateSyncDeviceIpCommandHandler>(
+      () => UpdateSyncDeviceIpCommandHandler(syncDeviceRepository: syncDeviceRepository),
     );
 }

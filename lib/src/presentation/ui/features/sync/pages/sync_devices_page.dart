@@ -420,7 +420,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             )
           : ListView.separated(
               itemCount: list!.items.length,
-              padding: EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              padding: EdgeInsets.only(
+                top: AppTheme.sizeSmall,
+                bottom: AppTheme.sizeSmall,
+              ),
               itemBuilder: (context, index) {
                 return SyncDeviceListItemWidget(
                   key: ValueKey(list!.items[index].id),
@@ -580,7 +583,10 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                     SizedBox(width: AppTheme.sizeXSmall),
                     Expanded(
                       child: Text(
-                        widget.item.lastSyncDate != null ? DateTimeHelper.formatDate(widget.item.lastSyncDate) : '-',
+                        widget.item.lastSyncDate != null
+                            ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
+                                locale: Localizations.localeOf(context))
+                            : '-',
                         style: AppTheme.labelSmall.copyWith(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
