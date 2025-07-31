@@ -5,9 +5,10 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 ## 1. Setting Up the Development Environment
 
 - **Prerequisites:**
-  - [Flutter SDK](https://docs.flutter.dev/get-started/install)
-  - [Dart SDK](https://dart.dev/get-dart)
+  - [FVM (Flutter Version Management)](https://fvm.app/docs/getting_started/installation)
   - Compatible device or emulator for Windows, Linux, or Android
+- **Install FVM:**
+  Follow the installation instructions on the [official FVM website](https://fvm.app/docs/getting_started/installation) for your operating system.
 - **Clone the repository (with submodules):**
   ```bash
   git clone --recurse-submodules https://github.com/ahmet-cetinkaya/whph.git
@@ -20,14 +21,22 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   ```bash
   cd whph
   ```
+- **Install the project's Flutter version using FVM:**
+  ```bash
+  fvm install
+  fvm use
+  ```
+  This will automatically install and use the Flutter version specified in the `.fvmrc` file.
 - **Install dependencies:**
   ```bash
-  flutter pub get
+  fvm flutter pub get
   ```
 - **Start the application:**
   ```bash
-  flutter run
+  fvm flutter run
   ```
+
+> **Note:** This project uses FVM to ensure all contributors use the same Flutter version. Always use `fvm flutter` instead of `flutter` when running commands.
 
 ## 2. Code Style and Formatting Requirements
 
@@ -88,7 +97,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - Ensure all existing and new tests pass before submitting a pull request.
 - Use the test suite in the `test/` directory:
   ```bash
-  flutter test
+  fvm flutter test
   ```
 - Prefer widget, unit, and integration tests as appropriate.
 - Test on all supported platforms (Android, Windows, Linux) if possible.
@@ -98,7 +107,21 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - Adhere to the code style and guidelines outlined above.
 - Use conventional commit messages (e.g., `feat:`, `fix:`, `docs:`).
 - Update documentation as needed for new features or changes.
-- Run `flutter analyze` and address any warnings or errors.
+- Run `fvm flutter analyze` and address any warnings or errors.
+- Always use `fvm flutter` instead of `flutter` for consistency with the project's Flutter version management.
+- You can also use the RPS commands defined in `pubspec.yaml` for common tasks:
+  ```bash
+  # Install RPS globally (if not already installed)
+  dart pub global activate rps
+  
+  # Run common commands
+  rps test          # Run tests
+  rps clean         # Clean build artifacts
+  rps format        # Format code
+  rps gen           # Generate code
+  rps run           # Run the app
+  rps run:demo      # Run in demo mode
+  ```
 - If your change affects the build or deployment, update relevant scripts or documentation.
 - For native code integration, use platform channels and defined constants.
 - Respect licensing and third-party dependencies.

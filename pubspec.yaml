@@ -14,23 +14,24 @@ scripts:
   # For example, to run the `clean` command: `rps clean`
   clean: bash scripts/clean.sh
   format: dart format . -l 120 && prettier --write "**/*.{yaml,yml,json}" "!android/fdroid/**"
-  gen: flutter pub run build_runner clean && flutter pub run build_runner build --delete-conflicting-outputs && rps format
-  gen:icons: flutter pub run icons_launcher:create
-  gen:migrate: flutter pub run drift_dev make-migrations && rps format
+  gen: fvm flutter pub run build_runner clean && fvm flutter pub run build_runner build --delete-conflicting-outputs && rps format
+  gen:icons: fvm flutter pub run icons_launcher:create
+  gen:migrate: fvm flutter pub run drift_dev make-migrations && rps format
   gen:changelog: bash scripts/create_changelog.sh --auto
   gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
-  release:linux: flutter build linux --release
-  release:windows: flutter build windows --release
-  release:windows:setup: flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
-  release:android: flutter build apk --release
-  release:android:bundle: flutter build appbundle --release
-  test: flutter test
+  release:linux: fvm flutter build linux --release
+  release:windows: fvm flutter build windows --release
+  release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
+  release:android: fvm flutter build apk --release
+  release:android:bundle: fvm flutter build appbundle --release
+  test: fvm flutter test
   test:ci: act -j build
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
   test:ci:fdroid: bash scripts/test_ci_fdroid.sh
   test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
   test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
-  run:demo: flutter run --dart-define=DEMO_MODE=true
+  run: fvm flutter run
+  run:demo: fvm flutter run --dart-define=DEMO_MODE=true
   version:major: bash scripts/version_bump.sh major
   version:minor: bash scripts/version_bump.sh minor
   version:patch: bash scripts/version_bump.sh patch
