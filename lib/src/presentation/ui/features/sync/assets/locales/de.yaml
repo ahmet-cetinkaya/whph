@@ -9,25 +9,53 @@ sync:
     from_label: Von
     help:
       content: |
-        🔄 Synchronisieren Sie Ihre Daten sicher zwischen mehreren Geräten.
+        🔄 Halten Sie Ihre Aufgaben, Gewohnheiten, Notizen, Einstellungen usw. auf allen Geräten synchronisiert. Alle Daten bleiben in Ihrem lokalen Netzwerk — nichts wird in die Cloud gesendet.
 
-        ## 🔗 QR-Code-Verbindung
-        - Einfache Gerätekopplung
-        - Sichere Verbindungseinrichtung
-        - Schnelle Synchronisationsinitiierung
+        ## ⚡ Schnelle und sichere Einrichtung
 
-        ## 📱 Geräteverwaltung
-        - Verbundene Geräte anzeigen
-        - Synchronisationsstatus überwachen
-        - Alte Geräte entfernen
+        Verbinden Sie Ihre Geräte über dasselbe Wi-Fi-Netzwerk mit QR-Codes. Die Synchronisation startet automatisch nach der Kopplung.
 
-        ## 💡 Tipps
-        - Geräte im selben Netzwerk halten
-        - Regelmäßig synchronisieren für beste Ergebnisse
-        - Ungenutzte Geräteverbindungen entfernen
-        - Letzte Synchronisationsdaten überprüfen
-        - QR-Codes für schnelle Einrichtung verwenden
-        - Auf Synchronisationsabschluss warten
+        - 📱 **Mobil → Mobil:** Ein Gerät muss im **Server-Modus** sein, um die Kopplung zu ermöglichen  
+        - 💻 **Desktop → Mobil:** Desktop zeigt QR-Code, Mobil scannt ihn  
+
+        ## 📱 Mobile Geräte
+
+        Android-Geräte können in zwei verschiedenen Modi arbeiten:
+
+        - 🔍 **Client-Modus:**  
+          - Scannt QR-Codes  
+          - Verbindet sich mit anderen Geräten zum Datenempfang  
+        - 📡 **Server-Modus:**  
+          - Zeigt QR-Code zum Scannen für andere  
+          - Sendet Daten an verbundene Geräte  
+          - Kann über das Wi-Fi-Hotspot-Symbol umgeschaltet werden
+
+        Für die Synchronisation zwischen zwei mobilen Geräten muss eines im **Server-Modus** sein.
+
+        ## 💻 Desktop-Geräte
+
+        Desktop-Anwendungen fungieren immer als **Server**-Knoten:
+
+        - 🖥️ Zeigen QR-Code für die Kopplung  
+        - ✅ Akzeptieren eingehende Verbindungen automatisch  
+        - 🔄 Synchronisieren Daten in beide Richtungen  
+        - 📊 Zeigen Live-Synchronisationsstatus
+
+        ## 🛠️ Geräteverwaltung
+
+        Verwalten Sie alle verbundenen Geräte von einem Ort aus:
+
+        - 📋 Verbundene Geräte anzeigen  
+        - ⏰ Letzte Synchronisationszeiten einsehen  
+        - 🔁 Manuelle Synchronisation auslösen  
+        - 🗑️ Alte oder ungenutzte Geräte entfernen
+
+        ## 💡 Bewährte Praktiken
+
+        - 📶 Stellen Sie sicher, dass alle Geräte im selben Wi-Fi-Netzwerk sind  
+        - 📱 Halten Sie Apps während der Synchronisation geöffnet und aktiv  
+        - 🧹 Entfernen Sie Geräte, die Sie nicht mehr verwenden  
+        - ⏱️ Überprüfen Sie Synchronisationszeiten, um sicherzustellen, dass alles aktuell ist
       title: Gerätesynchronisation Hilfe
     last_sync_label: Letzte Synchronisation
     no_devices_found: Keine synchronisierten Geräte

@@ -9,26 +9,54 @@ sync:
     from_label: Kimden
     help:
       content: |
-        🔄 Verilerinizi birden fazla cihaz arasında güvenli bir şekilde senkronize edin.
+        🔄 Görevlerinizi, alışkanlıklarınızı, notlarınızı, ayarlarınızı vb. tüm cihazlarınızda senkronize edin. Tüm veriler yerel ağınızda kalır — buluta hiçbir şey gönderilmez.
 
-        ## 🔗 QR Kod Bağlantısı
-        - Kolay cihaz eşleştirme
-        - Güvenli bağlantı kurulumu
-        - Hızlı senkronizasyon başlatma
+        ## ⚡ Hızlı ve Güvenli Kurulum
 
-        ## 📱 Cihaz Yönetimi
-        - Bağlı cihazları görüntüleyin
-        - Senkronizasyon durumunu izleyin
-        - Eski cihazları kaldırın
+        Cihazlarınızı aynı Wi-Fi ağı üzerinden QR kodları kullanarak bağlayın. Eşleştirmeden sonra senkronizasyon otomatik başlar.
 
-        ## 💡 İpuçları
-        - Cihazları aynı ağda tutun
-        - Düzenli olarak senkronize edin
-        - Kullanılmayan cihaz bağlantılarını kaldırın
-        - Son senkronizasyon tarihlerini kontrol edin
-        - Hızlı kurulum için QR kodları kullanın
-        - Senkronizasyonun tamamlanmasını bekleyin
-      title: Cihaz Senkronizasyonu Yardım
+        - 📱 **Mobil → Mobil:** Bir cihazın eşleştirmeye izin vermek için **Sunucu modunda** olması gerekir  
+        - 💻 **Masaüstü → Mobil:** Masaüstü QR kod gösterir, mobil tarar  
+
+        ## 📱 Mobil Cihazlar
+
+        Android cihazlar iki farklı modda çalışabilir:
+
+        - 🔍 **İstemci Modu:**  
+          - QR kodları tarar  
+          - Veri almak için diğer cihazlara bağlanır  
+        - 📡 **Sunucu Modu:**  
+          - Diğerlerinin taraması için QR kod gösterir  
+          - Bağlı cihazlara veri gönderir  
+          - Wi-Fi hotspot simgesi ile değiştirilebilir
+
+        İki mobil cihaz arasında senkronizasyon için birinin **Sunucu modunda** olması gerekir.
+
+        ## 💻 Masaüstü Cihazlar
+
+        Masaüstü uygulamaları her zaman **Sunucu** düğümü olarak çalışır:
+
+        - 🖥️ Eşleştirme için QR kod gösterir  
+        - ✅ Gelen bağlantıları otomatik kabul eder  
+        - 🔄 Verileri her iki yönde senkronize eder  
+        - 📊 Canlı senkronizasyon durumunu gösterir
+
+        ## 🛠️ Cihaz Yönetimi
+
+        Tüm bağlı cihazları tek yerden yönetin:
+
+        - 📋 Bağlı cihazları görüntüleyin  
+        - ⏰ Son senkronizasyon zamanlarını görün  
+        - 🔁 Manuel senkronizasyon başlatın  
+        - 🗑️ Eski veya kullanılmayan cihazları kaldırın
+
+        ## 💡 En İyi Uygulamalar
+
+        - 📶 Tüm cihazların aynı Wi-Fi ağında olduğundan emin olun  
+        - 📱 Senkronizasyon sırasında uygulamaları açık ve aktif tutun  
+        - 🧹 Artık kullanmadığınız cihazları kaldırın  
+        - ⏱️ Her şeyin güncel olduğundan emin olmak için senkronizasyon zamanlarını kontrol edin
+      title: Cihaz Senkronizasyonu Yardımı
     last_sync_label: Son Senkronizasyon
     no_devices_found: Senkronize edilmiş cihaz yok
     sync_tooltip: Şimdi Senkronize Et

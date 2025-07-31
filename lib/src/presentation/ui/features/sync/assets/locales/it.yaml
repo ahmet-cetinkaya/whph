@@ -7,25 +7,53 @@ sync:
     from_label: Da
     help:
       content: |
-        🔄 Sincronizza in sicurezza i tuoi dati tra più dispositivi.
+        🔄 Mantieni le tue attività, abitudini, note, impostazioni, ecc. sincronizzate su tutti i tuoi dispositivi. Tutti i dati rimangono nella tua rete locale — nulla viene inviato al cloud.
 
-        ## 🔗 Connessione codice QR
-        - Accoppiamento dispositivi facile
-        - Configurazione connessione sicura
-        - Avvio sincronizzazione rapido
+        ## ⚡ Configurazione rapida e sicura
 
-        ## 📱 Gestione dispositivi
-        - Visualizza dispositivi connessi
-        - Monitora stato sincronizzazione
-        - Rimuovi vecchi dispositivi
+        Connetti i tuoi dispositivi tramite la stessa rete Wi-Fi usando codici QR. La sincronizzazione inizia automaticamente dopo l'accoppiamento.
 
-        ## 💡 Suggerimenti
-        - Mantieni i dispositivi sulla stessa rete
-        - Sincronizza regolarmente per risultati migliori
-        - Rimuovi connessioni dispositivi inutilizzati
-        - Controlla le date dell'ultima sincronizzazione
-        - Usa codici QR per configurazione rapida
-        - Aspetta il completamento della sincronizzazione
+        - 📱 **Mobile → Mobile:** Un dispositivo deve essere in **modalità Server** per consentire l'accoppiamento  
+        - 💻 **Desktop → Mobile:** Il desktop mostra un codice QR, il mobile lo scansiona  
+
+        ## 📱 Dispositivi mobili
+
+        I dispositivi Android possono funzionare in due modalità diverse:
+
+        - 🔍 **Modalità Client:**  
+          - Scansiona codici QR  
+          - Si connette ad altri dispositivi per ricevere dati  
+        - 📡 **Modalità Server:**  
+          - Mostra codice QR per la scansione da parte di altri  
+          - Invia dati ai dispositivi connessi  
+          - Può essere commutata tramite l'icona hotspot Wi-Fi
+
+        Per sincronizzare tra due dispositivi mobili, uno deve essere in **modalità Server**.
+
+        ## 💻 Dispositivi desktop
+
+        Le applicazioni desktop agiscono sempre come nodi **Server**:
+
+        - 🖥️ Mostrano codice QR per l'accoppiamento  
+        - ✅ Accettano automaticamente connessioni in entrata  
+        - 🔄 Sincronizzano dati in entrambe le direzioni  
+        - 📊 Mostrano stato di sincronizzazione in tempo reale
+
+        ## 🛠️ Gestione dispositivi
+
+        Gestisci tutti i dispositivi connessi da un unico posto:
+
+        - 📋 Visualizza dispositivi connessi  
+        - ⏰ Vedi orari dell'ultima sincronizzazione  
+        - 🔁 Attiva sincronizzazione manuale  
+        - 🗑️ Rimuovi dispositivi vecchi o inutilizzati
+
+        ## 💡 Migliori pratiche
+
+        - 📶 Assicurati che tutti i dispositivi siano sulla stessa rete Wi-Fi  
+        - 📱 Mantieni le app aperte e attive durante la sincronizzazione  
+        - 🧹 Rimuovi dispositivi che non usi più  
+        - ⏱️ Controlla gli orari di sincronizzazione per assicurarti che tutto sia aggiornato
       title: Aiuto sincronizzazione dispositivi
     last_sync_label: Ultima sincronizzazione
     no_devices_found: Nessun dispositivo sincronizzato
