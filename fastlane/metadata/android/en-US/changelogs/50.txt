@@ -1,0 +1,5 @@
+• Improve sync help content
+• Add custom accent color support
+• Use theme service for accent color in ui elements
+• Resolve bidirectional sync failure preventing Linux demo data from syncing to Android
+• Add background color to appbar in pages

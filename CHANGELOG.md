@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2025-07-31
+
+### Added
+- Improve sync help content
+- Add custom accent color support
+
+### Fixed
+- Use theme service for accent color in ui elements
+- Resolve bidirectional sync failure preventing Linux demo data from syncing to Android
+- Add background color to appbar in pages
+
 ## [0.11.1] - 2025-07-29
 
 ### Added
