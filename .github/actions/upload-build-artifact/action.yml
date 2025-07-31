@@ -1,0 +1,33 @@
+name: 'Upload Build Artifact'
+description: 'Uploads build artifacts with consistent naming and versioning'
+inputs:
+  artifact-name:
+    description: 'Name of the artifact (e.g., android, linux, windows-portable)'
+    required: true
+  artifact-path:
+    description: 'Path to the artifact files'
+    required: true
+  app-version:
+    description: 'Application version for naming'
+    required: true
+  compression-level:
+    description: 'Compression level for the artifact'
+    required: false
+    default: '6'
+  if-no-files-found:
+    description: 'What to do if no files are found'
+    required: false
+    default: 'error'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: whph-v${{ inputs.app-version }}-${{ inputs.artifact-name }}
+        path: ${{ inputs.artifact-path }}
+        if-no-files-found: ${{ inputs.if-no-files-found }}
+        compression-level: ${{ inputs.compression-level }}
+        overwrite: false
+        include-hidden-files: false

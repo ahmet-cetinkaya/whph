@@ -11,19 +11,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Initialize acore submodule
-        run: |
-          git submodule update --init lib/corePackages/acore
-
-      # Install dependencies
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          cache: true
+          submodules: recursive
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: 'windows'
 
       - name: Setup Visual Studio tools
         uses: microsoft/setup-msbuild@v2
@@ -43,15 +42,18 @@ jobs:
             exit 1
           }
 
-      - name: Install Flutter dependencies
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+        with:
+          enable-platform: windows-desktop
+
+      - name: Check plugin compatibility
         run: |
-          flutter config --enable-windows-desktop
-          flutter pub get
           Write-Host "Checking for plugin compatibility..."
-          flutter pub deps
+          fvm flutter pub deps
 
       - name: Clean previous builds
-        run: flutter clean
+        run: fvm flutter clean
 
       # Add workaround for flutter_local_notifications_windows AOT issue
       - name: Apply Windows build workarounds
@@ -86,22 +88,22 @@ jobs:
       - name: Build for Windows (with verbose output and multiple strategies)
         run: |
           Write-Host "=== Starting Windows Build Process ==="
-          flutter config --enable-windows-desktop
+          fvm flutter config --enable-windows-desktop
 
           Write-Host "=== Flutter Environment Check ==="
-          flutter doctor -v
+          fvm flutter doctor -v
 
           Write-Host "=== Cleaning Previous Builds ==="
-          flutter clean
+          fvm flutter clean
 
           Write-Host "=== Installing Dependencies ==="
-          flutter pub get
+          fvm flutter pub get
 
           Write-Host "=== Attempting Windows Build (Multiple Strategies) ==="
 
           # Strategy 1: Standard release build
           Write-Host "📦 Strategy 1: Standard release build"
-          flutter build windows --release --verbose
+          fvm flutter build windows --release --verbose
           if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ Standard release build succeeded!"
             echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
@@ -110,7 +112,7 @@ jobs:
             
             # Strategy 2: Release build with tree-shake disabled
             Write-Host "📦 Strategy 2: Release build with --no-tree-shake-icons"
-            flutter build windows --release --no-tree-shake-icons --verbose
+            fvm flutter build windows --release --no-tree-shake-icons --verbose
             if ($LASTEXITCODE -eq 0) {
               Write-Host "✅ Release build with --no-tree-shake-icons succeeded!"
               echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
@@ -119,7 +121,7 @@ jobs:
               
               # Strategy 3: Profile build as fallback
               Write-Host "📦 Strategy 3: Profile build as fallback"
-              flutter build windows --profile --verbose
+              fvm flutter build windows --profile --verbose
               if ($LASTEXITCODE -eq 0) {
                 Write-Host "✅ Profile build succeeded as fallback!"
                 echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
@@ -319,29 +321,22 @@ jobs:
 
       - name: Get application version
         id: app_version
-        run: |
-          $content = Get-Content 'pubspec.yaml'
-          $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value }
-          echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+        uses: ./.github/actions/get-app-version
 
       - name: Upload Windows build artifact (Portable)
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-build-artifact
         with:
-          name: whph-v${{ env.APP_VERSION }}-windows-portable
-          path: build\windows\x64\runner\${{ env.BUILD_TYPE }}\
-          if-no-files-found: error
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: false
+          artifact-name: windows-portable
+          artifact-path: build\windows\x64\runner\${{ env.BUILD_TYPE }}\
+          app-version: ${{ steps.app_version.outputs.version }}
 
       - name: Upload Windows Installer
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-build-artifact
         with:
-          name: whph-v${{ env.APP_VERSION }}-windows-installer
-          path: build\windows\installer\whph-setup.exe
-          if-no-files-found: error
-          compression-level: 0
-          overwrite: false
+          artifact-name: windows-installer
+          artifact-path: build\windows\installer\whph-setup.exe
+          app-version: ${{ steps.app_version.outputs.version }}
+          compression-level: '0'
 
       - name: Verify installer artifact exists
         run: |

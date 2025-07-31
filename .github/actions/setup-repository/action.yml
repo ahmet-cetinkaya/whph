@@ -1,0 +1,12 @@
+name: 'Initialize Submodules'
+description: 'Initializes required submodules for the project'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Initialize acore submodule
+      shell: bash
+      run: |
+        echo "Initializing acore submodule..."
+        git submodule update --init lib/corePackages/acore
+        echo "Acore submodule initialized successfully"

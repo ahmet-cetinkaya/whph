@@ -1,0 +1,44 @@
+name: 'Install Flutter Dependencies'
+description: 'Installs Flutter dependencies and sets up pub cache'
+inputs:
+  enable-platform:
+    description: 'Platform to enable (e.g., windows-desktop)'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set PUB_CACHE (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: echo "PUB_CACHE=$(pwd)/.pub-cache" >> $GITHUB_ENV
+
+    - name: Set PUB_CACHE (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: echo "PUB_CACHE=$(Get-Location)\.pub-cache" >> $env:GITHUB_ENV
+
+    - name: Set PATH for Flutter (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: echo "PATH=$HOME/.pub-cache/bin:$PATH" >> $GITHUB_ENV
+
+    - name: Set PATH for Flutter (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: echo "$env:USERPROFILE\.pub-cache\bin" >> $env:GITHUB_PATH
+
+    - name: Enable platform
+      if: inputs.enable-platform != ''
+      shell: bash
+      run: |
+        echo "Enabling platform: ${{ inputs.enable-platform }}"
+        fvm flutter config --enable-${{ inputs.enable-platform }}
+
+    - name: Install Flutter dependencies
+      shell: bash
+      run: |
+        echo "Installing Flutter dependencies..."
+        fvm flutter pub get
+        echo "Flutter dependencies installed successfully"
