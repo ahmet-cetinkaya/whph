@@ -53,7 +53,7 @@ class TaskReminderSelector extends StatelessWidget {
           isExpanded: true,
           underline: Container(
             height: 1,
-            color: Colors.grey,
+            color: AppTheme.dividerColor,
           ),
           items: ReminderTime.values.map((reminderTime) {
             return DropdownMenuItem<ReminderTime>(

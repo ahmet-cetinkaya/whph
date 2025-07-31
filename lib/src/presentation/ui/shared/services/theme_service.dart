@@ -17,27 +17,32 @@ class ThemeService implements IThemeService {
   AppThemeMode _currentThemeMode = AppThemeMode.auto;
   AppThemeMode _storedThemeMode = AppThemeMode.auto; // The user's preference
   bool _isDynamicAccentColorEnabled = false;
+  bool _isCustomAccentColorEnabled = false;
+  Color? _customAccentColor;
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
 
   ThemeService({required Mediator mediator}) : _mediator = mediator;
 
-  /// Calculates the appropriate text color for a given background color
-  /// using the theme's light and dark text colors instead of standard black/white
-  Color _getContrastingTextColor(Color backgroundColor) {
-    // Use ColorContrastHelper to determine if we need light or dark text
-    Color standardColor = ColorContrastHelper.getContrastingTextColor(backgroundColor);
-    
-    // Return theme-appropriate colors instead of standard black/white
-    return standardColor == Colors.white ? lightTextColor : darkTextColor;
-  }
+  // /// Calculates the appropriate text color for a given background color
+  // /// using the theme's light and dark text colors instead of standard black/white
+  // Color _getContrastingTextColor(Color backgroundColor) {
+  //   // Use ColorContrastHelper directly - it already returns the correct contrast color
+  //   return ;
+  // }
 
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
 
   @override
   bool get isDynamicAccentColorEnabled => _isDynamicAccentColorEnabled;
+
+  @override
+  bool get isCustomAccentColorEnabled => _isCustomAccentColorEnabled;
+
+  @override
+  Color? get customAccentColor => _customAccentColor;
 
   @override
   Color get primaryColor => _primaryColor;
@@ -221,7 +226,7 @@ class ThemeService implements IThemeService {
       checkboxTheme: CheckboxThemeData(
         checkColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return _getContrastingTextColor(_primaryColor);
+            return ColorContrastHelper.getContrastingTextColor(_primaryColor);
           }
           return lightTextColor;
         }),
@@ -377,7 +382,7 @@ class ThemeService implements IThemeService {
               return secondaryTextColor;
             }
             // Use contrast calculation to determine the best text color for the primary background
-            return _getContrastingTextColor(_primaryColor);
+            return ColorContrastHelper.getContrastingTextColor(_primaryColor);
           }),
           padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
@@ -531,13 +536,39 @@ class ThemeService implements IThemeService {
     ));
 
     if (enabled) {
+      // Disable custom accent color when enabling dynamic
+      _isCustomAccentColorEnabled = false;
       await _loadDynamicAccentColor();
     } else {
-      _primaryColor = domain.AppTheme.primaryColor;
-      _dynamicLightColorScheme = null;
-      _dynamicDarkColorScheme = null;
+      await _updatePrimaryColor();
     }
 
+    _notifyThemeChanged();
+  }
+
+  @override
+  Future<void> setCustomAccentColor(Color? color) async {
+    _customAccentColor = color;
+    _isCustomAccentColorEnabled = color != null;
+
+    // Always save the custom accent color value (empty string when disabled)
+    await _mediator.send(SaveSettingCommand(
+      key: SettingKeys.customAccentColor,
+      value: color != null ? color.toARGB32().toString() : '',
+      valueType: SettingValueType.string,
+    ));
+
+    if (color != null) {
+      // Disable dynamic accent color when enabling custom
+      _isDynamicAccentColorEnabled = false;
+      await _mediator.send(SaveSettingCommand(
+        key: SettingKeys.dynamicAccentColor,
+        value: false.toString(),
+        valueType: SettingValueType.bool,
+      ));
+    }
+
+    await _updatePrimaryColor();
     _notifyThemeChanged();
   }
 
@@ -546,6 +577,8 @@ class ThemeService implements IThemeService {
     await _loadThemeSettings();
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
+    } else {
+      await _updatePrimaryColor();
     }
     _notifyThemeChanged();
   }
@@ -585,6 +618,40 @@ class ThemeService implements IThemeService {
       _isDynamicAccentColorEnabled = dynamicResponse.getValue<bool>();
     } catch (e) {
       _isDynamicAccentColorEnabled = false; // Default
+    }
+
+    // Load custom accent color
+    try {
+      final customResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        GetSettingQuery(key: SettingKeys.customAccentColor),
+      );
+      final colorValue = customResponse.value;
+      if (colorValue.isNotEmpty) {
+        _customAccentColor = Color(int.parse(colorValue));
+        _isCustomAccentColorEnabled = true;
+      } else {
+        _customAccentColor = null;
+        _isCustomAccentColorEnabled = false;
+      }
+    } catch (e) {
+      _customAccentColor = null;
+      _isCustomAccentColorEnabled = false;
+    }
+
+    // Update primary color based on loaded settings
+    await _updatePrimaryColor();
+  }
+
+  /// Updates the primary color based on current settings
+  Future<void> _updatePrimaryColor() async {
+    if (_isCustomAccentColorEnabled && _customAccentColor != null) {
+      _primaryColor = _customAccentColor!;
+      _dynamicLightColorScheme = null;
+      _dynamicDarkColorScheme = null;
+    } else {
+      _primaryColor = domain.AppTheme.primaryColor;
+      _dynamicLightColorScheme = null;
+      _dynamicDarkColorScheme = null;
     }
   }
 
@@ -677,7 +744,7 @@ class ThemeService implements IThemeService {
     return isDark
         ? ColorScheme.dark(
             primary: primaryColor,
-            onPrimary: _getContrastingTextColor(primaryColor), // Use contrast calculation
+            onPrimary: ColorContrastHelper.getContrastingTextColor(primaryColor),
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,
@@ -694,7 +761,7 @@ class ThemeService implements IThemeService {
           )
         : ColorScheme.light(
             primary: primaryColor,
-            onPrimary: _getContrastingTextColor(primaryColor), // Use contrast calculation
+            onPrimary: ColorContrastHelper.getContrastingTextColor(primaryColor),
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,

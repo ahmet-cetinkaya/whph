@@ -115,8 +115,8 @@ class _SearchFilterState extends State<SearchFilter> {
                   hintText:
                       widget.placeholder ?? _translationService.translate(SharedTranslationKeys.searchPlaceholder),
                   hintStyle: widget.isDense
-                      ? AppTheme.bodyXSmall.copyWith(color: Colors.white70)
-                      : AppTheme.bodySmall.copyWith(color: Colors.white70),
+                      ? AppTheme.bodyXSmall.copyWith(color: AppTheme.secondaryTextColor.withValues(alpha: 0.7))
+                      : AppTheme.bodySmall.copyWith(color: AppTheme.secondaryTextColor.withValues(alpha: 0.7)),
                   suffixIcon: IconButton(
                     icon: const Icon(
                       Icons.close,

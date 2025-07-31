@@ -207,6 +207,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
+              backgroundColor: Theme.of(context).cardColor,
               title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
               automaticallyImplyLeading: false,
               actions: [
@@ -552,7 +553,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               constraints: const BoxConstraints(),
               icon: Icon(
                 widget.icon,
-                color: widget.color ?? Colors.white,
+                color: widget.color ?? Theme.of(context).iconTheme.color,
               ),
               iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
               onPressed: () => _showTagSelectionModal(context),

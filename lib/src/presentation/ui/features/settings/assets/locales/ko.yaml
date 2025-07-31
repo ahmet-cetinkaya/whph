@@ -156,4 +156,8 @@ settings:
       title: 동적 강조 색상
       description: 시스템이 지원하는 경우 기본 색상이 시스템의 동적 색상 체계에 따라 적응됩니다
       feature: 동적
+    custom_accent:
+      title: 사용자 정의 강조 색상
+      description: 앱의 외관을 개인화하기 위해 사용자 정의 강조 색상을 선택하세요
+      feature: 사용자 정의
     error: 테마 설정 로드에 실패했습니다

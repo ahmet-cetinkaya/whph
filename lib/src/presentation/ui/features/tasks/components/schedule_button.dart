@@ -68,7 +68,7 @@ class ScheduleButton extends StatelessWidget {
     return PopupMenuButton<ScheduleOption>(
       icon: Icon(
         Icons.schedule,
-        color: Colors.grey,
+        color: AppTheme.secondaryTextColor,
         size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
       ),
       onSelected: (ScheduleOption option) {

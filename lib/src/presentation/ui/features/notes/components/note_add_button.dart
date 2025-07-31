@@ -107,7 +107,6 @@ class _NoteAddButtonState extends State<NoteAddButton> {
       label: Text(_translationService.translate(NoteTranslationKeys.addNote)),
       style: FilledButton.styleFrom(
         backgroundColor: widget.buttonColor,
-        foregroundColor: AppTheme.textColor,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.sizeSmall),

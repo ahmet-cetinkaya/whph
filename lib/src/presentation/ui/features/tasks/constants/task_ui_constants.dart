@@ -48,7 +48,7 @@ class TaskUiConstants {
       case EisenhowerPriority.notUrgentNotImportant:
         return AppTheme.infoColor;
       default:
-        return Colors.white;
+        return AppTheme.secondaryTextColor;
     }
   }
 

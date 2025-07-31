@@ -9,6 +9,12 @@ abstract class IThemeService {
   /// Gets whether dynamic accent color is enabled
   bool get isDynamicAccentColorEnabled;
 
+  /// Gets whether custom accent color is enabled
+  bool get isCustomAccentColorEnabled;
+
+  /// Gets the current custom accent color (null if not set)
+  Color? get customAccentColor;
+
   /// Gets the current primary color
   Color get primaryColor;
 
@@ -44,6 +50,9 @@ abstract class IThemeService {
 
   /// Updates the dynamic accent color setting
   Future<void> setDynamicAccentColor(bool enabled);
+
+  /// Updates the custom accent color setting
+  Future<void> setCustomAccentColor(Color? color);
 
   /// Refreshes theme from settings
   Future<void> refreshTheme();

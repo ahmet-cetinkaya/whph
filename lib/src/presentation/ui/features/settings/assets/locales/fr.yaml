@@ -155,4 +155,8 @@ settings:
       title: Couleur d'accent dynamique
       description: Si votre système le prend en charge, la couleur primaire s'adaptera en fonction du schéma de couleurs dynamique du système
       feature: Dynamique
+    custom_accent:
+      title: Couleur d'accent personnalisée
+      description: Choisissez une couleur d'accent personnalisée pour personnaliser l'apparence de votre application
+      feature: Personnalisé
     error: Échec du chargement des paramètres de thème

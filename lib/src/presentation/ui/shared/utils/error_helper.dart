@@ -40,13 +40,9 @@ class ErrorHelper {
       duration: const Duration(seconds: 8),
       actionWidget: FilledButton.icon(
         onPressed: () => _sendErrorReport(error, stackTrace),
-        icon: const Icon(Icons.send, size: AppTheme.iconSizeSmall, color: Colors.white),
-        label: Text(
-          reportText,
-          style: const TextStyle(color: Colors.white),
-        ),
+        icon: Icon(Icons.send, size: AppTheme.iconSizeSmall),
+        label: Text(reportText),
         style: FilledButton.styleFrom(
-          backgroundColor: Colors.black.withValues(alpha: 0.25),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         ),
       ),
