@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Initialize acore submodule
-        run: |
-          git submodule update --init lib/corePackages/acore
-
-      # Install dependencies
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          submodules: recursive
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: 'linux'
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
 
       - name: Install dependencies
         run: |
-          sudo apt-get update && sudo apt-get upgrade
+          sudo apt-get update && sudo apt-get upgrade -y
           sudo apt-get install -y cmake ninja-build build-essential clang pkg-config libgtk-3-dev liblzma-dev
           sudo apt-get install -y libunwind-dev
           sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
@@ -40,21 +40,16 @@ jobs:
 
       # Build for Linux
       - name: Build for Linux
-        run: flutter build linux --release
+        run: fvm flutter build linux --release
 
       # Publish the build artifacts
       - name: Get application version
         id: app_version
-        run: |
-          APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
-          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+        uses: ./.github/actions/get-app-version
 
       - name: Upload Linux build artifact
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-build-artifact
         with:
-          name: whph-v${{ env.APP_VERSION }}-linux
-          path: build/linux/x64/release/bundle/
-          if-no-files-found: error
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: false
+          artifact-name: linux
+          artifact-path: build/linux/x64/release/bundle/
+          app-version: ${{ steps.app_version.outputs.version }}

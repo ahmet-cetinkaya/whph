@@ -11,47 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Get Flutter version
-        id: flutter_version
-        run: |
-          echo "version=$(bash scripts/get_flutter_version.sh)" >> $GITHUB_OUTPUT
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          flutter-version: ${{ steps.flutter_version.outputs.version }}
+          submodules: recursive
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: 'android'
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
 
       - name: Install OpenJDK 17 from apt
         run: |
-          sudo apt-get update
+          sudo apt-get update -y
           sudo apt-get install -y openjdk-17-jdk-headless
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Initialize acore submodule
-        run: |
-          git submodule update --init lib/corePackages/acore
-
       - name: Remove non-Android platforms
         run: |
           rm -rf ios linux macos web windows
-
-      - name: Disable Flutter analytics
-        run: flutter config --no-analytics
-
-      - name: Set PUB_CACHE
-        run: echo "PUB_CACHE=$(pwd)/.pub-cache" >> $GITHUB_ENV
-
-      - name: Set PATH for Flutter
-        run: echo "PATH=$HOME/.pub-cache/bin:$PATH" >> $GITHUB_ENV
-
-      - name: Install Flutter dependencies
-        run: flutter pub get
 
       - name: Setup Keystore
         run: |
@@ -67,17 +53,17 @@ jobs:
           EOF
 
       - name: Build for Android
-        run: flutter build apk --release
+        run: fvm flutter build apk --release
 
       # Publish the build artifacts
       - name: Get application version
         id: app_version
-        run: |
-          APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
-          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+        uses: ./.github/actions/get-app-version
 
       - name: Upload Android build artifact
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-build-artifact
         with:
-          name: whph-v${{ env.APP_VERSION }}-android
-          path: build/app/outputs/flutter-apk/app-release.apk
+          artifact-name: android
+          artifact-path: build/app/outputs/flutter-apk/app-release.apk
+          app-version: ${{ steps.app_version.outputs.version }}
+          compression-level: '0'

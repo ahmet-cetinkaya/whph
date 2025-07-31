@@ -1,0 +1,115 @@
+name: 'Setup Flutter with FVM'
+description: 'Sets up Flutter using FVM (Flutter Version Management) with caching'
+inputs:
+  cache-key-suffix:
+    description: 'Additional suffix for cache key'
+    required: false
+    default: ''
+outputs:
+  flutter-version:
+    description: 'The Flutter version that was installed'
+    value: ${{ steps.get-version.outputs.version }}
+  cache-hit:
+    description: 'Whether the cache was hit'
+    value: ${{ steps.cache-fvm.outputs.cache-hit }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get Flutter version from .fvmrc
+      id: get-version
+      shell: bash
+      run: |
+        if [ -f ".fvmrc" ]; then
+          VERSION=$(cat .fvmrc | grep -o '"flutter": "[^"]*"' | cut -d'"' -f4)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found Flutter version: $VERSION"
+        else
+          echo "Error: .fvmrc file not found"
+          exit 1
+        fi
+
+    - name: Cache FVM Flutter SDK
+      id: cache-fvm
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.fvm/flutter_sdk
+          ~/.fvm/versions
+          ~/fvm/flutter_sdk
+          ~/fvm/versions
+        key: ${{ runner.os }}-fvm-${{ steps.get-version.outputs.version }}-${{ inputs.cache-key-suffix }}
+        restore-keys: |
+          ${{ runner.os }}-fvm-${{ steps.get-version.outputs.version }}-
+          ${{ runner.os }}-fvm-
+
+    - name: Install FVM (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "Installing FVM using recommended install script..."
+        curl -fsSL https://fvm.app/install.sh | bash
+        echo "FVM installed successfully"
+
+    - name: Install FVM (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Installing FVM using Chocolatey..."
+        choco install fvm -y
+        Write-Host "FVM installed successfully"
+
+    - name: Install Flutter via FVM
+      shell: bash
+      run: |
+        echo "Installing Flutter ${{ steps.get-version.outputs.version }} via FVM..."
+        fvm install ${{ steps.get-version.outputs.version }}
+        fvm use ${{ steps.get-version.outputs.version }} --force
+        echo "Flutter installation completed"
+
+    - name: Add FVM Flutter to PATH (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "Adding FVM Flutter to PATH..."
+        echo "$HOME/.fvm/flutter_sdk/bin" >> $GITHUB_PATH
+        echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+        echo "PATH updated for Unix systems"
+
+    - name: Add FVM Flutter to PATH (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Adding FVM Flutter to PATH..."
+        echo "$env:USERPROFILE\.fvm\flutter_sdk\bin" >> $env:GITHUB_PATH
+        echo "$env:USERPROFILE\AppData\Local\Pub\Cache\bin" >> $env:GITHUB_PATH
+        Write-Host "PATH updated for Windows"
+
+    - name: Verify Flutter installation (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "Verifying Flutter installation..."
+        echo "Current PATH: $PATH"
+        echo "Checking FVM installation..."
+        which fvm || echo "FVM not found in PATH"
+        fvm --version || echo "FVM version check failed"
+        echo "Checking Flutter installation via FVM..."
+        fvm flutter --version
+        echo "Flutter verification completed"
+
+    - name: Verify Flutter installation (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Verifying Flutter installation..."
+        fvm --version
+        fvm flutter --version
+        Write-Host "Flutter verification completed"
+
+    - name: Disable Flutter analytics
+      shell: bash
+      run: |
+        echo "Disabling Flutter analytics..."
+        fvm flutter config --no-analytics
+        echo "Flutter analytics disabled"

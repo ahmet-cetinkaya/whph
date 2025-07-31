@@ -19,10 +19,18 @@ jobs:
       tag-version: ${{ steps.check.outputs.tag-version }}
       app-version: ${{ steps.check.outputs.app-version }}
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          submodules: recursive
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Get application version
+        id: app_version
+        uses: ./.github/actions/get-app-version
 
       - name: Check if all workflows completed successfully
         id: check
@@ -37,8 +45,8 @@ jobs:
             echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
             echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
             
-            # Get app version from pubspec.yaml
-            APP_VERSION=$(awk '/^version:/ {print $2}' pubspec.yaml)
+            # Use app version from the composite action
+            APP_VERSION="${{ steps.app_version.outputs.version }}"
             echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
             
             # Check if all three workflows have completed successfully for this tag
@@ -90,10 +98,14 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          submodules: recursive
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
 
       - name: Download all artifacts from completed workflows
         run: |
