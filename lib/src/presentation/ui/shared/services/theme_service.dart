@@ -25,13 +25,6 @@ class ThemeService implements IThemeService {
 
   ThemeService({required Mediator mediator}) : _mediator = mediator;
 
-  // /// Calculates the appropriate text color for a given background color
-  // /// using the theme's light and dark text colors instead of standard black/white
-  // Color _getContrastingTextColor(Color backgroundColor) {
-  //   // Use ColorContrastHelper directly - it already returns the correct contrast color
-  //   return ;
-  // }
-
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
 
