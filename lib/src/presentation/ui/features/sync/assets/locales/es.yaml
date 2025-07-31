@@ -9,25 +9,53 @@ sync:
     from_label: De
     help:
       content: |
-        🔄 Sincroniza tus datos de forma segura entre múltiples dispositivos.
+        🔄 Mantén tus tareas, hábitos, notas, configuraciones, etc. sincronizados en todos tus dispositivos. Todos los datos permanecen en tu red local — nada se envía a la nube.
 
-        ## 🔗 Conexión por código QR
-        - Emparejamiento fácil de dispositivos
-        - Configuración de conexión segura
-        - Inicio rápido de sincronización
+        ## ⚡ Configuración rápida y segura
 
-        ## 📱 Gestión de dispositivos
-        - Ver dispositivos conectados
-        - Monitorear estado de sincronización
-        - Eliminar dispositivos antiguos
+        Conecta tus dispositivos a través de la misma red Wi-Fi usando códigos QR. La sincronización comienza automáticamente después del emparejamiento.
 
-        ## 💡 Consejos
-        - Mantén los dispositivos en la misma red
-        - Sincroniza regularmente para mejores resultados
-        - Elimina conexiones de dispositivos no utilizados
-        - Verifica fechas de última sincronización
-        - Usa códigos QR para configuración rápida
-        - Espera a que complete la sincronización
+        - 📱 **Móvil → Móvil:** Un dispositivo debe estar en **modo Servidor** para permitir el emparejamiento  
+        - 💻 **Escritorio → Móvil:** El escritorio muestra un código QR, el móvil lo escanea  
+
+        ## 📱 Dispositivos móviles
+
+        Los dispositivos Android pueden funcionar en dos modos diferentes:
+
+        - 🔍 **Modo Cliente:**  
+          - Escanea códigos QR  
+          - Se conecta a otros dispositivos para recibir datos  
+        - 📡 **Modo Servidor:**  
+          - Muestra código QR para que otros lo escaneen  
+          - Envía datos a dispositivos conectados  
+          - Se puede alternar con el icono de hotspot Wi-Fi
+
+        Para sincronizar entre dos dispositivos móviles, uno debe estar en **modo Servidor**.
+
+        ## 💻 Dispositivos de escritorio
+
+        Las aplicaciones de escritorio siempre actúan como nodos **Servidor**:
+
+        - 🖥️ Muestran código QR para emparejamiento  
+        - ✅ Aceptan automáticamente conexiones entrantes  
+        - 🔄 Sincronizan datos en ambas direcciones  
+        - 📊 Muestran estado de sincronización en vivo
+
+        ## 🛠️ Gestión de dispositivos
+
+        Gestiona todos los dispositivos conectados desde un solo lugar:
+
+        - 📋 Ver dispositivos conectados  
+        - ⏰ Ver tiempos de última sincronización  
+        - 🔁 Activar sincronización manual  
+        - 🗑️ Eliminar dispositivos antiguos o no utilizados
+
+        ## 💡 Mejores prácticas
+
+        - 📶 Asegúrate de que todos los dispositivos estén en la misma red Wi-Fi  
+        - 📱 Mantén las aplicaciones abiertas y activas durante la sincronización  
+        - 🧹 Elimina dispositivos que ya no uses  
+        - ⏱️ Verifica los tiempos de sincronización para asegurar que todo esté actualizado
       title: Ayuda de sincronización de dispositivos
     last_sync_label: Última sincronización
     no_devices_found: Sin dispositivos sincronizados

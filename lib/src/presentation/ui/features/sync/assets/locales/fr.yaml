@@ -9,25 +9,53 @@ sync:
     from_label: De
     help:
       content: |
-        🔄 Synchronisez vos données en toute sécurité entre plusieurs appareils.
+        🔄 Gardez vos tâches, habitudes, notes, paramètres, etc. synchronisés sur tous vos appareils. Toutes les données restent dans votre réseau local — rien n'est envoyé vers le cloud.
 
-        ## 🔗 Connexion par code QR
-        - Appairage d'appareils facile
-        - Configuration de connexion sécurisée
-        - Initiation rapide de la synchronisation
+        ## ⚡ Configuration rapide et sécurisée
 
-        ## 📱 Gestion des appareils
-        - Afficher les appareils connectés
-        - Surveiller le statut de synchronisation
-        - Supprimer les anciens appareils
+        Connectez vos appareils via le même réseau Wi-Fi en utilisant des codes QR. La synchronisation démarre automatiquement après l'appairage.
 
-        ## 💡 Conseils
-        - Gardez les appareils sur le même réseau
-        - Synchronisez régulièrement pour de meilleurs résultats
-        - Supprimez les connexions d'appareils inutilisées
-        - Vérifiez les dates de dernière synchronisation
-        - Utilisez les codes QR pour une configuration rapide
-        - Attendez la fin de la synchronisation
+        - 📱 **Mobile → Mobile :** Un appareil doit être en **mode Serveur** pour permettre l'appairage  
+        - 💻 **Bureau → Mobile :** Le bureau affiche un code QR, le mobile le scanne  
+
+        ## 📱 Appareils mobiles
+
+        Les appareils Android peuvent fonctionner en deux modes différents :
+
+        - 🔍 **Mode Client :**  
+          - Scanne les codes QR  
+          - Se connecte à d'autres appareils pour recevoir des données  
+        - 📡 **Mode Serveur :**  
+          - Affiche un code QR pour que d'autres le scannent  
+          - Envoie des données aux appareils connectés  
+          - Peut être basculé via l'icône hotspot Wi-Fi
+
+        Pour synchroniser entre deux appareils mobiles, l'un doit être en **mode Serveur**.
+
+        ## 💻 Appareils de bureau
+
+        Les applications de bureau agissent toujours comme des nœuds **Serveur** :
+
+        - 🖥️ Affichent un code QR pour l'appairage  
+        - ✅ Acceptent automatiquement les connexions entrantes  
+        - 🔄 Synchronisent les données dans les deux sens  
+        - 📊 Affichent le statut de synchronisation en temps réel
+
+        ## 🛠️ Gestion des appareils
+
+        Gérez tous les appareils connectés depuis un seul endroit :
+
+        - 📋 Afficher les appareils connectés  
+        - ⏰ Voir les heures de dernière synchronisation  
+        - 🔁 Déclencher une synchronisation manuelle  
+        - 🗑️ Supprimer les appareils anciens ou inutilisés
+
+        ## 💡 Meilleures pratiques
+
+        - 📶 Assurez-vous que tous les appareils sont sur le même réseau Wi-Fi  
+        - 📱 Gardez les applications ouvertes et actives pendant la synchronisation  
+        - 🧹 Supprimez les appareils que vous n'utilisez plus  
+        - ⏱️ Vérifiez les heures de synchronisation pour vous assurer que tout est à jour
       title: Aide de synchronisation des appareils
     last_sync_label: Dernière synchronisation
     no_devices_found: Aucun appareil synchronisé

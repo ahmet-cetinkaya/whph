@@ -7,25 +7,53 @@ sync:
     from_label: From
     help:
       content: |
-        🔄 Securely sync your data between multiple devices.
+        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
 
-        ## 🔗 QR Code Connection
-        - Easy device pairing
-        - Secure connection setup
-        - Quick sync initiation
+        ## ⚡ Quick & Secure Setup
 
-        ## 📱 Device Management
-        - View connected devices
-        - Monitor sync status
-        - Remove old devices
+        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
 
-        ## 💡 Tips
-        - Keep devices on the same network
-        - Sync regularly for best results
-        - Remove unused device connections
-        - Check last sync dates
-        - Use QR codes for quick setup
-        - Wait for sync completion
+        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
+        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+
+        ## 📱 Mobile Devices
+
+        Android devices can work in two different modes:
+
+        - 🔍 **Client Mode:**  
+          - Scans QR codes  
+          - Connects to other devices to receive data  
+        - 📡 **Server Mode:**  
+          - Shows QR code for others to scan  
+          - Sends data to connected devices  
+          - Can be toggled via the Wi-Fi hotspot icon
+
+        To sync between two mobile devices, one must be in **Server mode**.
+
+        ## 💻 Desktop Devices
+
+        Desktop apps always act as **Server** nodes:
+
+        - 🖥️ Display a QR code for pairing  
+        - ✅ Automatically accept incoming connections  
+        - 🔄 Sync data in both directions  
+        - 📊 Show live sync status
+
+        ## 🛠️ Device Management
+
+        Manage all connected devices from one place:
+
+        - 📋 View connected devices  
+        - ⏰ See last sync times  
+        - 🔁 Trigger manual sync  
+        - 🗑️ Remove old or unused devices
+
+        ## 💡 Best Practices
+
+        - 📶 Make sure all devices are on the same Wi-Fi network  
+        - 📱 Keep apps open and active during sync  
+        - 🧹 Remove devices you no longer use  
+        - ⏱️ Check sync times to ensure everything is up to date
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
