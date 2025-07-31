@@ -89,6 +89,23 @@ echo "Generating changelog..."
 cd "$PROJECT_ROOT"
 bash scripts/create_changelog.sh "$NEW_BUILD" --auto
 
+# Ask for confirmation before git operations
+echo ""
+echo "Files have been updated and changelog generated."
+echo "The following git operations will be performed:"
+echo "  1. Commit F-Droid metadata changes in submodule"
+echo "  2. Commit main repository changes (version files + changelog)"
+echo "  3. Update F-Droid metadata with commit hash"
+echo "  4. Create version tag: v$NEW_VERSION"
+echo ""
+read -p "Do you want to proceed with git operations? (y/N): " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Git operations cancelled. Files have been updated but not committed."
+    echo "You can manually commit the changes later or run the script again."
+    exit 0
+fi
+
 # Git operations - Create version bump commit first
 echo "Creating version bump commit..."
 
