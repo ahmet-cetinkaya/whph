@@ -15,7 +15,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageIgnoreRuleRepository,
-    );
+  );
 
   @override
   Future<void> startTracking() async {
@@ -61,9 +61,6 @@ class AndroidAppUsageService extends BaseAppUsageService {
     });
   }
 
-
-
-
   /// Gets accurate foreground usage data using the native Android UsageStatsManager.
   /// This method filters for foreground activity only and matches Digital Wellbeing accuracy.
   Future<Map<String, dynamic>> _getAccurateForegroundUsage(int startTimeMs, int endTimeMs) async {
@@ -102,7 +99,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
   Future<Map<String, dynamic>> _getTodayUsageDirectly() async {
     try {
       Logger.info('Getting TODAY\'S usage directly from Android (bypassing hour collection)');
-      
+
       final result = await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
         'getTodayForegroundUsage',
       );
@@ -168,8 +165,6 @@ class AndroidAppUsageService extends BaseAppUsageService {
     }
   }
 
-
-
   /// Diagnostic method to log usage calculation results.
   /// This helps identify and debug the accuracy of the event-based method.
   Future<void> compareUsageMethods(DateTime startTime, DateTime endTime) async {
@@ -199,7 +194,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
   Future<void> collectTodayUsageDirectly() async {
     try {
       Logger.info('=== COLLECTING TODAY\'S USAGE DIRECTLY (NO HOUR ACCUMULATION) ===');
-      
+
       // Get today's usage directly from Android
       final todayUsageMap = await _getTodayUsageDirectly();
 
@@ -238,7 +233,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
         );
 
         recordsSaved++;
-        Logger.info('Saved TODAY\'S usage: $appName = ${cappedSeconds}s (${(cappedSeconds/60).toInt()}m) - DIRECT');
+        Logger.info('Saved TODAY\'S usage: $appName = ${cappedSeconds}s (${(cappedSeconds / 60).toInt()}m) - DIRECT');
       }
 
       Logger.info('=== COMPLETED: Saved $recordsSaved direct today records ===');
@@ -251,7 +246,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
   Future<void> _clearTodayRecords(DateTime todayStart) async {
     try {
       final todayEnd = todayStart.add(const Duration(days: 1));
-      
+
       final existingRecords = await appUsageTimeRecordRepository.getAll(
         customWhereFilter: CustomWhereFilter(
           'usage_date >= ? AND usage_date < ? AND deleted_date IS NULL',
@@ -261,7 +256,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
       if (existingRecords.isNotEmpty) {
         Logger.info('Clearing ${existingRecords.length} existing records for today before direct collection');
-        
+
         for (final record in existingRecords) {
           record.deletedDate = DateTime.now().toUtc();
           await appUsageTimeRecordRepository.update(record);

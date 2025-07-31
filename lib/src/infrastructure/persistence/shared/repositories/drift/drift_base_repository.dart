@@ -186,20 +186,24 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     // Ensure page size doesn't exceed maximum
     pageSize = pageSize > SyncPaginationConfig.maxPageSize ? SyncPaginationConfig.maxPageSize : pageSize;
 
+    // Handle null lastSyncDate by using a very early date for initial sync
+    final effectiveLastSyncDate = lastSyncDate;
+    Logger.debug('🕒 Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
+
     // Get counts for each operation type
     final createCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ?',
-      [Variable.withDateTime(lastSyncDate)],
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL',
+      [Variable.withDateTime(effectiveLastSyncDate)],
     );
 
     final updateCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ?',
-      [Variable.withDateTime(lastSyncDate)],
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL',
+      [Variable.withDateTime(effectiveLastSyncDate)],
     );
 
     final deleteCount = await _getCountForQuery(
       'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
-      [Variable.withDateTime(lastSyncDate)],
+      [Variable.withDateTime(effectiveLastSyncDate)],
     );
 
     final totalItems = createCount + updateCount + deleteCount;
@@ -223,8 +227,8 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       final createLimit = remainingItems > (createCount - createOffset) ? (createCount - createOffset) : remainingItems;
 
       createSync = await _getPaginatedQueryResults(
-        'SELECT * FROM ${table.actualTableName} WHERE created_date > ? ORDER BY created_date ASC LIMIT ? OFFSET ?',
-        [Variable.withDateTime(lastSyncDate), Variable.withInt(createLimit), Variable.withInt(createOffset)],
+        'SELECT * FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
+        [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(createLimit), Variable.withInt(createOffset)],
       );
       remainingItems -= createSync.length;
     }
@@ -235,8 +239,8 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
 
       if (updateLimit > 0) {
         updateSync = await _getPaginatedQueryResults(
-          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? ORDER BY modified_date ASC LIMIT ? OFFSET ?',
-          [Variable.withDateTime(lastSyncDate), Variable.withInt(updateLimit), Variable.withInt(updateOffset)],
+          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL ORDER BY modified_date ASC LIMIT ? OFFSET ?',
+          [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(updateLimit), Variable.withInt(updateOffset)],
         );
         remainingItems -= updateSync.length;
       }
@@ -249,7 +253,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       if (deleteLimit > 0) {
         deleteSync = await _getPaginatedQueryResults(
           'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ? ORDER BY deleted_date ASC LIMIT ? OFFSET ?',
-          [Variable.withDateTime(lastSyncDate), Variable.withInt(deleteLimit), Variable.withInt(deleteOffset)],
+          [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(deleteLimit), Variable.withInt(deleteOffset)],
         );
       }
     }

@@ -79,6 +79,11 @@ class SyncQrScanButton extends StatelessWidget {
   Future<void> _saveSyncDevice(BuildContext context, SyncQrCodeMessage syncQrCodeMessageFromIP) async {
     if (!context.mounted) return;
 
+    // Determine sync type based on remote device platform - move to outer scope
+    bool isDesktopSync = syncQrCodeMessageFromIP.platform == 'desktop';
+    bool isMobileToMobileSync = Platform.isAndroid &&
+        (syncQrCodeMessageFromIP.platform == 'android' || syncQrCodeMessageFromIP.platform == 'ios');
+
     await AsyncErrorHandler.executeChain<String>(
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
@@ -89,10 +94,13 @@ class SyncQrScanButton extends StatelessWidget {
           throw BusinessException('Local IP address could not be determined', SyncTranslationKeys.ipAddressError);
         }
 
-        // For mobile-to-mobile sync, determine our role
         String targetIp = syncQrCodeMessageFromIP.localIP;
 
-        if (Platform.isAndroid) {
+        if (isDesktopSync) {
+          Logger.info('🖥️ Initiating desktop sync - connecting to desktop server...');
+          // For desktop sync, mobile always acts as client connecting to desktop server
+          // targetIp remains the desktop's IP from QR code
+        } else if (isMobileToMobileSync) {
           Logger.info('🤝 Initiating mobile-to-mobile sync...');
 
           // Negotiate sync role
@@ -120,6 +128,9 @@ class SyncQrScanButton extends StatelessWidget {
               Logger.warning('❌ Failed to start as server, falling back to client mode');
             }
           }
+        } else {
+          Logger.info('🔗 Unknown platform sync - treating as standard client connection...');
+          // For unknown platforms or backward compatibility, treat as standard client connection
         }
 
         // Show testing connection message
@@ -168,10 +179,14 @@ class SyncQrScanButton extends StatelessWidget {
         // Save device and start sync
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
 
-        // Determine the correct IP assignment based on sync role
+        // Determine the correct IP assignment based on sync type and role
         String fromIP, toIP;
-        if (Platform.isAndroid) {
-          // For mobile-to-mobile sync, we need to determine which device is server vs client
+        if (isDesktopSync) {
+          // Desktop-mobile sync: Desktop is always server (fromIP), mobile is client (toIP)
+          fromIP = syncQrCodeMessageFromIP.localIP; // Desktop IP
+          toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown'; // Mobile IP
+        } else if (isMobileToMobileSync) {
+          // For mobile-to-mobile sync, determine which device is server vs client
           final localDeviceId = await _deviceIdService.getDeviceId();
           final isLocalServer = localDeviceId.compareTo(syncQrCodeMessageFromIP.deviceId) < 0;
 
@@ -185,7 +200,7 @@ class SyncQrScanButton extends StatelessWidget {
             toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
           }
         } else {
-          // Desktop-mobile sync (existing logic)
+          // Unknown platform sync - default to treating remote as server
           fromIP = syncQrCodeMessageFromIP.localIP;
           toIP = await NetworkUtils.getLocalIpAddress() ?? 'unknown';
         }

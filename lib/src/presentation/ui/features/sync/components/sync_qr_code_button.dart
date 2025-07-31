@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -11,6 +12,7 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 import 'package:whph/src/presentation/ui/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/src/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:acore/acore.dart';
 
 class SyncQrCodeButton extends StatelessWidget {
   const SyncQrCodeButton({super.key});
@@ -25,10 +27,23 @@ class SyncQrCodeButton extends StatelessWidget {
     final deviceName = await DeviceInfoHelper.getDeviceName();
     final deviceId = await deviceIdService.getDeviceId();
 
+    // Determine platform for QR code
+    String platform;
+    if (Platform.isAndroid) {
+      platform = 'android';
+    } else if (Platform.isIOS) {
+      platform = 'ios';
+    } else if (PlatformUtils.isDesktop) {
+      platform = 'desktop';
+    } else {
+      platform = 'unknown';
+    }
+
     SyncQrCodeMessage syncQrCodeMessage = SyncQrCodeMessage(
       localIP: ipAddress ?? 'Unknown IP',
       deviceName: deviceName,
       deviceId: deviceId,
+      platform: platform,
     );
 
     Logger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');

@@ -325,6 +325,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     bool allDevicesSynced = true;
     DateTime? oldestLastSyncDate;
+    final List<SyncDevice> successfulDevices = [];
 
     for (SyncDevice syncDevice in syncDevices) {
       try {
@@ -332,7 +333,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
         final success = await _syncDeviceWithPagination(syncDevice);
         if (success) {
-          await _saveSyncDevice(syncDevice);
+          // Store successful devices for later processing - don't update lastSyncDate yet
+          successfulDevices.add(syncDevice);
           oldestLastSyncDate = oldestLastSyncDate == null
               ? syncDevice.lastSyncDate
               : (syncDevice.lastSyncDate!.isBefore(oldestLastSyncDate) ? syncDevice.lastSyncDate : oldestLastSyncDate);
@@ -340,9 +342,20 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           allDevicesSynced = false;
         }
       } catch (e) {
-        Logger.error('Failed to sync with device ${syncDevice.id}: $e');
+        Logger.error('❌ CRITICAL: Failed to sync with device ${syncDevice.id}: $e');
+        Logger.error('🔍 Error type: ${e.runtimeType}');
+        Logger.error('🔍 This will prevent lastSyncDate update and mark sync as failed');
         allDevicesSynced = false;
       }
+    }
+
+    // Only update lastSyncDate if ALL devices synced successfully
+    if (allDevicesSynced) {
+      for (SyncDevice syncDevice in successfulDevices) {
+        await _saveSyncDevice(syncDevice);
+      }
+    } else {
+      Logger.error('❌ Sync incomplete - some devices failed. Not updating lastSyncDate for any devices');
     }
 
     if (allDevicesSynced && oldestLastSyncDate != null) {
@@ -350,8 +363,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       await _cleanupSoftDeletedData(oldestLastSyncDate);
     }
 
-    Logger.info('🏁 Paginated sync operation completed');
-    return PaginatedSyncCommandResponse(isComplete: true);
+    if (allDevicesSynced) {
+      Logger.info('🏁 Paginated sync operation completed successfully');
+      return PaginatedSyncCommandResponse(isComplete: true);
+    } else {
+      Logger.error('🏁 Paginated sync operation completed with failures');
+      return PaginatedSyncCommandResponse(isComplete: false);
+    }
   }
 
   Future<bool> _syncDeviceWithPagination(SyncDevice syncDevice) async {
@@ -364,10 +382,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     // Test connectivity
     final portTest = await NetworkUtils.testPortConnectivity(targetIp);
     if (!portTest) {
-      Logger.warning('⚠️ Port connectivity test failed for $targetIp:44040');
+      Logger.error('❌ Port connectivity test failed for $targetIp:44040');
       return false;
     }
 
+    // Track sync failures for detailed error reporting
+    final List<String> failedEntities = [];
+    
     // Sync each entity type with pagination
     for (int configIndex = 0; configIndex < _syncConfigs.length; configIndex++) {
       final config = _syncConfigs[configIndex];
@@ -381,16 +402,27 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         operation: 'preparing',
       );
 
-      final success = await _syncEntityWithPagination(syncDevice, config, targetIp);
-      if (!success) {
-        Logger.error('Failed to sync ${config.name} with device ${syncDevice.id}');
-        return false;
+      try {
+        final success = await _syncEntityWithPagination(syncDevice, config, targetIp);
+        if (!success) {
+          Logger.error('❌ Failed to sync ${config.name} with device ${syncDevice.id}');
+          failedEntities.add(config.name);
+        }
+      } catch (e) {
+        Logger.error('❌ Exception during ${config.name} sync with device ${syncDevice.id}: $e');
+        failedEntities.add(config.name);
       }
 
       // Add delay between entities to prevent overwhelming the system
       await Future.delayed(SyncPaginationConfig.batchDelay);
     }
 
+    if (failedEntities.isNotEmpty) {
+      Logger.error('❌ Device sync failed for ${failedEntities.length} entities: ${failedEntities.join(', ')}');
+      return false;
+    }
+
+    Logger.info('✅ All entities synced successfully with device ${syncDevice.id}');
     return true;
   }
 
@@ -434,10 +466,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           operation: 'transmitting',
         );
 
-        // Skip if no data to sync
+        // Always send sync request for bidirectional sync, even if local device has no data
+        // This ensures the remote device can send its data back
         if (paginatedData.totalItems == 0) {
-          Logger.debug('⏭️ Skipping ${config.name}: no data to sync');
-          break;
+          Logger.debug('📤 Sending empty sync request for ${config.name} to receive remote data');
         }
 
         // Create DTO for this page
@@ -632,16 +664,51 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               Logger.debug('📨 Received paginated sync response: success=$success, isComplete=$isComplete');
 
               if (success == true) {
-                // CRITICAL FIX: Only process response data if this is a bidirectional sync
-                // For unidirectional sends, don't trigger recursive processing
+                // CRITICAL FIX: Process server response data to sync desktop data to mobile
+                // Previous bug: This data was being skipped, causing sync to appear successful
+                // but desktop data never reached the mobile device database
+                bool responseProcessingSuccess = true;
                 if (messageData['paginatedSyncDataDto'] != null && isComplete) {
-                  Logger.warning(
-                      '⚠️ Server returned response data - this suggests bidirectional sync. Skipping recursive processing to prevent infinite loops.');
-                  // Log what we received but don't process it to avoid recursion
-                  Logger.debug(
-                      '📦 Server response data available but not processed: ${messageData['paginatedSyncDataDto']?.toString().substring(0, 100)}...');
+                  Logger.info('📥 Server returned response data - processing desktop data sync to mobile');
+                  
+                  Map<String, dynamic>? responseDataMap;
+                  try {
+                    // Parse the server response data
+                    responseDataMap = messageData['paginatedSyncDataDto'] as Map<String, dynamic>;
+                    
+                    // Fix potential type casting issues by normalizing numeric fields
+                    _normalizeJsonNumericTypes(responseDataMap);
+                    
+                    // Manual deserialization to avoid generic type issues with JsonMapper
+                    final responseDto = _deserializePaginatedSyncDataDto(responseDataMap);
+                    
+                    if (responseDto == null) {
+                      Logger.error('❌ Failed to deserialize server response data');
+                      responseProcessingSuccess = false;
+                    } else {
+                      Logger.debug('📋 Processing ${responseDto.entityType} data from server (${responseDto.totalItems} items)');
+                      
+                      // Process the incoming data using the same method used for server-side processing
+                      final processSuccess = await processIncomingPaginatedData(responseDto);
+                      
+                      if (processSuccess) {
+                        Logger.info('✅ Successfully processed server response data for ${responseDto.entityType}');
+                      } else {
+                        Logger.error('❌ Failed to process server response data for ${responseDto.entityType}');
+                        responseProcessingSuccess = false;
+                      }
+                    }
+                  } catch (e) {
+                    Logger.error('❌ Error processing server response data: $e');
+                    if (responseDataMap != null) {
+                      Logger.debug('📦 Raw server response data: ${responseDataMap.toString().substring(0, 500)}...');
+                    }
+                    responseProcessingSuccess = false;
+                  }
                 }
-                completer.complete(true);
+                
+                // Only complete successfully if both server response AND response processing succeeded
+                completer.complete(responseProcessingSuccess);
                 break;
               } else {
                 final String reason = messageData['message']?.toString() ?? 'Unknown server-side failure';
@@ -796,10 +863,69 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         return true;
       }
 
-      Logger.debug('⏭️ Skipping ${dto.entityType}: no sync data available');
-      return true;
+      // CRITICAL FIX: Check if this is a legitimate empty sync vs a deserialization failure
+      // If the DTO contains sync data but paginatedData is null, this indicates a deserialization error
+      final bool hasActualSyncData = _dtoContainsSyncData(dto);
+      
+      if (hasActualSyncData) {
+        // DTO contains data but deserialization failed - this is an error
+        Logger.error('❌ ${dto.entityType} deserialization failed despite having sync data - marking as failed');
+        return false;
+      } else {
+        // DTO has no sync data - this is legitimate skipping
+        Logger.debug('⏭️ Skipping ${dto.entityType}: no sync data available');
+        return true;
+      }
     } catch (e) {
       Logger.error('❌ Error processing incoming paginated data for ${dto.entityType}: $e');
+      return false;
+    }
+  }
+
+  /// Helper method to check if a DTO contains actual sync data
+  bool _dtoContainsSyncData(PaginatedSyncDataDto dto) {
+    try {
+      switch (dto.entityType) {
+        case 'AppUsage':
+          return dto.appUsagesSyncData != null && dto.appUsagesSyncData!.data.getTotalItemCount() > 0;
+        case 'AppUsageTag':
+          return dto.appUsageTagsSyncData != null && dto.appUsageTagsSyncData!.data.getTotalItemCount() > 0;
+        case 'AppUsageTimeRecord':
+          return dto.appUsageTimeRecordsSyncData != null && dto.appUsageTimeRecordsSyncData!.data.getTotalItemCount() > 0;
+        case 'AppUsageTagRule':
+          return dto.appUsageTagRulesSyncData != null && dto.appUsageTagRulesSyncData!.data.getTotalItemCount() > 0;
+        case 'AppUsageIgnoreRule':
+          return dto.appUsageIgnoreRulesSyncData != null && dto.appUsageIgnoreRulesSyncData!.data.getTotalItemCount() > 0;
+        case 'Habit':
+          return dto.habitsSyncData != null && dto.habitsSyncData!.data.getTotalItemCount() > 0;
+        case 'HabitRecord':
+          return dto.habitRecordsSyncData != null && dto.habitRecordsSyncData!.data.getTotalItemCount() > 0;
+        case 'HabitTag':
+          return dto.habitTagsSyncData != null && dto.habitTagsSyncData!.data.getTotalItemCount() > 0;
+        case 'Tag':
+          return dto.tagsSyncData != null && dto.tagsSyncData!.data.getTotalItemCount() > 0;
+        case 'TagTag':
+          return dto.tagTagsSyncData != null && dto.tagTagsSyncData!.data.getTotalItemCount() > 0;
+        case 'Task':
+          return dto.tasksSyncData != null && dto.tasksSyncData!.data.getTotalItemCount() > 0;
+        case 'TaskTag':
+          return dto.taskTagsSyncData != null && dto.taskTagsSyncData!.data.getTotalItemCount() > 0;
+        case 'TaskTimeRecord':
+          return dto.taskTimeRecordsSyncData != null && dto.taskTimeRecordsSyncData!.data.getTotalItemCount() > 0;
+        case 'Setting':
+          return dto.settingsSyncData != null && dto.settingsSyncData!.data.getTotalItemCount() > 0;
+        case 'SyncDevice':
+          return dto.syncDevicesSyncData != null && dto.syncDevicesSyncData!.data.getTotalItemCount() > 0;
+        case 'Note':
+          return dto.notesSyncData != null && dto.notesSyncData!.data.getTotalItemCount() > 0;
+        case 'NoteTag':
+          return dto.noteTagsSyncData != null && dto.noteTagsSyncData!.data.getTotalItemCount() > 0;
+        default:
+          Logger.warning('Unknown entity type in DTO sync data check: ${dto.entityType}');
+          return false;
+      }
+    } catch (e) {
+      Logger.error('Error checking DTO sync data for ${dto.entityType}: $e');
       return false;
     }
   }
@@ -809,6 +935,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       // Find the config for the incoming entity type
       final config = _syncConfigs.firstWhere((c) => c.name == incomingDto.entityType);
 
+      // CRITICAL FIX: Find the server's own sync device record to use its lastSyncDate
+      // This ensures bidirectional sync works correctly - server sends its data based on its own sync state
+      final localDeviceId = await deviceIdService.getDeviceId();
+      final allSyncDevices = await syncDeviceRepository.getAll();
+      final serverSyncDevice = allSyncDevices.firstWhere(
+        (device) => device.id == incomingDto.syncDevice.id,
+        orElse: () => incomingDto.syncDevice,
+      );
+
       // Create a response sync device (swap from/to for return path)
       final responseSyncDevice = SyncDevice(
         id: incomingDto.syncDevice.id,
@@ -817,19 +952,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         fromDeviceId: incomingDto.syncDevice.toDeviceId,
         toDeviceId: incomingDto.syncDevice.fromDeviceId,
         name: incomingDto.syncDevice.name,
-        lastSyncDate: incomingDto.syncDevice.lastSyncDate,
+        lastSyncDate: serverSyncDevice.lastSyncDate,
         createdDate: incomingDto.syncDevice.createdDate,
       );
 
-      // Get the same page of data for response
-      final lastSyncDate = incomingDto.syncDevice.lastSyncDate ?? DateTime(1900, 1, 1);
+      // CRITICAL FIX: Use server's own lastSyncDate to determine what data to send back
+      // This enables proper bidirectional sync - server sends its data regardless of client's sync state
+      final serverLastSyncDate = serverSyncDevice.lastSyncDate ?? DateTime(1900, 1, 1);
+      Logger.debug('🔄 Server preparing response using its own lastSyncDate: $serverLastSyncDate for ${incomingDto.entityType}');
+      
       final responseData = await config.getPaginatedSyncData(
-        lastSyncDate,
+        serverLastSyncDate,
         incomingDto.pageIndex,
         incomingDto.pageSize,
         incomingDto.entityType,
       );
 
+      Logger.debug('📤 Server response prepared: ${responseData.totalItems} items for ${incomingDto.entityType}');
       return _createPaginatedSyncDataDto(responseSyncDevice, responseData, incomingDto.entityType);
     } catch (e) {
       Logger.error('Error preparing paginated sync data response: $e');
@@ -960,14 +1099,772 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
   }
 
+  /// Manually deserializes PaginatedSyncDataDto to avoid generic type issues with JsonMapper
+  PaginatedSyncDataDto? _deserializePaginatedSyncDataDto(Map<String, dynamic> json) {
+    try {
+      // Extract basic fields
+      final appVersion = json['appVersion'] as String;
+      final entityType = json['entityType'] as String;
+      final pageIndex = json['pageIndex'] as int;
+      final pageSize = json['pageSize'] as int;
+      final totalPages = json['totalPages'] as int;
+      final totalItems = json['totalItems'] as int;
+      final isLastPage = json['isLastPage'] as bool;
+      
+      // Deserialize sync device
+      final syncDeviceMap = json['syncDevice'] as Map<String, dynamic>;
+      final syncDevice = JsonMapper.deserialize<SyncDevice>(syncDeviceMap);
+      if (syncDevice == null) {
+        Logger.error('❌ Failed to deserialize SyncDevice');
+        return null;
+      }
+      
+      // Deserialize progress if present
+      SyncProgress? progress;
+      if (json['progress'] != null) {
+        final progressMap = json['progress'] as Map<String, dynamic>;
+        progress = JsonMapper.deserialize<SyncProgress>(progressMap);
+      }
+      
+      // Deserialize the specific entity sync data based on entityType
+      PaginatedSyncData? entitySyncData;
+      final String syncDataKey = _getEntityDataKey(entityType);
+      
+      Logger.debug('🔍 Looking for sync data key: $syncDataKey');
+      if (json[syncDataKey] != null) {
+        final syncDataMap = json[syncDataKey] as Map<String, dynamic>;
+        Logger.debug('🔍 Found $syncDataKey data, deserializing...');
+        entitySyncData = _deserializePaginatedSyncDataForEntity(syncDataMap, entityType);
+        if (entitySyncData != null) {
+          Logger.debug('✅ Successfully deserialized $entityType data (${entitySyncData.runtimeType})');
+        } else {
+          Logger.error('❌ Failed to deserialize $entityType data');
+        }
+      } else {
+        Logger.debug('⚠️ No $syncDataKey found in response data');
+      }
+      
+      // Create the DTO using constructor
+      return _createPaginatedSyncDataDtoFromDeserialized(
+        appVersion: appVersion,
+        syncDevice: syncDevice,
+        entityType: entityType,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: totalPages,
+        totalItems: totalItems,
+        isLastPage: isLastPage,
+        progress: progress,
+        entitySyncData: entitySyncData,
+      );
+    } catch (e) {
+      Logger.error('❌ Error in manual PaginatedSyncDataDto deserialization: $e');
+      return null;
+    }
+  }
+
+  /// Helper function to safely deserialize entities with type conversion
+  T? _safeDeserialize<T>(Map<String, dynamic> item) {
+    try {
+      // Handle type conversion for fields that might be int instead of double
+      if (T == Task || T == Note) {
+        // Convert int to double for 'order' field if needed
+        if (item.containsKey('order') && item['order'] is int) {
+          item['order'] = (item['order'] as int).toDouble();
+        }
+      }
+      return JsonMapper.deserialize<T>(item);
+    } catch (e) {
+      Logger.warning('⚠️ Failed to deserialize ${T.toString()}: $e');
+      return null;
+    }
+  }
+
+  /// Deserializes PaginatedSyncData for a specific entity type
+  PaginatedSyncData? _deserializePaginatedSyncDataForEntity(Map<String, dynamic> json, String entityType) {
+    try {
+      final dataMap = json['data'] as Map<String, dynamic>;
+      final pageIndex = json['pageIndex'] as int;
+      final pageSize = json['pageSize'] as int;
+      final totalPages = json['totalPages'] as int;
+      final totalItems = json['totalItems'] as int;
+      final isLastPage = json['isLastPage'] as bool;
+      
+      // Deserialize the SyncData based on entity type
+      SyncData? syncData;
+      switch (entityType) {
+        case 'Setting':
+          Logger.debug('🔍 Deserializing Setting entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Setting>(item))
+              .where((item) => item != null)
+              .cast<Setting>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Setting>(item))
+              .where((item) => item != null)
+              .cast<Setting>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Setting>(item))
+              .where((item) => item != null)
+              .cast<Setting>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized Settings: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<Setting>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          // Return properly typed PaginatedSyncData for Settings
+          final result = PaginatedSyncData<Setting>(
+            data: syncData as SyncData<Setting>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<Setting> (${result.runtimeType})');
+          return result;
+        
+        case 'SyncDevice':
+          Logger.debug('🔍 Deserializing SyncDevice entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<SyncDevice>(item))
+              .where((item) => item != null)
+              .cast<SyncDevice>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<SyncDevice>(item))
+              .where((item) => item != null)
+              .cast<SyncDevice>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<SyncDevice>(item))
+              .where((item) => item != null)
+              .cast<SyncDevice>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized SyncDevices: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<SyncDevice>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          // Return properly typed PaginatedSyncData for SyncDevices
+          final result = PaginatedSyncData<SyncDevice>(
+            data: syncData as SyncData<SyncDevice>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<SyncDevice> (${result.runtimeType})');
+          return result;
+        
+        case 'Task':
+          Logger.debug('🔍 Deserializing Task entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Task>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Task>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Task>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Task>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Task>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Task>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized Tasks: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<Task>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<Task>(
+            data: syncData as SyncData<Task>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<Task> (${result.runtimeType})');
+          return result;
+
+        case 'Note':
+          Logger.debug('🔍 Deserializing Note entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Note>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Note>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Note>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Note>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => _safeDeserialize<Note>(item as Map<String, dynamic>))
+              .where((item) => item != null)
+              .cast<Note>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized Notes: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<Note>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<Note>(
+            data: syncData as SyncData<Note>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<Note> (${result.runtimeType})');
+          return result;
+
+        case 'Habit':
+          Logger.debug('🔍 Deserializing Habit entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Habit>(item))
+              .where((item) => item != null)
+              .cast<Habit>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Habit>(item))
+              .where((item) => item != null)
+              .cast<Habit>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Habit>(item))
+              .where((item) => item != null)
+              .cast<Habit>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized Habits: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<Habit>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<Habit>(
+            data: syncData as SyncData<Habit>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<Habit> (${result.runtimeType})');
+          return result;
+
+        case 'Tag':
+          Logger.debug('🔍 Deserializing Tag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Tag>(item))
+              .where((item) => item != null)
+              .cast<Tag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Tag>(item))
+              .where((item) => item != null)
+              .cast<Tag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<Tag>(item))
+              .where((item) => item != null)
+              .cast<Tag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized Tags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<Tag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<Tag>(
+            data: syncData as SyncData<Tag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<Tag> (${result.runtimeType})');
+          return result;
+
+        case 'AppUsage':
+          Logger.debug('🔍 Deserializing AppUsage entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsage>(item))
+              .where((item) => item != null)
+              .cast<AppUsage>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsage>(item))
+              .where((item) => item != null)
+              .cast<AppUsage>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsage>(item))
+              .where((item) => item != null)
+              .cast<AppUsage>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized AppUsages: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<AppUsage>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<AppUsage>(
+            data: syncData as SyncData<AppUsage>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsage> (${result.runtimeType})');
+          return result;
+
+        case 'TaskTag':
+          Logger.debug('🔍 Deserializing TaskTag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTag>(item))
+              .where((item) => item != null)
+              .cast<TaskTag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTag>(item))
+              .where((item) => item != null)
+              .cast<TaskTag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTag>(item))
+              .where((item) => item != null)
+              .cast<TaskTag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized TaskTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<TaskTag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<TaskTag>(
+            data: syncData as SyncData<TaskTag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<TaskTag> (${result.runtimeType})');
+          return result;
+
+        case 'TaskTimeRecord':
+          Logger.debug('🔍 Deserializing TaskTimeRecord entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<TaskTimeRecord>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<TaskTimeRecord>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TaskTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<TaskTimeRecord>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized TaskTimeRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<TaskTimeRecord>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<TaskTimeRecord>(
+            data: syncData as SyncData<TaskTimeRecord>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<TaskTimeRecord> (${result.runtimeType})');
+          return result;
+
+        case 'HabitTag':
+          Logger.debug('🔍 Deserializing HabitTag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitTag>(item))
+              .where((item) => item != null)
+              .cast<HabitTag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitTag>(item))
+              .where((item) => item != null)
+              .cast<HabitTag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitTag>(item))
+              .where((item) => item != null)
+              .cast<HabitTag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized HabitTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<HabitTag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<HabitTag>(
+            data: syncData as SyncData<HabitTag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<HabitTag> (${result.runtimeType})');
+          return result;
+
+        case 'NoteTag':
+          Logger.debug('🔍 Deserializing NoteTag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<NoteTag>(item))
+              .where((item) => item != null)
+              .cast<NoteTag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<NoteTag>(item))
+              .where((item) => item != null)
+              .cast<NoteTag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<NoteTag>(item))
+              .where((item) => item != null)
+              .cast<NoteTag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized NoteTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<NoteTag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<NoteTag>(
+            data: syncData as SyncData<NoteTag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<NoteTag> (${result.runtimeType})');
+          return result;
+
+        case 'AppUsageTag':
+          Logger.debug('🔍 Deserializing AppUsageTag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTag>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTag>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTag>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized AppUsageTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<AppUsageTag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<AppUsageTag>(
+            data: syncData as SyncData<AppUsageTag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsageTag> (${result.runtimeType})');
+          return result;
+
+        case 'AppUsageTagRule':
+          Logger.debug('🔍 Deserializing AppUsageTagRule entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTagRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTagRule>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTagRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTagRule>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTagRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTagRule>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized AppUsageTagRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<AppUsageTagRule>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<AppUsageTagRule>(
+            data: syncData as SyncData<AppUsageTagRule>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsageTagRule> (${result.runtimeType})');
+          return result;
+
+        case 'TagTag':
+          Logger.debug('🔍 Deserializing TagTag entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TagTag>(item))
+              .where((item) => item != null)
+              .cast<TagTag>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TagTag>(item))
+              .where((item) => item != null)
+              .cast<TagTag>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<TagTag>(item))
+              .where((item) => item != null)
+              .cast<TagTag>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized TagTags: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<TagTag>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<TagTag>(
+            data: syncData as SyncData<TagTag>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<TagTag> (${result.runtimeType})');
+          return result;
+
+        case 'AppUsageIgnoreRule':
+          Logger.debug('🔍 Deserializing AppUsageIgnoreRule entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageIgnoreRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageIgnoreRule>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageIgnoreRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageIgnoreRule>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageIgnoreRule>(item))
+              .where((item) => item != null)
+              .cast<AppUsageIgnoreRule>()
+              .toList();
+          
+          Logger.debug('📊 Deserialized AppUsageIgnoreRules: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+          
+          syncData = SyncData<AppUsageIgnoreRule>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+          
+          final result = PaginatedSyncData<AppUsageIgnoreRule>(
+            data: syncData as SyncData<AppUsageIgnoreRule>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsageIgnoreRule> (${result.runtimeType})');
+          return result;
+
+        // Add other entity types as needed
+        default:
+          Logger.warning('⚠️ Unsupported entity type for deserialization: $entityType');
+          return null;
+      }
+    } catch (e) {
+      Logger.error('❌ CRITICAL: Failed to deserialize PaginatedSyncData for $entityType: $e');
+      Logger.error('🔍 This indicates a serious deserialization failure that will cause sync to fail');
+      Logger.error('🔍 Error type: ${e.runtimeType}');
+      if (e.toString().contains('Null') && e.toString().contains('subtype')) {
+        Logger.error('🔍 This appears to be a null casting error - check for missing pagination parameters');
+      }
+      return null;
+    }
+  }
+
+  /// Creates PaginatedSyncDataDto from deserialized components
+  PaginatedSyncDataDto _createPaginatedSyncDataDtoFromDeserialized({
+    required String appVersion,
+    required SyncDevice syncDevice,
+    required String entityType,
+    required int pageIndex,
+    required int pageSize,
+    required int totalPages,
+    required int totalItems,
+    required bool isLastPage,
+    SyncProgress? progress,
+    PaginatedSyncData? entitySyncData,
+  }) {
+    return PaginatedSyncDataDto(
+      appVersion: appVersion,
+      syncDevice: syncDevice,
+      entityType: entityType,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalPages: totalPages,
+      totalItems: totalItems,
+      isLastPage: isLastPage,
+      progress: progress,
+      // CRITICAL FIX: Properly assign entity sync data based on entityType
+      settingsSyncData: entityType == 'Setting' ? entitySyncData as PaginatedSyncData<Setting>? : null,
+      appUsagesSyncData: entityType == 'AppUsage' ? entitySyncData as PaginatedSyncData<AppUsage>? : null,
+      appUsageTagsSyncData: entityType == 'AppUsageTag' ? entitySyncData as PaginatedSyncData<AppUsageTag>? : null,
+      appUsageTimeRecordsSyncData: entityType == 'AppUsageTimeRecord' ? entitySyncData as PaginatedSyncData<AppUsageTimeRecord>? : null,
+      appUsageTagRulesSyncData: entityType == 'AppUsageTagRule' ? entitySyncData as PaginatedSyncData<AppUsageTagRule>? : null,
+      appUsageIgnoreRulesSyncData: entityType == 'AppUsageIgnoreRule' ? entitySyncData as PaginatedSyncData<AppUsageIgnoreRule>? : null,
+      habitsSyncData: entityType == 'Habit' ? entitySyncData as PaginatedSyncData<Habit>? : null,
+      habitRecordsSyncData: entityType == 'HabitRecord' ? entitySyncData as PaginatedSyncData<HabitRecord>? : null,
+      habitTagsSyncData: entityType == 'HabitTag' ? entitySyncData as PaginatedSyncData<HabitTag>? : null,
+      tagsSyncData: entityType == 'Tag' ? entitySyncData as PaginatedSyncData<Tag>? : null,
+      tagTagsSyncData: entityType == 'TagTag' ? entitySyncData as PaginatedSyncData<TagTag>? : null,
+      tasksSyncData: entityType == 'Task' ? entitySyncData as PaginatedSyncData<Task>? : null,
+      taskTagsSyncData: entityType == 'TaskTag' ? entitySyncData as PaginatedSyncData<TaskTag>? : null,
+      taskTimeRecordsSyncData: entityType == 'TaskTimeRecord' ? entitySyncData as PaginatedSyncData<TaskTimeRecord>? : null,
+      syncDevicesSyncData: entityType == 'SyncDevice' ? entitySyncData as PaginatedSyncData<SyncDevice>? : null,
+      notesSyncData: entityType == 'Note' ? entitySyncData as PaginatedSyncData<Note>? : null,
+      noteTagsSyncData: entityType == 'NoteTag' ? entitySyncData as PaginatedSyncData<NoteTag>? : null,
+    );
+  }
+
+  /// Normalizes numeric types in JSON to prevent int/double casting errors during deserialization
+  void _normalizeJsonNumericTypes(Map<String, dynamic> json) {
+    // Recursively process nested maps and lists
+    json.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        _normalizeJsonNumericTypes(value);
+      } else if (value is List) {
+        for (var item in value) {
+          if (item is Map<String, dynamic>) {
+            _normalizeJsonNumericTypes(item);
+          }
+        }
+      } else if (value is int) {
+        // Convert specific int fields that should be double to double
+        if (key == 'progressPercentage') {
+          json[key] = value.toDouble();
+        }
+      }
+    });
+  }
+
   Future<void> _validateDeviceId(SyncDevice remoteDevice) async {
     final localDeviceIP = await NetworkUtils.getLocalIpAddress();
     final localDeviceID = await deviceIdService.getDeviceId();
 
-    if (remoteDevice.fromIp == localDeviceIP && remoteDevice.fromDeviceId == localDeviceID ||
-        remoteDevice.toIp == localDeviceIP && remoteDevice.toDeviceId == localDeviceID) {
+    // Check if this device is involved in the sync relationship (either as from or to)
+    final isFromDevice = remoteDevice.fromIp == localDeviceIP && remoteDevice.fromDeviceId == localDeviceID;
+    final isToDevice = remoteDevice.toIp == localDeviceIP && remoteDevice.toDeviceId == localDeviceID;
+
+    // Also check if device IDs match but IPs might be different (for mobile-mobile sync scenarios)
+    final deviceIdMatches = remoteDevice.fromDeviceId == localDeviceID || remoteDevice.toDeviceId == localDeviceID;
+
+    if (isFromDevice || isToDevice || deviceIdMatches) {
       return;
     }
+
+    Logger.error('Device validation failed:');
+    Logger.error('Local: IP=$localDeviceIP, ID=$localDeviceID');
+    Logger.error('Remote: fromIP=${remoteDevice.fromIp}, fromID=${remoteDevice.fromDeviceId}');
+    Logger.error('Remote: toIP=${remoteDevice.toIp}, toID=${remoteDevice.toDeviceId}');
 
     throw BusinessException('Device ID mismatch', SyncTranslationKeys.deviceMismatchError);
   }

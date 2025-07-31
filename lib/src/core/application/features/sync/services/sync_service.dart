@@ -99,21 +99,46 @@ class SyncService implements ISyncService {
 
       // Create paginated sync command handler and listen to progress
       final command = PaginatedSyncCommand();
-      await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+      final response = await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
-      // Reset the attempt count on successful sync
-      _reconnectAttempts = 0;
+      // Check if sync was actually successful
+      if (response.isComplete) {
+        // Reset the attempt count on successful sync
+        _reconnectAttempts = 0;
 
-      Logger.info('✅ Paginated sync completed successfully');
+        Logger.info('✅ Paginated sync completed successfully');
 
-      // Update sync status to completed
-      updateSyncStatus(SyncStatus(
-        state: SyncState.completed,
-        isManual: isManual,
-        lastSyncTime: DateTime.now(),
-      ));
+        // Update sync status to completed
+        updateSyncStatus(SyncStatus(
+          state: SyncState.completed,
+          isManual: isManual,
+          lastSyncTime: DateTime.now(),
+        ));
 
-      notifySyncComplete();
+        notifySyncComplete();
+      } else {
+        // Sync failed or was incomplete
+        Logger.error('❌ Paginated sync failed or was incomplete');
+        
+        // Update sync status to error
+        updateSyncStatus(SyncStatus(
+          state: SyncState.error,
+          errorMessage: 'Sync was incomplete or failed',
+          isManual: isManual,
+          lastSyncTime: DateTime.now(),
+        ));
+
+        _handleDisconnection();
+        
+        // Reset to idle after error delay
+        Timer(const Duration(seconds: 5), () {
+          updateSyncStatus(SyncStatus(
+            state: SyncState.idle,
+            lastSyncTime: DateTime.now(),
+          ));
+        });
+        return; // Exit early to skip the success flow
+      }
 
       // Reset to idle after a short delay
       Timer(const Duration(seconds: 2), () {
