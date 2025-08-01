@@ -260,7 +260,8 @@ tasks:
       urgent_not_important: Acil ama Önemli Değil
   quick_task:
     create_error: Görev oluşturulurken hata oluştu
-    lock_description: Benzer görevler oluştururken değerlerini korumak için özellikleri kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
+    lock_description: Benzer görevler oluştururken değerlerini korumak için 
+      özellikleri kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
     lock_settings: Kilit Ayarları
     reset_all: Tüm alanları sıfırla
     reset_confirm:
