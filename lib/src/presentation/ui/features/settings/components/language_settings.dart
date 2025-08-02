@@ -144,7 +144,7 @@ class _LanguageDialog extends StatelessWidget {
 
   Widget _buildLanguageTile(BuildContext context, _LanguageOption language) {
     final isSelected = _translationService.getCurrentLanguage(context) == language.code;
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: AppTheme.sizeMedium,
@@ -192,12 +192,12 @@ class _LanguageDialog extends StatelessWidget {
       body: ListView(
         children: [
           const SizedBox(height: AppTheme.sizeSmall),
-          
+
           // Language count info
           Padding(
             padding: const EdgeInsets.all(AppTheme.sizeMedium),
             child: Card(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.sizeMedium),
                 child: Row(
@@ -221,14 +221,13 @@ class _LanguageDialog extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Language sections
           for (final section in _languageSections) ...[
             _buildSectionHeader(section.title),
-            for (final language in section.languages)
-              _buildLanguageTile(context, language),
+            for (final language in section.languages) _buildLanguageTile(context, language),
           ],
-          
+
           const SizedBox(height: AppTheme.sizeLarge),
         ],
       ),
