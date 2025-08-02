@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Versionsmatchning
+shared:
+  buttons:
+    add: Lägg till
+    back: Tillbaka
+    cancel: Avbryt
+    close: Stäng
+    confirm: Bekräfta
+    delete: Ta bort
+    done: Klar
+    load_more: Ladda mer
+    save: Spara
+    saved: Sparad
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: Augusti
+      aug_short: Aug
+      dec: December
+      dec_short: Dec
+      feb: Februari
+      feb_short: Feb
+      jan: Januari
+      jan_short: Jan
+      jul: Juli
+      jul_short: Jul
+      jun: Juni
+      jun_short: Jun
+      mar: Mars
+      mar_short: Mar
+      may: Maj
+      may_short: Maj
+      nov: November
+      nov_short: Nov
+      oct: Oktober
+      oct_short: Okt
+      sep: September
+      sep_short: Sep
+    week_days:
+      friday: Fredag
+      friday_short: Fre
+      monday: Måndag
+      monday_short: Mån
+      saturday: Lördag
+      saturday_short: Lör
+      sunday: Söndag
+      sunday_short: Sön
+      thursday: Torsdag
+      thursday_short: Tor
+      tuesday: Tisdag
+      tuesday_short: Tis
+      wednesday: Onsdag
+      wednesday_short: Ons
+  change: Ändra
+  color_picker:
+    confirm_selection: Bekräfta val
+    select_color_title: Välj färg
+    tabs:
+      custom: Anpassad
+      palette: Färger
+    title: Färgväljare
+  data:
+    created_date_label: Skapandedatum
+    modified_date_label: Ändringsdatum
+    name_label: Namn
+  date_filter:
+    title: Välj datumintervall
+    tooltips:
+      clear: Rensa datumfilter
+      filter: Filtrera efter datum
+  date_format:
+    hint: DD/MM/ÅÅÅÅ
+  days:
+    friday: Fredag
+    friday_short: Fre
+    monday: Måndag
+    monday_short: Mån
+    saturday: Lördag
+    saturday_short: Lör
+    sunday: Söndag
+    sunday_short: Sön
+    thursday: Torsdag
+    thursday_short: Tor
+    tuesday: Tisdag
+    tuesday_short: Tis
+    wednesday: Onsdag
+    wednesday_short: Ons
+  editor:
+    markdown:
+      hint: Du kan skriva med Markdown-format...
+      tooltips:
+        bold: Fet
+        italic: Kursiv
+        strikethrough: Genomstruken
+        code: Kod
+        link: Länk
+        quote: Citat
+        bulleted_list: Punktlista
+        numbered_list: Numrerad lista
+        horizontal_rule: Horisontell linje
+        edit: Redigera
+        preview: Förhandsgranska
+  errors:
+    deleting: Fel uppstod vid borttagning av data
+    file_not_found: Fil hittades inte
+    file_pick: Fel vid val av fil
+    file_read: Fel vid läsning av fil
+    file_save: Fel vid sparande av fil
+    file_write: Fel vid skrivning av fil
+    loading: Fel uppstod vid laddning av data
+    report_subject: "{appName} App: Oväntad felrapport"
+    report_template: |
+      Hej, jag stötte på ett oväntat fel när jag använde {appName} appen.
+
+      Här är information som kan hjälpa till att diagnostisera problemet:
+      App-version: {version}
+      Enhetsinformation: {device}
+      OS: {os}
+      OS-version: {osVersion}
+      Felmeddelande:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Hjälp mig att lösa detta problem.
+
+      Tack!
+    saving: Fel uppstod vid sparande av data
+    storage_permission: Lagringstillstånd krävs
+    storage_permission_denied: Lagringstillstånd nekat
+    unexpected: Ett oväntat fel uppstod
+  filters:
+    search: Sök
+  help:
+    tooltip: Hjälp
+  messages:
+    confirm_delete: Är du säker på att du vill ta bort detta objekt?
+    no_items_found: Inga objekt
+  nav:
+    items:
+      app_usages: Appanvändning
+      habits: Vanor
+      more: Mer
+      notes: Anteckningar
+      settings: Inställningar
+      tags: Taggar
+      tasks: Uppgifter
+      today: Idag
+  none_option: "Inga taggar"
+  regex_help:
+    examples:
+      chat: 'Matchar antingen "Slack" eller "Discord"'
+      chrome: 'Matchar vilken fönsteritel som helst som innehåller "Chrome"'
+      exact_chrome: 'Matchar exakt "Chrome"'
+      pdf: Matchar vilken PDF-fil som helst
+      vscode: Matchar vilket VS Code-fönster som helst
+    tips:
+      any_chars: 'Använd ".*" för att matcha alla tecken'
+      dot: '"\." matchar en punkt'
+      end: '"$" matchar slutet av text'
+      or: '"|" betyder ELLER'
+      start: '"^" matchar början av text'
+    tips_title: 💡 Tips
+    title: Mönsterexempel
+  report_error: Rapportera fel
+  save_list_options: Spara listalternativ
+  search:
+    placeholder: Sök
+    tooltip: Sök objekt
+  sections:
+    habits: Vanor
+    special_filters: Specialfilter
+    statistics: Statistik
+    tags: Taggar
+    tasks: Uppgifter
+    time: Tid
+  sort:
+    ascending: Stigande
+    custom_order:
+      description: Aktivera dra och släpp för att ordna om objekt
+      title: Anpassad sortering
+    descending: Fallande
+    remove_criteria: Ta bort kriterium
+    reset_to_default: Återställ till standard
+    sort: Sortera
+  statistics:
+    daily_usage:
+      description: Visar total användningstid per veckodag
+      title: Daglig användning
+    hourly_usage:
+      description: Visar total användningstid per timme på dagen
+      title: Timvis användning
+  time:
+    not_set: "Inte inställd"
+  time_periods:
+    custom: Anpassad
+    last_month: Förra månaden
+    last_three_months: Senaste 3 månaderna
+    last_week: Förra veckan
+    this_month: Denna månad
+    this_three_months: Dessa 3 månader
+    this_week: Denna vecka
+    today: Idag
+  tooltips:
+    compare_with_previous: Jämför med föregående period
+    filter_by_tags: Filtrera efter taggar
+    refresh: Uppdatera
+  ui:
+    report_error: Rapportera
+  units:
+    days: dagar
+    hours: tim
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Nedladdningssida
+      later: Senare
+      update_now: Uppdatera nu
+    downloading: Laddar ner uppdatering...
+    failed: Uppdatering misslyckades.
+    message: En ny version ({version}) är tillgänglig.
+    question: Vill du uppdatera nu?
+    success: Uppdatering nedladdad framgångsrikt!
+    title: Uppdatering tillgänglig!
+  validation:
+    required: "{field} är obligatoriskt"

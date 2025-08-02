@@ -1,0 +1,96 @@
+notes:
+  help:
+    content: |
+      Zbuduj kompleksowy system zarządzania wiedzą, który przechwytuje twoje pomysły, efektywnie organizuje informacje i sprawia, że ważne spostrzeżenia są łatwo dostępne, gdy ich potrzebujesz.
+
+      ## ⚡ Dlaczego to ważne?
+
+      Efektywne robienie notatek i zarządzanie wiedzą są niezbędne dla produktywności i nauki. Dobrze zorganizowany system notatek zapobiega utracie cennych spostrzeżeń, przyspiesza podejmowanie decyzji i tworzy niezawodną zewnętrzną pamięć, która z czasem staje się bardziej wartościowa.
+
+      ## ✍️ Bezproblemowe przechwytywanie informacji
+
+      Stwórz płynny przepływ pracy do przechwytywania i przetwarzania informacji, który zapewnia, że nic ważnego nie zostanie przeoczone, jednocześnie utrzymując skupienie na bieżącej pracy.
+
+      - 📝 Szybko przechwytuj pomysły bez zakłócania przepływu
+      - ✏️ Edytuj i udoskonalaj informacje w miarę rozwoju zrozumienia
+      - 🗑️ Systematycznie usuwaj przestarzałe lub nieistotne informacje
+      - 📌 Utrzymuj krytyczne informacje łatwo dostępne i zorganizowane
+
+      ## 🗂️ Strategiczna organizacja
+
+      Opracuj system organizacyjny, który skaluje się z twoją bazą wiedzy i sprawia, że odzyskiwanie informacji jest szybkie i niezawodne, niezależnie od objętości.
+
+      - 🏷️ Stosuj konsekwentne strategie tagowania dla szybkiej kategoryzacji
+      - 🔍 Używaj potężnych możliwości wyszukiwania, aby natychmiast znajdować informacje
+      - 📚 Grupuj powiązane notatki, aby tworzyć kompleksowe obszary wiedzy
+      - 🎯 Utrzymuj skupienie poprzez zorganizowaną architekturę informacji
+
+      ## 📄 Profesjonalne tworzenie treści
+
+      Wykorzystuj zaawansowane narzędzia formatowania do tworzenia jasnych, dobrze ustrukturyzowanych treści, które komunikują się efektywnie i wytrzymują próbę czasu.
+
+      - 🎨 **Bogate formatowanie:** Używaj Markdown do profesjonalnej struktury dokumentów
+      - 📋 **Jasna struktura:** Organizuj treść za pomocą nagłówków, list i wyróżnień
+      - 🔗 **Połączona wiedza:** Łącz powiązane koncepcje i informacje
+      - 📖 **Czytelny wynik:** Formatuj treść dla łatwego zrozumienia i udostępniania
+
+      ## 🚀 Korzyści produktywności
+
+      Przekształć swoją praktykę robienia notatek w mnożnik produktywności, który wzmacnia myślenie, przyspiesza naukę i poprawia jakość podejmowania decyzji.
+
+      - 🧠 **Wzmocnione myślenie:** Zewnętrzna pamięć uwalnia pojemność umysłową do pracy twórczej
+      - ⚡ **Szybszy dostęp:** Zorganizowane informacje redukują czas spędzony na szukaniu
+      - 🌐 **Uniwersalna dostępność:** Dostęp do bazy wiedzy z dowolnego urządzenia
+      - 📈 **Ciągłe doskonalenie:** Udoskonalone treści stają się bardziej wartościowe z czasem
+    title: Przewodnik zarządzania wiedzą i organizacji notatek
+  actions:
+    add: Dodaj notatkę
+    delete: Usuń notatkę
+    edit: Edytuj notatkę
+    save: Zapisz notatkę
+  components:
+    note_details_content:
+      add_tag_button: Dodaj tag
+      content_placeholder: Napisz treść notatki tutaj...
+      save_button: Zapisz
+      saved_message: Notatka zapisana pomyślnie
+      title_placeholder: Tytuł notatki
+      update_button: Aktualizuj
+    notes_list:
+      empty_message: Nie znaleziono notatek
+      loading: Ładowanie notatek...
+  delete:
+    confirm_message: Czy na pewno chcesz usunąć tę notatkę?
+    confirm_title: Usuń notatkę
+  details:
+    content: Treść
+    tags:
+      hint: Wybierz tagi dla notatki
+      label: Tagi
+    title: Tytuł
+  errors:
+    adding_tag: Nie udało się dodać tagu
+    deleting: Wystąpił nieoczekiwany błąd podczas usuwania notatki
+    getting_notes: Wystąpił błąd podczas pobierania notatek
+    loading_details: Nie udało się załadować szczegółów notatki
+    loading_tags: Nie udało się załadować tagów notatki
+    note_not_found: Nie znaleziono notatki
+    note_tag_not_found: Nie znaleziono tagu notatki
+    removing_tag: Nie udało się usunąć tagu
+    saving_note: Nie udało się zapisać notatki
+    tag_already_exists: Ten tag został już dodany
+  filters:
+    search:
+      placeholder: Szukaj notatek...
+    tooltips:
+      filter_by_tags: Filtruj według tagów
+  new_note: Nowa notatka
+  title_placeholder: Wprowadź opisowy tytuł notatki...
+  no_notes: Brak notatek
+  note_details: Szczegóły notatki
+  notes: Notatki
+  title: Notatki
+  tooltips:
+    add_note: Dodaj notatkę
+    delete_note: Usuń notatkę
+    edit_name: Edytuj tytuł

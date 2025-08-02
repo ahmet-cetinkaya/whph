@@ -68,5 +68,6 @@
     "whph",
     "wlan"
   ],
-  "dart.flutterSdkPath": ".fvm/versions/3.32.0"
+  "dart.flutterSdkPath": ".fvm/versions/3.32.0",
+  "codium.codeCompletion.enable": false
 }

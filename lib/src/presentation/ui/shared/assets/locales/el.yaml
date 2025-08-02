@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Αναντιστοιχία έκδοσης
+shared:
+  buttons:
+    add: Προσθήκη
+    back: Πίσω
+    cancel: Ακύρωση
+    close: Κλείσιμο
+    confirm: Επιβεβαίωση
+    delete: Διαγραφή
+    done: Τέλος
+    load_more: Φόρτωση περισσότερων
+    save: Αποθήκευση
+    saved: Αποθηκεύτηκε
+  calendar:
+    months:
+      apr: Απρίλιος
+      apr_short: Απρ
+      aug: Αύγουστος
+      aug_short: Αύγ
+      dec: Δεκέμβριος
+      dec_short: Δεκ
+      feb: Φεβρουάριος
+      feb_short: Φεβ
+      jan: Ιανουάριος
+      jan_short: Ιαν
+      jul: Ιούλιος
+      jul_short: Ιούλ
+      jun: Ιούνιος
+      jun_short: Ιούν
+      mar: Μάρτιος
+      mar_short: Μάρ
+      may: Μάιος
+      may_short: Μάι
+      nov: Νοέμβριος
+      nov_short: Νοέ
+      oct: Οκτώβριος
+      oct_short: Οκτ
+      sep: Σεπτέμβριος
+      sep_short: Σεπ
+    week_days:
+      friday: Παρασκευή
+      friday_short: Παρ
+      monday: Δευτέρα
+      monday_short: Δευ
+      saturday: Σάββατο
+      saturday_short: Σάβ
+      sunday: Κυριακή
+      sunday_short: Κυρ
+      thursday: Πέμπτη
+      thursday_short: Πέμ
+      tuesday: Τρίτη
+      tuesday_short: Τρί
+      wednesday: Τετάρτη
+      wednesday_short: Τετ
+  change: Αλλαγή
+  color_picker:
+    confirm_selection: Επιβεβαίωση επιλογής
+    select_color_title: Επιλογή χρώματος
+    tabs:
+      custom: Προσαρμοσμένο
+      palette: Χρώματα
+    title: Επιλογέας χρώματος
+  data:
+    created_date_label: Ημερομηνία δημιουργίας
+    modified_date_label: Ημερομηνία τροποποίησης
+    name_label: Όνομα
+  date_filter:
+    title: Επιλογή εύρους ημερομηνιών
+    tooltips:
+      clear: Εκκαθάριση φίλτρου ημερομηνίας
+      filter: Φιλτράρισμα κατά ημερομηνία
+  date_format:
+    hint: ΗΗ/ΜΜ/ΕΕΕΕ
+  days:
+    friday: Παρασκευή
+    friday_short: Παρ
+    monday: Δευτέρα
+    monday_short: Δευ
+    saturday: Σάββατο
+    saturday_short: Σάβ
+    sunday: Κυριακή
+    sunday_short: Κυρ
+    thursday: Πέμπτη
+    thursday_short: Πέμ
+    tuesday: Τρίτη
+    tuesday_short: Τρί
+    wednesday: Τετάρτη
+    wednesday_short: Τετ
+  editor:
+    markdown:
+      hint: Μπορείτε να γράψετε χρησιμοποιώντας μορφή Markdown...
+      tooltips:
+        bold: Έντονα
+        italic: Πλάγια
+        strikethrough: Διαγραμμένα
+        code: Κώδικας
+        link: Σύνδεσμος
+        quote: Παράθεση
+        bulleted_list: Λίστα με κουκκίδες
+        numbered_list: Αριθμημένη λίστα
+        horizontal_rule: Οριζόντια γραμμή
+        edit: Επεξεργασία
+        preview: Προεπισκόπηση
+  errors:
+    deleting: Παρουσιάστηκε σφάλμα κατά τη διαγραφή δεδομένων
+    file_not_found: Το αρχείο δεν βρέθηκε
+    file_pick: Σφάλμα κατά την επιλογή αρχείου
+    file_read: Σφάλμα κατά την ανάγνωση αρχείου
+    file_save: Σφάλμα κατά την αποθήκευση αρχείου
+    file_write: Σφάλμα κατά την εγγραφή αρχείου
+    loading: Παρουσιάστηκε σφάλμα κατά τη φόρτωση δεδομένων
+    report_subject: "{appName} Εφαρμογή: Αναφορά απροσδόκητου σφάλματος"
+    report_template: |
+      Γεια σας, αντιμετώπισα ένα απροσδόκητο σφάλμα κατά τη χρήση της εφαρμογής {appName}.
+
+      Εδώ είναι πληροφορίες που μπορεί να σας βοηθήσουν να διαγνώσετε το πρόβλημα:
+      Έκδοση εφαρμογής: {version}
+      Πληροφορίες συσκευής: {device}
+      Λειτουργικό σύστημα: {os}
+      Έκδοση λειτουργικού συστήματος: {osVersion}
+      Μήνυμα σφάλματος:
+      ```
+      {error}
+      Ίχνος στοίβας:
+      {stackTrace}
+      ```
+
+      Παρακαλώ βοηθήστε με να λύσω αυτό το πρόβλημα.
+
+      Ευχαριστώ!
+    saving: Παρουσιάστηκε σφάλμα κατά την αποθήκευση δεδομένων
+    storage_permission: Απαιτείται άδεια αποθήκευσης
+    storage_permission_denied: Η άδεια αποθήκευσης απορρίφθηκε
+    unexpected: Παρουσιάστηκε απροσδόκητο σφάλμα
+  filters:
+    search: Αναζήτηση
+  help:
+    tooltip: Βοήθεια
+  messages:
+    confirm_delete: Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το στοιχείο;
+    no_items_found: Δεν βρέθηκαν στοιχεία
+  nav:
+    items:
+      app_usages: Χρήση εφαρμογών
+      habits: Συνήθειες
+      more: Περισσότερα
+      notes: Σημειώσεις
+      settings: Ρυθμίσεις
+      tags: Ετικέτες
+      tasks: Εργασίες
+      today: Σήμερα
+  none_option: "Χωρίς ετικέτες"
+  regex_help:
+    examples:
+      chat: 'Ταιριάζει είτε με "Slack" είτε με "Discord"'
+      chrome: 'Ταιριάζει με οποιονδήποτε τίτλο παραθύρου που περιέχει "Chrome"'
+      exact_chrome: 'Ταιριάζει ακριβώς με "Chrome"'
+      pdf: Ταιριάζει με οποιοδήποτε αρχείο PDF
+      vscode: Ταιριάζει με οποιοδήποτε παράθυρο VS Code
+    tips:
+      any_chars: 'Χρησιμοποιήστε ".*" για να ταιριάξετε οποιουσδήποτε χαρακτήρες'
+      dot: '"\." ταιριάζει με μια τελεία'
+      end: '"$" ταιριάζει με το τέλο�� του κειμένου'
+      or: '"|" σημαίνει Ή'
+      start: '"^" ταιριάζει με την αρχή του κειμένου'
+    tips_title: 💡 Συμβουλές
+    title: Παραδείγματα μοτίβων
+  report_error: Αναφορά σφάλματος
+  save_list_options: Αποθήκευση επιλογών λίστας
+  search:
+    placeholder: Αναζήτηση
+    tooltip: Αναζήτηση στοιχείων
+  sections:
+    habits: Συνήθειες
+    special_filters: Ειδικά φίλτρα
+    statistics: Στατιστικά
+    tags: Ετικέτες
+    tasks: Εργασίες
+    time: Χρόνος
+  sort:
+    ascending: Αύξουσα
+    custom_order:
+      description: Ενεργοποίηση μεταφοράς και απόθεσης για αναδιάταξη στοιχείων
+      title: Προσαρμοσμένη ταξινόμηση
+    descending: Φθίνουσα
+    remove_criteria: Αφαίρεση κριτηρίου
+    reset_to_default: Επαναφορά στην προεπιλογή
+    sort: Ταξινόμηση
+  statistics:
+    daily_usage:
+      description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ημέρα της εβδομάδας
+      title: Ημερήσια χρήση
+    hourly_usage:
+      description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ώρα της ημέρας
+      title: Ωριαία χρήση
+  time:
+    not_set: "Δεν έχει οριστεί"
+  time_periods:
+    custom: Προσαρμοσμένο
+    last_month: Προηγούμενος μήνας
+    last_three_months: Τελευταίοι 3 μήνες
+    last_week: Προηγούμενη εβδομάδα
+    this_month: Αυτός ο μήνας
+    this_three_months: Αυτοί οι 3 μήνες
+    this_week: Αυτή η εβδομάδα
+    today: Σήμερα
+  tooltips:
+    compare_with_previous: Σύγκριση με προηγούμενη περίοδο
+    filter_by_tags: Φιλτράρισμα κατά ετικέτες
+    refresh: Ανανέωση
+  ui:
+    report_error: Αναφορά
+  units:
+    days: ημέρες
+    hours: ώρες
+    minutes: λεπτά
+    minutes_short: λ
+    seconds: δευτερόλεπτα
+  update_dialog:
+    buttons:
+      download_page: Σελίδα λήψης
+      later: Αργότερα
+      update_now: Ενημέρωση τώρα
+    downloading: Λήψη ενημέρωσης...
+    failed: Η ενημέρωση απέτυχε.
+    message: Μια νέα έκδοση ({version}) είναι διαθέσιμη.
+    question: Θέλετε να ενημερώσετε τώρα;
+    success: Η ενημέρωση λήφθηκε με επιτυχία!
+    title: Διαθέσιμη ενημέρωση!
+  validation:
+    required: "Το {field} είναι υποχρεωτικό"

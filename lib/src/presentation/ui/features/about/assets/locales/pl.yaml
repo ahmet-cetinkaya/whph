@@ -1,0 +1,49 @@
+about:
+  about_title: "O aplikacji"
+  version: Wersja {version}
+  description: >
+    {appName} to kompleksowa aplikacja zaprojektowana w celu zwiększenia Twojej osobistej produktywności; pozwala skutecznie zarządzać zadaniami, rozwijać nowe nawyki i maksymalnie wykorzystywać czas. Dodatkowo wzmacnia koncentrację poprzez śledzenie czasu spędzanego w różnych aplikacjach. Analizując swoje postępy, możesz świętować osiągnięcia i zyskać motywację potrzebną do bardziej produktywnego życia.
+  links:
+    website: Strona internetowa
+    source_code: Kod źródłowy
+    feedback: Opinie
+    contact: Kontakt
+    check_update: Sprawdź aktualizacje
+  support_me:
+    title: Wesprzyj {appName}
+    description: >
+      {appName} to całkowicie darmowe oprogramowanie open-source. Każdy może go używać, eksplorować, ulepszać i udostępniać.
+
+
+      Podczas gdy Ty nadal cieszysz się z jego używania, ja pracuję nad tym, aby uczynić go jeszcze lepszym. Jeśli chciałbyś wesprzeć kontynuację tego wysiłku, możesz postawić mi kawę; Twoje wsparcie bezpośrednio przyczyni się do rozwoju i trwałości {appName}. 😊
+    button_text: Postaw mi kawę
+  onboarding:
+    step1:
+      title: "Witaj w {appName}"
+      description: "Twój osobisty towarzysz w budowaniu lepszych nawyków, zarządzaniu zadaniami i skutecznym śledzeniu czasu. Poznajmy razem kluczowe funkcje!"
+    step2:
+      title: "Zarządzanie zadaniami"
+      description: "Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby pozostać skupionym i śledzić postępy w ważnych zadaniach."
+    step3:
+      title: "Budowanie nawyków"
+      description: "Buduj trwałe nawyki poprzez śledzenie codziennych aktywności. Ustawiaj przypomnienia, monitoruj swoje serie i wizualizuj postępy za pomocą szczegółowych statystyk."
+    step4:
+      title: "Robienie notatek"
+      description: "Utrzymuj ważne informacje w porządku dzięki potężnemu systemowi notatek. Taguj swoje notatki dla łatwej kategoryzacji i szybkiego dostępu."
+    step5:
+      title: "Użycie aplikacji i wgląd w czas"
+      description: "Monitoruj wzorce użycia aplikacji i analizuj czas spędzony na różnych aktywnościach. Uzyskaj wgląd w swoje cyfrowe nawyki i zoptymalizuj produktywność."
+    step6:
+      title: "Inteligentny system tagów"
+      description: "Używaj tagów do organizowania i grupowania zadań, nawyków i aplikacji. Śledź czas spędzony na różnych aktywnościach według tagów, aby zrozumieć, gdzie idzie Twój czas i zoptymalizować przepływ pracy."
+    step7:
+      title: "Uprawnienia aplikacji"
+      description: "{appName} potrzebuje pewnych uprawnień, aby działać prawidłowo. Możesz przejrzeć uprawnienia, które chciałbyś przyznać dla funkcji systemowych, takich jak powiadomienia i śledzenie aplikacji."
+      review_permissions: "Przejrzyj uprawnienia"
+    step8:
+      title: "Gotowy na transformację swojego życia?"
+      description: "Masz wszystkie narzędzia potrzebne do budowania lepszych nawyków, pozostania skupionym i osiągnięcia swoich celów. Rozpocznij swoją podróż ku bardziej produktywnemu i satysfakcjonującemu życiu już dziś!"
+    buttons:
+      next: "Dalej"
+      back: "Wstecz"
+      start: "Rozpocznij"

@@ -1,0 +1,102 @@
+sync:
+  devices:
+    errors:
+      loading: Nie udało się załadować urządzeń synchronizacji
+      removing: Nie udało się usunąć urządzenia synchronizacji
+      sync_failed: Nie udało się zsynchronizować urządzeń
+    from_label: Od
+    help:
+      content: |
+        🔄 Utrzymuj swoje zadania, nawyki, notatki, ustawienia itp. zsynchronizowane na wszystkich urządzeniach. Wszystkie dane pozostają w twojej sieci lokalnej — nic nie jest wysyłane do chmury.
+
+        ## ⚡ Szybka i bezpieczna konfiguracja
+
+        Połącz swoje urządzenia przez tę samą sieć Wi-Fi używając kodów QR. Synchronizacja rozpoczyna się automatycznie po sparowaniu.
+
+        - 📱 **Telefon → Telefon:** Jedno urządzenie musi być w **trybie serwera**, aby umożliwić parowanie
+        - 💻 **Komputer → Telefon:** Komputer pokazuje kod QR, telefon go skanuje
+
+        ## 📱 Urządzenia mobilne
+
+        Urządzenia Android mogą pracować w dwóch różnych trybach:
+
+        - 🔍 **Tryb klienta:**
+          - Skanuje kody QR
+          - Łączy się z innymi urządzeniami, aby otrzymać dane
+        - 📡 **Tryb serwera:**
+          - Pokazuje kod QR do skanowania przez innych
+          - Wysyła dane do połączonych urządzeń
+          - Można przełączać za pomocą ikony hotspotu Wi-Fi
+
+        Aby synchronizować między dwoma urządzeniami mobilnymi, jedno musi być w **trybie serwera**.
+
+        ## 💻 Urządzenia stacjonarne
+
+        Aplikacje komputerowe zawsze działają jako węzły **serwera**:
+
+        - 🖥️ Wyświetlają kod QR do parowania
+        - ✅ Automatycznie akceptują przychodzące połączenia
+        - 🔄 Synchronizują dane w obu kierunkach
+        - 📊 Pokazują status synchronizacji na żywo
+
+        ## 🛠️ Zarządzanie urządzeniami
+
+        Zarządzaj wszystkimi połączonymi urządzeniami z jednego miejsca:
+
+        - 📋 Przeglądaj połączone urządzenia
+        - ⏰ Zobacz czasy ostatniej synchronizacji
+        - 🔁 Uruchom ręczną synchronizację
+        - 🗑️ Usuń stare lub nieużywane urządzenia
+
+        ## 💡 Najlepsze praktyki
+
+        - 📶 Upewnij się, że wszystkie urządzenia są w tej samej sieci Wi-Fi
+        - 📱 Utrzymuj aplikacje otwarte i aktywne podczas synchronizacji
+        - 🧹 Usuń urządzenia, których już nie używasz
+        - ⏱️ Sprawdzaj czasy synchronizacji, aby upewnić się, że wszystko jest aktualne
+      title: Pomoc synchronizacji urządzeń
+    last_sync_label: Ostatnia synchronizacja
+    no_devices_found: Nie znaleziono zsynchronizowanych urządzeń
+    sync_tooltip: Synchronizuj teraz
+    title: Synchronizuj urządzenia
+    to_label: Do
+    unnamed_device: Urządzenie bez nazwy
+  error:
+    scan: Nie udało się zeskanować
+  errors:
+    connection_failed: |
+      Połączenie nie powiodło się. Upewnij się, że:
+
+      1. Oba urządzenia są w tej samej sieci
+      2. Obie aplikacje są otwarte i działają
+      3. Żadna zapora sieciowa nie blokuje połączenia
+    device_mismatch: Błąd synchronizacji. Urządzenie próbujące synchronizować nie jest prawidłowo sparowane z tym urządzeniem.
+    device_not_found: Nie znaleziono urządzenia synchronizacji
+    ip_address: Nie można pobrać lokalnego adresu IP
+    parse_message: Nie można przeanalizować zeskanowanej wiadomości
+    process_failed: Proces synchronizacji nie powiódł się.
+    save_device: Nie udało się zapisać urządzenia synchronizacji
+    scan: Nie udało się zeskanować
+    sync_failed: Synchronizacja nie powiodła się. Spróbuj ponownie.
+    sync_timeout: Przekroczono czas synchronizacji
+    version_mismatch: "Niezgodność wersji. Wersja lokalna: {currentVersion}, Wersja zdalna: {remoteVersion}. Zaktualizuj obie aplikacje do tej samej wersji."
+  messages:
+    device_already_paired: To urządzenie jest już sparowane
+    sync_completed: Synchronizacja zakończona pomyślnie
+    sync_in_progress: Synchronizacja w toku...
+    testing_connection: Testowanie połączenia...
+  qr_code:
+    close_button: Zamknij
+    dialog_title: Zeskanuj kod QR, aby zsynchronizować
+  scanner:
+    title: Zeskanuj kod QR
+    instruction: Umieść kod QR w ramce
+  server:
+    starting: Uruchamianie trybu serwera...
+    active: Tryb serwera aktywny - Pokaż kod QR innym urządzeniom
+    stopped: Tryb serwera zatrzymany - Urządzenie jest teraz w trybie klienta
+    start_failed: Nie udało się uruchomić trybu serwera - Sprawdź, czy port 44040 jest dostępny
+    start_tooltip: Uruchom tryb serwera
+    stop_tooltip: Zatrzymaj tryb serwera
+    error: Błąd
+    device_became_server: To urządzenie jest teraz serwerem synchronizacji

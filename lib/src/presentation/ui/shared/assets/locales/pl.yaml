@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Niezgodność wersji
+shared:
+  buttons:
+    add: Dodaj
+    back: Wstecz
+    cancel: Anuluj
+    close: Zamknij
+    confirm: Potwierdź
+    delete: Usuń
+    done: Gotowe
+    load_more: Załaduj więcej
+    save: Zapisz
+    saved: Zapisano
+  calendar:
+    months:
+      apr: Kwiecień
+      apr_short: Kwi
+      aug: Sierpień
+      aug_short: Sie
+      dec: Grudzień
+      dec_short: Gru
+      feb: Luty
+      feb_short: Lut
+      jan: Styczeń
+      jan_short: Sty
+      jul: Lipiec
+      jul_short: Lip
+      jun: Czerwiec
+      jun_short: Cze
+      mar: Marzec
+      mar_short: Mar
+      may: Maj
+      may_short: Maj
+      nov: Listopad
+      nov_short: Lis
+      oct: Październik
+      oct_short: Paź
+      sep: Wrzesień
+      sep_short: Wrz
+    week_days:
+      friday: Piątek
+      friday_short: Pt
+      monday: Poniedziałek
+      monday_short: Pn
+      saturday: Sobota
+      saturday_short: So
+      sunday: Niedziela
+      sunday_short: Nd
+      thursday: Czwartek
+      thursday_short: Cz
+      tuesday: Wtorek
+      tuesday_short: Wt
+      wednesday: Środa
+      wednesday_short: Śr
+  change: Zmień
+  color_picker:
+    confirm_selection: Potwierdź wybór
+    select_color_title: Wybierz kolor
+    tabs:
+      custom: Niestandardowy
+      palette: Kolory
+    title: Wybór koloru
+  data:
+    created_date_label: Data utworzenia
+    modified_date_label: Data modyfikacji
+    name_label: Nazwa
+  date_filter:
+    title: Wybierz zakres dat
+    tooltips:
+      clear: Wyczyść filtr dat
+      filter: Filtruj według daty
+  date_format:
+    hint: DD/MM/YYYY
+  days:
+    friday: Piątek
+    friday_short: Pt
+    monday: Poniedziałek
+    monday_short: Pn
+    saturday: Sobota
+    saturday_short: So
+    sunday: Niedziela
+    sunday_short: Nd
+    thursday: Czwartek
+    thursday_short: Cz
+    tuesday: Wtorek
+    tuesday_short: Wt
+    wednesday: Środa
+    wednesday_short: Śr
+  editor:
+    markdown:
+      hint: Możesz pisać używając formatu Markdown...
+      tooltips:
+        bold: Pogrubienie
+        italic: Kursywa
+        strikethrough: Przekreślenie
+        code: Kod
+        link: Link
+        quote: Cytat
+        bulleted_list: Lista punktowana
+        numbered_list: Lista numerowana
+        horizontal_rule: Linia pozioma
+        edit: Edytuj
+        preview: Podgląd
+  errors:
+    deleting: Wystąpi�� błąd podczas usuwania danych
+    file_not_found: Nie znaleziono pliku
+    file_pick: Błąd podczas wybierania pliku
+    file_read: Błąd podczas odczytywania pliku
+    file_save: Błąd podczas zapisywania pliku
+    file_write: Błąd podczas zapisywania pliku
+    loading: Wystąpił błąd podczas ładowania danych
+    report_subject: "{appName} App: Raport nieoczekiwanego błędu"
+    report_template: |
+      Cześć, napotkałem nieoczekiwany błąd podczas korzystania z aplikacji {appName}.
+
+      Oto informacje, które mogą pomóc w zdiagnozowaniu problemu:
+      Wersja aplikacji: {version}
+      Informacje o urządzeniu: {device}
+      System operacyjny: {os}
+      Wersja systemu: {osVersion}
+      Komunikat błędu:
+      ```
+      {error}
+      Ślad stosu:
+      {stackTrace}
+      ```
+
+      Proszę o pomoc w rozwiązaniu tego problemu.
+
+      Dziękuję!
+    saving: Wystąpił błąd podczas zapisywania danych
+    storage_permission: Wymagane uprawnienie do pamięci
+    storage_permission_denied: Odmówiono dostępu do pamięci
+    unexpected: Wystąpił nieoczekiwany błąd
+  filters:
+    search: Szukaj
+  help:
+    tooltip: Pomoc
+  messages:
+    confirm_delete: Czy na pewno chcesz usunąć ten element?
+    no_items_found: Brak elementów
+  nav:
+    items:
+      app_usages: Użycie aplikacji
+      habits: Nawyki
+      more: Więcej
+      notes: Notatki
+      settings: Ustawienia
+      tags: Tagi
+      tasks: Zadania
+      today: Dzisiaj
+  none_option: "Brak tagów"
+  regex_help:
+    examples:
+      chat: Pasuje do \"Slack\" lub \"Discord\"
+      chrome: Pasuje do każdego tytułu okna zawierającego \"Chrome\"
+      exact_chrome: Pasuje dokładnie do \"Chrome\"
+      pdf: Pasuje do każdego pliku PDF
+      vscode: Pasuje do każdego okna VS Code
+    tips:
+      any_chars: Użyj \".*\" aby dopasować dowolne znaki
+      dot: \"\\.\" pasuje do kropki
+      end: \"$\" pasuje do końca tekstu
+      or: \"|\" oznacza LUB
+      start: \"^\" pasuje do początku tekstu
+    tips_title: 💡 Wskazówki
+    title: Przykłady wzorców
+  report_error: Zgłoś błąd
+  save_list_options: Zapisz opcje listy
+  search:
+    placeholder: Szukaj
+    tooltip: Szukaj elementów
+  sections:
+    habits: Nawyki
+    special_filters: Filtry specjalne
+    statistics: Statystyki
+    tags: Tagi
+    tasks: Zadania
+    time: Czas
+  sort:
+    ascending: Rosnąco
+    custom_order:
+      description: Włącz przeciąganie i upuszczanie aby zmienić kolejność elementów
+      title: Sortowanie niestandardowe
+    descending: Malejąco
+    remove_criteria: Usuń kryteria
+    reset_to_default: Przywróć domyślne
+    sort: Sortuj
+  statistics:
+    daily_usage:
+      description: Pokazuje całkowity czas użytkowania na dzień tygodnia
+      title: Użycie dzienne
+    hourly_usage:
+      description: Pokazuje całkowity czas użytkowania na godzinę dnia
+      title: Użycie godzinowe
+  time:
+    not_set: "Nie ustawiono"
+  time_periods:
+    custom: Niestandardowy
+    last_month: Ostatni miesiąc
+    last_three_months: Ostatnie 3 miesiące
+    last_week: Ostatni tydzień
+    this_month: Ten miesiąc
+    this_three_months: Te 3 miesiące
+    this_week: Ten tydzień
+    today: Dzisiaj
+  tooltips:
+    compare_with_previous: Porównaj z poprzednim okresem
+    filter_by_tags: Filtruj według tagów
+    refresh: Odśwież
+  ui:
+    report_error: Zgłoś
+  units:
+    days: dni
+    hours: godz
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Strona pobierania
+      later: Później
+      update_now: Aktualizuj teraz
+    downloading: Pobieranie aktualizacji...
+    failed: Nie udało się zaktualizować.
+    message: Dostępna jest nowa wersja ({version}).
+    question: Czy chcesz zaktualizować teraz?
+    success: Aktualizacja pobrana pomyślnie!
+    title: Dostępna aktualizacja!
+  validation:
+    required: "{field} jest wymagane"

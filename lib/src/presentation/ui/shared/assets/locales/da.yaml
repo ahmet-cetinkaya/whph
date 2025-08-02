@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Versionsuoverensstemmelse
+shared:
+  buttons:
+    add: Tilføj
+    back: Tilbage
+    cancel: Annuller
+    close: Luk
+    confirm: Bekræft
+    delete: Slet
+    done: Færdig
+    load_more: Indlæs mere
+    save: Gem
+    saved: Gemt
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: August
+      aug_short: Aug
+      dec: December
+      dec_short: Dec
+      feb: Februar
+      feb_short: Feb
+      jan: Januar
+      jan_short: Jan
+      jul: Juli
+      jul_short: Jul
+      jun: Juni
+      jun_short: Jun
+      mar: Marts
+      mar_short: Mar
+      may: Maj
+      may_short: Maj
+      nov: November
+      nov_short: Nov
+      oct: Oktober
+      oct_short: Okt
+      sep: September
+      sep_short: Sep
+    week_days:
+      friday: Fredag
+      friday_short: Fre
+      monday: Mandag
+      monday_short: Man
+      saturday: Lørdag
+      saturday_short: Lør
+      sunday: Søndag
+      sunday_short: Søn
+      thursday: Torsdag
+      thursday_short: Tor
+      tuesday: Tirsdag
+      tuesday_short: Tir
+      wednesday: Onsdag
+      wednesday_short: Ons
+  change: Skift
+  color_picker:
+    confirm_selection: Bekræft valg
+    select_color_title: Vælg farve
+    tabs:
+      custom: Brugerdefineret
+      palette: Farver
+    title: Farvevælger
+  data:
+    created_date_label: Oprettelsesdato
+    modified_date_label: Ændringsdato
+    name_label: Navn
+  date_filter:
+    title: Vælg datointerval
+    tooltips:
+      clear: Ryd datofilter
+      filter: Filtrer efter dato
+  date_format:
+    hint: DD/MM/ÅÅÅÅ
+  days:
+    friday: Fredag
+    friday_short: Fre
+    monday: Mandag
+    monday_short: Man
+    saturday: Lørdag
+    saturday_short: Lør
+    sunday: Søndag
+    sunday_short: Søn
+    thursday: Torsdag
+    thursday_short: Tor
+    tuesday: Tirsdag
+    tuesday_short: Tir
+    wednesday: Onsdag
+    wednesday_short: Ons
+  editor:
+    markdown:
+      hint: Du kan skrive ved hjælp af Markdown-format...
+      tooltips:
+        bold: Fed
+        italic: Kursiv
+        strikethrough: Gennemstreget
+        code: Kode
+        link: Link
+        quote: Citat
+        bulleted_list: Punktliste
+        numbered_list: Nummereret liste
+        horizontal_rule: Vandret linje
+        edit: Rediger
+        preview: Forhåndsvisning
+  errors:
+    deleting: Der opstod en fejl under sletning af data
+    file_not_found: Fil ikke fundet
+    file_pick: Fejl under valg af fil
+    file_read: Fejl under læsning af fil
+    file_save: Fejl under gemning af fil
+    file_write: Fejl under skrivning af fil
+    loading: Der opstod en fejl under indlæsning af data
+    report_subject: "{appName} App: Uventet fejlrapport"
+    report_template: |
+      Hej, jeg stødte på en uventet fejl, mens jeg brugte {appName} appen.
+
+      Her er information, der kan hjælpe dig med at diagnosticere problemet:
+      App-version: {version}
+      Enhedsinfo: {device}
+      OS: {os}
+      OS-version: {osVersion}
+      Fejlbesked:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Hjælp mig venligst med at løse dette problem.
+
+      Tak!
+    saving: Der opstod en fejl under gemning af data
+    storage_permission: Lagerrettighed påkrævet
+    storage_permission_denied: Lagerrettighed nægtet
+    unexpected: Der opstod en uventet fejl
+  filters:
+    search: Søg
+  help:
+    tooltip: Hjælp
+  messages:
+    confirm_delete: Er du sikker på, at du vil slette dette element?
+    no_items_found: Ingen elementer
+  nav:
+    items:
+      app_usages: App-forbrug
+      habits: Vaner
+      more: Mere
+      notes: Noter
+      settings: Indstillinger
+      tags: Tags
+      tasks: Opgaver
+      today: I dag
+  none_option: "Ingen tags"
+  regex_help:
+    examples:
+      chat: 'Matcher enten "Slack" eller "Discord"'
+      chrome: 'Matcher enhver vinduestitel, der indeholder "Chrome"'
+      exact_chrome: 'Matcher nøjagtigt "Chrome"'
+      pdf: Matcher enhver PDF-fil
+      vscode: Matcher ethvert VS Code-vindue
+    tips:
+      any_chars: 'Brug ".*" til at matche alle tegn'
+      dot: '"\." matcher et punktum'
+      end: '"$" matcher slutningen af tekst'
+      or: '"|" betyder ELLER'
+      start: '"^" matcher begyndelsen af tekst'
+    tips_title: 💡 Tips
+    title: Mønstereksempler
+  report_error: Rapporter fejl
+  save_list_options: Gem listeindstillinger
+  search:
+    placeholder: Søg
+    tooltip: Søg efter elementer
+  sections:
+    habits: Vaner
+    special_filters: Særlige filtre
+    statistics: Statistikker
+    tags: Tags
+    tasks: Opgaver
+    time: Tid
+  sort:
+    ascending: Stigende
+    custom_order:
+      description: Aktiver træk og slip for at ændre rækkefølge af elementer
+      title: Brugerdefineret sortering
+    descending: Faldende
+    remove_criteria: Fjern kriterium
+    reset_to_default: Nulstil til standard
+    sort: Sorter
+  statistics:
+    daily_usage:
+      description: Viser den samlede brugstid pr. ugedag
+      title: Daglig brug
+    hourly_usage:
+      description: Viser den samlede brugstid pr. time på dagen
+      title: Timelig brug
+  time:
+    not_set: "Ikke indstillet"
+  time_periods:
+    custom: Brugerdefineret
+    last_month: Sidste måned
+    last_three_months: Sidste 3 måneder
+    last_week: Sidste uge
+    this_month: Denne måned
+    this_three_months: Disse 3 måneder
+    this_week: Denne uge
+    today: I dag
+  tooltips:
+    compare_with_previous: Sammenlign med forrige periode
+    filter_by_tags: Filtrer efter tags
+    refresh: Opdater
+  ui:
+    report_error: Rapporter
+  units:
+    days: dage
+    hours: timer
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Downloadside
+      later: Senere
+      update_now: Opdater nu
+    downloading: Downloader opdatering...
+    failed: Opdatering mislykkedes.
+    message: En ny version ({version}) er tilgængelig.
+    question: Vil du opdatere nu?
+    success: Opdatering downloadet med succes!
+    title: Opdatering tilgængelig!
+  validation:
+    required: "{field} er påkrævet"

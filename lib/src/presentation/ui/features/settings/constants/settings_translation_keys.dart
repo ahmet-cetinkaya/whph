@@ -133,6 +133,5 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String customAccentColorTitle = 'settings.theme.custom_accent.title';
   static const String customAccentColorDescription = 'settings.theme.custom_accent.description';
   static const String customAccentColorFeature = 'settings.theme.custom_accent.feature';
-  static const String customAccentColorReset = 'settings.theme.custom_accent.reset';
   static const String themeSettingsError = 'settings.theme.error';
 }

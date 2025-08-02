@@ -1,0 +1,102 @@
+sync:
+  devices:
+    errors:
+      loading: Failed to load sync devices
+      removing: Failed to remove sync device
+      sync_failed: Failed to sync devices
+    from_label: From
+    help:
+      content: |
+        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+
+        ## ⚡ Quick & Secure Setup
+
+        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+
+        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
+        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+
+        ## 📱 Mobile Devices
+
+        Android devices can work in two different modes:
+
+        - 🔍 **Client Mode:**  
+          - Scans QR codes  
+          - Connects to other devices to receive data  
+        - 📡 **Server Mode:**  
+          - Shows QR code for others to scan  
+          - Sends data to connected devices  
+          - Can be toggled via the Wi-Fi hotspot icon
+
+        To sync between two mobile devices, one must be in **Server mode**.
+
+        ## 💻 Desktop Devices
+
+        Desktop apps always act as **Server** nodes:
+
+        - 🖥️ Display a QR code for pairing  
+        - ✅ Automatically accept incoming connections  
+        - 🔄 Sync data in both directions  
+        - 📊 Show live sync status
+
+        ## 🛠️ Device Management
+
+        Manage all connected devices from one place:
+
+        - 📋 View connected devices  
+        - ⏰ See last sync times  
+        - 🔁 Trigger manual sync  
+        - 🗑️ Remove old or unused devices
+
+        ## 💡 Best Practices
+
+        - 📶 Make sure all devices are on the same Wi-Fi network  
+        - 📱 Keep apps open and active during sync  
+        - 🧹 Remove devices you no longer use  
+        - ⏱️ Check sync times to ensure everything is up to date
+      title: Device Synchronization Help
+    last_sync_label: Last Sync
+    no_devices_found: No synced devices
+    sync_tooltip: Sync Now
+    title: Sync Devices
+    to_label: To
+    unnamed_device: Unnamed Device
+  error:
+    scan: Failed to scan
+  errors:
+    connection_failed: |
+      Connection failed. Please ensure:
+
+      1. Both devices are on the same network
+      2. Both apps are open and running
+      3. No firewall is blocking the connection
+    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
+    device_not_found: Sync device not found
+    ip_address: Unable to fetch local IP address
+    parse_message: Unable to parse scanned message
+    process_failed: Sync process failed.
+    save_device: Failed to save sync device
+    scan: Failed to scan
+    sync_failed: Synchronization failed. Please try again.
+    sync_timeout: Sync timeout
+    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+  messages:
+    device_already_paired: This device is already paired
+    sync_completed: Sync completed successfully
+    sync_in_progress: Syncing in progress...
+    testing_connection: Testing connection...
+  qr_code:
+    close_button: Close
+    dialog_title: Scan QR Code to Sync
+  scanner:
+    title: Scan QR Code
+    instruction: Position QR code within the frame
+  server:
+    starting: Starting server mode...
+    active: Server mode active - Show QR code to other devices
+    stopped: Server mode stopped - Device is now in client mode
+    start_failed: Failed to start server mode - Check if port 44040 is available
+    start_tooltip: Start Server Mode
+    stop_tooltip: Stop Server Mode
+    error: Error
+    device_became_server: This device is now the sync server

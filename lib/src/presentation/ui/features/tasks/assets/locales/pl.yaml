@@ -1,0 +1,315 @@
+tasks:
+  add_button:
+    tooltip: Dodaj nowe zadanie
+  all_tasks_done: Wszystkie zadania ukończone!
+  card:
+    schedule:
+      today: Zaplanuj na dzisiaj
+      tomorrow: Zaplanuj na jutro
+    tooltips:
+      schedule: Zaplanuj zadanie
+  complete:
+    error: Wystąpił nieoczekiwany błąd podczas zapisywania ukończenia zadania.
+  date_selection:
+    deadline_date_title: Wybierz datę terminu
+    planned_date_title: Wybierz planowaną datę
+  delete:
+    error: Wystąpił nieoczekiwany błąd podczas usuwania zadania.
+    message: Czy na pewno chcesz usunąć to zadanie?
+    title: Usuń zadanie
+  details:
+    deadline_date:
+      label: Data terminu
+    description:
+      hint: Dodaj opis...
+      label: Opis
+    elapsed_time:
+      label: Czas wykonania
+    estimated_time:
+      label: Szacowany czas
+    is_completed: Ukończone
+    planned_date:
+      label: Planowana data
+    priority:
+      label: Priorytet
+    sub_tasks:
+      label: Podzadania
+    parent_task:
+      label: Zadanie nadrzędne
+      tooltip: Kliknij aby przejść do zadania nadrzędnego
+    tags:
+      hint: Wybierz tagi do powiązania
+      label: Tagi
+    tags_hint: Wybierz tagi dla zadania
+    title:
+      label: Tytuł
+    total_elapsed_time: Całkowity czas wykonania
+  errors:
+    add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
+    adding_tag: Nie udało się dodać tagu
+    get_tags: Wystąpił błąd podczas pobierania tagów
+    get_task: Wystąpił nieoczekiwany błąd podczas ładowania zadania
+    loading_tags: Nie udało się załadować tagów zadania
+    loading_task: Nie udało się załadować zadania
+    loading_tasks: Nie udało się załadować zadań
+    remove_tag: Wystąpił nieoczekiwany błąd podczas usuwania tagu
+    removing_tag: Nie udało się usunąć tagu
+    same_tag: Nie można dodać tego samego tagu dwukrotnie
+    save_task: Wystąpił nieoczekiwany błąd podczas zapisywania zadania
+    saving_task: Nie udało się zapisać zadania
+    sort_field_not_supported: Pole sortowania nie jest obsługiwane
+    task_not_found: Nie znaleziono zadania
+    task_tag_already_deleted: Tag zadania został już usunięty
+    task_tag_already_exists: Ten tag zadania już istnieje
+    task_tag_not_found: Nie znaleziono tagu zadania
+  filters:
+    completion: Według statusu ukończenia
+    deadline_date: Według daty terminu
+    planned_date: Według planowanej daty
+    search:
+      placeholder: Szukaj zadań
+    tags: Według tagów
+    tooltips:
+      filter_by_tags: Filtruj według tagów
+  help:
+    details:
+      content: |
+        Opanuj zarządzanie zadaniami i zmaksymalizuj produktywność poprzez organizowanie, ustalanie priorytetów i śledzenie swojej pracy w sposób efektywny.
+
+        ## ⚡ Dlaczego to ważne?
+
+        Efektywne zarządzanie zadaniami to podstawa produktywności. Właściwie ustrukturyzowane zadania z jasnymi priorytetami i terminami pomagają skupić się na tym, co najważniejsze i zapobiegają przeoczeniu ważnej pracy.
+
+        ## 📝 Organizacja zadań
+
+        Strukturyzuj swoje zadania ze szczegółowymi informacjami, aby zachować jasność i skupienie. Używaj tagów, priorytetów i szacowania czasu, aby stworzyć systematyczne podejście do obciążenia pracą.
+
+        - 🏷️ Kategoryzuj zadania za pomocą znaczących tagów
+        - ⚖️ Ustalaj priorytety używając sprawdzonych frameworków
+        - ⏱️ Dokładnie szacuj wymagania czasowe
+        - 📅 Planuj realistyczne terminy i harmonogramy
+
+        ## ⏰ Zarządzanie czasem
+
+        Śledź swoje inwestycje czasowe, aby zrozumieć wzorce pracy i poprawić efektywność. Właściwe zarządzanie czasem przekształca rozproszone wysiłki w skupioną produktywność.
+
+        - 📊 Monitoruj rzeczywisty vs szacowany czas
+        - 🎯 Skupiaj się na działaniach o wysokim wpływie
+        - 📈 Analizuj wzorce produktywności w czasie
+        - ⏳ Równoważ pilne i ważne zadania
+
+        ## 📊 Framework priorytetów (Macierz Eisenhowera)
+
+        Organizuj swoje zadania używając tej sprawdzonej metody priorytetyzacji, aby zapewnić, że zawsze pracujesz nad właściwymi rzeczami we właściwym czasie.
+
+        - 🔥 **Pilne i ważne:** Obsługuj natychmiast - zarządzanie kryzysowe i terminy
+        - 📈 **Ważne, niepilne:** Planuj strategicznie - planowanie i rozwój umiejętności
+        - ⚡ **Pilne, nieważne:** Deleguj gdy to możliwe - przerwania i niektóre spotkania
+        - 🗑️ **Ani pilne, ani ważne:** Eliminuj - marnowanie czasu i działania o niskiej wartości
+      title: Przewodnik zarządzania zadaniami i produktywności
+    overview:
+      content: |
+        Przekształć swoją produktywność dzięki systematycznemu zarządzaniu zadaniami, które pomaga pozostać zorganizowanym, skupionym i kontrolować obciążenie pracą.
+
+        ## ⚡ Dlaczego to ważne?
+
+        Efektywne zarządzanie zadaniami to kamień węgielny osobistego i zawodowego sukcesu. Poprzez systematyczne organizowanie pracy redukujesz stres, konsekwentnie dotrzymujesz terminów i tworzysz przestrzeń dla znaczącego postępu w ważnych celach.
+
+        ## 📋 Organizacja zadań
+
+        Stwórz ustrukturyzowane podejście do zarządzania swoimi obowiązkami. Dobrze zorganizowane zadania prowadzą do jasnych priorytetów i efektywnej realizacji codziennej pracy.
+
+        - ✅ Twórz i kategoryzuj zadania systematycznie
+        - 🏷️ Grupuj powiązaną pracę za pomocą znaczących tagów
+        - ⚖️ Ustalaj jasne priorytety i terminy
+        - 🔍 Używaj filtrów i wyszukiwania dla szybkiego dostępu
+
+        ## ⏱️ Śledzenie czasu i skupienie
+
+        Monitoruj swoje inwestycje czasowe, aby zrozumieć wzorce produktywności i zoptymalizować przepływ pracy. Świadomość czasu prowadzi do lepszego planowania i poprawy wydajności.
+
+        - ⏰ Śledź rzeczywisty czas spędzony na zadaniu
+        - 🎯 Używaj trybu maratonu dla skupionych sesji pracy
+        - 📊 Analizuj wzorce ukończenia i trendy
+        - 🔄 Regularnie przeglądaj i dostosowuj szacowania czasu
+
+        ## 📈 Monitorowanie postępu
+
+        Śledź swoje osiągnięcia i ucz się ze swoich wzorców pracy. Regularne przeglądy i refleksje napędzają ciągłe doskonalenie systemu produktywności.
+
+        - 📈 Monitoruj wskaźniki ukończenia zadań
+        - 📅 Przeglądaj dzienny i tygodniowy postęp
+        - 🎯 Identyfikuj wąskie gardła i możliwości optymalizacji
+        - 🏆 Świętuj osiągnięcia i ukończenie kamieni milowych
+      title: Przewodnik zarządzania zadaniami i przepływem pracy
+  marathon:
+    details:
+      title: Szczegóły zadania
+    help:
+      content: |
+        Zmaksymalizuj swoje skupienie i produktywność dzięki ustrukturyzowanym sesjom pracy, które pomagają utrzymać głęboką koncentrację jednocześnie zapobiegając wypaleniu.
+
+        ## ⚡ Dlaczego to ważne?
+
+        Skupione sesje pracy są niezbędne dla głębokiej pracy i wysokiej jakości rezultatów. Pracując w ustrukturyzowanych interwałach z regularnymi przerwami, utrzymujesz szczytową wydajność umysłową jednocześnie unikając zmęczenia, które wynika z przedłużonych, nieskupionych okresów pracy.
+
+        ## ⏰ Sesje skupienia z ograniczonym czasem
+
+        Używaj sprawdzonych technik zarządzania czasem do strukturyzowania pracy dla maksymalnej efektywności. Ustrukturyzowane sesje pomagają utrzymać koncentrację i skuteczniej ukończyć zadania.
+
+        - 🎯 **Klasyczne skupienie:** 25 minut pracy / 5 minut przerwy
+        - 📈 **Rozszerzone skupienie:** 50 minut pracy / 10 minut przerwy
+        - 🔄 **Długa przerwa:** 15-30 minut po 4 sesjach
+        - ⚖️ **Niestandardowy czas:** Dostosuj interwały do swojego naturalnego rytmu
+
+        ## 🧠 Korzyści poznawcze
+
+        Ustrukturyzowane sesje pracy wykorzystują naturalne cykle uwagi mózgu, aby zoptymalizować wydajność i zapobiec zmęczeniu umysłowemu, które obniża jakość i kreatywność.
+
+        - 🎯 Wzmocnione skupienie i głęboka koncentracja
+        - 🔋 Zmniejszone zmęczenie umysłowe i wypalenie
+        - 💪 Utrzymana motywacja poprzez regularne osiągnięcia
+        - ⚡ Poprawiona świadomość czasu i dokładność planowania
+
+        ## 📊 Optymalizacja wydajności
+
+        Śledź swoje wzorce skupionej pracy, aby zrozumieć swoje szczytowe czasy produktywności i zoptymalizować harmonogram dla maksymalnej efektywności.
+
+        - 🏷️ Kategoryzuj sesje skupienia tagami do analizy
+        - 📈 Monitoruj wzorce produktywności w różnych czasach
+        - 🚫 Eliminuj rozproszenia przed rozpoczęciem sesji
+        - 🚶 Używaj przerw na ruch fizyczny i reset umysłowy
+      title: Przewodnik skupionych sesji pracy i zarządzania czasem
+      tooltip: Podpowiedź pomocy maratonu
+    label: Tryb maratonu
+    unpin_task_tooltip: Odepnij bieżące zadanie
+  new_task: Nowe zadanie
+  no_tasks: Brak zadań
+  notifications:
+    deadline_message: "Termin twojego zadania jest o {time}"
+    deadline_title: "Termin zadania: {title}"
+    planned_message: "Twoje zadanie jest zaplanowane na {time}"
+    reminder_title: "Przypomnienie o zadaniu: {title}"
+  page:
+    completed_tasks_title: Ukończone zadania
+    title: Zadania
+  pomodoro:
+    actions:
+      stop_timer: Zatrzymaj timer
+    notifications:
+      break_completed: Sesja przerwy ukończona!
+      long_break_completed: Długa przerwa ukończona!
+      time_remaining_prefix: "Pozostały czas:"
+      timer_completed: Timer ukończony!
+      title: Timer Pomodoro
+      work_completed: Sesja pracy ukończona!
+    settings:
+      auto_start_break: Automatycznie rozpocznij przerwę po pracy
+      auto_start_section: Opcje automatycznego startu
+      auto_start_work: Automatycznie rozpocznij pracę po przerwie
+      break_duration: Czas trwania przerwy
+      long_break_duration: Czas trwania długiej przerwy
+      sessions_before_long_break: Sesje przed długą przerwą
+      ticking_sound: Włącz dźwięk tykania
+      ticking_sound_section: Dźwięk tykania
+      ticking_speed: Prędkość
+      ticking_volume: Głośność
+      keep_screen_awake_section: Utrzymuj ekran aktywny
+      keep_screen_awake: Utrzymuj ekran aktywny podczas sesji
+      timer_label: Czas trwania sesji
+      title: Ustawienia timera
+      work_duration: Czas trwania pracy
+    system_tray:
+      app_running: Aplikacja działa
+      complete_title: Pomodoro ukończone
+      tap_to_open: Dotknij aby otworzyć
+      timer_running: Timer działa
+  priorities:
+    not_urgent_important: Niepilne ale ważne
+    not_urgent_not_important: Niepilne ani ważne
+    urgent_important: Pilne i ważne
+    urgent_not_important: Pilne ale nieważne
+  priority:
+    selection:
+      title: Wybierz priorytet
+    tooltips:
+      none: Brak priorytetu
+      not_urgent_important: Niepilne ale ważne
+      not_urgent_not_important: Niepilne i nieważne
+      urgent_important: Pilne i ważne
+      urgent_not_important: Pilne ale nieważne
+    types:
+      none: Brak priorytetu
+      not_urgent_important: Niepilne ale ważne
+      not_urgent_not_important: Niepilne i nieważne
+      urgent_important: Pilne i ważne
+      urgent_not_important: Pilne ale nieważne
+  quick_task:
+    create_error: Błąd tworzenia zadania
+    lock_description: Zablokuj właściwości, aby zachować ich wartości podczas tworzenia wielu podobnych zadań. Zablokowane właściwości nie zostaną wyczyszczone po zresetowaniu formularza.
+    lock_settings: Ustawienia blokady
+    reset_all: Resetuj wszystkie pola
+    reset_confirm:
+      message: Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być cofnięta.
+      title: Resetuj wszystkie pola
+    title: Szybkie zadanie
+    title_hint: Wprowadź opisowy tytuł zadania...
+    title_placeholder: Co trzeba zrobić?
+    tooltips:
+      deadline_date: "Termin: {date}"
+      deadline_date_not_set: "Termin: Nie ustawiono"
+      estimated_time: "Szacowany czas: {time}"
+      estimated_time_not_set: "Szacowany czas: Nie ustawiono"
+      planned_date: "Planowane: {date}"
+      planned_date_not_set: "Planowane: Nie ustawiono"
+  recurrence:
+    count: Liczba wystąpień
+    custom: Niestandardowe
+    daily: Codziennie
+    daySuffix: dzień/dni
+    endDate: Data końcowa
+    enterCountHint: Wprowadź liczbę
+    interval:
+      label: Powtarzaj co
+      prefix: co
+      suffix:
+        days: dzień/dni
+        months: miesiąc/miesiące
+        weeks: tydzień/tygodnie
+        years: rok/lata
+    label: Powtarzanie
+    monthSuffix: miesiąc/miesiące
+    monthly: Miesięcznie
+    none: Bez powtarzania
+    range: Zakres
+    selectDateHint: Wybierz datę
+    startDate: Data rozpoczęcia
+    summary:
+      endsAfter: kończy się po
+      endsOnDate: kończy się w dniu
+      occurrences: wystąpienia
+      on: w
+      starts: rozpoczyna się
+    weekDays: Dni tygodnia
+    weekSuffix: tydzień/tygodnie
+    weekly: Tygodniowo
+    yearSuffix: rok/lata
+    yearly: Rocznie
+  reminder:
+    atTime: O zaplanowanej godzinie
+    deadlineReminderLabel: Przypomnienie o terminie
+    fifteenMinutesBefore: 15 minut wcześniej
+    fiveMinutesBefore: 5 minut wcześniej
+    none: Brak przypomnienia
+    oneDayBefore: 1 dzień wcześniej
+    oneHourBefore: 1 godzinę wcześniej
+    plannedReminderLabel: Przypomnienie o planowanej dacie
+  task_details: Szczegóły zadania
+  title: Zadania
+  tooltips:
+    clear_date: Wyczyść datę
+    decrease_estimated_time: Zmniejsz szacowany czas
+    edit_title: Edytuj tytuł
+    increase_estimated_time: Zwiększ szacowany czas
+    set_reminder: Ustaw przypomnienie
+    show_completed_tasks: Filtruj ukończone zadania

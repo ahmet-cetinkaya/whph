@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Neujemanje različic
+shared:
+  buttons:
+    add: Dodaj
+    back: Nazaj
+    cancel: Prekliči
+    close: Zapri
+    confirm: Potrdi
+    delete: Izbriši
+    done: Končano
+    load_more: Naloži več
+    save: Shrani
+    saved: Shranjeno
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: Avgust
+      aug_short: Avg
+      dec: December
+      dec_short: Dec
+      feb: Februar
+      feb_short: Feb
+      jan: Januar
+      jan_short: Jan
+      jul: Julij
+      jul_short: Jul
+      jun: Junij
+      jun_short: Jun
+      mar: Marec
+      mar_short: Mar
+      may: Maj
+      may_short: Maj
+      nov: November
+      nov_short: Nov
+      oct: Oktober
+      oct_short: Okt
+      sep: September
+      sep_short: Sep
+    week_days:
+      friday: Petek
+      friday_short: Pet
+      monday: Ponedeljek
+      monday_short: Pon
+      saturday: Sobota
+      saturday_short: Sob
+      sunday: Nedelja
+      sunday_short: Ned
+      thursday: Četrtek
+      thursday_short: Čet
+      tuesday: Torek
+      tuesday_short: Tor
+      wednesday: Sreda
+      wednesday_short: Sre
+  change: Spremeni
+  color_picker:
+    confirm_selection: Potrdi izbiro
+    select_color_title: Izberi barvo
+    tabs:
+      custom: Po meri
+      palette: Barve
+    title: Izbirnik barv
+  data:
+    created_date_label: Datum nastanka
+    modified_date_label: Datum spremembe
+    name_label: Ime
+  date_filter:
+    title: Izberi obseg datumov
+    tooltips:
+      clear: Počisti filter datuma
+      filter: Filtriraj po datumu
+  date_format:
+    hint: DD/MM/LLLL
+  days:
+    friday: Petek
+    friday_short: Pet
+    monday: Ponedeljek
+    monday_short: Pon
+    saturday: Sobota
+    saturday_short: Sob
+    sunday: Nedelja
+    sunday_short: Ned
+    thursday: Četrtek
+    thursday_short: Čet
+    tuesday: Torek
+    tuesday_short: Tor
+    wednesday: Sreda
+    wednesday_short: Sre
+  editor:
+    markdown:
+      hint: Lahko pišete z uporabo Markdown formata...
+      tooltips:
+        bold: Krepko
+        italic: Ležeče
+        strikethrough: Prečrtano
+        code: Koda
+        link: Povezava
+        quote: Citat
+        bulleted_list: Seznam z alinejami
+        numbered_list: Oštevilčen seznam
+        horizontal_rule: Vodoravna črta
+        edit: Uredi
+        preview: Predogled
+  errors:
+    deleting: Napaka pri brisanju podatkov
+    file_not_found: Datoteka ni najdena
+    file_pick: Napaka pri izbiri datoteke
+    file_read: Napaka pri branju datoteke
+    file_save: Napaka pri shranjevanju datoteke
+    file_write: Napaka pri pisanju datoteke
+    loading: Napaka pri nalaganju podatkov
+    report_subject: "{appName} Aplikacija: Poročilo o nepričakovani napaki"
+    report_template: |
+      Pozdravljeni, naletел sem na nepričakovano napako med uporabo aplikacije {appName}.
+
+      Tukaj so informacije, ki lahko pomagajo pri diagnosticiranju problema:
+      Različica aplikacije: {version}
+      Informacije o napravi: {device}
+      OS: {os}
+      Različica OS: {osVersion}
+      Sporočilo o napaki:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Prosim pomagajte mi rešiti ta problem.
+
+      Hvala!
+    saving: Napaka pri shranjevanju podatkov
+    storage_permission: Potrebno je dovoljenje za shranjevanje
+    storage_permission_denied: Dovoljenje za shranjevanje zavrnjeno
+    unexpected: Zgodila se je nepričakovana napaka
+  filters:
+    search: Išči
+  help:
+    tooltip: Pomoč
+  messages:
+    confirm_delete: Ali ste prepričani, da želite izbrisati ta element?
+    no_items_found: Ni elementov
+  nav:
+    items:
+      app_usages: Uporaba aplikacij
+      habits: Navade
+      more: Več
+      notes: Zapiski
+      settings: Nastavitve
+      tags: Oznake
+      tasks: Naloge
+      today: Danes
+  none_option: "Brez oznak"
+  regex_help:
+    examples:
+      chat: 'Se ujema z "Slack" ali "Discord"'
+      chrome: 'Se ujema s katerim koli naslovom okna, ki vsebuje "Chrome"'
+      exact_chrome: 'Se natančno ujema z "Chrome"'
+      pdf: Se ujema s katero koli PDF datoteko
+      vscode: Se ujema s katerim koli VS Code oknom
+    tips:
+      any_chars: 'Uporabite ".*" za ujemanje s katerimi koli znaki'
+      dot: '"\." se ujema s piko'
+      end: '"$" se ujema s koncem besedila'
+      or: '"|" pomeni ALI'
+      start: '"^" se ujema z začetkom besedila'
+    tips_title: 💡 Nasveti
+    title: Primeri vzorcev
+  report_error: Prijavi napako
+  save_list_options: Shrani možnosti seznama
+  search:
+    placeholder: Išči
+    tooltip: Išči elemente
+  sections:
+    habits: Navade
+    special_filters: Posebni filtri
+    statistics: Statistike
+    tags: Oznake
+    tasks: Naloge
+    time: Čas
+  sort:
+    ascending: Naraščajoče
+    custom_order:
+      description: Omogoči povleci in spusti za preureditev elementov
+      title: Razvrščanje po meri
+    descending: Padajoče
+    remove_criteria: Odstrani kriterij
+    reset_to_default: Ponastavi na privzeto
+    sort: Razvrsti
+  statistics:
+    daily_usage:
+      description: Prikazuje skupni čas uporabe na dan v tednu
+      title: Dnevna uporaba
+    hourly_usage:
+      description: Prikazuje skupni čas uporabe na uro v dnevu
+      title: Urna uporaba
+  time:
+    not_set: "Ni nastavljeno"
+  time_periods:
+    custom: Po meri
+    last_month: Prejšnji mesec
+    last_three_months: Zadnji 3 meseci
+    last_week: Prejšnji teden
+    this_month: Ta mesec
+    this_three_months: Ti 3 meseci
+    this_week: Ta teden
+    today: Danes
+  tooltips:
+    compare_with_previous: Primerjaj s prejšnjim obdobjem
+    filter_by_tags: Filtriraj po oznakah
+    refresh: Osveži
+  ui:
+    report_error: Prijavi
+  units:
+    days: dni
+    hours: ur
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Stran za prenos
+      later: Pozneje
+      update_now: Posodobi zdaj
+    downloading: Prenašanje posodobitve...
+    failed: Posodobitev ni uspela.
+    message: Na voljo je nova različica ({version}).
+    question: Ali želite posodobiti zdaj?
+    success: Posodobitev uspešno prenesena!
+    title: Posodobitev na voljo!
+  validation:
+    required: "{field} je obvezno"

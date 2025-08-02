@@ -1,0 +1,51 @@
+calendar:
+  pages:
+    today:
+      help:
+        content: |
+          Zoptymalizuj swoją codzienną produktywność dzięki zunifikowanemu widokowi, który integruje zadania, nawyki i śledzenie czasu, aby pomóc ci utrzymać skupienie i efektywnie osiągać cele.
+
+          ## ⚡ Dlaczego to ważne?
+
+          Codzienne zarządzanie produktywnością to kamień węgielny efektywnego wykorzystania czasu i osiągania celów. Centralizując codzienne aktywności w jednym widoku, eliminujesz przełączanie kontekstu, utrzymujesz jasne priorytety i tworzysz systematyczne podejście do wykonywania najważniejszej pracy.
+
+          ## 🔄 Konsekwencja nawyków
+
+          Monitoruj i utrzymuj codzienne rutyny dzięki usprawnionym śledzeniu nawyków, które buduje momentum i wzmacnia pozytywne wzorce behawioralne przez cały dzień.
+
+          - ✅ **Szybka ocena:** Przeglądaj wszystkie codzienne nawyki na pierwszy rzut oka dla szybkiej oceny postępu
+          - ✔️ **Natychmiastowe ukończenie:** Oznaczaj nawyki jako ukończone prostymi interakcjami, które utrzymują przepływ
+          - 🔄 **Wzmacnianie rutyny:** Wzmacniaj codzienne wzorce poprzez konsekwentne śledzenie i potwierdzanie
+          - 📈 **Budowanie momentum:** Wizualne wskaźniki postępu, które motywują do dalszej konsekwencji
+
+          ## 📋 Wykonywanie zadań
+
+          Skupiaj zarządzanie zadaniami dzięki jasnemu widokowi dzisiejszych priorytetów, który pomaga efektywnie wykonywać bez tracenia z oczu terminów i zobowiązań.
+
+          - 🗓️ **Jasność priorytetów:** Zobacz zaplanowane i wymagalne zadania zorganizowane dla optymalnego wykonania
+          - ➕ **Szybkie przechwytywanie:** Dodawaj nowe zadania szybko bez zakłócania bieżącego przepływu pracy
+          - ✔️ **Śledzenie postępu:** Monitoruj status ukończenia, aby utrzymać odpowiedzialność i momentum
+          - 🎯 **Utrzymanie skupienia:** Jasny dzienny widok zapobiega przytłoczeniu przyszłymi zobowiązaniami
+
+          ## ⏰ Analiza inwestycji czasowych
+
+          Zrozum, jak spędzasz czas poprzez skategoryzowaną analizę, która ujawnia wzorce produktywności i pomaga zoptymalizować codzienny harmonogram dla maksymalnej efektywności.
+
+          - 📊 **Wglądy kategorii:** Analizuj rozkład czasu w różnych tagach aktywności i projektach
+          - 📈 **Rozpoznawanie wzorców:** Identyfikuj trendy produktywności i okresy szczytowej wydajności
+          - 🕒 **Monitorowanie aktywności:** Śledź czas spędzony na różnych codziennych aktywnościach i obowiązkach
+          - 🎯 **Możliwości optymalizacji:** Używaj danych do podejmowania świadomych decyzji o alokacji czasu
+
+          ## ⚙️ Skróty produktywności
+
+          Wykorzystuj szybkie akcje i efektywne przepływy pracy, które minimalizują tarcie i maksymalizują zdolność utrzymania skupienia na aktywnościach o wysokiej wartości przez cały dzień.
+
+          - ▶️ **Sesje skupienia:** Rozpoczynaj skoncentrowane okresy pracy z integracją timera trybu maratonu
+          - 🔎 **Inteligentne filtrowanie:** Używaj filtrowania opartego na tagach, aby skupić się na konkretnych projektach lub obszarach życia
+          - ✅ **Efektywne ukończenie:** Ukończaj nawyki i zadania za pomocą usprawnionych, wolnych od rozpraszania interakcji
+          - 📊 **Wglądy w wydajność:** Dostęp do wykresów czasu dla natychmiastowej informacji zwrotnej o codziennych wzorcach produktywności
+        title: Przewodnik codziennego zarządzania produktywnością
+      title: Dzisiaj
+  sections:
+    habits: Nawyki
+    tasks: Zadania
