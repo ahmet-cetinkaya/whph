@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Versjonsmisforhold
+shared:
+  buttons:
+    add: Legg til
+    back: Tilbake
+    cancel: Avbryt
+    close: Lukk
+    confirm: Bekreft
+    delete: Slett
+    done: Ferdig
+    load_more: Last mer
+    save: Lagre
+    saved: Lagret
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: August
+      aug_short: Aug
+      dec: Desember
+      dec_short: Des
+      feb: Februar
+      feb_short: Feb
+      jan: Januar
+      jan_short: Jan
+      jul: Juli
+      jul_short: Jul
+      jun: Juni
+      jun_short: Jun
+      mar: Mars
+      mar_short: Mar
+      may: Mai
+      may_short: Mai
+      nov: November
+      nov_short: Nov
+      oct: Oktober
+      oct_short: Okt
+      sep: September
+      sep_short: Sep
+    week_days:
+      friday: Fredag
+      friday_short: Fre
+      monday: Mandag
+      monday_short: Man
+      saturday: Lørdag
+      saturday_short: Lør
+      sunday: Søndag
+      sunday_short: Søn
+      thursday: Torsdag
+      thursday_short: Tor
+      tuesday: Tirsdag
+      tuesday_short: Tir
+      wednesday: Onsdag
+      wednesday_short: Ons
+  change: Endre
+  color_picker:
+    confirm_selection: Bekreft valg
+    select_color_title: Velg farge
+    tabs:
+      custom: Tilpasset
+      palette: Farger
+    title: Fargevelger
+  data:
+    created_date_label: Opprettelsesdato
+    modified_date_label: Endringsdato
+    name_label: Navn
+  date_filter:
+    title: Velg datoområde
+    tooltips:
+      clear: Fjern datofilter
+      filter: Filtrer etter dato
+  date_format:
+    hint: DD/MM/ÅÅÅÅ
+  days:
+    friday: Fredag
+    friday_short: Fre
+    monday: Mandag
+    monday_short: Man
+    saturday: Lørdag
+    saturday_short: Lør
+    sunday: Søndag
+    sunday_short: Søn
+    thursday: Torsdag
+    thursday_short: Tor
+    tuesday: Tirsdag
+    tuesday_short: Tir
+    wednesday: Onsdag
+    wednesday_short: Ons
+  editor:
+    markdown:
+      hint: Du kan skrive ved hjelp av Markdown-format...
+      tooltips:
+        bold: Fet
+        italic: Kursiv
+        strikethrough: Gjennomstreket
+        code: Kode
+        link: Lenke
+        quote: Sitat
+        bulleted_list: Punktliste
+        numbered_list: Nummerert liste
+        horizontal_rule: Horisontal linje
+        edit: Rediger
+        preview: Forhåndsvisning
+  errors:
+    deleting: Feil oppstod under sletting av data
+    file_not_found: Fil ikke funnet
+    file_pick: Feil under valg av fil
+    file_read: Feil under lesing av fil
+    file_save: Feil under lagring av fil
+    file_write: Feil under skriving av fil
+    loading: Feil oppstod under lasting av data
+    report_subject: "{appName} App: Uventet feilrapport"
+    report_template: |
+      Hei, jeg støtte på en uventet feil mens jeg brukte {appName} appen.
+
+      Her er informasjon som kan hjelpe deg med å diagnostisere problemet:
+      App-versjon: {version}
+      Enhetsinfo: {device}
+      OS: {os}
+      OS-versjon: {osVersion}
+      Feilmelding:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Vennligst hjelp meg å løse dette problemet.
+
+      Takk!
+    saving: Feil oppstod under lagring av data
+    storage_permission: Lagringstillatelse kreves
+    storage_permission_denied: Lagringstillatelse nektet
+    unexpected: En uventet feil oppstod
+  filters:
+    search: Søk
+  help:
+    tooltip: Hjelp
+  messages:
+    confirm_delete: Er du sikker på at du vil slette dette elementet?
+    no_items_found: Ingen elementer
+  nav:
+    items:
+      app_usages: App-bruk
+      habits: Vaner
+      more: Mer
+      notes: Notater
+      settings: Innstillinger
+      tags: Tagger
+      tasks: Oppgaver
+      today: I dag
+  none_option: "Ingen tagger"
+  regex_help:
+    examples:
+      chat: 'Matcher enten "Slack" eller "Discord"'
+      chrome: 'Matcher enhver vindutittel som inneholder "Chrome"'
+      exact_chrome: 'Matcher nøyaktig "Chrome"'
+      pdf: Matcher enhver PDF-fil
+      vscode: Matcher ethvert VS Code-vindu
+    tips:
+      any_chars: 'Bruk ".*" for å matche alle tegn'
+      dot: '"\." matcher et punktum'
+      end: '"$" matcher slutten av tekst'
+      or: '"|" betyr ELLER'
+      start: '"^" matcher begynnelsen av tekst'
+    tips_title: 💡 Tips
+    title: Mønstereksempler
+  report_error: Rapporter feil
+  save_list_options: Lagre listealternativer
+  search:
+    placeholder: Søk
+    tooltip: Søk etter elementer
+  sections:
+    habits: Vaner
+    special_filters: Spesialfiltre
+    statistics: Statistikk
+    tags: Tagger
+    tasks: Oppgaver
+    time: Tid
+  sort:
+    ascending: Stigende
+    custom_order:
+      description: Aktiver dra og slipp for å omorganisere elementer
+      title: Tilpasset sortering
+    descending: Synkende
+    remove_criteria: Fjern kriterium
+    reset_to_default: Tilbakestill til standard
+    sort: Sorter
+  statistics:
+    daily_usage:
+      description: Viser total brukstid per ukedag
+      title: Daglig bruk
+    hourly_usage:
+      description: Viser total brukstid per time på dagen
+      title: Timevis bruk
+  time:
+    not_set: "Ikke satt"
+  time_periods:
+    custom: Tilpasset
+    last_month: Forrige måned
+    last_three_months: Siste 3 måneder
+    last_week: Forrige uke
+    this_month: Denne måneden
+    this_three_months: Disse 3 månedene
+    this_week: Denne uken
+    today: I dag
+  tooltips:
+    compare_with_previous: Sammenlign med forrige periode
+    filter_by_tags: Filtrer etter tagger
+    refresh: Oppdater
+  ui:
+    report_error: Rapporter
+  units:
+    days: dager
+    hours: timer
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Nedlastingsside
+      later: Senere
+      update_now: Oppdater nå
+    downloading: Laster ned oppdatering...
+    failed: Oppdatering mislyktes.
+    message: En ny versjon ({version}) er tilgjengelig.
+    question: Vil du oppdatere nå?
+    success: Oppdatering lastet ned!
+    title: Oppdatering tilgjengelig!
+  validation:
+    required: "{field} er påkrevd"

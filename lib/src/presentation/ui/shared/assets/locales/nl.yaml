@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Versieverschil
+shared:
+  buttons:
+    add: Toevoegen
+    back: Terug
+    cancel: Annuleren
+    close: Sluiten
+    confirm: Bevestigen
+    delete: Verwijderen
+    done: Klaar
+    load_more: Meer laden
+    save: Opslaan
+    saved: Opgeslagen
+  calendar:
+    months:
+      apr: April
+      apr_short: Apr
+      aug: Augustus
+      aug_short: Aug
+      dec: December
+      dec_short: Dec
+      feb: Februari
+      feb_short: Feb
+      jan: Januari
+      jan_short: Jan
+      jul: Juli
+      jul_short: Jul
+      jun: Juni
+      jun_short: Jun
+      mar: Maart
+      mar_short: Mrt
+      may: Mei
+      may_short: Mei
+      nov: November
+      nov_short: Nov
+      oct: Oktober
+      oct_short: Okt
+      sep: September
+      sep_short: Sep
+    week_days:
+      friday: Vrijdag
+      friday_short: Vr
+      monday: Maandag
+      monday_short: Ma
+      saturday: Zaterdag
+      saturday_short: Za
+      sunday: Zondag
+      sunday_short: Zo
+      thursday: Donderdag
+      thursday_short: Do
+      tuesday: Dinsdag
+      tuesday_short: Di
+      wednesday: Woensdag
+      wednesday_short: Wo
+  change: Wijzigen
+  color_picker:
+    confirm_selection: Selectie bevestigen
+    select_color_title: Kleur selecteren
+    tabs:
+      custom: Aangepast
+      palette: Kleuren
+    title: Kleurkiezer
+  data:
+    created_date_label: Aanmaakdatum
+    modified_date_label: Wijzigingsdatum
+    name_label: Naam
+  date_filter:
+    title: Datumbereik selecteren
+    tooltips:
+      clear: Datumfilter wissen
+      filter: Filteren op datum
+  date_format:
+    hint: DD/MM/JJJJ
+  days:
+    friday: Vrijdag
+    friday_short: Vr
+    monday: Maandag
+    monday_short: Ma
+    saturday: Zaterdag
+    saturday_short: Za
+    sunday: Zondag
+    sunday_short: Zo
+    thursday: Donderdag
+    thursday_short: Do
+    tuesday: Dinsdag
+    tuesday_short: Di
+    wednesday: Woensdag
+    wednesday_short: Wo
+  editor:
+    markdown:
+      hint: Je kunt schrijven met Markdown-opmaak...
+      tooltips:
+        bold: Vet
+        italic: Cursief
+        strikethrough: Doorgestreept
+        code: Code
+        link: Link
+        quote: Citaat
+        bulleted_list: Opsommingslijst
+        numbered_list: Genummerde lijst
+        horizontal_rule: Horizontale lijn
+        edit: Bewerken
+        preview: Voorbeeld
+  errors:
+    deleting: Fout bij het verwijderen van gegevens
+    file_not_found: Bestand niet gevonden
+    file_pick: Fout bij het kiezen van bestand
+    file_read: Fout bij het lezen van bestand
+    file_save: Fout bij het opslaan van bestand
+    file_write: Fout bij het schrijven van bestand
+    loading: Fout bij het laden van gegevens
+    report_subject: "{appName} App: Onverwacht foutrapport"
+    report_template: |
+      Hallo, ik kwam een onverwachte fout tegen tijdens het gebruik van de {appName} app.
+
+      Hier is informatie die kan helpen bij het diagnosticeren van het probleem:
+      App-versie: {version}
+      Apparaatinfo: {device}
+      Besturingssysteem: {os}
+      OS-versie: {osVersion}
+      Foutmelding:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Help me alsjeblieft dit probleem op te lossen.
+
+      Bedankt!
+    saving: Fout bij het opslaan van gegevens
+    storage_permission: Opslagtoestemming vereist
+    storage_permission_denied: Opslagtoestemming geweigerd
+    unexpected: Er is een onverwachte fout opgetreden
+  filters:
+    search: Zoeken
+  help:
+    tooltip: Help
+  messages:
+    confirm_delete: Weet je zeker dat je dit item wilt verwijderen?
+    no_items_found: Geen items
+  nav:
+    items:
+      app_usages: App-gebruik
+      habits: Gewoontes
+      more: Meer
+      notes: Notities
+      settings: Instellingen
+      tags: Tags
+      tasks: Taken
+      today: Vandaag
+  none_option: "Geen tags"
+  regex_help:
+    examples:
+      chat: 'Komt overeen met "Slack" of "Discord"'
+      chrome: 'Komt overeen met elke venstertitel die "Chrome" bevat'
+      exact_chrome: 'Komt exact overeen met "Chrome"'
+      pdf: Komt overeen met elk PDF-bestand
+      vscode: Komt overeen met elk VS Code-venster
+    tips:
+      any_chars: 'Gebruik ".*" om overeen te komen met alle tekens'
+      dot: '"\." komt overeen met een punt'
+      end: '"$" komt overeen met het einde van tekst'
+      or: '"|" betekent OF'
+      start: '"^" komt overeen met het begin van tekst'
+    tips_title: 💡 Tips
+    title: Patroonvoorbeelden
+  report_error: Fout melden
+  save_list_options: Lijstopties opslaan
+  search:
+    placeholder: Zoeken
+    tooltip: Items zoeken
+  sections:
+    habits: Gewoontes
+    special_filters: Speciale filters
+    statistics: Statistieken
+    tags: Tags
+    tasks: Taken
+    time: Tijd
+  sort:
+    ascending: Oplopend
+    custom_order:
+      description: Schakel slepen en neerzetten in om items opnieuw te ordenen
+      title: Aangepaste sortering
+    descending: Aflopend
+    remove_criteria: Criterium verwijderen
+    reset_to_default: Terugzetten naar standaard
+    sort: Sorteren
+  statistics:
+    daily_usage:
+      description: Toont de totale gebruikstijd per dag van de week
+      title: Dagelijks gebruik
+    hourly_usage:
+      description: Toont de totale gebruikstijd per uur van de dag
+      title: Uurlijks gebruik
+  time:
+    not_set: "Niet ingesteld"
+  time_periods:
+    custom: Aangepast
+    last_month: Vorige maand
+    last_three_months: Laatste 3 maanden
+    last_week: Vorige week
+    this_month: Deze maand
+    this_three_months: Deze 3 maanden
+    this_week: Deze week
+    today: Vandaag
+  tooltips:
+    compare_with_previous: Vergelijken met vorige periode
+    filter_by_tags: Filteren op tags
+    refresh: Vernieuwen
+  ui:
+    report_error: Melden
+  units:
+    days: dagen
+    hours: uur
+    minutes: min
+    minutes_short: m
+    seconds: sec
+  update_dialog:
+    buttons:
+      download_page: Downloadpagina
+      later: Later
+      update_now: Nu bijwerken
+    downloading: Update downloaden...
+    failed: Update mislukt.
+    message: Een nieuwe versie ({version}) is beschikbaar.
+    question: Wil je nu bijwerken?
+    success: Update succesvol gedownload!
+    title: Update beschikbaar!
+  validation:
+    required: "{field} is verplicht"

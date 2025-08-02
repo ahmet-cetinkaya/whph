@@ -43,7 +43,7 @@ void main() {
 
 class TranslationKeysAnalyzer {
   // Supported languages
-  static const supportedLanguages = ['en', 'tr'];
+  static const supportedLanguages = ['de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'tr', 'uk', 'zh'];
 
   // TranslationKey file paths
   static const translationKeyPaths = [

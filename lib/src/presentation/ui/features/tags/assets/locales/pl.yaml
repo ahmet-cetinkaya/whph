@@ -1,0 +1,128 @@
+tags:
+  actions:
+    add: Dodaj tag
+    archive: Archiwizuj tag
+    delete: Usuń tag
+    edit: Edytuj tag
+    hide_archived: Ukryj zarchiwizowane tagi
+    show_archived: Pokaż zarchiwizowane tagi
+    unarchive: Przywróć tag z archiwum
+  categories:
+    all: Wszystkie
+    app_usage: Użycie aplikacji
+    habits: Nawyki
+    tasks: Zadania
+  default_name: Nowy tag
+  details:
+    archived: Zarchiwizowane
+    color: Kolor
+    help:
+      description: Opis pomocy szczegółów
+      title: Tytuł pomocy szczegółów
+    name: Nazwa
+    related_tags: Powiązane tagi
+    select_tag: Wybierz tag
+    tasks_label: Zadania
+  errors:
+    creating: Nie udało się utworzyć tagu
+    deleting: Nie udało się usunąć tagu
+    get_tags: Wystąpił błąd podczas pobierania tagów
+    loading: Nie udało się załadować tagów
+    loading_archive_status: Nie udało się załadować statusu archiwum
+    same_tag: Główny i drugorzędny tag nie mogą być takie same
+    saving: Nie udało się zapisać tagu
+    tag_not_found: Nie znaleziono tagu
+    tag_tag_already_exists: Ta relacja tagów już istnieje
+    tag_tag_not_found: Nie znaleziono relacji tagów
+    toggling_archive: Nie udało się przełączyć statusu archiwum
+  filter:
+    all_categories: Wszystkie kategorie
+    select_category: Wybierz kategorię
+  filter_tooltip: Filtruj według tagów
+  help:
+    content: Treść pomocy tagów
+    overview:
+      content: |
+        Przekształć swoją produktywność dzięki strategicznemu tagowaniu, które pomaga organizować pracę, śledzić inwestycje czasowe i utrzymywać jasny fokus na tym, co najważniejsze.
+
+        ## ⚡ Dlaczego to ważne?
+
+        Organizacja oparta na tagach jest fundamentalna dla efektywnego zarządzania czasem i produktywności. Kategoryzując swoje aktywności za pomocą znaczących tagów, zyskujesz jasny wgląd w to, jak spędzasz czas i możesz podejmować świadome decyzje w celu optymalizacji skupienia i efektywności.
+
+        ## 📊 Analiza inwestycji czasowych
+
+        Zrozum, gdzie idzie twój czas i podejmuj decyzje oparte na danych dotyczące priorytetów. Śledzenie czasu za pomocą tagów ujawnia wzorce, które pomagają zoptymalizować harmonogram i nawyki pracy.
+
+        - ⏱️ Monitoruj czas spędzony w różnych kategoriach aktywności
+        - 📅 Śledź inwestycje czasowe w określonych okresach i trendy
+        - ⚖️ Porównuj alokację czasu między projektami i obowiązkami
+        - 📈 Identyfikuj wzorce produktywności i szczytowe czasy wydajności
+        - 🎯 Skupiaj energię na aktywnościach o wysokim wpływie
+
+        ## 🗂️ Strategiczna organizacja
+
+        Stwórz systematyczne podejście do organizowania pracy, które skaluje się z twoimi potrzebami. Dobrze ustrukturyzowane tagi stanowią podstawę efektywnego systemu produktywności.
+
+        - 🔍 Filtruj i znajdź informacje szybko za pomocą wyszukiwania wielotagowego
+        - 🗄️ Archiwizuj ukończone projekty, aby utrzymać czystą organizację
+        - 🧩 Buduj hierarchiczne struktury, które odzwierciedlają wzorce pracy
+        - 👥 Grupuj powiązane aktywności dla lepszego zarządzania projektami
+        - ⏳ Umożliwiaj kompleksowe śledzenie czasu we wszystkich aktywnościach
+
+        ## 💡 Strategie optymalizacji
+
+        Wykorzystuj zaawansowane techniki tagowania, aby zmaksymalizować efektywność systemu organizacyjnego i utrzymać długoterminowy wzrost produktywności.
+
+        - 🏷️ Używaj jasnych, opisowych nazw, które pozostają znaczące w czasie
+        - 🔗 **Twórz struktury hierarchiczne:** Projekty → Działy → Obszary
+        - 📊 Regularnie przeglądaj raporty analizy czasu, aby zidentyfikować możliwości poprawy
+        - ��️ Utrzymuj czystość systemu poprzez archiwizowanie ukończonej pracy
+        - 🎯 Stosuj skupione filtrowanie, aby wyeliminować rozproszenia i zwiększyć koncentrację
+      title: Przewodnik organizacji opartej na tagach i zarządzania czasem
+    title: Pomoc tagów
+  labels:
+    color: Kolor
+    description: Opis
+    name: Nazwa
+    tags: Tagi
+  list:
+    filter_tooltip: Filtruj według tagów
+    no_tags: Brak tagów
+  messages:
+    archive_confirm: Czy na pewno chcesz zarchiwizować ten tag?
+    confirm_archive: Czy na pewno chcesz zarchiwizować ten tag?
+    confirm_delete: Czy na pewno chcesz usunąć ten tag?
+    confirm_unarchive: Czy na pewno chcesz przywrócić ten tag z archiwum?
+    unarchive_confirm: Czy na pewno chcesz przywrócić ten tag z archiwum?
+  new_tag: Nowy tag
+  name_placeholder: Wprowadź opisową nazwę tagu...
+  no_tags: Brak tagów
+  none_option: Brak
+  search:
+    clear_all: Wyczyść wszystko
+    label: Szukaj tagów
+  sections:
+    list: Tagi
+  selection:
+    done: Gotowe
+  tag_details: Szczegóły tagu
+  time_bar_chart:
+    by_element: Według elementu
+    no_data: Brak danych
+    title: Rozkład czasu
+  time_chart:
+    no_data: Brak danych
+    other_category: Inne
+  time_distribution: Rozkład czasu
+  time_records: Rekordy czasu
+  title: Tagi
+  tooltips:
+    add_tag: Dodaj tag
+    add_task: Dodaj nowe zadanie
+    archive_tag: Archiwizuj tag
+    color: Kliknij, aby przypisać kolor do tagu
+    delete_tag: Usuń tag
+    edit_name: Edytuj nazwę
+    remove_tag: Usuń tag
+    select: Kliknij, aby wybrać tag
+    unarchive_tag: Przywróć tag z archiwum

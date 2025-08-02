@@ -1,0 +1,163 @@
+common:
+  buttons:
+    cancel: Anuluj
+
+settings:
+  about:
+    title: O aplikacji
+  errors:
+    export_failed: Eksport nie powiódł się
+    import_failed: Import nie powiódł się
+    setting_not_found: Ustawienie nie znalezione
+    version_mismatch: Nie znaleziono wersji
+  export:
+    csv_description: Możesz użyć tego do przeglądania w Excelu i podobnych aplikacjach.
+    error: Eksport nie powiódł się
+    in_progress: Eksportowanie danych, proszę czekać...
+    json_description: Eksportuj dane w czytelnym formacie JSON do celów rozwoju i debugowania.
+    select_directory: Wybierz katalog eksportu
+    select_path: Wybierz lokalizację zapisu
+    select_type: Wybierz format eksportu
+    success: "Eksport pomyślny. Lokalizacja pliku:"
+    title: Eksport
+    canceled: Eksport anulowany przez użytkownika
+  export_data:
+    title: Eksportuj dane
+  import:
+    error: Import nie powiódł się
+    error.entity: Błąd w typie
+    in_progress: Importowanie danych, proszę czekać...
+    migration_failed: Import nie powiódł się. Upewnij się, że masz zainstalowaną najnowszą wersję aplikacji.
+    select_file: Wybierz plik
+    strategy:
+      merge: Połącz z istniejącymi danymi
+      replace: Usuń istniejące dane i dodaj nowe
+      title: Strategia importu
+    success: Import pomyślny
+    title: Import
+    unsupported_version: Nieobsługiwana wersja
+    version_mismatch: Nie znaleziono wersji
+  import_export:
+    description: Eksportuj swoje dane w różnych formatach lub importuj dane z plików kopii zapasowej
+    select_action: Wybierz akcję importu/eksportu
+    title: Import/Eksport
+  language:
+    choose_title: Wybierz swój język
+    title: Język
+  notifications:
+    disable_error: Nie udało się wyłączyć powiadomień
+    enable_error: Nie udało się włączyć powiadomień
+    title: Powiadomienia
+  permissions:
+    app_usage:
+      description: Ta aplikacja potrzebuje uprawnień do dostępu do statystyk użycia aplikacji, aby dokładnie śledzić wzorce użycia aplikacji.
+      instructions: "Instrukcje:"
+      steps:
+        step1: Naciśnij przycisk "Otwórz ustawienia"
+        step2: Na ekranie ustawień dostępu do użycia, który się otworzy, znajdź "{appName}" na liście
+        step3: Dotknij "{appName}"
+        step4: Włącz "Zezwól na dostęp do użycia" lub przełącz przełącznik na WŁĄCZONY
+      title: Uprawnienie użycia aplikacji
+    battery_optimization:
+      description: Dla niezawodnych powiadomień ta aplikacja musi być wyłączona z optymalizacji baterii. Bez tego przypomnienia mogą być opóźnione lub w ogóle nie dostarczane.
+      importance: Lokalizacja tego ustawienia może się różnić w zależności od producenta urządzenia.
+      instructions: "Instrukcje:"
+      not_disabled: Optymalizacja baterii jest nadal włączona. Udziel uprawnień, aby odpowiednia funkcja działała poprawnie.
+      steps:
+        step1: Naciśnij przycisk "Otwórz ustawienia"
+        step2: Na ekranie ustawień, który się otworzy, znajdź "{appName}"
+        step3: Dotknij "{appName}"
+        step4: Upewnij się, że "Zezwól na użycie w tle" jest włączone na stronie, która się otworzy
+        step5: Dotknij "Zezwól na użycie w tle"
+        step6: Wybierz "Nieograniczone"
+      title: Optymalizacja baterii
+    exact_alarm:
+      description: Android 12+ wymaga uprawnień do planowania dokładnych alarmów, aby przypomnienia działały prawidłowo.
+      instructions: "Instrukcje:"
+      steps:
+        android12plus:
+          step2: Przejdź do Alarmy i przypomnienia i włącz uprawnienie
+          step3: Potwierdź uprawnienie dokładnego alarmu
+        step1: Naciśnij przycisk "Otwórz ustawienia"
+        step2: 'Na otwartej stronie Alarmy i przypomnienia aplikacji {appName}, włącz "Zezwól na ustawianie alarmów i przypomnień"'
+      title: Uprawnienie dokładnego alarmu
+    fix_it: Napraw to
+    granted: Uprawnienie przyznane
+    instructions: Instrukcje
+    notification:
+      description: Uprawnienie do powiadomień jest wymagane do otrzymywania przypomnień. Bez tego uprawnienia nie będziesz otrzymywać żadnych powiadomień.
+      instructions: "Instrukcje:"
+      steps:
+        android:
+          step1: Naciśnij przycisk "Otwórz ustawienia"
+          step2: Zezwól na powiadomienia po wyświetleniu monitu
+        ios:
+          step1: Naciśnij przycisk "Otwórz ustawienia"
+          step2: Zezwól na powiadomienia po wyświetleniu monitu
+      title: Uprawnienie powiadomień
+    open_settings: Otwórz ustawienia
+    startup:
+      description: Aby aplikacja uruchamiała się automatycznie z urządzeniem, wymagane jest uprawnienie automatycznego uruchamiania. To zapewnia, że przypomnienia i powiadomienia działają prawidłowo nawet po ponownym uruchomieniu urządzenia.
+      importance: Lokalizacja ustawienia automatycznego uruchamiania różni się lub może nie być obecna w zależności od producenta urządzenia.
+      instructions: "Instrukcje:"
+      steps:
+        step1: Naciśnij przycisk "Otwórz ustawienia"
+        step2: 'Na ekranie ustawień, który się otworzy, znajdź aplikację "{appName}"'
+        step3: 'Włącz "Automatyczne uruchamianie", "Autorun", "Uruchom przy starcie" lub podobne uprawnienie'
+      title: Uprawnienie automatycznego uruchamiania
+    title: Uprawnienia
+  startup:
+    disable_error: Nie udało się wyłączyć ustawienia uruchamiania
+    enable_error: Nie udało się włączyć ustawienia uruchamiania
+    subtitle: Dotknij, aby otworzyć ustawienia systemowe i włączyć uprawnienie automatycznego uruchamiania dla aplikacji
+    title: Uruchom przy starcie
+  sync_devices:
+    title: Synchronizuj urządzenia
+  title: Ustawienia
+  backup:
+    title: Kopia zapasowa
+    description: Twórz i przywracaj skompresowane kopie zapasowe danych aplikacji używając bezpiecznego formatu .whph
+    export:
+      title: Utwórz kopię zapasową
+      description: Eksportuj wszystkie swoje dane do skompresowanego pliku kopii zapasowej .whph
+      in_progress: Tworzenie kopii zapasowej, proszę czekać...
+      success: "Kopia zapasowa utworzona pomyślnie. Lokalizacja pliku:"
+      error: Nie udało się utworzyć kopii zapasowej
+      select_path: Wybierz lokalizację zapisu kopii zapasowej
+    import:
+      title: Przywróć kopię zapasową
+      description: Importuj dane z wcześniej utworzonego pliku kopii zapasowej .whph
+      in_progress: Przywracanie kopii zapasowej, proszę czekać...
+      success: Kopia zapasowa przywrócona pomyślnie
+      error: Nie udało się przywrócić kopii zapasowej
+      select_file: Wybierz plik kopii zapasowej
+      strategy:
+        title: Strategia przywracania
+        replace: Usuń istniejące dane i przywróć
+        merge: Połącz z istniejącymi danymi
+    canceled: Operacja kopii zapasowej anulowana przez użytkownika
+    export_failed: Eksport kopii zapasowej nie powiódł się
+    import_failed: Import kopii zapasowej nie powiódł się
+    invalid_format: Nieprawidłowy format pliku kopii zapasowej
+    invalid_format_error: Nieprawidłowy format pliku kopii zapasowej
+    corrupted: Plik kopii zapasowej jest uszkodzony
+    export_description: Utwórz skompresowany plik kopii zapasowej zawierający wszystkie twoje dane
+  theme:
+    title: Motyw
+    description: Dostosuj wygląd WHPH
+    mode:
+      title: Tryb motywu
+      light: Jasny
+      dark: Ciemny
+      auto:
+        title: Automatyczny
+        description: Podążaj za ustawieniami motywu systemu
+    dynamic_accent:
+      title: Dynamiczny kolor akcentu
+      description: Jeśli twój system to obsługuje, kolor główny będzie się dostosowywać na podstawie dynamicznego schematu kolorów systemu
+      feature: Dynamiczny
+    custom_accent:
+      title: Niestandardowy kolor akcentu
+      description: Wybierz niestandardowy kolor akcentu, aby spersonalizować wygląd aplikacji
+      feature: Niestandardowy
+    error: Nie udało się załadować ustawień motywu

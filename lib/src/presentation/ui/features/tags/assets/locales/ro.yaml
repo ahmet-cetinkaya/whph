@@ -1,0 +1,128 @@
+tags:
+  actions:
+    add: Add Tag
+    archive: Archive Tag
+    delete: Delete Tag
+    edit: Edit Tag
+    hide_archived: Hide archived tags
+    show_archived: Show archived tags
+    unarchive: Unarchive Tag
+  categories:
+    all: All
+    app_usage: App Usage
+    habits: Habits
+    tasks: Tasks
+  default_name: New Tag
+  details:
+    archived: Archived
+    color: Color
+    help:
+      description: Details help description
+      title: Details Help Title
+    name: Name
+    related_tags: Related Tags
+    select_tag: Select tag
+    tasks_label: Tasks
+  errors:
+    creating: Failed to create tag
+    deleting: Failed to delete tag
+    get_tags: Error occurred while fetching tags
+    loading: Failed to load tags
+    loading_archive_status: Failed to load archive status
+    same_tag: Primary and secondary tags cannot be the same
+    saving: Failed to save tag
+    tag_not_found: Tag not found
+    tag_tag_already_exists: This tag relationship already exists
+    tag_tag_not_found: Tag relationship not found
+    toggling_archive: Failed to toggle archive status
+  filter:
+    all_categories: All Categories
+    select_category: Select Category
+  filter_tooltip: Filter by tags
+  help:
+    content: Tag help content
+    overview:
+      content: |
+        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+
+        ## ⚡ Why Is It Important?
+
+        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+
+        ## 📊 Time Investment Analysis
+
+        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+
+        - ⏱️ Monitor time spent across different activity categories
+        - 📅 Track time investments over specific periods and trends
+        - ⚖️ Compare time allocation across projects and responsibilities
+        - 📈 Identify productivity patterns and peak performance times
+        - 🎯 Focus your energy on high-impact activities
+
+        ## 🗂️ Strategic Organization
+
+        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+
+        - 🔍 Filter and find information quickly with multi-tag searches
+        - 🗄️ Archive completed projects to maintain clean organization
+        - 🧩 Build hierarchical structures that reflect your work patterns
+        - 👥 Group related activities for better project management
+        - ⏳ Enable comprehensive time tracking across all activities
+
+        ## 💡 Optimization Strategies
+
+        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+
+        - 🏷️ Use clear, descriptive names that remain meaningful over time
+        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
+        - 📊 Review time analysis reports regularly to identify improvement opportunities
+        - 🗄️ Maintain system cleanliness by archiving completed work
+        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
+      title: Tag-Based Organization & Time Management Guide
+    title: Tag Help
+  labels:
+    color: Color
+    description: Description
+    name: Name
+    tags: Tags
+  list:
+    filter_tooltip: Filter by tags
+    no_tags: No tags
+  messages:
+    archive_confirm: Are you sure you want to archive this tag?
+    confirm_archive: Are you sure you want to archive this tag?
+    confirm_delete: Are you sure you want to delete this tag?
+    confirm_unarchive: Are you sure you want to unarchive this tag?
+    unarchive_confirm: Are you sure you want to unarchive this tag?
+  new_tag: New Tag
+  name_placeholder: Enter a descriptive tag name...
+  no_tags: No tags
+  none_option: None
+  search:
+    clear_all: Clear All
+    label: Search tags
+  sections:
+    list: Tags
+  selection:
+    done: Done
+  tag_details: Tag Details
+  time_bar_chart:
+    by_element: By element
+    no_data: No data
+    title: Time Distribution
+  time_chart:
+    no_data: No data
+    other_category: Other
+  time_distribution: Time Distribution
+  time_records: Time Records
+  title: Tags
+  tooltips:
+    add_tag: Add tag
+    add_task: Add new task
+    archive_tag: Archive tag
+    color: Click to assign color to tag
+    delete_tag: Delete tag
+    edit_name: Edit name
+    remove_tag: Remove tag
+    select: Click to select tag
+    unarchive_tag: Unarchive tag

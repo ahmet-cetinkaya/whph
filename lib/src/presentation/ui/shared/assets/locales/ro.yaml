@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Nepotrivire de versiune
+shared:
+  buttons:
+    add: Adaugă
+    back: Înapoi
+    cancel: Anulează
+    close: Închide
+    confirm: Confirmă
+    delete: Șterge
+    done: Gata
+    load_more: Încarcă mai mult
+    save: Salvează
+    saved: Salvat
+  calendar:
+    months:
+      apr: Aprilie
+      apr_short: Apr
+      aug: August
+      aug_short: Aug
+      dec: Decembrie
+      dec_short: Dec
+      feb: Februarie
+      feb_short: Feb
+      jan: Ianuarie
+      jan_short: Ian
+      jul: Iulie
+      jul_short: Iul
+      jun: Iunie
+      jun_short: Iun
+      mar: Martie
+      mar_short: Mar
+      may: Mai
+      may_short: Mai
+      nov: Noiembrie
+      nov_short: Nov
+      oct: Octombrie
+      oct_short: Oct
+      sep: Septembrie
+      sep_short: Sep
+    week_days:
+      friday: Vineri
+      friday_short: Vin
+      monday: Luni
+      monday_short: Lun
+      saturday: Sâmbătă
+      saturday_short: Sâm
+      sunday: Duminică
+      sunday_short: Dum
+      thursday: Joi
+      thursday_short: Joi
+      tuesday: Marți
+      tuesday_short: Mar
+      wednesday: Miercuri
+      wednesday_short: Mie
+  change: Schimbă
+  color_picker:
+    confirm_selection: Confirmă selecția
+    select_color_title: Selectează culoarea
+    tabs:
+      custom: Personalizat
+      palette: Culori
+    title: Selector de culori
+  data:
+    created_date_label: Data creării
+    modified_date_label: Data modificării
+    name_label: Nume
+  date_filter:
+    title: Selectează intervalul de date
+    tooltips:
+      clear: Șterge filtrul de dată
+      filter: Filtrează după dată
+  date_format:
+    hint: ZZ/LL/AAAA
+  days:
+    friday: Vineri
+    friday_short: Vin
+    monday: Luni
+    monday_short: Lun
+    saturday: Sâmbătă
+    saturday_short: Sâm
+    sunday: Duminică
+    sunday_short: Dum
+    thursday: Joi
+    thursday_short: Joi
+    tuesday: Marți
+    tuesday_short: Mar
+    wednesday: Miercuri
+    wednesday_short: Mie
+  editor:
+    markdown:
+      hint: Poți scrie folosind formatul Markdown...
+      tooltips:
+        bold: Îngroșat
+        italic: Cursiv
+        strikethrough: Tăiat
+        code: Cod
+        link: Link
+        quote: Citat
+        bulleted_list: Listă cu puncte
+        numbered_list: Listă numerotată
+        horizontal_rule: Linie orizontală
+        edit: Editează
+        preview: Previzualizare
+  errors:
+    deleting: Eroare la ștergerea datelor
+    file_not_found: Fișierul nu a fost găsit
+    file_pick: Eroare la selectarea fișierului
+    file_read: Eroare la citirea fișierului
+    file_save: Eroare la salvarea fișierului
+    file_write: Eroare la scrierea fișierului
+    loading: Eroare la încărcarea datelor
+    report_subject: "{appName} App: Raport de eroare neașteptată"
+    report_template: |
+      Salut, am întâlnit o eroare neașteptată în timp ce foloseam aplicația {appName}.
+
+      Iată informații care ar putea ajuta la diagnosticarea problemei:
+      Versiunea aplicației: {version}
+      Informații despre dispozitiv: {device}
+      SO: {os}
+      Versiunea SO: {osVersion}
+      Mesajul de eroare:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Vă rog să mă ajutați să rezolv această problemă.
+
+      Mulțumesc!
+    saving: Eroare la salvarea datelor
+    storage_permission: Este necesară permisiunea de stocare
+    storage_permission_denied: Permisiunea de stocare a fost refuzată
+    unexpected: A apărut o eroare neașteptată
+  filters:
+    search: Caută
+  help:
+    tooltip: Ajutor
+  messages:
+    confirm_delete: Ești sigur că vrei să ștergi acest element?
+    no_items_found: Niciun element
+  nav:
+    items:
+      app_usages: Utilizarea aplicațiilor
+      habits: Obiceiuri
+      more: Mai mult
+      notes: Notițe
+      settings: Setări
+      tags: Etichete
+      tasks: Sarcini
+      today: Astăzi
+  none_option: "Fără etichete"
+  regex_help:
+    examples:
+      chat: 'Se potrivește cu "Slack" sau "Discord"'
+      chrome: 'Se potrivește cu orice titlu de fereastră care conține "Chrome"'
+      exact_chrome: 'Se potrivește exact cu "Chrome"'
+      pdf: Se potrivește cu orice fișier PDF
+      vscode: Se potrivește cu orice fereastră VS Code
+    tips:
+      any_chars: 'Folosește ".*" pentru a se potrivi cu orice caractere'
+      dot: '"\." se potrivește cu un punct'
+      end: '"$" se potrivește cu sfârșitul textului'
+      or: '"|" înseamnă SAU'
+      start: '"^" se potrivește cu începutul textului'
+    tips_title: 💡 Sfaturi
+    title: Exemple de modele
+  report_error: Raportează eroarea
+  save_list_options: Salvează opțiunile listei
+  search:
+    placeholder: Caută
+    tooltip: Caută elemente
+  sections:
+    habits: Obiceiuri
+    special_filters: Filtre speciale
+    statistics: Statistici
+    tags: Etichete
+    tasks: Sarcini
+    time: Timp
+  sort:
+    ascending: Crescător
+    custom_order:
+      description: Activează drag and drop pentru a reordona elementele
+      title: Sortare personalizată
+    descending: Descrescător
+    remove_criteria: Elimină criteriul
+    reset_to_default: Resetează la implicit
+    sort: Sortează
+  statistics:
+    daily_usage:
+      description: Arată timpul total de utilizare pe zi a săptămânii
+      title: Utilizare zilnică
+    hourly_usage:
+      description: Arată timpul total de utilizare pe oră din zi
+      title: Utilizare pe ore
+  time:
+    not_set: "Nu este setat"
+  time_periods:
+    custom: Personalizat
+    last_month: Luna trecută
+    last_three_months: Ultimele 3 luni
+    last_week: Săptămâna trecută
+    this_month: Luna aceasta
+    this_three_months: Aceste 3 luni
+    this_week: Săptămâna aceasta
+    today: Astăzi
+  tooltips:
+    compare_with_previous: Compară cu perioada anterioară
+    filter_by_tags: Filtrează după etichete
+    refresh: Reîmprospătează
+  ui:
+    report_error: Raportează
+  units:
+    days: zile
+    hours: ore
+    minutes: min
+    minutes_short: m
+    seconds: sec
+  update_dialog:
+    buttons:
+      download_page: Pagina de descărcare
+      later: Mai târziu
+      update_now: Actualizează acum
+    downloading: Se descarcă actualizarea...
+    failed: Actualizarea a eșuat.
+    message: O nouă versiune ({version}) este disponibilă.
+    question: Vrei să actualizezi acum?
+    success: Actualizarea a fost descărcată cu succes!
+    title: Actualizare disponibilă!
+  validation:
+    required: "{field} este obligatoriu"

@@ -1,0 +1,163 @@
+common:
+  buttons:
+    cancel: Cancel
+
+settings:
+  about:
+    title: About
+  errors:
+    export_failed: Export failed
+    import_failed: Import failed
+    setting_not_found: Setting not found
+    version_mismatch: Version not found
+  export:
+    csv_description: You can use this to view in Excel and similar applications.
+    error: Export failed
+    in_progress: Exporting data, please wait...
+    json_description: Export data in readable JSON format for development and debugging purposes.
+    select_directory: Select export directory
+    select_path: Select save location
+    select_type: Select export format
+    success: "Export successful. File location:"
+    title: Export
+    canceled: Export canceled by user
+  export_data:
+    title: Export Data
+  import:
+    error: Import failed
+    error.entity: Error in type
+    in_progress: Importing data, please wait...
+    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
+    select_file: Select file
+    strategy:
+      merge: Merge with Existing Data
+      replace: Delete Existing Data and Add New
+      title: Import Strategy
+    success: Import successful
+    title: Import
+    unsupported_version: Unsupported version
+    version_mismatch: Version not found
+  import_export:
+    description: Export your data in various formats or import data from backup files
+    select_action: Select import/export action
+    title: Import/Export
+  language:
+    choose_title: Choose your language
+    title: Language
+  notifications:
+    disable_error: Failed to disable notifications
+    enable_error: Failed to enable notifications
+    title: Notifications
+  permissions:
+    app_usage:
+      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
+      instructions: "Instructions:"
+      steps:
+        step1: Press the "Open Setting" button
+        step2: In the usage access settings screen that opens, find "{appName}" in the list
+        step3: Tap on "{appName}"
+        step4: Enable "Allow usage access" or toggle the switch to ON
+      title: App Usage Permission
+    battery_optimization:
+      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
+      importance: The location of this setting may vary depending on your device manufacturer.
+      instructions: "Instructions:"
+      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      steps:
+        step1: Press the "Open Setting" button
+        step2: In the settings screen that opens, find "{appName}"
+        step3: Tap on "{appName}"
+        step4: Ensure "Allow Background Usage" is enabled on the page that opens
+        step5: Tap on "Allow Background Usage"
+        step6: Select "Unrestricted"
+      title: Battery Optimization
+    exact_alarm:
+      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
+      instructions: "Instructions:"
+      steps:
+        android12plus:
+          step2: Go to Alarms & reminders and enable permission
+          step3: Confirm exact alarm permission
+        step1: Press the "Open Setting" button
+        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
+      title: Exact Alarm Permission
+    fix_it: Fix It
+    granted: Permission granted
+    instructions: Instructions
+    notification:
+      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
+      instructions: "Instructions:"
+      steps:
+        android:
+          step1: Press the "Open Setting" button
+          step2: Allow notifications when prompted
+        ios:
+          step1: Press the "Open Setting" button
+          step2: Allow notifications when prompted
+      title: Notification Permission
+    open_settings: Open Setting
+    startup:
+      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
+      importance: Auto-start setting location varies or may not be present by device manufacturer.
+      instructions: "Instructions:"
+      steps:
+        step1: Press the "Open Setting" button
+        step2: 'In the settings screen that opens, find "{appName}" app'
+        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
+      title: Auto-start Permission
+    title: Permissions
+  startup:
+    disable_error: Failed to disable startup setting
+    enable_error: Failed to enable startup setting
+    subtitle: Tap to open system settings and enable auto-start permission for the app
+    title: Start at Startup
+  sync_devices:
+    title: Sync Devices
+  title: Settings
+  backup:
+    title: Backup
+    description: Create and restore compressed backups of your application data using the secure .whph format
+    export:
+      title: Create Backup
+      description: Export all your data to a compressed .whph backup file
+      in_progress: Creating backup, please wait...
+      success: "Backup created successfully. File location:"
+      error: Failed to create backup
+      select_path: Select backup save location
+    import:
+      title: Restore Backup
+      description: Import data from a previously created .whph backup file
+      in_progress: Restoring backup, please wait...
+      success: Backup restored successfully
+      error: Failed to restore backup
+      select_file: Select backup file
+      strategy:
+        title: Restore Strategy
+        replace: Delete Existing Data and Restore
+        merge: Merge with Existing Data
+    canceled: Backup operation canceled by user
+    export_failed: Backup export failed
+    import_failed: Backup import failed
+    invalid_format: Invalid backup file format
+    invalid_format_error: Invalid backup file format
+    corrupted: Backup file is corrupted or damaged
+    export_description: Create a compressed backup file containing all your data
+  theme:
+    title: Theme
+    description: Customize the appearance of WHPH
+    mode:
+      title: Theme Mode
+      light: Light
+      dark: Dark
+      auto:
+        title: Auto
+        description: Follow system theme settings
+    dynamic_accent:
+      title: Dynamic Accent Color
+      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
+      feature: Dynamic
+    custom_accent:
+      title: Custom Accent Color
+      description: Choose a custom accent color to personalize your app's appearance
+      feature: Custom
+    error: Failed to load theme settings

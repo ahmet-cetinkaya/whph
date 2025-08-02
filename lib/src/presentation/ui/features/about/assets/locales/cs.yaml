@@ -1,0 +1,49 @@
+about:
+  about_title: "O aplikaci"
+  version: Verze {version}
+  description: >
+    {appName} je komplexní aplikace navržená pro zvýšení vaší osobní produktivity; umožňuje vám efektivně spravovat úkoly, rozvíjet nové návyky a maximálně využívat váš čas. Navíc posiluje vaše soustředění sledováním času stráveného v různých aplikacích. Analýzou vašeho pokroku můžete oslavovat své úspěchy a získat motivaci potřebnou pro produktivnější život.
+  links:
+    website: Webové stránky
+    source_code: Zdrojový kód
+    feedback: Zpětná vazba
+    contact: Kontakt
+    check_update: Zkontrolovat aktualizace
+  support_me:
+    title: Podpořte {appName}
+    description: >
+      {appName} je zcela bezplatný a open-source software. Každý jej může volně používat, zkoumat, vylepšovat a sdílet.
+
+
+      Zatímco si jej nadále užíváte, já pokračuji v práci na jeho zlepšování. Pokud byste chtěli podpořit pokračování tohoto úsilí, můžete mi koupit kávu; vaše podpora přímo přispěje k vývoji a udržitelnosti {appName}. 😊
+    button_text: Kupte mi kávu
+  onboarding:
+    step1:
+      title: "Vítejte v {appName}"
+      description: "Váš osobní společník pro budování lepších návyků, správu úkolů a efektivní sledování času. Pojďme společně prozkoumat klíčové funkce!"
+    step2:
+      title: "Správa úkolů"
+      description: "Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami. Použijte Pomodoro časovač pro udržení soustředění a sledování pokroku na důležitých úkolech."
+    step3:
+      title: "Budování návyků"
+      description: "Budujte trvalé návyky sledováním denních aktivit. Nastavte připomínky, sledujte své série a vizualizujte pokrok s podrobnými statistikami."
+    step4:
+      title: "Psaní poznámek"
+      description: "Udržujte důležité informace organizované pomocí výkonného systému poznámek. Označte své poznámky pro snadnou kategorizaci a rychlý přístup."
+    step5:
+      title: "Využití aplikací a časové poznatky"
+      description: "Sledujte vzorce používání aplikací a analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte produktivitu."
+    step6:
+      title: "Inteligentní systém štítků"
+      description: "Použijte štítky k organizaci a seskupování úkolů, návyků a aplikací. Sledujte čas strávený různými aktivitami podle štítků pro pochopení, kam váš čas směřuje, a optimalizujte pracovní tok."
+    step7:
+      title: "Oprávnění aplikace"
+      description: "{appName} potřebuje určitá oprávnění pro správné fungování. Můžete zkontrolovat oprávnění, která chcete udělit pro systémové funkce jako oznámení a sledování aplikací."
+      review_permissions: "Zkontrolovat oprávnění"
+    step8:
+      title: "Připraveni transformovat svůj život?"
+      description: "Máte všechny nástroje potřebné k budování lepších návyků, udržení soustředění a dosažení cílů. Začněte svou cestu k produktivnějšímu a naplňujícímu životu ještě dnes!"
+    buttons:
+      next: "Další"
+      back: "Zpět"
+      start: "Začít"

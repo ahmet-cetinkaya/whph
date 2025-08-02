@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Versioristiriita
+shared:
+  buttons:
+    add: Lisää
+    back: Takaisin
+    cancel: Peruuta
+    close: Sulje
+    confirm: Vahvista
+    delete: Poista
+    done: Valmis
+    load_more: Lataa lisää
+    save: Tallenna
+    saved: Tallennettu
+  calendar:
+    months:
+      apr: Huhtikuu
+      apr_short: Huh
+      aug: Elokuu
+      aug_short: Elo
+      dec: Joulukuu
+      dec_short: Jou
+      feb: Helmikuu
+      feb_short: Hel
+      jan: Tammikuu
+      jan_short: Tam
+      jul: Heinäkuu
+      jul_short: Hei
+      jun: Kesäkuu
+      jun_short: Kes
+      mar: Maaliskuu
+      mar_short: Maa
+      may: Toukokuu
+      may_short: Tou
+      nov: Marraskuu
+      nov_short: Mar
+      oct: Lokakuu
+      oct_short: Lok
+      sep: Syyskuu
+      sep_short: Syy
+    week_days:
+      friday: Perjantai
+      friday_short: Pe
+      monday: Maanantai
+      monday_short: Ma
+      saturday: Lauantai
+      saturday_short: La
+      sunday: Sunnuntai
+      sunday_short: Su
+      thursday: Torstai
+      thursday_short: To
+      tuesday: Tiistai
+      tuesday_short: Ti
+      wednesday: Keskiviikko
+      wednesday_short: Ke
+  change: Muuta
+  color_picker:
+    confirm_selection: Vahvista valinta
+    select_color_title: Valitse väri
+    tabs:
+      custom: Mukautettu
+      palette: Värit
+    title: Värivalitsin
+  data:
+    created_date_label: Luontipäivä
+    modified_date_label: Muokkauspäivä
+    name_label: Nimi
+  date_filter:
+    title: Valitse päivämääräväli
+    tooltips:
+      clear: Tyhjennä päivämääräsuodatin
+      filter: Suodata päivämäärän mukaan
+  date_format:
+    hint: PP/KK/VVVV
+  days:
+    friday: Perjantai
+    friday_short: Pe
+    monday: Maanantai
+    monday_short: Ma
+    saturday: Lauantai
+    saturday_short: La
+    sunday: Sunnuntai
+    sunday_short: Su
+    thursday: Torstai
+    thursday_short: To
+    tuesday: Tiistai
+    tuesday_short: Ti
+    wednesday: Keskiviikko
+    wednesday_short: Ke
+  editor:
+    markdown:
+      hint: Voit kirjoittaa Markdown-muodossa...
+      tooltips:
+        bold: Lihavoitu
+        italic: Kursivoitu
+        strikethrough: Yliviivattu
+        code: Koodi
+        link: Linkki
+        quote: Lainaus
+        bulleted_list: Luettelomerkit
+        numbered_list: Numeroitu lista
+        horizontal_rule: Vaakaviiva
+        edit: Muokkaa
+        preview: Esikatselu
+  errors:
+    deleting: Virhe tietojen poistamisessa
+    file_not_found: Tiedostoa ei löytynyt
+    file_pick: Virhe tiedoston valinnassa
+    file_read: Virhe tiedoston lukemisessa
+    file_save: Virhe tiedoston tallentamisessa
+    file_write: Virhe tiedoston kirjoittamisessa
+    loading: Virhe tietojen lataamisessa
+    report_subject: "{appName} Sovellus: Odottamaton virheraportti"
+    report_template: |
+      Hei, kohtasin odottamattoman virheen käyttäessäni {appName} sovellusta.
+
+      Tässä on tietoja, jotka voivat auttaa ongelman diagnosoinnissa:
+      Sovelluksen versio: {version}
+      Laitteen tiedot: {device}
+      Käyttöjärjestelmä: {os}
+      Käyttöjärjestelmän versio: {osVersion}
+      Virheviesti:
+      ```
+      {error}
+      Pinojälki:
+      {stackTrace}
+      ```
+
+      Auttakaa minua ratkaisemaan tämä ongelma.
+
+      Kiitos!
+    saving: Virhe tietojen tallentamisessa
+    storage_permission: Tallennuslupa vaaditaan
+    storage_permission_denied: Tallennuslupa evätty
+    unexpected: Odottamaton virhe tapahtui
+  filters:
+    search: Haku
+  help:
+    tooltip: Ohje
+  messages:
+    confirm_delete: Oletko varma, että haluat poistaa tämän kohteen?
+    no_items_found: Ei kohteita
+  nav:
+    items:
+      app_usages: Sovelluskäyttö
+      habits: Tavat
+      more: Lisää
+      notes: Muistiinpanot
+      settings: Asetukset
+      tags: Tunnisteet
+      tasks: Tehtävät
+      today: Tänään
+  none_option: "Ei tunnisteita"
+  regex_help:
+    examples:
+      chat: 'Vastaa joko "Slack" tai "Discord"'
+      chrome: 'Vastaa mitä tahansa ikkunan otsikkoa, joka sisältää "Chrome"'
+      exact_chrome: 'Vastaa tarkalleen "Chrome"'
+      pdf: Vastaa mitä tahansa PDF-tiedostoa
+      vscode: Vastaa mitä tahansa VS Code -ikkunaa
+    tips:
+      any_chars: 'Käytä ".*" vastataksesi mihin tahansa merkkeihin'
+      dot: '"\." vastaa pistettä'
+      end: '"$" vastaa tekstin loppua'
+      or: '"|" tarkoittaa TAI'
+      start: '"^" vastaa tekstin alkua'
+    tips_title: 💡 Vinkit
+    title: Malliesimerkit
+  report_error: Ilmoita virheestä
+  save_list_options: Tallenna listan asetukset
+  search:
+    placeholder: Haku
+    tooltip: Etsi kohteita
+  sections:
+    habits: Tavat
+    special_filters: Erikoissuodattimet
+    statistics: Tilastot
+    tags: Tunnisteet
+    tasks: Tehtävät
+    time: Aika
+  sort:
+    ascending: Nouseva
+    custom_order:
+      description: Ota käyttöön vedä ja pudota kohteiden uudelleenjärjestämiseksi
+      title: Mukautettu järjestys
+    descending: Laskeva
+    remove_criteria: Poista kriteeri
+    reset_to_default: Palauta oletukseen
+    sort: Järjestä
+  statistics:
+    daily_usage:
+      description: Näyttä�� kokonaiskäyttöajan viikonpäivittäin
+      title: Päivittäinen käyttö
+    hourly_usage:
+      description: Näyttää kokonaiskäyttöajan tunnin mukaan
+      title: Tuntikäyttö
+  time:
+    not_set: "Ei asetettu"
+  time_periods:
+    custom: Mukautettu
+    last_month: Viime kuussa
+    last_three_months: Viimeiset 3 kuukautta
+    last_week: Viime viikolla
+    this_month: Tässä kuussa
+    this_three_months: Nämä 3 kuukautta
+    this_week: Tällä viikolla
+    today: Tänään
+  tooltips:
+    compare_with_previous: Vertaa edelliseen jaksoon
+    filter_by_tags: Suodata tunnisteiden mukaan
+    refresh: Päivitä
+  ui:
+    report_error: Ilmoita
+  units:
+    days: päivää
+    hours: t
+    minutes: min
+    minutes_short: m
+    seconds: s
+  update_dialog:
+    buttons:
+      download_page: Lataussivu
+      later: Myöhemmin
+      update_now: Päivitä nyt
+    downloading: Ladataan päivitystä...
+    failed: Päivitys epäonnistui.
+    message: Uusi versio ({version}) on saatavilla.
+    question: Haluatko päivittää nyt?
+    success: Päivitys ladattu onnistuneesti!
+    title: Päivitys saatavilla!
+  validation:
+    required: "{field} on pakollinen"

@@ -1,0 +1,233 @@
+settings:
+  import:
+    version_mismatch: Neshoda verzí
+shared:
+  buttons:
+    add: Přidat
+    back: Zpět
+    cancel: Zrušit
+    close: Zavřít
+    confirm: Potvrdit
+    delete: Smazat
+    done: Hotovo
+    load_more: Načíst více
+    save: Uložit
+    saved: Uloženo
+  calendar:
+    months:
+      apr: Duben
+      apr_short: Dub
+      aug: Srpen
+      aug_short: Srp
+      dec: Prosinec
+      dec_short: Pro
+      feb: Únor
+      feb_short: Úno
+      jan: Leden
+      jan_short: Led
+      jul: Červenec
+      jul_short: Čvc
+      jun: Červen
+      jun_short: Čvn
+      mar: Březen
+      mar_short: Bře
+      may: Květen
+      may_short: Kvě
+      nov: Listopad
+      nov_short: Lis
+      oct: Říjen
+      oct_short: Říj
+      sep: Září
+      sep_short: Zář
+    week_days:
+      friday: Pátek
+      friday_short: Pá
+      monday: Pondělí
+      monday_short: Po
+      saturday: Sobota
+      saturday_short: So
+      sunday: Neděle
+      sunday_short: Ne
+      thursday: Čtvrtek
+      thursday_short: Čt
+      tuesday: Úterý
+      tuesday_short: Út
+      wednesday: Středa
+      wednesday_short: St
+  change: Změnit
+  color_picker:
+    confirm_selection: Potvrdit výběr
+    select_color_title: Vybrat barvu
+    tabs:
+      custom: Vlastní
+      palette: Barvy
+    title: Výběr barvy
+  data:
+    created_date_label: Datum vytvoření
+    modified_date_label: Datum úpravy
+    name_label: Název
+  date_filter:
+    title: Vybrat rozsah dat
+    tooltips:
+      clear: Vymazat filtr data
+      filter: Filtrovat podle data
+  date_format:
+    hint: DD/MM/RRRR
+  days:
+    friday: Pátek
+    friday_short: Pá
+    monday: Pondělí
+    monday_short: Po
+    saturday: Sobota
+    saturday_short: So
+    sunday: Neděle
+    sunday_short: Ne
+    thursday: Čtvrtek
+    thursday_short: Čt
+    tuesday: Úterý
+    tuesday_short: Út
+    wednesday: Středa
+    wednesday_short: St
+  editor:
+    markdown:
+      hint: Můžete psát pomocí formátu Markdown...
+      tooltips:
+        bold: Tučné
+        italic: Kurzíva
+        strikethrough: Přeškrtnuté
+        code: Kód
+        link: Odkaz
+        quote: Citace
+        bulleted_list: Seznam s odrážkami
+        numbered_list: Číslovaný seznam
+        horizontal_rule: Vodorovná čára
+        edit: Upravit
+        preview: Náhled
+  errors:
+    deleting: Při mazání dat došlo k chybě
+    file_not_found: Soubor nenalezen
+    file_pick: Chyba při výběru souboru
+    file_read: Chyba při čtení souboru
+    file_save: Chyba při ukládání souboru
+    file_write: Chyba při zápisu souboru
+    loading: Při načítání dat došlo k chybě
+    report_subject: "{appName} Aplikace: Hlášení neočekávané chyby"
+    report_template: |
+      Dobrý den, narazil jsem na neočekávanou chybu při používání aplikace {appName}.
+
+      Zde jsou informace, které by vám mohly pomoci diagnostikovat problém:
+      Verze aplikace: {version}
+      Informace o zařízení: {device}
+      OS: {os}
+      Verze OS: {osVersion}
+      Chybová zpráva:
+      ```
+      {error}
+      Stack Trace:
+      {stackTrace}
+      ```
+
+      Prosím pomozte mi vyřešit tento problém.
+
+      Děkuji!
+    saving: Při ukládání dat došlo k chybě
+    storage_permission: Vyžaduje se oprávnění k úložišti
+    storage_permission_denied: Oprávnění k úložišti bylo zamítnuto
+    unexpected: Došlo k neočekávané chybě
+  filters:
+    search: Hledat
+  help:
+    tooltip: Nápověda
+  messages:
+    confirm_delete: Opravdu chcete smazat tuto položku?
+    no_items_found: Žádné položky
+  nav:
+    items:
+      app_usages: Využití aplikací
+      habits: N��vyky
+      more: Více
+      notes: Poznámky
+      settings: Nastavení
+      tags: Štítky
+      tasks: Úkoly
+      today: Dnes
+  none_option: "Žádné štítky"
+  regex_help:
+    examples:
+      chat: 'Odpovídá buď "Slack" nebo "Discord"'
+      chrome: 'Odpovídá jakémukoli názvu okna obsahujícímu "Chrome"'
+      exact_chrome: 'Odpovídá přesně "Chrome"'
+      pdf: Odpovídá jakémukoli PDF souboru
+      vscode: Odpovídá jakémukoli oknu VS Code
+    tips:
+      any_chars: 'Použijte ".*" pro odpovídání jakýmkoli znakům'
+      dot: '"\." odpovídá tečce'
+      end: '"$" odpovídá konci textu'
+      or: '"|" znamená NEBO'
+      start: '"^" odpovídá začátku textu'
+    tips_title: 💡 Tipy
+    title: Příklady vzorů
+  report_error: Nahlásit chybu
+  save_list_options: Uložit možnosti seznamu
+  search:
+    placeholder: Hledat
+    tooltip: Hledat položky
+  sections:
+    habits: Návyky
+    special_filters: Speciální filtry
+    statistics: Statistiky
+    tags: Štítky
+    tasks: Úkoly
+    time: Čas
+  sort:
+    ascending: Vzestupně
+    custom_order:
+      description: Povolit přetahování pro změnu pořadí položek
+      title: Vlastní řazení
+    descending: Sestupně
+    remove_criteria: Odstranit kritérium
+    reset_to_default: Obnovit na výchozí
+    sort: Řadit
+  statistics:
+    daily_usage:
+      description: Zobrazuje celkový čas využití za den v týdnu
+      title: Denní využití
+    hourly_usage:
+      description: Zobrazuje celkový čas využití za hodinu dne
+      title: Hodinové využití
+  time:
+    not_set: "Nenastaveno"
+  time_periods:
+    custom: Vlastní
+    last_month: Minulý měsíc
+    last_three_months: Poslední 3 měsíce
+    last_week: Minulý týden
+    this_month: Tento měsíc
+    this_three_months: Tyto 3 měsíce
+    this_week: Tento týden
+    today: Dnes
+  tooltips:
+    compare_with_previous: Porovnat s předchozím obdobím
+    filter_by_tags: Filtrovat podle štítků
+    refresh: Obnovit
+  ui:
+    report_error: Nahlásit
+  units:
+    days: dny
+    hours: hod
+    minutes: min
+    minutes_short: m
+    seconds: sek
+  update_dialog:
+    buttons:
+      download_page: Stránka stahování
+      later: Později
+      update_now: Aktualizovat nyní
+    downloading: Stahování aktualizace...
+    failed: Aktualizace se nezdařila.
+    message: Je k dispozici nová verze ({version}).
+    question: Chcete aktualizovat nyní?
+    success: Aktualizace byla úspěšně stažena!
+    title: Aktualizace k dispozici!
+  validation:
+    required: "{field} je povinné"

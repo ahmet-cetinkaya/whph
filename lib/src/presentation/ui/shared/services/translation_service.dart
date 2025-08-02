@@ -12,16 +12,28 @@ import 'package:whph/src/presentation/ui/shared/services/background_translation_
 
 class TranslationService implements ITranslationService {
   static const _supportedLocales = [
-    Locale('de'),
-    Locale('en'),
-    Locale('es'),
-    Locale('fr'),
-    Locale('it'),
-    Locale('ja'),
-    Locale('ko'),
-    Locale('ru'),
-    Locale('tr'),
-    Locale('zh'),
+    Locale('cs'), // Czech
+    Locale('da'), // Danish
+    Locale('de'), // German
+    Locale('el'), // Greek
+    Locale('en'), // English
+    Locale('es'), // Spanish
+    Locale('fi'), // Finnish
+    Locale('fr'), // French
+    Locale('it'), // Italian
+    Locale('ja'), // Japanese
+    Locale('ko'), // Korean
+    Locale('nl'), // Dutch
+    Locale('no'), // Norwegian
+    Locale('pl'), // Polish
+    Locale('pt'), // Portuguese
+    Locale('ro'), // Romanian
+    Locale('ru'), // Russian
+    Locale('sl'), // Slovenian
+    Locale('sv'), // Swedish
+    Locale('tr'), // Turkish
+    Locale('uk'), // Ukrainian
+    Locale('zh'), // Chinese
   ];
 
   @override

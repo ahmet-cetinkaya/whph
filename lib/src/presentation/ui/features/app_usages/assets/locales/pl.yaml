@@ -1,0 +1,178 @@
+app_usages:
+  delete:
+    confirm_title: Usuń użycie aplikacji
+    error: Wystąpił nieoczekiwany błąd podczas usuwania użycia aplikacji
+  details:
+    color:
+      hint: Kliknij, aby zmienić kolor
+      label: Kolor
+    device:
+      label: Urządzenie
+      unknown: Nieznane urządzenie
+    help:
+      content: |
+        Zobacz dokładnie, ile czasu spędzasz w aplikacjach i zachowaj kontrolę, organizując je za pomocą tagów.
+
+        ## ⚡ Dlaczego to ważne?
+
+        Zarządzanie czasem to klucz do twojej produktywności. Śledzenie użycia aplikacji i tagowanie ich odpowiednimi kategoriami poprawia skupienie i pomaga zapobiec niepotrzebnemu marnowaniu czasu.
+
+        ## ⏱️ Śledzenie czasu
+
+        Śledź swoje codzienne nawyki użytkowania, aby dokładnie analizować swój czas. Dzięki szczegółowym czasom użytkowania w aplikacji i śledzeniu aktywnych okien, łatwo zobaczysz, ile uwagi poświęcasz każdej aplikacji. Te dane wskazują, gdzie potrzebne są ulepszenia.
+
+        - ⏳ Przeglądaj codzienne czasy użytkowania
+        - 🔍 Śledź aktywne okna
+        - 📊 Zrozum rozkład swojego czasu dzięki szczegółowym raportom
+
+        ## 🏷️ Zarządzanie tagami
+
+        Kategoryzowanie i organizowanie aplikacji zwiększa produktywność. Dzięki systemowi tagowania możesz grupować aplikacje i przyspieszać przepływ pracy za pomocą reguł automatyzacji. To pomaga utrzymać skupienie i efektywniej wykorzystywać czas.
+
+        - 🏷️ Taguj aplikacje znaczącymi kategoriami
+        - ⚙️ Twórz automatyczne reguły tagowania
+        - 🔄 Oszczędzaj czas, redukując zadania manualne
+
+        ## 📈 Analiza i śledzenie produktywności
+
+        Wizualizuj własne wzorce użytkowania, aby odkryć swoje mocne i słabe strony. Śledzenie produktywnego czasu jest kluczowe dla zwiększenia skupienia. Dzięki narzędziom porównawczym i raportowym w aplikacji możesz wyraźnie zobaczyć swój postęp.
+
+        - 📊 Wizualizuj wzorce użytkowania
+        - 🤝 Porównuj z podobnymi aplikacjami
+        - 🚀 Śledź produktywny vs nieproduktywny czas
+      title: Przewodnik śledzenia czasu i produktywności
+    tags:
+      hint: Wybierz tagi
+      label: Tagi
+  device_filter:
+    clear_all: Wyczyść wszystko
+    search:
+      label: Szukaj urządzeń
+  errors:
+    add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
+    app_usage_ignore_rule_not_found: Nie znaleziono reguły ignorowania
+    app_usage_not_found: Nie znaleziono użycia aplikacji
+    app_usage_tag_not_found: Nie znaleziono tagu użycia aplikacji
+    delete: Wystąpił nieoczekiwany błąd podczas usuwania użycia aplikacji
+    app_usage_tag_rule_not_found: Nie znaleziono reguły tagu
+    get_tags: Wystąpił błąd podczas pobierania tagów użycia aplikacji
+    get_usage: Wystąpił nieoczekiwany błąd podczas pobierania użycia aplikacji
+    remove_tag: Wystąpił nieoczekiwany błąd podczas usuwania tagu
+    save_rule: Wystąpił nieoczekiwany błąd podczas zapisywania reguł ignorowania
+    save_usage: Wystąpił nieoczekiwany błąd podczas zapisywania użycia aplikacji
+    statistics: Wystąpił nieoczekiwany błąd podczas pobierania statystyk
+    tag_already_exists: Ten tag został już dodany
+  form:
+    description:
+      hint: Wprowadź opis dla tej reguły
+      label: Opis (opcjonalny)
+    pattern:
+      help_tooltip: Pokaż pomoc regex
+      hint: Wprowadź wzorzec regex
+      label: Wzorzec
+      required: Wzorzec jest wymagany
+    save: Zapisz
+    saved: Zapisano
+  ignore_rules:
+    delete_confirm: 'Czy na pewno chcesz usunąć regułę ignorowania "{pattern}"?'
+    delete_title: Usuń regułę
+    delete_tooltip: Usuń regułę
+    no_rules: Brak reguł ignorowania
+    pattern_label: Wzorzec
+  no_usage: Jeszcze brak użycia aplikacji
+  pages:
+    view:
+      buttons:
+        filter_tags: Filtruj tagi
+        filter_devices: Filtruj urządzenia
+        tag_rules: Reguły tagów
+      help:
+        content: |
+          Analizuj, organizuj i przejmij kontrolę nad użyciem aplikacji, aby pracować efektywniej. Dzięki narzędziom tagowania i analizy zobacz, zarządzaj i poprawiaj sposób, w jaki spędzasz czas.
+
+          ## ⏱️ Śledzenie użytkowania
+
+          Odkryj swoje codzienne nawyki użytkowania. Śledź aktywne okna i czasy trwania, aby zrozumieć, gdzie idzie twój czas. To pomaga zidentyfikować obszary skupienia i zmniejszyć marnowanie czasu.
+
+          - ⌛ Przeglądaj czasy użytkowania aplikacji
+          - 📅 Analizuj codzienne wzorce
+          - 🖥️ Śledź historię aktywnych okien
+
+          ## 🏷️ Tagowanie i kategoryzacja
+
+          Stwórz zorganizowaną strukturę, grupując aplikacje. Dzięki systemowi tagowania uczyń swoje dane bardziej znaczącymi i łatwo analizuj, ile czasu spędzasz na kategorię.
+
+          - 🏷️ Przypisuj znaczące tagi do aplikacji
+          - ⚙️ Definiuj automatyczne reguły tagowania
+          - 📚 Przeglądaj czas użytkowania według kategorii
+
+          ## 📊 Analiza użytkowania
+
+          Analizuj, jak efektywnie wykorzystujesz swój czas. Poprzez porównania aplikacji i wzorce użytkowania zobacz, które narzędzia są rzeczywiście korzystne dla ciebie.
+
+          - 📈 Analizuj własne wzorce użytkowania
+          - 🔄 Porównuj różne aplikacje
+          - 🚀 Śledź produktywny i nieproduktywny czas
+
+          ## ⚙️ Narzędzia zarządzania
+
+          Używaj reguł i opcji filtrowania, aby lepiej kontrolować zachowania aplikacji. Szczególnie dzięki automatyzacji oszczędzaj cenny czas.
+
+          - 🛠️ Definiuj nowe reguły lub edytuj istniejące
+          - 🗑️ Usuń niepotrzebne reguły
+          - 🔍 Filtruj według tagu i zakresu dat
+        title: Przewodnik użycia aplikacji i zarządzania czasem
+
+      title: Użycie aplikacji
+  rules:
+    add_new_rule: Dodaj nową regułę
+    delete_confirm_message: Czy na pewno chcesz usunąć tę regułę?
+    delete_confirm_title: Usuń regułę
+    errors:
+      delete_rule: Wystąpił nieoczekiwany błąd podczas usuwania reguły
+      get_rules: Wystąpił nieoczekiwany błąd podczas pobierania reguł
+    existing_rules: Istniejące reguły
+    help:
+      content: |
+        Używaj reguł do zarządzania danymi aplikacji w sposób zorganizowany, spójny i efektywny. Dostosuj śledzenie aplikacji za pomocą automatycznego tagowania i opcji wykluczania, aby wzmocnić zarządzanie czasem.
+
+        ## 🏷️ Automatyczne reguły tagowania
+
+        Twórz reguły dla swoich aplikacji, aby system mógł przypisywać odpowiednie tagi w twoim imieniu. To eliminuje potrzebę ręcznego tagowania.
+
+        - 🧠 Automatycznie taguj aplikacje na podstawie ich nazw
+        - 🗂️ Dopasowuj wiele tagów jedną regułą
+        - ⏱️ Automatycznie śledź czas spędzony w otagowanych aplikacjach
+
+        ## ⚙️ Zarządzanie regułami
+
+        Używaj elastycznego ekranu zarządzania regułami, aby zbudować własny system. Usuń niepotrzebne reguły, dodaj nowe i aktualizuj istniejące.
+
+        - ➕ Definiuj nowe reguły
+        - ✏️ Edytuj istniejące reguły
+        - 🗑️ Usuń reguły, których już nie używasz
+
+        ## 🚫 Reguły ignorowania
+
+        Wyklucz aplikacje systemowe lub działające w tle, które mogą zniekształcić analizę produktywności. Dzięki tym regułom możesz skupić się tylko na tym, co naprawdę ważne.
+
+        - 🧹 Wyklucz określone aplikacje ze śledzenia
+        - 🖥️ Pomiń procesy systemowe i narzędzia pomocnicze
+        - 🔕 Odfiltruj aplikacje działające w tle
+
+        ## 🧩 Zaawansowane opcje dopasowywania
+
+        Wzmocnij swoje reguły zaawansowanymi opcjami dopasowywania wzorców.
+
+        - ✳️ Twórz elastyczne reguły używając symboli wieloznacznych
+        - 🧾 Dopasowuj dokładne nazwy aplikacji
+        - 🔠 Wybieraj ustawienia wrażliwości na wielkość liter
+      title: Przewodnik reguł tagowania i wykluczania
+    ignore_rules: Reguły ignorowania
+    no_rules: Brak reguł
+    tag_rules: Reguły tagów
+    title: Reguły użycia aplikacji
+  tooltips:
+    edit_name: Edytuj nazwę
+  units:
+    minutes: min

@@ -1,0 +1,315 @@
+tasks:
+  add_button:
+    tooltip: Add new task
+  all_tasks_done: All tasks completed!
+  card:
+    schedule:
+      today: Schedule for today
+      tomorrow: Schedule for tomorrow
+    tooltips:
+      schedule: Schedule task
+  complete:
+    error: Unexpected error occurred while saving task completion.
+  date_selection:
+    deadline_date_title: Select deadline date
+    planned_date_title: Select planned date
+  delete:
+    error: Unexpected error occurred while deleting task.
+    message: Are you sure you want to delete this task?
+    title: Delete Task
+  details:
+    deadline_date:
+      label: Deadline Date
+    description:
+      hint: Add description...
+      label: Description
+    elapsed_time:
+      label: Elapsed Time
+    estimated_time:
+      label: Estimated Time
+    is_completed: Completed
+    planned_date:
+      label: Planned Date
+    priority:
+      label: Priority
+    sub_tasks:
+      label: Sub-tasks
+    parent_task:
+      label: Parent Task
+      tooltip: Click to navigate to parent task
+    tags:
+      hint: Select tags to associate
+      label: Tags
+    tags_hint: Select tags for task
+    title:
+      label: Title
+    total_elapsed_time: Total Elapsed Time
+  errors:
+    add_tag: Unexpected error occurred while adding tag
+    adding_tag: Failed to add tag
+    get_tags: Error occurred while fetching tags
+    get_task: Unexpected error occurred while loading task
+    loading_tags: Failed to load task tags
+    loading_task: Failed to load task
+    loading_tasks: Failed to load tasks
+    remove_tag: Unexpected error occurred while removing tag
+    removing_tag: Failed to remove tag
+    same_tag: Cannot add the same tag twice
+    save_task: Unexpected error occurred while saving task
+    saving_task: Failed to save task
+    sort_field_not_supported: Sort field not supported
+    task_not_found: Task not found
+    task_tag_already_deleted: Task tag is already deleted
+    task_tag_already_exists: This task tag already exists
+    task_tag_not_found: Task tag not found
+  filters:
+    completion: By Completion Status
+    deadline_date: By Deadline Date
+    planned_date: By Planned Date
+    search:
+      placeholder: Search tasks
+    tags: By Tags
+    tooltips:
+      filter_by_tags: Filter by tags
+  help:
+    details:
+      content: |
+        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+
+        ## ⚡ Why Is It Important?
+
+        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+
+        ## 📝 Task Organization
+
+        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+
+        - 🏷️ Categorize tasks with meaningful tags
+        - ⚖️ Set priorities using proven frameworks
+        - ⏱️ Estimate time requirements accurately
+        - 📅 Plan realistic deadlines and schedules
+
+        ## ⏰ Time Management
+
+        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+
+        - 📊 Monitor actual vs. estimated time
+        - 🎯 Focus on high-impact activities
+        - 📈 Analyze productivity patterns over time
+        - ⏳ Balance urgent and important tasks
+
+        ## 📊 Priority Framework (Eisenhower Matrix)
+
+        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+
+        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
+        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
+        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
+        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
+      title: Task Management & Productivity Guide
+    overview:
+      content: |
+        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+
+        ## ⚡ Why Is It Important?
+
+        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+
+        ## 📋 Task Organization
+
+        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+
+        - ✅ Create and categorize tasks systematically
+        - 🏷️ Group related work with meaningful tags
+        - ⚖️ Set clear priorities and deadlines
+        - 🔍 Use filters and search for quick access
+
+        ## ⏱️ Time Tracking & Focus
+
+        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+
+        - ⏰ Track actual time spent per task
+        - 🎯 Use Marathon Mode for focused work sessions
+        - 📊 Analyze completion patterns and trends
+        - 🔄 Review and adjust time estimates regularly
+
+        ## 📈 Progress Monitoring
+
+        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+
+        - 📈 Monitor task completion rates
+        - 📅 Review daily and weekly progress
+        - 🎯 Identify bottlenecks and optimization opportunities
+        - 🏆 Celebrate achievements and milestone completions
+      title: Task Management & Workflow Guide
+  marathon:
+    details:
+      title: Task Details
+    help:
+      content: |
+        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+
+        ## ⚡ Why Is It Important?
+
+        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+
+        ## ⏰ Time-Boxed Focus Sessions
+
+        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+
+        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
+        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
+        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
+        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+
+        ## 🧠 Cognitive Benefits
+
+        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+
+        - 🎯 Enhanced focus and deep concentration
+        - 🔋 Reduced mental fatigue and burnout
+        - 💪 Sustained motivation through regular accomplishments
+        - ⚡ Improved time awareness and planning accuracy
+
+        ## 📊 Performance Optimization
+
+        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+
+        - 🏷️ Categorize focus sessions with tags for analysis
+        - 📈 Monitor productivity patterns across different times
+        - 🚫 Eliminate distractions before starting sessions
+        - 🚶 Use breaks for physical movement and mental reset
+      title: Focused Work Sessions & Time Management Guide
+      tooltip: Marathon help tooltip
+    label: Marathon Mode
+    unpin_task_tooltip: Unpin current task
+  new_task: New Task
+  no_tasks: No tasks
+  notifications:
+    deadline_message: "Your task deadline is at {time}"
+    deadline_title: "Task Deadline: {title}"
+    planned_message: "Your task is planned for {time}"
+    reminder_title: "Task Reminder: {title}"
+  page:
+    completed_tasks_title: Completed tasks
+    title: Tasks
+  pomodoro:
+    actions:
+      stop_timer: Stop Timer
+    notifications:
+      break_completed: Break session completed!
+      long_break_completed: Long break completed!
+      time_remaining_prefix: "Time remaining:"
+      timer_completed: Timer completed!
+      title: Pomodoro Timer
+      work_completed: Work session completed!
+    settings:
+      auto_start_break: Auto-start break after work
+      auto_start_section: Auto-Start Options
+      auto_start_work: Auto-start work after break
+      break_duration: Break Duration
+      long_break_duration: Long Break Duration
+      sessions_before_long_break: Sessions before Long Break
+      ticking_sound: Enable ticking sound
+      ticking_sound_section: Ticking Sound
+      ticking_speed: Speed
+      ticking_volume: Volume
+      keep_screen_awake_section: Keep Screen Awake
+      keep_screen_awake: Keep screen awake during sessions
+      timer_label: Session durations
+      title: Timer Settings
+      work_duration: Work Duration
+    system_tray:
+      app_running: App Running
+      complete_title: Pomodoro Complete
+      tap_to_open: Tap to open
+      timer_running: Timer running
+  priorities:
+    not_urgent_important: Not Urgent but Important
+    not_urgent_not_important: Not Urgent or Important
+    urgent_important: Urgent and Important
+    urgent_not_important: Urgent but Not Important
+  priority:
+    selection:
+      title: Select Priority
+    tooltips:
+      none: No Priority
+      not_urgent_important: Not Urgent but Important
+      not_urgent_not_important: Not Urgent & Not Important
+      urgent_important: Urgent & Important
+      urgent_not_important: Urgent but Not Important
+    types:
+      none: No Priority
+      not_urgent_important: Not Urgent but Important
+      not_urgent_not_important: Not Urgent & Not Important
+      urgent_important: Urgent & Important
+      urgent_not_important: Urgent but Not Important
+  quick_task:
+    create_error: Error creating task
+    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
+    lock_settings: Lock Settings
+    reset_all: Reset all fields
+    reset_confirm:
+      message: Are you sure you want to reset all fields? This action cannot be undone.
+      title: Reset All Fields
+    title: Quick Task
+    title_hint: Enter a descriptive task title...
+    title_placeholder: What needs to be done?
+    tooltips:
+      deadline_date: "Deadline: {date}"
+      deadline_date_not_set: "Deadline: Not set"
+      estimated_time: "Estimated Time: {time}"
+      estimated_time_not_set: "Estimated Time: Not set"
+      planned_date: "Planned: {date}"
+      planned_date_not_set: "Planned: Not set"
+  recurrence:
+    count: Number of occurrences
+    custom: Custom
+    daily: Daily
+    daySuffix: day(s)
+    endDate: End date
+    enterCountHint: Enter count
+    interval:
+      label: Repeat every
+      prefix: every
+      suffix:
+        days: day(s)
+        months: month(s)
+        weeks: week(s)
+        years: year(s)
+    label: Recurrence
+    monthSuffix: month(s)
+    monthly: Monthly
+    none: No recurrence
+    range: Range
+    selectDateHint: Select date
+    startDate: Start date
+    summary:
+      endsAfter: ends after
+      endsOnDate: ends on
+      occurrences: occurrences
+      on: on
+      starts: starts
+    weekDays: Days of week
+    weekSuffix: week(s)
+    weekly: Weekly
+    yearSuffix: year(s)
+    yearly: Yearly
+  reminder:
+    atTime: At the scheduled time
+    deadlineReminderLabel: Deadline Reminder
+    fifteenMinutesBefore: 15 minutes before
+    fiveMinutesBefore: 5 minutes before
+    none: No reminder
+    oneDayBefore: 1 day before
+    oneHourBefore: 1 hour before
+    plannedReminderLabel: Planned Date Reminder
+  task_details: Task Details
+  title: Tasks
+  tooltips:
+    clear_date: Clear date
+    decrease_estimated_time: Decrease estimated time
+    edit_title: Edit title
+    increase_estimated_time: Increase estimated time
+    set_reminder: Set reminder
+    show_completed_tasks: Filter completed tasks
