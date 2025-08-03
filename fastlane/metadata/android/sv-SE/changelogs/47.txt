@@ -1,0 +1,4 @@
+• Förbättra KDE Wayland-fönstermetoder
+• Lägg till enhetsfiltrering i appanvändningsfunktioner
+• Implementera applikationskatalogtjänst för plattformar
+• Ta bort utfyllnad från beskrivningar

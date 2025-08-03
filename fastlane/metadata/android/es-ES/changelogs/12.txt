@@ -1,0 +1,2 @@
+• Tareas de adición rápida mejoradas con la capacidad de seleccionar etiquetas.
+• Se agregó una sección para tareas completadas que se puede expandir.

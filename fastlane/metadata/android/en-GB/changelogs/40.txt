@@ -1,0 +1,6 @@
+• Improved synchronization with mobile platforms.
+• Improved logging and conflict resolution.
+• Added a feature to check for updates.
+• Improved list view with separators.
+• Improved error logging on import and export.
+• Improved pagination logic in the app usage list.

@@ -1,6 +1,0 @@
-• Update application name and description
-• Improve permission handling
-• Simplify layout structure in settings page
-• Update dialog sizes for improved responsiveness
-• Adjust padding and height for better layout
-• Enhance task completion handling and selection

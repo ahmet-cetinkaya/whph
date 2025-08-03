@@ -1,0 +1,3 @@
+• Förbättra logik och inställningar för supportdialog
+• Förbättra felloggning vid appstart
+• Förbättra layoutstrukturen på inställningssidan

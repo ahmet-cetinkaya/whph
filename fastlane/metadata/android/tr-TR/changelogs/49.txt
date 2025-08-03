@@ -1,0 +1,6 @@
+• Hassas algoritmalarla Digital Wellbeing uyumlu kullanım takibi uygulayın
+• Dinamik renk kullanımı için daha net bir açıklama ekleyin
+• Yedek temayı koyu olarak ayarlayın
+• Görev, alışkanlık, not ve etiket girişleri için başlangıç başlıklarını kaldırın ve yer tutucular ekleyin
+• İzin kontrolü ve veri yükleme sırasında kullanıcı arayüzünün titremesini önleyin
+• İşe alım sonraki düğme metni için tema rengini kullanın

@@ -1,8 +1,0 @@
-• Implement demo data service and configuration
-• Standardize padding across UI components
-• Aggregate tag items to avoid duplicates
-• Simplify note content display logic
-• Refresh reminders on language change
-• Improve onboarding and support dialog handling
-• Remove parent task optional property chip
-• Add notifications for habit record changes

@@ -1,6 +1,6 @@
-• Mejorar sincronización de plataforma móvil
-• Mejorar registro y resolución de conflictos
-• Añadir funcionalidad de verificar actualizaciones
-• Mejorar vista de lista con separadores
-• Mejorar registro de errores en importar/exportar
-• Mejorar lógica de paginación en lista de uso de apps
+• Sincronización mejorada con plataformas móviles.
+• Registro y resolución de conflictos mejorados.
+• Se agregó una función para buscar actualizaciones.
+• Vista de lista mejorada con separadores.
+• Registro de errores mejorado en la importación y exportación.
+• Lógica de paginación mejorada en la lista de uso de la aplicación.

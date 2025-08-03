@@ -1,0 +1,6 @@
+• Uygulama adını ve açıklamasını güncelleyin
+• İzin işlemeyi iyileştirin
+• Ayarlar sayfasındaki düzen yapısını basitleştirin
+• Geliştirilmiş yanıt verebilirlik için iletişim kutusu boyutlarını güncelleyin
+• Daha iyi düzen için dolguyu ve yüksekliği ayarlayın
+• Görev tamamlama işlemini ve seçimini geliştirin

@@ -1,6 +1,0 @@
-• Simplify task list handling and improve filter functionality in tag details page
-• Enhance refresh logic and add tag filter functionality in today page
-• Enhance task listing with improved refresh logic and task data model
-• Adjust task filtering logic in marathon page
-• Ensure context is mounted before popping the navigator in tag select dropdown
-• Improve habits list filtering and refresh logic

@@ -1,0 +1,2 @@
+• Izboljšaj QuickTaskBottomSheet z izbiro oznak in funkcionalnostjo brisanja
+• Dodaj odsek dokončanih opravil z razširljivim pogledom na straneh s podrobnostmi o opravilih in oznakah

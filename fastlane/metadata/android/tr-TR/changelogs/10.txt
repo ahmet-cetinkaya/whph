@@ -1,0 +1,5 @@
+• Kenar çubuğunu gizleme ve görev silme geri aramasını işleme seçeneği ekleyin
+• Etiket ayrıntıları sayfasındaki görev bölümü düzenini basitleştirin
+• Sıralama için EisenhowerPriority enum değerlerini yeniden sıralayın
+• Uygulama kullanımı yok mesajı için çeviri ekleyin
+• Süre güncelleme mantığını düzeltin ve görev ayrıntıları iletişim kutusunu geliştirin

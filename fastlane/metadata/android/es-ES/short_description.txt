@@ -1,1 +1,1 @@
-Aplicación de productividad para gestión de tareas, seguimiento de hábitos y optimización del tiempo
+App de productividad para gestionar tareas, hábitos y optimizar el tiempo.

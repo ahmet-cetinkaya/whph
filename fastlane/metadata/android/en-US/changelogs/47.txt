@@ -1,4 +1,0 @@
-• Enhance KDE Wayland window methods
-• Add device filtering to app usage features
-• Implement application directory service for platforms
-• Remove padding from descriptions

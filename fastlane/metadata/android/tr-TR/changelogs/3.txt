@@ -1,0 +1,5 @@
+• Birden çok bileşende yenileme ve yardım eylemleri için araç ipuçları ekleyin
+• AppAbout bileşeninde daha iyi düzen için Dolguyu Merkezle değiştirin
+• Yerelleştirilmiş güncelleme iletişim kutusu uygulayın
+• Ekran boyutuna göre ResponsiveScaffoldLayout'ta logo için boşluğu ayarlayın
+• Üç nokta taşma işleme ile Yardım Menüsünde başlık görüntüsünü iyileştirin

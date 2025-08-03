@@ -1,0 +1,2 @@
+• Ajout de la prise en charge de la création d'un programme d'installation pour Windows.
+• Suppression du paramètre de taille de fenêtre par défaut.

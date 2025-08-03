@@ -1,0 +1,1 @@
+• Suppression de la logique de vérification des mises à jour inutilisée.

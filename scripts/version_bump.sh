@@ -118,7 +118,11 @@ cd "$PROJECT_ROOT"
 
 # Then, stage changes in the main repository (including submodule update)
 echo "Staging main repository changes..."
-git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "android/fdroid" "CHANGELOG.md" "fastlane/metadata/android/en-US/changelogs/"
+git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "android/fdroid" "CHANGELOG.md"
+for d in fastlane/metadata/android/*/ ; do
+    git add "${d}changelogs"
+
+done
 git commit -m "chore: update app version to $NEW_VERSION"
 
 # Get the commit hash of the version bump commit
@@ -146,7 +150,7 @@ echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
 echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
 echo "  - $FDROID_METADATA_FILE (versionName: $NEW_VERSION, versionCode: $NEW_BUILD, commit: $VERSION_COMMIT)"
 echo "  - CHANGELOG.md (generated for version $NEW_VERSION)"
-echo "  - fastlane/metadata/android/en-US/changelogs/ (generated for version code $NEW_BUILD)"
+echo "  - fastlane/metadata/android/*/changelogs/ (generated for version code $NEW_BUILD)"
 echo ""
 
 # Git operations completed

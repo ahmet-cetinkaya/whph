@@ -1,0 +1,3 @@
+• Oznámení jsou nyní zobrazována v překryvných oknech místo snackbarů.
+• Přidáno oznámení o načítání s ukazatelem průběhu.
+• Vylepšená příprava a protokolování dat pro synchronizaci.

@@ -1,0 +1,6 @@
+• Uppdatera tröskelvärdet för taggprocent för visning
+• Lägg till konfettianimation för slutförande av uppgift och vana
+• Förbättra spårning av vanestreak och användargränssnitt
+• Förbättra hanteringen av schemaläggningstid
+• Förbättra layouten för påminnelseikonen i HabitCard
+• Lägg till verktygstips på schemaläggningsknappen

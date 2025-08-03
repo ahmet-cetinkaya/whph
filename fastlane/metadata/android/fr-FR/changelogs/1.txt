@@ -1,0 +1,2 @@
+• Amélioration de la disposition de la barre d'applications pour un meilleur affichage sur tous les appareils.
+• Ajout d'une nouvelle section d'aide pour vous aider avec les tâches, les balises, les codes QR, la synchronisation, les habitudes et l'aperçu d'aujourd'hui.

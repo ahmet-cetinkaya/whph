@@ -1,0 +1,5 @@
+• Verbesserte Synchronisierungshilfe.
+• Unterstützung für benutzerdefinierte Akzentfarben hinzugefügt.
+• Verbesserte Verwendung von Themenfarben in der Benutzeroberfläche.
+• Ein Fehler bei der bidirektionalen Synchronisierung wurde behoben.
+• Eine Hintergrundfarbe zur App-Leiste hinzugefügt.

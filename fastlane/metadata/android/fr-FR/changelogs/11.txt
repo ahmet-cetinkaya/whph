@@ -1,0 +1,1 @@
+• Amélioration de la suppression des tâches depuis la page de détails de la tâche.

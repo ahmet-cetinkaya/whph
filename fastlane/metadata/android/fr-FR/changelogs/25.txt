@@ -1,0 +1,5 @@
+• Amélioration de la gestion des événements après le redémarrage de l'appareil.
+• Mise à jour de la configuration de tri par défaut.
+• Amélioration de la fonctionnalité de réorganisation dans la boîte de dialogue de tri.
+• Amélioration du filtrage par date.
+• Amélioration de la lecture audio.

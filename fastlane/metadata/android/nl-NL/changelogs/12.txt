@@ -1,0 +1,2 @@
+• Verbeterde snelle toevoeging van taken met de mogelijkheid om tags te selecteren.
+• Een sectie voor voltooide taken toegevoegd die kan worden uitgevouwen.

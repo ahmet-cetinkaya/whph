@@ -1,6 +1,0 @@
-• Add auto-start permission management
-• Add auto select task on marathon page
-• Add floating action button for task creation
-• Add lock settings and clear all functionality
-• Improve help menu contents
-• Update application name to 'Work Hard Play Hard'

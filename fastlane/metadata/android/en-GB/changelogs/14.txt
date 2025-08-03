@@ -1,0 +1,3 @@
+• Simplified filtering of tasks and tags.
+• Improved logic for updating the task list.
+• Improved filtering in the habits list.

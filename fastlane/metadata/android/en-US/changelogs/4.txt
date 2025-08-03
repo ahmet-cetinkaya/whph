@@ -1,6 +1,0 @@
-• Add import/export functionality and update localization
-• Implement pagination for fetching tags in various components
-• Implement device ID service and update sync device model
-• Add tap function to notification setting card
-• Add 'Add Habit' tooltip translation in English and Turkish
-• Update pattern label translation and add spacing in rule lists

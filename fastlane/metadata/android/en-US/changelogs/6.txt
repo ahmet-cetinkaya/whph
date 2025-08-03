@@ -1,1 +1,0 @@
-• Add support for sub-tasks and parent task relationships; update localization and database schema

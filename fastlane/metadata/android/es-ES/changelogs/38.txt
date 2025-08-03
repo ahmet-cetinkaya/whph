@@ -1,0 +1,1 @@
+• Se eliminó la lógica de comprobación de actualizaciones no utilizada.

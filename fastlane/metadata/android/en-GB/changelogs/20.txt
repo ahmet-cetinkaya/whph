@@ -1,0 +1,6 @@
+• Improved task completion button with sub-task progress.
+• Standardized sizes of dialog boxes.
+• Added a button for scheduling tasks.
+• Added an option for a more compact view for a better overview.
+• Implemented a service for data migration.
+• Improved layout using the Wrap widget.

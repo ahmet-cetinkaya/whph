@@ -1,0 +1,6 @@
+• Dodaj manjkajoče prevode in izboljšaj strukturo
+• Izboljšaj uporabniški vmesnik časovnika pomodoro
+• Izboljšaj preverjanje in prenašanje posodobitev
+• Izboljšaj postavitev in odzivnost v vseh komponentah
+• Izboljšaj postavitev z odzivnim oblikovanjem
+• Zmanjšaj privzeto velikost strani z 20 na 10

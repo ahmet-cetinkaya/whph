@@ -1,0 +1,4 @@
+• Nauwkeurige tracking van app-gebruik op de voorgrond voor Android toegevoegd.
+• Geoptimaliseerd app-logo.
+• Verbeterde visuele dichtheid van knoppen.
+• Geluidsfeedback toegevoegd bij het maken van een record.

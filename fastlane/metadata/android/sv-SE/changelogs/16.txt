@@ -1,0 +1,6 @@
+• Lägg till hantering av autostartbehörighet
+• Lägg till automatisk val av uppgift på maratonsidan
+• Lägg till flytande åtgärdsknapp för att skapa uppgifter
+• Lägg till låsinställningar och rensa all funktionalitet
+• Förbättra innehållet i hjälpmenyn
+• Uppdatera applikationsnamnet till 'Work Hard Play Hard'

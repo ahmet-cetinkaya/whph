@@ -1,0 +1,4 @@
+• Migliorati i metodi della finestra per KDE Wayland.
+• Aggiunto il filtraggio dei dispositivi alle funzionalità di utilizzo dell'app.
+• Implementato un servizio di directory delle applicazioni per varie piattaforme.
+• Rimosso il riempimento dalle descrizioni.

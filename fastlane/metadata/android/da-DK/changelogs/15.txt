@@ -1,0 +1,5 @@
+• Forbedret tag-håndtering og oversættelser.
+• Forbedrede meddelelser ved synkronisering af enheder.
+• Forbedret brugergrænseflade og funktioner i indstillinger.
+• Forbedrede note-handlinger.
+• Forbedret håndtering af vaner.

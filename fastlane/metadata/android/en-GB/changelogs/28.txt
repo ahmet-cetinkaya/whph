@@ -1,0 +1,2 @@
+• Added support for creating an installer for Windows.
+• Removed the default window size setting.

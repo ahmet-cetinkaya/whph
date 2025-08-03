@@ -1,0 +1,3 @@
+• Semplificato il filtraggio di attività e tag.
+• Migliorata la logica di aggiornamento dell'elenco delle attività.
+• Migliorato il filtraggio nell'elenco delle abitudini.

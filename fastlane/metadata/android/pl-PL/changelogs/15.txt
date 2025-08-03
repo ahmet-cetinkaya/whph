@@ -1,0 +1,5 @@
+• Ulepszone zarządzanie tagami i tłumaczenia.
+• Ulepszone powiadomienia podczas synchronizacji urządzeń.
+• Ulepszony interfejs użytkownika i funkcje w ustawieniach.
+• Ulepszone działania dotyczące notatek.
+• Ulepszone zarządzanie nawykami.

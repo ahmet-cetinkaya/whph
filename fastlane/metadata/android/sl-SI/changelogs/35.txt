@@ -1,0 +1,3 @@
+• Izboljšaj logiko in nastavitve pogovornega okna za podporo
+• Izboljšaj beleženje napak ob zagonu aplikacije
+• Izboljšaj strukturo postavitve na strani z nastavitvami

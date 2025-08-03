@@ -1,0 +1,1 @@
+• Se agregó soporte para subtareas y relaciones de tareas. Se actualizó la traducción y el esquema de la base de datos.

@@ -1,1 +1,0 @@
-• Improved background tracking of app usage on Android devices for a smoother experience

@@ -1,0 +1,6 @@
+• Îmbunătățiți gestionarea etichetelor și localizarea
+• Actualizați localizarea pentru mesajele de sincronizare a dispozitivelor
+• Îmbunătățiți interfața de utilizare și funcționalitatea setărilor
+• Îmbunătățiți localizarea și acțiunile de notițe
+• Îmbunătățiți funcțiile de gestionare a obiceiurilor și interfața de utilizare
+• Îmbunătățiți opțiunile listei de pe pagina de astăzi și gestionarea erorilor

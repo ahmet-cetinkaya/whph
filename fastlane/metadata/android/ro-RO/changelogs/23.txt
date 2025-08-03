@@ -1,0 +1,4 @@
+• Actualizați gestionarea culorilor etichetelor în utilizarea aplicației și detaliile etichetelor
+• Îmbunătățiți logica de procesare a etichetelor în detaliile de utilizare a aplicației
+• Schimbați umplutura la alinierea la centru
+• Schimbați dimensiunea dialogului câmpurilor de blocare la mediu

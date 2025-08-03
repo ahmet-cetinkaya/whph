@@ -1,0 +1,6 @@
+• Ajout de la possibilité d'essayer l'application avec des données de démonstration.
+• Remplissage uniforme dans toute l'application.
+• Amélioration de l'affichage des notes.
+• Les rappels sont désormais mis à jour lorsque la langue est modifiée.
+• Amélioration des boîtes de dialogue pour l'intégration et le support.
+• Ajout de notifications pour les changements dans les enregistrements d'habitudes.

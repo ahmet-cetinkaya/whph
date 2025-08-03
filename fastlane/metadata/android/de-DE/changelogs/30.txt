@@ -1,0 +1,6 @@
+• Möglichkeit zum Ausprobieren der App mit Demodaten hinzugefügt.
+• Einheitliche Polsterung in der gesamten App.
+• Verbesserte Anzeige von Notizen.
+• Erinnerungen werden jetzt aktualisiert, wenn die Sprache geändert wird.
+• Verbesserte Dialogfelder für Onboarding und Support.
+• Benachrichtigungen über Änderungen bei Gewohnheitsaufzeichnungen hinzugefügt.

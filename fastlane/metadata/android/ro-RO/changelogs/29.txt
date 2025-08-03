@@ -1,0 +1,7 @@
+• Adăugați opțiuni de sortare la selecția etichetelor
+• Dezactivați opțiunile de sortare pe baza unei ordini personalizate
+• Încărcați etichetele inițiale și prioritatea la adăugarea unei subsarcini
+• Adăugați câmpul sarcinii părinte în detaliile sarcinii
+• Asigurați-vă că analiza gestionează notificările malformate
+• Adăugați un ascultător de actualizare a etichetelor în detaliile sarcinii
+• Îmbunătățiți serviciul de memento Android cu suport pentru traducere

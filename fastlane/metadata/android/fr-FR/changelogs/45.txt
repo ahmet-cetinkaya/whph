@@ -1,4 +1,4 @@
-• Implémentation du suivi précis d'utilisation d'apps au premier plan pour Android
-• Mise à jour des ressources de logo pour une optimisation améliorée
-• Mise à jour de la densité visuelle d'IconButton
-• Ajout de retour sonore lors de la création d'enregistrements
+• Ajout d'un suivi précis de l'utilisation des applications au premier plan pour Android.
+• Optimisation du logo de l'application.
+• Amélioration de la densité visuelle des boutons.
+• Ajout d'un retour sonore lors de la création d'un enregistrement.

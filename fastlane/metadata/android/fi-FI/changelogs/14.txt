@@ -1,0 +1,3 @@
+• Yksinkertaistettu tehtävien ja tunnisteiden suodatus.
+• Parannettu logiikka tehtäväluettelon päivittämiseksi.
+• Parannettu suodatus tottumusten luettelossa.

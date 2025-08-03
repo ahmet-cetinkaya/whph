@@ -1,0 +1,3 @@
+• Migliorata la finestra di dialogo di supporto e le impostazioni.
+• Migliorata la registrazione degli errori all'avvio dell'app.
+• Migliorata la struttura del layout nella pagina delle impostazioni.

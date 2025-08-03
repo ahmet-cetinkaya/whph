@@ -1,0 +1,2 @@
+• Etiket seçimi ve temizleme işlevselliği ile QuickTaskBottomSheet'i geliştirin
+• Görev ve etiket ayrıntıları sayfalarında genişletilebilir görünüme sahip tamamlanmış görevler bölümü ekleyin

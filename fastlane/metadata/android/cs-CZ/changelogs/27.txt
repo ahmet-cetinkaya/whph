@@ -1,0 +1,6 @@
+• Vylepšené zobrazení procent štítků.
+• Přidána animace konfet po dokončení úkolu nebo zvyku.
+• Vylepšené sledování série zvyků a uživatelské rozhraní.
+• Vylepšené plánování času.
+• Vylepšené rozvržení ikony připomenutí.
+• Přidána nápověda k tlačítku plánování.

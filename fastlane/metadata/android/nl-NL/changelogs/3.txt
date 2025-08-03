@@ -1,0 +1,4 @@
+• Tooltips toegevoegd voor de knoppen Vernieuwen en Help.
+• Verbeterde lay-out in de sectie 'Over'.
+• Verbeterd dialoogvenster voor het bijwerken van de app.
+• Verbeterde titelweergave in het helpmenu.

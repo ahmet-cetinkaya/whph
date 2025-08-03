@@ -1,0 +1,6 @@
+• Implementato il monitoraggio dell'utilizzo compatibile con Digital Wellbeing.
+• Aggiunta una descrizione più chiara per l'utilizzo dei colori dinamici.
+• Impostato il tema scuro come predefinito.
+• Rimossi i titoli iniziali e aggiunti segnaposto per gli input.
+• Impedito lo sfarfallio dell'interfaccia utente durante i controlli delle autorizzazioni e il caricamento dei dati.
+• Utilizzato il colore del tema per il pulsante "Avanti" durante l'onboarding.

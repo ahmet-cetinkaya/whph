@@ -1,0 +1,6 @@
+• Daha iyi yanıt verebilirlik için uygulama çubuğu başlık düzenini iyileştir
+• Görev Detayları ve Görevler Genel Bakış sayfaları için yardım modalları ekle
+• Etiket Detayları ve Etiketler Genel Bakış sayfaları için yardım modalları ekle
+• QR Kod Tarayıcı ve Cihazları Senkronize Et sayfaları için yardım modalları ekle
+• Alışkanlık Detayları ve Alışkanlıklar Genel Bakış sayfaları için yardım modalları ekle
+• Bugün görünümü için özellikler ve ipuçları içeren yardım modalı ekle

@@ -1,0 +1,1 @@
+• Ajout de la prise en charge des sous-tâches et des relations de tâches. Mise à jour de la traduction et du schéma de la base de données.
