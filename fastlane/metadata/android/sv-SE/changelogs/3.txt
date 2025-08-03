@@ -1,0 +1,5 @@
+• Lägg till verktygstips för uppdaterings- och hjälpåtgärder i flera komponenter
+• Ersätt utfyllnad med centrering för förbättrad layout i AppAbout-komponenten
+• Implementera lokaliserad uppdateringsdialog
+• Justera avstånd för logotyp i ResponsiveScaffoldLayout baserat på skärmstorlek
+• Förbättra titelvisningen i HelpMenu med hantering av ellipsöverflöd

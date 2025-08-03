@@ -1,7 +1,0 @@
-• Add sorting options to tag selection
-• Disable sorting options based on custom order
-• Load initial tags and priority in adding sub task
-• Add parent task field in task details
-• Ensure parsing handles malformed notifications
-• Add tag update listener in task details
-• Enhance Android reminder service with translation support

@@ -1,6 +1,6 @@
-• Mobile Plattform-Synchronisation verbessert
-• Protokollierung und Konfliktlösung erweitert
-• Funktion zur Überprüfung von Updates hinzugefügt
-• Listenansicht mit Trennlinien verbessert
-• Fehlerprotokollierung bei Import/Export verbessert
-• Paginierungslogik in App-Nutzungsliste verbessert
+• Verbesserte Synchronisierung mit mobilen Plattformen.
+• Verbesserte Protokollierung und Konfliktlösung.
+• Eine Funktion zur Suche nach Updates hinzugefügt.
+• Verbesserte Listenansicht mit Trennzeichen.
+• Verbesserte Fehlerprotokollierung beim Import und Export.
+• Verbesserte Paginierungslogik in der Liste der App-Nutzung.

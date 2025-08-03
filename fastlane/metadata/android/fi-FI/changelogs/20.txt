@@ -1,0 +1,6 @@
+• Parannettu tehtävän suorituspainike alitehtävien edistymisellä.
+• Standardisoidut valintaikkunoiden koot.
+• Lisätty painike tehtävien ajoittamista varten.
+• Lisätty vaihtoehto tiiviimpään näkymään paremman yleiskuvan saamiseksi.
+• Toteutettu palvelu tietojen siirtoa varten.
+• Parannettu asettelu Wrap-widgetin avulla.

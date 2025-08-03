@@ -1,0 +1,3 @@
+• Přidány zprávy o průběhu exportu a importu dat.
+• Vylepšené načítání dat, které nyní zahrnuje i smazané poznámky.
+• Vylepšená velikost dialogových oken pro lepší uživatelský zážitek.

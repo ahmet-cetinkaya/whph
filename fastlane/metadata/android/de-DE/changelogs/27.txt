@@ -1,0 +1,6 @@
+• Verbesserte Anzeige von Tag-Prozentsätzen.
+• Eine Konfetti-Animation hinzugefügt, wenn eine Aufgabe oder Gewohnheit abgeschlossen ist.
+• Verbesserte Verfolgung von Gewohnheitssträhnen und Benutzeroberfläche.
+• Verbesserte Zeitplanung.
+• Verbessertes Layout des Erinnerungssymbols.
+• Ein Tipp zur Planungsschaltfläche hinzugefügt.

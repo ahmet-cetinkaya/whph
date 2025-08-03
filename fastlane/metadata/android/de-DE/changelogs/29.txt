@@ -1,0 +1,5 @@
+• Sortieroptionen zur Tag-Auswahl hinzugefügt.
+• Verbessertes Hinzufügen von Teilaufgaben.
+• Ein Feld für die übergeordnete Aufgabe in den Aufgabendetails hinzugefügt.
+• Verbesserte Handhabung von Benachrichtigungen.
+• Verbesserter Erinnerungsdienst für Android mit Übersetzungsunterstützung.

@@ -1,0 +1,6 @@
+• Adăugați funcționalitatea de import/export și actualizați localizarea
+• Implementați paginarea pentru preluarea etichetelor în diverse componente
+• Implementați serviciul de identificare a dispozitivului și actualizați modelul dispozitivului de sincronizare
+• Adăugați funcția de atingere la cardul de setări de notificare
+• Adăugați traducerea sfatului „Adăugare obicei” în engleză și turcă
+• Actualizați traducerea etichetei modelului și adăugați spațiere în listele de reguli

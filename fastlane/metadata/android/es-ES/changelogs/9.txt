@@ -1,0 +1,1 @@
+• Manejo de errores y registro mejorados durante la sincronización del dispositivo.

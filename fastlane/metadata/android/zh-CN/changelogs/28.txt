@@ -1,0 +1,2 @@
+• 添加Inno Setup用于创建Windows安装程序
+• 删除默认窗口大小设置

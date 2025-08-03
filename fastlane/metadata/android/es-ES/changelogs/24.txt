@@ -1,0 +1,3 @@
+• Consultas mejoradas para ignorar las etiquetas archivadas.
+• Se eliminó el cálculo innecesario de la fecha límite.
+• Filtrado de fechas mejorado en la página de hoy.

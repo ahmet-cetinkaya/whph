@@ -1,5 +1,0 @@
-• Add tooltips for refresh and help actions in multiple components
-• Replace Padding with Center for improved layout in AppAbout component
-• Implement localized update dialog
-• Adjust spacing for logo in ResponsiveScaffoldLayout based on screen size
-• Improve title display in HelpMenu with ellipsis overflow handling

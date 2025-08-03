@@ -1,0 +1,6 @@
+• 通过子任务进度增强TaskCompleteButton
+• 在组件之间标准化对话框大小
+• 添加用于任务调度的ScheduleButton组件
+• 向搜索筛选器和组件添加isDense选项
+• 实现数据迁移服务
+• 使用Wrap小部件改进布局

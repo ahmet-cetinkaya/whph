@@ -1,0 +1,5 @@
+• Ahora puede ocultar el panel lateral.
+• Eliminación de tareas mejorada.
+• Vista de tareas simplificada en los detalles de la etiqueta.
+• Se agregó traducción para cuando no se usan aplicaciones.
+• Se corrigió un error en la lógica para actualizar la duración de la tarea.

@@ -1,1 +1,0 @@
-• Improve layout and spacing in AppAbout component

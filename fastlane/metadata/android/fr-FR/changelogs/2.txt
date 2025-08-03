@@ -1,0 +1,2 @@
+• Amélioration de l'installation des mises à jour de l'application.
+• Ajout de traductions pour diverses parties de l'application, y compris les balises, la synchronisation et les paramètres.

@@ -1,4 +1,4 @@
-• Genaue Vordergrund-App-Nutzungsverfolgung für Android implementiert
-• Logo-Assets für verbesserte Optimierung aktualisiert
-• IconButton visuelle Dichte aktualisiert
-• Sound-Feedback bei Datensatzerstellung hinzugefügt
+• Genaue Verfolgung der App-Nutzung im Vordergrund für Android hinzugefügt.
+• Optimiertes App-Logo.
+• Verbesserte visuelle Dichte von Schaltflächen.
+• Audio-Feedback beim Erstellen eines Eintrags hinzugefügt.

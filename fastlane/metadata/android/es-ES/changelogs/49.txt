@@ -1,0 +1,6 @@
+• Se implementó un seguimiento de uso compatible con Digital Wellbeing.
+• Se agregó una descripción más clara para el uso de colores dinámicos.
+• Se estableció el tema oscuro como predeterminado.
+• Se eliminaron los títulos iniciales y se agregaron marcadores de posición para las entradas.
+• Se evitó el parpadeo de la interfaz de usuario durante las comprobaciones de permisos y la carga de datos.
+• Se usó el color del tema para el botón 'Siguiente' durante la incorporación.

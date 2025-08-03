@@ -1,0 +1,2 @@
+• Amélioration de l'ajout rapide de tâches avec la possibilité de sélectionner des balises.
+• Ajout d'une section pour les tâches terminées qui peut être développée.

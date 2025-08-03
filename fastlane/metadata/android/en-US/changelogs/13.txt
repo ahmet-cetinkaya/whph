@@ -1,6 +1,0 @@
-• Add completed tasks filter toggle and enhance task list rebuilding
-• Show tag name on selection in app usage tag rules
-• Enhance window detection with multiple strategies and error handling
-• Implement dynamic visibility for optional fields in details
-• Add task ordering
-• Implement fade transition for page navigation

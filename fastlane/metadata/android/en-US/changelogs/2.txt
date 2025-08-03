@@ -1,6 +1,0 @@
-• Configure release signing with keystore and update build.gradle
-• Implement APK installation via MethodChannel and update manifest for FileProvider
-• Integrate translation service across various components and add localization files
-• Integrate translation service for tag components
-• Integrate translation service for sync components
-• Integrate translation service for settings components

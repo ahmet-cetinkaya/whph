@@ -1,0 +1,6 @@
+• Izboljšaj upravljanje oznak in lokalizacijo
+• Posodobi lokalizacijo za sporočila o sinhronizaciji naprav
+• Izboljšaj uporabniški vmesnik in funkcionalnost nastavitev
+• Izboljšaj lokalizacijo in dejanja z opombami
+• Izboljšaj funkcije upravljanja navad in uporabniški vmesnik
+• Izboljšaj možnosti seznama na današnji strani in obravnavo napak

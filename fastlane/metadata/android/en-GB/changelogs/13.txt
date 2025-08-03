@@ -1,0 +1,5 @@
+• Added the ability to filter completed tasks.
+• Improved display of tag name on selection.
+• Improved window detection and bug fixes.
+• Added task sorting.
+• Smoother transitions between pages.

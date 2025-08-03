@@ -1,0 +1,5 @@
+• Möglichkeit zum Filtern erledigter Aufgaben hinzugefügt.
+• Verbesserte Anzeige des Tag-Namens bei der Auswahl.
+• Verbesserte Fenstererkennung und Fehlerbehebungen.
+• Aufgabensortierung hinzugefügt.
+• Sanftere Übergänge zwischen den Seiten.

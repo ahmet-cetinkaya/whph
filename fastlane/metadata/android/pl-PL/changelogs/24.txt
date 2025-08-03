@@ -1,0 +1,3 @@
+• Ulepszone zapytania w celu ignorowania zarchiwizowanych tagów.
+• Usunięto niepotrzebne obliczanie terminu.
+• Ulepszone filtrowanie dat na dzisiejszej stronie.

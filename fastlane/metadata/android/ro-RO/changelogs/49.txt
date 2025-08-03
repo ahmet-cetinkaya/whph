@@ -1,0 +1,6 @@
+• Implementați urmărirea utilizării compatibilă cu Digital Wellbeing cu algoritmi de precizie
+• Adăugați o descriere mai clară pentru utilizarea culorilor dinamice
+• Setați tema de rezervă la întuneric
+• Eliminați titlurile inițiale și adăugați substituenți pentru intrările de sarcini, obiceiuri, note și etichete
+• Preveniți pâlpâirea interfeței de utilizare în timpul verificării permisiunilor și a încărcării datelor
+• Utilizați culoarea temei pentru textul butonului următor de la integrare

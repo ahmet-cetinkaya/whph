@@ -1,0 +1,6 @@
+• Added the ability to try the app with demo data.
+• Consistent padding throughout the app.
+• Improved display of notes.
+• Reminders are now updated when the language is changed.
+• Improved dialogs for onboarding and support.
+• Added notifications for changes in habit records.

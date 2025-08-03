@@ -1,0 +1,5 @@
+• Apariencia mejorada del campo de búsqueda.
+• Interfaz de usuario mejorada para una mejor experiencia.
+• Se implementó un servicio para la migración de datos con control de versiones.
+• Se agregó una función que evita que el teléfono entre en modo de suspensión mientras se usa el temporizador Pomodoro.
+• Lógica mejorada para el color de la barra de progreso en el temporizador Pomodoro.

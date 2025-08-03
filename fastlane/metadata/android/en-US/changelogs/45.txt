@@ -1,4 +1,0 @@
-• Implement accurate foreground app usage tracking for Android
-• Update logo assets for improved optimization
-• Update IconButton visual density
-• Add sound feedback on record creation

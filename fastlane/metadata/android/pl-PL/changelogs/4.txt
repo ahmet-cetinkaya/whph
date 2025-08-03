@@ -1,0 +1,5 @@
+• Dodano funkcję importu i eksportu danych.
+• Ulepszone ładowanie tagów.
+• Ulepszona synchronizacja urządzeń.
+• Dodano funkcję dotknięcia do karty ustawień powiadomień.
+• Dodano tłumaczenia podpowiedzi "Dodaj nawyk".

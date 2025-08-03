@@ -1,4 +1,4 @@
-• Mejorar métodos de ventana KDE Wayland
-• Añadir filtrado de dispositivos a características de uso de apps
-• Implementar servicio de directorio de aplicaciones para plataformas
-• Eliminar padding de descripciones
+• Métodos de ventana mejorados para KDE Wayland.
+• Se agregó filtrado de dispositivos a las funciones de uso de la aplicación.
+• Se implementó un servicio de directorio de aplicaciones para varias plataformas.
+• Se eliminó el relleno de las descripciones.

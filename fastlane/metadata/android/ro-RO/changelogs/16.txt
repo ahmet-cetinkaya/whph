@@ -1,0 +1,6 @@
+• Adăugați gestionarea permisiunilor de pornire automată
+• Adăugați selectarea automată a sarcinilor pe pagina maraton
+• Adăugați un buton de acțiune plutitor pentru crearea sarcinilor
+• Adăugați setări de blocare și funcționalitatea de ștergere a tuturor
+• Îmbunătățiți conținutul meniului de ajutor
+• Actualizați numele aplicației la 'Work Hard Play Hard'

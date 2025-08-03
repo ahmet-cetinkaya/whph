@@ -1,6 +1,0 @@
-• Handle boot completed events
-• Update default sorting configuration
-• Enhance reordering functionality in sort dialog
-• Add padding to empty state overlays
-• Update date filtering logic
-• Update play method to include audio focus

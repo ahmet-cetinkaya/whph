@@ -1,5 +1,0 @@
-• Add option to hide sidebar and handle task deletion callback
-• Simplify task section layout in tag details page
-• Reorder EisenhowerPriority enum values for sorting
-• Add translation for no app usage message
-• Correct duration update logic and enhance task details dialog

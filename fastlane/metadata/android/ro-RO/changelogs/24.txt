@@ -1,0 +1,5 @@
+• Adăugați ignoreArchivedTagVisibility la interogări
+• Eliminați calculul neutilizat al datei limită
+• Ajustați umplutura pentru aspect în aspect
+• Actualizați logica de filtrare a datei în pagina de astăzi
+• Adăugați directiva de ignorare pentru depend_on_referenced_packages

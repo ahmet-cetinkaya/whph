@@ -1,0 +1,6 @@
+• Adăugați traducerile lipsă și îmbunătățiți structura
+• Îmbunătățiți interfața de utilizare a cronometrului pomodoro
+• Îmbunătățiți verificarea și descărcarea actualizărilor
+• Îmbunătățiți aspectul și receptivitatea în toate componentele
+• Îmbunătățiți aspectul cu un design receptiv
+• Reduceți dimensiunea implicită a paginii de la 20 la 10

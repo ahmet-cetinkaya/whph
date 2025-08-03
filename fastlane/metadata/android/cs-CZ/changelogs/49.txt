@@ -1,0 +1,6 @@
+• Implementováno sledování využití kompatibilní s Digital Wellbeing.
+• Přidán jasnější popis pro použití dynamických barev.
+• Nastaven tmavý motiv jako záložní.
+• Odebrány počáteční názvy a přidány zástupné symboly pro vstupy.
+• Zabráněno blikání uživatelského rozhraní během kontroly oprávnění a načítání dat.
+• Použita barva motivu pro tlačítko "Další" při onboardingu.

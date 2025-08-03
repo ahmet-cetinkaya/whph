@@ -1,0 +1,2 @@
+• Zaktualizowane testy i ulepszona migracja bazy danych.
+• Ulepszone przetwarzanie i rejestrowanie YAML.

@@ -1,0 +1,6 @@
+• Přidána správa oprávnění pro automatické spuštění.
+• Přidán automatický výběr úkolu na stránce maratonu.
+• Přidáno tlačítko pro rychlé vytvoření úkolu.
+• Přidána nastavení zámku a funkce pro vymazání všeho.
+• Vylepšený obsah nápovědy.
+• Název aplikace aktualizován na 'Work Hard Play Hard'.

@@ -1,0 +1,3 @@
+• Les notifications sont désormais affichées dans des superpositions au lieu de snackbars.
+• Ajout d'une notification de chargement avec une barre de progression.
+• Amélioration de la préparation des données et de la journalisation pour la synchronisation.

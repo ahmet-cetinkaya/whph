@@ -1,0 +1,5 @@
+• Přidány možnosti třídění pro výběr štítků.
+• Vylepšené přidávání dílčích úkolů.
+• Přidáno pole pro nadřazený úkol v detailech úkolu.
+• Vylepšené zpracování oznámení.
+• Vylepšená služba připomenutí pro Android s podporou překladů.

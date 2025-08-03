@@ -1,6 +1,0 @@
-• Improve mobile platform sync
-• Enhance logging and conflict resolution
-• Add check for updates functionality
-• Improve list view with separators
-• Improve error logging in import/export
-• Improve pagination logic in app usage list

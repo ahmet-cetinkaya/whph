@@ -1,1 +1,1 @@
-Produktivitäts-App für Aufgabenverwaltung, Gewohnheitsverfolgung und Zeitoptimierung
+Produktivitäts-App für Aufgaben, Gewohnheiten und Zeitoptimierung.

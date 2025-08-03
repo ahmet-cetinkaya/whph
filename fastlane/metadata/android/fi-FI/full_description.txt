@@ -1,0 +1,25 @@
+WHPH on kattava tuottavuussovellus, joka on suunniteltu auttamaan sinua hallitsemaan tehtäviä, kehittämään uusia tapoja ja optimoimaan aikaasi. Se seuraa sovellusten käyttöä parantaakseen keskittymistä, antaen sinun analysoida edistymistäsi, juhlia saavutuksia ja pysyä motivoituneena.
+
+<h3>Tärkeimmät Ominaisuudet:</h3>
+<ul>
+<li><strong>Tehtävien Hallinta:</strong> Järjestä ja seuraa päivittäisiä tehtäviäsi tehokkaasti</li>
+<li><strong>Tapojen Seuranta:</strong> Rakenna ja ylläpidä positiivisia tapoja edistymisen seurannalla</li>
+<li><strong>Ajan Optimointi:</strong> Analysoi aikankäyttömalleja ja paranna tuottavuutta</li>
+<li><strong>Sovellusten Käytön Seuranta:</strong> Seuraa, miten käytät aikaa eri sovelluksissa</li>
+<li><strong>Edistymisen Analyysi:</strong> Katso yksityiskohtaisia näkemyksiä tuottavuusmalleistasi</li>
+<li><strong>Saavutusjärjestelmä:</strong> Juhli virstanpylväitä ja pysy motivoituneena</li>
+</ul>
+
+<h3>Miksi Valita WHPH?</h3>
+<p>WHPH yhdistää useita tuottavuustyökaluja yhteen yhdistettyyn kokemukseen. Halusitpa hallita päivittäisiä tehtäviäsi, rakentaa parempia tapoja tai ymmärtää, miten käytät aikaasi, WHPH tarjoaa tiedot ja työkalut, joita tarvitset tuottavuutesi parantamiseen ja tavoitteidesi saavuttamiseen.</p>
+
+<p>Sovellus on suunniteltu yksityisyys mielessä - kaikki tietosi pysyvät laitteessasi, antaen sinulle täyden kontrollin henkilökohtaisista tuottavuustiedoistasi.</p>
+
+<h3>Tuetut Alustat:</h3>
+<ul>
+<li>Android</li>
+<li>Windows</li>
+<li>Linux</li>
+</ul>
+
+<p>Aloita matkasi kohti parempaa tuottavuutta tänään WHPH:n kanssa!</p>

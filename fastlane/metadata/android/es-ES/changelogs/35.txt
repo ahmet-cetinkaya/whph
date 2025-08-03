@@ -1,0 +1,3 @@
+• Diálogo de soporte y configuración mejorados.
+• Registro de errores mejorado al iniciar la aplicación.
+• Estructura de diseño mejorada en la página de configuración.

@@ -1,0 +1,3 @@
+• Simplification du filtrage des tâches et des balises.
+• Amélioration de la logique de mise à jour de la liste des tâches.
+• Amélioration du filtrage dans la liste des habitudes.

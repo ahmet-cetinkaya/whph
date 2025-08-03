@@ -1,0 +1,3 @@
+• Amélioration de la gestion des couleurs des balises.
+• Amélioration de la gestion des balises lors du suivi de l'utilisation des applications.
+• Amélioration du centrage des éléments.

@@ -1,0 +1,3 @@
+• Statusmeldingen voor het exporteren en importeren van gegevens toegevoegd.
+• Verbeterde gegevensophaling, die nu ook verwijderde notities omvat.
+• Verbeterde grootte van dialoogvensters voor een betere gebruikerservaring.

@@ -1,0 +1,3 @@
+• Se agregaron notificaciones de estado para exportar e importar datos.
+• Recuperación de datos mejorada, que ahora incluye notas eliminadas.
+• Tamaño mejorado de los cuadros de diálogo para una mejor experiencia de usuario.

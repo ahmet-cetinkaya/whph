@@ -1,0 +1,2 @@
+• Opdaterede tests og forbedret databasemigrering.
+• Forbedret YAML-behandling og logning.

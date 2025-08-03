@@ -1,0 +1,6 @@
+• Aggiunta la possibilità di provare l'app con dati demo.
+• Riempimento uniforme in tutta l'app.
+• Migliorata la visualizzazione delle note.
+• I promemoria vengono ora aggiornati quando si cambia lingua.
+• Migliorate le finestre di dialogo per l'onboarding e il supporto.
+• Aggiunte notifiche per le modifiche alle registrazioni delle abitudini.

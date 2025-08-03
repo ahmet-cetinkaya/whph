@@ -1,0 +1,6 @@
+• Simplificați gestionarea listei de sarcini și îmbunătățiți funcționalitatea de filtrare în pagina de detalii a etichetei
+• Îmbunătățiți logica de reîmprospătare și adăugați funcționalitatea de filtrare a etichetelor în pagina de astăzi
+• Îmbunătățiți lista de sarcini cu o logică de reîmprospătare îmbunătățită și un model de date al sarcinilor
+• Ajustați logica de filtrare a sarcinilor în pagina maraton
+• Asigurați-vă că contextul este montat înainte de a scoate navigatorul din meniul derulant de selectare a etichetelor
+• Îmbunătățiți filtrarea listei de obiceiuri și logica de reîmprospătare

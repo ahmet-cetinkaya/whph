@@ -1,0 +1,2 @@
+• Dodano obsługę tworzenia instalatora dla systemu Windows.
+• Usunięto domyślne ustawienie rozmiaru okna.

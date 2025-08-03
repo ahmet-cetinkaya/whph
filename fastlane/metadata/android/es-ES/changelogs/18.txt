@@ -1,0 +1,5 @@
+• Se han actualizado el nombre y la descripción de la aplicación.
+• Manejo de permisos mejorado.
+• Estructura de diseño simplificada en la página de configuración.
+• Capacidad de respuesta mejorada de los cuadros de diálogo.
+• Finalización y selección de tareas mejoradas.

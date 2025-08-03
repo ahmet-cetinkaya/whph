@@ -1,0 +1,4 @@
+• Dodano podpowiedzi do przycisków Odśwież i Pomoc.
+• Ulepszony układ w sekcji "O programie".
+• Ulepszone okno dialogowe aktualizacji aplikacji.
+• Ulepszone wyświetlanie tytułu w menu pomocy.

@@ -1,0 +1,3 @@
+• Forenklet filtrering af opgaver og tags.
+• Forbedret logik for opdatering af opgavelisten.
+• Forbedret filtrering i vanelisten.

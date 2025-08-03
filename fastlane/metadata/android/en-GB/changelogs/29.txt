@@ -1,0 +1,5 @@
+• Added sorting options for tag selection.
+• Improved adding of sub-tasks.
+• Added a field for the parent task in the task details.
+• Improved handling of notifications.
+• Improved reminder service for Android with translation support.

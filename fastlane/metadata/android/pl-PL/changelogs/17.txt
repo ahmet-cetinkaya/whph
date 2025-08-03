@@ -1,0 +1,3 @@
+• Powiadomienia są teraz wyświetlane w nakładkach zamiast w snackbarach.
+• Dodano powiadomienie o ładowaniu z paskiem postępu.
+• Ulepszone przygotowywanie danych i rejestrowanie do synchronizacji.

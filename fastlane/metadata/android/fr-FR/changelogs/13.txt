@@ -1,0 +1,5 @@
+• Ajout de la possibilité de filtrer les tâches terminées.
+• Amélioration de l'affichage du nom de la balise lors de la sélection.
+• Amélioration de la détection des fenêtres et corrections de bugs.
+• Ajout du tri des tâches.
+• Transitions plus fluides entre les pages.

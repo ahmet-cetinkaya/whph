@@ -1,0 +1,1 @@
+• Eliminați logica de verificare a actualizărilor neutilizată

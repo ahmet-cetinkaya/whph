@@ -1,0 +1,4 @@
+• Forbedrede vinduesmetoder til KDE Wayland.
+• Tilføjet enhedsfiltrering til funktioner til app-brug.
+• Implementeret en applikationsbibliotekstjeneste til forskellige platforme.
+• Fjernet polstring fra beskrivelser.

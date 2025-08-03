@@ -1,0 +1,6 @@
+• Digital Wellbeing-compatibele gebruikstracking geïmplementeerd.
+• Een duidelijkere beschrijving voor het gebruik van dynamische kleuren toegevoegd.
+• Donker thema als standaard ingesteld.
+• Initiële titels verwijderd en plaatsaanduidingen voor invoer toegevoegd.
+• Flikkeren van de gebruikersinterface tijdens toestemmingscontroles en het laden van gegevens voorkomen.
+• Themakleur gebruikt voor de knop 'Volgende' tijdens het onboarden.
