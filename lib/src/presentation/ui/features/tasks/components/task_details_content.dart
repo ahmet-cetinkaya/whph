@@ -68,6 +68,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
   Timer? _debounce;
+  
+  // Track date picker interaction state to prevent controller conflicts
+  bool _isPlannedDatePickerActive = false;
+  bool _isDeadlineDatePickerActive = false;
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
@@ -231,6 +235,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       print('Refreshing task data for task ${widget.taskId}');
     }
 
+    // Skip refresh if we're in the middle of date picker interactions to prevent conflicts
+    if (_isDatePickerInteractionActive()) {
+      if (kDebugMode) {
+        print('Skipping task refresh - date picker interaction active');
+      }
+      return;
+    }
+
     await AsyncErrorHandler.execute<GetTaskQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
@@ -283,7 +295,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
           // Only update planned date if it's different - handle conversion in presentation layer
           final plannedDateText = _task!.plannedDate != null
-              ? DateFormatService.formatForDisplay(_task!.plannedDate, context, type: DateFormatType.dateTime)
+              ? DateFormatService.formatForInput(_task!.plannedDate, context, type: DateFormatType.dateTime)
               : '';
 
           if (kDebugMode) {
@@ -291,28 +303,32 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 'Updating planned date: server=${_task!.plannedDate}, formatted="$plannedDateText", current="${_plannedDateController.text}"');
           }
 
-          // Only update if different and preserve user input if server returned null unexpectedly
+          // Only update if different and preserve user input during active editing
           if (_plannedDateController.text != plannedDateText) {
+            // Check if we're in the middle of a date picker interaction
+            final isDatePickerActive = _isDatePickerInteractionActive();
+            
             // Check if we're clearing a user-entered date due to server issue
-            if (plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty) {
+            if (plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty && !isDatePickerActive) {
               if (kDebugMode) {
                 print(
                     'Warning: Server returned null planned date, preserving user input: "${_plannedDateController.text}"');
               }
               // Don't clear the field if user had entered a date but server returned null
               // This could happen if save failed or there was a parsing issue
-            } else {
+            } else if (!isDatePickerActive) {
+              // Only update controller if we're not in the middle of date picker interaction
               _plannedDateController.text = plannedDateText;
             }
             // Don't restore selection if text changed
-          } else if (plannedDateSelection.isValid) {
-            // Restore selection if text didn't change
+          } else if (plannedDateSelection.isValid && !_isDatePickerInteractionActive()) {
+            // Restore selection if text didn't change and not in date picker interaction
             _plannedDateController.selection = plannedDateSelection;
           }
 
           // Only update deadline date if it's different - handle conversion in presentation layer
           final deadlineDateText = _task!.deadlineDate != null
-              ? DateFormatService.formatForDisplay(_task!.deadlineDate, context, type: DateFormatType.dateTime)
+              ? DateFormatService.formatForInput(_task!.deadlineDate, context, type: DateFormatType.dateTime)
               : '';
 
           if (kDebugMode) {
@@ -320,21 +336,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 'Updating deadline date: server=${_task!.deadlineDate}, formatted="$deadlineDateText", current="${_deadlineDateController.text}"');
           }
 
-          // Only update if different and preserve user input if server returned null unexpectedly
+          // Only update if different and preserve user input during active editing
           if (_deadlineDateController.text != deadlineDateText) {
+            // Check if we're in the middle of a date picker interaction
+            final isDatePickerActive = _isDatePickerInteractionActive();
+            
             // Check if we're clearing a user-entered date due to server issue
-            if (deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty) {
+            if (deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty && !isDatePickerActive) {
               if (kDebugMode) {
                 print(
                     'Warning: Server returned null deadline date, preserving user input: "${_deadlineDateController.text}"');
               }
               // Don't clear the field if user had entered a date but server returned null
-            } else {
+            } else if (!isDatePickerActive) {
+              // Only update controller if we're not in the middle of date picker interaction
               _deadlineDateController.text = deadlineDateText;
             }
             // Don't restore selection if text changed
-          } else if (deadlineDateSelection.isValid) {
-            // Restore selection if text didn't change
+          } else if (deadlineDateSelection.isValid && !_isDatePickerInteractionActive()) {
+            // Restore selection if text didn't change and not in date picker interaction
             _deadlineDateController.selection = deadlineDateSelection;
           }
 
@@ -399,6 +419,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _saveTaskImmediately();
   }
 
+  /// Helper method to check if any date picker interaction is currently active
+  bool _isDatePickerInteractionActive() {
+    return _isPlannedDatePickerActive || _isDeadlineDatePickerActive;
+  }
+
   /// Helper method to parse dates from controllers with error handling
   DateTime? _parseDateFromController(TextEditingController controller) {
     if (controller.text.isEmpty) return null;
@@ -406,12 +431,31 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     try {
       // Check if context is mounted and safe to use
       if (mounted && context.mounted) {
-        // Use DateFormatService.parseFromInput to match the format used in formatForDisplay
-        final parsedDate = DateFormatService.parseFromInput(controller.text, context);
+        // Try multiple parsing approaches for better compatibility
+        DateTime? parsedDate;
+        
+        // First try: Use DateFormatService.parseFromInput to match the format used in formatForDisplay
+        parsedDate = DateFormatService.parseFromInput(controller.text, context);
+        
+        // Second try: Use direct parsing with locale context
+        if (parsedDate == null) {
+          final locale = Localizations.localeOf(context);
+          parsedDate = DateFormatService.parseDateTime(controller.text, assumeLocal: true, locale: locale);
+        }
+        
+        // Third try: Use direct parsing without locale
+        parsedDate ??= DateFormatService.parseDateTime(controller.text, assumeLocal: true);
+        
+        // Fourth try: Custom parsing for common display formats
+        parsedDate ??= _parseCustomDateFormat(controller.text);
+        
         final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
 
         if (kDebugMode) {
           print('Parsing date controller: "${controller.text}" -> $result');
+          if (result == null) {
+            print('All parsing attempts failed for: "${controller.text}"');
+          }
         }
 
         return result;
@@ -435,6 +479,103 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
+  /// Custom date parsing for common display formats that might not be handled by DateFormatService
+  DateTime? _parseCustomDateFormat(String dateStr) {
+    if (dateStr.trim().isEmpty) return null;
+
+    try {
+      if (kDebugMode) {
+        print('Custom parsing attempt for: "$dateStr"');
+      }
+
+      // Handle Turkish format: "5 Ağu 2025 00:00" or "5 Ağu 2025"
+      // Use \S+ instead of \w+ to handle Turkish characters properly
+      final turkishFormat = RegExp(r'^(\d{1,2})\s+(\S+)\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
+      final turkishMatch = turkishFormat.firstMatch(dateStr.trim());
+      
+      if (turkishMatch != null) {
+        final day = int.parse(turkishMatch.group(1)!);
+        final monthStr = turkishMatch.group(2)!.toLowerCase();
+        final year = int.parse(turkishMatch.group(3)!);
+        final hour = turkishMatch.group(4) != null ? int.parse(turkishMatch.group(4)!) : 0;
+        final minute = turkishMatch.group(5) != null ? int.parse(turkishMatch.group(5)!) : 0;
+
+        if (kDebugMode) {
+          print('Turkish format matched: day=$day, month="$monthStr", year=$year, hour=$hour, minute=$minute');
+        }
+
+        // Turkish month mapping
+        const turkishMonths = {
+          'oca': 1, 'ocak': 1,
+          'şub': 2, 'şubat': 2,
+          'mar': 3, 'mart': 3,
+          'nis': 4, 'nisan': 4,
+          'may': 5, 'mayıs': 5,
+          'haz': 6, 'haziran': 6,
+          'tem': 7, 'temmuz': 7,
+          'ağu': 8, 'ağustos': 8,
+          'eyl': 9, 'eylül': 9,
+          'eki': 10, 'ekim': 10,
+          'kas': 11, 'kasım': 11,
+          'ara': 12, 'aralık': 12,
+        };
+
+        final month = turkishMonths[monthStr];
+        if (kDebugMode) {
+          print('Month lookup: "$monthStr" -> $month');
+        }
+        
+        if (month != null && day >= 1 && day <= 31) {
+          final result = DateTime(year, month, day, hour, minute);
+          if (kDebugMode) {
+            print('Custom Turkish parsing successful: $result');
+          }
+          return result;
+        }
+      }
+
+      // Handle other common formats like "Aug 5, 2025 14:30"
+      final englishFormat = RegExp(r'^(\S+)\s+(\d{1,2}),\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
+      final englishMatch = englishFormat.firstMatch(dateStr.trim());
+      
+      if (englishMatch != null) {
+        final monthStr = englishMatch.group(1)!.toLowerCase();
+        final day = int.parse(englishMatch.group(2)!);
+        final year = int.parse(englishMatch.group(3)!);
+        final hour = englishMatch.group(4) != null ? int.parse(englishMatch.group(4)!) : 0;
+        final minute = englishMatch.group(5) != null ? int.parse(englishMatch.group(5)!) : 0;
+
+        // English month mapping
+        const englishMonths = {
+          'jan': 1, 'january': 1,
+          'feb': 2, 'february': 2,
+          'mar': 3, 'march': 3,
+          'apr': 4, 'april': 4,
+          'may': 5,
+          'jun': 6, 'june': 6,
+          'jul': 7, 'july': 7,
+          'aug': 8, 'august': 8,
+          'sep': 9, 'september': 9,
+          'oct': 10, 'october': 10,
+          'nov': 11, 'november': 11,
+          'dec': 12, 'december': 12,
+        };
+
+        final month = englishMonths[monthStr];
+        if (month != null && day >= 1 && day <= 31) {
+          return DateTime(year, month, day, hour, minute);
+        }
+      }
+
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in custom date parsing: $e');
+      }
+    }
+
+    return null;
+  }
+
   /// Helper method to build save command with current form data
   SaveTaskCommand _buildSaveCommand() {
     final plannedDate = _parseDateFromController(_plannedDateController);
@@ -446,22 +587,27 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       print('  Deadline date text: "${_deadlineDateController.text}" -> $deadlineDate');
     }
 
-    // Validate that if user entered date text, it was successfully parsed
+    // Handle parsing failures gracefully
+    DateTime? finalPlannedDate = plannedDate;
+    DateTime? finalDeadlineDate = deadlineDate;
+
+    // If parsing failed but user has text, preserve the existing task date to avoid data loss
     if (_plannedDateController.text.isNotEmpty && plannedDate == null) {
       if (kDebugMode) {
-        print('ERROR: Failed to parse planned date: "${_plannedDateController.text}"');
-        print('This should not happen with the improved parsing. Please report this format.');
+        print('WARNING: Failed to parse planned date: "${_plannedDateController.text}"');
+        print('Using existing task planned date to prevent data loss.');
       }
-      // Clear the invalid text to prevent user confusion
-      _plannedDateController.clear();
+      // Use the existing task date instead of null to preserve data
+      finalPlannedDate = _task?.plannedDate;
     }
+    
     if (_deadlineDateController.text.isNotEmpty && deadlineDate == null) {
       if (kDebugMode) {
-        print('ERROR: Failed to parse deadline date: "${_deadlineDateController.text}"');
-        print('This should not happen with the improved parsing. Please report this format.');
+        print('WARNING: Failed to parse deadline date: "${_deadlineDateController.text}"');
+        print('Using existing task deadline date to prevent data loss.');
       }
-      // Clear the invalid text to prevent user confusion
-      _deadlineDateController.clear();
+      // Use the existing task date instead of null to preserve data
+      finalDeadlineDate = _task?.deadlineDate;
     }
 
     final recurrenceStartDate =
@@ -474,8 +620,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       id: _task!.id,
       title: _titleController.text,
       description: _descriptionController.text,
-      plannedDate: plannedDate,
-      deadlineDate: deadlineDate,
+      plannedDate: finalPlannedDate,
+      deadlineDate: finalDeadlineDate,
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
       isCompleted: _task!.isCompleted,
@@ -545,12 +691,31 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   /// Event handler for planned date changes
   void _onPlannedDateChanged(DateTime? date) {
-    _handleFieldChange(date, (val) {
-      _task?.plannedDate = val;
+    if (!mounted || _task == null) return;
+    
+    // Mark that we're in a planned date picker interaction
+    _isPlannedDatePickerActive = true;
+    
+    setState(() {
+      _task!.plannedDate = date;
       // If date is set and reminder is not, set default reminder
-      if (val != null && _task!.plannedDateReminderTime == ReminderTime.none) {
+      if (date != null && _task!.plannedDateReminderTime == ReminderTime.none) {
         _task!.plannedDateReminderTime = ReminderTime.atTime;
       }
+      
+      // Update the controller text immediately to prevent conflicts
+      final plannedDateText = date != null
+          ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime)
+          : '';
+      _plannedDateController.text = plannedDateText;
+    });
+    
+    // Use debounced update instead of immediate to prevent conflicts
+    _updateTask();
+    
+    // Clear the interaction flag after a short delay
+    Timer(const Duration(milliseconds: 100), () {
+      _isPlannedDatePickerActive = false;
     });
   }
 
@@ -561,12 +726,31 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   /// Event handler for deadline date changes
   void _onDeadlineDateChanged(DateTime? date) {
-    _handleFieldChange(date, (val) {
-      _task?.deadlineDate = val;
+    if (!mounted || _task == null) return;
+    
+    // Mark that we're in a deadline date picker interaction
+    _isDeadlineDatePickerActive = true;
+    
+    setState(() {
+      _task!.deadlineDate = date;
       // If date is set and reminder is not, set default reminder
-      if (val != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
+      if (date != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
         _task!.deadlineDateReminderTime = ReminderTime.atTime;
       }
+      
+      // Update the controller text immediately to prevent conflicts
+      final deadlineDateText = date != null
+          ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime)
+          : '';
+      _deadlineDateController.text = deadlineDateText;
+    });
+    
+    // Use debounced update instead of immediate to prevent conflicts
+    _updateTask();
+    
+    // Clear the interaction flag after a short delay
+    Timer(const Duration(milliseconds: 100), () {
+      _isDeadlineDatePickerActive = false;
     });
   }
 
@@ -884,9 +1068,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         label: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
         icon: TaskUiConstants.plannedDateIcon,
         widget: TaskDateField(
+          key: ValueKey('planned_date_${_task!.id}'),
           controller: _plannedDateController,
           hintText: '',
-          minDateTime: DateTime.now(),
+          minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
           onDateChanged: _onPlannedDateChanged,
           onReminderChanged: _onPlannedReminderChanged,
           reminderValue: _task!.plannedDateReminderTime,
@@ -900,9 +1085,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         label: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         icon: TaskUiConstants.deadlineDateIcon,
         widget: TaskDateField(
+          key: ValueKey('deadline_date_${_task!.id}'),
           controller: _deadlineDateController,
           hintText: '',
-          minDateTime: DateTime.now(),
+          minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
           onDateChanged: _onDeadlineDateChanged,
           onReminderChanged: _onDeadlineReminderChanged,
           reminderValue: _task!.deadlineDateReminderTime,

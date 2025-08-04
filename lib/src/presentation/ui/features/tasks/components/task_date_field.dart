@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show DateTimePickerField;
+import 'package:flutter/material.dart' hide DatePickerDialog;
+import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 /// A widget for displaying a date field with a reminder icon
-class TaskDateField extends StatelessWidget {
+class TaskDateField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final Function(DateTime?) onDateChanged;
@@ -30,97 +30,177 @@ class TaskDateField extends StatelessWidget {
     this.dateIcon = Icons.calendar_today,
   });
 
+  @override
+  State<TaskDateField> createState() => _TaskDateFieldState();
+}
+
+class _TaskDateFieldState extends State<TaskDateField> {
+  bool _isDatePickerOpen = false;
+
   String _getReminderLabel(ReminderTime reminderTime) {
     switch (reminderTime) {
       case ReminderTime.none:
-        return translationService.translate(TaskTranslationKeys.reminderNone);
+        return widget.translationService.translate(TaskTranslationKeys.reminderNone);
       case ReminderTime.atTime:
-        return translationService.translate(TaskTranslationKeys.reminderAtTime);
+        return widget.translationService.translate(TaskTranslationKeys.reminderAtTime);
       case ReminderTime.fiveMinutesBefore:
-        return translationService.translate(TaskTranslationKeys.reminderFiveMinutesBefore);
+        return widget.translationService.translate(TaskTranslationKeys.reminderFiveMinutesBefore);
       case ReminderTime.fifteenMinutesBefore:
-        return translationService.translate(TaskTranslationKeys.reminderFifteenMinutesBefore);
+        return widget.translationService.translate(TaskTranslationKeys.reminderFifteenMinutesBefore);
       case ReminderTime.oneHourBefore:
-        return translationService.translate(TaskTranslationKeys.reminderOneHourBefore);
+        return widget.translationService.translate(TaskTranslationKeys.reminderOneHourBefore);
       case ReminderTime.oneDayBefore:
-        return translationService.translate(TaskTranslationKeys.reminderOneDayBefore);
+        return widget.translationService.translate(TaskTranslationKeys.reminderOneDayBefore);
+    }
+  }
+
+  Future<void> _handleDateSelection() async {
+    if (_isDatePickerOpen) return; // Prevent multiple opens
+    
+    setState(() {
+      _isDatePickerOpen = true;
+    });
+
+    try {
+      // Parse the current date from the controller or use now
+      DateTime? initialDate;
+      
+      try {
+        if (widget.controller.text.isNotEmpty) {
+          initialDate = DateFormatService.parseFromInput(
+            widget.controller.text, 
+            context, 
+            type: DateFormatType.dateTime,
+          );
+          
+          // If parseFromInput fails, try alternative parsing methods
+          initialDate ??= DateFormatService.parseDateTime(
+            widget.controller.text,
+            assumeLocal: true,
+            locale: Localizations.localeOf(context),
+          );
+        }
+      } catch (e) {
+        // If all parsing methods fail, use null
+        debugPrint('TaskDateField: Failed to parse date "${widget.controller.text}": $e');
+      }
+
+      // Ensure initialDate is within bounds
+      if (initialDate != null) {
+        if (widget.minDateTime != null && initialDate.isBefore(widget.minDateTime!)) {
+          initialDate = widget.minDateTime!;
+        }
+      }
+
+      final config = DatePickerConfig(
+        selectionMode: DateSelectionMode.single,
+        initialDate: initialDate,
+        minDate: widget.minDateTime,
+        maxDate: null,
+        formatType: DateFormatType.dateTime,
+        showTime: true,
+        enableManualInput: true,
+        titleText: 'Select Date & Time',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+      );
+
+      final result = await DatePickerDialog.show(
+        context: context,
+        config: config,
+      );
+
+      if (result != null && result.isConfirmed && result.selectedDate != null && mounted) {
+        final selectedDateTime = result.selectedDate!;
+        
+        // Validate the selected date is within bounds (must be >= minDateTime)
+        if (widget.minDateTime != null && selectedDateTime.isBefore(widget.minDateTime!)) {
+          return;
+        }
+
+        // Format the date for display using centralized service
+        final String formattedDateTime = DateFormatService.formatForInput(
+          selectedDateTime,
+          context,
+          type: DateFormatType.dateTime,
+        );
+        
+        // Update controller text first
+        widget.controller.text = formattedDateTime;
+
+        // Call the callback with the selected date in local timezone
+        widget.onDateChanged(selectedDateTime);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDatePickerOpen = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasReminder = reminderValue != ReminderTime.none;
-    final reminderText = hasReminder && reminderValue != ReminderTime.atTime ? _getReminderLabel(reminderValue) : '';
+    final hasReminder = widget.reminderValue != ReminderTime.none;
 
     return Row(
       children: [
         // Date field
         Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: DateTimePickerField(
-                  controller: controller,
-                  hintText: hintText,
-                  minDateTime: minDateTime,
-                  onConfirm: onDateChanged,
-                  clearButtonTooltip: translationService.translate(TaskTranslationKeys.clearDateTooltip),
+          child: TextFormField(
+            controller: widget.controller,
+            readOnly: true,
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              suffixIcon: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: _handleDateSelection,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(
+                      _isDatePickerOpen ? Icons.schedule : Icons.edit,
+                      size: 16.0,
+                      color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
+                    ),
+                  ),
                 ),
               ),
-            ],
+              isDense: true,
+              contentPadding: const EdgeInsets.only(left: 8.0),
+            ),
+            onTap: _handleDateSelection,
           ),
         ),
 
         // Reminder icon/button
-        if (controller.text.isNotEmpty)
+        if (widget.controller.text.isNotEmpty)
           PopupMenuButton<ReminderTime>(
             icon: Icon(
               Icons.notifications,
               color: hasReminder ? Theme.of(context).colorScheme.primary : AppTheme.secondaryTextColor,
               size: AppTheme.iconSizeSmall,
             ),
-            tooltip: translationService.translate(TaskTranslationKeys.setReminderTooltip),
-            onSelected: onReminderChanged,
+            tooltip: widget.translationService.translate(TaskTranslationKeys.setReminderTooltip),
+            onSelected: widget.onReminderChanged,
             itemBuilder: (context) => ReminderTime.values.map((reminderTime) {
               return PopupMenuItem<ReminderTime>(
                 value: reminderTime,
                 child: Row(
+                  spacing: 8,
                   children: [
-                    if (reminderTime == reminderValue)
+                    if (reminderTime == widget.reminderValue)
                       Icon(
                         Icons.check,
                         color: Theme.of(context).colorScheme.primary,
                         size: AppTheme.iconSizeSmall,
                       ),
-                    if (reminderTime == reminderValue) const SizedBox(width: 8),
                     Text(_getReminderLabel(reminderTime)),
                   ],
                 ),
               );
             }).toList(),
-          ),
-
-        // Show reminder text if there's a reminder
-        if (hasReminder && controller.text.isNotEmpty && reminderText.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: AppTheme.size2XSmall),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.size2XSmall * 1.5, vertical: AppTheme.size2XSmall / 2),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppTheme.size2XSmall),
-              ),
-              child: Text(
-                reminderText,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
           ),
       ],
     );
