@@ -27,7 +27,6 @@ class PrioritySelectField extends StatefulWidget {
 
 class _PrioritySelectFieldState extends State<PrioritySelectField> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
-  bool isHovered = false;
 
   void _showPrioritySelection(BuildContext context) {
     final theme = Theme.of(context);
@@ -60,7 +59,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           ],
         ),
       ),
-      size: DialogSize.medium,
+      size: DialogSize.small,
     );
   }
 
@@ -71,7 +70,7 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
         ? TaskUiConstants.getPriorityColor(option.value)
         : theme.colorScheme.onSurface.withValues(alpha: 0.7);
 
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         widget.onChanged(option.value);
         Navigator.pop(context);
@@ -119,37 +118,27 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
       orElse: () => widget.options.first,
     );
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: InkWell(
-        onTap: () => _showPrioritySelection(context),
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          height: 36,
-          decoration: BoxDecoration(
-            color: isHovered ? theme.colorScheme.onSurface.withValues(alpha: 0.1) : Colors.transparent,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  selectedOption.label,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: widget.value != null
-                        ? TaskUiConstants.getPriorityColor(widget.value)
-                        : theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
+    return InkWell(
+      onTap: () => _showPrioritySelection(context),
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        height: 36,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                selectedOption.label,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: widget.value != null
+                      ? TaskUiConstants.getPriorityColor(widget.value)
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
-              Icon(
-                Icons.arrow_drop_down,
-                size: AppTheme.fontSizeLarge,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

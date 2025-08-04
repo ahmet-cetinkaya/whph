@@ -964,11 +964,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   onChanged: _onTitleChanged,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
+                    focusedBorder: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    suffixIcon: Tooltip(
-                      message: _translationService.translate(TaskTranslationKeys.editTitleTooltip),
-                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
-                    ),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -1003,6 +1000,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
           // Only show chip section if we have available fields to add
           if (availableChipFields.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,
@@ -1018,100 +1016,135 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         label: _translationService.translate(TaskTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(TaskTranslationKeys.tagsHint),
-        widget: TagSelectDropdown(
-          key: ValueKey(_taskTags!.items.length),
-          isMultiSelect: true,
-          onTagsSelected: (options, _) => _onTagsSelected(options),
-          showSelectedInDropdown: true,
-          initialSelectedTags:
-              _taskTags!.items.map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId)).toList(),
-          icon: SharedUiConstants.addIcon,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: TagSelectDropdown(
+            key: ValueKey(_taskTags!.items.length),
+            isMultiSelect: true,
+            onTagsSelected: (options, _) => _onTagsSelected(options),
+            showSelectedInDropdown: true,
+            initialSelectedTags:
+                _taskTags!.items.map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId)).toList(),
+            icon: SharedUiConstants.addIcon,
+          ),
         ),
       );
 
   DetailTableRowData _buildPrioritySection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.priorityLabel),
         icon: TaskUiConstants.priorityIcon,
-        widget: PrioritySelectField(
-          value: _task!.priority,
-          options: _priorityOptions,
-          onChanged: _onPriorityChanged,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: PrioritySelectField(
+            value: _task!.priority,
+            options: _priorityOptions,
+            onChanged: _onPriorityChanged,
+          ),
         ),
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
         icon: TaskUiConstants.estimatedTimeIcon,
-        widget: NumericInput(
-          initialValue: _task!.estimatedTime ?? TaskUiConstants.defaultEstimatedTimeOptions.first,
-          incrementValue: 5,
-          decrementValue: 5,
-          onValueChanged: _onEstimatedTimeChanged,
-          decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
-          incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
-          iconColor: AppTheme.secondaryTextColor,
-          iconSize: AppTheme.iconSizeSmall,
-          valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: NumericInput(
+            initialValue: _task!.estimatedTime ?? TaskUiConstants.defaultEstimatedTimeOptions.first,
+            incrementValue: 5,
+            decrementValue: 5,
+            onValueChanged: _onEstimatedTimeChanged,
+            decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
+            incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
+            iconColor: AppTheme.secondaryTextColor,
+            iconSize: AppTheme.iconSizeSmall,
+            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+          ),
         ),
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
         icon: TaskUiConstants.timerIcon,
-        widget: Text(
-          SharedUiConstants.formatDurationHuman((_task!.totalDuration / 60).round(), _translationService),
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: Text(
+            SharedUiConstants.formatDurationHuman((_task!.totalDuration / 60).round(), _translationService),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       );
 
   DetailTableRowData _buildPlannedDateSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
         icon: TaskUiConstants.plannedDateIcon,
-        widget: TaskDateField(
-          key: ValueKey('planned_date_${_task!.id}'),
-          controller: _plannedDateController,
-          hintText: '',
-          minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-          onDateChanged: _onPlannedDateChanged,
-          onReminderChanged: _onPlannedReminderChanged,
-          reminderValue: _task!.plannedDateReminderTime,
-          translationService: _translationService,
-          reminderLabelPrefix: 'tasks.reminder.planned',
-          dateIcon: TaskUiConstants.plannedDateIcon,
+        widget: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+          child: TaskDateField(
+            key: ValueKey('planned_date_${_task!.id}'),
+            controller: _plannedDateController,
+            hintText: '',
+            minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            onDateChanged: _onPlannedDateChanged,
+            onReminderChanged: _onPlannedReminderChanged,
+            reminderValue: _task!.plannedDateReminderTime,
+            translationService: _translationService,
+            reminderLabelPrefix: 'tasks.reminder.planned',
+            dateIcon: TaskUiConstants.plannedDateIcon,
+          ),
         ),
       );
 
   DetailTableRowData _buildDeadlineDateSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         icon: TaskUiConstants.deadlineDateIcon,
-        widget: TaskDateField(
-          key: ValueKey('deadline_date_${_task!.id}'),
-          controller: _deadlineDateController,
-          hintText: '',
-          minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-          onDateChanged: _onDeadlineDateChanged,
-          onReminderChanged: _onDeadlineReminderChanged,
-          reminderValue: _task!.deadlineDateReminderTime,
-          translationService: _translationService,
-          reminderLabelPrefix: 'tasks.reminder.deadline',
-          dateIcon: TaskUiConstants.deadlineDateIcon,
+        widget: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+          child: TaskDateField(
+            key: ValueKey('deadline_date_${_task!.id}'),
+            controller: _deadlineDateController,
+            hintText: '',
+            minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            onDateChanged: _onDeadlineDateChanged,
+            onReminderChanged: _onDeadlineReminderChanged,
+            reminderValue: _task!.deadlineDateReminderTime,
+            translationService: _translationService,
+            reminderLabelPrefix: 'tasks.reminder.deadline',
+            dateIcon: TaskUiConstants.deadlineDateIcon,
+          ),
         ),
       );
 
   Future<void> _openRecurrenceDialog() async {
     if (_task == null) return;
 
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
+    final result = await showDialog<Map<String, dynamic>>(
       context: context,
-      size: DialogSize.min,
-      child: RecurrenceSettingsDialog(
-        initialRecurrenceType: _task!.recurrenceType,
-        initialRecurrenceInterval: _task!.recurrenceInterval,
-        initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
-        initialRecurrenceStartDate: _task!.recurrenceStartDate,
-        initialRecurrenceEndDate: _task!.recurrenceEndDate,
-        initialRecurrenceCount: _task!.recurrenceCount,
-      ),
+      builder: (BuildContext context) {
+        return RecurrenceSettingsDialog(
+          initialRecurrenceType: _task!.recurrenceType,
+          initialRecurrenceInterval: _task!.recurrenceInterval,
+          initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
+          initialRecurrenceStartDate: _task!.recurrenceStartDate,
+          initialRecurrenceEndDate: _task!.recurrenceEndDate,
+          initialRecurrenceCount: _task!.recurrenceCount,
+        );
+      },
     );
 
     if (result != null) {
@@ -1157,26 +1190,31 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   DetailTableRowData _buildRecurrenceSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.recurrenceLabel),
         icon: Icons.repeat,
-        widget: InkWell(
-          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          onTap: _openRecurrenceDialog,
-          child: Row(
-            children: [
-              // Main Content Section
-              Expanded(
-                child: Text(
-                  _getRecurrenceSummaryText(),
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: _task!.recurrenceType == RecurrenceType.none
-                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
-                        : null,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            onTap: _openRecurrenceDialog,
+            child: Row(
+              children: [
+                // Main Content Section
+                Expanded(
+                  child: Text(
+                    _getRecurrenceSummaryText(),
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: _task!.recurrenceType == RecurrenceType.none
+                          ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+                          : null,
+                    ),
                   ),
                 ),
-              ),
-              // Edit Icon Section
-              Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -1268,27 +1306,34 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   DetailTableRowData _buildParentTaskSection() => DetailTableRowData(
         label: _translationService.translate(TaskTranslationKeys.parentTaskLabel),
         icon: TaskUiConstants.parentTaskIcon,
-        widget: InkWell(
-          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          onTap: () => _navigateToParentTask(),
-          child: Row(
-            children: [
-              // Main Content Section
-              Expanded(
-                child: Text(
-                  _task!.parentTask?.title ?? '',
-                  style: AppTheme.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            onTap: () => _navigateToParentTask(),
+            child: Row(
+              children: [
+                // Main Content Section
+                Expanded(
+                  child: Text(
+                    _task!.parentTask?.title ?? '',
+                    style: AppTheme.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              // Navigate Icon Section
-              Icon(
-                Icons.open_in_new,
-                size: AppTheme.iconSizeSmall,
-                color: AppTheme.secondaryTextColor,
-              ),
-            ],
+                // Navigate Icon Section
+                Icon(
+                  Icons.open_in_new,
+                  size: AppTheme.iconSizeSmall,
+                  color: AppTheme.secondaryTextColor,
+                ),
+              ],
+            ),
           ),
         ),
       );

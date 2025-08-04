@@ -378,10 +378,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
               border: const OutlineInputBorder(),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               hintText: _translationService.translate(NoteTranslationKeys.titlePlaceholder),
-              suffixIcon: Tooltip(
-                message: _translationService.translate(NoteTranslationKeys.editNameTooltip),
-                child: const Icon(Icons.edit, size: AppTheme.iconSizeSmall),
-              ),
             ),
             style: theme.textTheme.bodyLarge,
           ),
@@ -398,6 +394,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,

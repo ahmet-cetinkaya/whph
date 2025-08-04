@@ -670,10 +670,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     hintText: _translationService.translate(HabitTranslationKeys.namePlaceholder),
-                    suffixIcon: Tooltip(
-                      message: _translationService.translate(HabitTranslationKeys.editNameTooltip),
-                      child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
-                    ),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -724,6 +720,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
           // Optional field chips moved to just above Records header
           if (availableChipFields.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,
@@ -812,8 +809,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 ),
               ),
             ),
-            // Edit Icon Section
-            Icon(SharedUiConstants.editIcon, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),
           ],
         ),
       ),
@@ -970,11 +965,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     color: isArchived ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
-              ),
-              // Trailing Icon Section
-              Icon(
-                Icons.chevron_right,
-                color: isArchived ? Theme.of(context).disabledColor : null,
               ),
             ],
           ),

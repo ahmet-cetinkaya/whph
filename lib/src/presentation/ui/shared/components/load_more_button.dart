@@ -33,10 +33,10 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(
             horizontal: AppTheme.sizeSmall,
-            vertical: AppTheme.size3XSmall,
+            vertical: AppTheme.size2XSmall,
           ),
-          minimumSize: const Size(0, 32),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: const Size(0, 36),
+          tapTargetSize: MaterialTapTargetSize.padded,
         ),
         onPressed: _isLoading
             ? null
@@ -52,13 +52,13 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
           children: [
             Icon(
               Icons.expand_more,
-              size: AppTheme.iconSizeSmall,
+              size: AppTheme.iconSizeXSmall,
             ),
             const SizedBox(width: AppTheme.size3XSmall),
             Flexible(
               child: Text(
                 buttonText,
-                style: const TextStyle(fontSize: AppTheme.fontSizeSmall),
+                style: const TextStyle(fontSize: AppTheme.fontSizeXSmall),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -68,10 +68,24 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
       );
     }
 
-    // For larger screens, use the original layout
+    // For larger screens, use a more compact layout
     return TextButton.icon(
-      icon: const Icon(Icons.expand_more),
-      label: Text(buttonText),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.sizeSmall,
+          vertical: AppTheme.size2XSmall,
+        ),
+        minimumSize: const Size(0, 36),
+        tapTargetSize: MaterialTapTargetSize.padded,
+      ),
+      icon: Icon(
+        Icons.expand_more,
+        size: AppTheme.iconSizeXSmall,
+      ),
+      label: Text(
+        buttonText,
+        style: const TextStyle(fontSize: AppTheme.fontSizeXSmall),
+      ),
       onPressed: _isLoading
           ? null
           : () async {
