@@ -4,7 +4,6 @@ import 'package:whph/src/presentation/ui/shared/components/color_picker.dart';
 import 'package:whph/src/presentation/ui/shared/components/color_preview.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
@@ -54,7 +53,7 @@ class _ColorFieldState extends State<ColorField> {
 
     final selectedColor = await ResponsiveDialogHelper.showResponsiveDialog<Color>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.small,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).cardColor,
@@ -95,56 +94,45 @@ class _ColorFieldState extends State<ColorField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding ?? EdgeInsets.zero,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _onColorSelectionOpen,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                // Icon (if provided)
-                if (widget.icon != null) ...[
-                  Icon(
-                    widget.icon,
-                    size: AppTheme.iconSizeSmall,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 12),
-                ],
+      child: GestureDetector(
+        onTap: _onColorSelectionOpen,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              // Icon (if provided)
+              if (widget.icon != null) ...[
+                Icon(
+                  widget.icon,
+                  size: AppTheme.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 12),
+              ],
 
-                // Label (if provided)
-                if (widget.label != null) ...[
-                  Expanded(
-                    child: Text(
-                      widget.label!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                ],
-
+              // Label (if provided)
+              if (widget.label != null) ...[
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Color Preview
-                      ColorPreview(color: _selectedColor),
-
-                      // Edit Icon
-                      Icon(
-                        SharedUiConstants.editIcon,
-                        size: AppTheme.iconSizeSmall,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ],
+                  child: Text(
+                    widget.label!,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                 ),
+                const SizedBox(width: 12),
               ],
-            ),
+
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // Color Preview
+                    ColorPreview(color: _selectedColor),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

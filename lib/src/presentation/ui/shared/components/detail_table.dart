@@ -75,9 +75,8 @@ class DetailTable extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Başlık kısmı - normal padding ile
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
+            padding: const EdgeInsets.only(top: AppTheme.sizeMedium, left: AppTheme.sizeMedium),
             child: _buildLabel(context, data, theme),
           ),
           if (data.hintText != null)
@@ -94,8 +93,6 @@ class DetailTable extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: AppTheme.size3XSmall),
-          // Content kısmı - minimal padding ile
           Padding(
             padding: data.removePadding
                 ? const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall)

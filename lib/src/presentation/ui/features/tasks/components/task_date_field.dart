@@ -103,6 +103,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
         titleText: 'Select Date & Time',
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
+        allowNullConfirm: true,
       );
 
       final result = await DatePickerDialog.show(
@@ -110,26 +111,33 @@ class _TaskDateFieldState extends State<TaskDateField> {
         config: config,
       );
 
-      if (result != null && result.isConfirmed && result.selectedDate != null && mounted) {
-        final selectedDateTime = result.selectedDate!;
-        
-        // Validate the selected date is within bounds (must be >= minDateTime)
-        if (widget.minDateTime != null && selectedDateTime.isBefore(widget.minDateTime!)) {
-          return;
+      if (result != null && result.isConfirmed && mounted) {
+        if (result.selectedDate != null) {
+          // Date was selected
+          final selectedDateTime = result.selectedDate!;
+          
+          // Validate the selected date is within bounds (must be >= minDateTime)
+          if (widget.minDateTime != null && selectedDateTime.isBefore(widget.minDateTime!)) {
+            return;
+          }
+
+          // Format the date for display using centralized service
+          final String formattedDateTime = DateFormatService.formatForInput(
+            selectedDateTime,
+            context,
+            type: DateFormatType.dateTime,
+          );
+          
+          // Update controller text first
+          widget.controller.text = formattedDateTime;
+
+          // Call the callback with the selected date in local timezone
+          widget.onDateChanged(selectedDateTime);
+        } else {
+          // Date was cleared using Clear button in date picker
+          widget.controller.clear();
+          widget.onDateChanged(null);
         }
-
-        // Format the date for display using centralized service
-        final String formattedDateTime = DateFormatService.formatForInput(
-          selectedDateTime,
-          context,
-          type: DateFormatType.dateTime,
-        );
-        
-        // Update controller text first
-        widget.controller.text = formattedDateTime;
-
-        // Call the callback with the selected date in local timezone
-        widget.onDateChanged(selectedDateTime);
       }
     } finally {
       if (mounted) {
@@ -153,20 +161,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
             readOnly: true,
             decoration: InputDecoration(
               hintText: widget.hintText,
-              suffixIcon: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: _handleDateSelection,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Icon(
-                      _isDatePickerOpen ? Icons.schedule : Icons.edit,
-                      size: 16.0,
-                      color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ),
-              ),
+              focusedBorder: InputBorder.none,
               isDense: true,
               contentPadding: const EdgeInsets.only(left: 8.0),
             ),

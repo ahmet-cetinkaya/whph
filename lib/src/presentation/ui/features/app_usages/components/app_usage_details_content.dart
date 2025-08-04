@@ -397,10 +397,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              suffixIcon: Tooltip(
-                message: _translationService.translate(AppUsageTranslationKeys.editNameTooltip),
-                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
-              ),
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -452,7 +448,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.size2XSmall),
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,

@@ -79,7 +79,15 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       // DO NOT call widget.onRecurrenceDaysChanged here; parent handles defaults.
     }
 
-    // Initialize controllers
+    // Initialize non-formatted controller values
+    _intervalController.text = _recurrenceInterval.toString();
+    _countController.text = _recurrenceCount?.toString() ?? '';
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize controllers that need context after dependencies are available
     _updateControllers();
   }
 
@@ -108,7 +116,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
   }
 
   void _updateControllers() {
-    // Format dates for controllers
+    // Format dates for controllers (requires context, so called from didChangeDependencies)
     if (_recurrenceStartDate != null) {
       _startDateController.text =
           DateFormatService.formatForDisplay(_recurrenceStartDate!, context, type: DateFormatType.dateTime);
@@ -123,7 +131,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       _endDateController.clear();
     }
 
-    // Set interval and count controllers
+    // Update interval and count controllers
     _intervalController.text = (_recurrenceInterval ?? 1).toString();
     _countController.text = (_recurrenceCount ?? 0).toString();
   }

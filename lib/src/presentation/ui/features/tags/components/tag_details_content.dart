@@ -322,10 +322,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               hintText: _translationService.translate(TagTranslationKeys.namePlaceholder),
-              suffixIcon: Tooltip(
-                message: _translationService.translate(TagTranslationKeys.editNameTooltip),
-                child: Icon(Icons.edit, size: AppTheme.iconSizeSmall),
-              ),
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -393,7 +389,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
           // Only show chip section if we have available fields to add
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.size2XSmall),
+            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,
