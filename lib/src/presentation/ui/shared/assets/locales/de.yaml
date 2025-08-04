@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Horizontale Linie
         edit: Bearbeiten
         preview: Vorschau
+        image: Bild
+        heading: Überschrift
+        checkbox: Kontrollkästchen
   errors:
     deleting: Fehler beim Löschen der Daten
     file_not_found: Datei nicht gefunden

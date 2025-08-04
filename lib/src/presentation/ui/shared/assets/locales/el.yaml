@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Οριζόντια γραμμή
         edit: Επεξεργασία
         preview: Προεπισκόπηση
+        image: Εικόνα
+        heading: Επικεφαλίδα
+        checkbox: Πλαίσιο ελέγχου
   errors:
     deleting: Παρουσιάστηκε σφάλμα κατά τη διαγραφή δεδομένων
     file_not_found: Το αρχείο δεν βρέθηκε

@@ -103,6 +103,9 @@ shared:
         horizontal_rule: 水平線
         edit: 編集
         preview: プレビュー
+        image: 画像
+        heading: 見出し
+        checkbox: チェックボックス
   errors:
     deleting: データの削除中にエラーが発生しました
     file_not_found: ファイルが見つかりません

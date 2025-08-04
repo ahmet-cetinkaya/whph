@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Horizontal Rule
         edit: Edit
         preview: Preview
+        image: Image
+        heading: Heading
+        checkbox: Checkbox
   errors:
     deleting: Error occurred while deleting data
     file_not_found: File not found

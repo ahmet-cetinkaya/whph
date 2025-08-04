@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Horisontell linje
         edit: Redigera
         preview: Förhandsgranska
+        image: Bild
+        heading: Rubrik
+        checkbox: Kryssruta
   errors:
     deleting: Fel uppstod vid borttagning av data
     file_not_found: Fil hittades inte

@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Linha horizontal
         edit: Editar
         preview: Visualizar
+        image: Imagem
+        heading: Cabeçalho
+        checkbox: Caixa de seleção
   errors:
     deleting: Erro ao excluir dados
     file_not_found: Arquivo não encontrado

@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Горизонтальна лінія
         edit: Редагувати
         preview: Попередній перегляд
+        image: Зображення
+        heading: Заголовок
+        checkbox: Прапорець
   errors:
     deleting: Сталася помилка під час видалення даних
     file_not_found: Файл не знайдено

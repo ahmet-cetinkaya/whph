@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Vodoravna črta
         edit: Uredi
         preview: Predogled
+        image: Slika
+        heading: Naslov
+        checkbox: Potrditveno polje
   errors:
     deleting: Napaka pri brisanju podatkov
     file_not_found: Datoteka ni najdena

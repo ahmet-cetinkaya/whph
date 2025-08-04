@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Горизонтальная линия
         edit: Редактировать
         preview: Предпросмотр
+        image: Изображение
+        heading: Заголовок
+        checkbox: Флажок
   errors:
     deleting: Ошибка при удалении данных
     file_not_found: Файл не найден

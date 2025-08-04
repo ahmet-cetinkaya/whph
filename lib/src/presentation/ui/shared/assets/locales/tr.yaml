@@ -100,6 +100,9 @@ shared:
         horizontal_rule: Yatay Çizgi
         edit: Düzenle
         preview: Önizleme
+        image: Resim
+        heading: Başlık
+        checkbox: Onay kutusu
   errors:
     deleting: Veri silinirken hata oluştu
     file_not_found: Dosya bulunamadı

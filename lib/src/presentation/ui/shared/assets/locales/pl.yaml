@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Linia pozioma
         edit: Edytuj
         preview: Podgląd
+        image: Obraz
+        heading: Nagłówek
+        checkbox: Pole wyboru
   errors:
     deleting: Wystąpi�� błąd podczas usuwania danych
     file_not_found: Nie znaleziono pliku

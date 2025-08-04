@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Vandret linje
         edit: Rediger
         preview: Forhåndsvisning
+        image: Billede
+        heading: Overskrift
+        checkbox: Afkrydsningsfelt
   errors:
     deleting: Der opstod en fejl under sletning af data
     file_not_found: Fil ikke fundet

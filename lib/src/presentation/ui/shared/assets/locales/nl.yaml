@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Horizontale lijn
         edit: Bewerken
         preview: Voorbeeld
+        image: Afbeelding
+        heading: Kop
+        checkbox: Selectievakje
   errors:
     deleting: Fout bij het verwijderen van gegevens
     file_not_found: Bestand niet gevonden

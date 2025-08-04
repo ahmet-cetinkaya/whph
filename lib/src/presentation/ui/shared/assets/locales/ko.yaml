@@ -103,6 +103,9 @@ shared:
         horizontal_rule: 수평선
         edit: 편집
         preview: 미리보기
+        image: 이미지
+        heading: 제목
+        checkbox: 체크박스
   errors:
     deleting: 데이터 삭제 중 오류가 발생했습니다
     file_not_found: 파일을 찾을 수 없습니다
