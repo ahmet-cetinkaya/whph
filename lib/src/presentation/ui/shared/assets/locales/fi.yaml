@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Vaakaviiva
         edit: Muokkaa
         preview: Esikatselu
+        image: Kuva
+        heading: Otsikko
+        checkbox: Valintaruutu
   errors:
     deleting: Virhe tietojen poistamisessa
     file_not_found: Tiedostoa ei löytynyt

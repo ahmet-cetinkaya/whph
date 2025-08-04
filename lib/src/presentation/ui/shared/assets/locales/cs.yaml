@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Vodorovná čára
         edit: Upravit
         preview: Náhled
+        image: Obrázek
+        heading: Nadpis
+        checkbox: Zaškrtávací políčko
   errors:
     deleting: Při mazání dat došlo k chybě
     file_not_found: Soubor nenalezen

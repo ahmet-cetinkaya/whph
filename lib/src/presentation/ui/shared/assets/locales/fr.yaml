@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Ligne horizontale
         edit: Modifier
         preview: Aperçu
+        image: Image
+        heading: Titre
+        checkbox: Case à cocher
   errors:
     deleting: Erreur lors de la suppression des données
     file_not_found: Fichier non trouvé

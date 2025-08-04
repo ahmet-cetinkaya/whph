@@ -43,7 +43,30 @@ void main() {
 
 class TranslationKeysAnalyzer {
   // Supported languages
-  static const supportedLanguages = ['de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'tr', 'uk', 'zh'];
+  static const supportedLanguages = [
+    'cs', // Czech
+    'da', // Danish
+    'de', // German
+    'el', // Greek
+    'en', // English
+    'es', // Spanish
+    'fi', // Finnish
+    'fr', // French
+    'it', // Italian
+    'ja', // Japanese
+    'ko', // Korean
+    'nl', // Dutch
+    'no', // Norwegian
+    'pl', // Polish
+    'pt', // Portuguese
+    'ro', // Romanian
+    'ru', // Russian
+    'sl', // Slovenian
+    'sv', // Swedish
+    'tr', // Turkish
+    'uk', // Ukrainian
+    'zh', // Chinese
+  ];
 
   // TranslationKey file paths
   static const translationKeyPaths = [

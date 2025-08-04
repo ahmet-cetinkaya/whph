@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Linie orizontală
         edit: Editează
         preview: Previzualizare
+        image: Imagine
+        heading: Titlu
+        checkbox: Casetă de selectare
   errors:
     deleting: Eroare la ștergerea datelor
     file_not_found: Fișierul nu a fost găsit

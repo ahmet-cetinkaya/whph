@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Horisontal linje
         edit: Rediger
         preview: Forhåndsvisning
+        image: Bilde
+        heading: Overskrift
+        checkbox: Avkryssingsboks
   errors:
     deleting: Feil oppstod under sletting av data
     file_not_found: Fil ikke funnet

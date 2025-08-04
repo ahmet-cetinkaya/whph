@@ -108,6 +108,9 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String markdownEditorHorizontalRuleTooltip = 'shared.editor.markdown.tooltips.horizontal_rule';
   static const String markdownEditorEditTooltip = 'shared.editor.markdown.tooltips.edit';
   static const String markdownEditorPreviewTooltip = 'shared.editor.markdown.tooltips.preview';
+  static const String markdownEditorImageTooltip = 'shared.editor.markdown.tooltips.image';
+  static const String markdownEditorHeadingTooltip = 'shared.editor.markdown.tooltips.heading';
+  static const String markdownEditorCheckboxTooltip = 'shared.editor.markdown.tooltips.checkbox';
 
   // Color Picker
   static const String colorPickerTitle = 'shared.color_picker.title';

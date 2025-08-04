@@ -103,6 +103,9 @@ shared:
         horizontal_rule: Linea orizzontale
         edit: Modifica
         preview: Anteprima
+        image: Immagine
+        heading: Intestazione
+        checkbox: Casella di controllo
   errors:
     deleting: Errore durante l'eliminazione dei dati
     file_not_found: File non trovato

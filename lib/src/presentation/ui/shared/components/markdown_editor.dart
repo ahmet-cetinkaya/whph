@@ -147,20 +147,25 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                   // Markdown Toolbar
                   Expanded(
                     child: MarkdownToolbar(
-                      useIncludedTextField: false,
                       controller: widget.controller,
+                      useIncludedTextField: false,
                       focusNode: _focusNode,
+                      // Style
                       collapsable: false,
                       backgroundColor: toolbarBgColor,
-                      iconColor: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(8),
+                      iconColor: theme.colorScheme.primary,
                       iconSize: 20,
+                      dropdownTextColor: theme.colorScheme.primary,
                       width: 36,
                       height: 36,
                       spacing: 4,
                       runSpacing: 4,
-                      borderRadius: BorderRadius.circular(8),
+                      // Customize toolbar tooltips
                       showTooltips: true,
-                      // Customize toolbar buttons
+                      imageTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorImageTooltip),
+                      headingTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorHeadingTooltip),
+                      checkboxTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
                       boldTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
                       italicTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
                       strikethroughTooltip:

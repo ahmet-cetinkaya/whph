@@ -103,6 +103,9 @@ shared:
         horizontal_rule: 水平线
         edit: 编辑
         preview: 预览
+        image: 图片
+        heading: 标题
+        checkbox: 复选框
   errors:
     deleting: 删除数据时发生错误
     file_not_found: 文件未找到
