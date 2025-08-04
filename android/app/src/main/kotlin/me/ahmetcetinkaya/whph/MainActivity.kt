@@ -661,32 +661,76 @@ class MainActivity : FlutterActivity() {
                         )
 
                         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                        val triggerTimeMillis = System.currentTimeMillis() + (delaySeconds * 1000)
+                        val currentTimeMillis = System.currentTimeMillis()
+                        val triggerTimeMillis = currentTimeMillis + (delaySeconds * 1000L)
+                        
+                        // Extract the reminderId from the payload if present (needed for logging)
+                        var reminderId: String? = null
+                        try {
+                            if (payload != null) {
+                                val payloadObj = org.json.JSONObject(payload)
+                                reminderId = payloadObj.optString("reminderId", null)
+                            }
+                        } catch (e: Exception) {
+                            // Ignore parsing errors for logging
+                        }
+
+                        // Log scheduling details for debugging
+                        Log.d("MainActivity", "📅 Scheduling notification with ID: $id")
+                        Log.d("MainActivity", "  - Current time: ${java.util.Date(currentTimeMillis)}")
+                        Log.d("MainActivity", "  - Delay seconds: $delaySeconds")
+                        Log.d("MainActivity", "  - Trigger time: ${java.util.Date(triggerTimeMillis)}")
+                        Log.d("MainActivity", "  - Reminder ID: $reminderId")
+
+                        // Validate that trigger time is in the future
+                        if (triggerTimeMillis <= currentTimeMillis) {
+                            Log.e("MainActivity", "ERROR: Trigger time is not in the future! triggerTime=$triggerTimeMillis, currentTime=$currentTimeMillis")
+                            result.error("INVALID_TIME", "Trigger time must be in the future", null)
+                            return@setMethodCallHandler
+                        }
+
+                        // Check exact alarm permission for Android 12+
+                        val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            alarmManager.canScheduleExactAlarms()
+                        } else {
+                            true
+                        }
+
+                        Log.d("MainActivity", "  - Can schedule exact alarms: $canScheduleExactAlarms")
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            alarmManager.setExactAndAllowWhileIdle(
-                                AlarmManager.RTC_WAKEUP,
-                                triggerTimeMillis,
-                                pendingIntent
-                            )
+                            if (canScheduleExactAlarms) {
+                                alarmManager.setExactAndAllowWhileIdle(
+                                    AlarmManager.RTC_WAKEUP,
+                                    triggerTimeMillis,
+                                    pendingIntent
+                                )
+                                Log.d("MainActivity", "  - Used: setExactAndAllowWhileIdle")
+                            } else {
+                                // Fallback for devices without exact alarm permission
+                                alarmManager.setAndAllowWhileIdle(
+                                    AlarmManager.RTC_WAKEUP,
+                                    triggerTimeMillis,
+                                    pendingIntent
+                                )
+                                Log.d("MainActivity", "  - Used: setAndAllowWhileIdle (fallback)")
+                            }
                         } else {
                             alarmManager.setExact(
                                 AlarmManager.RTC_WAKEUP,
                                 triggerTimeMillis,
                                 pendingIntent
                             )
+                            Log.d("MainActivity", "  - Used: setExact")
                         }
                         
                         // Track the reminder for pattern-based cancellation
-                        // Extract the reminderId from the payload if present
-                        var reminderId: String? = null
+                        // Extract metadata from the payload if present
                         var metadata: String? = null
                         
                         try {
                             if (payload != null) {
                                 val payloadObj = org.json.JSONObject(payload)
-                                // Try to extract reminderId or any unique identifier from the payload
-                                reminderId = payloadObj.optString("reminderId", null)
                                 
                                 // Extract relevant metadata for filtering (taskId, habitId, etc.)
                                 if (payloadObj.has("arguments")) {

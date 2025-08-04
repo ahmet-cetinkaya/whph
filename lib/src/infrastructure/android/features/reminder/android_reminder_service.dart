@@ -64,17 +64,18 @@ class AndroidReminderService implements IReminderService {
     // Check for exact alarm permission on Android 12+
     final hasPermission = await _checkExactAlarmPermission();
     if (!hasPermission) {
-      Logger.debug('No exact alarm permission on Android 12+');
-      return;
+      Logger.warning('No exact alarm permission on Android 12+ - notifications may not fire exactly on time');
+      // Continue anyway to use fallback scheduling methods
     }
 
-    // Ensure the scheduled date is in local time
+    // Ensure the scheduled date is converted to local time properly
     final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
-
-    // Compare with local time
+    
+    // Get current time in the same timezone context for consistent comparison
     final now = DateTime.now();
+    
     if (localScheduledDate.isBefore(now)) {
-      Logger.debug('Scheduled date is in the past');
+      Logger.debug('Scheduled date $localScheduledDate is in the past (current: $now)');
       return;
     }
 
@@ -85,8 +86,31 @@ class AndroidReminderService implements IReminderService {
     // Convert string ID to numeric ID using consistent method
     final notificationId = _getNotificationIdFromReminderId(id);
 
-    // Calculate seconds until the notification should be shown using local time
-    final int delaySeconds = localScheduledDate.difference(DateTime.now()).inSeconds;
+    // Calculate delay using consistent timezone handling
+    // Use milliseconds for higher precision, then convert to seconds
+    final delayMillis = localScheduledDate.difference(now).inMilliseconds;
+    final int delaySeconds = (delayMillis / 1000).round();
+    
+    // Log the scheduling details for debugging timezone issues
+    Logger.debug('📅 Scheduling notification: $id');
+    Logger.debug('  - Original scheduled date: $scheduledDate');
+    Logger.debug('  - Local scheduled date: $localScheduledDate');
+    Logger.debug('  - Current time: $now');
+    Logger.debug('  - Delay: ${delaySeconds}s (${delayMillis}ms)');
+
+    // Validate delay is reasonable
+    if (delaySeconds <= 0) {
+      Logger.warning('Calculated delay is non-positive: ${delaySeconds}s, skipping notification');
+      return;
+    }
+    
+    // Validate delay is not too far in the future (prevent overflow issues)
+    const maxDelayDays = 365; // 1 year maximum
+    const maxDelaySeconds = maxDelayDays * 24 * 60 * 60;
+    if (delaySeconds > maxDelaySeconds) {
+      Logger.warning('Calculated delay is too far in future: ${delaySeconds}s (${delaySeconds / (24 * 60 * 60)} days), skipping notification');
+      return;
+    }
 
     try {
       final success = await _scheduleNotification(
@@ -100,6 +124,8 @@ class AndroidReminderService implements IReminderService {
 
       if (!success) {
         Logger.error('AndroidReminderService: Failed to schedule notification: $id');
+      } else {
+        Logger.debug('✅ Successfully scheduled notification: $id for ${DateTime.now().add(Duration(seconds: delaySeconds))}');
       }
     } catch (e) {
       Logger.error('AndroidReminderService: Error scheduling reminder $id: $e');
@@ -178,7 +204,11 @@ class AndroidReminderService implements IReminderService {
     }
 
     // Check for exact alarm permission on Android 12+
-    await _checkExactAlarmPermission();
+    final hasPermission = await _checkExactAlarmPermission();
+    if (!hasPermission) {
+      Logger.warning('No exact alarm permission on Android 12+ - recurring notifications may not fire exactly on time');
+      // Continue anyway to use fallback scheduling methods
+    }
 
     // Translate title and body to current app language
     final translatedTitle = _translateText(title, payload);
@@ -461,12 +491,14 @@ class AndroidReminderService implements IReminderService {
         final androidInfo = await deviceInfoPlugin.androidInfo;
         final sdkInt = androidInfo.version.sdkInt;
         isAndroid12Plus = sdkInt >= 31; // Android 12 is API level 31
+        Logger.debug('Android API level: $sdkInt, requires exact alarm permission: $isAndroid12Plus');
       } catch (e) {
         Logger.error('Error checking Android version: $e');
       }
 
       // If not Android 12+, we don't need this permission
       if (!isAndroid12Plus) {
+        Logger.debug('Android version < 12, exact alarm permission not required');
         return true;
       }
 
@@ -474,11 +506,12 @@ class AndroidReminderService implements IReminderService {
       final platform = MethodChannel(AndroidAppConstants.channels.exactAlarm);
       final bool hasPermission = await platform.invokeMethod('canScheduleExactAlarms');
 
+      Logger.debug('Exact alarm permission check result: $hasPermission');
       return hasPermission;
     } catch (e) {
       Logger.error('Error checking exact alarm permission: $e');
-      // If we can't check, assume we have permission to avoid blocking functionality
-      return true;
+      // If we can't check, assume we don't have permission to use fallback methods
+      return false;
     }
   }
 }
