@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2025-08-05
+
+### Added
+- Add markdown editor tooltips for image, heading, and checkbox
+- Remove edit icons and improve spacing in detail forms
+- Add support for cs, da, el, fi, nl, no, pt, ro, sl, sv locales
+
+### Fixed
+- Improve notification scheduling with better validation and fallback handling
+- Implement Windows audio player and add sound assets
+
 ## [0.12.0] - 2025-07-31
 
 ### Added
