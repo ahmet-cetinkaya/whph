@@ -165,7 +165,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       showTooltips: true,
                       imageTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorImageTooltip),
                       headingTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorHeadingTooltip),
-                      checkboxTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
+                      checkboxTooltip:
+                          _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
                       boldTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
                       italicTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
                       strikethroughTooltip:

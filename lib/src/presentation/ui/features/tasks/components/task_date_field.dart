@@ -56,7 +56,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
 
   Future<void> _handleDateSelection() async {
     if (_isDatePickerOpen) return; // Prevent multiple opens
-    
+
     setState(() {
       _isDatePickerOpen = true;
     });
@@ -64,15 +64,15 @@ class _TaskDateFieldState extends State<TaskDateField> {
     try {
       // Parse the current date from the controller or use now
       DateTime? initialDate;
-      
+
       try {
         if (widget.controller.text.isNotEmpty) {
           initialDate = DateFormatService.parseFromInput(
-            widget.controller.text, 
-            context, 
+            widget.controller.text,
+            context,
             type: DateFormatType.dateTime,
           );
-          
+
           // If parseFromInput fails, try alternative parsing methods
           initialDate ??= DateFormatService.parseDateTime(
             widget.controller.text,
@@ -115,7 +115,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
         if (result.selectedDate != null) {
           // Date was selected
           final selectedDateTime = result.selectedDate!;
-          
+
           // Validate the selected date is within bounds (must be >= minDateTime)
           if (widget.minDateTime != null && selectedDateTime.isBefore(widget.minDateTime!)) {
             return;
@@ -127,7 +127,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
             context,
             type: DateFormatType.dateTime,
           );
-          
+
           // Update controller text first
           widget.controller.text = formattedDateTime;
 

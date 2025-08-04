@@ -51,7 +51,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     }
   }
 
-
   String _getDateRangeText() {
     if (_selectedStartDate == null || _selectedEndDate == null) return '';
     return '${_selectedStartDate!.day}/${_selectedStartDate!.month} - ${_selectedEndDate!.day}/${_selectedEndDate!.month}';
@@ -179,7 +178,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       widget.onDateFilterChange(_selectedStartDate, _selectedEndDate);
     }
   }
-
 
   void _onClearDate() {
     setState(() {
