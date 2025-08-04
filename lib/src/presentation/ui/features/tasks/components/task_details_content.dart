@@ -68,7 +68,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
   Timer? _debounce;
-  
+
   // Track date picker interaction state to prevent controller conflicts
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
@@ -307,7 +307,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           if (_plannedDateController.text != plannedDateText) {
             // Check if we're in the middle of a date picker interaction
             final isDatePickerActive = _isDatePickerInteractionActive();
-            
+
             // Check if we're clearing a user-entered date due to server issue
             if (plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty && !isDatePickerActive) {
               if (kDebugMode) {
@@ -340,7 +340,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           if (_deadlineDateController.text != deadlineDateText) {
             // Check if we're in the middle of a date picker interaction
             final isDatePickerActive = _isDatePickerInteractionActive();
-            
+
             // Check if we're clearing a user-entered date due to server issue
             if (deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty && !isDatePickerActive) {
               if (kDebugMode) {
@@ -433,22 +433,22 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       if (mounted && context.mounted) {
         // Try multiple parsing approaches for better compatibility
         DateTime? parsedDate;
-        
+
         // First try: Use DateFormatService.parseFromInput to match the format used in formatForDisplay
         parsedDate = DateFormatService.parseFromInput(controller.text, context);
-        
+
         // Second try: Use direct parsing with locale context
         if (parsedDate == null) {
           final locale = Localizations.localeOf(context);
           parsedDate = DateFormatService.parseDateTime(controller.text, assumeLocal: true, locale: locale);
         }
-        
+
         // Third try: Use direct parsing without locale
         parsedDate ??= DateFormatService.parseDateTime(controller.text, assumeLocal: true);
-        
+
         // Fourth try: Custom parsing for common display formats
         parsedDate ??= _parseCustomDateFormat(controller.text);
-        
+
         final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
 
         if (kDebugMode) {
@@ -492,7 +492,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Use \S+ instead of \w+ to handle Turkish characters properly
       final turkishFormat = RegExp(r'^(\d{1,2})\s+(\S+)\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
       final turkishMatch = turkishFormat.firstMatch(dateStr.trim());
-      
+
       if (turkishMatch != null) {
         final day = int.parse(turkishMatch.group(1)!);
         final monthStr = turkishMatch.group(2)!.toLowerCase();
@@ -506,25 +506,37 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
         // Turkish month mapping
         const turkishMonths = {
-          'oca': 1, 'ocak': 1,
-          'şub': 2, 'şubat': 2,
-          'mar': 3, 'mart': 3,
-          'nis': 4, 'nisan': 4,
-          'may': 5, 'mayıs': 5,
-          'haz': 6, 'haziran': 6,
-          'tem': 7, 'temmuz': 7,
-          'ağu': 8, 'ağustos': 8,
-          'eyl': 9, 'eylül': 9,
-          'eki': 10, 'ekim': 10,
-          'kas': 11, 'kasım': 11,
-          'ara': 12, 'aralık': 12,
+          'oca': 1,
+          'ocak': 1,
+          'şub': 2,
+          'şubat': 2,
+          'mar': 3,
+          'mart': 3,
+          'nis': 4,
+          'nisan': 4,
+          'may': 5,
+          'mayıs': 5,
+          'haz': 6,
+          'haziran': 6,
+          'tem': 7,
+          'temmuz': 7,
+          'ağu': 8,
+          'ağustos': 8,
+          'eyl': 9,
+          'eylül': 9,
+          'eki': 10,
+          'ekim': 10,
+          'kas': 11,
+          'kasım': 11,
+          'ara': 12,
+          'aralık': 12,
         };
 
         final month = turkishMonths[monthStr];
         if (kDebugMode) {
           print('Month lookup: "$monthStr" -> $month');
         }
-        
+
         if (month != null && day >= 1 && day <= 31) {
           final result = DateTime(year, month, day, hour, minute);
           if (kDebugMode) {
@@ -537,7 +549,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Handle other common formats like "Aug 5, 2025 14:30"
       final englishFormat = RegExp(r'^(\S+)\s+(\d{1,2}),\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
       final englishMatch = englishFormat.firstMatch(dateStr.trim());
-      
+
       if (englishMatch != null) {
         final monthStr = englishMatch.group(1)!.toLowerCase();
         final day = int.parse(englishMatch.group(2)!);
@@ -547,18 +559,29 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
         // English month mapping
         const englishMonths = {
-          'jan': 1, 'january': 1,
-          'feb': 2, 'february': 2,
-          'mar': 3, 'march': 3,
-          'apr': 4, 'april': 4,
+          'jan': 1,
+          'january': 1,
+          'feb': 2,
+          'february': 2,
+          'mar': 3,
+          'march': 3,
+          'apr': 4,
+          'april': 4,
           'may': 5,
-          'jun': 6, 'june': 6,
-          'jul': 7, 'july': 7,
-          'aug': 8, 'august': 8,
-          'sep': 9, 'september': 9,
-          'oct': 10, 'october': 10,
-          'nov': 11, 'november': 11,
-          'dec': 12, 'december': 12,
+          'jun': 6,
+          'june': 6,
+          'jul': 7,
+          'july': 7,
+          'aug': 8,
+          'august': 8,
+          'sep': 9,
+          'september': 9,
+          'oct': 10,
+          'october': 10,
+          'nov': 11,
+          'november': 11,
+          'dec': 12,
+          'december': 12,
         };
 
         final month = englishMonths[monthStr];
@@ -566,7 +589,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           return DateTime(year, month, day, hour, minute);
         }
       }
-
     } catch (e) {
       if (kDebugMode) {
         print('Error in custom date parsing: $e');
@@ -600,7 +622,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Use the existing task date instead of null to preserve data
       finalPlannedDate = _task?.plannedDate;
     }
-    
+
     if (_deadlineDateController.text.isNotEmpty && deadlineDate == null) {
       if (kDebugMode) {
         print('WARNING: Failed to parse deadline date: "${_deadlineDateController.text}"');
@@ -692,27 +714,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   /// Event handler for planned date changes
   void _onPlannedDateChanged(DateTime? date) {
     if (!mounted || _task == null) return;
-    
+
     // Mark that we're in a planned date picker interaction
     _isPlannedDatePickerActive = true;
-    
+
     setState(() {
       _task!.plannedDate = date;
       // If date is set and reminder is not, set default reminder
       if (date != null && _task!.plannedDateReminderTime == ReminderTime.none) {
         _task!.plannedDateReminderTime = ReminderTime.atTime;
       }
-      
+
       // Update the controller text immediately to prevent conflicts
-      final plannedDateText = date != null
-          ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime)
-          : '';
+      final plannedDateText =
+          date != null ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime) : '';
       _plannedDateController.text = plannedDateText;
     });
-    
+
     // Use debounced update instead of immediate to prevent conflicts
     _updateTask();
-    
+
     // Clear the interaction flag after a short delay
     Timer(const Duration(milliseconds: 100), () {
       _isPlannedDatePickerActive = false;
@@ -727,27 +748,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   /// Event handler for deadline date changes
   void _onDeadlineDateChanged(DateTime? date) {
     if (!mounted || _task == null) return;
-    
+
     // Mark that we're in a deadline date picker interaction
     _isDeadlineDatePickerActive = true;
-    
+
     setState(() {
       _task!.deadlineDate = date;
       // If date is set and reminder is not, set default reminder
       if (date != null && _task!.deadlineDateReminderTime == ReminderTime.none) {
         _task!.deadlineDateReminderTime = ReminderTime.atTime;
       }
-      
+
       // Update the controller text immediately to prevent conflicts
-      final deadlineDateText = date != null
-          ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime)
-          : '';
+      final deadlineDateText =
+          date != null ? DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime) : '';
       _deadlineDateController.text = deadlineDateText;
     });
-    
+
     // Use debounced update instead of immediate to prevent conflicts
     _updateTask();
-    
+
     // Clear the interaction flag after a short delay
     Timer(const Duration(milliseconds: 100), () {
       _isDeadlineDatePickerActive = false;

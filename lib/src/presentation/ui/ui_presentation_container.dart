@@ -34,7 +34,8 @@ void registerUIPresentation(IContainer container) {
         container.resolve<ILogger>(),
       ));
   container.registerSingleton<TagsService>((_) => TagsService());
-  container.registerSingleton<ISoundPlayer>((_) => Platform.isWindows ? WindowsAudioPlayer() : AudioPlayerSoundPlayer());
+  container
+      .registerSingleton<ISoundPlayer>((_) => Platform.isWindows ? WindowsAudioPlayer() : AudioPlayerSoundPlayer());
   container.registerSingleton<ITranslationService>((_) => TranslationService());
   container.registerSingleton<IThemeService>((_) => ThemeService(mediator: container.resolve<Mediator>()));
   container.registerSingleton<IConfettiAnimationService>((_) => ConfettiAnimationService());

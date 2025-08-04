@@ -70,10 +70,10 @@ class AndroidReminderService implements IReminderService {
 
     // Ensure the scheduled date is converted to local time properly
     final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
-    
+
     // Get current time in the same timezone context for consistent comparison
     final now = DateTime.now();
-    
+
     if (localScheduledDate.isBefore(now)) {
       Logger.debug('Scheduled date $localScheduledDate is in the past (current: $now)');
       return;
@@ -90,7 +90,7 @@ class AndroidReminderService implements IReminderService {
     // Use milliseconds for higher precision, then convert to seconds
     final delayMillis = localScheduledDate.difference(now).inMilliseconds;
     final int delaySeconds = (delayMillis / 1000).round();
-    
+
     // Log the scheduling details for debugging timezone issues
     Logger.debug('📅 Scheduling notification: $id');
     Logger.debug('  - Original scheduled date: $scheduledDate');
@@ -103,12 +103,13 @@ class AndroidReminderService implements IReminderService {
       Logger.warning('Calculated delay is non-positive: ${delaySeconds}s, skipping notification');
       return;
     }
-    
+
     // Validate delay is not too far in the future (prevent overflow issues)
     const maxDelayDays = 365; // 1 year maximum
     const maxDelaySeconds = maxDelayDays * 24 * 60 * 60;
     if (delaySeconds > maxDelaySeconds) {
-      Logger.warning('Calculated delay is too far in future: ${delaySeconds}s (${delaySeconds / (24 * 60 * 60)} days), skipping notification');
+      Logger.warning(
+          'Calculated delay is too far in future: ${delaySeconds}s (${delaySeconds / (24 * 60 * 60)} days), skipping notification');
       return;
     }
 
@@ -125,7 +126,8 @@ class AndroidReminderService implements IReminderService {
       if (!success) {
         Logger.error('AndroidReminderService: Failed to schedule notification: $id');
       } else {
-        Logger.debug('✅ Successfully scheduled notification: $id for ${DateTime.now().add(Duration(seconds: delaySeconds))}');
+        Logger.debug(
+            '✅ Successfully scheduled notification: $id for ${DateTime.now().add(Duration(seconds: delaySeconds))}');
       }
     } catch (e) {
       Logger.error('AndroidReminderService: Error scheduling reminder $id: $e');
