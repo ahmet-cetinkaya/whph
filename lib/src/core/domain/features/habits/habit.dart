@@ -171,6 +171,45 @@ class Habit extends BaseEntity<String> {
       };
 
   factory Habit.fromJson(Map<String, dynamic> json) {
+    // Handle estimatedTime: might come as int, double, or num
+    int? estimatedTime;
+    if (json['estimatedTime'] != null) {
+      final estimatedTimeValue = json['estimatedTime'];
+      if (estimatedTimeValue is int) {
+        estimatedTime = estimatedTimeValue;
+      } else if (estimatedTimeValue is double) {
+        estimatedTime = estimatedTimeValue.toInt();
+      } else if (estimatedTimeValue is num) {
+        estimatedTime = estimatedTimeValue.toInt();
+      }
+    }
+
+    // Handle targetFrequency: might come as int, double, or num
+    int targetFrequency = 1;
+    if (json['targetFrequency'] != null) {
+      final targetFrequencyValue = json['targetFrequency'];
+      if (targetFrequencyValue is int) {
+        targetFrequency = targetFrequencyValue;
+      } else if (targetFrequencyValue is double) {
+        targetFrequency = targetFrequencyValue.toInt();
+      } else if (targetFrequencyValue is num) {
+        targetFrequency = targetFrequencyValue.toInt();
+      }
+    }
+
+    // Handle periodDays: might come as int, double, or num
+    int periodDays = 7;
+    if (json['periodDays'] != null) {
+      final periodDaysValue = json['periodDays'];
+      if (periodDaysValue is int) {
+        periodDays = periodDaysValue;
+      } else if (periodDaysValue is double) {
+        periodDays = periodDaysValue.toInt();
+      } else if (periodDaysValue is num) {
+        periodDays = periodDaysValue.toInt();
+      }
+    }
+
     return Habit(
       id: json['id'] as String,
       createdDate: DateTime.parse(json['createdDate'] as String),
@@ -178,14 +217,14 @@ class Habit extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       name: json['name'] as String,
       description: json['description'] as String,
-      estimatedTime: json['estimatedTime'] as int?,
+      estimatedTime: estimatedTime,
       archivedDate: json['archivedDate'] != null ? DateTime.parse(json['archivedDate'] as String) : null,
       hasReminder: json['hasReminder'] as bool? ?? false,
       reminderTime: json['reminderTime'] as String?,
       reminderDays: json['reminderDays'] as String? ?? '',
       hasGoal: json['hasGoal'] as bool? ?? false,
-      targetFrequency: json['targetFrequency'] as int? ?? 1,
-      periodDays: json['periodDays'] as int? ?? 7,
+      targetFrequency: targetFrequency,
+      periodDays: periodDays,
     );
   }
 }

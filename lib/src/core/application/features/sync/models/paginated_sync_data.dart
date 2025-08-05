@@ -65,7 +65,7 @@ class SyncPaginationConfig {
   static const int defaultDatabasePageSize = 200;
 
   /// Default page size for network transmission
-  static const int defaultNetworkPageSize = 100;
+  static const int defaultNetworkPageSize = 50;
 
   /// Maximum page size to prevent memory issues
   static const int maxPageSize = 500;
