@@ -22,11 +22,9 @@ import 'package:whph/src/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_sounds.dart';
-import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -854,10 +852,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     if (isArchived) return; // Don't open dialog for archived habits
 
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
+    final result = await showDialog<HabitReminderSettingsResult>(
       context: context,
-      size: DialogSize.min,
-      child: HabitReminderSettingsDialog(
+      builder: (context) => HabitReminderSettingsDialog(
         hasReminder: _habit!.hasReminder,
         reminderTime: _habit!.getReminderTimeOfDay(),
         reminderDays: _habit!.getReminderDaysAsList(),
@@ -927,10 +924,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           onTap: isArchived
               ? null
               : () async {
-                  final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
+                  final result = await showDialog<HabitGoalResult>(
                     context: context,
-                    size: DialogSize.min,
-                    child: HabitGoalDialog(
+                    builder: (context) => HabitGoalDialog(
                       hasGoal: _habit!.hasGoal,
                       targetFrequency: _habit!.targetFrequency,
                       periodDays: _habit!.periodDays,
