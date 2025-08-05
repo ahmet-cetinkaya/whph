@@ -89,11 +89,11 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'sync':
-        // Legacy sync endpoint is no longer supported - redirect to paginated sync
+        // Legacy sync endpoint is no longer supported - redirect to new sync system
         Logger.warning('⚠️ Legacy sync endpoint called - this is deprecated');
         WebSocketMessage deprecationMessage = WebSocketMessage(type: 'sync_deprecated', data: {
           'success': false,
-          'message': 'Legacy sync is deprecated. Please use paginated_sync endpoint.',
+          'message': 'Legacy sync is deprecated. Please use the new registry-based sync system (v2/v3).',
           'timestamp': DateTime.now().toIso8601String()
         });
         socket.add(JsonMapper.serialize(deprecationMessage));
@@ -101,6 +101,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'paginated_sync':
+        Logger.warning('⚠️ Paginated sync endpoint called - this is deprecated in favor of v2/v3 sync systems');
         Logger.info('🔄 Processing paginated sync request...');
         final paginatedSyncData = parsedMessage.data;
         if (paginatedSyncData == null) {
@@ -123,8 +124,8 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           socket.add(JsonMapper.serialize(responseMessage));
           Logger.info('📤 Paginated sync response sent to client');
 
-          // Add a small delay before closing the connection
-          await Future.delayed(const Duration(milliseconds: 200));
+          // CRITICAL FIX: Add proper delay to ensure response is fully transmitted before close
+          await Future.delayed(const Duration(milliseconds: 1000));
           await socket.close();
         } catch (e, stackTrace) {
           Logger.error('Paginated sync processing failed: $e');
@@ -196,6 +197,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
           WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
           socket.add(JsonMapper.serialize(errorMessage));
+          // CRITICAL FIX: Only close on error, not on success
           await socket.close();
         }
         break;

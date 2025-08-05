@@ -8,6 +8,9 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_s
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/src/core/application/features/sync/services/v2/sync_registry_initializer.dart';
+import 'package:whph/src/core/application/features/sync/services/v3/bidirectional_sync_initializer.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
@@ -18,7 +21,9 @@ import 'package:mediatr/mediatr.dart';
 class PlatformInitializationService {
   /// Runs desktop-specific initialization if on a desktop platform
   static Future<void> initializeDesktop(IContainer container) async {
+    print('🔧 DEBUG: PlatformInitializationService.initializeDesktop() called');
     if (!(PlatformUtils.isDesktop)) {
+      print('🔧 DEBUG: Not a desktop platform, skipping desktop initialization');
       Logger.debug('PlatformInitializationService: Not a desktop platform, skipping desktop initialization');
       return;
     }
@@ -49,6 +54,48 @@ class PlatformInitializationService {
     // Initialize WebSocket server for inter-process communication
     Logger.info('PlatformInitializationService: Starting WebSocket server on $platformName for sync communication...');
     startWebSocketServer();
+
+    // Initialize new sync registry system
+    try {
+      Logger.info('PlatformInitializationService: Initializing sync registry...');
+      await SyncRegistryInitializer.initialize(container);
+      Logger.info('PlatformInitializationService: Sync registry initialized successfully');
+    } catch (e, stackTrace) {
+      Logger.error('PlatformInitializationService: Failed to initialize sync registry: $e');
+      Logger.error('StackTrace: $stackTrace');
+    }
+
+    // Initialize bidirectional sync system (v3)
+    try {
+      print('🔧 DEBUG: About to initialize bidirectional sync system (v3)...');
+      Logger.info('PlatformInitializationService: Initializing bidirectional sync system...');
+      await BidirectionalSyncInitializer.initialize(container);
+      print('🔧 DEBUG: Bidirectional sync initialized successfully!');
+      Logger.info('PlatformInitializationService: Bidirectional sync initialized successfully');
+      
+      // Run quick test
+      final testResult = await BidirectionalSyncInitializer.runTest();
+      if (testResult['success'] == true) {
+        Logger.info('PlatformInitializationService: Bidirectional sync test passed ✅');
+      } else {
+        Logger.warning('PlatformInitializationService: Bidirectional sync test failed ❌');
+      }
+    } catch (e, stackTrace) {
+      Logger.error('PlatformInitializationService: Failed to initialize bidirectional sync: $e');
+      Logger.error('StackTrace: $stackTrace');
+    }
+
+    // Initialize sync scheduler (Desktop)
+    try {
+      Logger.info('PlatformInitializationService: Starting Desktop sync service...');
+      final syncService = container.resolve<ISyncService>();
+      // Fire and forget - don't await since interface returns void
+      syncService.startSync();
+      Logger.info('PlatformInitializationService: Desktop sync service started successfully');
+    } catch (e, stackTrace) {
+      Logger.error('PlatformInitializationService: Failed to start Desktop sync service: $e');
+      Logger.error('StackTrace: $stackTrace');
+    }
 
     Logger.debug('PlatformInitializationService: Desktop initialization completed on $platformName');
   }
