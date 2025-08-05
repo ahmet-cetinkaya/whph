@@ -51,12 +51,9 @@ class DetailTable extends StatelessWidget {
             ),
             child: Padding(
               padding: _getContainerPadding(data),
-              // Ensure minimum height for each row
               child: !forceVertical
                   ? SizedBox(
-                      // You can adjust the minHeight value as needed
-                      // Use a constant or theme value for consistency
-                      height: isDense ? AppTheme.size3XLarge : AppTheme.size4XLarge,
+                      height: AppTheme.size4XLarge,
                       child: _buildRow(context, data, theme),
                     )
                   : _buildRow(context, data, theme),
