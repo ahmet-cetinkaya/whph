@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class PrioritySelectField extends StatefulWidget {
   final EisenhowerPriority? value;
@@ -31,35 +29,23 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   void _showPrioritySelection(BuildContext context) {
     final theme = Theme.of(context);
 
-    ResponsiveDialogHelper.showResponsiveDialog(
+    showDialog(
       context: context,
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppTheme.sizeLarge),
-              child: Text(
-                _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: widget.options.map((option) => _buildPriorityOption(context, option)).toList(),
-                ),
-              ),
-            ),
-          ],
+      builder: (context) => AlertDialog(
+        title: Text(
+          _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
         ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: widget.options.map((option) => _buildPriorityOption(context, option)).toList(),
+          ),
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
       ),
-      size: DialogSize.small,
     );
   }
 
