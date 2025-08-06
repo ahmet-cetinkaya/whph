@@ -181,7 +181,7 @@ class _HabitReminderSelectorState extends State<HabitReminderSelector> {
   @override
   Widget build(BuildContext context) {
     // Check if screen is wide enough for horizontal layout
-    final isWideScreen = MediaQuery.of(context).size.width > 600;
+    final isWideScreen = MediaQuery.sizeOf(context).width > 600;
 
     // Build the switch with label, similar to goal dialog
     Widget reminderSwitch = ListTile(
