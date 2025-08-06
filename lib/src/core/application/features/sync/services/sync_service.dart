@@ -190,12 +190,14 @@ class SyncService implements ISyncService {
 
     // For background syncs, use the response data to determine if notification should be shown
     if (!response.hadMeaningfulSync || response.syncedDeviceCount == 0) {
-      Logger.debug('Skipping notification for background sync - no meaningful sync activity (devices: ${response.syncedDeviceCount}, meaningful: ${response.hadMeaningfulSync})');
+      Logger.debug(
+          'Skipping notification for background sync - no meaningful sync activity (devices: ${response.syncedDeviceCount}, meaningful: ${response.hadMeaningfulSync})');
       return;
     }
 
     // For background syncs with meaningful activity, show notification
-    Logger.debug('Notifying sync completion for background sync with meaningful activity (${response.syncedDeviceCount} devices synced) at ${DateTime.now()}');
+    Logger.debug(
+        'Notifying sync completion for background sync with meaningful activity (${response.syncedDeviceCount} devices synced) at ${DateTime.now()}');
     notifySyncComplete();
   }
 
