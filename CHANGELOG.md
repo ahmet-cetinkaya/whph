@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2025-08-06
+
+### Added
+- Implement single instance application management
+- Enhance server-side sync status tracking and UI feedback
+
+### Fixed
+- Correct corrupted characters in multiple locale files
+- Add AppUsageTimeRecord and HabitRecord entity support to paginated sync
+- Use local variables to reduce `MediaQuery` calls
+- Avoid `MediaQuery.of()`
+- Implement v2/v3 registry-based sync system with bidirectional support
+- Replace ResponsiveDialogHelper with standard showDialog
+- Remove conditional height logic and comments from detail table
+
 ## [0.13.0] - 2025-08-05
 
 ### Added

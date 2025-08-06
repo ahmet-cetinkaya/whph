@@ -1,0 +1,5 @@
+• Correction du problème où plusieurs instances de l'application pouvaient s'exécuter simultanément
+• Amélioration des indicateurs d'état de synchronisation et des messages de retour
+• Correction des problèmes d'affichage avec le texte non anglais dans l'application
+• Synchronisation améliorée pour le suivi d'utilisation des applications et les habitudes
+• Améliorations de performance pour une réactivité plus rapide de l'application
