@@ -21,7 +21,7 @@ class ResponsiveDialogHelper {
     bool enableDrag = true,
   }) async {
     final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.sizeOf(context);
 
     if (isDesktop) {
       // Show as modal dialog on desktop
@@ -80,9 +80,8 @@ class ResponsiveDialogHelper {
         enableDrag: enableDrag,
         useRootNavigator: false,
         builder: (BuildContext context) {
-          final mediaQuery = MediaQuery.of(context);
-          final safeAreaBottom = mediaQuery.viewPadding.bottom;
-          final screenHeight = mediaQuery.size.height;
+          final safeAreaBottom = MediaQuery.viewPaddingOf(context).bottom;
+          final screenHeight = MediaQuery.sizeOf(context).height;
 
           // Calculate available height considering safe area
           final availableHeight = screenHeight - safeAreaBottom;
@@ -90,7 +89,7 @@ class ResponsiveDialogHelper {
           final initialHeight = availableHeight * size.mobileInitialSizeRatio;
 
           return Padding(
-            padding: size == DialogSize.small ? MediaQuery.of(context).viewInsets : EdgeInsets.zero,
+            padding: size == DialogSize.small ? MediaQuery.viewInsetsOf(context) : EdgeInsets.zero,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: maxHeight,

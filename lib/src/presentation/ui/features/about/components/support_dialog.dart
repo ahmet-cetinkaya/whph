@@ -29,7 +29,7 @@ class SupportDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.sizeOf(context).width * 0.8,
         constraints: const BoxConstraints(maxWidth: 400),
         padding: const EdgeInsets.all(24.0),
         child: Column(

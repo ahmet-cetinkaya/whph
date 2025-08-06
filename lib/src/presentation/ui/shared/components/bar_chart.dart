@@ -29,7 +29,7 @@ class BarChart extends StatelessWidget {
     Color finalBarColor = barColor ?? AppThemeHelper.getRandomChartColor();
 
     // Calculate bar width safely
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final baseWidth = screenWidth - 100;
 
     // Use a minimum of 1.0 for maxValue to avoid division by zero
@@ -61,7 +61,7 @@ class BarChart extends StatelessWidget {
                 ),
                 SizedBox(
                   height: 40,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.sizeOf(context).width,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Padding(
