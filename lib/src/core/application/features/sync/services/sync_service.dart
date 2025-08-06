@@ -115,7 +115,9 @@ class SyncService implements ISyncService {
           lastSyncTime: DateTime.now(),
         ));
 
-        notifySyncComplete();
+        // Only notify sync completion for meaningful syncs
+        // Don't notify for background syncs that found no devices
+        _notifySyncCompleteIfMeaningful(isManual, response);
       } else {
         // Sync failed or was incomplete
         Logger.error('❌ Paginated sync failed or was incomplete');
@@ -174,6 +176,27 @@ class SyncService implements ISyncService {
   void stopSync() {
     // Default implementation - can be overridden by platform-specific services
     Logger.debug('Base SyncService stopSync called');
+  }
+
+  /// Determines if sync completion should trigger a notification
+  /// Only notify for meaningful syncs to avoid premature notifications
+  void _notifySyncCompleteIfMeaningful(bool isManual, PaginatedSyncCommandResponse response) {
+    // Always notify for manual syncs - user initiated these
+    if (isManual) {
+      Logger.debug('Notifying sync completion for manual sync at ${DateTime.now()}');
+      notifySyncComplete();
+      return;
+    }
+
+    // For background syncs, use the response data to determine if notification should be shown
+    if (!response.hadMeaningfulSync || response.syncedDeviceCount == 0) {
+      Logger.debug('Skipping notification for background sync - no meaningful sync activity (devices: ${response.syncedDeviceCount}, meaningful: ${response.hadMeaningfulSync})');
+      return;
+    }
+
+    // For background syncs with meaningful activity, show notification
+    Logger.debug('Notifying sync completion for background sync with meaningful activity (${response.syncedDeviceCount} devices synced) at ${DateTime.now()}');
+    notifySyncComplete();
   }
 
   void notifySyncComplete() {

@@ -7,16 +7,15 @@ import 'package:whph/src/core/application/features/sync/commands/delete_sync_com
 import 'package:whph/src/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
+import 'package:whph/src/presentation/ui/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/sync/components/sync_qr_code_button.dart';
-import 'package:whph/src/presentation/ui/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
-import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/src/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
@@ -33,7 +32,8 @@ class SyncDevicesPage extends StatefulWidget {
   State<SyncDevicesPage> createState() => _SyncDevicesPageState();
 }
 
-class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAliveClientMixin {
+class _SyncDevicesPageState extends State<SyncDevicesPage>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   static const String _serverModeSettingKey = 'sync_server_mode_enabled';
 
   final _mediator = container.resolve<Mediator>();
@@ -46,6 +46,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   StreamSubscription<SyncStatus>? _syncStatusSubscription;
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
   bool _isServerMode = false;
+  late AnimationController _syncIconAnimationController;
+  late AnimationController _syncButtonAnimationController;
+  
+  // Server mode specific sync tracking
+  bool _isServerSyncActive = false;
+  Timer? _syncStatusDebounceTimer;
+  SyncState? _lastProcessedState;
 
   @override
   bool get wantKeepAlive => true;
@@ -53,10 +60,31 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   @override
   void initState() {
     super.initState();
-    _syncService = Platform.isAndroid ? AndroidSyncService(_mediator) : container.resolve<ISyncService>();
+    
+    // CRITICAL: Use the same sync service instance from container
+    // This ensures we listen to the same stream that's being updated
+    _syncService = container.resolve<ISyncService>();
     if (Platform.isAndroid) {
       _serverSyncService = container.resolve<AndroidServerSyncService>();
     }
+
+    // Desktop is always in server mode (passive)
+    if (PlatformUtils.isDesktop) {
+      _isServerMode = true;
+    }
+
+    // Initialize sync icon animation controller
+    _syncIconAnimationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
+    // Initialize sync button animation controller
+    _syncButtonAnimationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
     _setupSyncStatusListener();
     _loadServerModePreference();
     refresh();
@@ -81,7 +109,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         final shouldStartServer = setting?.getValue<bool>() ?? false;
 
         if (shouldStartServer) {
-          Logger.info('🚀 Auto-starting server mode from saved preference');
+          Logger.info('��� Auto-starting server mode from saved preference');
           await _startServerModeFromPreference();
         }
       }
@@ -111,19 +139,97 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   void _setupSyncStatusListener() {
+    Logger.debug('🔧 Setting up sync status listener for ${_isServerMode ? "server" : "client"} mode');
+    
     _syncStatusSubscription = _syncService.syncStatusStream.listen((status) {
       if (mounted) {
-        setState(() {
-          _currentSyncStatus = status;
-        });
-        _handleSyncStatusChange(status);
+        _currentSyncStatus = status;
+        Logger.debug('📡 Sync status received: ${status.state} (manual: ${status.isManual})');
+
+        if (_isServerMode) {
+          _handleServerModeSyncStatusWithDebounce(status);
+        } else {
+          // For client mode, always update UI for any sync status change
+          setState(() {});
+          _handleSyncStatusChange(status);
+        }
+      }
+    });
+    
+    Logger.debug('✅ Sync status listener setup completed');
+  }
+
+  void _handleServerModeSyncStatusWithDebounce(SyncStatus status) {
+    // Cancel any existing debounce timer
+    _syncStatusDebounceTimer?.cancel();
+    
+    // For server mode, only process meaningful state changes
+    if (status.state == _lastProcessedState) {
+      return; // Ignore duplicate states
+    }
+
+    Logger.debug('🔄 Server sync status: ${status.state} (last: $_lastProcessedState)');
+
+    // Handle immediate state changes
+    if (status.state == SyncState.syncing && !_isServerSyncActive) {
+      // Start sync immediately
+      _isServerSyncActive = true;
+      _syncIconAnimationController.repeat();
+      _lastProcessedState = status.state;
+      setState(() {});
+      Logger.debug('🔄 Server sync animation started immediately');
+      return;
+    }
+
+    // Debounce other state changes to prevent flicker
+    _syncStatusDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        _processServerSyncStatusChange(status);
       }
     });
   }
 
-  void _handleSyncStatusChange(SyncStatus status) {
+  void _processServerSyncStatusChange(SyncStatus status) {
+    final previousState = _lastProcessedState;
+    _lastProcessedState = status.state;
+
     switch (status.state) {
       case SyncState.syncing:
+        // Already handled immediately above
+        break;
+
+      case SyncState.idle:
+        if (_isServerSyncActive) {
+          _isServerSyncActive = false;
+          _syncIconAnimationController.stop();
+          _syncIconAnimationController.reset();
+          setState(() {});
+          Logger.debug('✅ Server sync animation stopped ($previousState → ${status.state})');
+          refresh(); // Refresh device list
+        }
+        break;
+
+      case SyncState.completed:
+      case SyncState.error:
+        // Ignore intermediate states completely
+        Logger.debug('🔄 Server sync intermediate state ignored: ${status.state}');
+        break;
+    }
+  }
+
+  void _handleSyncStatusChange(SyncStatus status) {
+    // Client mode handling - handle ALL sync types for UI consistency
+    Logger.debug('🔄 Client sync status change: ${status.state} (manual: ${status.isManual})');
+    
+    switch (status.state) {
+      case SyncState.syncing:
+        // Start sync button animation for ANY sync (manual, background, pairing, etc.)
+        if (!_syncButtonAnimationController.isAnimating) {
+          _syncButtonAnimationController.repeat();
+          Logger.debug('🔄 Client sync button animation started (manual: ${status.isManual})');
+        }
+
+        // Show overlay notification ONLY for manual syncs in client mode
         if (status.isManual) {
           OverlayNotificationHelper.showLoading(
             context: context,
@@ -132,24 +238,42 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
           );
         }
         break;
+
       case SyncState.completed:
-        OverlayNotificationHelper.hideNotification();
-        OverlayNotificationHelper.showSuccess(
-          context: context,
-          message: _translationService.translate(SyncTranslationKeys.syncCompleted),
-          duration: const Duration(seconds: 3),
-        );
-        refresh();
-        break;
       case SyncState.error:
-        OverlayNotificationHelper.hideNotification();
-        OverlayNotificationHelper.showError(
-          context: context,
-          message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
-          duration: const Duration(seconds: 3),
-        );
-        break;
       case SyncState.idle:
+        // Stop sync button animation for ANY sync completion
+        if (_syncButtonAnimationController.isAnimating) {
+          _syncButtonAnimationController.stop();
+          _syncButtonAnimationController.reset();
+          Logger.debug('✅ Client sync button animation stopped (${status.state}, manual: ${status.isManual})');
+        }
+
+        // Handle notifications ONLY for manual syncs
+        if (status.isManual) {
+          OverlayNotificationHelper.hideNotification();
+
+          if (status.state == SyncState.completed) {
+            OverlayNotificationHelper.showSuccess(
+              context: context,
+              message: _translationService.translate(SyncTranslationKeys.syncCompleted),
+              duration: const Duration(seconds: 3),
+            );
+          } else if (status.state == SyncState.error) {
+            OverlayNotificationHelper.showError(
+              context: context,
+              message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
+              duration: const Duration(seconds: 3),
+            );
+          }
+        }
+
+        // Refresh device list on ANY sync completion
+        if (status.state == SyncState.completed) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            refresh();
+          });
+        }
         break;
     }
   }
@@ -157,6 +281,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   @override
   void dispose() {
     _syncStatusSubscription?.cancel();
+    _syncStatusDebounceTimer?.cancel();
+    _syncIconAnimationController.dispose();
+    _syncButtonAnimationController.dispose();
     super.dispose();
   }
 
@@ -183,6 +310,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
   }
 
   Future<void> _sync() async {
+    // Only allow sync in client mode
+    if (_isServerMode) {
+      Logger.warning('Sync cannot be initiated in server mode');
+      return;
+    }
+
     if (!Platform.isAndroid) {
       Logger.warning('Sync is only supported on Android platform');
       return;
@@ -348,6 +481,23 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
     }
   }
 
+  Widget _buildSyncStatusIndicator() {
+    return AnimatedBuilder(
+      animation: _syncIconAnimationController,
+      builder: (context, child) {
+        return Transform.rotate(
+          angle: _syncIconAnimationController.value * 2 * 3.14159,
+          child: child,
+        );
+      },
+      child: Icon(
+        Icons.sync,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+        size: 24,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -360,23 +510,34 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
         elevation: 0,
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
-          // Only Android can initiate sync, desktop is passive
-          // Hide sync button when device is in server mode
-          if (Platform.isAndroid && !_isServerMode)
+          // Sync status indicator - only show in server mode when actually syncing
+          if (_isServerSyncActive && _isServerMode)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: _buildSyncStatusIndicator(),
+            ),
+
+          // Sync Now button - only show in client mode (quick access)
+          if (!_isServerMode)
             IconButton(
               onPressed: _currentSyncStatus.isSyncing ? null : _sync,
               icon: _currentSyncStatus.isSyncing
-                  ? SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
-                      ),
+                  ? AnimatedBuilder(
+                      animation: _syncButtonAnimationController,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _syncButtonAnimationController.value * 2 * 3.14159,
+                          child: const Icon(Icons.sync),
+                        );
+                      },
                     )
                   : const Icon(Icons.sync),
-              color: Theme.of(context).colorScheme.primary,
-              tooltip: _translationService.translate(SyncTranslationKeys.syncTooltip),
+              color: _currentSyncStatus.isSyncing 
+                  ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
+                  : Theme.of(context).colorScheme.primary,
+              tooltip: _currentSyncStatus.isSyncing
+                  ? _translationService.translate(SyncTranslationKeys.syncInProgress)
+                  : _translationService.translate(SyncTranslationKeys.syncTooltip),
             ),
 
           // Mobile sync mode controls
@@ -412,7 +573,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
       ),
       body: list == null || list!.items.isEmpty
           ? Padding(
-              padding: const EdgeInsets.all(AppTheme.sizeLarge),
+              padding: const EdgeInsets.all(0),
               child: IconOverlay(
                 icon: Icons.devices_other,
                 message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
@@ -420,10 +581,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage> with AutomaticKeepAli
             )
           : ListView.separated(
               itemCount: list!.items.length,
-              padding: EdgeInsets.only(
-                top: AppTheme.sizeSmall,
-                bottom: AppTheme.sizeSmall,
-              ),
+              padding: EdgeInsets.all(AppTheme.sizeSmall),
               itemBuilder: (context, index) {
                 return SyncDeviceListItemWidget(
                   key: ValueKey(list!.items[index].id),

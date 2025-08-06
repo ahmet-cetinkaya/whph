@@ -125,6 +125,37 @@ class Task extends BaseEntity<String> {
       };
 
   factory Task.fromJson(Map<String, dynamic> json) {
+    // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
+    // This ensures robust deserialization regardless of JSON source (database, API, sync, etc.)
+
+    // Handle estimatedTime: might come as int, double, or null
+    int? estimatedTime;
+    final estimatedTimeValue = json['estimatedTime'];
+    if (estimatedTimeValue is num) {
+      estimatedTime = estimatedTimeValue.toInt();
+    }
+
+    // Handle order: might come as int, double, or null
+    double order = 0.0;
+    final orderValue = json['order'];
+    if (orderValue is num) {
+      order = orderValue.toDouble();
+    }
+
+    // Handle recurrenceInterval: ensure it's int
+    int? recurrenceInterval;
+    final intervalValue = json['recurrenceInterval'];
+    if (intervalValue is num) {
+      recurrenceInterval = intervalValue.toInt();
+    }
+
+    // Handle recurrenceCount: ensure it's int
+    int? recurrenceCount;
+    final countValue = json['recurrenceCount'];
+    if (countValue is num) {
+      recurrenceCount = countValue.toInt();
+    }
+
     return Task(
       id: json['id'] as String,
       createdDate: DateTime.parse(json['createdDate'] as String),
@@ -137,10 +168,10 @@ class Task extends BaseEntity<String> {
           : null,
       plannedDate: json['plannedDate'] != null ? DateTime.parse(json['plannedDate'] as String) : null,
       deadlineDate: json['deadlineDate'] != null ? DateTime.parse(json['deadlineDate'] as String) : null,
-      estimatedTime: json['estimatedTime'] as int?,
+      estimatedTime: estimatedTime,
       isCompleted: json['isCompleted'] as bool? ?? false,
       parentTaskId: json['parentTaskId'] as String?,
-      order: (json['order'] as num?)?.toDouble() ?? 0.0,
+      order: order,
       plannedDateReminderTime: json['plannedDateReminderTime'] != null
           ? ReminderTime.values.firstWhere((e) => e.toString() == json['plannedDateReminderTime'])
           : ReminderTime.none,
@@ -150,12 +181,12 @@ class Task extends BaseEntity<String> {
       recurrenceType: json['recurrenceType'] != null
           ? RecurrenceType.values.firstWhere((e) => e.toString() == json['recurrenceType'])
           : RecurrenceType.none,
-      recurrenceInterval: json['recurrenceInterval'] as int?,
+      recurrenceInterval: recurrenceInterval,
       recurrenceDaysString: json['recurrenceDaysString'] as String?,
       recurrenceStartDate:
           json['recurrenceStartDate'] != null ? DateTime.parse(json['recurrenceStartDate'] as String) : null,
       recurrenceEndDate: json['recurrenceEndDate'] != null ? DateTime.parse(json['recurrenceEndDate'] as String) : null,
-      recurrenceCount: json['recurrenceCount'] as int?,
+      recurrenceCount: recurrenceCount,
       recurrenceParentId: json['recurrenceParentId'] as String?,
     );
   }

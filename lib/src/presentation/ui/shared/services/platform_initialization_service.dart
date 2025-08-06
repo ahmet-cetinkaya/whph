@@ -8,6 +8,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_s
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
@@ -49,6 +50,18 @@ class PlatformInitializationService {
     // Initialize WebSocket server for inter-process communication
     Logger.info('PlatformInitializationService: Starting WebSocket server on $platformName for sync communication...');
     startWebSocketServer();
+
+    // Initialize sync scheduler (Desktop)
+    try {
+      Logger.info('PlatformInitializationService: Starting Desktop sync service...');
+      final syncService = container.resolve<ISyncService>();
+      // Fire and forget - don't await since interface returns void
+      syncService.startSync();
+      Logger.info('PlatformInitializationService: Desktop sync service started successfully');
+    } catch (e, stackTrace) {
+      Logger.error('PlatformInitializationService: Failed to start Desktop sync service: $e');
+      Logger.error('StackTrace: $stackTrace');
+    }
 
     Logger.debug('PlatformInitializationService: Desktop initialization completed on $platformName');
   }
