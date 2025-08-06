@@ -1849,6 +1849,84 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           Logger.debug('✅ Created PaginatedSyncData<AppUsageIgnoreRule> (${result.runtimeType})');
           return result;
 
+        case 'AppUsageTimeRecord':
+          Logger.debug('🔍 Deserializing AppUsageTimeRecord entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+
+          Logger.debug(
+              '📊 Deserialized AppUsageTimeRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
+          syncData = SyncData<AppUsageTimeRecord>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+
+          final result = PaginatedSyncData<AppUsageTimeRecord>(
+            data: syncData as SyncData<AppUsageTimeRecord>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsageTimeRecord> (${result.runtimeType})');
+          return result;
+
+        case 'HabitRecord':
+          Logger.debug('🔍 Deserializing HabitRecord entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+
+          Logger.debug(
+              '📊 Deserialized HabitRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
+          syncData = SyncData<HabitRecord>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+
+          final result = PaginatedSyncData<HabitRecord>(
+            data: syncData as SyncData<HabitRecord>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<HabitRecord> (${result.runtimeType})');
+          return result;
+
         // Add other entity types as needed
         default:
           Logger.warning('⚠️ Unsupported entity type for deserialization: $entityType');
