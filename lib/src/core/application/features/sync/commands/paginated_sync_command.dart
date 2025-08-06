@@ -532,11 +532,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           final serverTotalPages = _serverTotalPages[config.name];
           if (serverTotalPages != null && pageIndex < serverTotalPages - 1) {
             hasMorePages = true;
-            Logger.debug("🔄 Local data complete but server has $serverTotalPages pages total. Continuing pagination for ${config.name} (page $pageIndex)");
+            Logger.debug(
+                "🔄 Local data complete but server has $serverTotalPages pages total. Continuing pagination for ${config.name} (page $pageIndex)");
           } else if (serverTotalPages == null && pageIndex < 2) {
             // Fallback: if no server info yet, try a few more pages for low-volume entities
             hasMorePages = true;
-            Logger.debug("🔄 No server pagination info yet. Continuing pagination for ${config.name} (page $pageIndex)");
+            Logger.debug(
+                "🔄 No server pagination info yet. Continuing pagination for ${config.name} (page $pageIndex)");
           }
         }
         pageIndex++;
@@ -725,7 +727,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 // but desktop data never reached the mobile device database
                 bool responseProcessingSuccess = true;
                 if (messageData['paginatedSyncDataDto'] != null) {
-                  Logger.info('📥 Server returned response data - processing desktop data sync to mobile (isComplete: $isComplete)');
+                  Logger.info(
+                      '📥 Server returned response data - processing desktop data sync to mobile (isComplete: $isComplete)');
 
                   Map<String, dynamic>? responseDataMap;
                   try {
@@ -748,13 +751,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                       // Process the incoming data using the same method used for server-side processing
                       final processSuccess = await processIncomingPaginatedData(responseDto);
 
-
                       // CRITICAL FIX: Store server pagination info for dynamic pagination control
                       // This enables proper pagination based on servers actual data, not static limits
                       _serverTotalPages[responseDto.entityType] = responseDto.totalPages;
                       _serverTotalItems[responseDto.entityType] = responseDto.totalItems;
-                      
-                      Logger.debug("🔄 Server pagination info for ${responseDto.entityType}: page ${responseDto.pageIndex + 1}/${responseDto.totalPages}, ${responseDto.totalItems} total items");
+
+                      Logger.debug(
+                          "🔄 Server pagination info for ${responseDto.entityType}: page ${responseDto.pageIndex + 1}/${responseDto.totalPages}, ${responseDto.totalItems} total items");
                       if (processSuccess) {
                         Logger.info('✅ Successfully processed server response data for ${responseDto.entityType}');
                       } else {
@@ -3285,7 +3288,6 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       return null;
     }
   }
-
 
   /// Get maximum pages to check for each entity type based on expected data volume
 
