@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
-          submodules: recursive
+          submodules: false
 
       - name: Initialize Submodules
         uses: ./.github/actions/setup-repository
@@ -102,7 +102,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
-          submodules: recursive
+          submodules: false
 
       - name: Initialize Submodules
         uses: ./.github/actions/setup-repository
