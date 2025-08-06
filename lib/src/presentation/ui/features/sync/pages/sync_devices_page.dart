@@ -109,7 +109,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         final shouldStartServer = setting?.getValue<bool>() ?? false;
 
         if (shouldStartServer) {
-          Logger.info('��� Auto-starting server mode from saved preference');
+          Logger.info('🔄 Auto-starting server mode from saved preference');
           await _startServerModeFromPreference();
         }
       }

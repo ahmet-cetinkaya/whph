@@ -246,7 +246,7 @@ tasks:
       urgent_not_important: 緊急だが重要でない
   quick_task:
     create_error: タスク作成エラー
-    lock_description: 複数��類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
+    lock_description: 複数の類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
     lock_settings: ロック設定
     reset_all: すべてのフィールドをリセット
     reset_confirm:
