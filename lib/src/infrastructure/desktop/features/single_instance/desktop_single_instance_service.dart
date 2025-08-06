@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_single_instance_service.dart';
@@ -15,6 +16,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   RandomAccessFile? _lockHandle;
   Isolate? _focusListenerIsolate;
   ReceivePort? _focusReceivePort;
+  SendPort? _focusListenerSendPort;
   Function()? _onFocusRequested;
 
   @override
@@ -122,15 +124,22 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       
       // Start the isolate to monitor focus requests
       _focusReceivePort = ReceivePort();
+      final commandReceivePort = ReceivePort();
+      
       _focusListenerIsolate = await Isolate.spawn(
         _focusListenerIsolateEntry,
         {
-          'sendPort': _focusReceivePort!.sendPort,
+          'focusSendPort': _focusReceivePort!.sendPort,
+          'commandSendPort': commandReceivePort.sendPort,
           'focusFilePath': _focusFile!.path,
           'intervalMs': _focusCheckIntervalMs,
           'currentPid': pid,
         },
       );
+      
+      // Get the send port for communicating with the isolate
+      _focusListenerSendPort = await commandReceivePort.first;
+      commandReceivePort.close();
       
       // Listen for focus requests from the isolate
       _focusReceivePort!.listen((message) {
@@ -148,7 +157,15 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   @override
   Future<void> stopListeningForFocusCommands() async {
     try {
+      // Signal the isolate to shut down gracefully
+      if (_focusListenerSendPort != null) {
+        _focusListenerSendPort!.send('shutdown');
+        _focusListenerSendPort = null;
+      }
+      
       if (_focusListenerIsolate != null) {
+        // Give the isolate a moment to shut down gracefully
+        await Future.delayed(Duration(milliseconds: 100));
         _focusListenerIsolate!.kill();
         _focusListenerIsolate = null;
       }
@@ -180,15 +197,28 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   }
 
   static void _focusListenerIsolateEntry(Map<String, dynamic> params) async {
-    final SendPort sendPort = params['sendPort'];
+    final SendPort focusSendPort = params['focusSendPort'];
+    final SendPort commandSendPort = params['commandSendPort'];
     final String focusFilePath = params['focusFilePath'];
     final int intervalMs = params['intervalMs'];
     final int currentPid = params['currentPid'];
     
+    // Set up command listener
+    final commandReceivePort = ReceivePort();
+    commandSendPort.send(commandReceivePort.sendPort);
+    
+    bool shouldExit = false;
+    commandReceivePort.listen((message) {
+      if (message == 'shutdown') {
+        shouldExit = true;
+        commandReceivePort.close();
+      }
+    });
+    
     final focusFile = File(focusFilePath);
     DateTime lastModified = DateTime.fromMillisecondsSinceEpoch(0);
     
-    while (true) {
+    while (!shouldExit) {
       try {
         await Future.delayed(Duration(milliseconds: intervalMs));
         
@@ -206,15 +236,18 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
             
             // Don't respond to our own requests
             if (requestPid != null && requestPid != currentPid) {
-              sendPort.send('focus_requested');
+              focusSendPort.send('focus_requested');
               
               // Clear the focus file after processing
               await focusFile.writeAsString('', mode: FileMode.write);
             }
           }
         }
-      } catch (e) {
-        // Ignore errors in the isolate to prevent crashes
+      } catch (e, s) {
+        // Log errors in the isolate to aid debugging, instead of swallowing them.
+        // Use print instead of Logger since this is in an isolate
+        // Use debugPrint for consistent logging in isolates
+        debugPrint('Error in focus listener isolate: $e\n$s');
       }
     }
   }
