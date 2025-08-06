@@ -131,7 +131,7 @@ class PlatformInitializationService {
       // Set up focus listener for when other instances try to launch
       await singleInstanceService.startListeningForFocusCommands(() async {
         Logger.info('Focus request received from another instance');
-        
+
         try {
           // Show and focus the window
           await windowManager.show();

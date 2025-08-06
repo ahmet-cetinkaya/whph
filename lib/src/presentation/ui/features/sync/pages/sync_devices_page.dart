@@ -48,7 +48,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   bool _isServerMode = false;
   late AnimationController _syncIconAnimationController;
   late AnimationController _syncButtonAnimationController;
-  
+
   // Server mode specific sync tracking
   bool _isServerSyncActive = false;
   Timer? _syncStatusDebounceTimer;
@@ -60,7 +60,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   @override
   void initState() {
     super.initState();
-    
+
     // CRITICAL: Use the same sync service instance from container
     // This ensures we listen to the same stream that's being updated
     _syncService = container.resolve<ISyncService>();
@@ -140,7 +140,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   void _setupSyncStatusListener() {
     Logger.debug('🔧 Setting up sync status listener for ${_isServerMode ? "server" : "client"} mode');
-    
+
     _syncStatusSubscription = _syncService.syncStatusStream.listen((status) {
       if (mounted) {
         _currentSyncStatus = status;
@@ -155,14 +155,14 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         }
       }
     });
-    
+
     Logger.debug('✅ Sync status listener setup completed');
   }
 
   void _handleServerModeSyncStatusWithDebounce(SyncStatus status) {
     // Cancel any existing debounce timer
     _syncStatusDebounceTimer?.cancel();
-    
+
     // For server mode, only process meaningful state changes
     if (status.state == _lastProcessedState) {
       return; // Ignore duplicate states
@@ -220,7 +220,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   void _handleSyncStatusChange(SyncStatus status) {
     // Client mode handling - handle ALL sync types for UI consistency
     Logger.debug('🔄 Client sync status change: ${status.state} (manual: ${status.isManual})');
-    
+
     switch (status.state) {
       case SyncState.syncing:
         // Start sync button animation for ANY sync (manual, background, pairing, etc.)
@@ -532,7 +532,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       },
                     )
                   : const Icon(Icons.sync),
-              color: _currentSyncStatus.isSyncing 
+              color: _currentSyncStatus.isSyncing
                   ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                   : Theme.of(context).colorScheme.primary,
               tooltip: _currentSyncStatus.isSyncing

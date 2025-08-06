@@ -34,15 +34,15 @@ void main() async {
     if (PlatformUtils.isDesktop) {
       try {
         final singleInstanceService = container.resolve<ISingleInstanceService>();
-        
+
         if (await singleInstanceService.isAnotherInstanceRunning()) {
           // Try to focus the existing instance
           await singleInstanceService.sendFocusToExistingInstance();
-          
+
           // Exit gracefully without showing any windows
           exit(0);
         }
-        
+
         // Lock this instance
         if (!await singleInstanceService.lockInstance()) {
           // Failed to acquire lock, another instance might have started
