@@ -9,13 +9,13 @@ class AppThemeHelper {
   }
 
   static bool isMediumScreen(BuildContext context) {
-    return MediaQuery.sizeOf(context).width >= AppTheme.screenMedium &&
-        MediaQuery.sizeOf(context).width < AppTheme.screenLarge;
+    final width = MediaQuery.sizeOf(context).width;
+    return width >= AppTheme.screenMedium && width < AppTheme.screenLarge;
   }
 
   static bool isLargeScreen(BuildContext context) {
-    return MediaQuery.sizeOf(context).width >= AppTheme.screenLarge &&
-        MediaQuery.sizeOf(context).width < AppTheme.screenXLarge;
+    final width = MediaQuery.sizeOf(context).width;
+    return width >= AppTheme.screenLarge && width < AppTheme.screenXLarge;
   }
 
   static bool isXLargeScreen(BuildContext context) {
