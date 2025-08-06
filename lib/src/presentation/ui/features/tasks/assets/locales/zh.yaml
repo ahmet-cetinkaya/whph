@@ -250,7 +250,7 @@ tasks:
     lock_settings: 锁定设置
     reset_all: 重置所有字段
     reset_confirm:
-      message: 您��定要重置所有字段吗？此操作无法撤销。
+      message: 您确定要重置所有字段吗？此操作无法撤销。
       title: 重置所有字段
     title: 快速任务
     title_hint: 请输入描述性的任务标题...

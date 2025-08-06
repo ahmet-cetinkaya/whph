@@ -107,7 +107,7 @@ shared:
         heading: Nagłówek
         checkbox: Pole wyboru
   errors:
-    deleting: Wystąpi�� błąd podczas usuwania danych
+    deleting: Wystąpił błąd podczas usuwania danych
     file_not_found: Nie znaleziono pliku
     file_pick: Błąd podczas wybierania pliku
     file_read: Błąd podczas odczytywania pliku

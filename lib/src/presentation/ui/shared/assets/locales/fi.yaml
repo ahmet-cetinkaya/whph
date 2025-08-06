@@ -193,7 +193,7 @@ shared:
     sort: Järjestä
   statistics:
     daily_usage:
-      description: Näyttä�� kokonaiskäyttöajan viikonpäivittäin
+      description: Näyttää kokonaiskäyttöajan viikonpäivittäin
       title: Päivittäinen käyttö
     hourly_usage:
       description: Näyttää kokonaiskäyttöajan tunnin mukaan

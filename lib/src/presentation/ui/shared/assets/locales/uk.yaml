@@ -40,7 +40,7 @@ shared:
       sep: Вересень
       sep_short: Вер
     week_days:
-      friday: П'ятни��я
+      friday: П'ятниця
       friday_short: Пт
       monday: Понеділок
       monday_short: Пн
@@ -86,7 +86,7 @@ shared:
     thursday_short: Чт
     tuesday: Вівторок
     tuesday_short: Вт
-    wednesday: Се��еда
+    wednesday: Середа
     wednesday_short: Ср
   editor:
     markdown:
