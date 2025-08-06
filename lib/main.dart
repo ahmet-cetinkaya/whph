@@ -94,16 +94,13 @@ void main() async {
     }
 
     // Set up cleanup on exit for desktop platforms
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      ProcessSignal.sigint.watch().listen((_) async {
-        await _cleanupOnExit();
-        exit(0);
-      });
-      
-      ProcessSignal.sigterm.watch().listen((_) async {
-        await _cleanupOnExit();
-        exit(0);
-      });
+    if (PlatformUtils.isDesktop) {
+      for (final signal in [ProcessSignal.sigint, ProcessSignal.sigterm]) {
+        signal.watch().listen((_) async {
+          await _cleanupOnExit();
+          exit(0);
+        });
+      }
     }
   }, (error, stack) {
     // Global error handling for uncaught exceptions
@@ -117,7 +114,7 @@ void main() async {
 /// Cleanup resources before app exit
 Future<void> _cleanupOnExit() async {
   try {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (PlatformUtils.isDesktop) {
       final singleInstanceService = container.resolve<ISingleInstanceService>();
       await singleInstanceService.releaseInstance();
     }

@@ -4,8 +4,6 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:whph/src/core/domain/shared/constants/app_assets.dart';
-import 'package:whph/src/core/application/shared/services/abstraction/i_single_instance_service.dart';
-import 'package:whph/main.dart' as main;
 
 class DesktopSystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
   final List<TrayMenuItem> _menuItems = [];
@@ -137,21 +135,8 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
   }
 
   Future<void> _exitApp() async {
-    try {
-      await destroy();
-      
-      // Call global cleanup if single instance service is available
-      try {
-        final singleInstanceService = main.container.resolve<ISingleInstanceService>();
-        await singleInstanceService.releaseInstance();
-      } catch (e) {
-        // Single instance service not available on this platform, continue
-        Logger.debug('Single instance service not available during cleanup: $e');
-      }
-    } catch (e) {
-      Logger.error('Error during app exit cleanup: $e');
-    }
-    
+    await destroy();
+    // Direct exit - cleanup is handled by signal handlers in main.dart
     exit(0);
   }
 
