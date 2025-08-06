@@ -136,6 +136,7 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
 
   Future<void> _exitApp() async {
     await destroy();
+    // Direct exit - cleanup is handled by signal handlers in main.dart
     exit(0);
   }
 
