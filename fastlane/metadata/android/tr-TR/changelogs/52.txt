@@ -1,0 +1,5 @@
+• Birden fazla uygulama örneğinin aynı anda çalışabildiği sorun düzeltildi
+• Senkronizasyon durum göstergeleri ve geri bildirim mesajları iyileştirildi
+• Uygulamada İngilizce olmayan metinlerle görüntüleme sorunları düzeltildi
+• Uygulama kullanım takibi ve alışkanlıklar için gelişmiş senkronizasyon
+• Daha hızlı uygulama tepkisi için performans iyileştirmeleri
