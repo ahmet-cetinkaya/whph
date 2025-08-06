@@ -12,6 +12,7 @@ import 'package:whph/src/core/application/features/settings/services/abstraction
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:whph/src/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/infrastructure/android/features/settings/android_startup_settings_service.dart';
 import 'package:whph/src/infrastructure/desktop/features/notification/desktop_notification_service.dart';
@@ -43,6 +44,7 @@ import 'package:whph/src/infrastructure/android/features/setup/android_setup_ser
 import 'package:whph/src/infrastructure/android/features/file_system/android_file_service.dart';
 import 'package:whph/src/infrastructure/android/features/file_system/android_application_directory_service.dart';
 import 'package:whph/src/infrastructure/desktop/features/file_system/desktop_file_service.dart';
+import 'package:whph/src/infrastructure/desktop/features/single_instance/desktop_single_instance_service.dart';
 import 'package:whph/src/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/src/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 
@@ -78,6 +80,11 @@ void registerInfrastructure(IContainer container) {
 
   container.registerSingleton<ISystemTrayService>(
       (_) => (PlatformUtils.isMobile) ? MobileSystemTrayService() : DesktopSystemTrayService());
+
+  // Register single instance service (desktop only)
+  if (PlatformUtils.isDesktop) {
+    container.registerSingleton<ISingleInstanceService>((_) => DesktopSingleInstanceService());
+  }
 
   container.registerSingleton<INotificationService>((_) {
     final mediator = container.resolve<Mediator>();
