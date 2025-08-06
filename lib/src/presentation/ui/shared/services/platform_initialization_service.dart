@@ -6,6 +6,7 @@ import 'package:whph/src/presentation/api/api.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/src/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
@@ -40,6 +41,9 @@ class PlatformInitializationService {
 
     // Set up system tray integration
     await _initializeSystemTray(container);
+
+    // Set up single instance focus handling
+    await _initializeSingleInstanceFocusHandling(container);
 
     // Configure auto-start behavior
     await _configureStartupSettings(container);
@@ -114,6 +118,33 @@ class PlatformInitializationService {
     await systemTrayService.init();
 
     Logger.debug('PlatformInitializationService: System tray initialized');
+  }
+
+  /// Initializes single instance focus handling
+  static Future<void> _initializeSingleInstanceFocusHandling(IContainer container) async {
+    Logger.debug('PlatformInitializationService: Setting up single instance focus handling...');
+
+    try {
+      final singleInstanceService = container.resolve<ISingleInstanceService>();
+      final windowManager = container.resolve<IWindowManager>();
+
+      // Set up focus listener for when other instances try to launch
+      await singleInstanceService.startListeningForFocusCommands(() async {
+        Logger.info('Focus request received from another instance');
+        
+        try {
+          // Show and focus the window
+          await windowManager.show();
+          await windowManager.focus();
+        } catch (e) {
+          Logger.error('Failed to focus window: $e');
+        }
+      });
+
+      Logger.debug('PlatformInitializationService: Single instance focus handling initialized');
+    } catch (e) {
+      Logger.debug('Single instance service not available, skipping focus handling setup: $e');
+    }
   }
 
   /// Configures auto-start behavior
