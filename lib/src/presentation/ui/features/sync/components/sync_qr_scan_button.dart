@@ -265,7 +265,8 @@ class SyncQrScanButton extends StatelessWidget {
           }
         });
 
-        await syncService.runSync();
+        // Mark as manual sync so UI updates properly
+        await syncService.runSync(isManual: true);
 
         await completer.future.timeout(
           const Duration(seconds: 30),

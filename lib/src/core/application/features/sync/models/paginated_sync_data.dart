@@ -49,10 +49,10 @@ class PaginatedSyncData<T extends BaseEntity> {
   factory PaginatedSyncData.fromJson(Map<String, dynamic> json, Type type) {
     return PaginatedSyncData(
       data: SyncData<T>.fromJson(json['data'] as Map<String, dynamic>, type),
-      pageIndex: json['pageIndex'] as int,
-      pageSize: json['pageSize'] as int,
-      totalPages: json['totalPages'] as int,
-      totalItems: json['totalItems'] as int,
+      pageIndex: (json['pageIndex'] as num).toInt(),
+      pageSize: (json['pageSize'] as num).toInt(),
+      totalPages: (json['totalPages'] as num).toInt(),
+      totalItems: (json['totalItems'] as num).toInt(),
       isLastPage: json['isLastPage'] as bool,
       entityType: json['entityType'] as String,
     );
@@ -124,11 +124,11 @@ class SyncProgress {
   factory SyncProgress.fromJson(Map<String, dynamic> json) {
     return SyncProgress(
       currentEntity: json['currentEntity'] as String,
-      currentPage: json['currentPage'] as int,
-      totalPages: json['totalPages'] as int,
+      currentPage: (json['currentPage'] as num).toInt(),
+      totalPages: (json['totalPages'] as num).toInt(),
       progressPercentage: (json['progressPercentage'] as num).toDouble(),
-      entitiesCompleted: json['entitiesCompleted'] as int,
-      totalEntities: json['totalEntities'] as int,
+      entitiesCompleted: (json['entitiesCompleted'] as num).toInt(),
+      totalEntities: (json['totalEntities'] as num).toInt(),
       operation: json['operation'] as String,
     );
   }

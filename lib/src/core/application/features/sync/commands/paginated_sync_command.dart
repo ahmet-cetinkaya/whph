@@ -105,12 +105,16 @@ class PaginatedSyncCommandResponse {
   final bool isComplete;
   final String? nextEntityType;
   final int? nextPageIndex;
+  final int syncedDeviceCount;
+  final bool hadMeaningfulSync;
 
   PaginatedSyncCommandResponse({
     this.paginatedSyncDataDto,
     this.isComplete = false,
     this.nextEntityType,
     this.nextPageIndex,
+    this.syncedDeviceCount = 0,
+    this.hadMeaningfulSync = false,
   });
 }
 
@@ -361,7 +365,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     if (syncDevices.isEmpty) {
       Logger.info('🔍 No remote devices found to sync with');
-      return PaginatedSyncCommandResponse(isComplete: true);
+      return PaginatedSyncCommandResponse(
+        isComplete: true,
+        syncedDeviceCount: 0,
+        hadMeaningfulSync: false,
+      );
     }
 
     bool allDevicesSynced = true;
@@ -406,10 +414,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     if (allDevicesSynced) {
       Logger.info('🏁 Paginated sync operation completed successfully');
-      return PaginatedSyncCommandResponse(isComplete: true);
+      return PaginatedSyncCommandResponse(
+        isComplete: true,
+        syncedDeviceCount: successfulDevices.length,
+        hadMeaningfulSync: successfulDevices.isNotEmpty,
+      );
     } else {
       Logger.error('🏁 Paginated sync operation completed with failures');
-      return PaginatedSyncCommandResponse(isComplete: false);
+      return PaginatedSyncCommandResponse(
+        isComplete: false,
+        syncedDeviceCount: successfulDevices.length,
+        hadMeaningfulSync: successfulDevices.isNotEmpty,
+      );
     }
   }
 

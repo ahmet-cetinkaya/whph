@@ -1,6 +1,5 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/src/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/src/core/shared/utils/logger.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/src/core/domain/features/app_usages/app_usage_tag_rule.dart';
@@ -126,10 +125,10 @@ class PaginatedSyncDataDto {
       appVersion: json['appVersion'] as String,
       syncDevice: SyncDevice.fromJson(json['syncDevice'] as Map<String, dynamic>),
       entityType: json['entityType'] as String,
-      pageIndex: json['pageIndex'] as int,
-      pageSize: json['pageSize'] as int,
-      totalPages: json['totalPages'] as int,
-      totalItems: json['totalItems'] as int,
+      pageIndex: (json['pageIndex'] as num).toInt(),
+      pageSize: (json['pageSize'] as num).toInt(),
+      totalPages: (json['totalPages'] as num).toInt(),
+      totalItems: (json['totalItems'] as num).toInt(),
       isLastPage: json['isLastPage'] as bool,
       progress: json['progress'] != null ? SyncProgress.fromJson(json['progress'] as Map<String, dynamic>) : null,
       appUsagesSyncData: json['appUsagesSyncData'] != null
