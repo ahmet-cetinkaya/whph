@@ -4,7 +4,13 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/src/presentation/api/controllers/paginated_sync_controller.dart';
 import 'package:whph/src/core/application/shared/models/websocket_request.dart';
 import 'package:whph/src/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/src/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/main.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/src/core/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/src/core/application/features/sync/commands/save_sync_command.dart';
 
 const int webSocketPort = 44040;
 
@@ -68,6 +74,8 @@ void startWebSocketServer() async {
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
+  ISyncService? syncService;
+  
   try {
     Logger.debug('Received message: $message');
 
@@ -90,6 +98,19 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
       case 'paginated_sync':
         Logger.info('🔄 Processing paginated sync request...');
+        
+        // Notify sync service that sync has started (for UI feedback)
+        try {
+          syncService = container.resolve<ISyncService>();
+          syncService.updateSyncStatus(SyncStatus(
+            state: SyncState.syncing,
+            isManual: false, // Server-side sync is typically not manually initiated
+            lastSyncTime: DateTime.now(),
+          ));
+        } catch (e) {
+          Logger.debug('Could not update sync status (server may not have sync service): $e');
+        }
+        
         final paginatedSyncData = parsedMessage.data;
         if (paginatedSyncData == null) {
           throw FormatException('Paginated sync message missing data');
@@ -101,6 +122,13 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         try {
           final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
           Logger.info('✅ Paginated sync processing completed successfully');
+
+          // Update lastSyncDate for the sync device on server-side completion
+          try {
+            await _updateServerSideLastSyncDate(paginatedSyncData);
+          } catch (e) {
+            Logger.debug('Could not update server-side lastSyncDate: $e');
+          }
 
           WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
             'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
@@ -114,6 +142,21 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           // CRITICAL FIX: Add proper delay to ensure response is fully transmitted before close
           await Future.delayed(const Duration(milliseconds: 1000));
           await socket.close();
+          
+          // Notify sync service that sync completed successfully - go directly to idle after socket close
+          if (syncService != null) {
+            try {
+              // Wait a bit more to ensure socket is fully closed, then reset to idle
+              Timer(const Duration(seconds: 1), () {
+                syncService!.updateSyncStatus(SyncStatus(
+                  state: SyncState.idle,
+                  lastSyncTime: DateTime.now(),
+                ));
+              });
+            } catch (e) {
+              Logger.debug('Could not update sync status on completion: $e');
+            }
+          }
         } catch (e, stackTrace) {
           Logger.error('Paginated sync processing failed: $e');
           Logger.error('Stack trace: $stackTrace');
@@ -186,6 +229,21 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           socket.add(JsonMapper.serialize(errorMessage));
           // Close the socket after sending an error to clean up resources
           await socket.close();
+          
+          // Notify sync service that sync failed - go directly to idle after socket close
+          if (syncService != null) {
+            try {
+              // Wait a bit more to ensure socket is fully closed, then reset to idle
+              Timer(const Duration(seconds: 2), () {
+                syncService!.updateSyncStatus(SyncStatus(
+                  state: SyncState.idle,
+                  lastSyncTime: DateTime.now(),
+                ));
+              });
+            } catch (statusUpdateError) {
+              Logger.debug('Could not update sync status on error: $statusUpdateError');
+            }
+          }
         }
         break;
 
@@ -198,6 +256,80 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     Logger.error('Error processing WebSocket message: $e');
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
+    
+    // Reset sync status to idle on any error
+    if (syncService != null) {
+      try {
+        Timer(const Duration(seconds: 1), () {
+          syncService!.updateSyncStatus(SyncStatus(
+            state: SyncState.idle,
+            lastSyncTime: DateTime.now(),
+          ));
+        });
+      } catch (e) {
+        Logger.debug('Could not reset sync status on error: $e');
+      }
+    }
     rethrow;
+  }
+}
+
+/// Updates lastSyncDate for the sync device on server-side after successful sync
+Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncData) async {
+  try {
+    // Extract syncDevice from client data to get the same lastSyncDate
+    final syncDeviceData = paginatedSyncData['syncDevice'] as Map<String, dynamic>?;
+    if (syncDeviceData == null) {
+      Logger.debug('Cannot update lastSyncDate: missing syncDevice information');
+      return;
+    }
+
+    final clientLastSyncDate = syncDeviceData['lastSyncDate'] as String?;
+    if (clientLastSyncDate == null) {
+      Logger.debug('Cannot update lastSyncDate: missing lastSyncDate from client');
+      return;
+    }
+
+    // Parse the timestamp from client
+    final DateTime clientSyncTimestamp = DateTime.parse(clientLastSyncDate);
+
+    final mediator = container.resolve<Mediator>();
+    
+    // Find the sync device by IP pair
+    final clientIp = syncDeviceData['fromIp'] as String?;
+    final serverIp = syncDeviceData['toIp'] as String?;
+    
+    if (clientIp == null || serverIp == null) {
+      Logger.debug('Cannot update lastSyncDate: missing IP information in syncDevice');
+      return;
+    }
+    
+    final getSyncQuery = GetSyncDeviceQuery(
+      fromIP: clientIp, 
+      toIP: serverIp,
+      fromDeviceId: syncDeviceData['fromDeviceId'] as String? ?? '',
+      toDeviceId: syncDeviceData['toDeviceId'] as String? ?? '',
+    );
+    final syncResponse = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(getSyncQuery);
+    
+    if (syncResponse != null) {
+      // Use the SAME timestamp from client to ensure consistency
+      final updateCommand = SaveSyncDeviceCommand(
+        id: syncResponse.id,
+        name: syncResponse.name,
+        fromIP: syncResponse.fromIp,
+        toIP: syncResponse.toIp,
+        fromDeviceId: syncResponse.fromDeviceId,
+        toDeviceId: syncResponse.toDeviceId,
+        lastSyncDate: clientSyncTimestamp, // Use client's timestamp!
+      );
+      
+      await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(updateCommand);
+      Logger.debug('✅ Server-side lastSyncDate updated with client timestamp: $clientSyncTimestamp');
+    } else {
+      Logger.debug('⚠️ Sync device not found for IP pair: $clientIp -> $serverIp');
+    }
+  } catch (e) {
+    Logger.error('❌ Failed to update server-side lastSyncDate: $e');
   }
 }
