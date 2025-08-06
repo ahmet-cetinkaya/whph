@@ -148,7 +148,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
 
     // Check if this is a navigation item from the "More" menu that should be tracked
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
     final bool isFromMoreMenu = NavigationItems.topNavItems.indexOf(navItem) >= maxVisibleItems ||
@@ -239,8 +239,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   /// Builds the side drawer for navigation on larger screens
   Widget _buildDrawer(List<NavItem> topNavItems, List<NavItem>? bottomNavItems) {
-    final isMobile = MediaQuery.of(context).size.width <= 600;
-    final drawerWidth = isMobile ? MediaQuery.of(context).size.width * 0.65 : 180.0;
+    final isMobile = MediaQuery.sizeOf(context).width <= 600;
+    final drawerWidth = isMobile ? MediaQuery.sizeOf(context).width * 0.65 : 180.0;
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
@@ -348,7 +348,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   /// Builds the bottom navigation bar for smaller screens
   Widget _buildBottomNavigationBar() {
     final translationService = container.resolve<ITranslationService>();
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     final int maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
     final List<NavItem> mainNavItems = NavigationItems.topNavItems.take(maxVisibleItems).toList();
@@ -399,7 +399,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     container.resolve<ITranslationService>();
 
     // Calculate how many items can fit in the bottom navigation
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final int maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
     // Get items that don't fit in the bottom navigation
@@ -521,7 +521,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
 
     // If route not found in visible items, check if it's a "More" menu item
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
     // Check if current route is in items that would be in the "More" menu

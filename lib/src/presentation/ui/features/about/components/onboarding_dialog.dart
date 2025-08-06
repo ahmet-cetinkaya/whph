@@ -137,7 +137,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     return Dialog(
       backgroundColor: AppTheme.surface1,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.sizeOf(context).width * 0.8,
         constraints: const BoxConstraints(maxWidth: 400),
         padding: const EdgeInsets.all(24.0),
         child: Column(
