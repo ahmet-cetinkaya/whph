@@ -63,7 +63,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -175,7 +175,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
   }
 
   Widget _buildScannerOverlay(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.sizeOf(context);
     final scanAreaSize = screenSize.width * 0.7; // 70% of screen width
 
     return Positioned.fill(
@@ -258,7 +258,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
 
   Widget _buildInstructionText(BuildContext context, double scanAreaSize) {
     return Positioned(
-      top: MediaQuery.of(context).size.height / 2 + scanAreaSize / 2 + 40,
+      top: MediaQuery.sizeOf(context).height / 2 + scanAreaSize / 2 + 40,
       left: 0,
       right: 0,
       child: Center(

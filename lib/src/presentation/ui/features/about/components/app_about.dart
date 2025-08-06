@@ -143,7 +143,7 @@ class AppAbout extends StatelessWidget {
       'device-model': deviceInfo['deviceModel'] ?? 'Unknown',
       'operating-system': '${deviceInfo['osName']} ${deviceInfo['osVersion']}',
       'app-language': _translationService.getCurrentLanguage(context),
-      'screen-size': '${MediaQuery.of(context).size.width.toInt()}x${MediaQuery.of(context).size.height.toInt()}',
+      'screen-size': '${MediaQuery.sizeOf(context).width.toInt()}x${MediaQuery.sizeOf(context).height.toInt()}',
     };
 
     final uri = Uri.parse('${AppInfo.sourceCodeUrl}/issues/new').replace(

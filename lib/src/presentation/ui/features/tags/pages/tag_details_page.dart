@@ -117,7 +117,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
             ),
             const SizedBox(height: AppTheme.sizeSmall),
             SizedBox(
-              height: MediaQuery.of(context).size.height - 200, // Fixed height to prevent overflow
+              height: MediaQuery.sizeOf(context).height - 200, // Fixed height to prevent overflow
               child: DefaultTabController(
                 length: 3,
                 child: Column(

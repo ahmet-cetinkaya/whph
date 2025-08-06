@@ -467,7 +467,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     // Calculate responsive sizes with running state multiplier
     final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0;

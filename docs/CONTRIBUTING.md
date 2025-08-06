@@ -61,6 +61,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - Implement robust error handling and input validation.
 - Avoid magic strings/numbers; use constants or enums.
 - Follow security best practices and defensive programming techniques.
+- Avoid `MediaQuery.of(context)`; use specific methods like `MediaQuery.sizeOf(context)`.
 
 ## 3. How to Submit Pull Requests
 
