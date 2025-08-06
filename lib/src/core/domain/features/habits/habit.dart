@@ -173,41 +173,23 @@ class Habit extends BaseEntity<String> {
   factory Habit.fromJson(Map<String, dynamic> json) {
     // Handle estimatedTime: might come as int, double, or num
     int? estimatedTime;
-    if (json['estimatedTime'] != null) {
-      final estimatedTimeValue = json['estimatedTime'];
-      if (estimatedTimeValue is int) {
-        estimatedTime = estimatedTimeValue;
-      } else if (estimatedTimeValue is double) {
-        estimatedTime = estimatedTimeValue.toInt();
-      } else if (estimatedTimeValue is num) {
-        estimatedTime = estimatedTimeValue.toInt();
-      }
+    final estimatedTimeValue = json['estimatedTime'];
+    if (estimatedTimeValue is num) {
+      estimatedTime = estimatedTimeValue.toInt();
     }
 
     // Handle targetFrequency: might come as int, double, or num
     int targetFrequency = 1;
-    if (json['targetFrequency'] != null) {
-      final targetFrequencyValue = json['targetFrequency'];
-      if (targetFrequencyValue is int) {
-        targetFrequency = targetFrequencyValue;
-      } else if (targetFrequencyValue is double) {
-        targetFrequency = targetFrequencyValue.toInt();
-      } else if (targetFrequencyValue is num) {
-        targetFrequency = targetFrequencyValue.toInt();
-      }
+    final targetFrequencyValue = json['targetFrequency'];
+    if (targetFrequencyValue is num) {
+      targetFrequency = targetFrequencyValue.toInt();
     }
 
     // Handle periodDays: might come as int, double, or num
     int periodDays = 7;
-    if (json['periodDays'] != null) {
-      final periodDaysValue = json['periodDays'];
-      if (periodDaysValue is int) {
-        periodDays = periodDaysValue;
-      } else if (periodDaysValue is double) {
-        periodDays = periodDaysValue.toInt();
-      } else if (periodDaysValue is num) {
-        periodDays = periodDaysValue.toInt();
-      }
+    final periodDaysValue = json['periodDays'];
+    if (periodDaysValue is num) {
+      periodDays = periodDaysValue.toInt();
     }
 
     return Habit(
