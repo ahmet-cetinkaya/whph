@@ -136,6 +136,7 @@ class AppAbout extends StatelessWidget {
     // If the context is not mounted, return a default URL to avoid errors
     if (!context.mounted) return '${AppInfo.sourceCodeUrl}/issues/new';
 
+    final screenSize = MediaQuery.sizeOf(context);
     final queryParams = <String, String>{
       'template': 'general_feedback.yml',
       'title': '[FEEDBACK] ',
@@ -143,7 +144,7 @@ class AppAbout extends StatelessWidget {
       'device-model': deviceInfo['deviceModel'] ?? 'Unknown',
       'operating-system': '${deviceInfo['osName']} ${deviceInfo['osVersion']}',
       'app-language': _translationService.getCurrentLanguage(context),
-      'screen-size': '${MediaQuery.sizeOf(context).width.toInt()}x${MediaQuery.sizeOf(context).height.toInt()}',
+      'screen-size': '${screenSize.width.toInt()}x${screenSize.height.toInt()}',
     };
 
     final uri = Uri.parse('${AppInfo.sourceCodeUrl}/issues/new').replace(

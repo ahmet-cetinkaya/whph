@@ -239,8 +239,9 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
 
   /// Builds the side drawer for navigation on larger screens
   Widget _buildDrawer(List<NavItem> topNavItems, List<NavItem>? bottomNavItems) {
-    final isMobile = MediaQuery.sizeOf(context).width <= 600;
-    final drawerWidth = isMobile ? MediaQuery.sizeOf(context).width * 0.65 : 180.0;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final isMobile = screenWidth <= 600;
+    final drawerWidth = isMobile ? screenWidth * 0.65 : 180.0;
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
