@@ -184,7 +184,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
           WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
           socket.add(JsonMapper.serialize(errorMessage));
-          // CRITICAL FIX: Only close on error, not on success
+          // Close the socket after sending an error to clean up resources
           await socket.close();
         }
         break;

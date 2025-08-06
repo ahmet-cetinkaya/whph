@@ -130,51 +130,30 @@ class Task extends BaseEntity<String> {
 
     // Handle estimatedTime: might come as int, double, or null
     int? estimatedTime;
-    if (json['estimatedTime'] != null) {
-      final estimatedTimeValue = json['estimatedTime'];
-      if (estimatedTimeValue is int) {
-        estimatedTime = estimatedTimeValue;
-      } else if (estimatedTimeValue is double) {
-        estimatedTime = estimatedTimeValue.toInt();
-      } else if (estimatedTimeValue is num) {
-        estimatedTime = estimatedTimeValue.toInt();
-      }
-      // If it's not a number type, estimatedTime remains null
+    final estimatedTimeValue = json['estimatedTime'];
+    if (estimatedTimeValue is num) {
+      estimatedTime = estimatedTimeValue.toInt();
     }
 
     // Handle order: might come as int, double, or null
     double order = 0.0;
-    if (json['order'] != null) {
-      final orderValue = json['order'];
-      if (orderValue is double) {
-        order = orderValue;
-      } else if (orderValue is int) {
-        order = orderValue.toDouble();
-      } else if (orderValue is num) {
-        order = orderValue.toDouble();
-      }
+    final orderValue = json['order'];
+    if (orderValue is num) {
+      order = orderValue.toDouble();
     }
 
     // Handle recurrenceInterval: ensure it's int
     int? recurrenceInterval;
-    if (json['recurrenceInterval'] != null) {
-      final intervalValue = json['recurrenceInterval'];
-      if (intervalValue is int) {
-        recurrenceInterval = intervalValue;
-      } else if (intervalValue is num) {
-        recurrenceInterval = intervalValue.toInt();
-      }
+    final intervalValue = json['recurrenceInterval'];
+    if (intervalValue is num) {
+      recurrenceInterval = intervalValue.toInt();
     }
 
     // Handle recurrenceCount: ensure it's int
     int? recurrenceCount;
-    if (json['recurrenceCount'] != null) {
-      final countValue = json['recurrenceCount'];
-      if (countValue is int) {
-        recurrenceCount = countValue;
-      } else if (countValue is num) {
-        recurrenceCount = countValue.toInt();
-      }
+    final countValue = json['recurrenceCount'];
+    if (countValue is num) {
+      recurrenceCount = countValue.toInt();
     }
 
     return Task(

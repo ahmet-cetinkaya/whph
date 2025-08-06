@@ -87,15 +87,6 @@ class PaginatedSyncDataDto {
   });
 
   Map<String, dynamic> toJson() {
-    // Debug logging for Task entity
-    if (entityType == 'Task') {
-      Logger.debug(
-          '🔍 DEBUG: toJson for Task entity - tasksSyncData is ${tasksSyncData != null ? "NOT NULL" : "NULL"}');
-      if (tasksSyncData != null) {
-        Logger.debug('🔍 DEBUG: tasksSyncData totalItems: ${tasksSyncData!.totalItems}');
-      }
-    }
-
     return {
       'appVersion': appVersion,
       'syncDevice': syncDevice.toJson(),
@@ -129,18 +120,6 @@ class PaginatedSyncDataDto {
   factory PaginatedSyncDataDto.fromJson(Map<String, dynamic> json) {
     if (json['appVersion'] == null || json['appVersion'] is! String) {
       throw FormatException('Invalid or missing appVersion');
-    }
-
-    // Debug logging for Task entity
-    final entityType = json['entityType'] as String?;
-    if (entityType == 'Task') {
-      Logger.debug('🔍 DEBUG: fromJson for Task entity');
-      Logger.debug('🔍 DEBUG: tasksSyncData key exists: ${json.containsKey('tasksSyncData')}');
-      Logger.debug('🔍 DEBUG: tasksSyncData value: ${json['tasksSyncData'] != null ? "NOT NULL" : "NULL"}');
-      if (json['tasksSyncData'] != null) {
-        final taskSyncDataMap = json['tasksSyncData'] as Map<String, dynamic>;
-        Logger.debug('🔍 DEBUG: tasksSyncData map keys: ${taskSyncDataMap.keys.toList()}');
-      }
     }
 
     return PaginatedSyncDataDto(

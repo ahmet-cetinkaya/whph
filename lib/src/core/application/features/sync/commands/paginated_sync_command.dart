@@ -3289,8 +3289,6 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
   }
 
-  /// Get maximum pages to check for each entity type based on expected data volume
-
   void dispose() {
     _progressController.close();
   }

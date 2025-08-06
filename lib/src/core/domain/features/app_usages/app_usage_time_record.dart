@@ -28,15 +28,9 @@ class AppUsageTimeRecord extends BaseEntity<String> {
   factory AppUsageTimeRecord.fromJson(Map<String, dynamic> json) {
     // Handle duration: might come as int, double, or num
     int duration = 0;
-    if (json['duration'] != null) {
-      final durationValue = json['duration'];
-      if (durationValue is int) {
-        duration = durationValue;
-      } else if (durationValue is double) {
-        duration = durationValue.toInt();
-      } else if (durationValue is num) {
-        duration = durationValue.toInt();
-      }
+    final durationValue = json['duration'];
+    if (durationValue is num) {
+      duration = durationValue.toInt();
     }
 
     return AppUsageTimeRecord(
