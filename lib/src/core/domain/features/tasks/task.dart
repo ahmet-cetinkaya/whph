@@ -127,7 +127,7 @@ class Task extends BaseEntity<String> {
   factory Task.fromJson(Map<String, dynamic> json) {
     // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
     // This ensures robust deserialization regardless of JSON source (database, API, sync, etc.)
-    
+
     // Handle estimatedTime: might come as int, double, or null
     int? estimatedTime;
     if (json['estimatedTime'] != null) {
@@ -141,7 +141,7 @@ class Task extends BaseEntity<String> {
       }
       // If it's not a number type, estimatedTime remains null
     }
-    
+
     // Handle order: might come as int, double, or null
     double order = 0.0;
     if (json['order'] != null) {
@@ -154,7 +154,7 @@ class Task extends BaseEntity<String> {
         order = orderValue.toDouble();
       }
     }
-    
+
     // Handle recurrenceInterval: ensure it's int
     int? recurrenceInterval;
     if (json['recurrenceInterval'] != null) {
@@ -165,7 +165,7 @@ class Task extends BaseEntity<String> {
         recurrenceInterval = intervalValue.toInt();
       }
     }
-    
+
     // Handle recurrenceCount: ensure it's int
     int? recurrenceCount;
     if (json['recurrenceCount'] != null) {

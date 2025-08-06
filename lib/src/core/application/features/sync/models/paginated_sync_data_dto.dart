@@ -89,40 +89,41 @@ class PaginatedSyncDataDto {
   Map<String, dynamic> toJson() {
     // Debug logging for Task entity
     if (entityType == 'Task') {
-      Logger.debug('🔍 DEBUG: toJson for Task entity - tasksSyncData is ${tasksSyncData != null ? "NOT NULL" : "NULL"}');
+      Logger.debug(
+          '🔍 DEBUG: toJson for Task entity - tasksSyncData is ${tasksSyncData != null ? "NOT NULL" : "NULL"}');
       if (tasksSyncData != null) {
         Logger.debug('🔍 DEBUG: tasksSyncData totalItems: ${tasksSyncData!.totalItems}');
       }
     }
-    
+
     return {
-        'appVersion': appVersion,
-        'syncDevice': syncDevice.toJson(),
-        'entityType': entityType,
-        'pageIndex': pageIndex,
-        'pageSize': pageSize,
-        'totalPages': totalPages,
-        'totalItems': totalItems,
-        'isLastPage': isLastPage,
-        'progress': progress?.toJson(),
-        'appUsagesSyncData': appUsagesSyncData?.toJson(),
-        'appUsageTagsSyncData': appUsageTagsSyncData?.toJson(),
-        'appUsageTimeRecordsSyncData': appUsageTimeRecordsSyncData?.toJson(),
-        'appUsageTagRulesSyncData': appUsageTagRulesSyncData?.toJson(),
-        'appUsageIgnoreRulesSyncData': appUsageIgnoreRulesSyncData?.toJson(),
-        'habitsSyncData': habitsSyncData?.toJson(),
-        'habitRecordsSyncData': habitRecordsSyncData?.toJson(),
-        'habitTagsSyncData': habitTagsSyncData?.toJson(),
-        'tagsSyncData': tagsSyncData?.toJson(),
-        'tagTagsSyncData': tagTagsSyncData?.toJson(),
-        'tasksSyncData': tasksSyncData?.toJson(),
-        'taskTagsSyncData': taskTagsSyncData?.toJson(),
-        'taskTimeRecordsSyncData': taskTimeRecordsSyncData?.toJson(),
-        'settingsSyncData': settingsSyncData?.toJson(),
-        'syncDevicesSyncData': syncDevicesSyncData?.toJson(),
-        'notesSyncData': notesSyncData?.toJson(),
-        'noteTagsSyncData': noteTagsSyncData?.toJson(),
-      };
+      'appVersion': appVersion,
+      'syncDevice': syncDevice.toJson(),
+      'entityType': entityType,
+      'pageIndex': pageIndex,
+      'pageSize': pageSize,
+      'totalPages': totalPages,
+      'totalItems': totalItems,
+      'isLastPage': isLastPage,
+      'progress': progress?.toJson(),
+      'appUsagesSyncData': appUsagesSyncData?.toJson(),
+      'appUsageTagsSyncData': appUsageTagsSyncData?.toJson(),
+      'appUsageTimeRecordsSyncData': appUsageTimeRecordsSyncData?.toJson(),
+      'appUsageTagRulesSyncData': appUsageTagRulesSyncData?.toJson(),
+      'appUsageIgnoreRulesSyncData': appUsageIgnoreRulesSyncData?.toJson(),
+      'habitsSyncData': habitsSyncData?.toJson(),
+      'habitRecordsSyncData': habitRecordsSyncData?.toJson(),
+      'habitTagsSyncData': habitTagsSyncData?.toJson(),
+      'tagsSyncData': tagsSyncData?.toJson(),
+      'tagTagsSyncData': tagTagsSyncData?.toJson(),
+      'tasksSyncData': tasksSyncData?.toJson(),
+      'taskTagsSyncData': taskTagsSyncData?.toJson(),
+      'taskTimeRecordsSyncData': taskTimeRecordsSyncData?.toJson(),
+      'settingsSyncData': settingsSyncData?.toJson(),
+      'syncDevicesSyncData': syncDevicesSyncData?.toJson(),
+      'notesSyncData': notesSyncData?.toJson(),
+      'noteTagsSyncData': noteTagsSyncData?.toJson(),
+    };
   }
 
   factory PaginatedSyncDataDto.fromJson(Map<String, dynamic> json) {

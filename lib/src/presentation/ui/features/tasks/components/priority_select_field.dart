@@ -44,7 +44,8 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
             children: widget.options.map((option) => _buildPriorityOption(context, option)).toList(),
           ),
         ),
-        contentPadding: const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
+        contentPadding:
+            const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
       ),
     );
   }
