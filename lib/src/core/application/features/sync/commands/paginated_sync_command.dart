@@ -56,6 +56,43 @@ class ValidationException implements Exception {
   String toString() => 'ValidationException: $message';
 }
 
+/// Result of paginated sync operation
+class PaginatedSyncResult {
+  final bool success;
+  final bool hasMorePages;
+  final int? totalPages;
+  final int? totalItems;
+  final String? errorMessage;
+
+  PaginatedSyncResult({
+    required this.success,
+    this.hasMorePages = false,
+    this.totalPages,
+    this.totalItems,
+    this.errorMessage,
+  });
+
+  factory PaginatedSyncResult.success({
+    bool hasMorePages = false,
+    int? totalPages,
+    int? totalItems,
+  }) {
+    return PaginatedSyncResult(
+      success: true,
+      hasMorePages: hasMorePages,
+      totalPages: totalPages,
+      totalItems: totalItems,
+    );
+  }
+
+  factory PaginatedSyncResult.failure(String errorMessage) {
+    return PaginatedSyncResult(
+      success: false,
+      errorMessage: errorMessage,
+    );
+  }
+}
+
 class PaginatedSyncCommand implements IRequest<PaginatedSyncCommandResponse> {
   final PaginatedSyncDataDto? paginatedSyncDataDto;
 
@@ -68,12 +105,16 @@ class PaginatedSyncCommandResponse {
   final bool isComplete;
   final String? nextEntityType;
   final int? nextPageIndex;
+  final int syncedDeviceCount;
+  final bool hadMeaningfulSync;
 
   PaginatedSyncCommandResponse({
     this.paginatedSyncDataDto,
     this.isComplete = false,
     this.nextEntityType,
     this.nextPageIndex,
+    this.syncedDeviceCount = 0,
+    this.hadMeaningfulSync = false,
   });
 }
 
@@ -119,6 +160,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   // Progress tracking
   final _progressController = StreamController<SyncProgress>.broadcast();
   Stream<SyncProgress> get progressStream => _progressController.stream;
+
+  // Server pagination tracking for dynamic pagination control
+  final Map<String, int> _serverTotalPages = {};
+  final Map<String, int> _serverTotalItems = {};
 
   PaginatedSyncCommandHandler({
     required this.syncDeviceRepository,
@@ -320,7 +365,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     if (syncDevices.isEmpty) {
       Logger.info('🔍 No remote devices found to sync with');
-      return PaginatedSyncCommandResponse(isComplete: true);
+      return PaginatedSyncCommandResponse(
+        isComplete: true,
+        syncedDeviceCount: 0,
+        hadMeaningfulSync: false,
+      );
     }
 
     bool allDevicesSynced = true;
@@ -365,10 +414,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
     if (allDevicesSynced) {
       Logger.info('🏁 Paginated sync operation completed successfully');
-      return PaginatedSyncCommandResponse(isComplete: true);
+      return PaginatedSyncCommandResponse(
+        isComplete: true,
+        syncedDeviceCount: successfulDevices.length,
+        hadMeaningfulSync: successfulDevices.isNotEmpty,
+      );
     } else {
       Logger.error('🏁 Paginated sync operation completed with failures');
-      return PaginatedSyncCommandResponse(isComplete: false);
+      return PaginatedSyncCommandResponse(
+        isComplete: false,
+        syncedDeviceCount: successfulDevices.length,
+        hadMeaningfulSync: successfulDevices.isNotEmpty,
+      );
     }
   }
 
@@ -483,6 +540,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         }
 
         hasMorePages = !paginatedData.isLastPage;
+        // CRITICAL FIX: If local data says no more pages but we are still early in pagination,
+        // continue to check server response for more data
+        // CRITICAL FIX: Dynamic pagination based on server response
+        // If local data says no more pages but server indicated more pages exist, continue
+        if (!hasMorePages) {
+          final serverTotalPages = _serverTotalPages[config.name];
+          if (serverTotalPages != null && pageIndex < serverTotalPages - 1) {
+            hasMorePages = true;
+            Logger.debug(
+                "🔄 Local data complete but server has $serverTotalPages pages total. Continuing pagination for ${config.name} (page $pageIndex)");
+          } else if (serverTotalPages == null && pageIndex < 2) {
+            // Fallback: if no server info yet, try a few more pages for low-volume entities
+            hasMorePages = true;
+            Logger.debug(
+                "🔄 No server pagination info yet. Continuing pagination for ${config.name} (page $pageIndex)");
+          }
+        }
         pageIndex++;
 
         // Add delay between pages
@@ -668,8 +742,9 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 // Previous bug: This data was being skipped, causing sync to appear successful
                 // but desktop data never reached the mobile device database
                 bool responseProcessingSuccess = true;
-                if (messageData['paginatedSyncDataDto'] != null && isComplete) {
-                  Logger.info('📥 Server returned response data - processing desktop data sync to mobile');
+                if (messageData['paginatedSyncDataDto'] != null) {
+                  Logger.info(
+                      '📥 Server returned response data - processing desktop data sync to mobile (isComplete: $isComplete)');
 
                   Map<String, dynamic>? responseDataMap;
                   try {
@@ -692,6 +767,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                       // Process the incoming data using the same method used for server-side processing
                       final processSuccess = await processIncomingPaginatedData(responseDto);
 
+                      // CRITICAL FIX: Store server pagination info for dynamic pagination control
+                      // This enables proper pagination based on servers actual data, not static limits
+                      _serverTotalPages[responseDto.entityType] = responseDto.totalPages;
+                      _serverTotalItems[responseDto.entityType] = responseDto.totalItems;
+
+                      Logger.debug(
+                          "🔄 Server pagination info for ${responseDto.entityType}: page ${responseDto.pageIndex + 1}/${responseDto.totalPages}, ${responseDto.totalItems} total items");
                       if (processSuccess) {
                         Logger.info('✅ Successfully processed server response data for ${responseDto.entityType}');
                       } else {
@@ -1781,6 +1863,84 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             entityType: entityType,
           );
           Logger.debug('✅ Created PaginatedSyncData<AppUsageIgnoreRule> (${result.runtimeType})');
+          return result;
+
+        case 'AppUsageTimeRecord':
+          Logger.debug('🔍 Deserializing AppUsageTimeRecord entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<AppUsageTimeRecord>(item))
+              .where((item) => item != null)
+              .cast<AppUsageTimeRecord>()
+              .toList();
+
+          Logger.debug(
+              '📊 Deserialized AppUsageTimeRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
+          syncData = SyncData<AppUsageTimeRecord>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+
+          final result = PaginatedSyncData<AppUsageTimeRecord>(
+            data: syncData as SyncData<AppUsageTimeRecord>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<AppUsageTimeRecord> (${result.runtimeType})');
+          return result;
+
+        case 'HabitRecord':
+          Logger.debug('🔍 Deserializing HabitRecord entities...');
+          final createSync = (dataMap['createSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+          final updateSync = (dataMap['updateSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+          final deleteSync = (dataMap['deleteSync'] as List? ?? [])
+              .map((item) => JsonMapper.deserialize<HabitRecord>(item))
+              .where((item) => item != null)
+              .cast<HabitRecord>()
+              .toList();
+
+          Logger.debug(
+              '📊 Deserialized HabitRecords: ${createSync.length} create, ${updateSync.length} update, ${deleteSync.length} delete');
+
+          syncData = SyncData<HabitRecord>(
+            createSync: createSync,
+            updateSync: updateSync,
+            deleteSync: deleteSync,
+          );
+
+          final result = PaginatedSyncData<HabitRecord>(
+            data: syncData as SyncData<HabitRecord>,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            isLastPage: isLastPage,
+            entityType: entityType,
+          );
+          Logger.debug('✅ Created PaginatedSyncData<HabitRecord> (${result.runtimeType})');
           return result;
 
         // Add other entity types as needed
