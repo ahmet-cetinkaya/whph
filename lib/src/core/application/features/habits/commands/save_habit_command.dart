@@ -66,7 +66,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
 
       habit.name = request.name;
       habit.description = request.description;
-      habit.estimatedTime = request.estimatedTime;
+      habit.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
       habit.archivedDate = request.archivedDate;
 
       // Update reminder settings if provided
@@ -99,7 +99,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         createdDate: DateTime.now().toUtc(),
         name: request.name,
         description: request.description,
-        estimatedTime: request.estimatedTime,
+        estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null,
         hasReminder: request.hasReminder ?? false,
         reminderTime: request.reminderTime,
         hasGoal: request.hasGoal ?? false,

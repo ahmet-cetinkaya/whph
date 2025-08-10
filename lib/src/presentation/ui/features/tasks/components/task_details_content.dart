@@ -1082,6 +1082,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: NumericInput(
             initialValue: _task!.estimatedTime ?? TaskUiConstants.defaultEstimatedTimeOptions.first,
+            minValue: 0,
             incrementValue: 5,
             decrementValue: 5,
             onValueChanged: _onEstimatedTimeChanged,

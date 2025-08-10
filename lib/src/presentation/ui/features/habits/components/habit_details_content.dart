@@ -772,6 +772,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         icon: HabitUiConstants.estimatedTimeIcon,
         widget: NumericInput(
           initialValue: _habit!.estimatedTime ?? HabitUiConstants.defaultEstimatedTimeOptions.first,
+          minValue: 0,
           incrementValue: 5,
           decrementValue: 5,
           onValueChanged: (value) {
