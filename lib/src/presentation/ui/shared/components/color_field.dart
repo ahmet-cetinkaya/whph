@@ -4,9 +4,7 @@ import 'package:whph/src/presentation/ui/shared/components/color_picker.dart';
 import 'package:whph/src/presentation/ui/shared/components/color_preview.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
 class ColorField extends StatefulWidget {
   final Color? initialColor;
@@ -51,34 +49,30 @@ class _ColorFieldState extends State<ColorField> {
   Future<void> _onColorSelectionOpen() async {
     Color tempColor = _selectedColor;
 
-    final selectedColor = await ResponsiveDialogHelper.showResponsiveDialog<Color>(
+    final selectedColor = await showDialog<Color>(
       context: context,
-      size: DialogSize.small,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).cardColor,
-          title: Text(_translationService.translate(SharedTranslationKeys.selectColorTitle)),
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(_translationService.translate(SharedTranslationKeys.selectColorTitle)),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 400, // Fixed height for consistent sizing
+          child: ColorPicker(
+            pickerColor: _selectedColor,
+            onChangeColor: (color) {
+              tempColor = color;
+            },
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.check),
-              onPressed: () {
-                Navigator.of(context).pop(tempColor);
-              },
-              tooltip: _translationService.translate(SharedTranslationKeys.confirmSelection),
-            ),
-            const SizedBox(width: AppTheme.sizeSmall),
-          ],
         ),
-        body: ColorPicker(
-          pickerColor: _selectedColor,
-          onChangeColor: (color) {
-            tempColor = color;
-          },
-        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(tempColor),
+            child: Text(_translationService.translate(SharedTranslationKeys.confirmSelection)),
+          ),
+        ],
       ),
     );
 
