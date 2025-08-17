@@ -523,14 +523,15 @@ class TaskListState extends State<TaskList> {
         ],
       );
     } else {
+      final taskCards = _buildTaskCards();
       return ListView.builder(
         key: _pageStorageKey,
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _buildTaskCards().length + (_tasks!.hasNext ? 1 : 0),
+        itemCount: taskCards.length + (_tasks!.hasNext ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index < _buildTaskCards().length) {
-            return _buildTaskCards()[index];
+          if (index < taskCards.length) {
+            return taskCards[index];
           } else {
             // Load more button
             return Padding(
