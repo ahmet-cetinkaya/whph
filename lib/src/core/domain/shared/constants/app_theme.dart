@@ -32,5 +32,4 @@ class AppTheme {
     UiDensity.large: 1.2,
     UiDensity.larger: 1.4,
   };
-
 }
