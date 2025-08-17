@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/load_more_button.dart';
@@ -399,9 +399,8 @@ class TaskListState extends State<TaskList> {
   List<Widget> _buildTaskCards() {
     final items = _getFilteredTasks();
     return items
-        .map((task) => Material(
+        .map((task) => Container(
               key: ValueKey(task.id),
-              type: MaterialType.transparency,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
                 child: TaskCard(
@@ -499,46 +498,52 @@ class TaskListState extends State<TaskList> {
       );
     }
 
-    return ListView(
-      key: _pageStorageKey,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      controller: _scrollController,
-      children: [
-        if (widget.enableReordering && widget.filterByCompleted != true)
-          Material(
-            type: MaterialType.transparency,
-            child: ReorderableListView(
-              buildDefaultDragHandles: false,
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              proxyDecorator: (child, index, animation) => AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) => Transform.scale(
-                  scale: Curves.easeInOut.transform(animation.value) * 0.02 + 1,
-                  child: Material(
-                    elevation: Curves.easeInOut.transform(animation.value) * 5 + 1,
-                    shadowColor: Theme.of(context).shadowColor.withValues(alpha: 0.3),
-                    child: child,
-                  ),
-                ),
-                child: child,
-              ),
-              onReorder: _onReorder,
-              children: _buildTaskCards(),
+    if (widget.enableReordering && widget.filterByCompleted != true) {
+      return ReorderableListView(
+        key: _pageStorageKey,
+        buildDefaultDragHandles: false,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          child: child,
+        ),
+        onReorder: _onReorder,
+        children: [
+          ..._buildTaskCards(),
+          if (_tasks!.hasNext)
+            Padding(
+              key: const ValueKey('load_more_button'),
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+              child: Center(
+                  child: LoadMoreButton(
+                onPressed: _onLoadMore,
+              )),
             ),
-          )
-        else
-          ...List<Widget>.from(_buildTaskCards()),
-        if (_tasks!.hasNext)
-          Padding(
-            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-            child: Center(
-                child: LoadMoreButton(
-              onPressed: _onLoadMore,
-            )),
-          ),
-      ],
-    );
+        ],
+      );
+    } else {
+      final taskCards = _buildTaskCards();
+      return ListView.builder(
+        key: _pageStorageKey,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: taskCards.length + (_tasks!.hasNext ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index < taskCards.length) {
+            return taskCards[index];
+          } else {
+            // Load more button
+            return Padding(
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+              child: Center(
+                  child: LoadMoreButton(
+                onPressed: _onLoadMore,
+              )),
+            );
+          }
+        },
+      );
+    }
   }
 }
