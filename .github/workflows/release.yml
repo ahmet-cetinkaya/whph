@@ -36,11 +36,30 @@ jobs:
       - name: Check if all workflows completed successfully
         id: check
         run: |
-          # Extract tag info from the head branch
-          HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
-          echo "Head branch: $HEAD_BRANCH"
+          # Extract tag info from the head branch or use current branch for manual dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            HEAD_BRANCH="${{ github.ref_name }}"
+            echo "Manual dispatch - using current branch: $HEAD_BRANCH"
+          else
+            HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+            echo "Workflow run - using head branch: $HEAD_BRANCH"
+          fi
 
-          if [[ $HEAD_BRANCH =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          # For manual dispatch, skip tag validation and use app version directly
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Manual dispatch - release with current app version
+            APP_VERSION="${{ steps.app_version.outputs.version }}"
+            TAG_NAME="v${{ steps.app_version.outputs.version-number }}"
+            TAG_VERSION="${{ steps.app_version.outputs.version-number }}"
+            
+            echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+            echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+            echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+            echo "should-release=true" >> $GITHUB_OUTPUT
+            
+            echo "🎉 Manual release for version $APP_VERSION"
+            
+          elif [[ $HEAD_BRANCH =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             TAG_NAME="$HEAD_BRANCH"
             TAG_VERSION="${TAG_NAME#v}"
             echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
