@@ -1,0 +1,3 @@
+• Neue UI-Dichte-Einstellungen: Passen Sie Text- und Oberflächenelementgrößen für bessere Lesbarkeit auf hochauflösenden Displays an
+• Verbesserte Leistung: Schnelleres Rendern der Aufgabenliste und optimierte Bildschirmaktualisierungsraten
+• Verbesserte Benutzererfahrung: Bessere Datumsberechnungen und flüssigere Animationen

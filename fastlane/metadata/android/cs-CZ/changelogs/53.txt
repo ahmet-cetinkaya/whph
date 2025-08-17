@@ -1,0 +1,3 @@
+• Nová nastavení hustoty rozhraní: Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích s vysokým rozlišením
+• Vylepšený výkon: Rychlejší vykreslování seznamu úkolů a optimalizované obnovovací frekvence displeje
+• Vylepšené uživatelské prostředí: Lepší výpočty dat a plynulejší animace

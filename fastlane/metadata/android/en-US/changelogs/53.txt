@@ -1,0 +1,3 @@
+• New UI Density Settings: Adjust text and interface element sizes for better readability on high-resolution displays
+• Improved Performance: Faster task list rendering and optimized display refresh rates
+• Enhanced User Experience: Better date calculations and smoother animations

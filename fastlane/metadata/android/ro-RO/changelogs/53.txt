@@ -1,0 +1,3 @@
+• Noi setări de densitate a interfeței: Ajustați dimensiunile textului și elementelor de interfață pentru o mai bună lizibilitate pe ecrane de înaltă rezoluție
+• Performanță îmbunătățită: Redare mai rapidă a listei de sarcini și frecvențe de reîmprospătare a ecranului optimizate
+• Experiență de utilizator îmbunătățită: Calcule de date mai bune și animații mai fluide
