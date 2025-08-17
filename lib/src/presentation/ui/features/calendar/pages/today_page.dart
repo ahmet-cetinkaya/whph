@@ -73,6 +73,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _habitsLoaded = false;
   bool _tasksLoaded = false;
 
+  // Cached date calculations for performance
+  late DateTime _todayStart;
+  late DateTime _todayEnd;
+  late DateTime _tomorrowStart;
+
   @override
   bool get wantKeepAlive => true; // Keep the state alive when navigating away for marathon page
 
@@ -81,12 +86,21 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     super.initState();
     // Reset confetti flag daily by checking if it's a new day
     _resetConfettiIfNewDay();
+    // Initialize cached date calculations
+    _updateDateCalculations();
   }
 
   void _resetConfettiIfNewDay() {
     // This could be enhanced to check actual date change
     // For now, reset when page initializes
     _confettiShownToday = false;
+  }
+
+  void _updateDateCalculations() {
+    final now = DateTime.now();
+    _todayStart = DateTime(now.year, now.month, now.day);
+    _todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    _tomorrowStart = DateTime(now.year, now.month, now.day + 1);
   }
 
   void _onMainListOptionSettingsLoaded() {
@@ -204,11 +218,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     super.build(context);
 
-    final now = DateTime.now();
-    final todayStart = DateTime(now.year, now.month, now.day);
-    final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
-    final tomorrowStart = DateTime(now.year, now.month, now.day + 1);
-
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
@@ -285,7 +294,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
                       // Only show habits not completed today
-                      excludeCompletedForDate: todayStart,
+                      excludeCompletedForDate: _todayStart,
                       onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                       onHabitCompleted: _onHabitCompleted,
                       onListing: _onHabitsListed,
@@ -364,9 +373,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
                       filterByPlannedStartDate: DateTime(0),
-                      filterByPlannedEndDate: todayEnd,
+                      filterByPlannedEndDate: _todayEnd,
                       filterByDeadlineStartDate: DateTime(0),
-                      filterByDeadlineEndDate: todayEnd,
+                      filterByDeadlineEndDate: _todayEnd,
                       filterDateOr: true,
                       search: _taskSearchQuery,
                       pageSize: 5,
@@ -417,8 +426,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     Center(
                       child: TagTimeChart(
                         filterByTags: _selectedTagFilter,
-                        startDate: todayStart,
-                        endDate: tomorrowStart,
+                        startDate: _todayStart,
+                        endDate: _tomorrowStart,
                         selectedCategories: _selectedCategories,
                       ),
                     ),
