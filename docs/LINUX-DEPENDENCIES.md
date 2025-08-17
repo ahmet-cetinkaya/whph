@@ -41,12 +41,10 @@ sudo pacman -S sqlite
 # Update package list
 sudo apt update
 
-# Install essential runtime libraries
-sudo apt install -y libgtk-3-0 libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 \
-                    libgstreamer-plugins-good1.0-0
-
-# Install system integration
-sudo apt install -y libayatana-appindicator3-1 libnotify4
+# Install essential build and runtime libraries
+sudo apt install -y build-essential cmake pkg-config libasound2-dev libgtk-3-dev \
+                    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+                    libayatana-appindicator3-dev libnotify-dev
 
 # Install window management tools (for app usage tracking)
 sudo apt install -y x11-utils wmctrl xdotool  # For X11 systems
