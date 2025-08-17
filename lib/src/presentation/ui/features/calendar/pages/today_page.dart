@@ -103,6 +103,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _tomorrowStart = DateTime(now.year, now.month, now.day + 1);
   }
 
+  bool _isDateCacheStale() {
+    final now = DateTime.now();
+    final currentDayStart = DateTime(now.year, now.month, now.day);
+    return !_todayStart.isAtSameMomentAs(currentDayStart);
+  }
+
   void _onMainListOptionSettingsLoaded() {
     if (mounted) {
       setState(() {
@@ -217,6 +223,13 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    
+    // Check if date cache is stale and update if needed
+    if (_isDateCacheStale()) {
+      _updateDateCalculations();
+      // Reset confetti flag for new day
+      _confettiShownToday = false;
+    }
 
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
