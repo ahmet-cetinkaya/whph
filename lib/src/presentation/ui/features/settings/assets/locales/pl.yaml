@@ -161,3 +161,12 @@ settings:
       description: Wybierz niestandardowy kolor akcentu, aby spersonalizować wygląd aplikacji
       feature: Niestandardowy
     error: Nie udało się załadować ustawień motywu
+
+  ui_density:
+    title: Gęstość
+    description: Dostosuj rozmiar tekstu i elementów interfejsu, aby poprawić czytelność na wyświetlaczach o wysokim DPI
+    compact: Zwarta
+    normal: Normalna
+    large: Duża
+    larger: Większa
+    error: Nie udało się wczytać ustawień gęstości interfejsu

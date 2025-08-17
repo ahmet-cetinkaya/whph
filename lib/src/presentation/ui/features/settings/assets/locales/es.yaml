@@ -160,3 +160,11 @@ settings:
       description: Elige un color de acento personalizado para personalizar la apariencia de tu aplicación
       feature: Personalizado
     error: Error al cargar la configuración del tema
+  ui_density:
+    title: Densidad
+    description: Ajusta el tamaño del texto y elementos de la interfaz para mejorar la legibilidad en pantallas de alta resolución
+    compact: Compacto
+    normal: Normal
+    large: Grande
+    larger: Más grande
+    error: Error al cargar la configuración de densidad de la interfaz

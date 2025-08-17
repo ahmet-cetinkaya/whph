@@ -160,3 +160,11 @@ settings:
       description: Wählen Sie eine benutzerdefinierte Akzentfarbe, um das Erscheinungsbild Ihrer App zu personalisieren
       feature: Benutzerdefiniert
     error: Fehler beim Laden der Design-Einstellungen
+  ui_density:
+    title: Dichte
+    description: Anpassung der Größe von Text und UI-Elementen zur Verbesserung der Lesbarkeit auf hochauflösenden Displays
+    compact: Kompakt
+    normal: Normal
+    large: Groß
+    larger: Größer
+    error: Fehler beim Laden der UI-Dichte-Einstellungen

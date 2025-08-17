@@ -161,3 +161,11 @@ settings:
       description: アプリの外観をパーソナライズするためのカスタムアクセントカラーを選択してください
       feature: カスタム
     error: テーマ設定の読み込みに失敗しました
+  ui_density:
+    title: 密度
+    description: 高解像度ディスプレイでの読みやすさを向上させるため、テキストとUI要素のサイズを調整します
+    compact: コンパクト
+    normal: 標準
+    large: 大
+    larger: 特大
+    error: UI密度設定の読み込みに失敗しました

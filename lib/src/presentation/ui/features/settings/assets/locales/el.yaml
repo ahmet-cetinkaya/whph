@@ -161,3 +161,12 @@ settings:
       description: Choose a custom accent color to personalize your app's appearance
       feature: Custom
     error: Failed to load theme settings
+
+  ui_density:
+    title: Πυκνότητα
+    description: Ρυθμίστε το μέγεθος κειμένου και στοιχείων διεπαφής για βελτιωμένη αναγνωσιμότητα σε οθόνες υψηλής DPI
+    compact: Συμπαγές
+    normal: Κανονικό
+    large: Μεγάλο
+    larger: Μεγαλύτερο
+    error: Αποτυχία φόρτωσης ρυθμίσεων πυκνότητας διεπαφής

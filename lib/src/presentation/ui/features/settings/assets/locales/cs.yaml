@@ -161,3 +161,12 @@ settings:
       description: Choose a custom accent color to personalize your app's appearance
       feature: Custom
     error: Failed to load theme settings
+
+  ui_density:
+    title: Hustota
+    description: Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích s vysokým DPI
+    compact: Kompaktní
+    normal: Normální
+    large: Velká
+    larger: Větší
+    error: Nepodařilo se načíst nastavení hustoty rozhraní
