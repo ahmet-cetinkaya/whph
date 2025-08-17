@@ -85,50 +85,30 @@ jobs:
           # These flags may help with the AOT compilation issue
           echo "FLUTTER_BUILD_MODE=release" >> $env:GITHUB_ENV
 
-      - name: Build for Windows (with verbose output and multiple strategies)
+      - name: Build for Windows
         run: |
-          Write-Host "=== Starting Windows Build Process ==="
+          Write-Host "🔧 Configuring Windows build environment..."
           fvm flutter config --enable-windows-desktop
-
-          Write-Host "=== Flutter Environment Check ==="
-          fvm flutter doctor -v
-
-          Write-Host "=== Cleaning Previous Builds ==="
           fvm flutter clean
-
-          Write-Host "=== Installing Dependencies ==="
           fvm flutter pub get
 
-          Write-Host "=== Attempting Windows Build (Multiple Strategies) ==="
-
           # Strategy 1: Standard release build
-          Write-Host "📦 Strategy 1: Standard release build"
-          fvm flutter build windows --release --verbose
+          Write-Host "📦 Building Windows application (Release mode)..."
+          fvm flutter build windows --release
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Standard release build succeeded!"
+            Write-Host "✅ Release build succeeded!"
             echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
           } else {
-            Write-Host "❌ Standard release build failed with exit code: $LASTEXITCODE"
+            Write-Host "❌ Release build failed, trying profile mode..."
             
-            # Strategy 2: Release build with tree-shake disabled
-            Write-Host "📦 Strategy 2: Release build with --no-tree-shake-icons"
-            fvm flutter build windows --release --no-tree-shake-icons --verbose
+            # Strategy 2: Profile build as fallback
+            fvm flutter build windows --profile
             if ($LASTEXITCODE -eq 0) {
-              Write-Host "✅ Release build with --no-tree-shake-icons succeeded!"
-              echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
+              Write-Host "✅ Profile build succeeded!"
+              echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
             } else {
-              Write-Host "❌ Release build with --no-tree-shake-icons failed with exit code: $LASTEXITCODE"
-              
-              # Strategy 3: Profile build as fallback
-              Write-Host "📦 Strategy 3: Profile build as fallback"
-              fvm flutter build windows --profile --verbose
-              if ($LASTEXITCODE -eq 0) {
-                Write-Host "✅ Profile build succeeded as fallback!"
-                echo "BUILD_TYPE=Profile" >> $env:GITHUB_ENV
-              } else {
-                Write-Host "❌ ALL BUILD ATTEMPTS FAILED! Profile build exit code: $LASTEXITCODE"
-                exit 1
-              }
+              Write-Host "❌ Build failed with exit code: $LASTEXITCODE"
+              exit 1
             }
           }
 
@@ -138,8 +118,7 @@ jobs:
             echo "BUILD_TYPE=Release" >> $env:GITHUB_ENV
           }
 
-          Write-Host "🎯 Final BUILD_TYPE: $env:BUILD_TYPE"
-          Write-Host "=== Build Process Complete ==="
+          Write-Host "✅ Build completed successfully (BUILD_TYPE: $env:BUILD_TYPE)"
         env:
           FLUTTER_BUILD_DIR: build
 
@@ -169,37 +148,24 @@ jobs:
           }
 
       # Publish the build artifacts
-      - name: Debug build directory structure
+      - name: Check build output
         run: |
-          Write-Host "=== Build Environment Info ==="
           Write-Host "BUILD_TYPE: ${{ env.BUILD_TYPE }}"
-          Write-Host "Current directory: $(Get-Location)"
-          Write-Host "=== Build Directory Structure ==="
-          if (Test-Path "build") {
-            Write-Host "build/ directory contents:"
-            Get-ChildItem "build" -Recurse | ForEach-Object {
-              if ($_.PSIsContainer) {
-                Write-Host "  DIR:  $($_.FullName.Replace((Get-Location).Path, ''))"
-              } else {
-                Write-Host "  FILE: $($_.FullName.Replace((Get-Location).Path, '')) ($($_.Length) bytes)"
-              }
-            }
+          if (Test-Path "build/windows/x64/runner/${{ env.BUILD_TYPE }}") {
+            Write-Host "✅ Build output found"
           } else {
-            Write-Host "❌ build/ directory does not exist"
+            Write-Host "❌ Build output missing"
+            exit 1
           }
-          Write-Host "=== End Build Directory Structure ==="
 
       - name: Verify build output
         run: |
-          Write-Host "Verifying build output in ${{ env.BUILD_TYPE }} folder..."
           $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
           if (Test-Path $buildPath) {
-            Write-Host "Build folder exists: $buildPath"
-            Get-ChildItem -Path $buildPath -Recurse | Where-Object { -not $_.PSIsContainer } | ForEach-Object {
-              Write-Host "File: $($_.FullName) (Size: $($_.Length) bytes)"
-            }
+            $fileCount = (Get-ChildItem -Path $buildPath -Recurse -File).Count
+            Write-Host "✅ Build verified: $fileCount files in $buildPath"
           } else {
-            Write-Host "ERROR: Build folder not found: $buildPath"
+            Write-Host "❌ Build folder not found: $buildPath"
             exit 1
           }
 
@@ -246,10 +212,7 @@ jobs:
           $tempIssFile = "windows\setup-wizard\installer_temp.iss"
           $issTemplate | Set-Content $tempIssFile
 
-          Write-Host "=== Generated Installer Script Content ==="
-          Write-Host "Key lines from the installer script:"
-          $issTemplate.Split("`n") | Where-Object { $_ -match "(OutputDir|Source)" } | ForEach-Object { Write-Host "  $_" }
-          Write-Host "=== End Installer Script Content ==="
+          Write-Host "Installer script configured for build type: ${{ env.BUILD_TYPE }}"
 
           # Check if Inno Setup is available
           $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
@@ -269,45 +232,20 @@ jobs:
           & "$innoSetupPath" $tempIssFile
 
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "=== Installer Compilation Success ==="
-            # Check both possible locations for the installer
+            # Check for the installer
             $expectedPath = "$installerDir\whph-setup.exe"
             $alternatePath = "build\windows\installer\whph-setup.exe"
             
-            Write-Host "Checking for installer at expected path: $expectedPath"
             if (Test-Path $expectedPath) {
-              $installerSize = (Get-Item $expectedPath).Length
-              Write-Host "✅ Installer found at expected location: $expectedPath"
-              Write-Host "   Size: $($installerSize / 1MB) MB"
+              $installerSize = [math]::Round((Get-Item $expectedPath).Length / 1MB, 1)
+              Write-Host "✅ Installer created successfully ($installerSize MB)"
             } elseif (Test-Path $alternatePath) {
-              $installerSize = (Get-Item $alternatePath).Length
-              Write-Host "✅ Installer found at alternate location: $alternatePath"
-              Write-Host "   Size: $($installerSize / 1MB) MB"
-              # Move it to the expected location
               Move-Item $alternatePath $expectedPath
-              Write-Host "   Moved to expected location: $expectedPath"
+              $installerSize = [math]::Round((Get-Item $expectedPath).Length / 1MB, 1)
+              Write-Host "✅ Installer created successfully ($installerSize MB)"
             } else {
-              Write-Host "❌ ERROR: Installer file not found at any expected location"
-              Write-Host "Searching for whph-setup.exe in build directory..."
-              $foundFiles = Get-ChildItem -Path "build" -Recurse -Filter "whph-setup.exe" -ErrorAction SilentlyContinue
-              if ($foundFiles) {
-                foreach ($file in $foundFiles) {
-                  Write-Host "   Found: $($file.FullName)"
-                  # Move the first one found to the expected location
-                  Move-Item $file.FullName $expectedPath
-                  Write-Host "   Moved to expected location: $expectedPath"
-                  break
-                }
-              } else {
-                Write-Host "   No whph-setup.exe files found in build directory"
-                Write-Host "Contents of build directory:"
-                if (Test-Path "build") {
-                  Get-ChildItem "build" -Recurse | Where-Object { -not $_.PSIsContainer } | ForEach-Object { 
-                    Write-Host "     $($_.FullName)" 
-                  }
-                }
-                exit 1
-              }
+              Write-Host "❌ Installer creation failed - file not found"
+              exit 1
             }
           } else {
             Write-Host "ERROR: Installer creation failed with exit code: $LASTEXITCODE"
@@ -341,34 +279,10 @@ jobs:
       - name: Verify installer artifact exists
         run: |
           $installerPath = "build\windows\installer\whph-setup.exe"
-          Write-Host "Final verification: Installer artifact exists at: $installerPath"
           if (Test-Path $installerPath) {
-            $fileInfo = Get-Item $installerPath
-            Write-Host "✅ SUCCESS: Installer ready for upload"
-            Write-Host "   Path: $($fileInfo.FullName)"
-            Write-Host "   Size: $([math]::Round($fileInfo.Length / 1MB, 2)) MB"
-            Write-Host "   Created: $($fileInfo.CreationTime)"
-            Write-Host "   Modified: $($fileInfo.LastWriteTime)"
+            $sizeMB = [math]::Round((Get-Item $installerPath).Length / 1MB, 1)
+            Write-Host "✅ Installer ready for upload ($sizeMB MB)"
           } else {
-            Write-Host "❌ CRITICAL ERROR: Installer not found at expected location"
-            Write-Host "This will cause the artifact upload to fail!"
-            Write-Host "Contents of build\windows\installer directory:"
-            if (Test-Path "build\windows\installer") {
-              Get-ChildItem "build\windows\installer" | ForEach-Object { 
-                Write-Host "  - $($_.Name) ($([math]::Round($_.Length / 1MB, 2)) MB)" 
-              }
-            } else {
-              Write-Host "  Directory does not exist"
-            }
-            Write-Host "Contents of build\windows directory:"
-            if (Test-Path "build\windows") {
-              Get-ChildItem "build\windows" -Recurse | ForEach-Object { 
-                if (-not $_.PSIsContainer) {
-                  Write-Host "  File: $($_.FullName.Replace((Get-Location).Path, ''))"
-                }
-              }
-            } else {
-              Write-Host "  Directory does not exist"
-            }
+            Write-Host "❌ Installer not found"
             exit 1
           }
