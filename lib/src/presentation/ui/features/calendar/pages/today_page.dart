@@ -223,7 +223,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
     // Check if date cache is stale and update if needed
     if (_isDateCacheStale()) {
       _updateDateCalculations();

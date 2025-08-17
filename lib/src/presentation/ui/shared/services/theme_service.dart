@@ -162,15 +162,23 @@ class ThemeService implements IThemeService {
       textTheme: TextTheme(
         bodySmall: TextStyle(color: textColor, fontSize: 12.0 * densityMultiplier, height: 1.5),
         bodyMedium: TextStyle(color: textColor, fontSize: 14.0 * densityMultiplier, height: 1.5),
-        bodyLarge: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, height: 1.5, fontWeight: FontWeight.w500),
-        headlineSmall: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
-        headlineMedium: TextStyle(color: textColor, fontSize: 20.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
-        headlineLarge: TextStyle(color: textColor, fontSize: 28.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.2),
+        bodyLarge:
+            TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, height: 1.5, fontWeight: FontWeight.w500),
+        headlineSmall:
+            TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
+        headlineMedium:
+            TextStyle(color: textColor, fontSize: 20.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
+        headlineLarge:
+            TextStyle(color: textColor, fontSize: 28.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.2),
         displaySmall: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, fontWeight: FontWeight.bold),
-        displayLarge: TextStyle(color: textColor, fontSize: 48.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.1),
-        labelSmall: TextStyle(color: secondaryTextColor, fontSize: 11.0 * densityMultiplier, fontWeight: FontWeight.w500),
-        labelMedium: TextStyle(color: secondaryTextColor, fontSize: 12.0 * densityMultiplier, fontWeight: FontWeight.w500),
-        labelLarge: TextStyle(color: secondaryTextColor, fontSize: 14.0 * densityMultiplier, fontWeight: FontWeight.w500),
+        displayLarge:
+            TextStyle(color: textColor, fontSize: 48.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.1),
+        labelSmall:
+            TextStyle(color: secondaryTextColor, fontSize: 11.0 * densityMultiplier, fontWeight: FontWeight.w500),
+        labelMedium:
+            TextStyle(color: secondaryTextColor, fontSize: 12.0 * densityMultiplier, fontWeight: FontWeight.w500),
+        labelLarge:
+            TextStyle(color: secondaryTextColor, fontSize: 14.0 * densityMultiplier, fontWeight: FontWeight.w500),
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
@@ -382,7 +390,8 @@ class ThemeService implements IThemeService {
             // Use contrast calculation to determine the best text color for the primary background
             return ColorContrastHelper.getContrastingTextColor(_primaryColor);
           }),
-          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
+          padding: WidgetStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
@@ -416,7 +425,8 @@ class ThemeService implements IThemeService {
             }
             return BorderSide(color: _primaryColor, width: 1.5);
           }),
-          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
+          padding: WidgetStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
@@ -435,7 +445,8 @@ class ThemeService implements IThemeService {
             }
             return _primaryColor;
           }),
-          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
+          padding: WidgetStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
@@ -656,11 +667,10 @@ class ThemeService implements IThemeService {
       final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.uiDensity),
       );
-      _currentUiDensity = domain.UiDensity.values
-          .firstWhere(
-            (density) => density.name == densityResponse.value,
-            orElse: () => domain.AppTheme.defaultUiDensity,
-          );
+      _currentUiDensity = domain.UiDensity.values.firstWhere(
+        (density) => density.name == densityResponse.value,
+        orElse: () => domain.AppTheme.defaultUiDensity,
+      );
     } catch (e) {
       _currentUiDensity = domain.AppTheme.defaultUiDensity;
     }

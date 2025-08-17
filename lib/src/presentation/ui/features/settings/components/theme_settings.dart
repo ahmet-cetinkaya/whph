@@ -139,7 +139,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     if (_customAccentColor) {
       features.add(_translationService.translate(SettingsTranslationKeys.customAccentColorFeature));
     }
-    
+
     // Add UI density if not normal
     if (_uiDensity != domain.UiDensity.normal) {
       const densityKeys = {
@@ -590,7 +590,8 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                   children: [
                     _buildDensityOption(domain.UiDensity.compact, SettingsTranslationKeys.uiDensityCompact, '0.8x'),
                     Divider(height: 1, color: theme.dividerColor),
-                    _buildDensityOption(domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x (Default)'),
+                    _buildDensityOption(
+                        domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x (Default)'),
                     Divider(height: 1, color: theme.dividerColor),
                     _buildDensityOption(domain.UiDensity.large, SettingsTranslationKeys.uiDensityLarge, '1.2x'),
                     Divider(height: 1, color: theme.dividerColor),
