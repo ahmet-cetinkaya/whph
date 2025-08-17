@@ -43,6 +43,8 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Link WinRT libraries for all targets to support plugins that need them
+  target_link_libraries(${TARGET} PRIVATE "windowsapp.lib")
 endfunction()
 
 # Flutter library and tool build rules.
