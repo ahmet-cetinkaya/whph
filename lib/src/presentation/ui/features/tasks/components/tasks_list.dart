@@ -499,29 +499,17 @@ class TaskListState extends State<TaskList> {
       );
     }
 
-    return ListView(
+    return Column(
       key: _pageStorageKey,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      controller: _scrollController,
       children: [
         if (widget.enableReordering && widget.filterByCompleted != true)
-          Material(
-            type: MaterialType.transparency,
+          Flexible(
             child: ReorderableListView(
               buildDefaultDragHandles: false,
               shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              proxyDecorator: (child, index, animation) => AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) => Transform.scale(
-                  scale: Curves.easeInOut.transform(animation.value) * 0.02 + 1,
-                  child: Material(
-                    elevation: Curves.easeInOut.transform(animation.value) * 5 + 1,
-                    shadowColor: Theme.of(context).shadowColor.withValues(alpha: 0.3),
-                    child: child,
-                  ),
-                ),
+              physics: const NeverScrollableScrollPhysics(),
+              proxyDecorator: (child, index, animation) => Material(
+                elevation: 2,
                 child: child,
               ),
               onReorder: _onReorder,
