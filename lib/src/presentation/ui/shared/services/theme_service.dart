@@ -19,6 +19,7 @@ class ThemeService implements IThemeService {
   bool _isDynamicAccentColorEnabled = false;
   bool _isCustomAccentColorEnabled = false;
   Color? _customAccentColor;
+  domain.UiDensity _currentUiDensity = domain.AppTheme.defaultUiDensity;
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
@@ -36,6 +37,9 @@ class ThemeService implements IThemeService {
 
   @override
   Color? get customAccentColor => _customAccentColor;
+
+  @override
+  domain.UiDensity get currentUiDensity => _currentUiDensity;
 
   @override
   Color get primaryColor => _primaryColor;
@@ -118,6 +122,7 @@ class ThemeService implements IThemeService {
   @override
   ThemeData get themeData {
     final isDark = _currentThemeMode == AppThemeMode.dark;
+    final densityMultiplier = domain.AppTheme.getDensityMultiplier(_currentUiDensity);
 
     // Create color scheme with consistent surface colors
     ColorScheme colorScheme;
@@ -155,17 +160,17 @@ class ThemeService implements IThemeService {
         margin: EdgeInsets.zero,
       ),
       textTheme: TextTheme(
-        bodySmall: TextStyle(color: textColor, fontSize: 12.0, height: 1.5),
-        bodyMedium: TextStyle(color: textColor, fontSize: 14.0, height: 1.5),
-        bodyLarge: TextStyle(color: textColor, fontSize: 16.0, height: 1.5, fontWeight: FontWeight.w500),
-        headlineSmall: TextStyle(color: textColor, fontSize: 16.0, fontWeight: FontWeight.bold, height: 1.3),
-        headlineMedium: TextStyle(color: textColor, fontSize: 20.0, fontWeight: FontWeight.bold, height: 1.3),
-        headlineLarge: TextStyle(color: textColor, fontSize: 28.0, fontWeight: FontWeight.bold, height: 1.2),
-        displaySmall: TextStyle(color: textColor, fontSize: 16.0, fontWeight: FontWeight.bold),
-        displayLarge: TextStyle(color: textColor, fontSize: 48.0, fontWeight: FontWeight.bold, height: 1.1),
-        labelSmall: TextStyle(color: secondaryTextColor, fontSize: 11.0, fontWeight: FontWeight.w500),
-        labelMedium: TextStyle(color: secondaryTextColor, fontSize: 12.0, fontWeight: FontWeight.w500),
-        labelLarge: TextStyle(color: secondaryTextColor, fontSize: 14.0, fontWeight: FontWeight.w500),
+        bodySmall: TextStyle(color: textColor, fontSize: 12.0 * densityMultiplier, height: 1.5),
+        bodyMedium: TextStyle(color: textColor, fontSize: 14.0 * densityMultiplier, height: 1.5),
+        bodyLarge: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, height: 1.5, fontWeight: FontWeight.w500),
+        headlineSmall: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
+        headlineMedium: TextStyle(color: textColor, fontSize: 20.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.3),
+        headlineLarge: TextStyle(color: textColor, fontSize: 28.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.2),
+        displaySmall: TextStyle(color: textColor, fontSize: 16.0 * densityMultiplier, fontWeight: FontWeight.bold),
+        displayLarge: TextStyle(color: textColor, fontSize: 48.0 * densityMultiplier, fontWeight: FontWeight.bold, height: 1.1),
+        labelSmall: TextStyle(color: secondaryTextColor, fontSize: 11.0 * densityMultiplier, fontWeight: FontWeight.w500),
+        labelMedium: TextStyle(color: secondaryTextColor, fontSize: 12.0 * densityMultiplier, fontWeight: FontWeight.w500),
+        labelLarge: TextStyle(color: secondaryTextColor, fontSize: 14.0 * densityMultiplier, fontWeight: FontWeight.w500),
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
@@ -212,9 +217,9 @@ class ThemeService implements IThemeService {
         ),
         filled: false,
         fillColor: Colors.transparent,
-        labelStyle: TextStyle(color: secondaryTextColor, fontSize: 14.0, height: 1.5),
-        hintStyle: TextStyle(color: secondaryTextColor.withValues(alpha: 0.7), fontSize: 14.0),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        labelStyle: TextStyle(color: secondaryTextColor, fontSize: 14.0 * densityMultiplier, height: 1.5),
+        hintStyle: TextStyle(color: secondaryTextColor.withValues(alpha: 0.7), fontSize: 14.0 * densityMultiplier),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier),
       ),
       checkboxTheme: CheckboxThemeData(
         checkColor: WidgetStateProperty.resolveWith((states) {
@@ -238,7 +243,7 @@ class ThemeService implements IThemeService {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
-        textStyle: TextStyle(color: textColor, fontSize: 14.0, height: 1.5),
+        textStyle: TextStyle(color: textColor, fontSize: 14.0 * densityMultiplier, height: 1.5),
         menuStyle: MenuStyle(
           backgroundColor: WidgetStateProperty.all(surface1),
           elevation: WidgetStateProperty.all(isDark ? 0 : 4),
@@ -249,7 +254,7 @@ class ThemeService implements IThemeService {
         ),
         inputDecorationTheme: InputDecorationTheme(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12.0 * densityMultiplier, vertical: 8.0 * densityMultiplier),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
             borderSide: const BorderSide(
@@ -288,14 +293,14 @@ class ThemeService implements IThemeService {
         space: 1,
       ),
       chipTheme: ChipThemeData(
-        labelPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        labelPadding: EdgeInsets.symmetric(horizontal: 8.0 * densityMultiplier, vertical: 4.0 * densityMultiplier),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         side: BorderSide.none,
         backgroundColor: surface2,
         selectedColor: _primaryColor.withValues(alpha: 0.2),
-        labelStyle: TextStyle(color: textColor, fontSize: 14.0),
-        secondaryLabelStyle: TextStyle(color: secondaryTextColor, fontSize: 12.0),
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        labelStyle: TextStyle(color: textColor, fontSize: 14.0 * densityMultiplier),
+        secondaryLabelStyle: TextStyle(color: secondaryTextColor, fontSize: 12.0 * densityMultiplier),
+        padding: EdgeInsets.symmetric(horizontal: 12.0 * densityMultiplier, vertical: 8.0 * densityMultiplier),
       ),
       expansionTileTheme: ExpansionTileThemeData(
         iconColor: textColor,
@@ -377,12 +382,12 @@ class ThemeService implements IThemeService {
             // Use contrast calculation to determine the best text color for the primary background
             return ColorContrastHelper.getContrastingTextColor(_primaryColor);
           }),
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)),
+          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
-          textStyle: WidgetStateProperty.all(const TextStyle(
-            fontSize: 16.0,
+          textStyle: WidgetStateProperty.all(TextStyle(
+            fontSize: 16.0 * densityMultiplier,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           )),
@@ -411,12 +416,12 @@ class ThemeService implements IThemeService {
             }
             return BorderSide(color: _primaryColor, width: 1.5);
           }),
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)),
+          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
-          textStyle: WidgetStateProperty.all(const TextStyle(
-            fontSize: 16.0,
+          textStyle: WidgetStateProperty.all(TextStyle(
+            fontSize: 16.0 * densityMultiplier,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           )),
@@ -430,12 +435,12 @@ class ThemeService implements IThemeService {
             }
             return _primaryColor;
           }),
-          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)),
+          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier)),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           )),
-          textStyle: WidgetStateProperty.all(const TextStyle(
-            fontSize: 16.0,
+          textStyle: WidgetStateProperty.all(TextStyle(
+            fontSize: 16.0 * densityMultiplier,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           )),
@@ -448,7 +453,7 @@ class ThemeService implements IThemeService {
         shadowColor: isDark ? Colors.transparent : Colors.black.withValues(alpha: 0.1),
         titleTextStyle: TextStyle(
           color: textColor,
-          fontSize: 20.0,
+          fontSize: 20.0 * densityMultiplier,
           fontWeight: FontWeight.w600,
         ),
         iconTheme: IconThemeData(color: textColor),
@@ -458,19 +463,19 @@ class ThemeService implements IThemeService {
         tileColor: Colors.transparent,
         selectedTileColor: _primaryColor.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 8.0 * densityMultiplier),
         titleTextStyle: TextStyle(
           color: textColor,
-          fontSize: 16.0,
+          fontSize: 16.0 * densityMultiplier,
           fontWeight: FontWeight.w500,
         ),
         subtitleTextStyle: TextStyle(
           color: secondaryTextColor,
-          fontSize: 14.0,
+          fontSize: 14.0 * densityMultiplier,
         ),
         leadingAndTrailingTextStyle: TextStyle(
           color: secondaryTextColor,
-          fontSize: 14.0,
+          fontSize: 14.0 * densityMultiplier,
         ),
       ),
     );
@@ -566,6 +571,35 @@ class ThemeService implements IThemeService {
   }
 
   @override
+  Future<void> setUiDensity(domain.UiDensity density) async {
+    _currentUiDensity = density;
+
+    String valueToSave;
+    switch (density) {
+      case domain.UiDensity.compact:
+        valueToSave = 'compact';
+        break;
+      case domain.UiDensity.normal:
+        valueToSave = 'normal';
+        break;
+      case domain.UiDensity.large:
+        valueToSave = 'large';
+        break;
+      case domain.UiDensity.larger:
+        valueToSave = 'larger';
+        break;
+    }
+
+    await _mediator.send(SaveSettingCommand(
+      key: SettingKeys.uiDensity,
+      value: valueToSave,
+      valueType: SettingValueType.string,
+    ));
+
+    _notifyThemeChanged();
+  }
+
+  @override
   Future<void> refreshTheme() async {
     await _loadThemeSettings();
     if (_isDynamicAccentColorEnabled) {
@@ -629,6 +663,31 @@ class ThemeService implements IThemeService {
     } catch (e) {
       _customAccentColor = null;
       _isCustomAccentColorEnabled = false;
+    }
+
+    // Load UI density
+    try {
+      final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        GetSettingQuery(key: SettingKeys.uiDensity),
+      );
+      switch (densityResponse.value) {
+        case 'compact':
+          _currentUiDensity = domain.UiDensity.compact;
+          break;
+        case 'normal':
+          _currentUiDensity = domain.UiDensity.normal;
+          break;
+        case 'large':
+          _currentUiDensity = domain.UiDensity.large;
+          break;
+        case 'larger':
+          _currentUiDensity = domain.UiDensity.larger;
+          break;
+        default:
+          _currentUiDensity = domain.AppTheme.defaultUiDensity;
+      }
+    } catch (e) {
+      _currentUiDensity = domain.AppTheme.defaultUiDensity;
     }
 
     // Update primary color based on loaded settings

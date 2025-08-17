@@ -161,3 +161,12 @@ settings:
       description: 앱의 외관을 개인화하기 위해 사용자 정의 강조 색상을 선택하세요
       feature: 사용자 정의
     error: 테마 설정 로드에 실패했습니다
+
+  ui_density:
+    title: 밀도
+    description: 고해상도 DPI 디스플레이에서 가독성을 높이기 위해 텍스트와 UI 요소의 크기를 조정합니다
+    compact: 조밀함
+    normal: 보통
+    large: 큼
+    larger: 더 큼
+    error: UI 밀도 설정을 불러오지 못했습니다

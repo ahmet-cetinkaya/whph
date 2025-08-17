@@ -134,4 +134,13 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String customAccentColorDescription = 'settings.theme.custom_accent.description';
   static const String customAccentColorFeature = 'settings.theme.custom_accent.feature';
   static const String themeSettingsError = 'settings.theme.error';
+
+  // UI Density Settings
+  static const String uiDensityTitle = 'settings.ui_density.title';
+  static const String uiDensityDescription = 'settings.ui_density.description';
+  static const String uiDensityCompact = 'settings.ui_density.compact';
+  static const String uiDensityNormal = 'settings.ui_density.normal';
+  static const String uiDensityLarge = 'settings.ui_density.large';
+  static const String uiDensityLarger = 'settings.ui_density.larger';
+  static const String uiDensitySettingsError = 'settings.ui_density.error';
 }

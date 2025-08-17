@@ -8,6 +8,7 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/components/color_picker.dart';
+import 'package:whph/src/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
 
 class ThemeSettings extends StatefulWidget {
@@ -25,6 +26,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
   bool _dynamicAccentColor = false;
   bool _customAccentColor = false;
   Color? _customAccentColorValue;
+  domain.UiDensity _uiDensity = domain.AppTheme.defaultUiDensity;
   bool _isLoading = true;
   StreamSubscription<void>? _themeSubscription;
 
@@ -63,6 +65,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         _dynamicAccentColor = _themeService.isDynamicAccentColorEnabled;
         _customAccentColor = _themeService.isCustomAccentColorEnabled;
         _customAccentColorValue = _themeService.customAccentColor;
+        _uiDensity = _themeService.currentUiDensity;
         return true;
       },
     );
@@ -80,6 +83,10 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     await _themeService.setCustomAccentColor(color);
   }
 
+  Future<void> _saveUiDensity(domain.UiDensity density) async {
+    await _themeService.setUiDensity(density);
+  }
+
   void _showThemeModal() {
     if (!mounted) return;
 
@@ -90,19 +97,22 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         currentDynamicAccentColor: _dynamicAccentColor,
         currentCustomAccentColor: _customAccentColor,
         currentCustomAccentColorValue: _customAccentColorValue,
-        onThemeChanged: (mode, dynamic, custom, customColor) {
+        currentUiDensity: _uiDensity,
+        onThemeChanged: (mode, dynamic, custom, customColor, uiDensity) {
           if (mounted) {
             setState(() {
               _themeMode = mode;
               _dynamicAccentColor = dynamic;
               _customAccentColor = custom;
               _customAccentColorValue = customColor;
+              _uiDensity = uiDensity;
             });
           }
         },
         onSaveThemeMode: _saveThemeMode,
         onSaveDynamicAccentColor: _saveDynamicAccentColor,
         onSaveCustomAccentColor: _saveCustomAccentColor,
+        onSaveUiDensity: _saveUiDensity,
       ),
       size: DialogSize.medium,
     );
@@ -128,6 +138,28 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     }
     if (_customAccentColor) {
       features.add(_translationService.translate(SettingsTranslationKeys.customAccentColorFeature));
+    }
+    
+    // Add UI density if not normal
+    if (_uiDensity != domain.UiDensity.normal) {
+      String densityText;
+      switch (_uiDensity) {
+        case domain.UiDensity.compact:
+          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityCompact);
+          break;
+        case domain.UiDensity.large:
+          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityLarge);
+          break;
+        case domain.UiDensity.larger:
+          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityLarger);
+          break;
+        case domain.UiDensity.normal:
+          densityText = '';
+          break;
+      }
+      if (densityText.isNotEmpty) {
+        features.add(densityText);
+      }
     }
 
     if (features.isNotEmpty) {
@@ -171,20 +203,24 @@ class _ThemeDialogWrapper extends StatelessWidget {
   final bool currentDynamicAccentColor;
   final bool currentCustomAccentColor;
   final Color? currentCustomAccentColorValue;
-  final Function(AppThemeMode, bool, bool, Color?) onThemeChanged;
+  final domain.UiDensity currentUiDensity;
+  final Function(AppThemeMode, bool, bool, Color?, domain.UiDensity) onThemeChanged;
   final Future<void> Function(AppThemeMode) onSaveThemeMode;
   final Future<void> Function(bool) onSaveDynamicAccentColor;
   final Future<void> Function(Color?) onSaveCustomAccentColor;
+  final Future<void> Function(domain.UiDensity) onSaveUiDensity;
 
   const _ThemeDialogWrapper({
     required this.currentThemeMode,
     required this.currentDynamicAccentColor,
     required this.currentCustomAccentColor,
     required this.currentCustomAccentColorValue,
+    required this.currentUiDensity,
     required this.onThemeChanged,
     required this.onSaveThemeMode,
     required this.onSaveDynamicAccentColor,
     required this.onSaveCustomAccentColor,
+    required this.onSaveUiDensity,
   });
 
   @override
@@ -203,10 +239,12 @@ class _ThemeDialogWrapper extends StatelessWidget {
                 currentDynamicAccentColor: currentDynamicAccentColor,
                 currentCustomAccentColor: currentCustomAccentColor,
                 currentCustomAccentColorValue: currentCustomAccentColorValue,
+                currentUiDensity: currentUiDensity,
                 onThemeChanged: onThemeChanged,
                 onSaveThemeMode: onSaveThemeMode,
                 onSaveDynamicAccentColor: onSaveDynamicAccentColor,
                 onSaveCustomAccentColor: onSaveCustomAccentColor,
+                onSaveUiDensity: onSaveUiDensity,
               );
             },
           ),
@@ -221,20 +259,24 @@ class _ThemeDialog extends StatefulWidget {
   final bool currentDynamicAccentColor;
   final bool currentCustomAccentColor;
   final Color? currentCustomAccentColorValue;
-  final Function(AppThemeMode, bool, bool, Color?) onThemeChanged;
+  final domain.UiDensity currentUiDensity;
+  final Function(AppThemeMode, bool, bool, Color?, domain.UiDensity) onThemeChanged;
   final Future<void> Function(AppThemeMode) onSaveThemeMode;
   final Future<void> Function(bool) onSaveDynamicAccentColor;
   final Future<void> Function(Color?) onSaveCustomAccentColor;
+  final Future<void> Function(domain.UiDensity) onSaveUiDensity;
 
   const _ThemeDialog({
     required this.currentThemeMode,
     required this.currentDynamicAccentColor,
     required this.currentCustomAccentColor,
     required this.currentCustomAccentColorValue,
+    required this.currentUiDensity,
     required this.onThemeChanged,
     required this.onSaveThemeMode,
     required this.onSaveDynamicAccentColor,
     required this.onSaveCustomAccentColor,
+    required this.onSaveUiDensity,
   });
 
   @override
@@ -249,6 +291,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
   late bool _dynamicAccentColor;
   late bool _customAccentColor;
   late Color? _customAccentColorValue;
+  late domain.UiDensity _uiDensity;
 
   @override
   void initState() {
@@ -267,10 +310,11 @@ class _ThemeDialogState extends State<_ThemeDialog> {
     _dynamicAccentColor = _themeService.isDynamicAccentColorEnabled;
     _customAccentColor = _themeService.isCustomAccentColorEnabled;
     _customAccentColorValue = _themeService.customAccentColor;
+    _uiDensity = _themeService.currentUiDensity;
   }
 
   void _updateTheme() {
-    widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue);
+    widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue, _uiDensity);
   }
 
   @override
@@ -503,6 +547,142 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                         ),
                       ),
                     ],
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.sizeLarge),
+
+              // UI Density
+              Text(
+                _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: AppTheme.sizeSmall),
+
+              Card(
+                color: theme.cardTheme.color,
+                child: Column(
+                  children: [
+                    RadioListTile<domain.UiDensity>(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.uiDensityCompact),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '0.8x',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      value: domain.UiDensity.compact,
+                      groupValue: _uiDensity,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          setState(() {
+                            _uiDensity = value;
+                          });
+                          _updateTheme();
+                          await widget.onSaveUiDensity(value);
+                        }
+                      },
+                    ),
+                    Divider(
+                      height: 1,
+                      color: theme.dividerColor,
+                    ),
+                    RadioListTile<domain.UiDensity>(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.uiDensityNormal),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '1.0x (Default)',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      value: domain.UiDensity.normal,
+                      groupValue: _uiDensity,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          setState(() {
+                            _uiDensity = value;
+                          });
+                          _updateTheme();
+                          await widget.onSaveUiDensity(value);
+                        }
+                      },
+                    ),
+                    Divider(
+                      height: 1,
+                      color: theme.dividerColor,
+                    ),
+                    RadioListTile<domain.UiDensity>(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.uiDensityLarge),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '1.2x',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      value: domain.UiDensity.large,
+                      groupValue: _uiDensity,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          setState(() {
+                            _uiDensity = value;
+                          });
+                          _updateTheme();
+                          await widget.onSaveUiDensity(value);
+                        }
+                      },
+                    ),
+                    Divider(
+                      height: 1,
+                      color: theme.dividerColor,
+                    ),
+                    RadioListTile<domain.UiDensity>(
+                      title: Text(
+                        _translationService.translate(SettingsTranslationKeys.uiDensityLarger),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '1.4x',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      value: domain.UiDensity.larger,
+                      groupValue: _uiDensity,
+                      activeColor: theme.colorScheme.primary,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          setState(() {
+                            _uiDensity = value;
+                          });
+                          _updateTheme();
+                          await widget.onSaveUiDensity(value);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),

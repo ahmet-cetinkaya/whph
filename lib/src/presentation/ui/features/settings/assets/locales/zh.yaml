@@ -161,3 +161,11 @@ settings:
       description: 选择自定义强调色来个性化您的应用外观
       feature: 自定义
     error: 加载主题设置失败
+  ui_density:
+    title: 密度
+    description: 调整文本和UI元素的大小以改善高分辨率显示器上的可读性
+    compact: 紧凑
+    normal: 正常
+    large: 大
+    larger: 更大
+    error: 加载UI密度设置失败
