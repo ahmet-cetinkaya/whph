@@ -1,6 +1,7 @@
 name: Release All Platforms
 
 on:
+  workflow_dispatch: # Manual trigger
   workflow_run:
     workflows:
       - "Flutter CI - Android"
