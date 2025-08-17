@@ -160,3 +160,11 @@ settings:
       description: Uygulamanızın görünümünü kişiselleştirmek için özel bir vurgu rengi seçin
       feature: Özel
     error: Tema ayarları yüklenemedi
+  ui_density:
+    title: Yoğunluk
+    description: Yüksek DPI ekranlarda okunabilirliği artırmak için metin ve UI elemanlarının boyutunu ayarlayın
+    compact: Kompakt
+    normal: Normal
+    large: Büyük
+    larger: Daha Büyük
+    error: UI yoğunluk ayarları yüklenemedi
