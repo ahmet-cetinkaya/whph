@@ -205,6 +205,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     super.build(context);
 
     final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    final tomorrowStart = DateTime(now.year, now.month, now.day + 1);
 
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
@@ -282,7 +285,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
                       // Only show habits not completed today
-                      excludeCompletedForDate: DateTime(now.year, now.month, now.day),
+                      excludeCompletedForDate: todayStart,
                       onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                       onHabitCompleted: _onHabitCompleted,
                       onListing: _onHabitsListed,
@@ -361,9 +364,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                       filterNoTags: _showNoTagsFilter,
                       filterByPlannedStartDate: DateTime(0),
-                      filterByPlannedEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                      filterByPlannedEndDate: todayEnd,
                       filterByDeadlineStartDate: DateTime(0),
-                      filterByDeadlineEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                      filterByDeadlineEndDate: todayEnd,
                       filterDateOr: true,
                       search: _taskSearchQuery,
                       pageSize: 5,
@@ -414,8 +417,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     Center(
                       child: TagTimeChart(
                         filterByTags: _selectedTagFilter,
-                        startDate: DateTime(now.year, now.month, now.day),
-                        endDate: DateTime(now.year, now.month, now.day + 1),
+                        startDate: todayStart,
+                        endDate: tomorrowStart,
                         selectedCategories: _selectedCategories,
                       ),
                     ),
