@@ -81,59 +81,59 @@ class AppTheme {
   static const double screenLarge = 1024.0;
   static const double screenXLarge = 1440.0;
 
-  // Text Styles (dynamic)
+  // Text Styles (dynamic with density scaling)
   static TextStyle get label => TextStyle(
         color: textColor,
-        fontSize: fontSizeMedium,
+        fontSize: fontSizeMedium * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyXSmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeXSmall,
+        fontSize: fontSizeXSmall * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodySmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeSmall,
+        fontSize: fontSizeSmall * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyMedium => TextStyle(
         color: textColor,
-        fontSize: fontSizeMedium,
+        fontSize: fontSizeMedium * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyLarge => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge,
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         height: 1.5,
         fontWeight: FontWeight.w500,
       );
   static TextStyle get headlineSmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge,
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.3,
       );
   static TextStyle get headlineMedium => TextStyle(
         color: textColor,
-        fontSize: fontSizeXLarge,
+        fontSize: fontSizeXLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.3,
       );
   static TextStyle get headlineLarge => TextStyle(
         color: textColor,
-        fontSize: fontSizeXLarge + 8,
+        fontSize: (fontSizeXLarge + 8) * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.2,
       );
   static TextStyle get displaySmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge,
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
       );
   static TextStyle get displayLarge => TextStyle(
         color: textColor,
-        fontSize: 48.0,
+        fontSize: 48.0 * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.1,
       );

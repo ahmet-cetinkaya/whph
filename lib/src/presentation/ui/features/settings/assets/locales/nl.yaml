@@ -161,3 +161,12 @@ settings:
       description: Choose a custom accent color to personalize your app's appearance
       feature: Custom
     error: Failed to load theme settings
+
+  ui_density:
+    title: Dichtheid
+    description: Pas de grootte van tekst en UI-elementen aan om de leesbaarheid op schermen met hoge DPI te verbeteren
+    compact: Compact
+    normal: Normaal
+    large: Groot
+    larger: Groter
+    error: Kan UI-dichtheidsinstellingen niet laden

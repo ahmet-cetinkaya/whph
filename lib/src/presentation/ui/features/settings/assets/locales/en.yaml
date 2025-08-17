@@ -161,3 +161,11 @@ settings:
       description: Choose a custom accent color to personalize your app's appearance
       feature: Custom
     error: Failed to load theme settings
+  ui_density:
+    title: Density
+    description: Adjust the size of text and UI elements to improve readability on high DPI displays
+    compact: Compact
+    normal: Normal
+    large: Large
+    larger: Larger
+    error: Failed to load UI density settings

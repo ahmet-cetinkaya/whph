@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/src/core/domain/shared/constants/app_theme.dart';
 
 enum AppThemeMode { light, dark, auto }
 
@@ -14,6 +15,9 @@ abstract class IThemeService {
 
   /// Gets the current custom accent color (null if not set)
   Color? get customAccentColor;
+
+  /// Gets the current UI density
+  UiDensity get currentUiDensity;
 
   /// Gets the current primary color
   Color get primaryColor;
@@ -53,6 +57,9 @@ abstract class IThemeService {
 
   /// Updates the custom accent color setting
   Future<void> setCustomAccentColor(Color? color);
+
+  /// Updates the UI density setting
+  Future<void> setUiDensity(UiDensity density);
 
   /// Refreshes theme from settings
   Future<void> refreshTheme();
