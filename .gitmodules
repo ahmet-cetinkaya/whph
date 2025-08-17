@@ -3,5 +3,5 @@
 	url = git@github.com:ahmet-cetinkaya/acore-flutter.git
 [submodule "android/fdroid"]
 	path = android/fdroid
-	url = https://gitlab.com/ahmet-cetinkaya/fdroid-data.git
+	url = git@gitlab.com:ahmet-cetinkaya/fdroid-data.git
 	branch = me.ahmetcetinkaya.whph
