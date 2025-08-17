@@ -84,56 +84,56 @@ class AppTheme {
   // Text Styles (dynamic with density scaling)
   static TextStyle get label => TextStyle(
         color: textColor,
-        fontSize: fontSizeMedium * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeMedium * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyXSmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeXSmall * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeXSmall * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodySmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeSmall * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeSmall * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyMedium => TextStyle(
         color: textColor,
-        fontSize: fontSizeMedium * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeMedium * _service.currentUiDensity.multiplier,
         height: 1.5,
       );
   static TextStyle get bodyLarge => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         height: 1.5,
         fontWeight: FontWeight.w500,
       );
   static TextStyle get headlineSmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.3,
       );
   static TextStyle get headlineMedium => TextStyle(
         color: textColor,
-        fontSize: fontSizeXLarge * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeXLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.3,
       );
   static TextStyle get headlineLarge => TextStyle(
         color: textColor,
-        fontSize: (fontSizeXLarge + 8) * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: (fontSizeXLarge + 8) * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.2,
       );
   static TextStyle get displaySmall => TextStyle(
         color: textColor,
-        fontSize: fontSizeLarge * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: fontSizeLarge * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
       );
   static TextStyle get displayLarge => TextStyle(
         color: textColor,
-        fontSize: 48.0 * domain.AppTheme.getDensityMultiplier(_service.currentUiDensity),
+        fontSize: 48.0 * _service.currentUiDensity.multiplier,
         fontWeight: FontWeight.bold,
         height: 1.1,
       );

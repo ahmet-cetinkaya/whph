@@ -122,7 +122,7 @@ class ThemeService implements IThemeService {
   @override
   ThemeData get themeData {
     final isDark = _currentThemeMode == AppThemeMode.dark;
-    final densityMultiplier = domain.AppTheme.getDensityMultiplier(_currentUiDensity);
+    final densityMultiplier = _currentUiDensity.multiplier;
 
     // Create color scheme with consistent surface colors
     ColorScheme colorScheme;
@@ -574,21 +574,7 @@ class ThemeService implements IThemeService {
   Future<void> setUiDensity(domain.UiDensity density) async {
     _currentUiDensity = density;
 
-    String valueToSave;
-    switch (density) {
-      case domain.UiDensity.compact:
-        valueToSave = 'compact';
-        break;
-      case domain.UiDensity.normal:
-        valueToSave = 'normal';
-        break;
-      case domain.UiDensity.large:
-        valueToSave = 'large';
-        break;
-      case domain.UiDensity.larger:
-        valueToSave = 'larger';
-        break;
-    }
+    String valueToSave = density.name;
 
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.uiDensity,
@@ -670,22 +656,11 @@ class ThemeService implements IThemeService {
       final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.uiDensity),
       );
-      switch (densityResponse.value) {
-        case 'compact':
-          _currentUiDensity = domain.UiDensity.compact;
-          break;
-        case 'normal':
-          _currentUiDensity = domain.UiDensity.normal;
-          break;
-        case 'large':
-          _currentUiDensity = domain.UiDensity.large;
-          break;
-        case 'larger':
-          _currentUiDensity = domain.UiDensity.larger;
-          break;
-        default:
-          _currentUiDensity = domain.AppTheme.defaultUiDensity;
-      }
+      _currentUiDensity = domain.UiDensity.values
+          .firstWhere(
+            (density) => density.name == densityResponse.value,
+            orElse: () => domain.AppTheme.defaultUiDensity,
+          );
     } catch (e) {
       _currentUiDensity = domain.AppTheme.defaultUiDensity;
     }
