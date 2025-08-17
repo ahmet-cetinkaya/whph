@@ -45,6 +45,8 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
   # Link WinRT libraries for all targets to support plugins that need them
   target_link_libraries(${TARGET} PRIVATE "windowsapp.lib")
+  # Additional WinRT libraries that might be needed
+  target_link_libraries(${TARGET} PRIVATE "runtimeobject.lib")
 endfunction()
 
 # Flutter library and tool build rules.
