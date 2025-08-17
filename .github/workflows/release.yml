@@ -140,14 +140,21 @@ jobs:
           for workflow in "${WORKFLOWS[@]}"; do
             echo "Downloading artifacts from: $workflow"
             
-            # Get the latest successful run for this tag  
-            RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .databaseId" | head -1)
+            # For manual dispatch, get latest successful run regardless of branch
+            if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "  Manual dispatch - getting latest successful run"
+              RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,conclusion --jq ".[] | select(.conclusion == \"success\") | .databaseId" | head -1)
+            else
+              # For automatic runs, check for specific tag
+              echo "  Automatic run - checking for tag: $TAG_NAME"
+              RUN_ID=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .databaseId" | head -1)
+            fi
             
             if [[ -n "$RUN_ID" ]]; then
               echo "  Found run ID: $RUN_ID"
               gh run download "$RUN_ID" --dir artifacts/
             else
-              echo "  ❌ No successful run found for $workflow with tag $TAG_NAME"
+              echo "  ❌ No successful run found for $workflow"
               echo "  Available runs:"
               gh run list --workflow="$workflow" --limit=5 --json databaseId,headBranch,conclusion
               exit 1
