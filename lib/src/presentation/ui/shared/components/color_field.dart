@@ -48,14 +48,20 @@ class _ColorFieldState extends State<ColorField> {
 
   Future<void> _onColorSelectionOpen() async {
     Color tempColor = _selectedColor;
+    final theme = Theme.of(context);
 
     final selectedColor = await showDialog<Color>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(_translationService.translate(SharedTranslationKeys.selectColorTitle)),
+        title: Text(
+          _translationService.translate(SharedTranslationKeys.selectColorTitle),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
         content: SizedBox(
-          width: double.maxFinite,
-          height: 400, // Fixed height for consistent sizing
+          width: 500,
+          height: 400,
           child: ColorPicker(
             pickerColor: _selectedColor,
             onChangeColor: (color) {
@@ -63,6 +69,8 @@ class _ColorFieldState extends State<ColorField> {
             },
           ),
         ),
+        contentPadding:
+            const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -88,47 +96,25 @@ class _ColorFieldState extends State<ColorField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding ?? EdgeInsets.zero,
-      child: GestureDetector(
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: ColorPreview(color: _selectedColor),
+        title: widget.label != null
+            ? Text(
+                widget.label!,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              )
+            : null,
+        trailing: widget.icon != null
+            ? Icon(
+                widget.icon,
+                size: AppTheme.iconSizeSmall,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              )
+            : null,
         onTap: _onColorSelectionOpen,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              // Icon (if provided)
-              if (widget.icon != null) ...[
-                Icon(
-                  widget.icon,
-                  size: AppTheme.iconSizeSmall,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 12),
-              ],
-
-              // Label (if provided)
-              if (widget.label != null) ...[
-                Expanded(
-                  child: Text(
-                    widget.label!,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
-
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Color Preview
-                    ColorPreview(color: _selectedColor),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
