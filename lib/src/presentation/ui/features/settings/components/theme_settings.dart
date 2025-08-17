@@ -142,23 +142,14 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     
     // Add UI density if not normal
     if (_uiDensity != domain.UiDensity.normal) {
-      String densityText;
-      switch (_uiDensity) {
-        case domain.UiDensity.compact:
-          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityCompact);
-          break;
-        case domain.UiDensity.large:
-          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityLarge);
-          break;
-        case domain.UiDensity.larger:
-          densityText = _translationService.translate(SettingsTranslationKeys.uiDensityLarger);
-          break;
-        case domain.UiDensity.normal:
-          densityText = '';
-          break;
-      }
-      if (densityText.isNotEmpty) {
-        features.add(densityText);
+      const densityKeys = {
+        domain.UiDensity.compact: SettingsTranslationKeys.uiDensityCompact,
+        domain.UiDensity.large: SettingsTranslationKeys.uiDensityLarge,
+        domain.UiDensity.larger: SettingsTranslationKeys.uiDensityLarger,
+      };
+      final translationKey = densityKeys[_uiDensity];
+      if (translationKey != null) {
+        features.add(_translationService.translate(translationKey));
       }
     }
 
@@ -315,6 +306,36 @@ class _ThemeDialogState extends State<_ThemeDialog> {
 
   void _updateTheme() {
     widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue, _uiDensity);
+  }
+
+  Widget _buildDensityOption(domain.UiDensity value, String titleKey, String subtitle) {
+    final theme = Theme.of(context);
+    return RadioListTile<domain.UiDensity>(
+      title: Text(
+        _translationService.translate(titleKey),
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurface,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+        ),
+      ),
+      value: value,
+      groupValue: _uiDensity,
+      activeColor: theme.colorScheme.primary,
+      onChanged: (newValue) async {
+        if (newValue != null) {
+          setState(() {
+            _uiDensity = newValue;
+          });
+          _updateTheme();
+          await widget.onSaveUiDensity(newValue);
+        }
+      },
+    );
   }
 
   @override
@@ -567,122 +588,13 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                 color: theme.cardTheme.color,
                 child: Column(
                   children: [
-                    RadioListTile<domain.UiDensity>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.uiDensityCompact),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '0.8x',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                      value: domain.UiDensity.compact,
-                      groupValue: _uiDensity,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _uiDensity = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveUiDensity(value);
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: theme.dividerColor,
-                    ),
-                    RadioListTile<domain.UiDensity>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.uiDensityNormal),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '1.0x (Default)',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                      value: domain.UiDensity.normal,
-                      groupValue: _uiDensity,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _uiDensity = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveUiDensity(value);
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: theme.dividerColor,
-                    ),
-                    RadioListTile<domain.UiDensity>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.uiDensityLarge),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '1.2x',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                      value: domain.UiDensity.large,
-                      groupValue: _uiDensity,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _uiDensity = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveUiDensity(value);
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: theme.dividerColor,
-                    ),
-                    RadioListTile<domain.UiDensity>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.uiDensityLarger),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '1.4x',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                      value: domain.UiDensity.larger,
-                      groupValue: _uiDensity,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _uiDensity = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveUiDensity(value);
-                        }
-                      },
-                    ),
+                    _buildDensityOption(domain.UiDensity.compact, SettingsTranslationKeys.uiDensityCompact, '0.8x'),
+                    Divider(height: 1, color: theme.dividerColor),
+                    _buildDensityOption(domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x (Default)'),
+                    Divider(height: 1, color: theme.dividerColor),
+                    _buildDensityOption(domain.UiDensity.large, SettingsTranslationKeys.uiDensityLarge, '1.2x'),
+                    Divider(height: 1, color: theme.dividerColor),
+                    _buildDensityOption(domain.UiDensity.larger, SettingsTranslationKeys.uiDensityLarger, '1.4x'),
                   ],
                 ),
               ),

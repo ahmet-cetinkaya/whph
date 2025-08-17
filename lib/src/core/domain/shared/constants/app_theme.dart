@@ -33,7 +33,4 @@ class AppTheme {
     UiDensity.larger: 1.4,
   };
 
-  static double getDensityMultiplier(UiDensity density) {
-    return uiDensityMultipliers[density] ?? 1.0;
-  }
 }
