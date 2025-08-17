@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 3.14)
 project(whph LANGUAGES CXX)
 
+# Ensure we use a modern Windows SDK that includes WinRT libraries
+if(WIN32)
+  set(CMAKE_SYSTEM_VERSION "10.0.22000.0")
+endif()
+
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "whph")
@@ -31,6 +36,10 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
+
+# Add global linker flags for WinRT support (needed for flutter_local_notifications_windows)
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} windowsapp.lib runtimeobject.lib")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} windowsapp.lib runtimeobject.lib")
 
 # Compilation settings that should be applied to most targets.
 #
