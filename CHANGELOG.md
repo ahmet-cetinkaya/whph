@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.2] - 2025-08-17
+
+### Added
+- **UI Density Settings**: New interface density controls allowing users to adjust text and UI element sizes (Compact, Normal, Large, Larger) for improved readability on high DPI displays
+- Complete internationalization support for UI density settings across all supported languages
+
+### Changed
+- Optimize task list rendering performance by implementing task card caching
+- Improve date calculation performance with intelligent caching and staleness checks
+- Optimize display performance for high refresh rate screens
+- Enhanced UI density implementation based on code review feedback
+
+### Fixed
+- Enable Impeller rendering engine for improved performance
+- Validate estimatedTime to prevent negative values in time tracking
+- Replace responsive color dialog with standard AlertDialog for better consistency
+
 ## [0.13.1] - 2025-08-06
 
 ### Added
