@@ -34,7 +34,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders += [
-            'ENABLE_IMPELLER': 'false'
+            'ENABLE_IMPELLER': 'true'
         ]
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
