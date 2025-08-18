@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide DatePickerDialog;
-import 'package:acore/acore.dart' show DatePickerConfig, DateSelectionMode, QuickDateRange, DatePickerDialog;
+import 'package:acore/acore.dart' show DatePickerConfig, DateSelectionMode, QuickDateRange, DatePickerDialog, DateTimePickerTranslationKey;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
@@ -146,11 +146,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   }
 
   Future<void> _showDatePicker(BuildContext context) async {
-    final translations = <String, String>{
-      'date_picker_title': _translationService.translate(SharedTranslationKeys.dateRangeTitle),
-      'confirm': _translationService.translate(SharedTranslationKeys.doneButton),
-      'cancel': _translationService.translate(SharedTranslationKeys.cancelButton),
-      'date_format_hint': _translationService.translate(SharedTranslationKeys.dateFormatHint),
+    final translations = <DateTimePickerTranslationKey, String>{
+      DateTimePickerTranslationKey.title: _translationService.translate(SharedTranslationKeys.dateRangeTitle),
+      DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
+      DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
     };
 
     final config = DatePickerConfig(

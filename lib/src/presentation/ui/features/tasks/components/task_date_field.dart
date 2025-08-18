@@ -3,6 +3,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/src/core/domain/features/tasks/task.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 /// A widget for displaying a date field with a reminder icon
@@ -67,6 +68,8 @@ class _TaskDateFieldState extends State<TaskDateField> {
 
       try {
         if (widget.controller.text.isNotEmpty) {
+          final locale = Localizations.localeOf(context);
+          
           initialDate = DateFormatService.parseFromInput(
             widget.controller.text,
             context,
@@ -77,7 +80,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
           initialDate ??= DateFormatService.parseDateTime(
             widget.controller.text,
             assumeLocal: true,
-            locale: Localizations.localeOf(context),
+            locale: locale,
           );
         }
       } catch (e) {
@@ -100,10 +103,15 @@ class _TaskDateFieldState extends State<TaskDateField> {
         formatType: DateFormatType.dateTime,
         showTime: true,
         enableManualInput: true,
-        titleText: 'Select Date & Time',
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
+        titleText: widget.translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
+        confirmButtonText: widget.translationService.translate(SharedTranslationKeys.confirmButton),
+        cancelButtonText: widget.translationService.translate(SharedTranslationKeys.cancelButton),
         allowNullConfirm: true,
+        translations: {
+          DateTimePickerTranslationKey.setTime: widget.translationService.translate(SharedTranslationKeys.change),
+          DateTimePickerTranslationKey.noDateSelected: widget.translationService.translate(SharedTranslationKeys.notSetTime),
+          DateTimePickerTranslationKey.clear: widget.translationService.translate(SharedTranslationKeys.deleteButton),
+        },
       );
 
       final result = await DatePickerDialog.show(
