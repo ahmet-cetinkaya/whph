@@ -96,25 +96,36 @@ class _ColorFieldState extends State<ColorField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding ?? EdgeInsets.zero,
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: ColorPreview(color: _selectedColor),
-        title: widget.label != null
-            ? Text(
-                widget.label!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              )
-            : null,
-        trailing: widget.icon != null
-            ? Icon(
-                widget.icon,
-                size: AppTheme.iconSizeSmall,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              )
-            : null,
+      child: InkWell(
         onTap: _onColorSelectionOpen,
+        borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall),
+          child: Row(
+            children: [
+              ColorPreview(color: _selectedColor),
+              if (widget.label != null) ...[
+                const SizedBox(width: AppTheme.sizeSmall),
+                Expanded(
+                  child: Text(
+                    widget.label!,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ),
+              ],
+              if (widget.icon != null) ...[
+                const SizedBox(width: AppTheme.sizeSmall),
+                Icon(
+                  widget.icon,
+                  size: AppTheme.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
