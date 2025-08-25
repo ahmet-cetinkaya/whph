@@ -2,6 +2,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_option_with_translation_key.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 
 /// Model for storing task filter and sort settings
 class TaskListOptionSettings {
@@ -11,10 +12,13 @@ class TaskListOptionSettings {
   /// Flag to indicate if "None" (no tags) filter is selected
   final bool showNoTagsFilter;
 
-  /// Selected start date for filtering
+  /// Date filter setting with support for quick selections
+  final DateFilterSetting? dateFilterSetting;
+
+  /// Selected start date for filtering (deprecated - use dateFilterSetting)
   final DateTime? selectedStartDate;
 
-  /// Selected end date for filtering
+  /// Selected end date for filtering (deprecated - use dateFilterSetting)
   final DateTime? selectedEndDate;
 
   /// Search query
@@ -30,6 +34,7 @@ class TaskListOptionSettings {
   TaskListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,
+    this.dateFilterSetting,
     this.selectedStartDate,
     this.selectedEndDate,
     this.search,
@@ -39,7 +44,15 @@ class TaskListOptionSettings {
 
   /// Create settings from a JSON map
   factory TaskListOptionSettings.fromJson(Map<String, dynamic> json) {
-    // Handle dates
+    // Handle new date filter setting
+    DateFilterSetting? dateFilterSetting;
+    if (json['dateFilterSetting'] != null) {
+      dateFilterSetting = DateFilterSetting.fromJson(
+        json['dateFilterSetting'] as Map<String, dynamic>,
+      );
+    }
+
+    // Handle legacy dates for backward compatibility
     DateTime? startDate;
     if (json['selectedStartDate'] != null) {
       startDate = DateTime.tryParse(json['selectedStartDate'] as String);
@@ -48,6 +61,14 @@ class TaskListOptionSettings {
     DateTime? endDate;
     if (json['selectedEndDate'] != null) {
       endDate = DateTime.tryParse(json['selectedEndDate'] as String);
+    }
+
+    // If we have legacy dates but no new format, create DateFilterSetting from legacy data
+    if (dateFilterSetting == null && (startDate != null || endDate != null)) {
+      dateFilterSetting = DateFilterSetting.manual(
+        startDate: startDate,
+        endDate: endDate,
+      );
     }
 
     // Handle sort config
@@ -75,6 +96,7 @@ class TaskListOptionSettings {
       selectedTagIds:
           json['selectedTagIds'] != null ? List<String>.from(json['selectedTagIds'] as List<dynamic>) : null,
       showNoTagsFilter: json['showNoTagsFilter'] as bool? ?? false,
+      dateFilterSetting: dateFilterSetting,
       selectedStartDate: startDate,
       selectedEndDate: endDate,
       search: json['search'] as String?,
@@ -95,6 +117,12 @@ class TaskListOptionSettings {
       json['selectedTagIds'] = selectedTagIds;
     }
 
+    // Use new date filter setting format
+    if (dateFilterSetting != null) {
+      json['dateFilterSetting'] = dateFilterSetting!.toJson();
+    }
+
+    // Keep legacy format for backward compatibility
     if (selectedStartDate != null) {
       json['selectedStartDate'] = selectedStartDate!.toIso8601String();
     }

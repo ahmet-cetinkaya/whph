@@ -69,7 +69,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
       try {
         if (widget.controller.text.isNotEmpty) {
           final locale = Localizations.localeOf(context);
-          
+
           initialDate = DateFormatService.parseFromInput(
             widget.controller.text,
             context,
@@ -109,7 +109,8 @@ class _TaskDateFieldState extends State<TaskDateField> {
         allowNullConfirm: true,
         translations: {
           DateTimePickerTranslationKey.setTime: widget.translationService.translate(SharedTranslationKeys.change),
-          DateTimePickerTranslationKey.noDateSelected: widget.translationService.translate(SharedTranslationKeys.notSetTime),
+          DateTimePickerTranslationKey.noDateSelected:
+              widget.translationService.translate(SharedTranslationKeys.notSetTime),
           DateTimePickerTranslationKey.clear: widget.translationService.translate(SharedTranslationKeys.deleteButton),
         },
       );
