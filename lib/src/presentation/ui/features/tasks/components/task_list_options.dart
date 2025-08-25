@@ -10,6 +10,7 @@ import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constant
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/tasks/models/task_list_option_settings.dart';
 import 'package:whph/src/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/src/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/src/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/src/presentation/ui/shared/components/save_button.dart';
@@ -33,10 +34,13 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Flag to indicate if "None" (no tags) filter is selected
   final bool showNoTagsFilter;
 
-  /// Selected start date for filtering
+  /// Date filter setting with support for quick selections
+  final DateFilterSetting? dateFilterSetting;
+
+  /// Selected start date for filtering (deprecated - use dateFilterSetting)
   final DateTime? selectedStartDate;
 
-  /// Selected end date for filtering
+  /// Selected end date for filtering (deprecated - use dateFilterSetting)
   final DateTime? selectedEndDate;
 
   /// Search query
@@ -50,6 +54,9 @@ class TaskListOptions extends PersistentListOptionsBase {
 
   /// Callback when date filter changes
   final Function(DateTime?, DateTime?)? onDateFilterChange;
+
+  /// Callback when date filter setting changes (with quick selection support)
+  final Function(DateFilterSetting?)? onDateFilterSettingChange;
 
   /// Callback when search filter changes
   final Function(String?)? onSearchChange;
@@ -85,12 +92,14 @@ class TaskListOptions extends PersistentListOptionsBase {
     super.key,
     this.selectedTagIds,
     this.showNoTagsFilter = false,
+    this.dateFilterSetting,
     this.selectedStartDate,
     this.selectedEndDate,
     this.search,
     this.sortConfig,
     this.onTagFilterChange,
     this.onDateFilterChange,
+    this.onDateFilterSettingChange,
     this.onSearchChange,
     this.onSortChange,
     super.onSaveSettings,
@@ -146,11 +155,23 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         );
       }
 
-      if (widget.onDateFilterChange != null) {
-        widget.onDateFilterChange!(
-          filterSettings.selectedStartDate,
-          filterSettings.selectedEndDate,
-        );
+      if (widget.onDateFilterChange != null || widget.onDateFilterSettingChange != null) {
+        final dateFilterSetting = filterSettings.dateFilterSetting;
+
+        if (dateFilterSetting != null) {
+          // Calculate current dates for quick selections or use static dates for manual selections
+          final currentRange = dateFilterSetting.calculateCurrentDateRange();
+
+          widget.onDateFilterChange?.call(currentRange.startDate, currentRange.endDate);
+          widget.onDateFilterSettingChange?.call(dateFilterSetting);
+        } else {
+          // Fallback to legacy dates for backward compatibility
+          widget.onDateFilterChange?.call(
+            filterSettings.selectedStartDate,
+            filterSettings.selectedEndDate,
+          );
+          widget.onDateFilterSettingChange?.call(null);
+        }
       }
 
       if (widget.onSearchChange != null && filterSettings.search != null) {
@@ -183,6 +204,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         final settings = TaskListOptionSettings(
           selectedTagIds: widget.selectedTagIds,
           showNoTagsFilter: widget.showNoTagsFilter,
+          dateFilterSetting: widget.dateFilterSetting,
           selectedStartDate: widget.selectedStartDate,
           selectedEndDate: widget.selectedEndDate,
           search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
@@ -214,6 +236,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final currentSettings = TaskListOptionSettings(
       selectedTagIds: widget.selectedTagIds,
       showNoTagsFilter: widget.showNoTagsFilter,
+      dateFilterSetting: widget.dateFilterSetting,
       selectedStartDate: widget.selectedStartDate,
       selectedEndDate: widget.selectedEndDate,
       search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
@@ -236,6 +259,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
   bool _hasFilterChanges(TaskListOptions oldWidget) {
     final hasNonSearchChanges = widget.selectedTagIds != oldWidget.selectedTagIds ||
         widget.showNoTagsFilter != oldWidget.showNoTagsFilter ||
+        widget.dateFilterSetting != oldWidget.dateFilterSetting ||
         widget.selectedStartDate != oldWidget.selectedStartDate ||
         widget.selectedEndDate != oldWidget.selectedEndDate ||
         widget.showCompletedTasks != oldWidget.showCompletedTasks ||
@@ -350,12 +374,17 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   ),
 
                 // Date filter
-                if (widget.showDateFilter && widget.onDateFilterChange != null)
+                if (widget.showDateFilter &&
+                    (widget.onDateFilterChange != null || widget.onDateFilterSettingChange != null))
                   DateRangeFilter(
                     selectedStartDate: widget.selectedStartDate,
                     selectedEndDate: widget.selectedEndDate,
-                    onDateFilterChange: widget.onDateFilterChange!,
-                    iconColor: (widget.selectedStartDate != null || widget.selectedEndDate != null)
+                    dateFilterSetting: widget.dateFilterSetting,
+                    onDateFilterChange: widget.onDateFilterChange ?? (start, end) {},
+                    onDateFilterSettingChange: widget.onDateFilterSettingChange,
+                    iconColor: (widget.selectedStartDate != null ||
+                            widget.selectedEndDate != null ||
+                            widget.dateFilterSetting != null)
                         ? _themeService.primaryColor
                         : Colors.grey,
                   ),
