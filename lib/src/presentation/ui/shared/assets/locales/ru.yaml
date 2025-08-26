@@ -6,6 +6,7 @@ shared:
     add: Добавить
     back: Назад
     cancel: Отмена
+    clear: Очистить
     close: Закрыть
     confirm: Подтвердить
     delete: Удалить

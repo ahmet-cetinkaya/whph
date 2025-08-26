@@ -6,6 +6,7 @@ shared:
     add: Přidat
     back: Zpět
     cancel: Zrušit
+    clear: Vymazat
     close: Zavřít
     confirm: Potvrdit
     delete: Smazat

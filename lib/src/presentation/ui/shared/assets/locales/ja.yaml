@@ -6,6 +6,7 @@ shared:
     add: 追加
     back: 戻る
     cancel: キャンセル
+    clear: クリア
     close: 閉じる
     confirm: 確認
     delete: 削除

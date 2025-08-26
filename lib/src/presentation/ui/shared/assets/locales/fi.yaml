@@ -6,6 +6,7 @@ shared:
     add: Lisää
     back: Takaisin
     cancel: Peruuta
+    clear: Tyhjennä
     close: Sulje
     confirm: Vahvista
     delete: Poista

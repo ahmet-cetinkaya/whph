@@ -6,6 +6,7 @@ shared:
     add: Aggiungi
     back: Indietro
     cancel: Annulla
+    clear: Cancella
     close: Chiudi
     confirm: Conferma
     delete: Elimina
