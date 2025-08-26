@@ -102,6 +102,8 @@ class _ColorFieldState extends State<ColorField> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ColorPreview(color: _selectedColor),
               if (widget.label != null) ...[

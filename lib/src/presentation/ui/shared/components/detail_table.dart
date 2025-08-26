@@ -172,7 +172,10 @@ class DetailTable extends StatelessWidget {
               color: theme.colorScheme.onSurface,
             ) ??
             const TextStyle(),
-        child: data.widget,
+        child: Align(
+          alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
+          child: data.widget,
+        ),
       ),
     );
   }
