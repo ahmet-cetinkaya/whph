@@ -110,7 +110,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
         translations: {
           DateTimePickerTranslationKey.setTime: widget.translationService.translate(SharedTranslationKeys.change),
           DateTimePickerTranslationKey.noDateSelected: widget.translationService.translate(SharedTranslationKeys.notSetTime),
-          DateTimePickerTranslationKey.clear: widget.translationService.translate(SharedTranslationKeys.deleteButton),
+          DateTimePickerTranslationKey.clear: widget.translationService.translate(SharedTranslationKeys.clearButton),
         },
       );
 
