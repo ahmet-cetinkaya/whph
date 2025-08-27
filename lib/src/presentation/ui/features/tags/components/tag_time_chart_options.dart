@@ -41,7 +41,7 @@ class TagTimeChartOptions extends PersistentListOptionsBase {
   final bool hasItems;
 
   /// Callback when date filter changes
-  final void Function(DateTime, DateTime)? onDateFilterChange;
+  final void Function(DateTime?, DateTime?)? onDateFilterChange;
 
   /// Callback when date filter setting changes (with quick selection support)
   final Function(DateFilterSetting?)? onDateFilterSettingChange;
@@ -108,9 +108,6 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
         if (savedSettings != null) {
           final filterSettings = TagTimeChartOptionSettings.fromJson(savedSettings);
 
-          final startDate = filterSettings.selectedStartDate;
-          final endDate = filterSettings.selectedEndDate;
-
           // Convert List<TagTimeCategory> to Set<TagTimeCategory>
           final categories = filterSettings.selectedCategories.toSet();
 
@@ -121,17 +118,22 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
           if (widget.onDateFilterChange != null || widget.onDateFilterSettingChange != null) {
             final dateFilterSetting = filterSettings.dateFilterSetting;
 
-            if (dateFilterSetting != null) {
-              // Calculate current dates for quick selections or use static dates for manual selections
+            if (dateFilterSetting != null && dateFilterSetting.isQuickSelection) {
+              // Load quick selection settings (preferred)
               final currentRange = dateFilterSetting.calculateCurrentDateRange();
-
               widget.onDateFilterChange?.call(currentRange.startDate!, currentRange.endDate!);
               widget.onDateFilterSettingChange?.call(dateFilterSetting);
-            } else if (startDate != null && endDate != null) {
-              // Fallback to legacy dates for backward compatibility
-              widget.onDateFilterChange?.call(startDate, endDate);
+            } else {
+              // Legacy manual date settings - clear them (no default)
+              widget.onDateFilterChange?.call(null, null);
               widget.onDateFilterSettingChange?.call(null);
             }
+          }
+        } else {
+          // No saved settings - start with empty filter (no default)
+          if (widget.onDateFilterChange != null || widget.onDateFilterSettingChange != null) {
+            widget.onDateFilterChange?.call(null, null);
+            widget.onDateFilterSettingChange?.call(null);
           }
         }
       },
@@ -152,12 +154,30 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
       context: context,
       errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () async {
+        debugPrint('***** TagTimeChartOptions.saveFilterSettings() *****');
+        debugPrint('  widget.dateFilterSetting: ${widget.dateFilterSetting}');
+        debugPrint('  widget.selectedStartDate: ${widget.selectedStartDate}');
+        debugPrint('  widget.selectedEndDate: ${widget.selectedEndDate}');
+
+        // For auto-refresh quick selections, ignore selectedStartDate/selectedEndDate
+        // since they are dynamically calculated and shouldn't be saved
+        final isAutoRefreshSelection = widget.dateFilterSetting?.isQuickSelection == true &&
+            widget.dateFilterSetting?.isAutoRefreshEnabled == true;
+
+        // If dateFilterSetting is null (cleared), save null dates too
+        final isFilterCleared = widget.dateFilterSetting == null;
+
+        debugPrint('  isAutoRefreshSelection: $isAutoRefreshSelection');
+        debugPrint('  isFilterCleared: $isFilterCleared');
+
         final settings = TagTimeChartOptionSettings(
           dateFilterSetting: widget.dateFilterSetting,
-          selectedStartDate: widget.selectedStartDate,
-          selectedEndDate: widget.selectedEndDate,
+          selectedStartDate: (isAutoRefreshSelection || isFilterCleared) ? null : widget.selectedStartDate,
+          selectedEndDate: (isAutoRefreshSelection || isFilterCleared) ? null : widget.selectedEndDate,
           selectedCategories: widget.selectedCategories.toList(),
         );
+
+        debugPrint('  settings.toJson(): ${settings.toJson()}');
 
         await filterSettingsManager.saveFilterSettings(
           settingKey: settingKey,
@@ -180,10 +200,18 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
 
   @override
   Future<void> checkForUnsavedChanges() async {
+    // For auto-refresh quick selections, ignore selectedStartDate/selectedEndDate
+    // since they are dynamically calculated and shouldn't be compared
+    final isAutoRefreshSelection =
+        widget.dateFilterSetting?.isQuickSelection == true && widget.dateFilterSetting?.isAutoRefreshEnabled == true;
+
+    // If dateFilterSetting is null (cleared), ignore dates for comparison too
+    final isFilterCleared = widget.dateFilterSetting == null;
+
     final currentSettings = TagTimeChartOptionSettings(
       dateFilterSetting: widget.dateFilterSetting,
-      selectedStartDate: widget.selectedStartDate,
-      selectedEndDate: widget.selectedEndDate,
+      selectedStartDate: (isAutoRefreshSelection || isFilterCleared) ? null : widget.selectedStartDate,
+      selectedEndDate: (isAutoRefreshSelection || isFilterCleared) ? null : widget.selectedEndDate,
       selectedCategories: widget.selectedCategories.toList(),
     ).toJson();
 
@@ -229,10 +257,8 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
 
   void _onDateFilterChange(DateTime? start, DateTime? end) {
     if (start == null || end == null) {
-      // Return to default values when date filter is cleared
-      final defaultStartDate = DateTime.now().subtract(const Duration(days: 30));
-      final defaultEndDate = DateTime.now();
-      widget.onDateFilterChange?.call(defaultStartDate, defaultEndDate);
+      // Don't force default dates when cleared - let parent handle it
+      widget.onDateFilterChange?.call(null, null);
     } else {
       end = DateTime(end.year, end.month, end.day, 23, 59, 59);
       widget.onDateFilterChange?.call(start, end);
