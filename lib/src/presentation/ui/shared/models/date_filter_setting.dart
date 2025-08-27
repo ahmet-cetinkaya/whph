@@ -93,14 +93,6 @@ class DateFilterSetting {
     final now = DateTime.now();
 
     switch (quickSelectionKey!) {
-      case 'this_minute':
-        final minuteStart = DateTime(now.year, now.month, now.day, now.hour, now.minute);
-        final minuteEnd = DateTime(now.year, now.month, now.day, now.hour, now.minute, 59, 999);
-        return DateRange(
-          startDate: minuteStart,
-          endDate: minuteEnd,
-        );
-
       case 'today':
         final todayStart = DateTime(now.year, now.month, now.day);
         final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);

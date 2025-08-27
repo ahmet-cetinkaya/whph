@@ -154,10 +154,6 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
       context: context,
       errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () async {
-        debugPrint('***** TagTimeChartOptions.saveFilterSettings() *****');
-        debugPrint('  widget.dateFilterSetting: ${widget.dateFilterSetting}');
-        debugPrint('  widget.selectedStartDate: ${widget.selectedStartDate}');
-        debugPrint('  widget.selectedEndDate: ${widget.selectedEndDate}');
 
         // For auto-refresh quick selections, ignore selectedStartDate/selectedEndDate
         // since they are dynamically calculated and shouldn't be saved
@@ -167,8 +163,6 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
         // If dateFilterSetting is null (cleared), save null dates too
         final isFilterCleared = widget.dateFilterSetting == null;
 
-        debugPrint('  isAutoRefreshSelection: $isAutoRefreshSelection');
-        debugPrint('  isFilterCleared: $isFilterCleared');
 
         final settings = TagTimeChartOptionSettings(
           dateFilterSetting: widget.dateFilterSetting,
@@ -177,7 +171,6 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
           selectedCategories: widget.selectedCategories.toList(),
         );
 
-        debugPrint('  settings.toJson(): ${settings.toJson()}');
 
         await filterSettingsManager.saveFilterSettings(
           settingKey: settingKey,

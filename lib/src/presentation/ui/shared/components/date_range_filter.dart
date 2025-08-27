@@ -95,7 +95,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   void _setupAutoRefresh() {
     _autoRefreshTimer?.cancel();
     
-    print('DEBUG DateRangeFilter: Setting up auto-refresh - quickSelection: ${_dateFilterSetting?.isQuickSelection}, refreshEnabled: $_isRefreshToggleEnabled, key: $_activeQuickSelectionKey');
 
     if (_dateFilterSetting?.isQuickSelection == true && _isRefreshToggleEnabled) {
       // Preserve the quick selection setting for auto-refresh
@@ -104,33 +103,27 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       // Determine refresh interval based on quick selection type - production values
       Duration refreshInterval;
       switch (_activeQuickSelectionKey) {
-        case 'this_minute':
-          refreshInterval = const Duration(seconds: 5); // Debug: Refresh every 5 seconds for testing
-          break;
         case 'today':
-          refreshInterval = const Duration(minutes: 5); // Refresh every 5 minutes for day-level
+          refreshInterval = const Duration(minutes: 15); // Refresh every 15 minutes for day-level
           break;
         case 'this_week':
-          refreshInterval = const Duration(minutes: 15); // Refresh every 15 minutes for week-level
+          refreshInterval = const Duration(hours: 1); // Refresh every hour for week-level
           break;
         case 'this_month':
         case 'this_3_months':
-          refreshInterval = const Duration(hours: 1); // Refresh every hour for longer periods
+          refreshInterval = const Duration(hours: 4); // Refresh every 4 hours for longer periods
           break;
         default:
-          refreshInterval = const Duration(minutes: 5); // Default refresh
+          refreshInterval = const Duration(minutes: 30); // Default refresh
       }
 
-      print('DEBUG DateRangeFilter: Auto-refresh timer started - interval: ${refreshInterval.inSeconds} seconds');
 
       _autoRefreshTimer = Timer.periodic(refreshInterval, (timer) {
         if (!mounted) {
-          print('DEBUG DateRangeFilter: Widget unmounted, cancelling auto-refresh timer');
           timer.cancel();
           return;
         }
 
-        print('DEBUG DateRangeFilter: Auto-refresh timer fired');
 
         // Use preserved setting if current one is null
         final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
@@ -140,7 +133,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         }
       });
     } else {
-      print('DEBUG DateRangeFilter: Auto-refresh not set up - conditions not met');
     }
   }
 
@@ -152,7 +144,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       return;
     }
 
-    print('DEBUG DateRangeFilter: Auto-refresh triggered for quick selection: ${activeQuickSetting?.quickSelectionKey}');
 
     // Recalculate current range using the active quick setting
     final currentRange = activeQuickSetting!.calculateCurrentDateRange();
@@ -160,10 +151,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     // Check if the range actually changed
     final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
     
-    print('DEBUG DateRangeFilter: Date range changed: $hasChanged');
     if (hasChanged) {
-      print('DEBUG DateRangeFilter: Old range: ${_selectedStartDate} to ${_selectedEndDate}');
-      print('DEBUG DateRangeFilter: New range: ${currentRange.startDate} to ${currentRange.endDate}');
       
       setState(() {
         _selectedStartDate = currentRange.startDate;
@@ -173,11 +161,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
       });
 
-      print('DEBUG DateRangeFilter: Auto-refresh completed - dates updated without triggering callbacks');
       // DON'T call any callbacks during auto-refresh to prevent triggering unsaved changes
       // The TaskList will get updated dates through the calculateCurrentDateRange() method
-    } else {
-      print('DEBUG DateRangeFilter: Auto-refresh - no date change needed');
     }
   }
 
@@ -304,19 +289,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   List<QuickDateRange> _getQuickRanges() {
     final quickRanges = [
-      // Debug quick range for testing - This Minute
-      QuickDateRange(
-        key: 'this_minute',
-        label: 'This Minute (Debug)',
-        startDateCalculator: () {
-          final now = DateTime.now();
-          return DateTime(now.year, now.month, now.day, now.hour, now.minute);
-        },
-        endDateCalculator: () {
-          final now = DateTime.now();
-          return DateTime(now.year, now.month, now.day, now.hour, now.minute, 59, 999);
-        },
-      ),
       QuickDateRange(
         key: 'today',
         label: _translationService.translate(SharedTranslationKeys.today),
@@ -463,7 +435,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
         // Sort by specificity: minute -> day -> week -> month -> etc.
         final specificityOrder = [
-          'this_minute',
           'today',
           'this_week',
           'this_month',
@@ -612,7 +583,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
     // Cancel auto-refresh when clearing and clear preserved state
     if (_autoRefreshTimer?.isActive == true) {
-      print('DEBUG DateRangeFilter: Cancelling auto-refresh timer due to clear operation');
       _autoRefreshTimer?.cancel();
     }
     _preservedQuickSelectionSetting = null;
@@ -623,21 +593,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   bool _isExactQuickSelectionMatch(
       DateTime selectedStart, DateTime selectedEnd, DateTime quickStart, DateTime quickEnd, String quickKey) {
     switch (quickKey) {
-      case 'this_minute':
-        // For this_minute: start should be :00 seconds, end should be :59.999 seconds
-        // Very strict matching to avoid conflicts
-        final duration = selectedEnd.difference(selectedStart);
-        return selectedStart.second == 0 &&
-            selectedStart.millisecond == 0 &&
-            selectedEnd.second == 59 &&
-            selectedEnd.millisecond == 999 &&
-            duration.inSeconds == 59 &&
-            selectedStart.minute == quickStart.minute &&
-            selectedStart.hour == quickStart.hour &&
-            selectedStart.day == quickStart.day &&
-            selectedStart.month == quickStart.month &&
-            selectedStart.year == quickStart.year;
-
       case 'today':
         // For today: start should be 00:00:00, end should be 23:59:59
         // And duration should be almost 24 hours - be very strict to avoid conflicts
