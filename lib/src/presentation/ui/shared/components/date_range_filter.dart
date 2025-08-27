@@ -170,98 +170,92 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   void didUpdateWidget(DateRangeFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Check if any relevant properties have changed
-    final hasPropertiesChanged = widget.dateFilterSetting != oldWidget.dateFilterSetting ||
-        widget.selectedStartDate != oldWidget.selectedStartDate ||
-        widget.selectedEndDate != oldWidget.selectedEndDate;
-
-    if (!hasPropertiesChanged) {
-      return; // No changes, exit early
+    // Only update if the dateFilterSetting truly changed (ignoring auto-refresh updates)
+    if (widget.dateFilterSetting != oldWidget.dateFilterSetting) {
+      // If we're currently auto-refreshing and the new setting matches our preserved one, ignore
+      if (_isAutoRefreshActive() && _isSameQuickSelection(widget.dateFilterSetting)) {
+        return;
+      }
+      
+      _updateFromWidgetProperties();
+      _setupAutoRefresh();
     }
-
-    // Don't update state during active auto-refresh to prevent conflicts
-    if (_shouldPreserveAutoRefreshState()) {
-      return;
-    }
-
-    // Update state based on new widget properties
-    _updateStateFromWidget();
-
-    // Setup auto-refresh if needed
-    if (_shouldSetupAutoRefresh(oldWidget)) {
+    
+    // Handle legacy date properties for backward compatibility
+    else if (_shouldUpdateFromLegacyDates(oldWidget)) {
+      _updateFromLegacyProperties();
       _setupAutoRefresh();
     }
   }
 
-  /// Determines if we should preserve the current auto-refresh state
-  bool _shouldPreserveAutoRefreshState() {
-    // Only preserve state during active auto-refresh when properties haven't meaningfully changed
+  /// Check if auto-refresh is currently active
+  bool _isAutoRefreshActive() {
     return _isRefreshToggleEnabled && 
            _activeQuickSelectionKey != null && 
-           _preservedQuickSelectionSetting != null &&
-           _autoRefreshTimer?.isActive == true &&
-           (widget.dateFilterSetting == null || 
-            (widget.dateFilterSetting?.quickSelectionKey == _activeQuickSelectionKey &&
-             widget.dateFilterSetting?.isAutoRefreshEnabled == true));
+           _autoRefreshTimer?.isActive == true;
   }
 
-  /// Updates internal state based on current widget properties
-  void _updateStateFromWidget() {
+  /// Check if the new dateFilterSetting is the same quick selection we're already refreshing
+  bool _isSameQuickSelection(DateFilterSetting? newSetting) {
+    return newSetting?.quickSelectionKey == _activeQuickSelectionKey &&
+           newSetting?.isAutoRefreshEnabled == true;
+  }
+
+  /// Check if we should update from legacy date properties
+  bool _shouldUpdateFromLegacyDates(DateRangeFilter oldWidget) {
+    return widget.selectedStartDate != oldWidget.selectedStartDate ||
+           widget.selectedEndDate != oldWidget.selectedEndDate;
+  }
+
+  /// Updates state from widget's dateFilterSetting
+  void _updateFromWidgetProperties() {
     setState(() {
-      if (widget.dateFilterSetting != null) {
-        _updateFromDateFilterSetting();
+      _dateFilterSetting = widget.dateFilterSetting;
+      
+      if (_dateFilterSetting != null) {
+        _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
+        _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
+        
+        if (_dateFilterSetting!.isQuickSelection) {
+          final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
+          _selectedStartDate = currentRange.startDate;
+          _selectedEndDate = currentRange.endDate;
+          _preservedQuickSelectionSetting = _dateFilterSetting;
+        } else {
+          _selectedStartDate = _dateFilterSetting!.startDate;
+          _selectedEndDate = _dateFilterSetting!.endDate;
+          _preservedQuickSelectionSetting = null;
+        }
       } else {
-        _updateFromLegacyProperties();
+        // Clear operation
+        _selectedStartDate = null;
+        _selectedEndDate = null;
+        _activeQuickSelectionKey = null;
+        _isRefreshToggleEnabled = false;
+        _preservedQuickSelectionSetting = null;
       }
     });
   }
 
-  /// Updates state from the new DateFilterSetting
-  void _updateFromDateFilterSetting() {
-    _dateFilterSetting = widget.dateFilterSetting!;
-    _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
-    _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
-    
-    if (_dateFilterSetting!.isQuickSelection) {
-      final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
-      _selectedStartDate = currentRange.startDate;
-      _selectedEndDate = currentRange.endDate;
-      _preservedQuickSelectionSetting = _dateFilterSetting;
-    } else {
-      _selectedStartDate = _dateFilterSetting!.startDate;
-      _selectedEndDate = _dateFilterSetting!.endDate;
-      // Clear preserved state for manual selections
-      _preservedQuickSelectionSetting = null;
-    }
-  }
-
-  /// Updates state from legacy properties when DateFilterSetting is null
+  /// Updates state from legacy date properties (backward compatibility)
   void _updateFromLegacyProperties() {
-    _dateFilterSetting = null;
-    _selectedStartDate = widget.selectedStartDate;
-    _selectedEndDate = widget.selectedEndDate;
-    _activeQuickSelectionKey = null;
-    _isRefreshToggleEnabled = false;
-    
-    // Only try to detect quick selection from legacy dates if we didn't just clear
-    if (_selectedStartDate != null && _selectedEndDate != null && !_justCleared) {
-      _tryDetectQuickSelectionFromDates();
-    }
-    
-    // Reset the clear flag after handling
-    _justCleared = false;
+    setState(() {
+      _selectedStartDate = widget.selectedStartDate;
+      _selectedEndDate = widget.selectedEndDate;
+      
+      // Try to detect quick selection pattern if dates are provided
+      if (_selectedStartDate != null && _selectedEndDate != null && !_justCleared) {
+        _tryDetectQuickSelectionFromDates();
+      } else {
+        _activeQuickSelectionKey = null;
+        _isRefreshToggleEnabled = false;
+        _preservedQuickSelectionSetting = null;
+      }
+      
+      _justCleared = false;
+    });
   }
 
-  /// Determines if auto-refresh should be set up based on changes
-  bool _shouldSetupAutoRefresh(DateRangeFilter oldWidget) {
-    final hasActiveAutoRefresh = _isRefreshToggleEnabled && 
-        _activeQuickSelectionKey != null && 
-        _preservedQuickSelectionSetting != null;
-    
-    return !hasActiveAutoRefresh && 
-           (widget.dateFilterSetting?.quickSelectionKey != oldWidget.dateFilterSetting?.quickSelectionKey ||
-            widget.dateFilterSetting?.isQuickSelection != oldWidget.dateFilterSetting?.isQuickSelection);
-  }
 
   String _getDateRangeText() {
     if (_selectedStartDate == null || _selectedEndDate == null) return '';
