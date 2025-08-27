@@ -90,7 +90,15 @@ class FilterSettingsManager {
         if (search1 != search2) {
           return false;
         }
+      } else if (key == 'dateFilterSetting') {
+        // Special handling for dateFilterSetting - handle null cases
+        final map1 = value1 is Map ? value1 : null;
+        final map2 = value2 is Map ? value2 : null;
+        if (!_areDateFilterSettingsEqual(map1, map2)) {
+          return false;
+        }
       } else if (value1 is Map && value2 is Map) {
+        // Regular map comparison for other keys
         // Ensure keys are strings for recursive call, though practically they should be.
         final map1 = value1.map((k, v) => MapEntry(k.toString(), v));
         final map2 = value2.map((k, v) => MapEntry(k.toString(), v));
@@ -143,6 +151,38 @@ class FilterSettingsManager {
     return true;
   }
 
+  // Helper method to compare DateFilterSetting objects
+  bool _areDateFilterSettingsEqual(Map<dynamic, dynamic>? value1, Map<dynamic, dynamic>? value2) {
+    // If both are null, they're equal
+    if (value1 == null && value2 == null) {
+      return true;
+    }
+    
+    // If one is null and the other isn't, they're not equal
+    if (value1 == null || value2 == null) {
+      return false;
+    }
+    final isQuickSelection1 = value1['isQuickSelection'] as bool? ?? false;
+    final isQuickSelection2 = value2['isQuickSelection'] as bool? ?? false;
+    final isAutoRefreshEnabled1 = value1['isAutoRefreshEnabled'] as bool? ?? false;
+    final isAutoRefreshEnabled2 = value2['isAutoRefreshEnabled'] as bool? ?? false;
+
+    // If both are quick selections with auto-refresh enabled,
+    // compare only the essential properties, not the dynamic dates
+    if (isQuickSelection1 && isQuickSelection2 && 
+        isAutoRefreshEnabled1 && isAutoRefreshEnabled2) {
+      // For auto-refresh quick selections, only compare the key and refresh state
+      return value1['quickSelectionKey'] == value2['quickSelectionKey'] &&
+             value1['isQuickSelection'] == value2['isQuickSelection'] &&
+             value1['isAutoRefreshEnabled'] == value2['isAutoRefreshEnabled'];
+    }
+
+    // For non-auto-refresh or manual selections, do full comparison
+    final map1 = value1.map((k, v) => MapEntry(k.toString(), v));
+    final map2 = value2.map((k, v) => MapEntry(k.toString(), v));
+    return _areSettingsEqual(map1, map2);
+  }
+
   // Helper method to check if settings have non-default values
   bool _hasNonDefaultValues(Map<String, dynamic> settings) {
     for (final entry in settings.entries) {
@@ -167,4 +207,5 @@ class FilterSettingsManager {
     }
     return false;
   }
+
 }
