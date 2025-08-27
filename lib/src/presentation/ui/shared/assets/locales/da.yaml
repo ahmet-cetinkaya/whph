@@ -6,6 +6,7 @@ shared:
     add: Tilføj
     back: Tilbage
     cancel: Annuller
+    clear: Ryd
     close: Luk
     confirm: Bekræft
     delete: Slet

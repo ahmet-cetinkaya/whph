@@ -5,6 +5,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String savedButton = 'shared.buttons.saved';
   static const String addButton = 'shared.buttons.add';
   static const String cancelButton = 'shared.buttons.cancel';
+  static const String clearButton = 'shared.buttons.clear';
   static const String deleteButton = 'shared.buttons.delete';
   static const String closeButton = 'shared.buttons.close';
   static const String doneButton = 'shared.buttons.done';
