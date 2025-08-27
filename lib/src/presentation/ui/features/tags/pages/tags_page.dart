@@ -20,6 +20,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -42,8 +43,9 @@ class _TagsPageState extends State<TagsPage> {
 
   // Tag Time Chart Options
   static const String _timeChartSettingKeyVariantSuffix = 'TIME_CHART';
-  DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
-  DateTime _endDate = DateTime.now();
+  DateFilterSetting? _dateFilterSetting;
+  DateTime? _startDate;
+  DateTime? _endDate;
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
 
   // List Options
@@ -73,14 +75,35 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _onDateFilterChange(DateTime? startDate, DateTime? endDate) {
-    final DateTime newStartDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-    final DateTime newEndDate = endDate ?? DateTime.now();
-
-    if (CollectionUtils.hasValueChanged(_startDate, newStartDate) ||
-        CollectionUtils.hasValueChanged(_endDate, newEndDate)) {
+    if (startDate != null && endDate != null) {
+      if (CollectionUtils.hasValueChanged(_startDate, startDate) ||
+          CollectionUtils.hasValueChanged(_endDate, endDate)) {
+        setState(() {
+          _startDate = startDate;
+          _endDate = endDate;
+        });
+      }
+    } else {
+      // When cleared (null values), clear internal dates too for consistency
       setState(() {
-        _startDate = newStartDate;
-        _endDate = newEndDate;
+        _startDate = null;
+        _endDate = null;
+      });
+    }
+  }
+
+  void _onDateFilterSettingChange(DateFilterSetting? dateFilterSetting) {
+    if (_dateFilterSetting != dateFilterSetting) {
+      setState(() {
+        _dateFilterSetting = dateFilterSetting;
+        if (dateFilterSetting != null) {
+          final currentRange = dateFilterSetting.calculateCurrentDateRange();
+          _startDate = currentRange.startDate;
+          _endDate = currentRange.endDate;
+        } else {
+          _startDate = null;
+          _endDate = null;
+        }
       });
     }
   }
@@ -192,9 +215,11 @@ class _TagsPageState extends State<TagsPage> {
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
                       TagTimeChartOptions(
-                        selectedStartDate: _startDate,
-                        selectedEndDate: _endDate,
+                        dateFilterSetting: _dateFilterSetting,
+                        selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                        selectedEndDate: _dateFilterSetting != null ? _endDate : null,
                         onDateFilterChange: _onDateFilterChange,
+                        onDateFilterSettingChange: _onDateFilterSettingChange,
                         selectedCategories: _selectedCategories,
                         onCategoriesChanged: _onTimeChartCategoryChanged,
                         settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
@@ -212,8 +237,8 @@ class _TagsPageState extends State<TagsPage> {
                   child: Center(
                     child: TagTimeChart(
                       filterByTags: _selectedTagIds,
-                      startDate: _startDate,
-                      endDate: _endDate,
+                      startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                      endDate: _endDate ?? DateTime.now(),
                       filterByIsArchived: _showArchived,
                       selectedCategories: _selectedCategories,
                     ),
