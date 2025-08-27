@@ -383,6 +383,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       DateTimePickerTranslationKey.title: _translationService.translate(SharedTranslationKeys.dateRangeTitle),
       DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
       DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
+      DateTimePickerTranslationKey.clear: _translationService.translate(SharedTranslationKeys.clearButton),
     };
 
     final quickRanges = _getQuickRanges();
