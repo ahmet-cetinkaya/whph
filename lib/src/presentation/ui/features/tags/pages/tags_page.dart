@@ -83,9 +83,13 @@ class _TagsPageState extends State<TagsPage> {
           _endDate = endDate;
         });
       }
+    } else {
+      // When cleared (null values), clear internal dates too for consistency
+      setState(() {
+        _startDate = null;
+        _endDate = null;
+      });
     }
-    // When cleared (null values), don't change internal dates
-    // Keep existing dates for chart display but filter is cleared
   }
 
   void _onDateFilterSettingChange(DateFilterSetting? dateFilterSetting) {
@@ -225,8 +229,8 @@ class _TagsPageState extends State<TagsPage> {
                   child: Center(
                     child: TagTimeChart(
                       filterByTags: _selectedTagIds,
-                      startDate: _dateFilterSetting != null ? (_startDate ?? DateTime.now().subtract(const Duration(days: 30))) : DateTime.now().subtract(const Duration(days: 30)),
-                      endDate: _dateFilterSetting != null ? (_endDate ?? DateTime.now()) : DateTime.now(),
+                      startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                      endDate: _endDate ?? DateTime.now(),
                       filterByIsArchived: _showArchived,
                       selectedCategories: _selectedCategories,
                     ),
