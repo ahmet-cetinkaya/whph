@@ -69,7 +69,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
       try {
         if (widget.controller.text.isNotEmpty) {
           final locale = Localizations.localeOf(context);
-          
+
           initialDate = DateFormatService.parseFromInput(
             widget.controller.text,
             context,

@@ -44,11 +44,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   void initState() {
     super.initState();
 
-    final now = DateTime.now();
-    _filterState = AppUsageFilterState(
-      startDate: DateTime(now.year, now.month, now.day, 23, 59, 59).subtract(const Duration(days: 7)),
-      endDate: DateTime(now.year, now.month, now.day, 23, 59, 59),
-    );
+    // Start with no date filter - user will set dates when needed
+    _filterState = const AppUsageFilterState();
     _checkPermission();
   }
 
@@ -93,6 +90,22 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _filterState = newState;
     });
+  }
+
+  DateTime? _getEffectiveStartDate() {
+    if (_filterState.dateFilterSetting != null) {
+      final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
+      return currentRange.startDate ?? _filterState.startDate;
+    }
+    return _filterState.startDate;
+  }
+
+  DateTime? _getEffectiveEndDate() {
+    if (_filterState.dateFilterSetting != null) {
+      final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
+      return currentRange.endDate ?? _filterState.endDate;
+    }
+    return _filterState.endDate;
   }
 
   void _onPermissionGranted() {
@@ -186,8 +199,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                     onOpenDetails: _openDetails,
                     filterByTags: _filterState.tags,
                     showNoTagsFilter: _filterState.showNoTagsFilter,
-                    filterStartDate: _filterState.startDate,
-                    filterEndDate: _filterState.endDate,
+                    filterStartDate: _getEffectiveStartDate(),
+                    filterEndDate: _getEffectiveEndDate(),
                     filterByDevices: _filterState.devices),
               ),
           ],

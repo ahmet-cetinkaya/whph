@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/main.dart';
@@ -13,6 +15,7 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
@@ -37,14 +40,72 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   bool _showCompletedTasks = false;
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
+  DateFilterSetting? _dateFilterSetting;
   String? _searchQuery;
   bool _showNoTagsFilter = false;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
   String? _handledTaskId;
+  Timer? _autoRefreshUITimer;
+  bool _isLoadingSettings = false;
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoadingSettings = true; // Start with loading flag true
+  }
+
+  // Cache for auto-refresh dates to prevent constant recalculation
+  DateTime? _cachedAutoRefreshStartDate;
+  DateTime? _cachedAutoRefreshEndDate;
+  DateTime? _lastAutoRefreshCheck;
+
+  /// Get effective filter start date (calculated from DateFilterSetting if available)
+  DateTime? get _effectiveFilterStartDate {
+    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
+      _updateAutoRefreshCacheIfNeeded();
+      return _cachedAutoRefreshStartDate ?? _filterStartDate;
+    }
+    return _filterStartDate;
+  }
+
+  /// Get effective filter end date (calculated from DateFilterSetting if available)
+  DateTime? get _effectiveFilterEndDate {
+    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
+      _updateAutoRefreshCacheIfNeeded();
+      return _cachedAutoRefreshEndDate ?? _filterEndDate;
+    }
+    return _filterEndDate;
+  }
+
+  void _updateAutoRefreshCacheIfNeeded() {
+    final now = DateTime.now();
+    // Update cache only if minute has changed (for "this_minute") or if this is first check
+    if (_lastAutoRefreshCheck == null || 
+        now.minute != _lastAutoRefreshCheck!.minute ||
+        now.hour != _lastAutoRefreshCheck!.hour ||
+        now.day != _lastAutoRefreshCheck!.day) {
+      
+      final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
+      _cachedAutoRefreshStartDate = currentRange.startDate;
+      _cachedAutoRefreshEndDate = currentRange.endDate;
+      _lastAutoRefreshCheck = now;
+      
+      // Don't call setState - let TaskList handle its own refresh
+    }
+  }
+
+  String _getAutoRefreshKey() {
+    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
+      final now = DateTime.now();
+      // Create a key that changes every minute for auto-refresh
+      return '${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}';
+    }
+    return 'static';
+  }
 
   Future<void> _openDetails(String taskId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -75,6 +136,28 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     }
   }
 
+  void _onDateFilterSettingChange(DateFilterSetting? setting) {
+    if (mounted) {
+      setState(() {
+        _dateFilterSetting = setting;
+        // Also update the legacy fields for backward compatibility
+        if (setting != null) {
+          final currentRange = setting.calculateCurrentDateRange();
+          _filterStartDate = currentRange.startDate;
+          _filterEndDate = currentRange.endDate;
+        } else {
+          _filterStartDate = null;
+          _filterEndDate = null;
+        }
+      });
+    }
+    
+    // Skip auto-refresh setup during settings loading to prevent unsaved changes
+    if (!_isLoadingSettings) {
+      _setupAutoRefreshUI();
+    }
+  }
+
   void _onSearchChange(String? query) {
     if (mounted) {
       setState(() {
@@ -102,7 +185,36 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     if (!mounted) return;
     setState(() {
       _isTaskListVisible = true;
+      _isLoadingSettings = false;
     });
+    _setupAutoRefreshUI();
+  }
+
+  void _setupAutoRefreshUI() {
+    _autoRefreshUITimer?.cancel();
+    
+    // Setup minimal timer only for auto-refresh enabled quick selections
+    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
+      _autoRefreshUITimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+        
+        // CRITICAL: Don't change any widget properties, just call build
+        // This should not trigger didUpdateWidget since no properties change
+        if (mounted) {
+          // Force a rebuild without changing state
+          setState(() {}); // Empty setState - no actual state change
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshUITimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -191,8 +303,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             showNoTagsFilter: _showNoTagsFilter,
             selectedStartDate: _filterStartDate,
             selectedEndDate: _filterEndDate,
+            dateFilterSetting: _dateFilterSetting,
             onTagFilterChange: _onFilterTags,
             onDateFilterChange: _onDateFilterChange,
+            onDateFilterSettingChange: _onDateFilterSettingChange,
             onSearchChange: _onSearchChange,
             showCompletedTasks: _showCompletedTasks,
             onCompletedTasksToggle: _onCompletedTasksToggle,
@@ -211,13 +325,14 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           if (_isTaskListVisible)
             Expanded(
               child: TaskList(
+                key: ValueKey('${_getAutoRefreshKey()}_${_effectiveFilterStartDate?.millisecondsSinceEpoch}_${_effectiveFilterEndDate?.millisecondsSinceEpoch}'),
                 filterByCompleted: _showCompletedTasks,
                 filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
                 filterNoTags: _showNoTagsFilter,
-                filterByPlannedStartDate: _filterStartDate,
-                filterByPlannedEndDate: _filterEndDate,
-                filterByDeadlineStartDate: _filterStartDate,
-                filterByDeadlineEndDate: _filterEndDate,
+                filterByPlannedStartDate: _effectiveFilterStartDate,
+                filterByPlannedEndDate: _effectiveFilterEndDate,
+                filterByDeadlineStartDate: _effectiveFilterStartDate,
+                filterByDeadlineEndDate: _effectiveFilterEndDate,
                 filterDateOr: true,
                 search: _searchQuery,
                 onClickTask: (task) => _openDetails(task.id),

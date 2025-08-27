@@ -5,6 +5,7 @@ import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/src/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/src/presentation/ui/features/app_usages/components/device_select_dropdown.dart';
 import 'package:whph/src/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/src/presentation/ui/shared/components/save_button.dart';
@@ -20,21 +21,24 @@ import 'dart:async';
 class AppUsageFilterState {
   final List<String>? tags;
   final bool showNoTagsFilter;
-  final DateTime startDate;
-  final DateTime endDate;
+  final DateFilterSetting? dateFilterSetting;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final List<String>? devices;
 
   const AppUsageFilterState({
     this.tags,
     this.showNoTagsFilter = false,
-    required this.startDate,
-    required this.endDate,
+    this.dateFilterSetting,
+    this.startDate,
+    this.endDate,
     this.devices,
   });
 
   AppUsageFilterState copyWith({
     List<String>? tags,
     bool? showNoTagsFilter,
+    DateFilterSetting? dateFilterSetting,
     DateTime? startDate,
     DateTime? endDate,
     List<String>? devices,
@@ -42,6 +46,7 @@ class AppUsageFilterState {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
       showNoTagsFilter: showNoTagsFilter ?? this.showNoTagsFilter,
+      dateFilterSetting: dateFilterSetting ?? this.dateFilterSetting,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       devices: devices ?? this.devices,
@@ -93,12 +98,23 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
     if (savedSettings != null) {
       final settings = AppUsageFilterSettings.fromJson(savedSettings);
 
+      // Calculate effective dates from DateFilterSetting if available
+      DateTime? effectiveStart = settings.startDate;
+      DateTime? effectiveEnd = settings.endDate;
+      
+      if (settings.dateFilterSetting != null) {
+        final currentRange = settings.dateFilterSetting!.calculateCurrentDateRange();
+        effectiveStart = currentRange.startDate;
+        effectiveEnd = currentRange.endDate;
+      }
+
       // Create a new state with the saved settings
       final newState = AppUsageFilterState(
         tags: settings.tags,
         showNoTagsFilter: settings.showNoTagsFilter,
-        startDate: settings.startDate,
-        endDate: settings.endDate,
+        dateFilterSetting: settings.dateFilterSetting,
+        startDate: effectiveStart ?? settings.startDate,
+        endDate: effectiveEnd ?? settings.endDate,
         devices: settings.devices,
       );
 
@@ -127,6 +143,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
         final settings = AppUsageFilterSettings(
           tags: _currentState.tags,
           showNoTagsFilter: _currentState.showNoTagsFilter,
+          dateFilterSetting: _currentState.dateFilterSetting,
           startDate: _currentState.startDate,
           endDate: _currentState.endDate,
           devices: _currentState.devices,
@@ -154,6 +171,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
     final settings = AppUsageFilterSettings(
       tags: _currentState.tags,
       showNoTagsFilter: _currentState.showNoTagsFilter,
+      dateFilterSetting: _currentState.dateFilterSetting,
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
       devices: _currentState.devices,
@@ -190,6 +208,11 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
   }
 
   void _handleDateChange(DateTime? start, DateTime? end) {
+    // If both are null, this is likely a clear operation - let _handleDateSettingChange handle it
+    if (start == null && end == null) {
+      return; // Skip handling, wait for _handleDateSettingChange(null)
+    }
+
     final dateNow = DateTime.now();
     final dateFilterEnd = end ?? DateTime(dateNow.year, dateNow.month, dateNow.day, 23, 59, 59);
     final dateFilterStart = start ?? dateFilterEnd.subtract(const Duration(days: 7));
@@ -197,10 +220,49 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
     final newState = AppUsageFilterState(
       tags: _currentState.tags,
       showNoTagsFilter: _currentState.showNoTagsFilter,
+      dateFilterSetting: null, // Clear dateFilterSetting when manual dates are set
       startDate: dateFilterStart,
       endDate: dateFilterEnd,
       devices: _currentState.devices,
     );
+
+    if (mounted) {
+      setState(() => _currentState = newState);
+    }
+
+    widget.onFiltersChanged(newState);
+    handleFilterChange();
+  }
+
+  void _handleDateSettingChange(DateFilterSetting? dateFilterSetting) {
+    
+    DateTime? effectiveStart = _currentState.startDate;
+    DateTime? effectiveEnd = _currentState.endDate;
+
+    if (dateFilterSetting != null) {
+      if (dateFilterSetting.isQuickSelection) {
+        final currentRange = dateFilterSetting.calculateCurrentDateRange();
+        effectiveStart = currentRange.startDate;
+        effectiveEnd = currentRange.endDate;
+      } else {
+        effectiveStart = dateFilterSetting.startDate;
+        effectiveEnd = dateFilterSetting.endDate;
+      }
+    } else {
+      // When clearing, also clear the dates to prevent false quick selection detection
+      effectiveStart = null;
+      effectiveEnd = null;
+    }
+
+    final newState = AppUsageFilterState(
+      tags: _currentState.tags,
+      showNoTagsFilter: _currentState.showNoTagsFilter,
+      dateFilterSetting: dateFilterSetting, // This will be null when clearing
+      startDate: effectiveStart,
+      endDate: effectiveEnd,
+      devices: _currentState.devices,
+    );
+
 
     if (mounted) {
       setState(() => _currentState = newState);
@@ -280,9 +342,11 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
 
           // Date Range Filter
           DateRangeFilter(
-            selectedStartDate: _currentState.startDate,
-            selectedEndDate: _currentState.endDate,
+            selectedStartDate: _currentState.dateFilterSetting != null ? _currentState.startDate : null,
+            selectedEndDate: _currentState.dateFilterSetting != null ? _currentState.endDate : null,
+            dateFilterSetting: _currentState.dateFilterSetting,
             onDateFilterChange: _handleDateChange,
+            onDateFilterSettingChange: _handleDateSettingChange,
           ),
 
           // Save Button
@@ -297,4 +361,5 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       ),
     );
   }
+
 }
