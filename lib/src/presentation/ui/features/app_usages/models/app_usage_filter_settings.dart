@@ -11,10 +11,10 @@ class AppUsageFilterSettings {
   final DateFilterSetting? dateFilterSetting;
 
   /// Start date for filtering (deprecated - use dateFilterSetting)
-  final DateTime startDate;
+  final DateTime? startDate;
 
   /// End date for filtering (deprecated - use dateFilterSetting)
-  final DateTime endDate;
+  final DateTime? endDate;
 
   /// Selected device names for filtering
   final List<String>? devices;
@@ -24,8 +24,8 @@ class AppUsageFilterSettings {
     this.tags,
     this.showNoTagsFilter = false,
     this.dateFilterSetting,
-    required this.startDate,
-    required this.endDate,
+    this.startDate,
+    this.endDate,
     this.devices,
   });
 
@@ -50,19 +50,11 @@ class AppUsageFilterSettings {
       endDate = DateTime.tryParse(json['endDate'] as String);
     }
 
-    // Default to current date if dates are invalid
-    final now = DateTime.now();
-    final defaultEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
-    final defaultStart = defaultEnd.subtract(const Duration(days: 7));
-
-    final finalStartDate = startDate ?? defaultStart;
-    final finalEndDate = endDate ?? defaultEnd;
-
     // If we have legacy dates but no new format, create DateFilterSetting from legacy data
-    if (dateFilterSetting == null && (startDate != null || endDate != null)) {
+    if (dateFilterSetting == null && (startDate != null && endDate != null)) {
       dateFilterSetting = DateFilterSetting.manual(
-        startDate: finalStartDate,
-        endDate: finalEndDate,
+        startDate: startDate,
+        endDate: endDate,
       );
     }
 
@@ -70,8 +62,8 @@ class AppUsageFilterSettings {
       tags: json['tags'] != null ? List<String>.from(json['tags'] as List<dynamic>) : null,
       showNoTagsFilter: json['showNoTagsFilter'] as bool? ?? false,
       dateFilterSetting: dateFilterSetting,
-      startDate: finalStartDate,
-      endDate: finalEndDate,
+      startDate: startDate,
+      endDate: endDate,
       devices: json['devices'] != null ? List<String>.from(json['devices'] as List<dynamic>) : null,
     );
   }
@@ -80,14 +72,18 @@ class AppUsageFilterSettings {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {
       'showNoTagsFilter': showNoTagsFilter,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
     };
 
-    // Use new date filter setting format
-    if (dateFilterSetting != null) {
-      json['dateFilterSetting'] = dateFilterSetting!.toJson();
+    if (startDate != null) {
+      json['startDate'] = startDate!.toIso8601String();
     }
+
+    if (endDate != null) {
+      json['endDate'] = endDate!.toIso8601String();
+    }
+
+    // Use new date filter setting format - always include key even if null
+    json['dateFilterSetting'] = dateFilterSetting?.toJson();
 
     if (tags != null) {
       json['tags'] = tags;
