@@ -6,6 +6,7 @@ shared:
     add: Lägg till
     back: Tillbaka
     cancel: Avbryt
+    clear: Rensa
     close: Stäng
     confirm: Bekräfta
     delete: Ta bort
