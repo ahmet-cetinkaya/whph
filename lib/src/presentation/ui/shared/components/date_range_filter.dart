@@ -15,6 +15,7 @@ class DateRangeFilter extends StatefulWidget {
   final DateFilterSetting? dateFilterSetting;
   final Function(DateTime?, DateTime?) onDateFilterChange;
   final Function(DateFilterSetting?)? onDateFilterSettingChange;
+  final Function(DateTime?, DateTime?, DateFilterSetting?)? onAutoRefresh;
   final double iconSize;
   final Color? iconColor;
 
@@ -25,6 +26,7 @@ class DateRangeFilter extends StatefulWidget {
     this.dateFilterSetting,
     required this.onDateFilterChange,
     this.onDateFilterSettingChange,
+    this.onAutoRefresh,
     this.iconSize = AppTheme.iconSizeMedium,
     this.iconColor,
   });
@@ -161,8 +163,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
       });
 
-      // DON'T call any callbacks during auto-refresh to prevent triggering unsaved changes
-      // The TaskList will get updated dates through the calculateCurrentDateRange() method
+      // Call onAutoRefresh to notify parent of date changes without marking as "unsaved"
+      widget.onAutoRefresh?.call(currentRange.startDate, currentRange.endDate, activeQuickSetting);
     }
   }
 
