@@ -351,6 +351,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                       initialDate: _recurrenceStartDate ?? DateTime.now(),
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
+                      helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
                     );
                     if (pickedDate != null) {
                       setState(() {
@@ -469,6 +470,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                                 DateTime.now().toUtc().add(const Duration(days: 30))),
                         firstDate: _recurrenceStartDate ?? DateTime.now().toUtc(),
                         lastDate: DateTime(2100),
+                        helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
                       );
 
                       if (pickedDate != null) {

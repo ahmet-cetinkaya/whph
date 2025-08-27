@@ -6,6 +6,7 @@ shared:
     add: Dodaj
     back: Nazaj
     cancel: Prekliči
+    clear: Počisti
     close: Zapri
     confirm: Potrdi
     delete: Izbriši

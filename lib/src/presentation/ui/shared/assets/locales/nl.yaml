@@ -6,6 +6,7 @@ shared:
     add: Toevoegen
     back: Terug
     cancel: Annuleren
+    clear: Wissen
     close: Sluiten
     confirm: Bevestigen
     delete: Verwijderen

@@ -3,6 +3,7 @@ shared:
     add: Ekle
     back: Geri
     cancel: İptal
+    clear: Temizle
     close: Kapat
     confirm: Onayla
     delete: Sil
