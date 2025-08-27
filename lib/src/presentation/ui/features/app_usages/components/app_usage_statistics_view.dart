@@ -10,6 +10,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart' hide Container;
 
@@ -28,9 +29,10 @@ class AppUsageStatisticsView extends StatefulWidget {
 }
 
 class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
-  // Date range state
-  DateTime _startDate = DateTime.now().subtract(const Duration(days: 7));
-  DateTime _endDate = DateTime.now();
+  // Date range state - no default dates
+  DateFilterSetting? _dateFilterSetting;
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   // Comparison state
   bool _showComparison = false;
@@ -95,12 +97,21 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
       context: context,
       errorMessage: _translationService.translate(AppUsageTranslationKeys.statisticsError),
       operation: () async {
+        // Only fetch statistics if dates are available
+        if (_startDate == null || _endDate == null) {
+          setState(() {
+            _statistics = null;
+            _isLoading = false;
+          });
+          return null; // No error, just no data to fetch
+        }
+
         final query = GetAppUsageStatisticsQuery(
           appUsageId: widget.appUsageId,
-          startDate: DateTimeHelper.toUtcDateTime(_startDate),
-          endDate: DateTimeHelper.toUtcDateTime(_endDate),
-          compareStartDate: _showComparison ? DateTimeHelper.toUtcDateTime(_compareStartDate!) : null,
-          compareEndDate: _showComparison ? DateTimeHelper.toUtcDateTime(_compareEndDate!) : null,
+          startDate: DateTimeHelper.toUtcDateTime(_startDate!),
+          endDate: DateTimeHelper.toUtcDateTime(_endDate!),
+          compareStartDate: _showComparison && _compareStartDate != null ? DateTimeHelper.toUtcDateTime(_compareStartDate!) : null,
+          compareEndDate: _showComparison && _compareEndDate != null ? DateTimeHelper.toUtcDateTime(_compareEndDate!) : null,
         );
 
         return await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(query);
@@ -131,12 +142,32 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DateRangeFilter(
-                      selectedStartDate: _startDate,
-                      selectedEndDate: _endDate,
+                      dateFilterSetting: _dateFilterSetting,
+                      selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                      selectedEndDate: _dateFilterSetting != null ? _endDate : null,
                       onDateFilterChange: (startDate, endDate) {
                         setState(() {
-                          _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-                          _endDate = endDate ?? DateTime.now();
+                          _startDate = startDate;
+                          _endDate = endDate;
+                          _updateComparisonDates();
+                        });
+                        _fetchStatistics();
+                      },
+                      onDateFilterSettingChange: (dateFilterSetting) {
+                        setState(() {
+                          _dateFilterSetting = dateFilterSetting;
+                          if (dateFilterSetting?.isQuickSelection == true) {
+                            final currentRange = dateFilterSetting!.calculateCurrentDateRange();
+                            _startDate = currentRange.startDate;
+                            _endDate = currentRange.endDate;
+                          } else if (dateFilterSetting != null) {
+                            _startDate = dateFilterSetting.startDate;
+                            _endDate = dateFilterSetting.endDate;
+                          } else {
+                            // Clear operation
+                            _startDate = null;
+                            _endDate = null;
+                          }
                           _updateComparisonDates();
                         });
                         _fetchStatistics();
@@ -153,12 +184,32 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                     Flexible(
                       flex: 2,
                       child: DateRangeFilter(
-                        selectedStartDate: _startDate,
-                        selectedEndDate: _endDate,
+                        dateFilterSetting: _dateFilterSetting,
+                        selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                        selectedEndDate: _dateFilterSetting != null ? _endDate : null,
                         onDateFilterChange: (startDate, endDate) {
                           setState(() {
-                            _startDate = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-                            _endDate = endDate ?? DateTime.now();
+                            _startDate = startDate;
+                            _endDate = endDate;
+                            _updateComparisonDates();
+                          });
+                          _fetchStatistics();
+                        },
+                        onDateFilterSettingChange: (dateFilterSetting) {
+                          setState(() {
+                            _dateFilterSetting = dateFilterSetting;
+                            if (dateFilterSetting?.isQuickSelection == true) {
+                              final currentRange = dateFilterSetting!.calculateCurrentDateRange();
+                              _startDate = currentRange.startDate;
+                              _endDate = currentRange.endDate;
+                            } else if (dateFilterSetting != null) {
+                              _startDate = dateFilterSetting.startDate;
+                              _endDate = dateFilterSetting.endDate;
+                            } else {
+                              // Clear operation
+                              _startDate = null;
+                              _endDate = null;
+                            }
                             _updateComparisonDates();
                           });
                           _fetchStatistics();
@@ -174,12 +225,23 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
               }
             },
           ),
-          if (_showComparison) _buildComparisonLegend(),
+          if (_showComparison && _startDate != null && _endDate != null && _compareStartDate != null && _compareEndDate != null) _buildComparisonLegend(),
           const SizedBox(height: AppTheme.sizeMedium),
           if (_isLoading)
             const Center(child: CircularProgressIndicator())
           else if (_errorMessage != null)
             Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
+          else if (_startDate == null || _endDate == null)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                child: Text(
+                  _translationService.translate(SharedTranslationKeys.noItemsFoundMessage),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
           else if (_statistics != null) ...[
             _buildDailyUsageChart(),
             const SizedBox(height: AppTheme.sizeLarge),
@@ -232,7 +294,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                 children: [
                   _buildLegendItem(
                     _appUsageColor,
-                    _formatDateRange(_startDate, _endDate),
+                    _formatDateRange(_startDate!, _endDate!),
                   ),
                   const SizedBox(height: AppTheme.size2XSmall),
                   _buildLegendItem(
@@ -249,7 +311,7 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
                   children: [
                     _buildLegendItem(
                       _appUsageColor,
-                      _formatDateRange(_startDate, _endDate),
+                      _formatDateRange(_startDate!, _endDate!),
                     ),
                     const SizedBox(width: AppTheme.sizeMedium),
                     _buildLegendItem(
@@ -584,11 +646,11 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
   }
 
   void _updateComparisonDates() {
-    if (_showComparison) {
+    if (_showComparison && _startDate != null && _endDate != null) {
       // Set comparison period to the same length but immediately before current period
-      final periodLength = _endDate.difference(_startDate);
+      final periodLength = _endDate!.difference(_startDate!);
       _compareEndDate = _startDate;
-      _compareStartDate = _startDate.subtract(periodLength);
+      _compareStartDate = _startDate!.subtract(periodLength);
     } else {
       _compareStartDate = null;
       _compareEndDate = null;

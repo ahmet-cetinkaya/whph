@@ -27,6 +27,7 @@ import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.d
 import 'package:whph/src/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.dart';
+import 'package:whph/src/presentation/ui/shared/models/date_filter_setting.dart';
 
 class TagDetailsPage extends StatefulWidget {
   static const String route = '/tags/details';
@@ -53,8 +54,9 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
 
   final _barChartKey = GlobalKey<TagTimeBarChartState>();
-  DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
-  DateTime _endDate = DateTime.now();
+  DateFilterSetting? _dateFilterSetting;
+  DateTime? _startDate;
+  DateTime? _endDate;
   Set<TagTimeCategory> _selectedCategories = {TagTimeCategory.all};
 
   static const String _listOptionSettingKey = 'TAG_DETAILS_PAGE';
@@ -175,13 +177,34 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   children: [
                                     Expanded(
                                       child: TagTimeChartOptions(
-                                        selectedStartDate: _startDate,
-                                        selectedEndDate: _endDate,
+                                        dateFilterSetting: _dateFilterSetting,
+                                        selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                                        selectedEndDate: _dateFilterSetting != null ? _endDate : null,
                                         selectedCategories: _selectedCategories,
                                         onDateFilterChange: (start, end) {
+                                          if (start != null && end != null) {
+                                            setState(() {
+                                              _startDate = start;
+                                              _endDate = end;
+                                              _barChartKey.currentState?.refresh();
+                                            });
+                                          }
+                                        },
+                                        onDateFilterSettingChange: (dateFilterSetting) {
                                           setState(() {
-                                            _startDate = start;
-                                            _endDate = end;
+                                            _dateFilterSetting = dateFilterSetting;
+                                            if (dateFilterSetting?.isQuickSelection == true) {
+                                              final currentRange = dateFilterSetting!.calculateCurrentDateRange();
+                                              _startDate = currentRange.startDate;
+                                              _endDate = currentRange.endDate;
+                                            } else if (dateFilterSetting != null) {
+                                              _startDate = dateFilterSetting.startDate;
+                                              _endDate = dateFilterSetting.endDate;
+                                            } else {
+                                              // Clear operation
+                                              _startDate = null;
+                                              _endDate = null;
+                                            }
                                             _barChartKey.currentState?.refresh();
                                           });
                                         },
@@ -200,8 +223,8 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                   child: TagTimeBarChart(
                                     key: _barChartKey,
                                     filterByTags: [widget.tagId],
-                                    startDate: _startDate,
-                                    endDate: _endDate,
+                                    startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                                    endDate: _endDate ?? DateTime.now(),
                                     selectedCategories: _selectedCategories,
                                   ),
                                 ),
