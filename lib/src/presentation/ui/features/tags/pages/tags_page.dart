@@ -96,6 +96,19 @@ class _TagsPageState extends State<TagsPage> {
     if (_dateFilterSetting != dateFilterSetting) {
       setState(() {
         _dateFilterSetting = dateFilterSetting;
+        if (dateFilterSetting != null) {
+          if (dateFilterSetting.isQuickSelection) {
+            final currentRange = dateFilterSetting.calculateCurrentDateRange();
+            _startDate = currentRange.startDate;
+            _endDate = currentRange.endDate;
+          } else {
+            _startDate = dateFilterSetting.startDate;
+            _endDate = dateFilterSetting.endDate;
+          }
+        } else {
+          _startDate = null;
+          _endDate = null;
+        }
       });
     }
   }

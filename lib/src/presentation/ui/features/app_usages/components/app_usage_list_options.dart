@@ -173,7 +173,6 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
 
   @override
   Future<void> checkForUnsavedChanges() async {
-    print('DEBUG AppUsage: checkForUnsavedChanges called');
     final settings = AppUsageFilterSettings(
       tags: _currentState.tags,
       showNoTagsFilter: _currentState.showNoTagsFilter,
@@ -182,16 +181,13 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       endDate: _currentState.endDate,
       devices: _currentState.devices,
     );
-    print('DEBUG AppUsage: Current settings - ${settings.toJson()}');
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
       settingKey: settingKey,
       currentSettings: settings.toJson(),
     );
-    print('DEBUG AppUsage: hasChanges = $hasChanges, current hasUnsavedChanges = $hasUnsavedChanges');
 
     if (mounted && hasChanges != hasUnsavedChanges) {
-      print('DEBUG AppUsage: Updating hasUnsavedChanges from $hasUnsavedChanges to $hasChanges');
       setState(() {
         hasUnsavedChanges = hasChanges;
       });
@@ -244,26 +240,20 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
   }
 
   void _handleDateSettingChange(DateFilterSetting? dateFilterSetting) {
-    print('DEBUG AppUsage: _handleDateSettingChange called with dateFilterSetting = $dateFilterSetting');
-    print('DEBUG AppUsage: Current state - dateFilterSetting: ${_currentState.dateFilterSetting}, startDate: ${_currentState.startDate}, endDate: ${_currentState.endDate}');
     
     DateTime? effectiveStart = _currentState.startDate;
     DateTime? effectiveEnd = _currentState.endDate;
 
     if (dateFilterSetting != null) {
-      print('DEBUG AppUsage: dateFilterSetting is not null, processing...');
       if (dateFilterSetting.isQuickSelection) {
         final currentRange = dateFilterSetting.calculateCurrentDateRange();
         effectiveStart = currentRange.startDate;
         effectiveEnd = currentRange.endDate;
-        print('DEBUG AppUsage: Quick selection - effectiveStart: $effectiveStart, effectiveEnd: $effectiveEnd');
       } else {
         effectiveStart = dateFilterSetting.startDate;
         effectiveEnd = dateFilterSetting.endDate;
-        print('DEBUG AppUsage: Manual selection - effectiveStart: $effectiveStart, effectiveEnd: $effectiveEnd');
       }
     } else {
-      print('DEBUG AppUsage: dateFilterSetting is null (CLEAR operation) - clearing dates too');
       // When clearing, also clear the dates to prevent false quick selection detection
       effectiveStart = null;
       effectiveEnd = null;
@@ -278,14 +268,12 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       devices: _currentState.devices,
     );
 
-    print('DEBUG AppUsage: New state created - dateFilterSetting: ${newState.dateFilterSetting}, startDate: ${newState.startDate}, endDate: ${newState.endDate}');
 
     if (mounted) {
       setState(() => _currentState = newState);
     }
 
     widget.onFiltersChanged(newState);
-    print('DEBUG AppUsage: Calling handleFilterChange()...');
     handleFilterChange();
   }
 
