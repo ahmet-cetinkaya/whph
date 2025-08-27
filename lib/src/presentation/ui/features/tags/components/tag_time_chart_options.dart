@@ -118,13 +118,13 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
           if (widget.onDateFilterChange != null || widget.onDateFilterSettingChange != null) {
             final dateFilterSetting = filterSettings.dateFilterSetting;
 
-            if (dateFilterSetting != null && dateFilterSetting.isQuickSelection) {
-              // Load quick selection settings (preferred)
+            if (dateFilterSetting != null) {
+              // Load any date settings (both quick selections and manual ranges)
               final currentRange = dateFilterSetting.calculateCurrentDateRange();
-              widget.onDateFilterChange?.call(currentRange.startDate!, currentRange.endDate!);
+              widget.onDateFilterChange?.call(currentRange.startDate, currentRange.endDate);
               widget.onDateFilterSettingChange?.call(dateFilterSetting);
             } else {
-              // Legacy manual date settings - clear them (no default)
+              // No date settings, clear filter
               widget.onDateFilterChange?.call(null, null);
               widget.onDateFilterSettingChange?.call(null);
             }

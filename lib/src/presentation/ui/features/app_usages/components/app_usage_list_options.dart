@@ -103,14 +103,9 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       DateTime? effectiveEnd = settings.endDate;
       
       if (settings.dateFilterSetting != null) {
-        if (settings.dateFilterSetting!.isQuickSelection) {
-          final currentRange = settings.dateFilterSetting!.calculateCurrentDateRange();
-          effectiveStart = currentRange.startDate;
-          effectiveEnd = currentRange.endDate;
-        } else {
-          effectiveStart = settings.dateFilterSetting!.startDate;
-          effectiveEnd = settings.dateFilterSetting!.endDate;
-        }
+        final currentRange = settings.dateFilterSetting!.calculateCurrentDateRange();
+        effectiveStart = currentRange.startDate;
+        effectiveEnd = currentRange.endDate;
       }
 
       // Create a new state with the saved settings

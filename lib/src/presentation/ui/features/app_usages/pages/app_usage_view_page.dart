@@ -94,24 +94,16 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   DateTime? _getEffectiveStartDate() {
     if (_filterState.dateFilterSetting != null) {
-      if (_filterState.dateFilterSetting!.isQuickSelection) {
-        final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
-        return currentRange.startDate ?? _filterState.startDate;
-      } else {
-        return _filterState.dateFilterSetting!.startDate ?? _filterState.startDate;
-      }
+      final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
+      return currentRange.startDate ?? _filterState.startDate;
     }
     return _filterState.startDate;
   }
 
   DateTime? _getEffectiveEndDate() {
     if (_filterState.dateFilterSetting != null) {
-      if (_filterState.dateFilterSetting!.isQuickSelection) {
-        final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
-        return currentRange.endDate ?? _filterState.endDate;
-      } else {
-        return _filterState.dateFilterSetting!.endDate ?? _filterState.endDate;
-      }
+      final currentRange = _filterState.dateFilterSetting!.calculateCurrentDateRange();
+      return currentRange.endDate ?? _filterState.endDate;
     }
     return _filterState.endDate;
   }
