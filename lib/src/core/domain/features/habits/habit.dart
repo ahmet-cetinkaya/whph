@@ -19,6 +19,9 @@ class Habit extends BaseEntity<String> {
   int targetFrequency = 1; // How many times the habit should be performed
   int periodDays = 7; // Over how many days (e.g., 3 times in 7 days)
 
+  // Custom order for sorting
+  double order = 0.0;
+
   Habit({
     required super.id,
     required super.createdDate,
@@ -34,6 +37,7 @@ class Habit extends BaseEntity<String> {
     this.hasGoal = false,
     this.targetFrequency = 1,
     this.periodDays = 7,
+    this.order = 0.0,
   });
 
   // REMINDER RELATED METHODS
@@ -168,6 +172,7 @@ class Habit extends BaseEntity<String> {
         'hasGoal': hasGoal,
         'targetFrequency': targetFrequency,
         'periodDays': periodDays,
+        'order': order,
       };
 
   factory Habit.fromJson(Map<String, dynamic> json) {
@@ -192,6 +197,13 @@ class Habit extends BaseEntity<String> {
       periodDays = periodDaysValue.toInt();
     }
 
+    // Handle order: might come as int, double, or num
+    double order = 0.0;
+    final orderValue = json['order'];
+    if (orderValue is num) {
+      order = orderValue.toDouble();
+    }
+
     return Habit(
       id: json['id'] as String,
       createdDate: DateTime.parse(json['createdDate'] as String),
@@ -207,6 +219,7 @@ class Habit extends BaseEntity<String> {
       hasGoal: json['hasGoal'] as bool? ?? false,
       targetFrequency: targetFrequency,
       periodDays: periodDays,
+      order: order,
     );
   }
 }

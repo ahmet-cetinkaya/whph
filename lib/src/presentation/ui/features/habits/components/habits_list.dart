@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/src/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_card.dart';
 import 'package:whph/src/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/src/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/src/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/src/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/src/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' hide Container;
 
 class HabitsList extends StatefulWidget {
   final int pageSize;
@@ -26,11 +29,13 @@ class HabitsList extends StatefulWidget {
   final String? search;
   final SortConfig<HabitSortFields>? sortConfig;
   final DateTime? excludeCompletedForDate;
+  final bool enableReordering;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
   final void Function()? onHabitCompleted;
   final void Function(int count)? onListing;
+  final void Function()? onReorderComplete;
 
   const HabitsList({
     super.key,
@@ -44,10 +49,12 @@ class HabitsList extends StatefulWidget {
     this.search,
     this.sortConfig,
     this.excludeCompletedForDate,
+    this.enableReordering = false,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
     this.onListing,
+    this.onReorderComplete,
   });
 
   @override
@@ -64,10 +71,15 @@ class HabitsListState extends State<HabitsList> {
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
+  final PageStorageKey _pageStorageKey = const PageStorageKey<String>('habit_list_scroll');
+
+  // Drag state notifier for reorderable list
+  late final DragStateNotifier _dragStateNotifier;
 
   @override
   void initState() {
     super.initState();
+    _dragStateNotifier = DragStateNotifier();
     _currentFilters = _captureCurrentFilters();
     _getHabits();
     _setupEventListeners();
@@ -78,6 +90,7 @@ class HabitsListState extends State<HabitsList> {
     _removeEventListeners();
     _refreshDebounce?.cancel();
     _scrollController.dispose();
+    _dragStateNotifier.dispose();
     super.dispose();
   }
 
@@ -305,38 +318,204 @@ class HabitsListState extends State<HabitsList> {
     );
   }
 
-  Widget _buildColumnList() {
-    return ListView.separated(
-      controller: _scrollController,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemCount: _habitList!.items.length + (_habitList!.hasNext ? 1 : 0),
-      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
-      itemBuilder: (context, index) {
-        if (index == _habitList!.items.length) {
-          return Padding(
-            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
-          );
-        }
+  List<Widget> _buildHabitCards() {
+    return _habitList!.items.asMap().entries.map((entry) {
+      final index = entry.key;
+      final habit = entry.value;
+      return Padding(
+        key: ValueKey(habit.id),
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+        child: HabitCard(
+          habit: habit,
+          onOpenDetails: () => widget.onClickHabit(habit),
+          isMiniLayout: false,
+          dateRange: widget.dateRange,
+          isDateLabelShowing: false,
+          onRecordCreated: (_) => widget.onHabitCompleted?.call(),
+          onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
+          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true,
+          dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+        ),
+      );
+    }).toList();
+  }
 
-        final habit = _habitList!.items[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
-          child: HabitCard(
-            key: ValueKey(habit.id),
-            habit: habit,
-            onOpenDetails: () => widget.onClickHabit(habit),
-            isMiniLayout: false,
-            dateRange: widget.dateRange,
-            isDateLabelShowing: false,
-            onRecordCreated: (_) => widget.onHabitCompleted?.call(),
-            onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
-            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          ),
+  Widget _buildColumnList() {
+    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true) {
+      return ReorderableListView(
+        key: _pageStorageKey,
+        buildDefaultDragHandles: false,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          child: child,
+        ),
+        onReorder: _onReorder,
+        children: [
+          ..._buildHabitCards(),
+          if (_habitList!.hasNext)
+            Padding(
+              key: const ValueKey('load_more_button'),
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+              child: Center(
+                  child: LoadMoreButton(
+                onPressed: _onLoadMore,
+              )),
+            ),
+        ],
+      );
+    } else {
+      final habitCards = _buildHabitCards();
+      return ListView.builder(
+        key: _pageStorageKey,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: habitCards.length + (_habitList!.hasNext ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index < habitCards.length) {
+            return habitCards[index];
+          } else {
+            // Load more button
+            return Padding(
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+              child: Center(
+                  child: LoadMoreButton(
+                onPressed: _onLoadMore,
+              )),
+            );
+          }
+        },
+      );
+    }
+  }
+
+  Future<void> _onReorder(int oldIndex, int newIndex) async {
+    if (!mounted) return;
+
+    // Start dragging state
+    _dragStateNotifier.startDragging();
+
+    final items = _habitList!.items;
+    
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final habit = items[oldIndex];
+    final originalOrder = habit.order ?? 0.0;
+
+    // Get target order for server update BEFORE visual update
+    final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
+    double targetOrder;
+
+    try {
+      if (newIndex == 0) {
+        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
+        
+        if (firstOrder <= 0 || firstOrder < 1e-10) {
+          targetOrder = OrderRank.initialStep / 2;
+        } else if (firstOrder < 1e-6) {
+          targetOrder = firstOrder / 1000;
+        } else {
+          targetOrder = firstOrder - OrderRank.initialStep;
+          if (targetOrder <= 0) {
+            targetOrder = firstOrder / 2;
+          }
+        }
+      } else {
+        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+      }
+
+      if ((targetOrder - originalOrder).abs() < 1e-10) {
+        _dragStateNotifier.stopDragging();
+        return; // No real change in order
+      }
+
+      // Apply visual reordering with correct target order
+      setState(() {
+        final reorderedItems = List<HabitListItem>.from(_habitList!.items);
+        final habitToMove = reorderedItems.removeAt(oldIndex);
+        
+        // Update the moved habit's order to the target order for correct visual display
+        final updatedHabit = HabitListItem(
+          id: habitToMove.id,
+          name: habitToMove.name,
+          tags: habitToMove.tags,
+          estimatedTime: habitToMove.estimatedTime,
+          hasReminder: habitToMove.hasReminder,
+          reminderTime: habitToMove.reminderTime,
+          reminderDays: habitToMove.reminderDays,
+          archivedDate: habitToMove.archivedDate,
+          order: targetOrder, // Use the calculated target order
         );
-      },
-    );
+        
+        reorderedItems.insert(newIndex, updatedHabit);
+        
+        // Sort the items by order to ensure correct visual display
+        reorderedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
+        
+        _habitList = GetListHabitsQueryResponse(
+          items: reorderedItems,
+          totalItemCount: _habitList!.totalItemCount,
+          pageIndex: _habitList!.pageIndex,
+          pageSize: _habitList!.pageSize,
+        );
+      });
+
+      // Update backend
+      await AsyncErrorHandler.executeVoid(
+        context: context,
+        errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+        operation: () async {
+          await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
+            UpdateHabitOrderCommand(
+              habitId: habit.id,
+              beforeHabitOrder: originalOrder,
+              afterHabitOrder: targetOrder,
+            ),
+          );
+        },
+        onSuccess: () {
+          _dragStateNotifier.stopDragging();
+          // Don't call onReorderComplete to avoid unnecessary refresh
+        },
+        onError: (_) {
+          _dragStateNotifier.stopDragging();
+          refresh(); // Refresh to restore correct order on error
+        },
+      );
+    } catch (e) {
+      if (e is RankGapTooSmallException && mounted) {
+        // Try to recover by placing at the end
+        final targetOrder = items.last.order! + OrderRank.initialStep * 2;
+        await AsyncErrorHandler.executeVoid(
+          context: context,
+          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          operation: () async {
+            await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
+              UpdateHabitOrderCommand(
+                habitId: habit.id,
+                beforeHabitOrder: originalOrder,
+                afterHabitOrder: targetOrder,
+              ),
+            );
+          },
+          onSuccess: () {
+            _dragStateNotifier.stopDragging();
+            widget.onReorderComplete?.call();
+          },
+          onError: (_) {
+            _dragStateNotifier.stopDragging();
+            refresh();
+          },
+        );
+      } else {
+        _dragStateNotifier.stopDragging();
+        refresh();
+      }
+    }
   }
 
   Future<void> _onLoadMore() async {

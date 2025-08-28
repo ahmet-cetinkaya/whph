@@ -389,6 +389,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         translationKey: HabitTranslationKeys.archivedDateLabel,
                       ),
                     ],
+                    showCustomOrderOption: true,
                     isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                   ),
 

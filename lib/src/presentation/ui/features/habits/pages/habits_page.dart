@@ -231,10 +231,18 @@ class _HabitsPageState extends State<HabitsPage> {
                   AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                   !_filterByArchived)
                 SizedBox(
-                  width: daysToShow * 46.0,
+                  width: daysToShow * 46.0 + AppTheme.size3XSmall + (_sortConfig.useCustomOrder ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall : 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
+                    children: [
+                      ...lastDays.map((date) => _buildCalendarDay(date, today)),
+                      // Add spacing to match calendar right padding and drag handle width
+                      SizedBox(
+                        width: AppTheme.size3XSmall + (_sortConfig.useCustomOrder 
+                          ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall 
+                          : 0), // Calendar right padding + (drag handle + spacing + extra + right padding when custom sort)
+                      ),
+                    ],
                   ),
                 ),
             ],
@@ -250,8 +258,13 @@ class _HabitsPageState extends State<HabitsPage> {
                 filterByArchived: _filterByArchived,
                 search: _searchQuery,
                 sortConfig: _sortConfig,
+                enableReordering: _sortConfig.useCustomOrder,
                 onClickHabit: (item) {
                   _openDetails(item.id, context);
+                },
+                onReorderComplete: () {
+                  // Refresh the habits list to ensure correct order
+                  setState(() {});
                 },
               ),
             ),
