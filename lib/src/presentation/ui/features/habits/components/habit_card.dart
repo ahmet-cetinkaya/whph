@@ -28,6 +28,8 @@ class HabitCard extends StatefulWidget {
   final bool isDateLabelShowing;
   final int dateRange;
   final bool isDense;
+  final bool showDragHandle;
+  final int? dragIndex;
 
   const HabitCard({
     super.key,
@@ -39,6 +41,8 @@ class HabitCard extends StatefulWidget {
     this.isDateLabelShowing = true,
     this.dateRange = 7,
     this.isDense = false,
+    this.showDragHandle = false,
+    this.dragIndex,
   });
 
   @override
@@ -227,8 +231,8 @@ class _HabitCardState extends State<HabitCard> {
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
       contentPadding: EdgeInsets.only(
-        left: isCompactView ? AppTheme.size2XSmall : AppTheme.sizeMedium,
-        right: isCompactView ? AppTheme.size2XSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
+        left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
+        right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
       ),
       onTap: widget.onOpenDetails,
       dense: widget.isDense,
@@ -284,10 +288,46 @@ class _HabitCardState extends State<HabitCard> {
   // Helper method to build the trailing widget (reminder icon, calendar, or checkbox)
   Widget? _buildTrailing(bool isCompactView) {
     if (isCompactView) {
-      // For compact view, show only checkbox
-      return _buildCheckbox(context);
+      // For compact view, show checkbox first, then drag handle
+      final compactWidgets = <Widget>[];
+      
+      // Always add the checkbox first
+      compactWidgets.add(_buildCheckbox(context));
+      
+      // Add consistent spacing when custom sort is enabled (even for spacer alignment)
+      if (widget.showDragHandle) {
+        compactWidgets.add(const SizedBox(width: AppTheme.size3XSmall));
+        
+        if (widget.dragIndex != null) {
+          // Add actual drag handle after checkbox
+          compactWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: ReorderableDragStartListener(
+                index: widget.dragIndex!,
+                child: const Icon(Icons.drag_handle, color: Colors.grey),
+              ),
+            ),
+          );
+        } else {
+          // Add spacer for archived habits to maintain alignment
+          compactWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: SizedBox(
+                width: AppTheme.iconSizeMedium,
+              ),
+            ),
+          );
+        }
+      }
+      
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: compactWidgets,
+      );
     } else {
-      // For full view, show reminder icon and calendar
+      // For full view, show reminder icon, calendar, and optionally drag handle
       final List<Widget> trailingWidgets = [];
 
       // Add reminder icon if applicable
@@ -315,11 +355,80 @@ class _HabitCardState extends State<HabitCard> {
           trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
         }
         trailingWidgets.add(
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: _buildCalendar(),
+          Padding(
+            padding: const EdgeInsets.only(right: AppTheme.size3XSmall),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: _buildCalendar(),
+            ),
           ),
         );
+      }
+
+      // Always add drag handle space when custom sort is enabled for consistent alignment
+      if (widget.showDragHandle) {
+        // Add spacing before drag handle/spacer area
+        trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
+        
+        if (widget.dragIndex != null) {
+          // Add actual drag handle
+          trailingWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: SizedBox(
+                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+                child: Center(
+                  child: ReorderableDragStartListener(
+                    index: widget.dragIndex!,
+                    child: const Icon(Icons.drag_handle, color: Colors.grey),
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          // Add spacer for alignment (archived habits, etc.)
+          trailingWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: SizedBox(
+                width: AppTheme.iconSizeMedium,
+                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+              ),
+            ),
+          );
+        }
+      }
+
+      // If we have custom sort enabled but no other trailing widgets, still show the drag handle space
+      if (trailingWidgets.isEmpty && widget.showDragHandle) {
+        if (widget.dragIndex != null) {
+          trailingWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: SizedBox(
+                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+                child: Center(
+                  child: ReorderableDragStartListener(
+                    index: widget.dragIndex!,
+                    child: const Icon(Icons.drag_handle, color: Colors.grey),
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          // Add spacer for archived habits to maintain alignment
+          trailingWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              child: SizedBox(
+                width: AppTheme.iconSizeMedium,
+                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+              ),
+            ),
+          );
+        }
       }
 
       return trailingWidgets.isEmpty

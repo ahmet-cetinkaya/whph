@@ -97,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration {
@@ -404,6 +404,22 @@ class AppDatabase extends _$AppDatabase {
               SET usage_date = created_date
             ''');
           }
+        },
+        from21To22: (m, schema) async {
+          // Add order column to habit table for custom sorting
+          await m.addColumn(habitTable, habitTable.order);
+          
+          // Set default order values for existing habits based on created_date
+          await customStatement('''
+            WITH ordered_habits AS (
+              SELECT id, ROW_NUMBER() OVER (ORDER BY created_date ASC) * 1000.0 AS new_order
+              FROM habit_table
+              WHERE deleted_date IS NULL
+            )
+            UPDATE habit_table 
+            SET order = (SELECT new_order FROM ordered_habits WHERE ordered_habits.id = habit_table.id)
+            WHERE habit_table.id IN (SELECT id FROM ordered_habits)
+          ''');
         },
       ),
     );

@@ -322,7 +322,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
     if (request.sortByCustomSort) {
-      return [CustomOrder(field: "order")];
+      return [CustomOrder(field: "order", direction: SortDirection.asc)];
     }
 
     // Ensure sortBy is not null before iterating
