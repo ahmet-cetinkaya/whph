@@ -192,5 +192,6 @@ settings:
       no_file: Keine Debug-Protokolldatei gefunden. Protokolle werden erstellt, nachdem die Debug-Protokollierung aktiviert wurde und die App Protokolleinträge generiert.
       empty: Debug-Protokolldatei ist leer. Es wurden noch keine Protokolleinträge aufgezeichnet.
     export:
+      dialog_title: Debug-Protokolle exportieren
       error: Fehler beim Exportieren der Protokolle
       success: Protokolldatei erfolgreich exportiert

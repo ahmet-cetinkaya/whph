@@ -194,5 +194,6 @@ settings:
       no_file: Nenhum arquivo de log de depuração encontrado. Os logs serão criados após ativar o registro de depuração e o aplicativo gerar entradas de log.
       empty: O arquivo de log de depuração está vazio. Nenhuma entrada de log foi registrada ainda.
     export:
+      dialog_title: Exportar logs de depuração
       error: Erro ao exportar logs
       success: Arquivo de log exportado com sucesso

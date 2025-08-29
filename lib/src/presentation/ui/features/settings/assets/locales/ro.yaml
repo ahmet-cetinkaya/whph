@@ -194,5 +194,6 @@ settings:
       no_file: Nu s-a găsit niciun fișier jurnal de depanare. Jurnalele vor fi create după activarea înregistrării de depanare și generarea de intrări în jurnal de către aplicație.
       empty: Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări în jurnal.
     export:
+      dialog_title: Exportă jurnalele de depanare
       error: Eroare la exportul jurnalelor
       success: Fișierul jurnal a fost exportat cu succes

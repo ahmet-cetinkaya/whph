@@ -193,5 +193,6 @@ settings:
       no_file: No debug log file found. Logs will be created after debug logging is enabled and the app generates log entries.
       empty: Debug log file is empty. No log entries have been recorded yet.
     export:
+      dialog_title: Export Debug Logs
       error: Error exporting logs
       success: Log file exported successfully

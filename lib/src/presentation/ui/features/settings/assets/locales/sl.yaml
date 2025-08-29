@@ -9,7 +9,10 @@ settings:
     export_failed: Export failed
     import_failed: Import failed
     setting_not_found: Setting not found
-    version_mismatch: Version not found
+       export:
+      dialog_title: Izvozi dnevnike razhroščevanja
+      error: Napaka pri izvozu dnevnikov
+      success: Datoteka dnevnika je bila uspešno izvoženarsion_mismatch: Version not found
   export:
     csv_description: You can use this to view in Excel and similar applications.
     error: Export failed

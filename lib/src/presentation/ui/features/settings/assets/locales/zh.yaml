@@ -193,5 +193,6 @@ settings:
       no_file: 未找到调试日志文件。启用调试日志记录并且应用生成日志条目后将创建日志。
       empty: 调试日志文件为空。尚未记录任何日志条目。
     export:
+      dialog_title: 导出调试日志
       error: 导出日志时出错
       success: 日志文件导出成功
