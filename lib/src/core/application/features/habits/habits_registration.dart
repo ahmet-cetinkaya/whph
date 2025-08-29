@@ -4,6 +4,7 @@ import 'package:whph/src/core/application/features/habits/commands/add_habit_tag
 import 'package:whph/src/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/src/core/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/src/core/application/features/habits/commands/update_habit_order_command.dart';
+import 'package:whph/src/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habit_tags_query.dart';
@@ -71,5 +72,8 @@ void registerHabitsFeature(
     )
     ..registerHandler<UpdateHabitOrderCommand, UpdateHabitOrderResponse, UpdateHabitOrderCommandHandler>(
       () => UpdateHabitOrderCommandHandler(habitRepository),
+    )
+    ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
+      () => NormalizeHabitOrdersCommandHandler(habitRepository),
     );
 }

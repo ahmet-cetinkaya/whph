@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/habits/commands/update_habit_order_command.dart';
+import 'package:whph/src/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/src/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/habits/components/habit_card.dart';
@@ -453,9 +454,10 @@ class HabitsListState extends State<HabitsList> {
     final originalOrder = habit.order ?? 0.0;
 
     try {
-      // Get target order for server update BEFORE visual update
+      // Prepare data for server update
       final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
       
+      // Calculate target order for visual update only
       final targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
@@ -495,20 +497,50 @@ class HabitsListState extends State<HabitsList> {
       });
 
       // Update backend
-      await AsyncErrorHandler.executeVoid(
+      await AsyncErrorHandler.execute<UpdateHabitOrderResponse>(
         context: context,
         errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
         operation: () async {
-          await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
+          return await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
             UpdateHabitOrderCommand(
               habitId: habit.id,
               newOrder: targetOrder,
             ),
           );
         },
-        onSuccess: () {
+        onSuccess: (result) {
+          // Check if the backend returned a different order (due to re-normalization)
+          if ((result.order - targetOrder).abs() > 1e-10) {
+            // Backend order is different, update local state to match
+            setState(() {
+              final updatedItems = List<HabitListItem>.from(_habitList!.items);
+              final habitIndex = updatedItems.indexWhere((item) => item.id == habit.id);
+              if (habitIndex != -1) {
+                updatedItems[habitIndex] = HabitListItem(
+                  id: habit.id,
+                  name: habit.name,
+                  tags: habit.tags,
+                  estimatedTime: habit.estimatedTime,
+                  hasReminder: habit.hasReminder,
+                  reminderTime: habit.reminderTime,
+                  reminderDays: habit.reminderDays,
+                  archivedDate: habit.archivedDate,
+                  order: result.order, // Use the final order from backend
+                );
+                
+                // Re-sort with the updated order
+                updatedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
+                
+                _habitList = GetListHabitsQueryResponse(
+                  items: updatedItems,
+                  totalItemCount: _habitList!.totalItemCount,
+                  pageIndex: _habitList!.pageIndex,
+                  pageSize: _habitList!.pageSize,
+                );
+              }
+            });
+          }
           _dragStateNotifier.stopDragging();
-          // Don't call onReorderComplete to avoid unnecessary refresh
         },
         onError: (_) {
           _dragStateNotifier.stopDragging();
@@ -517,22 +549,18 @@ class HabitsListState extends State<HabitsList> {
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Try to recover by placing at the end
-        final targetOrder = items.last.order! + OrderRank.initialStep * 2;
+        // Normalize all habit orders to resolve ranking conflicts
         await AsyncErrorHandler.executeVoid(
           context: context,
           errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
           operation: () async {
-            await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
-              UpdateHabitOrderCommand(
-                habitId: habit.id,
-                newOrder: targetOrder,
-              ),
+            await _mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
+              const NormalizeHabitOrdersCommand(),
             );
           },
           onSuccess: () {
             _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call();
+            widget.onReorderComplete?.call(); // Refresh to show normalized order
           },
           onError: (_) {
             _dragStateNotifier.stopDragging();
