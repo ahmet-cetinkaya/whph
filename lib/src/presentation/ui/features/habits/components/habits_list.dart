@@ -518,8 +518,7 @@ class HabitsListState extends State<HabitsList> {
           await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
             UpdateHabitOrderCommand(
               habitId: habit.id,
-              beforeHabitOrder: originalOrder,
-              afterHabitOrder: targetOrder,
+              newOrder: targetOrder,
             ),
           );
         },
@@ -543,8 +542,7 @@ class HabitsListState extends State<HabitsList> {
             await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
               UpdateHabitOrderCommand(
                 habitId: habit.id,
-                beforeHabitOrder: originalOrder,
-                afterHabitOrder: targetOrder,
+                newOrder: targetOrder,
               ),
             );
           },
