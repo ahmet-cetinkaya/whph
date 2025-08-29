@@ -197,3 +197,5 @@ settings:
       dialog_title: Exportera felsökningsloggar
       error: Fel vid export av loggar
       success: Loggfil exporterad framgångsrikt
+      no_logs_available: Inga loggar tillgängliga för export
+      file_not_exist: Loggfilen finns inte

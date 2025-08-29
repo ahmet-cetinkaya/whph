@@ -173,4 +173,6 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String exportLogsDialogTitle = 'settings.debug_logs.export.dialog_title';
   static const String exportLogsError = 'settings.debug_logs.export.error';
   static const String exportLogsSuccess = 'settings.debug_logs.export.success';
+  static const String exportLogsNoLogsAvailable = 'settings.debug_logs.export.no_logs_available';
+  static const String exportLogsFileNotExist = 'settings.debug_logs.export.file_not_exist';
 }

@@ -197,3 +197,5 @@ settings:
       dialog_title: Eksporter debug-logfiler
       error: Fejl ved eksport af logfiler
       success: Logfil eksporteret succesfuldt
+      no_logs_available: Ingen logfiler tilgængelige til eksport. Generer nogle logfiler først.
+      file_not_exist: Logfil findes ikke. Aktivér debug-logning og generer nogle logfiler først.

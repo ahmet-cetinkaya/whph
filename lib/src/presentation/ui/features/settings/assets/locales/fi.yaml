@@ -194,6 +194,8 @@ settings:
       no_file: Virheenkorjauslokitiedostoa ei löytynyt. Lokit luodaan virheenkorjauslokituksen käyttöönoton ja sovelluksen lokimerkintöjen luomisen jälkeen.
       empty: Virheenkorjauslokitiedosto on tyhjä. Lokimerkintöjä ei ole vielä tallennettu.
     export:
-      dialog_title: Vie virheenjäljityslokit
-      error: Virhe lokien viennissä
+      dialog_title: Vie virheenkorjauslokit
+      error: Virhe lokien viedessä
       success: Lokitiedosto viety onnistuneesti
+      no_logs_available: Ei lokeja saatavilla vietäväksi. Luo ensin joitakin lokeja.
+      file_not_exist: Lokitiedostoa ei ole olemassa. Ota virheenkorjausloki käyttöön ja luo ensin joitakin lokeja.

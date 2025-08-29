@@ -13,6 +13,16 @@ import 'package:acore/acore.dart';
 /// This service handles exporting log files to user-selected locations
 /// across different platforms (desktop, mobile, web)
 class LogExportService implements ILogExportService {
+  /// Generate a timestamped filename for log export
+  String _generateSuggestedFileName(String logFilePath) {
+    final fileName = path.basename(logFilePath);
+    final fileExtension = path.extension(fileName);
+    final baseName = path.basenameWithoutExtension(fileName);
+
+    // Generate a timestamped filename
+    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
+    return '${baseName}_$timestamp$fileExtension';
+  }
   @override
   Future<String?> exportLogFile(String logFilePath) async {
     try {
@@ -41,13 +51,7 @@ class LogExportService implements ILogExportService {
   Future<String?> _exportOnDesktop(File logFile) async {
     try {
       final translationService = container.resolve<ITranslationService>();
-      final fileName = path.basename(logFile.path);
-      final fileExtension = path.extension(fileName);
-      final baseName = path.basenameWithoutExtension(fileName);
-
-      // Generate a timestamped filename
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-      final suggestedName = '${baseName}_$timestamp$fileExtension';
+      final suggestedName = _generateSuggestedFileName(logFile.path);
 
       // Show save dialog with localized title
       final result = await FilePicker.platform.saveFile(
@@ -73,13 +77,8 @@ class LogExportService implements ILogExportService {
   /// Export log file on mobile platforms using file saver
   Future<String?> _exportOnMobile(File logFile) async {
     try {
-      final fileName = path.basename(logFile.path);
-      final fileExtension = path.extension(fileName);
-      final baseName = path.basenameWithoutExtension(fileName);
-
-      // Generate a timestamped filename
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-      final suggestedName = '${baseName}_$timestamp$fileExtension';
+      final suggestedName = _generateSuggestedFileName(logFile.path);
+      final fileExtension = path.extension(logFile.path);
 
       // Read file content
       final fileContent = await logFile.readAsBytes();
@@ -101,13 +100,8 @@ class LogExportService implements ILogExportService {
   /// Export log file on web platform using file saver
   Future<String?> _exportOnWeb(File logFile) async {
     try {
-      final fileName = path.basename(logFile.path);
-      final fileExtension = path.extension(fileName);
-      final baseName = path.basenameWithoutExtension(fileName);
-
-      // Generate a timestamped filename
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-      final suggestedName = '${baseName}_$timestamp$fileExtension';
+      final suggestedName = _generateSuggestedFileName(logFile.path);
+      final fileExtension = path.extension(logFile.path);
 
       // Read file content
       final fileContent = await logFile.readAsBytes();

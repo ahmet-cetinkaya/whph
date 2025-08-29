@@ -196,3 +196,5 @@ settings:
       dialog_title: 导出调试日志
       error: 导出日志时出错
       success: 日志文件导出成功
+      no_logs_available: 没有可导出的日志
+      file_not_exist: 日志文件不存在

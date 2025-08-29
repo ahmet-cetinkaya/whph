@@ -197,3 +197,5 @@ settings:
       dialog_title: Exportar logs de depuração
       error: Erro ao exportar logs
       success: Arquivo de log exportado com sucesso
+      no_logs_available: Nenhum log disponível para exportação. Gere alguns logs primeiro.
+      file_not_exist: O arquivo de log não existe. Ative o log de depuração e gere alguns logs primeiro.

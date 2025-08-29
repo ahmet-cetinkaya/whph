@@ -7,10 +7,7 @@ settings:
   errors:
     export_failed: Échec de l'exportation
     import_failed: Échec de l'importation
-    setting_not_found    export:
-      dialog_title: Exporter les journaux de débogage
-      error: Erreur lors de l'exportation des journaux
-      success: Fichier journal exporté avec succèsaramètre non trouvé
+    setting_not_found: Paramètre non trouvé
     version_mismatch: Version non trouvée
   export:
     csv_description: Vous pouvez utiliser ceci pour visualiser dans Excel et applications similaires.
@@ -198,3 +195,5 @@ settings:
       dialog_title: Exporter les journaux de débogage
       error: Erreur lors de l'exportation des journaux
       success: Fichier de journal exporté avec succès
+      no_logs_available: Aucun journal disponible à exporter. Générez d'abord quelques journaux.
+      file_not_exist: Le fichier journal n'existe pas. Activez la journalisation de débogage et générez d'abord quelques journaux.

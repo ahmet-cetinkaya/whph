@@ -194,6 +194,8 @@ settings:
       no_file: Geen debug-logbestand gevonden. Logs worden aangemaakt nadat debug-logging is ingeschakeld en de app logvermeldingen genereert.
       empty: Debug-logbestand is leeg. Er zijn nog geen logvermeldingen opgenomen.
     export:
-      dialog_title: Debug-logbestanden exporteren
-      error: Fout bij exporteren van logbestanden
+      dialog_title: Debug-logs exporteren
+      error: Fout bij het exporteren van logs
       success: Logbestand succesvol geëxporteerd
+      no_logs_available: Geen logs beschikbaar om te exporteren. Genereer eerst enkele logs.
+      file_not_exist: Logbestand bestaat niet. Schakel debug-logging in en genereer eerst enkele logs.

@@ -197,3 +197,5 @@ settings:
       dialog_title: 디버그 로그 내보내기
       error: 로그 내보내기 오류
       success: 로그 파일이 성공적으로 내보내졌습니다
+      no_logs_available: 내보낼 로그가 없습니다
+      file_not_exist: 로그 파일이 존재하지 않습니다

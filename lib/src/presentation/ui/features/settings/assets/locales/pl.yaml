@@ -197,3 +197,5 @@ settings:
       dialog_title: Eksportuj dzienniki debugowania
       error: Błąd eksportu dzienników
       success: Plik dziennika wyeksportowany pomyślnie
+      no_logs_available: Brak dostępnych dzienników do eksportu
+      file_not_exist: Plik dziennika nie istnieje

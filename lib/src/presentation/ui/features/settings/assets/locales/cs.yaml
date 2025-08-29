@@ -197,3 +197,5 @@ settings:
       dialog_title: Export protokolů ladění
       error: Chyba při exportu protokolů
       success: Soubor protokolu byl úspěšně exportován
+      no_logs_available: Žádné protokoly nejsou k dispozici pro export. Nejprve vygenerujte nějaké protokoly.
+      file_not_exist: Soubor protokolu neexistuje. Povolte protokolování ladění a nejprve vygenerujte nějaké protokoly.
