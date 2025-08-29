@@ -42,8 +42,13 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
       // Normalize all orders if gaps are too small
       final allHabits = await _habitRepository.getAll(
         customWhereFilter: CustomWhereFilter('deleted_date IS NULL', []),
-        customOrder: [CustomOrder(field: "order")],
       );
+      
+      // Find the moved habit and update its order to reflect the user's intent
+      final movedHabitIndex = allHabits.indexWhere((h) => h.id == request.habitId);
+      if (movedHabitIndex != -1) {
+        allHabits[movedHabitIndex].order = request.newOrder;
+      }
       
       allHabits.sort((a, b) => a.order.compareTo(b.order));
       
@@ -61,7 +66,9 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
       // Batch update all habits
       await _habitRepository.updateAll(habitsToUpdate);
 
-      return UpdateHabitOrderResponse(habit.id, habit.order);
+      // Find the final normalized order for the moved habit
+      final finalOrder = habitsToUpdate.firstWhere((h) => h.id == request.habitId).order;
+      return UpdateHabitOrderResponse(request.habitId, finalOrder);
     }
   }
 }

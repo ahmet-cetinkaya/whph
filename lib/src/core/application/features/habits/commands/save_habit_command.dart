@@ -101,9 +101,8 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
       );
 
-      const int orderStep = 1000;
       final lastOrder = lastHabits.items.isNotEmpty ? lastHabits.items.first.order : 0;
-      final newOrder = ((lastOrder + orderStep).toDouble());
+      final newOrder = (lastOrder + OrderRank.initialStep).toDouble();
 
       // Create habit with default values
       habit = Habit(
