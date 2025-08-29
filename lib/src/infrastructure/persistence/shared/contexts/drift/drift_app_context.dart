@@ -408,7 +408,7 @@ class AppDatabase extends _$AppDatabase {
         from21To22: (m, schema) async {
           // Add order column to habit table for custom sorting
           await m.addColumn(habitTable, habitTable.order);
-          
+
           // Set default order values for existing habits based on created_date
           await customStatement('''
             WITH ordered_habits AS (

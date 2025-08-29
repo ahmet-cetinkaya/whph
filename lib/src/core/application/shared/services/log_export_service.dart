@@ -23,6 +23,7 @@ class LogExportService implements ILogExportService {
     final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
     return '${baseName}_$timestamp$fileExtension';
   }
+
   @override
   Future<String?> exportLogFile(String logFilePath) async {
     try {

@@ -110,8 +110,10 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
           appUsageId: widget.appUsageId,
           startDate: DateTimeHelper.toUtcDateTime(_startDate!),
           endDate: DateTimeHelper.toUtcDateTime(_endDate!),
-          compareStartDate: _showComparison && _compareStartDate != null ? DateTimeHelper.toUtcDateTime(_compareStartDate!) : null,
-          compareEndDate: _showComparison && _compareEndDate != null ? DateTimeHelper.toUtcDateTime(_compareEndDate!) : null,
+          compareStartDate:
+              _showComparison && _compareStartDate != null ? DateTimeHelper.toUtcDateTime(_compareStartDate!) : null,
+          compareEndDate:
+              _showComparison && _compareEndDate != null ? DateTimeHelper.toUtcDateTime(_compareEndDate!) : null,
         );
 
         return await _mediator.send<GetAppUsageStatisticsQuery, GetAppUsageStatisticsResponse>(query);
@@ -225,7 +227,12 @@ class _AppUsageStatisticsViewState extends State<AppUsageStatisticsView> {
               }
             },
           ),
-          if (_showComparison && _startDate != null && _endDate != null && _compareStartDate != null && _compareEndDate != null) _buildComparisonLegend(),
+          if (_showComparison &&
+              _startDate != null &&
+              _endDate != null &&
+              _compareStartDate != null &&
+              _compareEndDate != null)
+            _buildComparisonLegend(),
           const SizedBox(height: AppTheme.sizeMedium),
           if (_isLoading)
             const Center(child: CircularProgressIndicator())

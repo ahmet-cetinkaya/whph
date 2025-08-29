@@ -33,7 +33,8 @@ class HabitsPage extends StatefulWidget {
 class _HabitsPageState extends State<HabitsPage> {
   // Calendar layout constants
   static const double _calendarDayWidth = 46.0;
-  static const double _dragHandleWidth = AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall;
+  static const double _dragHandleWidth =
+      AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall;
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
@@ -174,7 +175,7 @@ class _HabitsPageState extends State<HabitsPage> {
     final baseWidth = daysToShow * _calendarDayWidth;
     final baseSpacing = AppTheme.size3XSmall;
     final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
-    
+
     return baseWidth + baseSpacing + dragHandleSpacing;
   }
 
@@ -182,7 +183,7 @@ class _HabitsPageState extends State<HabitsPage> {
   double _calculateCalendarSpacingWidth() {
     final baseSpacing = AppTheme.size3XSmall;
     final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
-    
+
     return baseSpacing + dragHandleSpacing;
   }
 

@@ -134,21 +134,21 @@ class LoggerService implements ILoggerService {
     if (_fileLogger != null) {
       _currentLogger.info('Debug logging disabled - stopping file logging');
       await _fileLogger!.flush();
-      
+
       // Get the log file path before disposing the logger
       final logFilePath = await _getLogFilePath();
       final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
-      
+
       _fileLogger!.dispose();
       _fileLogger = null;
-      
+
       // Delete the log file
       try {
         final logFile = File(logFilePath);
         if (await logFile.exists()) {
           await logFile.delete();
         }
-        
+
         // Also try to delete the logs directory if it's empty
         final logsDirectory = Directory(path.join(appDirectory.path, _logsDirectoryName));
         if (await logsDirectory.exists()) {

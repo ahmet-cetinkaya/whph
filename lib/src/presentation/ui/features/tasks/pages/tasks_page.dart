@@ -85,16 +85,15 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   void _updateAutoRefreshCacheIfNeeded() {
     final now = DateTime.now();
     // Update cache only if minute has changed (for "this_minute") or if this is first check
-    if (_lastAutoRefreshCheck == null || 
+    if (_lastAutoRefreshCheck == null ||
         now.minute != _lastAutoRefreshCheck!.minute ||
         now.hour != _lastAutoRefreshCheck!.hour ||
         now.day != _lastAutoRefreshCheck!.day) {
-      
       final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
       _cachedAutoRefreshStartDate = currentRange.startDate;
       _cachedAutoRefreshEndDate = currentRange.endDate;
       _lastAutoRefreshCheck = now;
-      
+
       // Don't call setState - let TaskList handle its own refresh
     }
   }
@@ -152,7 +151,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         }
       });
     }
-    
+
     // Skip auto-refresh setup during settings loading to prevent unsaved changes
     if (!_isLoadingSettings) {
       _setupAutoRefreshUI();
@@ -200,7 +199,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
   void _setupAutoRefreshUI() {
     _autoRefreshUITimer?.cancel();
-    
+
     // Setup minimal timer only for auto-refresh enabled quick selections
     if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
       _autoRefreshUITimer = Timer.periodic(const Duration(minutes: 1), (timer) {
@@ -208,7 +207,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           timer.cancel();
           return;
         }
-        
+
         // CRITICAL: Don't change any widget properties, just call build
         // This should not trigger didUpdateWidget since no properties change
         if (mounted) {
@@ -335,7 +334,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           if (_isTaskListVisible)
             Expanded(
               child: TaskList(
-                key: ValueKey('${_getAutoRefreshKey()}_${_effectiveFilterStartDate?.millisecondsSinceEpoch}_${_effectiveFilterEndDate?.millisecondsSinceEpoch}'),
+                key: ValueKey(
+                    '${_getAutoRefreshKey()}_${_effectiveFilterStartDate?.millisecondsSinceEpoch}_${_effectiveFilterEndDate?.millisecondsSinceEpoch}'),
                 filterByCompleted: _showCompletedTasks,
                 filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
                 filterNoTags: _showNoTagsFilter,

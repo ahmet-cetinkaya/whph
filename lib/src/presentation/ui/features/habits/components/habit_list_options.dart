@@ -414,8 +414,8 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                   ),
 
                 // Layout toggle button (only show when custom sort is enabled)
-                if (widget.showLayoutToggle && 
-                    widget.sortConfig?.useCustomOrder == true && 
+                if (widget.showLayoutToggle &&
+                    widget.sortConfig?.useCustomOrder == true &&
                     widget.onLayoutToggleChange != null)
                   FilterIconButton(
                     icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,
