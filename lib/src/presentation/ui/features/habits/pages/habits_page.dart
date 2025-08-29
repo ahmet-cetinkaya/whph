@@ -31,6 +31,9 @@ class HabitsPage extends StatefulWidget {
 }
 
 class _HabitsPageState extends State<HabitsPage> {
+  // Calendar layout constants
+  static const double _calendarDayWidth = 46.0;
+  static const double _dragHandleWidth = AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall;
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
@@ -166,6 +169,23 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
+  /// Calculate calendar header width based on days shown and reordering state
+  double _calculateCalendarHeaderWidth(int daysToShow) {
+    final baseWidth = daysToShow * _calendarDayWidth;
+    final baseSpacing = AppTheme.size3XSmall;
+    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
+    
+    return baseWidth + baseSpacing + dragHandleSpacing;
+  }
+
+  /// Calculate calendar spacing width to align with habit cards
+  double _calculateCalendarSpacingWidth() {
+    final baseSpacing = AppTheme.size3XSmall;
+    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
+    
+    return baseSpacing + dragHandleSpacing;
+  }
+
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
@@ -243,16 +263,14 @@ class _HabitsPageState extends State<HabitsPage> {
                   AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                   !_filterByArchived)
                 SizedBox(
-                  width: daysToShow * 46.0 + AppTheme.size3XSmall + (_sortConfig.useCustomOrder && !_forceOriginalLayout ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall : 0),
+                  width: _calculateCalendarHeaderWidth(daysToShow),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ...lastDays.map((date) => _buildCalendarDay(date, today)),
                       // Add spacing to match calendar right padding and drag handle width
                       SizedBox(
-                        width: AppTheme.size3XSmall + (_sortConfig.useCustomOrder && !_forceOriginalLayout
-                          ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall 
-                          : 0), // Calendar right padding + (drag handle + spacing + extra + right padding when custom sort)
+                        width: _calculateCalendarSpacingWidth(),
                       ),
                     ],
                   ),
