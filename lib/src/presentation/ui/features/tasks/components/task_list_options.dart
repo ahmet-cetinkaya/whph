@@ -76,6 +76,15 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Whether to show the sort button
   final bool showSortButton;
 
+  /// Whether to show the layout toggle button when custom sort is enabled
+  final bool showLayoutToggle;
+
+  /// Whether to force the original layout even with custom sort
+  final bool forceOriginalLayout;
+
+  /// Callback when layout toggle changes
+  final Function(bool)? onLayoutToggleChange;
+
   /// Whether to show the completed tasks toggle button
   final bool showCompletedTasksToggle;
 
@@ -107,6 +116,9 @@ class TaskListOptions extends PersistentListOptionsBase {
     this.showDateFilter = true,
     this.showSearchFilter = true,
     this.showSortButton = true,
+    this.showLayoutToggle = true,
+    this.forceOriginalLayout = false,
+    this.onLayoutToggleChange,
     super.showSaveButton = true,
     this.showCompletedTasksToggle = true,
     this.showCompletedTasks = false,
@@ -190,6 +202,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       if (widget.onSortChange != null && filterSettings.sortConfig != null) {
         widget.onSortChange!(filterSettings.sortConfig!);
       }
+
+      if (widget.onLayoutToggleChange != null) {
+        widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
+      }
     }
 
     if (mounted) {
@@ -233,6 +249,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
           search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
           showCompletedTasks: widget.showCompletedTasks,
           sortConfig: widget.sortConfig,
+          forceOriginalLayout: widget.forceOriginalLayout,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -270,6 +287,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
       showCompletedTasks: widget.showCompletedTasks,
       sortConfig: widget.sortConfig,
+      forceOriginalLayout: widget.forceOriginalLayout,
     ).toJson();
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -292,9 +310,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final endDateChanges = widget.selectedEndDate != oldWidget.selectedEndDate;
     final completedChanges = widget.showCompletedTasks != oldWidget.showCompletedTasks;
     final sortChanges = widget.sortConfig != oldWidget.sortConfig;
+    final layoutChanges = widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
 
     final hasNonSearchChanges = tagChanges || noTagsChanges || dateSettingChanges || 
-        startDateChanges || endDateChanges || completedChanges || sortChanges;
+        startDateChanges || endDateChanges || completedChanges || sortChanges || layoutChanges;
 
     if (hasNonSearchChanges) {
       // Don't trigger save button if this is just auto-refresh date recalculation
@@ -551,6 +570,20 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     ],
                     isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                     showCustomOrderOption: true,
+                  ),
+
+                // Layout toggle button (only show when custom sort is enabled)
+                if (widget.showLayoutToggle && 
+                    widget.sortConfig?.useCustomOrder == true && 
+                    widget.onLayoutToggleChange != null)
+                  FilterIconButton(
+                    icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: !widget.forceOriginalLayout ? Theme.of(context).primaryColor : Colors.grey,
+                    tooltip: widget.forceOriginalLayout
+                        ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
+                        : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
+                    onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
                   ),
 
                 // Save button

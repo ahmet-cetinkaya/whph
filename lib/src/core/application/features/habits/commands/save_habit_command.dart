@@ -93,6 +93,17 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
 
       await _habitRepository.update(habit);
     } else {
+      // Get the last habit to determine the order
+      final lastHabits = await _habitRepository.getList(
+        0,
+        1,
+        customWhereFilter: CustomWhereFilter("deleted_date IS NULL", []),
+        customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
+      );
+
+      final lastOrder = lastHabits.items.isNotEmpty ? lastHabits.items.first.order : 0;
+      final newOrder = (lastOrder + OrderRank.initialStep).toDouble();
+
       // Create habit with default values
       habit = Habit(
         id: KeyHelper.generateStringId(),
@@ -106,6 +117,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         targetFrequency: request.targetFrequency ?? 1,
         periodDays: request.periodDays ?? 7,
         archivedDate: request.archivedDate,
+        order: newOrder, // Set the calculated order
       );
 
       // Set reminder days using the helper method

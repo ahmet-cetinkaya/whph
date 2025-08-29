@@ -30,6 +30,9 @@ class TaskListOptionSettings {
   /// Current sort configuration
   final SortConfig<TaskSortFields>? sortConfig;
 
+  /// Whether to force the original layout even with custom sort
+  final bool forceOriginalLayout;
+
   /// Default constructor
   TaskListOptionSettings({
     this.selectedTagIds,
@@ -40,6 +43,7 @@ class TaskListOptionSettings {
     this.search,
     this.showCompletedTasks = false,
     this.sortConfig,
+    this.forceOriginalLayout = false,
   });
 
   /// Create settings from a JSON map
@@ -102,6 +106,7 @@ class TaskListOptionSettings {
       search: json['search'] as String?,
       showCompletedTasks: json['showCompletedTasks'] as bool? ?? false,
       sortConfig: sortConfig,
+      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
     );
   }
 
@@ -111,6 +116,7 @@ class TaskListOptionSettings {
       'showNoTagsFilter': showNoTagsFilter,
       'showCompletedTasks': showCompletedTasks,
       'search': search, // Always include search, even if null
+      'forceOriginalLayout': forceOriginalLayout,
     };
 
     if (selectedTagIds != null) {

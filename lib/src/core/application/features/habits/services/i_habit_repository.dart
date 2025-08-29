@@ -3,4 +3,5 @@ import 'package:whph/src/core/domain/features/habits/habit.dart';
 
 abstract class IHabitRepository extends app.IRepository<Habit, String> {
   Future<String> getReminderDaysById(String id);
+  Future<void> updateAll(List<Habit> habits);
 }

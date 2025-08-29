@@ -44,6 +44,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   String? _searchQuery;
   bool _showNoTagsFilter = false;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
+  bool _forceOriginalLayout = false;
 
   String? _handledTaskId;
   Timer? _autoRefreshUITimer;
@@ -178,6 +179,13 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     if (!mounted) return;
     setState(() {
       _sortConfig = newConfig;
+    });
+  }
+
+  void _onLayoutToggleChange(bool forceOriginalLayout) {
+    if (!mounted) return;
+    setState(() {
+      _forceOriginalLayout = forceOriginalLayout;
     });
   }
 
@@ -316,7 +324,9 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             showCompletedTasksToggle: true,
             hasItems: true,
             sortConfig: _sortConfig,
+            forceOriginalLayout: _forceOriginalLayout,
             onSortChange: _onSortConfigChange,
+            onLayoutToggleChange: _onLayoutToggleChange,
             settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
             onSettingsLoaded: _onSettingsLoaded,
           ),
@@ -337,6 +347,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                 search: _searchQuery,
                 onClickTask: (task) => _openDetails(task.id),
                 enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+                forceOriginalLayout: _forceOriginalLayout,
                 sortConfig: _sortConfig,
               ),
             ),
