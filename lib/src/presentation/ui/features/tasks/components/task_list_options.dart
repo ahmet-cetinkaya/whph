@@ -215,7 +215,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         // Clear unsaved changes after loading saved settings
         hasUnsavedChanges = false;
       });
-      
+
       // Ensure unsaved changes are cleared after all callbacks are processed
       // Use microtask to run after current event loop
       Future.microtask(() {
@@ -237,9 +237,9 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       operation: () async {
         // For auto-refresh quick selections, ignore selectedStartDate/selectedEndDate
         // since they are dynamically calculated and shouldn't be saved
-        final isAutoRefreshSelection = widget.dateFilterSetting?.isQuickSelection == true && 
-                                      widget.dateFilterSetting?.isAutoRefreshEnabled == true;
-        
+        final isAutoRefreshSelection = widget.dateFilterSetting?.isQuickSelection == true &&
+            widget.dateFilterSetting?.isAutoRefreshEnabled == true;
+
         final settings = TaskListOptionSettings(
           selectedTagIds: widget.selectedTagIds,
           showNoTagsFilter: widget.showNoTagsFilter,
@@ -275,9 +275,9 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
   Future<void> checkForUnsavedChanges() async {
     // For auto-refresh quick selections, ignore selectedStartDate/selectedEndDate
     // since they are dynamically calculated and shouldn't be compared
-    final isAutoRefreshSelection = widget.dateFilterSetting?.isQuickSelection == true && 
-                                  widget.dateFilterSetting?.isAutoRefreshEnabled == true;
-    
+    final isAutoRefreshSelection =
+        widget.dateFilterSetting?.isQuickSelection == true && widget.dateFilterSetting?.isAutoRefreshEnabled == true;
+
     final currentSettings = TaskListOptionSettings(
       selectedTagIds: widget.selectedTagIds,
       showNoTagsFilter: widget.showNoTagsFilter,
@@ -312,8 +312,14 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final sortChanges = widget.sortConfig != oldWidget.sortConfig;
     final layoutChanges = widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
 
-    final hasNonSearchChanges = tagChanges || noTagsChanges || dateSettingChanges || 
-        startDateChanges || endDateChanges || completedChanges || sortChanges || layoutChanges;
+    final hasNonSearchChanges = tagChanges ||
+        noTagsChanges ||
+        dateSettingChanges ||
+        startDateChanges ||
+        endDateChanges ||
+        completedChanges ||
+        sortChanges ||
+        layoutChanges;
 
     if (hasNonSearchChanges) {
       // Don't trigger save button if this is just auto-refresh date recalculation
@@ -337,11 +343,11 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     // 1. Both have the exact same auto-refresh quick selection
     // 2. Only the calculated dates (selectedStartDate/selectedEndDate) changed
     // 3. The DateFilterSetting object itself is unchanged (same reference/content)
-    
-    final currentAutoRefresh = widget.dateFilterSetting?.isQuickSelection == true && 
-                              widget.dateFilterSetting?.isAutoRefreshEnabled == true;
-    final oldAutoRefresh = oldWidget.dateFilterSetting?.isQuickSelection == true && 
-                          oldWidget.dateFilterSetting?.isAutoRefreshEnabled == true;
+
+    final currentAutoRefresh =
+        widget.dateFilterSetting?.isQuickSelection == true && widget.dateFilterSetting?.isAutoRefreshEnabled == true;
+    final oldAutoRefresh = oldWidget.dateFilterSetting?.isQuickSelection == true &&
+        oldWidget.dateFilterSetting?.isAutoRefreshEnabled == true;
 
     // Both must have auto-refresh enabled
     if (!currentAutoRefresh || !oldAutoRefresh) {
@@ -350,26 +356,24 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
 
     // DateFilterSetting objects must be equal (same settings, just dates recalculated)
     final sameSettings = widget.dateFilterSetting == oldWidget.dateFilterSetting;
-    
+
     // Only dates should have changed, nothing else
     final onlyDatesChanged = (widget.selectedStartDate != oldWidget.selectedStartDate ||
-                             widget.selectedEndDate != oldWidget.selectedEndDate) &&
-                            widget.selectedTagIds == oldWidget.selectedTagIds &&
-                            widget.showNoTagsFilter == oldWidget.showNoTagsFilter &&
-                            widget.showCompletedTasks == oldWidget.showCompletedTasks &&
-                            widget.sortConfig == oldWidget.sortConfig;
+            widget.selectedEndDate != oldWidget.selectedEndDate) &&
+        widget.selectedTagIds == oldWidget.selectedTagIds &&
+        widget.showNoTagsFilter == oldWidget.showNoTagsFilter &&
+        widget.showCompletedTasks == oldWidget.showCompletedTasks &&
+        widget.sortConfig == oldWidget.sortConfig;
 
     final isAutoRefreshRecalc = sameSettings && onlyDatesChanged;
 
     return isAutoRefreshRecalc;
   }
 
-
   bool _hasSearchChanges(TaskListOptions oldWidget) {
     final hasChanges = widget.search != oldWidget.search;
     return hasChanges;
   }
-
 
   @override
   void didUpdateWidget(TaskListOptions oldWidget) {
@@ -573,8 +577,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   ),
 
                 // Layout toggle button (only show when custom sort is enabled)
-                if (widget.showLayoutToggle && 
-                    widget.sortConfig?.useCustomOrder == true && 
+                if (widget.showLayoutToggle &&
+                    widget.sortConfig?.useCustomOrder == true &&
                     widget.onLayoutToggleChange != null)
                   FilterIconButton(
                     icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,

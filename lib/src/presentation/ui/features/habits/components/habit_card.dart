@@ -290,14 +290,14 @@ class _HabitCardState extends State<HabitCard> {
     if (isCompactView) {
       // For compact view, show checkbox first, then drag handle
       final compactWidgets = <Widget>[];
-      
+
       // Always add the checkbox first
       compactWidgets.add(_buildCheckbox(context));
-      
+
       // Add consistent spacing when custom sort is enabled (even for spacer alignment)
       if (widget.showDragHandle) {
         compactWidgets.add(const SizedBox(width: AppTheme.size3XSmall));
-        
+
         if (widget.dragIndex != null) {
           // Add actual drag handle after checkbox
           compactWidgets.add(
@@ -321,7 +321,7 @@ class _HabitCardState extends State<HabitCard> {
           );
         }
       }
-      
+
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: compactWidgets,
@@ -369,7 +369,7 @@ class _HabitCardState extends State<HabitCard> {
       if (widget.showDragHandle) {
         // Add spacing before drag handle/spacer area
         trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
-        
+
         if (widget.dragIndex != null) {
           // Add actual drag handle
           trailingWidgets.add(

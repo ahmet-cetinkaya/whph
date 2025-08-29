@@ -157,7 +157,7 @@ class FilterSettingsManager {
     if (value1 == null && value2 == null) {
       return true;
     }
-    
+
     // If one is null and the other isn't, they're not equal
     if (value1 == null || value2 == null) {
       return false;
@@ -169,12 +169,11 @@ class FilterSettingsManager {
 
     // If both are quick selections with auto-refresh enabled,
     // compare only the essential properties, not the dynamic dates
-    if (isQuickSelection1 && isQuickSelection2 && 
-        isAutoRefreshEnabled1 && isAutoRefreshEnabled2) {
+    if (isQuickSelection1 && isQuickSelection2 && isAutoRefreshEnabled1 && isAutoRefreshEnabled2) {
       // For auto-refresh quick selections, only compare the key and refresh state
       return value1['quickSelectionKey'] == value2['quickSelectionKey'] &&
-             value1['isQuickSelection'] == value2['isQuickSelection'] &&
-             value1['isAutoRefreshEnabled'] == value2['isAutoRefreshEnabled'];
+          value1['isQuickSelection'] == value2['isQuickSelection'] &&
+          value1['isAutoRefreshEnabled'] == value2['isAutoRefreshEnabled'];
     }
 
     // For non-auto-refresh or manual selections, do full comparison
@@ -207,5 +206,4 @@ class FilterSettingsManager {
     }
     return false;
   }
-
 }

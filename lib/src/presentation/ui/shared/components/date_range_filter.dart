@@ -47,7 +47,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   // Track refresh toggle state
   bool _isRefreshToggleEnabled = false;
-  
+
   // Track if we just performed a clear operation to avoid false detection
   bool _justCleared = false;
   final _translationService = container.resolve<ITranslationService>();
@@ -64,13 +64,13 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     if (_dateFilterSetting != null) {
       _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
       _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
-      
+
       if (_dateFilterSetting!.isQuickSelection) {
         // Calculate current date range for quick selections
         final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
         _selectedStartDate = currentRange.startDate;
         _selectedEndDate = currentRange.endDate;
-        
+
         // Preserve the quick selection setting immediately for auto-refresh
         _preservedQuickSelectionSetting = _dateFilterSetting;
       } else {
@@ -83,7 +83,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       _selectedEndDate = widget.selectedEndDate;
       _activeQuickSelectionKey = null;
       _isRefreshToggleEnabled = false;
-      
+
       // Try to detect if the legacy dates match a quick selection pattern
       if (_selectedStartDate != null && _selectedEndDate != null) {
         _tryDetectQuickSelectionFromDates();
@@ -96,7 +96,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   void _setupAutoRefresh() {
     _autoRefreshTimer?.cancel();
-    
 
     if (_dateFilterSetting?.isQuickSelection == true && _isRefreshToggleEnabled) {
       // Preserve the quick selection setting for auto-refresh
@@ -119,13 +118,11 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           refreshInterval = const Duration(minutes: 30); // Default refresh
       }
 
-
       _autoRefreshTimer = Timer.periodic(refreshInterval, (timer) {
         if (!mounted) {
           timer.cancel();
           return;
         }
-
 
         // Use preserved setting if current one is null
         final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
@@ -134,27 +131,24 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           _refreshQuickSelection();
         }
       });
-    } else {
-    }
+    } else {}
   }
 
   void _refreshQuickSelection() {
     // Use preserved setting if current one is null or not a quick selection
     final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
-    
+
     if (activeQuickSetting?.isQuickSelection != true) {
       return;
     }
-
 
     // Recalculate current range using the active quick setting
     final currentRange = activeQuickSetting!.calculateCurrentDateRange();
 
     // Check if the range actually changed
     final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
-    
+
     if (hasChanged) {
-      
       setState(() {
         _selectedStartDate = currentRange.startDate;
         _selectedEndDate = currentRange.endDate;
@@ -178,11 +172,11 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       if (_isAutoRefreshActive() && _isSameQuickSelection(widget.dateFilterSetting)) {
         return;
       }
-      
+
       _updateFromWidgetProperties();
       _setupAutoRefresh();
     }
-    
+
     // Handle legacy date properties for backward compatibility
     else if (_shouldUpdateFromLegacyDates(oldWidget)) {
       _updateFromLegacyProperties();
@@ -192,32 +186,29 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   /// Check if auto-refresh is currently active
   bool _isAutoRefreshActive() {
-    return _isRefreshToggleEnabled && 
-           _activeQuickSelectionKey != null && 
-           _autoRefreshTimer?.isActive == true;
+    return _isRefreshToggleEnabled && _activeQuickSelectionKey != null && _autoRefreshTimer?.isActive == true;
   }
 
   /// Check if the new dateFilterSetting is the same quick selection we're already refreshing
   bool _isSameQuickSelection(DateFilterSetting? newSetting) {
-    return newSetting?.quickSelectionKey == _activeQuickSelectionKey &&
-           newSetting?.isAutoRefreshEnabled == true;
+    return newSetting?.quickSelectionKey == _activeQuickSelectionKey && newSetting?.isAutoRefreshEnabled == true;
   }
 
   /// Check if we should update from legacy date properties
   bool _shouldUpdateFromLegacyDates(DateRangeFilter oldWidget) {
     return widget.selectedStartDate != oldWidget.selectedStartDate ||
-           widget.selectedEndDate != oldWidget.selectedEndDate;
+        widget.selectedEndDate != oldWidget.selectedEndDate;
   }
 
   /// Updates state from widget's dateFilterSetting
   void _updateFromWidgetProperties() {
     setState(() {
       _dateFilterSetting = widget.dateFilterSetting;
-      
+
       if (_dateFilterSetting != null) {
         _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
         _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
-        
+
         if (_dateFilterSetting!.isQuickSelection) {
           final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
           _selectedStartDate = currentRange.startDate;
@@ -244,7 +235,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     setState(() {
       _selectedStartDate = widget.selectedStartDate;
       _selectedEndDate = widget.selectedEndDate;
-      
+
       // Try to detect quick selection pattern if dates are provided
       if (_selectedStartDate != null && _selectedEndDate != null && !_justCleared) {
         _tryDetectQuickSelectionFromDates();
@@ -253,11 +244,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         _isRefreshToggleEnabled = false;
         _preservedQuickSelectionSetting = null;
       }
-      
+
       _justCleared = false;
     });
   }
-
 
   String _getDateRangeText() {
     if (_selectedStartDate == null || _selectedEndDate == null) return '';
@@ -412,8 +402,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       final refreshEnabled = result.isRefreshEnabled ?? false;
 
       // Check if only refresh toggle changed (same dates, existing quick selection)
-      final hasRefreshToggleOnlyChanged = startDate == _selectedStartDate && 
-          endDate == _selectedEndDate && 
+      final hasRefreshToggleOnlyChanged = startDate == _selectedStartDate &&
+          endDate == _selectedEndDate &&
           _activeQuickSelectionKey != null &&
           refreshEnabled != _isRefreshToggleEnabled;
 
@@ -500,7 +490,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         if (isQuickSelection && quickSelectionKey != null) {
           _activeQuickSelectionKey = quickSelectionKey;
           _isRefreshToggleEnabled = refreshEnabled; // Use dialog's refresh state
-          
+
           // Preserve the quick selection setting for auto-refresh if refresh is enabled
           if (refreshEnabled) {
             _preservedQuickSelectionSetting = newSetting;
@@ -528,28 +518,23 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     if (_selectedStartDate == null || _selectedEndDate == null) return;
 
     final quickRanges = _getQuickRanges();
-    
+
     // Check each quick range to see if it matches the current dates
     for (final quickRange in quickRanges) {
       final quickStart = quickRange.startDateCalculator();
       final quickEnd = quickRange.endDateCalculator();
 
-      final isExactMatch = _isExactQuickSelectionMatch(
-        _selectedStartDate!, 
-        _selectedEndDate!, 
-        quickStart, 
-        quickEnd, 
-        quickRange.key
-      );
+      final isExactMatch =
+          _isExactQuickSelectionMatch(_selectedStartDate!, _selectedEndDate!, quickStart, quickEnd, quickRange.key);
 
       if (isExactMatch) {
         // Found a match! Set up the quick selection
         _activeQuickSelectionKey = quickRange.key;
-        
+
         // For legacy fallback, don't assume refresh was enabled - keep it disabled by default
         // This prevents overriding user's saved preference
         _isRefreshToggleEnabled = false;
-        
+
         // Create a DateFilterSetting for this detected quick selection
         _dateFilterSetting = DateFilterSetting.quickSelection(
           key: quickRange.key,
@@ -557,10 +542,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           endDate: _selectedEndDate!,
           isAutoRefreshEnabled: false,
         );
-        
+
         // Don't preserve for auto-refresh since it's disabled
         _preservedQuickSelectionSetting = null;
-        
+
         break;
       }
     }
@@ -584,7 +569,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     }
     _preservedQuickSelectionSetting = null;
   }
-
 
   /// More precise matching for quick selections to avoid false positives
   bool _isExactQuickSelectionMatch(

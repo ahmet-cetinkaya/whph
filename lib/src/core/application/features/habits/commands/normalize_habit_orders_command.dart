@@ -13,7 +13,8 @@ class NormalizeHabitOrdersResponse {
   NormalizeHabitOrdersResponse(this.normalizedCount);
 }
 
-class NormalizeHabitOrdersCommandHandler implements IRequestHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse> {
+class NormalizeHabitOrdersCommandHandler
+    implements IRequestHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse> {
   final IHabitRepository _habitRepository;
 
   NormalizeHabitOrdersCommandHandler(this._habitRepository);

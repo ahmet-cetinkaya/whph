@@ -301,7 +301,8 @@ class HabitsListState extends State<HabitsList> {
                 onRecordCreated: (_) => _onHabitRecordChanged(),
                 onRecordDeleted: (_) => _onHabitRecordChanged(),
                 isDense: true,
-                showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
+                showDragHandle:
+                    widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
                 dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
               ),
             );
@@ -381,7 +382,8 @@ class HabitsListState extends State<HabitsList> {
           onRecordCreated: (_) => widget.onHabitCompleted?.call(),
           onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
+          showDragHandle:
+              widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
           dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
         ),
       );
@@ -445,7 +447,7 @@ class HabitsListState extends State<HabitsList> {
     _dragStateNotifier.startDragging();
 
     final items = _habitList!.items;
-    
+
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -456,7 +458,7 @@ class HabitsListState extends State<HabitsList> {
     try {
       // Prepare data for server update
       final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
-      
+
       // Calculate target order - use manual calculation for position 0 until core package changes take effect
       double targetOrder;
       if (newIndex == 0 && existingOrders.isNotEmpty) {
@@ -477,7 +479,7 @@ class HabitsListState extends State<HabitsList> {
       setState(() {
         final reorderedItems = List<HabitListItem>.from(_habitList!.items);
         final habitToMove = reorderedItems.removeAt(oldIndex);
-        
+
         // Update the moved habit's order to the target order for correct visual display
         final updatedHabit = HabitListItem(
           id: habitToMove.id,
@@ -490,12 +492,12 @@ class HabitsListState extends State<HabitsList> {
           archivedDate: habitToMove.archivedDate,
           order: targetOrder, // Use the calculated target order
         );
-        
+
         reorderedItems.insert(newIndex, updatedHabit);
-        
+
         // Sort the items by order to ensure correct visual display
         reorderedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
-        
+
         _habitList = GetListHabitsQueryResponse(
           items: reorderedItems,
           totalItemCount: _habitList!.totalItemCount,
@@ -535,10 +537,10 @@ class HabitsListState extends State<HabitsList> {
                   archivedDate: habit.archivedDate,
                   order: result.order, // Use the final order from backend
                 );
-                
+
                 // Re-sort with the updated order
                 updatedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
-                
+
                 _habitList = GetListHabitsQueryResponse(
                   items: updatedItems,
                   totalItemCount: _habitList!.totalItemCount,

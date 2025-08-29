@@ -101,7 +101,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       // Calculate effective dates from DateFilterSetting if available
       DateTime? effectiveStart = settings.startDate;
       DateTime? effectiveEnd = settings.endDate;
-      
+
       if (settings.dateFilterSetting != null) {
         final currentRange = settings.dateFilterSetting!.calculateCurrentDateRange();
         effectiveStart = currentRange.startDate;
@@ -235,7 +235,6 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
   }
 
   void _handleDateSettingChange(DateFilterSetting? dateFilterSetting) {
-    
     DateTime? effectiveStart = _currentState.startDate;
     DateTime? effectiveEnd = _currentState.endDate;
 
@@ -262,7 +261,6 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       endDate: effectiveEnd,
       devices: _currentState.devices,
     );
-
 
     if (mounted) {
       setState(() => _currentState = newState);
@@ -361,5 +359,4 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       ),
     );
   }
-
 }

@@ -38,7 +38,7 @@ abstract class PersistentListOptionsBaseState<T extends PersistentListOptionsBas
 
   /// Flag indicating if settings have been loaded
   bool isSettingLoaded = false;
-  
+
   /// Flag indicating if settings are currently being loaded
   bool isLoadingSettings = false;
 

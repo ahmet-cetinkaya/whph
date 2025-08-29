@@ -118,9 +118,9 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
           final tempDir = Directory.systemTemp;
           final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
           final tempLogFile = File('${tempDir.path}/whph_memory_logs_$timestamp.log');
-          
+
           await tempLogFile.writeAsString(memoryLogs);
-          
+
           try {
             exportedPath = await _logExportService.exportLogFile(tempLogFile.path);
           } finally {
@@ -157,7 +157,6 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
