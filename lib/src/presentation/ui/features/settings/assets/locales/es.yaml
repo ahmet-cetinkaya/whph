@@ -192,5 +192,6 @@ settings:
       no_file: No se encontró archivo de registro de depuración. Los registros se crearán después de habilitar el registro de depuración y que la aplicación genere entradas de registro.
       empty: El archivo de registro de depuración está vacío. Aún no se han registrado entradas de registro.
     export:
+      dialog_title: Exportar registros de depuración
       error: Error al exportar registros
       success: Archivo de registro exportado exitosamente

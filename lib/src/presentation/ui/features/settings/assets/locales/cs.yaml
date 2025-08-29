@@ -194,5 +194,6 @@ settings:
       no_file: Soubor protokolu ladění nebyl nalezen. Protokoly budou vytvořeny po povolení protokolování ladění a generování záznamů protokolu aplikací.
       empty: Soubor protokolu ladění je prázdný. Dosud nebyly zaznamenány žádné záznamy protokolu.
     export:
+      dialog_title: Export protokolů ladění
       error: Chyba při exportu protokolů
       success: Soubor protokolu byl úspěšně exportován

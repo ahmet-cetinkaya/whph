@@ -192,5 +192,6 @@ settings:
       no_file: Hata ayıklama günlük dosyası bulunamadı. Günlükler hata ayıklama günlük kaydı etkinleştirildikten ve uygulama günlük girişleri oluşturduktan sonra oluşturulacak.
       empty: Hata ayıklama günlük dosyası boş. Henüz herhangi bir günlük girişi kaydedilmedi.
     export:
+      dialog_title: Hata ayıklama günlüklerini dışa aktar
       error: Günlükleri dışa aktarırken hata
       success: Günlük dosyası başarıyla dışa aktarıldı

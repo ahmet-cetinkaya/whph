@@ -194,5 +194,6 @@ settings:
       no_file: Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering av felsökningsloggning och appen genererar loggposter.
       empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats än.
     export:
+      dialog_title: Exportera felsökningsloggar
       error: Fel vid export av loggar
       success: Loggfil exporterad framgångsrikt

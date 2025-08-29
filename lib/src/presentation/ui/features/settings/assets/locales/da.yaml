@@ -194,5 +194,6 @@ settings:
       no_file: Ingen debug-logfil fundet. Logfiler vil blive oprettet efter aktivering af debug-logføring og appen genererer logposter.
       empty: Debug-logfil er tom. Der er endnu ikke registreret nogen logposter.
     export:
+      dialog_title: Eksporter debug-logfiler
       error: Fejl ved eksport af logfiler
       success: Logfil eksporteret succesfuldt

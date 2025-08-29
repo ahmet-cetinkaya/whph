@@ -194,5 +194,6 @@ settings:
       no_file: Ingen feilsøkingsloggfil funnet. Logger vil bli opprettet etter aktivering av feilsøkingslogging og appen genererer loggoppføringer.
       empty: Feilsøkingsloggfil er tom. Ingen loggoppføringer har blitt registrert ennå.
     export:
+      dialog_title: Eksporter feilsøkingslogger
       error: Feil ved eksport av logger
       success: Loggfil eksportert vellykket

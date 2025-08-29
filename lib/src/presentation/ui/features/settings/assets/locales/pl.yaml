@@ -194,5 +194,6 @@ settings:
       no_file: Nie znaleziono pliku dziennika debugowania. Dzienniki zostaną utworzone po włączeniu logowania debugowania i wygenerowaniu wpisów dziennika przez aplikację.
       empty: Plik dziennika debugowania jest pusty. Nie zostały jeszcze zapisane żadne wpisy dziennika.
     export:
+      dialog_title: Eksportuj dzienniki debugowania
       error: Błąd eksportu dzienników
       success: Plik dziennika wyeksportowany pomyślnie
