@@ -168,3 +168,32 @@ settings:
     large: Büyük
     larger: Daha Büyük
     error: UI yoğunluk ayarları yüklenemedi
+  advanced:
+    title: Gelişmiş
+    description: Gelişmiş ayarlar ve geliştirici araçları
+  debug_logs:
+    title: Hata Ayıklama Günlükleri
+    description: Sorun giderme ve destek için ayrıntılı günlük kaydını etkinleştir
+    load_settings_error: Hata ayıklama günlükleri ayarları yüklenirken hata
+    update_settings_error: Hata ayıklama günlükleri ayarı güncellenirken hata
+    view:
+      title: Hata ayıklama günlüklerini görüntüle
+      description: Mevcut hata ayıklama günlüklerini görüntüle ve dışa aktar
+    page:
+      title: Hata ayıklama günlükleri
+      description: Mevcut hata ayıklama günlük girişlerini görüntüleyin. Günlükler aşırı disk kullanımını önlemek için otomatik olarak temizlenir ve döndürülür.
+      content: Günlük içeriği
+      refresh: Günlükleri yenile
+      copy: Panoya kopyala
+      save_as: Dosya olarak kaydet
+      copied: Hata ayıklama günlükleri panoya kopyalandı
+      load_error: Hata ayıklama günlükleri yüklenirken hata
+      not_enabled: Hata ayıklama günlük kaydı etkin değil. Günlük toplamaya başlamak için Gelişmiş Ayarlar'da etkinleştirin.
+      no_file: Hata ayıklama günlük dosyası bulunamadı. Günlükler hata ayıklama günlük kaydı etkinleştirildikten ve uygulama günlük girişleri oluşturduktan sonra oluşturulacak.
+      empty: Hata ayıklama günlük dosyası boş. Henüz herhangi bir günlük girişi kaydedilmedi.
+    export:
+      dialog_title: Hata ayıklama günlüklerini dışa aktar
+      error: Günlükleri dışa aktarırken hata
+      success: Günlük dosyası başarıyla dışa aktarıldı
+      no_logs_available: Dışa aktarılacak günlük yok
+      file_not_exist: Günlük dosyası mevcut değil

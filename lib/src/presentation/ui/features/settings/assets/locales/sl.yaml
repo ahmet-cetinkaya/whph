@@ -170,3 +170,32 @@ settings:
     large: Veliko
     larger: Večje
     error: Nastavitev gostote vmesnika ni bilo mogoče naložiti
+  advanced:
+    title: Napredno
+    description: Napredne nastavitve in orodja za razvijalce
+  debug_logs:
+    title: Dnevniki razhroščevanja
+    description: Omogočite podrobno beleženje v datoteko za odpravljanje napak in podporo
+    load_settings_error: Napaka pri nalaganju nastavitev dnevnikov razhroščevanja
+    update_settings_error: Napaka pri posodabljanju nastavitev dnevnikov razhroščevanja
+    view:
+      title: Prikaži dnevnike razhroščevanja
+      description: Prikaži in izvozi trenutne dnevnike razhroščevanja
+    page:
+      title: Dnevniki razhroščevanja
+      description: Prikaži trenutne vnose dnevnika razhroščevanja. Dnevniki se samodejno počistijo in obrnejo, da preprečijo prekomerno uporabo diska.
+      content: Vsebina dnevnika
+      refresh: Osveži dnevnike
+      copy: Kopiraj v odložišče
+      save_as: Shrani kot datoteko
+      copied: Dnevniki razhroščevanja kopirani v odložišče
+      load_error: Napaka pri nalaganju dnevnikov razhroščevanja
+      not_enabled: Beleženje razhroščevanja ni omogočeno. Omogočite ga v naprednih nastavitvah za začetek zbiranja dnevnikov.
+      no_file: Datoteka dnevnika razhroščevanja ni bila najdena. Dnevniki bodo ustvarjeni po omogočitvi beleženja razhroščevanja in ko aplikacija ustvari vnose dnevnika.
+      empty: Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov dnevnika.
+    export:
+      dialog_title: Izvozi dnevnike razhroščevanja
+      error: Napaka pri izvozu dnevnikov
+      success: Datoteka dnevnika uspešno izvožena
+      no_logs_available: Ni na voljo dnevnikov za izvoz
+      file_not_exist: Datoteka dnevnika ne obstaja

@@ -170,3 +170,32 @@ settings:
     large: Mare
     larger: Mai mare
     error: Nu s-au putut încărca setările de densitate a interfeței
+  advanced:
+    title: Avansat
+    description: Setări avansate și instrumente pentru dezvoltatori
+  debug_logs:
+    title: Jurnale de depanare
+    description: Activați înregistrarea detaliată în fișier pentru depanare și suport
+    load_settings_error: Eroare la încărcarea setărilor jurnalelor de depanare
+    update_settings_error: Eroare la actualizarea setărilor jurnalelor de depanare
+    view:
+      title: Vizualizați jurnalele de depanare
+      description: Vizualizați și exportați jurnalele de depanare curente
+    page:
+      title: Jurnale de depanare
+      description: Vizualizați intrările curente din jurnalul de depanare. Jurnalele sunt golite și rotite automat pentru a preveni utilizarea excesivă a discului.
+      content: Conținutul jurnalului
+      refresh: Reîmprospătați jurnalele
+      copy: Copiați în clipboard
+      save_as: Salvați ca fișier
+      copied: Jurnalele de depanare au fost copiate în clipboard
+      load_error: Eroare la încărcarea jurnalelor de depanare
+      not_enabled: Înregistrarea depanării nu este activată. Activați-o în Setările avansate pentru a începe colectarea jurnalelor.
+      no_file: Nu s-a găsit niciun fișier jurnal de depanare. Jurnalele vor fi create după activarea înregistrării de depanare și generarea de intrări în jurnal de către aplicație.
+      empty: Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări în jurnal.
+    export:
+      dialog_title: Exportă jurnalele de depanare
+      error: Eroare la exportul jurnalelor
+      success: Fișierul jurnal a fost exportat cu succes
+      no_logs_available: Nu sunt disponibile jurnale pentru export
+      file_not_exist: Fișierul jurnal nu există

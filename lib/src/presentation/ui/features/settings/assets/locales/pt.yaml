@@ -170,3 +170,32 @@ settings:
     large: Grande
     larger: Maior
     error: Falha ao carregar as definições de densidade da interface
+  advanced:
+    title: Avançadas
+    description: Configurações avançadas e ferramentas de desenvolvedor
+  debug_logs:
+    title: Logs de depuração
+    description: Ativar registro detalhado em arquivo para resolução de problemas e suporte
+    load_settings_error: Erro ao carregar configurações dos logs de depuração
+    update_settings_error: Erro ao atualizar configurações dos logs de depuração
+    view:
+      title: Ver logs de depuração
+      description: Ver e exportar logs de depuração atuais
+    page:
+      title: Logs de depuração
+      description: Ver entradas atuais do log de depuração. Os logs são automaticamente limpos e rotacionados para evitar uso excessivo do disco.
+      content: Conteúdo do log
+      refresh: Atualizar logs
+      copy: Copiar para área de transferência
+      save_as: Salvar como arquivo
+      copied: Logs de depuração copiados para área de transferência
+      load_error: Erro ao carregar logs de depuração
+      not_enabled: O registro de depuração não está ativado. Ative-o nas Configurações avançadas para começar a coletar logs.
+      no_file: Nenhum arquivo de log de depuração encontrado. Os logs serão criados após ativar o registro de depuração e o aplicativo gerar entradas de log.
+      empty: O arquivo de log de depuração está vazio. Nenhuma entrada de log foi registrada ainda.
+    export:
+      dialog_title: Exportar logs de depuração
+      error: Erro ao exportar logs
+      success: Arquivo de log exportado com sucesso
+      no_logs_available: Nenhum log disponível para exportação. Gere alguns logs primeiro.
+      file_not_exist: O arquivo de log não existe. Ative o log de depuração e gere alguns logs primeiro.

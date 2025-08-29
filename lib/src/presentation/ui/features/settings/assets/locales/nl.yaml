@@ -170,3 +170,32 @@ settings:
     large: Groot
     larger: Groter
     error: Kan UI-dichtheidsinstellingen niet laden
+  advanced:
+    title: Geavanceerd
+    description: Geavanceerde instellingen en ontwikkelaarstools
+  debug_logs:
+    title: Debug-logs
+    description: Gedetailleerde logging naar bestand inschakelen voor probleemoplossing en ondersteuning
+    load_settings_error: Fout bij laden van debug-log instellingen
+    update_settings_error: Fout bij bijwerken van debug-log instellingen
+    view:
+      title: Debug-logs bekijken
+      description: Huidige debug-logs bekijken en exporteren
+    page:
+      title: Debug-logs
+      description: Huidige debug-logvermeldingen bekijken. Logs worden automatisch geleegd en geroteerd om overmatig schijfgebruik te voorkomen.
+      content: Loginhoud
+      refresh: Logs vernieuwen
+      copy: Kopiëren naar klembord
+      save_as: Opslaan als bestand
+      copied: Debug-logs gekopieerd naar klembord
+      load_error: Fout bij laden van debug-logs
+      not_enabled: Debug-logging is niet ingeschakeld. Schakel het in bij Geavanceerde instellingen om logs te verzamelen.
+      no_file: Geen debug-logbestand gevonden. Logs worden aangemaakt nadat debug-logging is ingeschakeld en de app logvermeldingen genereert.
+      empty: Debug-logbestand is leeg. Er zijn nog geen logvermeldingen opgenomen.
+    export:
+      dialog_title: Debug-logs exporteren
+      error: Fout bij het exporteren van logs
+      success: Logbestand succesvol geëxporteerd
+      no_logs_available: Geen logs beschikbaar om te exporteren. Genereer eerst enkele logs.
+      file_not_exist: Logbestand bestaat niet. Schakel debug-logging in en genereer eerst enkele logs.
