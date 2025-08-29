@@ -195,3 +195,5 @@ settings:
       dialog_title: Hata ayıklama günlüklerini dışa aktar
       error: Günlükleri dışa aktarırken hata
       success: Günlük dosyası başarıyla dışa aktarıldı
+      no_logs_available: Dışa aktarılacak günlük yok
+      file_not_exist: Günlük dosyası mevcut değil

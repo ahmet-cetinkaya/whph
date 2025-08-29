@@ -13,6 +13,10 @@ class LoggerService implements ILoggerService {
   final IApplicationDirectoryService _applicationDirectoryService;
   final Mediator _mediator;
 
+  // Log file path constants
+  static const String _logsDirectoryName = 'logs';
+  static const String _logFileName = 'whph.log';
+
   ILogger _currentLogger;
   FileLogger? _fileLogger;
   final MemoryLogger _memoryLogger = MemoryLogger(
@@ -28,6 +32,12 @@ class LoggerService implements ILoggerService {
   })  : _applicationDirectoryService = applicationDirectoryService,
         _mediator = mediator,
         _currentLogger = initialLogger;
+
+  /// Helper method to construct log file path consistently
+  Future<String> _getLogFilePath() async {
+    final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
+    return path.join(appDirectory.path, _logsDirectoryName, _logFileName);
+  }
 
   @override
   ILogger get logger => _currentLogger;
@@ -59,8 +69,7 @@ class LoggerService implements ILoggerService {
   @override
   Future<String?> getLogFilePath() async {
     if (_fileLogger != null) {
-      final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
-      return path.join(appDirectory.path, 'logs', 'whph.log');
+      return await _getLogFilePath();
     }
     return null;
   }
@@ -92,10 +101,8 @@ class LoggerService implements ILoggerService {
       return;
     }
 
-    // Get the application directory
-    final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
-    final logsDirectory = path.join(appDirectory.path, 'logs');
-    final logFilePath = path.join(logsDirectory, 'whph.log');
+    // Get the log file path
+    final logFilePath = await _getLogFilePath();
 
     // Create file logger
     _fileLogger = FileLogger(
@@ -129,8 +136,8 @@ class LoggerService implements ILoggerService {
       await _fileLogger!.flush();
       
       // Get the log file path before disposing the logger
+      final logFilePath = await _getLogFilePath();
       final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
-      final logFilePath = path.join(appDirectory.path, 'logs', 'whph.log');
       
       _fileLogger!.dispose();
       _fileLogger = null;
@@ -143,7 +150,7 @@ class LoggerService implements ILoggerService {
         }
         
         // Also try to delete the logs directory if it's empty
-        final logsDirectory = Directory(path.join(appDirectory.path, 'logs'));
+        final logsDirectory = Directory(path.join(appDirectory.path, _logsDirectoryName));
         if (await logsDirectory.exists()) {
           final contents = await logsDirectory.list().toList();
           if (contents.isEmpty) {

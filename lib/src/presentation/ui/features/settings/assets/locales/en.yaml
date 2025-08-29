@@ -196,3 +196,5 @@ settings:
       dialog_title: Export Debug Logs
       error: Error exporting logs
       success: Log file exported successfully
+      no_logs_available: No logs available to export. Generate some logs first.
+      file_not_exist: Log file does not exist. Enable debug logging and generate some logs first.

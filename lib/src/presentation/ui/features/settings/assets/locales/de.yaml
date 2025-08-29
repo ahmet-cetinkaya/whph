@@ -195,3 +195,5 @@ settings:
       dialog_title: Debug-Protokolle exportieren
       error: Fehler beim Exportieren der Protokolle
       success: Protokolldatei erfolgreich exportiert
+      no_logs_available: Keine Protokolle zum Exportieren verfügbar. Generieren Sie zuerst einige Protokolle.
+      file_not_exist: Protokolldatei existiert nicht. Aktivieren Sie die Debug-Protokollierung und generieren Sie zuerst einige Protokolle.

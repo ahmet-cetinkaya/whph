@@ -105,13 +105,13 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
           if (await logFile.exists()) {
             exportedPath = await _logExportService.exportLogFile(_logFilePath!);
           } else {
-            throw Exception("Log file does not exist. Enable debug logging and generate some logs first.");
+            throw Exception(_translationService.translate(SettingsTranslationKeys.exportLogsFileNotExist));
           }
         } else {
           // Debug logging is disabled, export memory logs
           final memoryLogs = _loggerService.getMemoryLogs();
           if (memoryLogs.isEmpty) {
-            throw Exception("No logs available to export. Generate some logs first.");
+            throw Exception(_translationService.translate(SettingsTranslationKeys.exportLogsNoLogsAvailable));
           }
 
           // Create a temporary file with memory logs

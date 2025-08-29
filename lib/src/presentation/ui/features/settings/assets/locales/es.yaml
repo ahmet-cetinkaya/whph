@@ -195,3 +195,5 @@ settings:
       dialog_title: Exportar registros de depuración
       error: Error al exportar registros
       success: Archivo de registro exportado exitosamente
+      no_logs_available: No hay registros disponibles para exportar. Genere algunos registros primero.
+      file_not_exist: El archivo de registro no existe. Habilite el registro de depuración y genere algunos registros primero.

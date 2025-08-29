@@ -197,3 +197,5 @@ settings:
       dialog_title: Izvozi dnevnike razhroščevanja
       error: Napaka pri izvozu dnevnikov
       success: Datoteka dnevnika uspešno izvožena
+      no_logs_available: Ni na voljo dnevnikov za izvoz
+      file_not_exist: Datoteka dnevnika ne obstaja
