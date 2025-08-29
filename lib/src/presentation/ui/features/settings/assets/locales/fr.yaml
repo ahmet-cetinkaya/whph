@@ -168,3 +168,32 @@ settings:
     large: Large
     larger: Plus large
     error: Échec du chargement des paramètres de densité UI
+  advanced:
+    title: Avancé
+    description: Paramètres avancés et outils de développement
+  debug_logs:
+    title: Journaux de débogage
+    description: Activer la journalisation détaillée dans un fichier pour le dépannage et le support
+    load_settings_error: Erreur lors du chargement des paramètres des journaux de débogage
+    update_settings_error: Erreur lors de la mise à jour du paramètre des journaux de débogage
+    view:
+      title: Voir les journaux de débogage
+      description: Voir et exporter les journaux de débogage actuels
+    page:
+      title: Journaux de débogage
+      description: Voir les entrées actuelles du journal de débogage. Les journaux sont automatiquement vidés et pivotés pour éviter une utilisation excessive du disque.
+      content: Contenu du journal
+      refresh: Actualiser les journaux
+      copy: Copier dans le presse-papiers
+      save_as: Enregistrer sous fichier
+      copied: Journaux de débogage copiés dans le presse-papiers
+      load_error: Erreur lors du chargement des journaux de débogage
+      not_enabled: La journalisation de débogage n'est pas activée. Activez-la dans les paramètres avancés pour commencer à collecter les journaux.
+      no_file: Aucun fichier de journal de débogage trouvé. Les journaux seront créés après activation de la journalisation de débogage et génération d'entrées de journal par l'application.
+      empty: Le fichier de journal de débogage est vide. Aucune entrée de journal n'a encore été enregistrée.
+    export:
+      dialog_title: Exporter les journaux de débogage
+      error: Erreur lors de l'exportation des journaux
+      success: Fichier de journal exporté avec succès
+      no_logs_available: Aucun journal disponible à exporter. Générez d'abord quelques journaux.
+      file_not_exist: Le fichier journal n'existe pas. Activez la journalisation de débogage et générez d'abord quelques journaux.

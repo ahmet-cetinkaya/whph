@@ -169,3 +169,32 @@ settings:
     large: Large
     larger: Larger
     error: Failed to load UI density settings
+  advanced:
+    title: Advanced
+    description: Advanced settings and developer tools
+  debug_logs:
+    title: Debug Logs
+    description: Enable detailed logging to file for troubleshooting and support
+    load_settings_error: Error loading debug logs settings
+    update_settings_error: Error updating debug logs setting
+    view:
+      title: View Debug Logs
+      description: View and export current debug logs
+    page:
+      title: Debug Logs
+      description: View current debug log entries. Logs are automatically flushed and rotated to prevent excessive disk usage.
+      content: Log Contents
+      refresh: Refresh Logs
+      copy: Copy to Clipboard
+      save_as: Save As File
+      copied: Debug logs copied to clipboard
+      load_error: Error loading debug logs
+      not_enabled: Debug logging is not enabled. Enable it in Advanced Settings to start collecting logs.
+      no_file: No debug log file found. Logs will be created after debug logging is enabled and the app generates log entries.
+      empty: Debug log file is empty. No log entries have been recorded yet.
+    export:
+      dialog_title: Export Debug Logs
+      error: Error exporting logs
+      success: Log file exported successfully
+      no_logs_available: No logs available to export. Generate some logs first.
+      file_not_exist: Log file does not exist. Enable debug logging and generate some logs first.

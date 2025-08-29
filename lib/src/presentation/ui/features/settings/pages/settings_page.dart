@@ -13,6 +13,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translati
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/settings/components/import_export_settings.dart';
+import 'package:whph/src/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String route = '/settings';
@@ -54,6 +55,9 @@ class SettingsPage extends StatelessWidget {
 
                 // Import/Export Settings
                 const ImportExportSettings(),
+
+                // Advanced Settings
+                const AdvancedSettingsTile(),
 
                 // About
                 AboutTile(),

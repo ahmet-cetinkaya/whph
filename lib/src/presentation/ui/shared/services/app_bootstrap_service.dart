@@ -12,6 +12,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_ser
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/src/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
@@ -28,15 +29,14 @@ class AppBootstrapService {
     initializeJsonMapper();
 
     registerPersistence(container);
-    registerInfrastructure(container); // ILogger gets registered here
+    registerInfrastructure(container);
+    registerApplication(container);
+    registerUIPresentation(container);
 
-    // Initialize Logger after infrastructure registration
+    // Initialize Logger after ALL services are registered
     Logger.initialize(container);
     Logger.info('AppBootstrapService: Starting app initialization...');
     Logger.debug('AppBootstrapService: Registering dependency modules...');
-
-    registerApplication(container);
-    registerUIPresentation(container);
 
     Logger.info('AppBootstrapService: Dependency injection container setup completed');
 
@@ -59,6 +59,10 @@ class AppBootstrapService {
   /// Initializes essential core services required for app functionality
   static Future<void> _initializeCoreServices(IContainer container) async {
     Logger.debug('AppBootstrapService: Initializing core services...');
+
+    // Configure logger service first (to enable file logging if setting is enabled)
+    final loggerService = container.resolve<ILoggerService>();
+    await loggerService.configureLogger();
 
     // Initialize translation service
     final translationService = container.resolve<ITranslationService>();

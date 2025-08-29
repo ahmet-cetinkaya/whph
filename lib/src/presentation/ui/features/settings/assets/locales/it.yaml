@@ -170,3 +170,32 @@ settings:
     large: Grande
     larger: Più grande
     error: Impossibile caricare le impostazioni della densità dell'interfaccia
+  advanced:
+    title: Avanzate
+    description: Impostazioni avanzate e strumenti per sviluppatori
+  debug_logs:
+    title: Log di debug
+    description: Abilita la registrazione dettagliata su file per risoluzione dei problemi e supporto
+    load_settings_error: Errore nel caricamento delle impostazioni dei log di debug
+    update_settings_error: Errore nell'aggiornamento delle impostazioni dei log di debug
+    view:
+      title: Visualizza log di debug
+      description: Visualizza ed esporta i log di debug correnti
+    page:
+      title: Log di debug
+      description: Visualizza le voci correnti del log di debug. I log vengono automaticamente svuotati e ruotati per evitare un uso eccessivo del disco.
+      content: Contenuto del log
+      refresh: Aggiorna log
+      copy: Copia negli appunti
+      save_as: Salva come file
+      copied: Log di debug copiati negli appunti
+      load_error: Errore nel caricamento dei log di debug
+      not_enabled: La registrazione di debug non è abilitata. Abilitala nelle Impostazioni avanzate per iniziare a raccogliere i log.
+      no_file: Nessun file di log di debug trovato. I log verranno creati dopo aver abilitato la registrazione di debug e l'app genererà voci di log.
+      empty: Il file di log di debug è vuoto. Non sono ancora state registrate voci di log.
+    export:
+      dialog_title: Esporta log di debug
+      error: Errore nell'esportazione dei log
+      success: File di log esportato con successo
+      no_logs_available: Nessun log disponibile per l'esportazione. Genera prima alcuni log.
+      file_not_exist: Il file di log non esiste. Abilita la registrazione di debug e genera prima alcuni log.
