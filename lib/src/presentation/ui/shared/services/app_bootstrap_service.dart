@@ -29,15 +29,14 @@ class AppBootstrapService {
     initializeJsonMapper();
 
     registerPersistence(container);
-    registerInfrastructure(container); // ILogger gets registered here
+    registerInfrastructure(container);
+    registerApplication(container);
+    registerUIPresentation(container);
 
-    // Initialize Logger after infrastructure registration
+    // Initialize Logger after ALL services are registered
     Logger.initialize(container);
     Logger.info('AppBootstrapService: Starting app initialization...');
     Logger.debug('AppBootstrapService: Registering dependency modules...');
-
-    registerApplication(container);
-    registerUIPresentation(container);
 
     Logger.info('AppBootstrapService: Dependency injection container setup completed');
 
@@ -61,6 +60,10 @@ class AppBootstrapService {
   static Future<void> _initializeCoreServices(IContainer container) async {
     Logger.debug('AppBootstrapService: Initializing core services...');
 
+    // Configure logger service first (to enable file logging if setting is enabled)
+    final loggerService = container.resolve<ILoggerService>();
+    await loggerService.configureLogger();
+
     // Initialize translation service
     final translationService = container.resolve<ITranslationService>();
     await translationService.init();
@@ -77,10 +80,6 @@ class AppBootstrapService {
     // Initialize reminder service
     final reminderService = container.resolve<ReminderService>();
     await reminderService.initialize();
-
-    // Configure logger based on settings
-    final loggerService = container.resolve<ILoggerService>();
-    await loggerService.configureLogger();
 
     // Initialize demo data if demo mode is enabled
     if (DemoConfig.isDemoModeEnabled) {

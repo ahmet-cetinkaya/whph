@@ -49,31 +49,30 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
         // Always flush current logs before reading
         await _loggerService.flush();
 
-        // Try to read from file first (if available)
-        String fileContent = '';
+        // Try to read debug logs from file first, then fallback to memory logs
         if (logFilePath != null) {
           final logFile = File(logFilePath);
           if (await logFile.exists()) {
             try {
-              fileContent = await logFile.readAsString();
+              _logContent = await logFile.readAsString();
             } catch (e) {
-              // Ignore file reading errors, fallback to memory
+              _logContent = 'Error reading log file: $e';
             }
+          } else {
+            _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsNoFile);
           }
+        } else {
+          _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsNotEnabled);
         }
 
-        // Get memory logs as fallback or supplement
-        final memoryContent = _loggerService.getMemoryLogs();
-
-        // Combine file content and memory content
-        if (fileContent.isNotEmpty && memoryContent.isNotEmpty) {
-          _logContent = '$fileContent\n--- Current Session ---\n$memoryContent';
-        } else if (fileContent.isNotEmpty) {
-          _logContent = fileContent;
-        } else if (memoryContent.isNotEmpty) {
-          _logContent = memoryContent;
-        } else {
-          _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsEmpty);
+        // If file is empty or debug logging is disabled, fallback to memory logs
+        if (_logContent.trim().isEmpty || logFilePath == null) {
+          final memoryLogs = _loggerService.getMemoryLogs();
+          if (memoryLogs.isNotEmpty) {
+            _logContent = memoryLogs;
+          } else if (_logContent.trim().isEmpty) {
+            _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsEmpty);
+          }
         }
 
         return true;
@@ -98,62 +97,46 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
         // Flush current logs before export
         await _loggerService.flush();
 
-        String contentToExport = '';
+        String? exportedPath;
 
-        // Try to read from file first
         if (_logFilePath != null) {
+          // Debug logs are stored in file, export directly from file
           final logFile = File(_logFilePath!);
           if (await logFile.exists()) {
-            try {
-              contentToExport = await logFile.readAsString();
-            } catch (e) {
-              // File read failed, use memory content
+            exportedPath = await _logExportService.exportLogFile(_logFilePath!);
+          } else {
+            throw Exception("Log file does not exist. Enable debug logging and generate some logs first.");
+          }
+        } else {
+          // Debug logging is disabled, export memory logs
+          final memoryLogs = _loggerService.getMemoryLogs();
+          if (memoryLogs.isEmpty) {
+            throw Exception("No logs available to export. Generate some logs first.");
+          }
+
+          // Create a temporary file with memory logs
+          final tempDir = Directory.systemTemp;
+          final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
+          final tempLogFile = File('${tempDir.path}/whph_memory_logs_$timestamp.log');
+          
+          await tempLogFile.writeAsString(memoryLogs);
+          
+          try {
+            exportedPath = await _logExportService.exportLogFile(tempLogFile.path);
+          } finally {
+            // Clean up temporary file
+            if (await tempLogFile.exists()) {
+              await tempLogFile.delete();
             }
           }
         }
 
-        // If no file content, use memory logs
-        if (contentToExport.isEmpty) {
-          contentToExport = _loggerService.getMemoryLogs();
-          if (contentToExport.isEmpty) {
-            throw Exception("No log content available to export.");
-          }
-
-          // Create a temporary file for memory logs export
-          final appDirectory = await _loggerService.getLogFilePath();
-          final tempDir = appDirectory?.split('/').take(appDirectory.split('/').length - 2).join('/') ?? '/tmp';
-          final tempFilePath = '$tempDir/whph_memory_logs.txt';
-          final tempFile = File(tempFilePath);
-          await tempFile.writeAsString(contentToExport);
-
-          // Export the temporary file
-          final exportedPath = await _logExportService.exportLogFile(tempFilePath);
-
-          // Clean up temp file
-          try {
-            await tempFile.delete();
-          } catch (e) {
-            // Ignore cleanup errors
-          }
-
-          if (exportedPath != null && mounted) {
-            OverlayNotificationHelper.showSuccess(
-              context: context,
-              message: '${_translationService.translate(SettingsTranslationKeys.exportLogsSuccess)}: $exportedPath',
-              duration: const Duration(seconds: 5),
-            );
-          }
-        } else {
-          // Export the existing log file
-          final exportedPath = await _logExportService.exportLogFile(_logFilePath!);
-
-          if (exportedPath != null && mounted) {
-            OverlayNotificationHelper.showSuccess(
-              context: context,
-              message: '${_translationService.translate(SettingsTranslationKeys.exportLogsSuccess)}: $exportedPath',
-              duration: const Duration(seconds: 5),
-            );
-          }
+        if (exportedPath != null && mounted) {
+          OverlayNotificationHelper.showSuccess(
+            context: context,
+            message: '${_translationService.translate(SettingsTranslationKeys.exportLogsSuccess)}: $exportedPath',
+            duration: const Duration(seconds: 5),
+          );
         }
 
         return true;
@@ -174,6 +157,7 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
