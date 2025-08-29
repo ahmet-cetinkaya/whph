@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Logs de depuração
     description: Ativar registro detalhado em arquivo para resolução de problemas e suporte
+    load_settings_error: Erro ao carregar configurações dos logs de depuração
+    update_settings_error: Erro ao atualizar configurações dos logs de depuração
     view:
       title: Ver logs de depuração
       description: Ver e exportar logs de depuração atuais

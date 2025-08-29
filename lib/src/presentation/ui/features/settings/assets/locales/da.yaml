@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Debug-logfiler
     description: Aktiver detaljeret logføring til fil for fejlfinding og support
+    load_settings_error: Fejl ved indlæsning af debug-log indstillinger
+    update_settings_error: Fejl ved opdatering af debug-log indstillinger
     view:
       title: Vis debug-logfiler
       description: Vis og eksporter aktuelle debug-logfiler

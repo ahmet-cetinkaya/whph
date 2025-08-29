@@ -175,6 +175,8 @@ settings:
   debug_logs:
     title: デバッグログ
     description: トラブルシューティングとサポートのためにファイルへの詳細ログを有効にする
+    load_settings_error: デバッグログ設定の読み込みエラー
+    update_settings_error: デバッグログ設定の更新エラー
     view:
       title: デバッグログを表示
       description: 現在のデバッグログを表示・エクスポートする

@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Jurnale de depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport
+    load_settings_error: Eroare la încărcarea setărilor jurnalelor de depanare
+    update_settings_error: Eroare la actualizarea setărilor jurnalelor de depanare
     view:
       title: Vizualizați jurnalele de depanare
       description: Vizualizați și exportați jurnalele de depanare curente

@@ -175,6 +175,8 @@ settings:
   debug_logs:
     title: 调试日志
     description: 启用详细的文件日志记录以便故障排除和支持
+    load_settings_error: 加载调试日志设置时出错
+    update_settings_error: 更新调试日志设置时出错
     view:
       title: 查看调试日志
       description: 查看和导出当前调试日志

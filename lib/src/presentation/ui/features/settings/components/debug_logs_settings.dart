@@ -43,7 +43,7 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
       setLoading: (isLoading) => setState(() {
         _isLoading = isLoading;
       }),
-      errorMessage: "Error loading debug logs settings",
+      errorMessage: _translationService.translate(SettingsTranslationKeys.debugLogsLoadSettingsError),
       operation: () async {
         try {
           final query = GetSettingQuery(key: SettingKeys.debugLogsEnabled);
@@ -66,7 +66,7 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
       setLoading: (isLoading) => setState(() {
         _isUpdating = isLoading;
       }),
-      errorMessage: "Error updating debug logs setting",
+      errorMessage: _translationService.translate(SettingsTranslationKeys.debugLogsUpdateSettingsError),
       operation: () async {
         final command = SaveSettingCommand(
           key: SettingKeys.debugLogsEnabled,

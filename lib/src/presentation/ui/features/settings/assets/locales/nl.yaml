@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Debug-logs
     description: Gedetailleerde logging naar bestand inschakelen voor probleemoplossing en ondersteuning
+    load_settings_error: Fout bij laden van debug-log instellingen
+    update_settings_error: Fout bij bijwerken van debug-log instellingen
     view:
       title: Debug-logs bekijken
       description: Huidige debug-logs bekijken en exporteren

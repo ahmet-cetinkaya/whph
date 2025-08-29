@@ -172,8 +172,10 @@ settings:
     title: Gelişmiş
     description: Gelişmiş ayarlar ve geliştirici araçları
   debug_logs:
-    title: Hata ayıklama günlükleri
-    description: Sorun giderme ve destek için dosyaya detaylı günlük kaydını etkinleştir
+    title: Hata Ayıklama Günlükleri
+    description: Sorun giderme ve destek için ayrıntılı günlük kaydını etkinleştir
+    load_settings_error: Hata ayıklama günlükleri ayarları yüklenirken hata
+    update_settings_error: Hata ayıklama günlükleri ayarı güncellenirken hata
     view:
       title: Hata ayıklama günlüklerini görüntüle
       description: Mevcut hata ayıklama günlüklerini görüntüle ve dışa aktar

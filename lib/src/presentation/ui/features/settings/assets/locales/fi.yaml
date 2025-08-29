@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Virheenkorjauslokit
     description: Ota käyttöön yksityiskohtainen lokitiedostoon kirjaaminen vianmääritystä ja tukea varten
+    load_settings_error: Virhe ladattaessa virheenkorjauslokien asetuksia
+    update_settings_error: Virhe päivitettäessä virheenkorjauslokien asetuksia
     view:
       title: Näytä virheenkorjauslokit
       description: Näytä ja vie nykyiset virheenkorjauslokit

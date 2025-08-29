@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Felsökningsloggar
     description: Aktivera detaljerad loggning till fil för felsökning och support
+    load_settings_error: Fel vid laddning av felsökningslogg-inställningar
+    update_settings_error: Fel vid uppdatering av felsökningslogg-inställningar
     view:
       title: Visa felsökningsloggar
       description: Visa och exportera aktuella felsökningsloggar

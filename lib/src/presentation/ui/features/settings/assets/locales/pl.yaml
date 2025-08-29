@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Dzienniki debugowania
     description: Włącz szczegółowe logowanie do pliku w celu rozwiązywania problemów i wsparcia
+    load_settings_error: Błąd ładowania ustawień dzienników debugowania
+    update_settings_error: Błąd aktualizacji ustawień dzienników debugowania
     view:
       title: Wyświetl dzienniki debugowania
       description: Wyświetl i eksportuj bieżące dzienniki debugowania

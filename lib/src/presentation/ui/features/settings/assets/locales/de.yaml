@@ -173,7 +173,9 @@ settings:
     description: Erweiterte Einstellungen und Entwicklertools
   debug_logs:
     title: Debug-Protokolle
-    description: Detaillierte Protokollierung in Datei für Fehlerbehebung und Support aktivieren
+    description: Detaillierte Protokollierung für Fehlerbehebung und Support aktivieren
+    load_settings_error: Fehler beim Laden der Debug-Protokoll-Einstellungen
+    update_settings_error: Fehler beim Aktualisieren der Debug-Protokoll-Einstellung
     view:
       title: Debug-Protokolle anzeigen
       description: Aktuelle Debug-Protokolle anzeigen und exportieren

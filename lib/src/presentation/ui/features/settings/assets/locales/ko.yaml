@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: 디버그 로그
     description: 문제 해결 및 지원을 위해 파일에 상세한 로깅 활성화
+    load_settings_error: 디버그 로그 설정 로드 오류
+    update_settings_error: 디버그 로그 설정 업데이트 오류
     view:
       title: 디버그 로그 보기
       description: 현재 디버그 로그 보기 및 내보내기

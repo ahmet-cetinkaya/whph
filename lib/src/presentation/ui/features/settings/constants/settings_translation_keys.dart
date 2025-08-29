@@ -153,6 +153,8 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String debugLogsDescription = 'settings.debug_logs.description';
   static const String viewLogsTitle = 'settings.debug_logs.view.title';
   static const String viewLogsDescription = 'settings.debug_logs.view.description';
+  static const String debugLogsLoadSettingsError = 'settings.debug_logs.load_settings_error';
+  static const String debugLogsUpdateSettingsError = 'settings.debug_logs.update_settings_error';
   
   // Debug Logs Page
   static const String debugLogsPageTitle = 'settings.debug_logs.page.title';
