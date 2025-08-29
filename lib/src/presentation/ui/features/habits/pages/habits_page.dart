@@ -31,6 +31,9 @@ class HabitsPage extends StatefulWidget {
 }
 
 class _HabitsPageState extends State<HabitsPage> {
+  // Calendar layout constants
+  static const double _calendarDayWidth = 46.0;
+  static const double _dragHandleWidth = AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall;
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
@@ -40,6 +43,7 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _filterByArchived = false;
   String? _searchQuery;
   SortConfig<HabitSortFields> _sortConfig = HabitDefaults.sorting;
+  bool _forceOriginalLayout = false;
   String? _handledHabitId;
   bool _isHabitListVisible = false;
 
@@ -81,6 +85,15 @@ class _HabitsPageState extends State<HabitsPage> {
     if (mounted) {
       setState(() {
         _sortConfig = newConfig;
+      });
+    }
+  }
+
+  // Handle layout toggle changes
+  void _onLayoutToggleChange(bool forceOriginalLayout) {
+    if (mounted) {
+      setState(() {
+        _forceOriginalLayout = forceOriginalLayout;
       });
     }
   }
@@ -156,6 +169,23 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
+  /// Calculate calendar header width based on days shown and reordering state
+  double _calculateCalendarHeaderWidth(int daysToShow) {
+    final baseWidth = daysToShow * _calendarDayWidth;
+    final baseSpacing = AppTheme.size3XSmall;
+    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
+    
+    return baseWidth + baseSpacing + dragHandleSpacing;
+  }
+
+  /// Calculate calendar spacing width to align with habit cards
+  double _calculateCalendarSpacingWidth() {
+    final baseSpacing = AppTheme.size3XSmall;
+    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
+    
+    return baseSpacing + dragHandleSpacing;
+  }
+
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
@@ -214,10 +244,12 @@ class _HabitsPageState extends State<HabitsPage> {
                   showNoTagsFilter: _showNoTagsFilter,
                   filterByArchived: _filterByArchived,
                   sortConfig: _sortConfig,
+                  forceOriginalLayout: _forceOriginalLayout,
                   onTagFilterChange: _onFilterTagsSelect,
                   onArchiveFilterChange: _onToggleArchived,
                   onSearchChange: _onSearchChange,
                   onSortChange: _onSortConfigChange,
+                  onLayoutToggleChange: _onLayoutToggleChange,
                   showSearchFilter: true,
                   showSortButton: true,
                   showSaveButton: true,
@@ -231,10 +263,16 @@ class _HabitsPageState extends State<HabitsPage> {
                   AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                   !_filterByArchived)
                 SizedBox(
-                  width: daysToShow * 46.0,
+                  width: _calculateCalendarHeaderWidth(daysToShow),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: lastDays.map((date) => _buildCalendarDay(date, today)).toList(),
+                    children: [
+                      ...lastDays.map((date) => _buildCalendarDay(date, today)),
+                      // Add spacing to match calendar right padding and drag handle width
+                      SizedBox(
+                        width: _calculateCalendarSpacingWidth(),
+                      ),
+                    ],
                   ),
                 ),
             ],
@@ -250,8 +288,14 @@ class _HabitsPageState extends State<HabitsPage> {
                 filterByArchived: _filterByArchived,
                 search: _searchQuery,
                 sortConfig: _sortConfig,
+                enableReordering: _sortConfig.useCustomOrder,
+                forceOriginalLayout: _forceOriginalLayout,
                 onClickHabit: (item) {
                   _openDetails(item.id, context);
+                },
+                onReorderComplete: () {
+                  // Refresh the habits list to ensure correct order
+                  setState(() {});
                 },
               ),
             ),

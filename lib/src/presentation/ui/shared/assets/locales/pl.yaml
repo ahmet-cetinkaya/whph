@@ -192,6 +192,8 @@ shared:
     remove_criteria: Usuń kryteria
     reset_to_default: Przywróć domyślne
     sort: Sortuj
+    enable_reordering_tooltip: Włącz tryb zmiany kolejności
+    disable_reordering_tooltip: Wyłącz tryb zmiany kolejności
   statistics:
     daily_usage:
       description: Pokazuje całkowity czas użytkowania na dzień tygodnia

@@ -51,6 +51,7 @@ class HabitListItem {
   String? reminderTime;
   List<int> reminderDays;
   DateTime? archivedDate;
+  double? order;
 
   HabitListItem({
     required this.id,
@@ -61,6 +62,7 @@ class HabitListItem {
     this.reminderTime,
     this.reminderDays = const [],
     this.archivedDate,
+    this.order,
   });
 
   bool isArchived() {
@@ -120,6 +122,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
         archivedDate: habit.archivedDate,
+        order: habit.order,
       ));
     }
 
@@ -213,7 +216,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     }
 
     if (request.sortByCustomSort) {
-      return [CustomOrder(field: "order")];
+      return [CustomOrder(field: "order", direction: SortDirection.asc)];
     }
 
     List<CustomOrder> customOrders = [];

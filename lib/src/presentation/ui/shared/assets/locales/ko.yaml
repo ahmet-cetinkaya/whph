@@ -192,6 +192,8 @@ shared:
     remove_criteria: 조건 제거
     reset_to_default: 기본값으로 재설정
     sort: 정렬
+    enable_reordering_tooltip: 재정렬 모드 활성화
+    disable_reordering_tooltip: 재정렬 모드 비활성화
   statistics:
     daily_usage:
       description: 요일별 총 사용 시간을 표시

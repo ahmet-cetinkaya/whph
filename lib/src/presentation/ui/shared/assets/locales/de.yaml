@@ -192,6 +192,8 @@ shared:
     remove_criteria: Kriterium entfernen
     reset_to_default: Auf Standard zurücksetzen
     sort: Sortieren
+    enable_reordering_tooltip: Neuordnung aktivieren
+    disable_reordering_tooltip: Neuordnung deaktivieren
   statistics:
     daily_usage:
       description: Zeigt die gesamte Nutzungszeit pro Wochentag

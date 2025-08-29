@@ -25,6 +25,7 @@ class HabitTable extends Table {
   BoolColumn get hasGoal => boolean().withDefault(const Constant(false))();
   IntColumn get targetFrequency => integer().withDefault(const Constant(1))();
   IntColumn get periodDays => integer().withDefault(const Constant(7))();
+  RealColumn get order => real().withDefault(const Constant(0.0))();
 }
 
 class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
@@ -52,6 +53,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       hasGoal: Value(entity.hasGoal),
       targetFrequency: Value(entity.targetFrequency),
       periodDays: Value(entity.periodDays),
+      order: Value(entity.order),
     );
   }
 
@@ -65,6 +67,15 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
 
     final reminderDays = result != null ? result.data['reminder_days'] as String : '';
     return reminderDays;
+  }
+
+  @override
+  Future<void> updateAll(List<Habit> habits) async {
+    await database.transaction(() async {
+      for (final habit in habits) {
+        await database.update(table).replace(toCompanion(habit));
+      }
+    });
   }
 
   // No need to override getById and getList methods anymore

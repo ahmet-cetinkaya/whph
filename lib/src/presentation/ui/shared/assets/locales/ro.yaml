@@ -192,6 +192,8 @@ shared:
     remove_criteria: Elimină criteriul
     reset_to_default: Resetează la implicit
     sort: Sortează
+    enable_reordering_tooltip: Activează modul de reordonare
+    disable_reordering_tooltip: Dezactivează modul de reordonare
   statistics:
     daily_usage:
       description: Arată timpul total de utilizare pe zi a săptămânii

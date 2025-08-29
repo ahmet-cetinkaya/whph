@@ -17,6 +17,8 @@ import 'package:whph/src/presentation/ui/features/tasks/constants/task_defaults.
 import 'package:whph/src/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/src/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/src/presentation/ui/features/tasks/pages/task_details_page.dart';
+import 'package:whph/src/presentation/ui/features/habits/constants/habit_defaults.dart';
+import 'package:whph/src/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/src/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/src/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
@@ -52,9 +54,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _showCompletedTasks = false;
   String? _taskSearchQuery;
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
+  bool _taskForceOriginalLayout = false;
 
   // Habit list options state
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
+  SortConfig<HabitSortFields> _habitSortConfig = HabitDefaults.sorting;
+  bool _habitForceOriginalLayout = false;
 
   // Time chart options state
   static const String _timeChartOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -145,6 +150,30 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     if (mounted) {
       setState(() {
         _taskSortConfig = newConfig;
+      });
+    }
+  }
+
+  void _onTaskLayoutToggleChange(bool forceOriginalLayout) {
+    if (mounted) {
+      setState(() {
+        _taskForceOriginalLayout = forceOriginalLayout;
+      });
+    }
+  }
+
+  void _onHabitSortConfigChange(SortConfig<HabitSortFields> newConfig) {
+    if (mounted) {
+      setState(() {
+        _habitSortConfig = newConfig;
+      });
+    }
+  }
+
+  void _onHabitLayoutToggleChange(bool forceOriginalLayout) {
+    if (mounted) {
+      setState(() {
+        _habitForceOriginalLayout = forceOriginalLayout;
       });
     }
   }
@@ -285,14 +314,19 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           onSettingsLoaded: _onHabitListOptionSettingsLoaded,
                           selectedTagIds: _selectedTagFilter,
                           showNoTagsFilter: _showNoTagsFilter,
+                          sortConfig: _habitSortConfig,
+                          forceOriginalLayout: _habitForceOriginalLayout,
                           onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
                             setState(() {
                               _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                               _showNoTagsFilter = isNoneSelected;
                             });
                           },
+                          onSortChange: _onHabitSortConfigChange,
+                          onLayoutToggleChange: _onHabitLayoutToggleChange,
                           showTagFilter: false,
                           showArchiveFilter: false,
+                          showSortButton: true,
                         ),
                       ),
                     ],
@@ -308,9 +342,16 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterNoTags: _showNoTagsFilter,
                       // Only show habits not completed today
                       excludeCompletedForDate: _todayStart,
+                      sortConfig: _habitSortConfig,
+                      enableReordering: _habitSortConfig.useCustomOrder,
+                      forceOriginalLayout: _habitForceOriginalLayout,
                       onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                       onHabitCompleted: _onHabitCompleted,
                       onListing: _onHabitsListed,
+                      onReorderComplete: () {
+                        // Refresh the habits list to ensure correct order
+                        setState(() {});
+                      },
                       showDoneOverlayWhenEmpty: true,
                     ),
                 ],
@@ -358,7 +399,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                     });
                                   },
                                   sortConfig: _taskSortConfig,
+                                  forceOriginalLayout: _taskForceOriginalLayout,
                                   onSortChange: _onSortConfigChange,
+                                  onLayoutToggleChange: _onTaskLayoutToggleChange,
                                   hasItems: true,
                                   showDateFilter: false,
                                   showTagFilter: false,
@@ -396,6 +439,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       onTaskCompleted: _onTaskCompleted,
                       onList: _onTasksListed,
                       enableReordering: _taskSortConfig.useCustomOrder,
+                      forceOriginalLayout: _taskForceOriginalLayout,
                       showDoneOverlayWhenEmpty: true,
                       sortConfig: _taskSortConfig,
                     ),

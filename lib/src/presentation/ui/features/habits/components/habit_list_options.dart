@@ -60,6 +60,15 @@ class HabitListOptions extends PersistentListOptionsBase {
   /// Whether to show the sort button
   final bool showSortButton;
 
+  /// Whether to show the layout toggle button when custom sort is enabled
+  final bool showLayoutToggle;
+
+  /// Whether to force the original layout even with custom sort
+  final bool forceOriginalLayout;
+
+  /// Callback when layout toggle changes
+  final Function(bool)? onLayoutToggleChange;
+
   /// Whether there are items to filter
   final bool hasItems;
 
@@ -78,6 +87,9 @@ class HabitListOptions extends PersistentListOptionsBase {
     this.showArchiveFilter = true,
     this.showSearchFilter = true,
     this.showSortButton = true,
+    this.showLayoutToggle = true,
+    this.forceOriginalLayout = false,
+    this.onLayoutToggleChange,
     super.showSaveButton = true,
     this.hasItems = true,
     super.hasUnsavedChanges = false,
@@ -133,6 +145,10 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
       if (widget.onSortChange != null && filterSettings.sortConfig != null) {
         widget.onSortChange!(filterSettings.sortConfig!);
       }
+
+      if (widget.onLayoutToggleChange != null) {
+        widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
+      }
     }
 
     if (mounted) {
@@ -155,6 +171,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
           filterByArchived: widget.filterByArchived,
           search: lastSearchQuery,
           sortConfig: widget.sortConfig,
+          forceOriginalLayout: widget.forceOriginalLayout,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -182,6 +199,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
       filterByArchived: widget.filterByArchived,
       search: lastSearchQuery,
       sortConfig: widget.sortConfig,
+      forceOriginalLayout: widget.forceOriginalLayout,
     ).toJson();
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -200,7 +218,8 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
     final hasNonSearchChanges = widget.selectedTagIds != oldWidget.selectedTagIds ||
         widget.showNoTagsFilter != oldWidget.showNoTagsFilter ||
         widget.filterByArchived != oldWidget.filterByArchived ||
-        widget.sortConfig != oldWidget.sortConfig;
+        widget.sortConfig != oldWidget.sortConfig ||
+        widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
 
     if (hasNonSearchChanges) {
       return true;
@@ -267,7 +286,8 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
     final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
         (widget.showArchiveFilter && widget.onArchiveFilterChange != null) ||
         (widget.showSearchFilter && widget.onSearchChange != null) ||
-        (widget.showSortButton && widget.onSortChange != null));
+        (widget.showSortButton && widget.onSortChange != null) ||
+        (widget.showLayoutToggle && widget.sortConfig?.useCustomOrder == true));
 
     // If no filters to show or settings not loaded, don't render anything
     if (!showAnyFilters || !isSettingLoaded) return const SizedBox.shrink();
@@ -389,7 +409,22 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         translationKey: HabitTranslationKeys.archivedDateLabel,
                       ),
                     ],
+                    showCustomOrderOption: true,
                     isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
+                  ),
+
+                // Layout toggle button (only show when custom sort is enabled)
+                if (widget.showLayoutToggle && 
+                    widget.sortConfig?.useCustomOrder == true && 
+                    widget.onLayoutToggleChange != null)
+                  FilterIconButton(
+                    icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: !widget.forceOriginalLayout ? primaryColor : Colors.grey,
+                    tooltip: widget.forceOriginalLayout
+                        ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
+                        : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
+                    onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
                   ),
 
                 // Save button
