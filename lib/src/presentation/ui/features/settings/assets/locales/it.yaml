@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Log di debug
     description: Abilita la registrazione dettagliata su file per risoluzione dei problemi e supporto
+    load_settings_error: Errore nel caricamento delle impostazioni dei log di debug
+    update_settings_error: Errore nell'aggiornamento delle impostazioni dei log di debug
     view:
       title: Visualizza log di debug
       description: Visualizza ed esporta i log di debug correnti

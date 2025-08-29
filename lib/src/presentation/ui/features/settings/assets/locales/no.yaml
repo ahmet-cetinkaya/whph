@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Feilsøkingslogger
     description: Aktiver detaljert logging til fil for feilsøking og støtte
+    load_settings_error: Feil ved lasting av feilsøkingslogg-innstillinger
+    update_settings_error: Feil ved oppdatering av feilsøkingslogg-innstillinger
     view:
       title: Vis feilsøkingslogger
       description: Vis og eksporter gjeldende feilsøkingslogger

@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Dnevniki razhroščevanja
     description: Omogočite podrobno beleženje v datoteko za odpravljanje napak in podporo
+    load_settings_error: Napaka pri nalaganju nastavitev dnevnikov razhroščevanja
+    update_settings_error: Napaka pri posodabljanju nastavitev dnevnikov razhroščevanja
     view:
       title: Prikaži dnevnike razhroščevanja
       description: Prikaži in izvozi trenutne dnevnike razhroščevanja

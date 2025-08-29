@@ -175,6 +175,8 @@ settings:
   debug_logs:
     title: Debug Logs
     description: Enable detailed logging to file for troubleshooting and support
+    load_settings_error: Error loading debug logs settings
+    update_settings_error: Error updating debug logs setting
     view:
       title: View Debug Logs
       description: View and export current debug logs

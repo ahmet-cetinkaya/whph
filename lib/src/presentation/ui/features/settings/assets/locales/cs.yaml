@@ -176,6 +176,8 @@ settings:
   debug_logs:
     title: Protokoly ladění
     description: Povolit podrobné protokolování do souboru pro řešení problémů a podporu
+    load_settings_error: Chyba při načítání nastavení protokolů ladění
+    update_settings_error: Chyba při aktualizaci nastavení protokolů ladění
     view:
       title: Zobrazit protokoly ladění
       description: Zobrazit a exportovat aktuální protokoly ladění
