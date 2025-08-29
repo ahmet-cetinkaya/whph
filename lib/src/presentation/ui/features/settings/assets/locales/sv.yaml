@@ -170,3 +170,27 @@ settings:
     large: Stor
     larger: Större
     error: Det gick inte att läsa in inställningarna för gränssnittstäthet
+  advanced:
+    title: Avancerat
+    description: Avancerade inställningar och utvecklarverktyg
+  debug_logs:
+    title: Felsökningsloggar
+    description: Aktivera detaljerad loggning till fil för felsökning och support
+    view:
+      title: Visa felsökningsloggar
+      description: Visa och exportera aktuella felsökningsloggar
+    page:
+      title: Felsökningsloggar
+      description: Visa aktuella felsökningsloggposter. Loggar rensas och roteras automatiskt för att förhindra överdriven diskanvändning.
+      content: Logginnehåll
+      refresh: Uppdatera loggar
+      copy: Kopiera till urklipp
+      save_as: Spara som fil
+      copied: Felsökningsloggar kopierade till urklipp
+      load_error: Fel vid laddning av felsökningsloggar
+      not_enabled: Felsökningsloggning är inte aktiverat. Aktivera det i Avancerade inställningar för att börja samla loggar.
+      no_file: Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering av felsökningsloggning och appen genererar loggposter.
+      empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats än.
+    export:
+      error: Fel vid export av loggar
+      success: Loggfil exporterad framgångsrikt

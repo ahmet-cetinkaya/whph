@@ -170,3 +170,27 @@ settings:
     large: Stor
     larger: Større
     error: Kunne ikke laste inn UI-tetthetsinnstillinger
+  advanced:
+    title: Avansert
+    description: Avanserte innstillinger og utviklerverktøy
+  debug_logs:
+    title: Feilsøkingslogger
+    description: Aktiver detaljert logging til fil for feilsøking og støtte
+    view:
+      title: Vis feilsøkingslogger
+      description: Vis og eksporter gjeldende feilsøkingslogger
+    page:
+      title: Feilsøkingslogger
+      description: Vis gjeldende feilsøkingsloggoppføringer. Logger tømmes og roteres automatisk for å forhindre overdreven diskbruk.
+      content: Logginnhold
+      refresh: Oppdater logger
+      copy: Kopier til utklippstavle
+      save_as: Lagre som fil
+      copied: Feilsøkingslogger kopiert til utklippstavle
+      load_error: Feil ved lasting av feilsøkingslogger
+      not_enabled: Feilsøkingslogging er ikke aktivert. Aktiver det i Avanserte innstillinger for å begynne å samle logger.
+      no_file: Ingen feilsøkingsloggfil funnet. Logger vil bli opprettet etter aktivering av feilsøkingslogging og appen genererer loggoppføringer.
+      empty: Feilsøkingsloggfil er tom. Ingen loggoppføringer har blitt registrert ennå.
+    export:
+      error: Feil ved eksport av logger
+      success: Loggfil eksportert vellykket

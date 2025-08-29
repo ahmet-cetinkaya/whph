@@ -12,6 +12,7 @@ import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_ser
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/src/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
@@ -76,6 +77,10 @@ class AppBootstrapService {
     // Initialize reminder service
     final reminderService = container.resolve<ReminderService>();
     await reminderService.initialize();
+
+    // Configure logger based on settings
+    final loggerService = container.resolve<ILoggerService>();
+    await loggerService.configureLogger();
 
     // Initialize demo data if demo mode is enabled
     if (DemoConfig.isDemoModeEnabled) {

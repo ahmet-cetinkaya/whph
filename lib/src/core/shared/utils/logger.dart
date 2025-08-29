@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_logger_service.dart';
 
 /// Static utility class for accessing the centralized logger throughout the application.
 ///
@@ -34,18 +35,26 @@ class Logger {
     _logger = null; // Reset logger to force re-resolution
   }
 
-  /// Gets the logger instance from the container, if available
+  /// Gets the logger instance from the logger service, if available
   static ILogger? get _instance {
     if (_logger != null) return _logger;
 
     if (_container == null) return null;
 
     try {
-      _logger = _container!.resolve<ILogger>();
+      // Try to get the logger from the logger service first (for dynamic configuration)
+      final loggerService = _container!.resolve<ILoggerService>();
+      _logger = loggerService.logger;
       return _logger!;
     } catch (e) {
-      // Container not yet ready or logger not registered
-      return null;
+      try {
+        // Fallback to direct logger resolution
+        _logger = _container!.resolve<ILogger>();
+        return _logger!;
+      } catch (e2) {
+        // Container not yet ready or logger not registered
+        return null;
+      }
     }
   }
 

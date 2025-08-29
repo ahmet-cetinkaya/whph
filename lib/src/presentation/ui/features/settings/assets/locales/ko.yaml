@@ -170,3 +170,27 @@ settings:
     large: 큼
     larger: 더 큼
     error: UI 밀도 설정을 불러오지 못했습니다
+  advanced:
+    title: 고급
+    description: 고급 설정 및 개발자 도구
+  debug_logs:
+    title: 디버그 로그
+    description: 문제 해결 및 지원을 위해 파일에 상세한 로깅 활성화
+    view:
+      title: 디버그 로그 보기
+      description: 현재 디버그 로그 보기 및 내보내기
+    page:
+      title: 디버그 로그
+      description: 현재 디버그 로그 항목을 봅니다. 로그는 과도한 디스크 사용을 방지하기 위해 자동으로 플러시되고 순환됩니다.
+      content: 로그 내용
+      refresh: 로그 새로고침
+      copy: 클립보드에 복사
+      save_as: 파일로 저장
+      copied: 디버그 로그가 클립보드에 복사되었습니다
+      load_error: 디버그 로그 로드 오류
+      not_enabled: 디버그 로깅이 활성화되지 않았습니다. 고급 설정에서 활성화하여 로그 수집을 시작하세요.
+      no_file: 디버그 로그 파일을 찾을 수 없습니다. 디버그 로깅을 활성화하고 앱이 로그 항목을 생성한 후 로그가 생성됩니다.
+      empty: 디버그 로그 파일이 비어있습니다. 아직 로그 항목이 기록되지 않았습니다.
+    export:
+      error: 로그 내보내기 오류
+      success: 로그 파일이 성공적으로 내보내졌습니다

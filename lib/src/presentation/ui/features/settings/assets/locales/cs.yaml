@@ -170,3 +170,27 @@ settings:
     large: Velká
     larger: Větší
     error: Nepodařilo se načíst nastavení hustoty rozhraní
+  advanced:
+    title: Pokročilé
+    description: Pokročilé nastavení a vývojářské nástroje
+  debug_logs:
+    title: Protokoly ladění
+    description: Povolit podrobné protokolování do souboru pro řešení problémů a podporu
+    view:
+      title: Zobrazit protokoly ladění
+      description: Zobrazit a exportovat aktuální protokoly ladění
+    page:
+      title: Protokoly ladění
+      description: Zobrazit aktuální záznamy protokolu ladění. Protokoly se automaticky čistí a rotují, aby se zabránilo nadměrnému využití disku.
+      content: Obsah protokolu
+      refresh: Obnovit protokoly
+      copy: Kopírovat do schránky
+      save_as: Uložit jako soubor
+      copied: Protokoly ladění zkopírovány do schránky
+      load_error: Chyba při načítání protokolů ladění
+      not_enabled: Protokolování ladění není povoleno. Povolte jej v pokročilých nastaveních pro zahájení shromažďování protokolů.
+      no_file: Soubor protokolu ladění nebyl nalezen. Protokoly budou vytvořeny po povolení protokolování ladění a generování záznamů protokolu aplikací.
+      empty: Soubor protokolu ladění je prázdný. Dosud nebyly zaznamenány žádné záznamy protokolu.
+    export:
+      error: Chyba při exportu protokolů
+      success: Soubor protokolu byl úspěšně exportován

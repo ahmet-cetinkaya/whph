@@ -170,3 +170,27 @@ settings:
     large: Duża
     larger: Większa
     error: Nie udało się wczytać ustawień gęstości interfejsu
+  advanced:
+    title: Zaawansowane
+    description: Zaawansowane ustawienia i narzędzia programistyczne
+  debug_logs:
+    title: Dzienniki debugowania
+    description: Włącz szczegółowe logowanie do pliku w celu rozwiązywania problemów i wsparcia
+    view:
+      title: Wyświetl dzienniki debugowania
+      description: Wyświetl i eksportuj bieżące dzienniki debugowania
+    page:
+      title: Dzienniki debugowania
+      description: Wyświetl bieżące wpisy dziennika debugowania. Dzienniki są automatycznie czyszczone i rotowane, aby zapobiec nadmiernemu użyciu dysku.
+      content: Zawartość dziennika
+      refresh: Odśwież dzienniki
+      copy: Kopiuj do schowka
+      save_as: Zapisz jako plik
+      copied: Dzienniki debugowania skopiowane do schowka
+      load_error: Błąd ładowania dzienników debugowania
+      not_enabled: Logowanie debugowania nie jest włączone. Włącz je w Ustawieniach zaawansowanych, aby rozpocząć zbieranie dzienników.
+      no_file: Nie znaleziono pliku dziennika debugowania. Dzienniki zostaną utworzone po włączeniu logowania debugowania i wygenerowaniu wpisów dziennika przez aplikację.
+      empty: Plik dziennika debugowania jest pusty. Nie zostały jeszcze zapisane żadne wpisy dziennika.
+    export:
+      error: Błąd eksportu dzienników
+      success: Plik dziennika wyeksportowany pomyślnie

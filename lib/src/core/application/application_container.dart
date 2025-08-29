@@ -28,12 +28,27 @@ import 'package:whph/src/core/application/features/widget/widget_registration.da
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/src/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_logger_service.dart';
+import 'package:whph/src/core/application/shared/services/logger_service.dart';
+import 'package:whph/src/core/application/shared/services/abstraction/i_log_export_service.dart';
+import 'package:whph/src/core/application/shared/services/log_export_service.dart';
 
 void registerApplication(IContainer container) {
   container.registerSingleton<IMapper>((_) => CoreMapper());
 
   Mediator mediator = Mediator(Pipeline());
   container.registerSingleton((_) => mediator);
+
+  // Register Logger Service
+  container.registerSingleton<ILoggerService>((_) => LoggerService(
+        applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
+        mediator: mediator,
+        initialLogger: container.resolve<ILogger>(),
+      ));
+
+  // Register Log Export Service
+  container.registerSingleton<ILogExportService>((_) => LogExportService());
 
   // Common Dependencies
   final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
