@@ -27,7 +27,7 @@ class LogExportService implements ILogExportService {
         throw Exception("Unsupported platform for log export");
       }
     } catch (e) {
-      throw Exception("Failed to export log file: $e");
+      rethrow;
     }
   }
 
