@@ -192,6 +192,8 @@ shared:
     remove_criteria: Criterium verwijderen
     reset_to_default: Terugzetten naar standaard
     sort: Sorteren
+    enable_reordering_tooltip: Herordenmodus inschakelen
+    disable_reordering_tooltip: Herordenmodus uitschakelen
   statistics:
     daily_usage:
       description: Toont de totale gebruikstijd per dag van de week

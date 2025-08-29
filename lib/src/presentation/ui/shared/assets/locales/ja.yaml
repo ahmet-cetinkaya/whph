@@ -192,6 +192,8 @@ shared:
     remove_criteria: 条件を削除
     reset_to_default: デフォルトにリセット
     sort: ソート
+    enable_reordering_tooltip: 並び替えモードを有効にする
+    disable_reordering_tooltip: 並び替えモードを無効にする
   statistics:
     daily_usage:
       description: 曜日ごとの総使用時間を表示
