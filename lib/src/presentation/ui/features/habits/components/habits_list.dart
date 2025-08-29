@@ -457,8 +457,16 @@ class HabitsListState extends State<HabitsList> {
       // Prepare data for server update
       final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
       
-      // Calculate target order using the fixed OrderRank utility
-      final targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+      // Calculate target order - use manual calculation for position 0 until core package changes take effect
+      double targetOrder;
+      if (newIndex == 0 && existingOrders.isNotEmpty) {
+        // Manual fix for position 0: subtract initialStep from first order
+        final firstOrder = existingOrders.first;
+        targetOrder = firstOrder - OrderRank.initialStep;
+      } else {
+        // Use OrderRank utility for other positions
+        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+      }
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
         _dragStateNotifier.stopDragging();
