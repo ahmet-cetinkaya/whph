@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:path/path.dart' as path;
@@ -85,13 +87,18 @@ class LoggerService implements ILoggerService {
   }
 
   Future<void> _enableFileLogging() async {
+    // Skip if file logging is already enabled
+    if (_fileLogger != null) {
+      return;
+    }
+
     // Get the application directory
     final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
     final logsDirectory = path.join(appDirectory.path, 'logs');
     final logFilePath = path.join(logsDirectory, 'whph.log');
 
-    // Create file logger if it doesn't exist
-    _fileLogger ??= FileLogger(
+    // Create file logger
+    _fileLogger = FileLogger(
       filePath: logFilePath,
       minLevel: LogLevel.debug, // Enable all logs when debug logging is on
       includeTimestamp: true,
@@ -100,19 +107,19 @@ class LoggerService implements ILoggerService {
       maxBackupFiles: 3,
     );
 
-    // Create composite logger with console, memory, and file logging
+    // Create composite logger with console, file, and memory logging
+    // Include memory logger for fallback access to recent logs
     _currentLogger = CompositeLogger([
       const ConsoleLogger(
         minLevel: LogLevel.info, // Keep console at info level to avoid spam
         includeTimestamp: true,
         includeStackTrace: true,
       ),
-      _memoryLogger,
       _fileLogger!,
+      _memoryLogger, // Include memory logger as backup
     ]);
 
-    // Log that debug logging has been enabled
-    _currentLogger.info('Debug logging enabled - writing logs to file');
+    // Debug logging is now enabled and ready
   }
 
   Future<void> _disableFileLogging() async {
@@ -120,8 +127,33 @@ class LoggerService implements ILoggerService {
     if (_fileLogger != null) {
       _currentLogger.info('Debug logging disabled - stopping file logging');
       await _fileLogger!.flush();
+      
+      // Get the log file path before disposing the logger
+      final appDirectory = await _applicationDirectoryService.getApplicationDirectory();
+      final logFilePath = path.join(appDirectory.path, 'logs', 'whph.log');
+      
       _fileLogger!.dispose();
       _fileLogger = null;
+      
+      // Delete the log file
+      try {
+        final logFile = File(logFilePath);
+        if (await logFile.exists()) {
+          await logFile.delete();
+        }
+        
+        // Also try to delete the logs directory if it's empty
+        final logsDirectory = Directory(path.join(appDirectory.path, 'logs'));
+        if (await logsDirectory.exists()) {
+          final contents = await logsDirectory.list().toList();
+          if (contents.isEmpty) {
+            await logsDirectory.delete();
+          }
+        }
+      } catch (e) {
+        // Log deletion failed, but continue - this is not critical
+        debugPrint('Failed to delete log file: $e');
+      }
     }
 
     // Use console and memory logger only

@@ -26,31 +26,27 @@ import 'package:whph/src/core/application/shared/services/abstraction/i_logger_s
 class Logger {
   Logger._(); // Private constructor to prevent instantiation
 
-  static ILogger? _logger;
   static IContainer? _container;
 
   /// Initialize the Logger with a container instance
   static void initialize(IContainer container) {
     _container = container;
-    _logger = null; // Reset logger to force re-resolution
   }
 
   /// Gets the logger instance from the logger service, if available
+  /// Always resolves fresh to ensure we get the current configured logger
   static ILogger? get _instance {
-    if (_logger != null) return _logger;
-
     if (_container == null) return null;
 
     try {
-      // Try to get the logger from the logger service first (for dynamic configuration)
+      // Always get the current logger from the logger service (no caching)
+      // This ensures we get the updated logger after configureLogger() is called
       final loggerService = _container!.resolve<ILoggerService>();
-      _logger = loggerService.logger;
-      return _logger!;
+      return loggerService.logger;
     } catch (e) {
       try {
         // Fallback to direct logger resolution
-        _logger = _container!.resolve<ILogger>();
-        return _logger!;
+        return _container!.resolve<ILogger>();
       } catch (e2) {
         // Container not yet ready or logger not registered
         return null;
