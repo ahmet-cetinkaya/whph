@@ -192,6 +192,8 @@ shared:
     remove_criteria: Kriteri Kaldır
     reset_to_default: Varsayılana Sıfırla
     sort: Sırala
+    enable_reordering_tooltip: Yeniden sıralama modunu etkinleştir
+    disable_reordering_tooltip: Yeniden sıralama modunu devre dışı bırak
   statistics:
     daily_usage:
       description: Haftanın günlerine göre toplam kullanım süresini gösterir

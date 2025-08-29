@@ -190,6 +190,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String sortDescending = 'shared.sort.descending';
   static const String sortRemoveCriteria = 'shared.sort.remove_criteria';
   static const String sort = 'shared.sort.sort';
+  static const String enableReorderingTooltip = 'shared.sort.enable_reordering_tooltip';
+  static const String disableReorderingTooltip = 'shared.sort.disable_reordering_tooltip';
 
   // Data
   static const String createdDateLabel = 'shared.data.created_date_label';

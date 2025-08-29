@@ -39,6 +39,7 @@ class TaskList extends StatefulWidget {
   final bool showSelectButton;
   final bool transparentCards;
   final bool enableReordering;
+  final bool forceOriginalLayout;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
@@ -68,6 +69,7 @@ class TaskList extends StatefulWidget {
     this.showSelectButton = false,
     this.transparentCards = false,
     this.enableReordering = false,
+    this.forceOriginalLayout = false,
     this.showDoneOverlayWhenEmpty = false,
     this.ignoreArchivedTagVisibility = false,
     required this.onClickTask,
@@ -413,7 +415,7 @@ class TaskListState extends State<TaskList> {
                         icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
                         onPressed: () => widget.onSelectTask?.call(task),
                       ),
-                    if (widget.enableReordering && widget.filterByCompleted != true)
+                    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
                       ReorderableDragStartListener(
                         index: items.indexOf(task),
                         child: const Icon(Icons.drag_handle, color: Colors.grey),
@@ -498,7 +500,7 @@ class TaskListState extends State<TaskList> {
       );
     }
 
-    if (widget.enableReordering && widget.filterByCompleted != true) {
+    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
       return ReorderableListView(
         key: _pageStorageKey,
         buildDefaultDragHandles: false,

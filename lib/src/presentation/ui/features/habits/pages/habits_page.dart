@@ -40,6 +40,7 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _filterByArchived = false;
   String? _searchQuery;
   SortConfig<HabitSortFields> _sortConfig = HabitDefaults.sorting;
+  bool _forceOriginalLayout = false;
   String? _handledHabitId;
   bool _isHabitListVisible = false;
 
@@ -81,6 +82,15 @@ class _HabitsPageState extends State<HabitsPage> {
     if (mounted) {
       setState(() {
         _sortConfig = newConfig;
+      });
+    }
+  }
+
+  // Handle layout toggle changes
+  void _onLayoutToggleChange(bool forceOriginalLayout) {
+    if (mounted) {
+      setState(() {
+        _forceOriginalLayout = forceOriginalLayout;
       });
     }
   }
@@ -214,10 +224,12 @@ class _HabitsPageState extends State<HabitsPage> {
                   showNoTagsFilter: _showNoTagsFilter,
                   filterByArchived: _filterByArchived,
                   sortConfig: _sortConfig,
+                  forceOriginalLayout: _forceOriginalLayout,
                   onTagFilterChange: _onFilterTagsSelect,
                   onArchiveFilterChange: _onToggleArchived,
                   onSearchChange: _onSearchChange,
                   onSortChange: _onSortConfigChange,
+                  onLayoutToggleChange: _onLayoutToggleChange,
                   showSearchFilter: true,
                   showSortButton: true,
                   showSaveButton: true,
@@ -231,14 +243,14 @@ class _HabitsPageState extends State<HabitsPage> {
                   AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                   !_filterByArchived)
                 SizedBox(
-                  width: daysToShow * 46.0 + AppTheme.size3XSmall + (_sortConfig.useCustomOrder ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall : 0),
+                  width: daysToShow * 46.0 + AppTheme.size3XSmall + (_sortConfig.useCustomOrder && !_forceOriginalLayout ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall : 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ...lastDays.map((date) => _buildCalendarDay(date, today)),
                       // Add spacing to match calendar right padding and drag handle width
                       SizedBox(
-                        width: AppTheme.size3XSmall + (_sortConfig.useCustomOrder 
+                        width: AppTheme.size3XSmall + (_sortConfig.useCustomOrder && !_forceOriginalLayout
                           ? AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall 
                           : 0), // Calendar right padding + (drag handle + spacing + extra + right padding when custom sort)
                       ),
@@ -259,6 +271,7 @@ class _HabitsPageState extends State<HabitsPage> {
                 search: _searchQuery,
                 sortConfig: _sortConfig,
                 enableReordering: _sortConfig.useCustomOrder,
+                forceOriginalLayout: _forceOriginalLayout,
                 onClickHabit: (item) {
                   _openDetails(item.id, context);
                 },

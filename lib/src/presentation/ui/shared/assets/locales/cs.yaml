@@ -192,6 +192,8 @@ shared:
     remove_criteria: Odstranit kritérium
     reset_to_default: Obnovit na výchozí
     sort: Řadit
+    enable_reordering_tooltip: Povolit režim přeřazení
+    disable_reordering_tooltip: Zakázat režim přeřazení
   statistics:
     daily_usage:
       description: Zobrazuje celkový čas využití za den v týdnu

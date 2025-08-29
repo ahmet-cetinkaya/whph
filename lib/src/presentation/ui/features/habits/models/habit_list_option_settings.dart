@@ -20,6 +20,9 @@ class HabitListOptionSettings {
   /// Current sort configuration
   final SortConfig<HabitSortFields>? sortConfig;
 
+  /// Whether to force the original layout even with custom sort
+  final bool forceOriginalLayout;
+
   /// Default constructor
   HabitListOptionSettings({
     this.selectedTagIds,
@@ -27,6 +30,7 @@ class HabitListOptionSettings {
     this.filterByArchived = false,
     this.search,
     this.sortConfig,
+    this.forceOriginalLayout = false,
   });
 
   /// Create settings from a JSON map
@@ -59,6 +63,7 @@ class HabitListOptionSettings {
       filterByArchived: json['filterByArchived'] as bool? ?? false,
       search: json['search'] as String?,
       sortConfig: sortConfig,
+      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
     );
   }
 
@@ -68,6 +73,7 @@ class HabitListOptionSettings {
       'showNoTagsFilter': showNoTagsFilter,
       'filterByArchived': filterByArchived,
       'search': search, // Always include search, even if null
+      'forceOriginalLayout': forceOriginalLayout,
     };
 
     if (selectedTagIds != null) {

@@ -30,6 +30,7 @@ class HabitsList extends StatefulWidget {
   final SortConfig<HabitSortFields>? sortConfig;
   final DateTime? excludeCompletedForDate;
   final bool enableReordering;
+  final bool forceOriginalLayout;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -50,6 +51,7 @@ class HabitsList extends StatefulWidget {
     this.sortConfig,
     this.excludeCompletedForDate,
     this.enableReordering = false,
+    this.forceOriginalLayout = false,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -271,51 +273,95 @@ class HabitsListState extends State<HabitsList> {
   }
 
   Widget _buildMiniCardList() {
-    // Calculate the total item count including load more button
-    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
-
-    return GridView.builder(
-      controller: _scrollController,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 300.0,
-        crossAxisSpacing: AppTheme.size3XSmall,
-        mainAxisSpacing: AppTheme.size3XSmall,
-        mainAxisExtent: 40.0,
-      ),
-      itemCount: totalItemCount,
-      itemBuilder: (context, index) {
-        // Load more button at the end
-        if (index == _habitList!.items.length) {
-          return Center(
-            child: Padding(
+    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
+      // Use ReorderableListView for drag-and-drop in mini layout
+      return ReorderableListView(
+        key: _pageStorageKey,
+        buildDefaultDragHandles: false,
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          child: child,
+        ),
+        onReorder: _onReorder,
+        children: [
+          ..._habitList!.items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final habit = entry.value;
+            return Padding(
+              key: ValueKey(habit.id),
+              padding: const EdgeInsets.all(AppTheme.size4XSmall),
+              child: HabitCard(
+                habit: habit,
+                isMiniLayout: true,
+                dateRange: widget.dateRange,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                onRecordCreated: (_) => _onHabitRecordChanged(),
+                onRecordDeleted: (_) => _onHabitRecordChanged(),
+                isDense: true,
+                showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
+                dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+              ),
+            );
+          }),
+          if (_habitList!.hasNext)
+            Padding(
+              key: const ValueKey('load_more_button_mini'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-              child: LoadMoreButton(onPressed: _onLoadMore),
+              child: Center(
+                child: LoadMoreButton(onPressed: _onLoadMore),
+              ),
+            ),
+        ],
+      );
+    } else {
+      // Calculate the total item count including load more button
+      final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
+
+      return GridView.builder(
+        controller: _scrollController,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 300.0,
+          crossAxisSpacing: AppTheme.size3XSmall,
+          mainAxisSpacing: AppTheme.size3XSmall,
+          mainAxisExtent: 40.0,
+        ),
+        itemCount: totalItemCount,
+        itemBuilder: (context, index) {
+          // Load more button at the end
+          if (index == _habitList!.items.length) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+                child: LoadMoreButton(onPressed: _onLoadMore),
+              ),
+            );
+          }
+
+          final habit = _habitList!.items[index];
+          return AnimatedOpacity(
+            opacity: 1.0,
+            duration: const Duration(milliseconds: 300),
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.size4XSmall),
+              child: HabitCard(
+                key: ValueKey(habit.id),
+                habit: habit,
+                isMiniLayout: true,
+                dateRange: widget.dateRange,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                onRecordCreated: (_) => _onHabitRecordChanged(),
+                onRecordDeleted: (_) => _onHabitRecordChanged(),
+                isDense: true,
+              ),
             ),
           );
-        }
-
-        final habit = _habitList!.items[index];
-        return AnimatedOpacity(
-          opacity: 1.0,
-          duration: const Duration(milliseconds: 300),
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.size4XSmall),
-            child: HabitCard(
-              key: ValueKey(habit.id),
-              habit: habit,
-              isMiniLayout: true,
-              dateRange: widget.dateRange,
-              onOpenDetails: () => widget.onClickHabit(habit),
-              onRecordCreated: (_) => _onHabitRecordChanged(),
-              onRecordDeleted: (_) => _onHabitRecordChanged(),
-              isDense: true,
-            ),
-          ),
-        );
-      },
-    );
+        },
+      );
+    }
   }
 
   List<Widget> _buildHabitCards() {
@@ -334,7 +380,7 @@ class HabitsListState extends State<HabitsList> {
           onRecordCreated: (_) => widget.onHabitCompleted?.call(),
           onRecordDeleted: (_) => widget.onHabitCompleted?.call(),
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true,
+          showDragHandle: widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
           dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
         ),
       );
@@ -342,7 +388,7 @@ class HabitsListState extends State<HabitsList> {
   }
 
   Widget _buildColumnList() {
-    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true) {
+    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       return ReorderableListView(
         key: _pageStorageKey,
         buildDefaultDragHandles: false,
