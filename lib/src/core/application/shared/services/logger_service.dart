@@ -110,7 +110,7 @@ class LoggerService implements ILoggerService {
       _memoryLogger,
       _fileLogger!,
     ]);
-    
+
     // Log that debug logging has been enabled
     _currentLogger.info('Debug logging enabled - writing logs to file');
   }

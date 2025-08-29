@@ -195,5 +195,6 @@ settings:
       no_file: Aucun fichier de journal de débogage trouvé. Les journaux seront créés après activation de la journalisation de débogage et génération d'entrées de journal par l'application.
       empty: Le fichier de journal de débogage est vide. Aucune entrée de journal n'a encore été enregistrée.
     export:
+      dialog_title: Exporter les journaux de débogage
       error: Erreur lors de l'exportation des journaux
       success: Fichier de journal exporté avec succès
