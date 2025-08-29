@@ -168,3 +168,27 @@ settings:
     large: Grande
     larger: Más grande
     error: Error al cargar la configuración de densidad de la interfaz
+  advanced:
+    title: Avanzado
+    description: Configuración avanzada y herramientas de desarrollador
+  debug_logs:
+    title: Registros de depuración
+    description: Habilitar registro detallado en archivo para solución de problemas y soporte
+    view:
+      title: Ver registros de depuración
+      description: Ver y exportar registros de depuración actuales
+    page:
+      title: Registros de depuración
+      description: Ver entradas actuales del registro de depuración. Los registros se vacían y rotan automáticamente para evitar uso excesivo del disco.
+      content: Contenido del registro
+      refresh: Actualizar registros
+      copy: Copiar al portapapeles
+      save_as: Guardar como archivo
+      copied: Registros de depuración copiados al portapapeles
+      load_error: Error al cargar registros de depuración
+      not_enabled: El registro de depuración no está habilitado. Actívalo en Configuración avanzada para comenzar a recopilar registros.
+      no_file: No se encontró archivo de registro de depuración. Los registros se crearán después de habilitar el registro de depuración y que la aplicación genere entradas de registro.
+      empty: El archivo de registro de depuración está vacío. Aún no se han registrado entradas de registro.
+    export:
+      error: Error al exportar registros
+      success: Archivo de registro exportado exitosamente

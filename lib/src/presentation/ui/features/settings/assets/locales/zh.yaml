@@ -169,3 +169,27 @@ settings:
     large: 大
     larger: 更大
     error: 加载UI密度设置失败
+  advanced:
+    title: 高级
+    description: 高级设置和开发者工具
+  debug_logs:
+    title: 调试日志
+    description: 启用详细的文件日志记录以便故障排除和支持
+    view:
+      title: 查看调试日志
+      description: 查看和导出当前调试日志
+    page:
+      title: 调试日志
+      description: 查看当前调试日志条目。日志会自动刷新和轮转以防止过度使用磁盘空间。
+      content: 日志内容
+      refresh: 刷新日志
+      copy: 复制到剪贴板
+      save_as: 另存为文件
+      copied: 调试日志已复制到剪贴板
+      load_error: 加载调试日志时出错
+      not_enabled: 调试日志记录未启用。在高级设置中启用它以开始收集日志。
+      no_file: 未找到调试日志文件。启用调试日志记录并且应用生成日志条目后将创建日志。
+      empty: 调试日志文件为空。尚未记录任何日志条目。
+    export:
+      error: 导出日志时出错
+      success: 日志文件导出成功

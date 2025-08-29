@@ -44,4 +44,7 @@ class SettingKeys {
   static const String dynamicAccentColor = 'DYNAMIC_ACCENT_COLOR';
   static const String customAccentColor = 'CUSTOM_ACCENT_COLOR';
   static const String uiDensity = 'UI_DENSITY';
+
+  // Debug Settings
+  static const String debugLogsEnabled = 'DEBUG_LOGS_ENABLED';
 }

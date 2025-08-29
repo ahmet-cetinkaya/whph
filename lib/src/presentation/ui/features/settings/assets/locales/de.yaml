@@ -168,3 +168,27 @@ settings:
     large: Groß
     larger: Größer
     error: Fehler beim Laden der UI-Dichte-Einstellungen
+  advanced:
+    title: Erweitert
+    description: Erweiterte Einstellungen und Entwicklertools
+  debug_logs:
+    title: Debug-Protokolle
+    description: Detaillierte Protokollierung in Datei für Fehlerbehebung und Support aktivieren
+    view:
+      title: Debug-Protokolle anzeigen
+      description: Aktuelle Debug-Protokolle anzeigen und exportieren
+    page:
+      title: Debug-Protokolle
+      description: Aktuelle Debug-Protokolleinträge anzeigen. Protokolle werden automatisch geleert und rotiert, um übermäßige Festplattennutzung zu vermeiden.
+      content: Protokollinhalt
+      refresh: Protokolle aktualisieren
+      copy: In Zwischenablage kopieren
+      save_as: Als Datei speichern
+      copied: Debug-Protokolle in Zwischenablage kopiert
+      load_error: Fehler beim Laden der Debug-Protokolle
+      not_enabled: Debug-Protokollierung ist nicht aktiviert. Aktivieren Sie sie in den erweiterten Einstellungen, um mit der Sammlung von Protokollen zu beginnen.
+      no_file: Keine Debug-Protokolldatei gefunden. Protokolle werden erstellt, nachdem die Debug-Protokollierung aktiviert wurde und die App Protokolleinträge generiert.
+      empty: Debug-Protokolldatei ist leer. Es wurden noch keine Protokolleinträge aufgezeichnet.
+    export:
+      error: Fehler beim Exportieren der Protokolle
+      success: Protokolldatei erfolgreich exportiert

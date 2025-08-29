@@ -143,4 +143,31 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String uiDensityLarge = 'settings.ui_density.large';
   static const String uiDensityLarger = 'settings.ui_density.larger';
   static const String uiDensitySettingsError = 'settings.ui_density.error';
+
+  // Advanced Settings
+  static const String advancedSettingsTitle = 'settings.advanced.title';
+  static const String advancedSettingsDescription = 'settings.advanced.description';
+
+  // Debug Logs Settings
+  static const String debugLogsTitle = 'settings.debug_logs.title';
+  static const String debugLogsDescription = 'settings.debug_logs.description';
+  static const String viewLogsTitle = 'settings.debug_logs.view.title';
+  static const String viewLogsDescription = 'settings.debug_logs.view.description';
+  
+  // Debug Logs Page
+  static const String debugLogsPageTitle = 'settings.debug_logs.page.title';
+  static const String debugLogsPageDescription = 'settings.debug_logs.page.description';
+  static const String debugLogsContent = 'settings.debug_logs.page.content';
+  static const String debugLogsRefresh = 'settings.debug_logs.page.refresh';
+  static const String debugLogsCopy = 'settings.debug_logs.page.copy';
+  static const String debugLogsSaveAs = 'settings.debug_logs.page.save_as';
+  static const String debugLogsCopied = 'settings.debug_logs.page.copied';
+  static const String debugLogsLoadError = 'settings.debug_logs.page.load_error';
+  static const String debugLogsNotEnabled = 'settings.debug_logs.page.not_enabled';
+  static const String debugLogsNoFile = 'settings.debug_logs.page.no_file';
+  static const String debugLogsEmpty = 'settings.debug_logs.page.empty';
+  
+  // Export Logs
+  static const String exportLogsError = 'settings.debug_logs.export.error';
+  static const String exportLogsSuccess = 'settings.debug_logs.export.success';
 }
