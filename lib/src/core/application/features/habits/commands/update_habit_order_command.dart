@@ -1,17 +1,16 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/src/core/domain/features/habits/habit.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/src/core/application/features/habits/constants/habit_translation_keys.dart';
 
 class UpdateHabitOrderCommand implements IRequest<UpdateHabitOrderResponse> {
   final String habitId;
-  final double beforeHabitOrder;
-  final double afterHabitOrder;
+  final double newOrder;
 
   UpdateHabitOrderCommand({
     required this.habitId,
-    required this.beforeHabitOrder,
-    required this.afterHabitOrder,
+    required this.newOrder,
   });
 }
 
@@ -32,54 +31,35 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
     final habit = await _habitRepository.getById(request.habitId);
     if (habit == null) throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
 
-    final otherHabits = await _habitRepository.getAll(
-      customWhereFilter: CustomWhereFilter(
-        'id != ? AND deleted_date IS NULL',
-        [habit.id],
-      ),
-      customOrder: [CustomOrder(field: "order")],
-    );
-
-    otherHabits.sort((a, b) => a.order.compareTo(b.order));
-
     try {
-      double newOrder;
-
-      // Directly use the calculated afterHabitOrder from UI
-      newOrder = request.afterHabitOrder;
-
-      // Check if the newOrder is valid and make adjustments if needed
-      if (otherHabits.isNotEmpty) {
-        if (newOrder <= 0) {
-          // If trying to move to first position but order is invalid
-          newOrder = otherHabits.first.order / 2;
-        } else if (newOrder >= (otherHabits.isNotEmpty ? otherHabits.last.order : 0) + OrderRank.maxOrder) {
-          // If order is too large, place it properly after the last item
-          newOrder = (otherHabits.last.order) + OrderRank.initialStep;
-        }
-      } else {
-        // If there are no other habits, use initial step
-        newOrder = OrderRank.initialStep;
-      }
-
-      habit.order = newOrder;
+      // Trust the calculated order from UI
+      habit.order = request.newOrder;
       habit.modifiedDate = DateTime.now().toUtc();
       await _habitRepository.update(habit);
 
-      return UpdateHabitOrderResponse(habit.id, newOrder);
+      return UpdateHabitOrderResponse(habit.id, request.newOrder);
     } on RankGapTooSmallException {
       // Normalize all orders if gaps are too small
+      final allHabits = await _habitRepository.getAll(
+        customWhereFilter: CustomWhereFilter('deleted_date IS NULL', []),
+        customOrder: [CustomOrder(field: "order")],
+      );
+      
+      allHabits.sort((a, b) => a.order.compareTo(b.order));
+      
+      // Assign new normalized orders
       double orderStep = OrderRank.initialStep;
-
-      // Include current habit in normalization
-      final allHabits = [...otherHabits, habit]..sort((a, b) => a.order.compareTo(b.order));
-
+      final habitsToUpdate = <Habit>[];
+      
       for (var h in allHabits) {
         h.order = orderStep;
         h.modifiedDate = DateTime.now().toUtc();
-        await _habitRepository.update(h);
+        habitsToUpdate.add(h);
         orderStep += OrderRank.initialStep;
       }
+
+      // Batch update all habits
+      await _habitRepository.updateAll(habitsToUpdate);
 
       return UpdateHabitOrderResponse(habit.id, habit.order);
     }

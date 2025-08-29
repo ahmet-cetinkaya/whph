@@ -69,6 +69,15 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     return reminderDays;
   }
 
+  @override
+  Future<void> updateAll(List<Habit> habits) async {
+    await database.transaction(() async {
+      for (final habit in habits) {
+        await database.update(table).replace(toCompanion(habit));
+      }
+    });
+  }
+
   // No need to override getById and getList methods anymore
   // The conversion between String and List<int> is handled automatically by Habit class
 }
