@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:path/path.dart' as path;
@@ -45,11 +44,11 @@ class LogExportService implements ILogExportService {
       final fileName = path.basename(logFile.path);
       final fileExtension = path.extension(fileName);
       final baseName = path.basenameWithoutExtension(fileName);
-      
+
       // Generate a timestamped filename
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
       final suggestedName = '${baseName}_$timestamp$fileExtension';
-      
+
       // Show save dialog with localized title
       final result = await FilePicker.platform.saveFile(
         dialogTitle: translationService.translate(SettingsTranslationKeys.exportLogsDialogTitle),
@@ -57,14 +56,14 @@ class LogExportService implements ILogExportService {
         type: FileType.custom,
         allowedExtensions: ['log', 'txt'],
       );
-      
+
       if (result != null) {
         // Copy the log file to the selected destination
         final destinationFile = File(result);
         await logFile.copy(result);
         return destinationFile.path;
       }
-      
+
       return null; // User cancelled
     } catch (e) {
       throw Exception("Failed to export log file on desktop: $e");
@@ -77,14 +76,14 @@ class LogExportService implements ILogExportService {
       final fileName = path.basename(logFile.path);
       final fileExtension = path.extension(fileName);
       final baseName = path.basenameWithoutExtension(fileName);
-      
+
       // Generate a timestamped filename
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
       final suggestedName = '${baseName}_$timestamp$fileExtension';
-      
+
       // Read file content
       final fileContent = await logFile.readAsBytes();
-      
+
       // Save file to Downloads directory
       final savedPath = await FileSaver.instance.saveAs(
         name: suggestedName,
@@ -92,7 +91,7 @@ class LogExportService implements ILogExportService {
         ext: fileExtension.replaceFirst('.', ''),
         mimeType: MimeType.text,
       );
-      
+
       return savedPath;
     } catch (e) {
       throw Exception("Failed to export log file on mobile: $e");
@@ -105,14 +104,14 @@ class LogExportService implements ILogExportService {
       final fileName = path.basename(logFile.path);
       final fileExtension = path.extension(fileName);
       final baseName = path.basenameWithoutExtension(fileName);
-      
+
       // Generate a timestamped filename
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
       final suggestedName = '${baseName}_$timestamp$fileExtension';
-      
+
       // Read file content
       final fileContent = await logFile.readAsBytes();
-      
+
       // Trigger browser download using FileSaver
       final savedPath = await FileSaver.instance.saveAs(
         name: suggestedName,
@@ -120,7 +119,7 @@ class LogExportService implements ILogExportService {
         ext: fileExtension.replaceFirst('.', ''),
         mimeType: MimeType.text,
       );
-      
+
       return savedPath ?? suggestedName; // Return filename if path not available on web
     } catch (e) {
       throw Exception("Failed to export log file on web: $e");

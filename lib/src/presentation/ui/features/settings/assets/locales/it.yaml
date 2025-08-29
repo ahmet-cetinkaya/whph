@@ -8,10 +8,7 @@ settings:
   errors:
     export_failed: Esportazione fallita
     import_failed: Importazione fallita
-    setting_not_found:    export:
-      dialog_title: Esporta log di debug
-      error: Errore durante l'esportazione dei log
-      success: File di log esportato con successopostazione non trovata
+    setting_not_found: Impostazione non trovata
     version_mismatch: Versione non trovata
   export:
     csv_description: Puoi usare questo per visualizzare in Excel e applicazioni simili.
@@ -197,5 +194,6 @@ settings:
       no_file: Nessun file di log di debug trovato. I log verranno creati dopo aver abilitato la registrazione di debug e l'app genererà voci di log.
       empty: Il file di log di debug è vuoto. Non sono ancora state registrate voci di log.
     export:
+      dialog_title: Esporta log di debug
       error: Errore nell'esportazione dei log
       success: File di log esportato con successo

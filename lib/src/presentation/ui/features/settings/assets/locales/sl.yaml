@@ -9,10 +9,7 @@ settings:
     export_failed: Export failed
     import_failed: Import failed
     setting_not_found: Setting not found
-       export:
-      dialog_title: Izvozi dnevnike razhroščevanja
-      error: Napaka pri izvozu dnevnikov
-      success: Datoteka dnevnika je bila uspešno izvoženarsion_mismatch: Version not found
+    version_mismatch: Version not found
   export:
     csv_description: You can use this to view in Excel and similar applications.
     error: Export failed
@@ -197,5 +194,6 @@ settings:
       no_file: Datoteka dnevnika razhroščevanja ni bila najdena. Dnevniki bodo ustvarjeni po omogočitvi beleženja razhroščevanja in ko aplikacija ustvari vnose dnevnika.
       empty: Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov dnevnika.
     export:
+      dialog_title: Izvozi dnevnike razhroščevanja
       error: Napaka pri izvozu dnevnikov
       success: Datoteka dnevnika uspešno izvožena
