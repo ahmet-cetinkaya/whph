@@ -452,27 +452,11 @@ class HabitsListState extends State<HabitsList> {
     final habit = items[oldIndex];
     final originalOrder = habit.order ?? 0.0;
 
-    // Get target order for server update BEFORE visual update
-    final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
-    double targetOrder;
-
     try {
-      if (newIndex == 0) {
-        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-        
-        if (firstOrder <= 0 || firstOrder < 1e-10) {
-          targetOrder = OrderRank.initialStep / 2;
-        } else if (firstOrder < 1e-6) {
-          targetOrder = firstOrder / 1000;
-        } else {
-          targetOrder = firstOrder - OrderRank.initialStep;
-          if (targetOrder <= 0) {
-            targetOrder = firstOrder / 2;
-          }
-        }
-      } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
-      }
+      // Get target order for server update BEFORE visual update
+      final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
+      
+      final targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
         _dragStateNotifier.stopDragging();
