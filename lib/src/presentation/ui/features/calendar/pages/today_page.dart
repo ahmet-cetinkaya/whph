@@ -52,6 +52,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   // Task list options state
   static const String _taskFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
   bool _showCompletedTasks = false;
+  bool _showSubTasks = false;
   String? _taskSearchQuery;
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
   bool _taskForceOriginalLayout = false;
@@ -398,6 +399,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                       _showCompletedTasks = showCompleted;
                                     });
                                   },
+                                  showSubTasks: _showSubTasks,
+                                  onSubTasksToggle: (showSubTasks) {
+                                    setState(() {
+                                      _showSubTasks = showSubTasks;
+                                    });
+                                  },
                                   sortConfig: _taskSortConfig,
                                   forceOriginalLayout: _taskForceOriginalLayout,
                                   onSortChange: _onSortConfigChange,
@@ -405,6 +412,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                   hasItems: true,
                                   showDateFilter: false,
                                   showTagFilter: false,
+                                  showSubTasksToggle: true,
                                 ),
                               ),
                             ),
@@ -434,6 +442,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       filterByDeadlineEndDate: _todayEnd,
                       filterDateOr: true,
                       search: _taskSearchQuery,
+                      includeSubTasks: _showSubTasks,
                       pageSize: 5,
                       onClickTask: (task) => _openTaskDetails(context, task.id),
                       onTaskCompleted: _onTaskCompleted,

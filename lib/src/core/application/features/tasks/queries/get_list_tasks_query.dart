@@ -67,6 +67,43 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
             filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
         filterByDeadlineEndDate =
             filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
+
+  /// Factory constructor for search queries that includes subtasks
+  factory GetListTasksQuery.forSearch({
+    required int pageIndex,
+    required int pageSize,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    bool filterDateOr = false,
+    List<String>? filterByTags,
+    bool filterNoTags = false,
+    bool? filterByCompleted,
+    String? filterBySearch,
+    List<SortOption<TaskSortFields>>? sortBy,
+    bool sortByCustomSort = false,
+    bool ignoreArchivedTagVisibility = false,
+  }) {
+    return GetListTasksQuery(
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      filterByPlannedStartDate: filterByPlannedStartDate,
+      filterByPlannedEndDate: filterByPlannedEndDate,
+      filterByDeadlineStartDate: filterByDeadlineStartDate,
+      filterByDeadlineEndDate: filterByDeadlineEndDate,
+      filterDateOr: filterDateOr,
+      filterByTags: filterByTags,
+      filterNoTags: filterNoTags,
+      filterByCompleted: filterByCompleted,
+      filterBySearch: filterBySearch,
+      sortBy: sortBy,
+      sortByCustomSort: sortByCustomSort,
+      ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+      areParentAndSubTasksIncluded: true,
+      filterByParentTaskId: null,
+    );
+  }
 }
 
 class TaskListItem {

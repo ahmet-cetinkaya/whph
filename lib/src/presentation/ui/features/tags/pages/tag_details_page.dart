@@ -281,6 +281,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     filterByTags: [widget.tagId],
                                     filterByCompleted: _showCompletedTasks,
                                     search: _taskSearchQuery,
+                                    includeSubTasks: true, // Always include subtasks when filtering by tags
                                     sortConfig: _taskSortConfig,
                                     enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
                                     ignoreArchivedTagVisibility: true,
