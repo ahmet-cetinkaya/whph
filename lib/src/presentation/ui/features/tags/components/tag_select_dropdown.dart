@@ -134,6 +134,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     _isDisposed = true;
     _searchDebounce?.cancel();
     _scrollController.removeListener(_scrollListener);
+    _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
   }
