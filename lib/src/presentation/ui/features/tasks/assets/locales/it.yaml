@@ -312,4 +312,5 @@ tasks:
     edit_title: Modifica titolo
     increase_estimated_time: Aumenta tempo stimato
     set_reminder: Imposta promemoria
+    show_subtasks: Mostra sottoattività
     show_completed_tasks: Filtra attività completate
