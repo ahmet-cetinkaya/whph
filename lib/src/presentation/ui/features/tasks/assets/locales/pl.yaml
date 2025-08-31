@@ -313,3 +313,4 @@ tasks:
     increase_estimated_time: Zwiększ szacowany czas
     set_reminder: Ustaw przypomnienie
     show_completed_tasks: Filtruj ukończone zadania
+    show_subtasks: Pokaż podzadania

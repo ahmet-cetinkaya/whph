@@ -38,6 +38,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   // Filter state
   List<String>? _selectedTagIds;
   bool _showCompletedTasks = false;
+  bool _showSubTasks = false;
   DateTime? _filterStartDate;
   DateTime? _filterEndDate;
   DateFilterSetting? _dateFilterSetting;
@@ -170,6 +171,14 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     if (mounted) {
       setState(() {
         _showCompletedTasks = showCompleted;
+      });
+    }
+  }
+
+  void _onSubTasksToggle(bool showSubTasks) {
+    if (mounted) {
+      setState(() {
+        _showSubTasks = showSubTasks;
       });
     }
   }
@@ -317,10 +326,13 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             onSearchChange: _onSearchChange,
             showCompletedTasks: _showCompletedTasks,
             onCompletedTasksToggle: _onCompletedTasksToggle,
+            showSubTasks: _showSubTasks,
+            onSubTasksToggle: _onSubTasksToggle,
             showTagFilter: true,
             showDateFilter: true,
             showSearchFilter: true,
             showCompletedTasksToggle: true,
+            showSubTasksToggle: true,
             hasItems: true,
             sortConfig: _sortConfig,
             forceOriginalLayout: _forceOriginalLayout,
@@ -345,6 +357,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                 filterByDeadlineEndDate: _effectiveFilterEndDate,
                 filterDateOr: true,
                 search: _searchQuery,
+                includeSubTasks: _showSubTasks,
                 onClickTask: (task) => _openDetails(task.id),
                 enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
                 forceOriginalLayout: _forceOriginalLayout,

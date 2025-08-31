@@ -97,6 +97,15 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Whether there are items to filter
   final bool hasItems;
 
+  /// Whether to show the subtasks toggle button
+  final bool showSubTasksToggle;
+
+  /// Current state of subtasks toggle
+  final bool showSubTasks;
+
+  /// Callback when subtasks toggle changes
+  final Function(bool)? onSubTasksToggle;
+
   const TaskListOptions({
     super.key,
     this.selectedTagIds,
@@ -123,6 +132,9 @@ class TaskListOptions extends PersistentListOptionsBase {
     this.showCompletedTasksToggle = true,
     this.showCompletedTasks = false,
     this.onCompletedTasksToggle,
+    this.showSubTasksToggle = true,
+    this.showSubTasks = false,
+    this.onSubTasksToggle,
     this.hasItems = true,
     super.hasUnsavedChanges = false,
     super.settingKeyVariantSuffix,
@@ -199,6 +211,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         widget.onCompletedTasksToggle!(filterSettings.showCompletedTasks);
       }
 
+      if (widget.onSubTasksToggle != null) {
+        widget.onSubTasksToggle!(filterSettings.showSubTasks);
+      }
+
       if (widget.onSortChange != null && filterSettings.sortConfig != null) {
         widget.onSortChange!(filterSettings.sortConfig!);
       }
@@ -248,6 +264,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
           selectedEndDate: isAutoRefreshSelection ? null : widget.selectedEndDate,
           search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
           showCompletedTasks: widget.showCompletedTasks,
+          showSubTasks: widget.showSubTasks,
           sortConfig: widget.sortConfig,
           forceOriginalLayout: widget.forceOriginalLayout,
         );
@@ -284,8 +301,9 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       dateFilterSetting: widget.dateFilterSetting,
       selectedStartDate: isAutoRefreshSelection ? null : widget.selectedStartDate,
       selectedEndDate: isAutoRefreshSelection ? null : widget.selectedEndDate,
-      search: lastSearchQuery, // Use lastSearchQuery instead of widget.search
+      search: lastSearchQuery,
       showCompletedTasks: widget.showCompletedTasks,
+      showSubTasks: widget.showSubTasks,
       sortConfig: widget.sortConfig,
       forceOriginalLayout: widget.forceOriginalLayout,
     ).toJson();
@@ -309,6 +327,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final startDateChanges = widget.selectedStartDate != oldWidget.selectedStartDate;
     final endDateChanges = widget.selectedEndDate != oldWidget.selectedEndDate;
     final completedChanges = widget.showCompletedTasks != oldWidget.showCompletedTasks;
+    final subTasksChanges = widget.showSubTasks != oldWidget.showSubTasks;
     final sortChanges = widget.sortConfig != oldWidget.sortConfig;
     final layoutChanges = widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
 
@@ -318,6 +337,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         startDateChanges ||
         endDateChanges ||
         completedChanges ||
+        subTasksChanges ||
         sortChanges ||
         layoutChanges;
 
@@ -363,6 +383,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         widget.selectedTagIds == oldWidget.selectedTagIds &&
         widget.showNoTagsFilter == oldWidget.showNoTagsFilter &&
         widget.showCompletedTasks == oldWidget.showCompletedTasks &&
+        widget.showSubTasks == oldWidget.showSubTasks &&
         widget.sortConfig == oldWidget.sortConfig;
 
     final isAutoRefreshRecalc = sameSettings && onlyDatesChanged;
@@ -519,6 +540,21 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onPressed: () {
                       final newState = !widget.showCompletedTasks;
                       widget.onCompletedTasksToggle!(newState);
+                    },
+                  ),
+
+                // Subtasks toggle button
+                if (widget.showSubTasksToggle && widget.onSubTasksToggle != null && widget.hasItems)
+                  FilterIconButton(
+                    icon: widget.showSubTasks ? Icons.account_tree : Icons.account_tree_outlined,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: widget.showSubTasks
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    tooltip: _translationService.translate(TaskTranslationKeys.showSubTasksTooltip),
+                    onPressed: () {
+                      final newState = !widget.showSubTasks;
+                      widget.onSubTasksToggle!(newState);
                     },
                   ),
 

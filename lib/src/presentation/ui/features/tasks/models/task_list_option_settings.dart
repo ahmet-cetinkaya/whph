@@ -33,6 +33,9 @@ class TaskListOptionSettings {
   /// Whether to force the original layout even with custom sort
   final bool forceOriginalLayout;
 
+  /// Show subtasks toggle
+  final bool showSubTasks;
+
   /// Default constructor
   TaskListOptionSettings({
     this.selectedTagIds,
@@ -44,6 +47,7 @@ class TaskListOptionSettings {
     this.showCompletedTasks = false,
     this.sortConfig,
     this.forceOriginalLayout = false,
+    this.showSubTasks = false,
   });
 
   /// Create settings from a JSON map
@@ -107,6 +111,7 @@ class TaskListOptionSettings {
       showCompletedTasks: json['showCompletedTasks'] as bool? ?? false,
       sortConfig: sortConfig,
       forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
+      showSubTasks: json['showSubTasks'] as bool? ?? false,
     );
   }
 
@@ -117,6 +122,7 @@ class TaskListOptionSettings {
       'showCompletedTasks': showCompletedTasks,
       'search': search, // Always include search, even if null
       'forceOriginalLayout': forceOriginalLayout,
+      'showSubTasks': showSubTasks,
     };
 
     if (selectedTagIds != null) {
