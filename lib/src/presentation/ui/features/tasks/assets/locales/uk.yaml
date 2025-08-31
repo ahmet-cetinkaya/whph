@@ -9,7 +9,8 @@ tasks:
     tooltips:
       schedule: Запланувати завдання
   complete:
-    error: Сталася неочікувана помилка під час збереж    clear_date: Очистити дату
+    error: Сталася неочікувана помилка під час збереж
+    clear_date: Очистити дату
     decrease_estimated_time: Зменшити орієнтовний час
     edit_title: Редагувати заголовок
     increase_estimated_time: Збільшити орієнтовний час
@@ -319,3 +320,4 @@ tasks:
     increase_estimated_time: Збільшити орієнтовний час
     set_reminder: Встановити нагадування
     show_completed_tasks: Фільтрувати виконані завдання
+    show_subtasks: Показати підзавдання

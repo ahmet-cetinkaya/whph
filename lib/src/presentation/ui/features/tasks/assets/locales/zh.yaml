@@ -14,7 +14,8 @@ tasks:
     deadline_date_title: 选择截止日期
     planned_date_title: 选择计划日期
   delete:
-    error: 删除    clear_date: 清除日期
+    error: 删除
+    clear_date: 清除日期
     decrease_estimated_time: 减少预估时间
     edit_title: 编辑标题
     increase_estimated_time: 增加预估时间
@@ -319,3 +320,4 @@ tasks:
     increase_estimated_time: 增加预计时间
     set_reminder: 设置提醒
     show_completed_tasks: 筛选已完成任务
+    show_subtasks: 显示子任务
