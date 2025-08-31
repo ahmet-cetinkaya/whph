@@ -313,3 +313,4 @@ tasks:
     increase_estimated_time: 予想時間を増やす
     set_reminder: リマインダーを設定
     show_completed_tasks: 完了したタスクをフィルター
+    show_subtasks: サブタスクを表示

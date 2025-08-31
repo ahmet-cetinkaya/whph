@@ -70,6 +70,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   Timer? _searchDebounce;
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -130,8 +131,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
   @override
   void dispose() {
-    _searchFocusNode.dispose();
+    _isDisposed = true;
     _searchDebounce?.cancel();
+    _scrollController.removeListener(_scrollListener);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -240,7 +244,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: TextField(
                         controller: _searchController,
-                        focusNode: _searchFocusNode,
+                        focusNode: _isDisposed ? null : _searchFocusNode,
                         textInputAction: TextInputAction.search,
                         decoration: InputDecoration(
                           labelText: _translationService.translate(TagTranslationKeys.searchLabel),
@@ -265,6 +269,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                           _searchDebounce = Timer(
                               value.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 300),
                               () {
+                            if (!mounted || _isDisposed) return;
                             _getTags(pageIndex: 0, search: value);
                           });
                         },

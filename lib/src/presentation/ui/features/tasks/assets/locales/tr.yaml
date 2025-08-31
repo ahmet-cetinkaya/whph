@@ -327,3 +327,4 @@ tasks:
     increase_estimated_time: Tahmini süreyi artır
     set_reminder: Hatırlatıcı ayarla
     show_completed_tasks: Tamamlanan görevleri filtrele
+    show_subtasks: Alt görevleri göster

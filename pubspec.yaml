@@ -25,6 +25,7 @@ scripts:
   release:android: fvm flutter build apk --release
   release:android:bundle: fvm flutter build appbundle --release
   test: fvm flutter test
+  test:locale: fvm flutter test test/src/presentation/ui/shared/services/translation_analysis_test.dart
   test:ci: act -j build
   test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
   test:ci:fdroid: bash scripts/test_ci_fdroid.sh

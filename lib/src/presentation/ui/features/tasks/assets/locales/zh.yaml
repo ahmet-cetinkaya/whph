@@ -313,3 +313,4 @@ tasks:
     increase_estimated_time: 增加预计时间
     set_reminder: 设置提醒
     show_completed_tasks: 筛选已完成任务
+    show_subtasks: 显示子任务

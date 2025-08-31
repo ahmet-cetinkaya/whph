@@ -124,6 +124,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Tooltips
   static const String editTitleTooltip = 'tasks.tooltips.edit_title';
   static const String showCompletedTasksTooltip = 'tasks.tooltips.show_completed_tasks';
+  static const String showSubTasksTooltip = 'tasks.tooltips.show_subtasks';
   static const String setReminderTooltip = 'tasks.tooltips.set_reminder';
   static const String clearDateTooltip = 'tasks.tooltips.clear_date';
   static const String decreaseEstimatedTime = 'tasks.tooltips.decrease_estimated_time';

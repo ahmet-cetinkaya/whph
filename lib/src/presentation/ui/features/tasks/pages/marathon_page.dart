@@ -58,6 +58,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   List<String>? _selectedTaskTagIds;
   String? _taskSearchQuery;
   bool _showCompletedTasks = false;
+  bool _showSubTasks = false;
 
   @override
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
@@ -452,11 +453,18 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                         _showCompletedTasks = showCompleted;
                                       });
                                     },
+                                    showSubTasks: _showSubTasks,
+                                    onSubTasksToggle: (showSubTasks) {
+                                      setState(() {
+                                        _showSubTasks = showSubTasks;
+                                      });
+                                    },
                                     hasItems: true,
                                     showDateFilter: false,
                                     showTagFilter: false,
                                     showSortButton: true,
                                     showSearchFilter: true,
+                                    showSubTasksToggle: true,
                                     sortConfig: _sortConfig,
                                     onSortChange: _onSortConfigChange,
                                     settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
@@ -489,6 +497,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             filterByDeadlineEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                             filterDateOr: true,
                             search: _taskSearchQuery,
+                            includeSubTasks: _showSubTasks,
                             onTaskCompleted: _onTasksChanged,
                             onClickTask: (task) => _showTaskDetails(task.id),
                             onSelectTask: _onSelectTask,
