@@ -12,7 +12,13 @@ tasks:
     error: タスク完了の保存中に予期しないエラーが発生しました。
   date_selection:
     deadline_date_title: 期限日を選択
-    planned_date_title: 予定日を選択
+    planned_date_ti    clear_date: 日付をクリア
+    decrease_estimated_time: 推定時間を減らす
+    edit_title: タイトルを編集
+    increase_estimated_time: 推定時間を増やす
+    set_reminder: リマインダーを設定
+    show_completed_tasks: 完了したタスクをフィルター
+    show_subtasks: サブタスクを表示
   delete:
     error: タスクの削除中に予期しないエラーが発生しました。
     message: このタスクを削除してもよろしいですか？

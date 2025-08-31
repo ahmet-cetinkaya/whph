@@ -345,13 +345,11 @@ class _ThemeDialogState extends State<_ThemeDialog> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
-        foregroundColor: theme.appBarTheme.foregroundColor,
+        backgroundColor: theme.cardColor,
         title: Text(
           _translationService.translate(SettingsTranslationKeys.themeTitle),
-          style: theme.appBarTheme.titleTextStyle,
         ),
-        iconTheme: theme.appBarTheme.iconTheme,
+        elevation: 0,
       ),
       body: Container(
         color: theme.scaffoldBackgroundColor,

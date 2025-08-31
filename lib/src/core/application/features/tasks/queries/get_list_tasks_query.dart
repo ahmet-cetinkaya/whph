@@ -67,6 +67,33 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
             filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
         filterByDeadlineEndDate =
             filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
+
+  /// Factory constructor for search queries that includes subtasks
+  GetListTasksQuery.forSearch({
+    required this.pageIndex,
+    required this.pageSize,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    this.filterDateOr = false,
+    this.filterByTags,
+    this.filterNoTags = false,
+    this.filterByCompleted,
+    this.filterBySearch,
+    this.sortBy,
+    this.sortByCustomSort = false,
+    this.ignoreArchivedTagVisibility = false,
+  })  : filterByParentTaskId = null,
+        areParentAndSubTasksIncluded = true,
+        filterByPlannedStartDate =
+            filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
+        filterByPlannedEndDate =
+            filterByPlannedEndDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedEndDate) : null,
+        filterByDeadlineStartDate =
+            filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
+        filterByDeadlineEndDate =
+            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
 }
 
 class TaskListItem {

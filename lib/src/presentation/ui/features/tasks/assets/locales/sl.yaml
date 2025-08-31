@@ -313,3 +313,4 @@ tasks:
     increase_estimated_time: Increase estimated time
     set_reminder: Set reminder
     show_completed_tasks: Filter completed tasks
+    show_subtasks: Prikaži podnaloge

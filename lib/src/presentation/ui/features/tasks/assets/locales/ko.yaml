@@ -313,3 +313,4 @@ tasks:
     increase_estimated_time: 예상 시간 늘리기
     set_reminder: 알림 설정
     show_completed_tasks: 완료된 작업 필터링
+    show_subtasks: 하위 작업 표시

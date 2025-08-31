@@ -17,6 +17,7 @@ import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/core/shared/utils/logger.dart';
 
 class TaskDetailsPage extends StatefulWidget {
@@ -50,6 +51,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
   // Task filter options
   String? _searchQuery;
+  List<String>? _selectedTagIds;
+  bool _showNoTagsFilter = false;
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
   bool _isRefreshInProgress = false;
   Timer? _debounceTimer;
@@ -165,6 +168,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   void _onSortChange(SortConfig<TaskSortFields> newConfig) {
     setState(() {
       _taskSortConfig = newConfig;
+    });
+    _refreshTasksList();
+  }
+
+  void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
+    setState(() {
+      _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
+      _showNoTagsFilter = isNoneSelected;
     });
     _refreshTasksList();
   }
@@ -295,13 +306,16 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                   // FILTERS - wrapped with Expanded for proper space allocation
                   Expanded(
                     child: TaskListOptions(
+                      selectedTagIds: _selectedTagIds,
+                      showNoTagsFilter: _showNoTagsFilter,
                       showCompletedTasks: _showCompletedTasks,
+                      onTagFilterChange: _onFilterTags,
                       onCompletedTasksToggle: _onCompletedTasksToggle,
                       onSearchChange: _onSearchChange,
                       onSortChange: _onSortChange,
                       hasItems: true,
                       showDateFilter: false,
-                      showTagFilter: false,
+                      showTagFilter: true,
                       showSortButton: true,
                       sortConfig: _taskSortConfig,
                       settingKeyVariantSuffix: subTaskFilterOptionsSettingKeySuffix,
@@ -326,6 +340,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
                 onClickTask: _onClickSubTask,
                 parentTaskId: widget.taskId,
                 filterByCompleted: _showCompletedTasks,
+                filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+                filterNoTags: _showNoTagsFilter,
                 search: _searchQuery,
                 onTaskCompleted: _onSubTaskCompleted,
                 onScheduleTask: _onScheduleTask,

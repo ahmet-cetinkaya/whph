@@ -32,6 +32,7 @@ class TaskList extends StatefulWidget {
   final bool? filterByCompleted;
   final String? search;
   final String? parentTaskId;
+  final bool includeSubTasks;
   final bool showDoneOverlayWhenEmpty;
   final bool ignoreArchivedTagVisibility;
 
@@ -65,6 +66,7 @@ class TaskList extends StatefulWidget {
     this.filterByCompleted,
     this.search,
     this.parentTaskId,
+    this.includeSubTasks = false,
     this.selectedTask,
     this.showSelectButton = false,
     this.transparentCards = false,
@@ -177,6 +179,8 @@ class TaskListState extends State<TaskList> {
       'tags': oldWidget.filterByTags?.join(','),
       'noTags': oldWidget.filterNoTags,
       'search': oldWidget.search,
+      'parentTaskId': oldWidget.parentTaskId,
+      'includeSubTasks': oldWidget.includeSubTasks,
       'plannedStartDate': oldWidget.filterByPlannedStartDate?.toIso8601String(),
       'plannedEndDate': oldWidget.filterByPlannedEndDate?.toIso8601String(),
       'deadlineStartDate': oldWidget.filterByDeadlineStartDate?.toIso8601String(),
@@ -189,6 +193,8 @@ class TaskListState extends State<TaskList> {
       'tags': widget.filterByTags?.join(','),
       'noTags': widget.filterNoTags,
       'search': widget.search,
+      'parentTaskId': widget.parentTaskId,
+      'includeSubTasks': widget.includeSubTasks,
       'plannedStartDate': widget.filterByPlannedStartDate?.toIso8601String(),
       'plannedEndDate': widget.filterByPlannedEndDate?.toIso8601String(),
       'deadlineStartDate': widget.filterByDeadlineStartDate?.toIso8601String(),
@@ -227,6 +233,7 @@ class TaskListState extends State<TaskList> {
           filterByCompleted: widget.filterByCompleted,
           filterBySearch: widget.search,
           filterByParentTaskId: widget.parentTaskId,
+          areParentAndSubTasksIncluded: widget.includeSubTasks,
           sortBy: widget.sortConfig?.orderOptions,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
