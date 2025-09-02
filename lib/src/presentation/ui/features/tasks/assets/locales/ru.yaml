@@ -291,14 +291,18 @@ tasks:
     summary:
       endsAfter: заканчивается после
       endsOnDate: заканчивается
-      occurrences: повторений
+      occurrences: повторения
       on: в
+      everyDay: каждый день
       starts: начинается
     weekDays: Дни недели
     weekSuffix: неделя(и)
     weekly: Еженедельно
     yearSuffix: год(ы)
     yearly: Ежегодно
+  validation:
+    deadline_time_invalid: Неверное время крайнего срока
+    deadline_cannot_be_before_planned: Крайний срок должен быть после запланированной даты
   reminder:
     atTime: В запланированное время
     deadlineReminderLabel: Напоминание о дедлайне

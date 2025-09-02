@@ -289,12 +289,16 @@ tasks:
       endsOnDate: закінчується в день
       occurrences: повторення
       on: в
+      everyDay: кожного дня
       starts: починається
     weekDays: Дні тижня
     weekSuffix: тиждень/тижні
     weekly: Щотижня
-    yearSuffix: рік/роки
+    yearSuffix: рік(и)
     yearly: Щорічно
+  validation:
+    deadline_time_invalid: Неправильний час крайнього терміну
+    deadline_cannot_be_before_planned: Крайній термін має бути після запланованої дати
   reminder:
     atTime: О запланованому часі
     deadlineReminderLabel: Нагадування про дедлайн

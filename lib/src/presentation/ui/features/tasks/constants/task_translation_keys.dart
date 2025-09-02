@@ -193,7 +193,12 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String starts = 'tasks.recurrence.summary.starts';
   static const String endsOnDate = 'tasks.recurrence.summary.endsOnDate';
   static const String endsAfter = 'tasks.recurrence.summary.endsAfter';
+  static const String everyDay = 'tasks.recurrence.summary.everyDay';
   static const String occurrences = 'tasks.recurrence.summary.occurrences';
+
+  // Validation Messages
+  static const String deadlineTimeInvalid = 'tasks.validation.deadline_time_invalid';
+  static const String deadlineCannotBeBeforePlanned = 'tasks.validation.deadline_cannot_be_before_planned';
 
   // Helper Method for Reminder Types
   static String getReminderTypeKey(ReminderTime reminderTime) {

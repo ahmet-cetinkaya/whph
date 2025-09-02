@@ -10,6 +10,9 @@ tasks:
       schedule: Schedule task
   complete:
     error: Unexpected error occurred while saving task completion.
+  validation:
+    deadline_time_invalid: Čas roka je neveljaven
+    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
   date_selection:
     deadline_date_title: Select deadline date
     planned_date_title: Select planned date
@@ -289,6 +292,7 @@ tasks:
       endsOnDate: ends on
       occurrences: occurrences
       on: on
+      everyDay: vsak dan
       starts: starts
     weekDays: Days of week
     weekSuffix: week(s)

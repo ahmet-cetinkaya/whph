@@ -204,8 +204,30 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
 
   static const String change = 'shared.change';
 
+  // Date Picker Translations
+  static const String selectedDateMustBeAtOrAfter = 'shared.datepicker.selected_date_must_be_at_or_after';
+  static const String selectedDateMustBeAtOrBefore = 'shared.datepicker.selected_date_must_be_at_or_before';
+  static const String startDateCannotBeAfterEndDate = 'shared.datepicker.start_date_cannot_be_after_end_date';
+  static const String startDateMustBeAtOrAfter = 'shared.datepicker.start_date_must_be_at_or_after';
+  static const String endDateMustBeAtOrBefore = 'shared.datepicker.end_date_must_be_at_or_before';
+  static const String cannotSelectDateBeforeMinDate = 'shared.datepicker.cannot_select_date_before_min_date';
+  static const String cannotSelectDateAfterMaxDate = 'shared.datepicker.cannot_select_date_after_max_date';
+  static const String startDateCannotBeBeforeMinDate = 'shared.datepicker.start_date_cannot_be_before_min_date';
+  static const String endDateCannotBeAfterMaxDate = 'shared.datepicker.end_date_cannot_be_after_max_date';
+  static const String cannotSelectTimeBeforeMinDate = 'shared.datepicker.cannot_select_time_before_min_date';
+  static const String cannotSelectTimeAfterMaxDate = 'shared.datepicker.cannot_select_time_after_max_date';
+  static const String timeMustBeAtOrAfter = 'shared.datepicker.time_must_be_at_or_after';
+  static const String timeMustBeAtOrBefore = 'shared.datepicker.time_must_be_at_or_before';
+  static const String selectedDateTimeMustBeAfter = 'shared.datepicker.selected_date_time_must_be_after';
+  static const String selectDateTimeTitle = 'shared.datepicker.select_date_time_title';
+  static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
+  static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
+    if (weekday < 1 || weekday > 7) {
+      throw ArgumentError('Invalid weekday: $weekday. Must be between 1 and 7.');
+    }
     final day = switch (weekday) {
       1 => 'monday',
       2 => 'tuesday',

@@ -236,4 +236,23 @@ shared:
     success: Opdatering downloadet med succes!
     title: Opdatering tilgængelig!
   validation:
-    required: "{field} er påkrævet"
+    required: "{field} er påkrævet."
+    deadline_cannot_be_before_planned: "Deadline kan ikke være før den planlagte dato."
+  datepicker:
+    deadline_cannot_be_before_planned_date: "Deadline skal være på eller efter den planlagte dato"
+    selected_date_must_be_at_or_after: Valgt dato skal være på eller efter {date}
+    selected_date_must_be_at_or_before: Valgt dato skal være på eller før {date}
+    start_date_cannot_be_after_end_date: Startdato kan ikke være efter slutdato
+    start_date_must_be_at_or_after: Startdato skal være på eller efter {date}
+    end_date_must_be_at_or_before: Slutdato skal være på eller før {date}
+    cannot_select_date_before_min_date: Kan ikke vælge dato før {date}
+    cannot_select_date_after_max_date: Kan ikke vælge dato efter {date}
+    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
+    end_date_cannot_be_after_max_date: Slutdato kan ikke være efter {date}
+    cannot_select_time_before_min_date: Kan ikke vælge tid før {time}
+    cannot_select_time_after_max_date: Kan ikke vælge tid efter {time}
+    time_must_be_at_or_after: Tid skal være på eller efter {time}
+    time_must_be_at_or_before: Tid skal være på eller før {time}
+    selected_date_time_must_be_after: Valgt dato og tid skal være efter {dateTime}
+    select_date_time_title: Vælg dato og tid
+    select_date_range_title: Vælg datointerval

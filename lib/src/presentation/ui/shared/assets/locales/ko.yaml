@@ -236,4 +236,23 @@ shared:
     success: 업데이트 다운로드가 완료되었습니다!
     title: 업데이트 사용 가능!
   validation:
-    required: "{field}은(는) 필수입니다"
+    required: "{field}이(가) 필요합니다."
+    deadline_cannot_be_before_planned: "마감일은 계획된 날짜보다 이르게 설정할 수 없습니다."
+  datepicker:
+    deadline_cannot_be_before_planned_date: "마감일은 계획된 날짜와 같거나 이후여야 합니다"
+    selected_date_must_be_at_or_after: "선택한 날짜는 {date} 이후여야 합니다"
+    selected_date_must_be_at_or_before: "선택한 날짜는 {date} 이전이어야 합니다"
+    start_date_cannot_be_after_end_date: "시작일은 종료일 이후가 될 수 없습니다"
+    start_date_must_be_at_or_after: "시작일은 {date} 이후여야 합니다"
+    end_date_must_be_at_or_before: "종료일은 {date} 이전이어야 합니다"
+    cannot_select_date_before_min_date: "{date} 이전 날짜는 선택할 수 없습니다"
+    cannot_select_date_after_max_date: "{date} 이후 날짜는 선택할 수 없습니다"
+    start_date_cannot_be_before_min_date: "시작일은 {date} 이전이 될 수 없습니다"
+    end_date_cannot_be_after_max_date: "종료일은 {date} 이후가 될 수 없습니다"
+    cannot_select_time_before_min_date: "{time} 이전 시간은 선택할 수 없습니다"
+    cannot_select_time_after_max_date: "{time} 이후 시간은 선택할 수 없습니다"
+    time_must_be_at_or_after: "시간은 {time} 이후여야 합니다"
+    time_must_be_at_or_before: "시간은 {time} 이전이어야 합니다"
+    selected_date_time_must_be_after: "선택한 날짜와 시간은 {dateTime} 이후여야 합니다"
+    select_date_time_title: "날짜와 시간 선택"
+    select_date_range_title: "기간 선택"

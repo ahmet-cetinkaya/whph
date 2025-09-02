@@ -14,6 +14,7 @@ class RecurrenceSettingsDialog extends StatefulWidget {
   final DateTime? initialRecurrenceStartDate;
   final DateTime? initialRecurrenceEndDate;
   final int? initialRecurrenceCount;
+  final DateTime? plannedDate;
 
   const RecurrenceSettingsDialog({
     super.key,
@@ -23,6 +24,7 @@ class RecurrenceSettingsDialog extends StatefulWidget {
     this.initialRecurrenceStartDate,
     this.initialRecurrenceEndDate,
     this.initialRecurrenceCount,
+    this.plannedDate,
   });
 
   @override
@@ -62,6 +64,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
           recurrenceStartDate: _recurrenceStartDate,
           recurrenceEndDate: _recurrenceEndDate,
           recurrenceCount: _recurrenceCount,
+          plannedDate: widget.plannedDate,
           onRecurrenceTypeChanged: (type) {
             setState(() {
               _recurrenceType = type;
