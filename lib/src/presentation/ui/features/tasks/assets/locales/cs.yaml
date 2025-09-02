@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: ends after
       endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      occurrences: výskyty
+      on: v
       everyDay: každý den
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
+      starts: začíná
+    weekDays: Dny v týdnu
+    weekSuffix: týden(y)
+    weekly: Týdně
+    yearSuffix: rok(y)
+    yearly: Ročně
   validation:
     deadline_time_invalid: Čas termínu je neplatný
     deadline_cannot_be_before_planned: Terminín musí být po plánovaném datu

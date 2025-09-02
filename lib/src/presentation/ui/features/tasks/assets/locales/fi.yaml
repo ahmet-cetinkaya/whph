@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: ends after
       endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      occurrences: esiintymiä
+      on: päivässä
       everyDay: joka päivä
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
+      starts: alkaa
+    weekDays: Viikon päivät
+    weekSuffix: viikko(a)
+    weekly: Viikoittain
+    yearSuffix: vuosi/vuotta
+    yearly: Vuosittain
   validation:
     deadline_time_invalid: Määräajan aika on virheellinen
     deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
