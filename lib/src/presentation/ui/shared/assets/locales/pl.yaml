@@ -236,4 +236,22 @@ shared:
     success: Aktualizacja pobrana pomyślnie!
     title: Dostępna aktualizacja!
   validation:
-    required: "{field} jest wymagane"
+    required: "{field} jest wymagane."
+  datepicker:
+    deadline_cannot_be_before_planned_date: "Termin musi być w dniu zaplanowanej daty lub później"
+    selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
+    selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
+    start_date_cannot_be_after_end_date: Data rozpoczęcia nie może być późniejsza niż data zakończenia
+    start_date_must_be_at_or_after: Data rozpoczęcia musi być {date} lub później
+    end_date_must_be_at_or_before: Data zakończenia musi być {date} lub wcześniej
+    cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
+    cannot_select_date_after_max_date: Nie można wybrać daty po {date}
+    start_date_cannot_be_before_min_date: Data rozpoczęcia nie może być przed {date}
+    end_date_cannot_be_after_max_date: Data zakończenia nie może być po {date}
+    cannot_select_time_before_min_date: Nie można wybrać czasu przed {time}
+    cannot_select_time_after_max_date: Nie można wybrać czasu po {time}
+    time_must_be_at_or_after: Czas musi być o {time} lub później
+    time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
+    selected_date_time_must_be_after: Wybrana data i czas muszą być po {dateTime}
+    select_date_time_title: Wybierz datę i czas
+    select_date_range_title: Wybierz zakres dat

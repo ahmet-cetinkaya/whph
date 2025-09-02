@@ -287,6 +287,7 @@ tasks:
     summary:
       endsAfter: ends after
       endsOnDate: ends on
+      everyDay: every day
       occurrences: occurrences
       on: on
       starts: starts
@@ -314,3 +315,6 @@ tasks:
     set_reminder: Set reminder
     show_completed_tasks: Filter completed tasks
     show_subtasks: Show subtasks
+  validation:
+    deadline_time_invalid: Please enter a valid deadline time
+    deadline_cannot_be_before_planned: Deadline must be scheduled after the planned date

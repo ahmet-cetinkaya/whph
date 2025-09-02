@@ -15,6 +15,7 @@ class TaskRecurrenceSelector extends StatefulWidget {
   final DateTime? recurrenceStartDate;
   final DateTime? recurrenceEndDate;
   final int? recurrenceCount;
+  final DateTime? plannedDate;
   final Function(RecurrenceType) onRecurrenceTypeChanged;
   final Function(int?) onRecurrenceIntervalChanged;
   final Function(List<WeekDays>?) onRecurrenceDaysChanged;
@@ -31,6 +32,7 @@ class TaskRecurrenceSelector extends StatefulWidget {
     this.recurrenceStartDate,
     this.recurrenceEndDate,
     this.recurrenceCount,
+    this.plannedDate,
     required this.onRecurrenceTypeChanged,
     required this.onRecurrenceIntervalChanged,
     required this.onRecurrenceDaysChanged,
@@ -145,6 +147,18 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     super.dispose();
   }
 
+  /// Get the minimum allowed end date based on planned date, recurrence start date, or current date
+  DateTime _getMinimumEndDate() {
+    // Priority order: plannedDate > recurrenceStartDate > current date
+    if (widget.plannedDate != null) {
+      return widget.plannedDate!;
+    }
+    if (_recurrenceStartDate != null) {
+      return _recurrenceStartDate!;
+    }
+    return DateTime.now().toUtc();
+  }
+
   String _getRecurrenceTypeLabel(RecurrenceType type) {
     switch (type) {
       case RecurrenceType.none:
@@ -152,6 +166,10 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       case RecurrenceType.daily:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaily);
       case RecurrenceType.weekly:
+        // For weekly recurrence, check if all weekdays are selected
+        if (_recurrenceDays?.length == WeekDays.values.length) {
+          return widget.translationService.translate(TaskTranslationKeys.everyDay);
+        }
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekly);
       case RecurrenceType.monthly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceMonthly);
@@ -468,7 +486,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                         initialDate: _recurrenceEndDate ??
                             (_recurrenceStartDate?.add(const Duration(days: 30)) ??
                                 DateTime.now().toUtc().add(const Duration(days: 30))),
-                        firstDate: _recurrenceStartDate ?? DateTime.now().toUtc(),
+                        firstDate: _getMinimumEndDate(),
                         lastDate: DateTime(2100),
                         helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
                       );

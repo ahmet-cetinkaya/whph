@@ -289,12 +289,16 @@ tasks:
       endsOnDate: ends on
       occurrences: occurrences
       on: on
+      everyDay: hver dag
       starts: starts
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+  validation:
+    deadline_time_invalid: Deadline tidspunkt er ugyldigt
+    deadline_cannot_be_before_planned: Deadline dato skal være efter den planlagte dato
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

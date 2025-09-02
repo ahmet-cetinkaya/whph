@@ -236,4 +236,22 @@ shared:
     success: Aktualizace byla úspěšně stažena!
     title: Aktualizace k dispozici!
   validation:
-    required: "{field} je povinné"
+    required: "{field} je povinné."
+  datepicker:
+    deadline_cannot_be_before_planned_date: "Termín musí být v den plánovaného data nebo později"
+    selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
+    selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
+    start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu
+    start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
+    end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
+    cannot_select_date_before_min_date: Nelze vybrat datum před {date}
+    cannot_select_date_after_max_date: Nelze vybrat datum po {date}
+    start_date_cannot_be_before_min_date: Počáteční datum nemůže být před {date}
+    end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
+    cannot_select_time_before_min_date: Nelze vybrat čas před {time}
+    cannot_select_time_after_max_date: Nelze vybrat čas po {time}
+    time_must_be_at_or_after: Čas musí být od {time} nebo později
+    time_must_be_at_or_before: Čas musí být do {time} nebo dříve
+    selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
+    select_date_time_title: Vybrat datum a čas
+    select_date_range_title: Vybrat rozsah dat

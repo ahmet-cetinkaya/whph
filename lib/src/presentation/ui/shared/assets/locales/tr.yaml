@@ -236,4 +236,22 @@ shared:
     success: Güncelleme başarıyla indirildi!
     title: Güncelleme Mevcut!
   validation:
-    required: "{field} alanı zorunludur"
+    required: "{field} zorunludur."
+  datepicker:
+    deadline_cannot_be_before_planned_date: "Bitiş tarihi planlanan tarihte veya sonrasında olmalıdır"
+    selected_date_must_be_at_or_after: "Seçilen tarih {date} veya sonrası olmalıdır"
+    selected_date_must_be_at_or_before: "Seçilen tarih {date} veya öncesi olmalıdır"
+    start_date_cannot_be_after_end_date: "Başlangıç tarihi bitiş tarihinden sonra olamaz"
+    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalıdır"
+    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalıdır"
+    cannot_select_date_before_min_date: "{date} tarihinden önce bir tarih seçilemez"
+    cannot_select_date_after_max_date: "{date} tarihinden sonra bir tarih seçilemez"
+    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} tarihinden önce olamaz"
+    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} tarihinden sonra olamaz"
+    cannot_select_time_before_min_date: "{time} saatinden önce bir saat seçilemez"
+    cannot_select_time_after_max_date: "{time} saatinden sonra bir saat seçilemez"
+    time_must_be_at_or_after: "Saat {time} veya sonrası olmalıdır"
+    time_must_be_at_or_before: "Saat {time} veya öncesi olmalıdır"
+    selected_date_time_must_be_after: "Seçilen tarih ve saat {dateTime} sonrası olmalıdır"
+    select_date_time_title: "Tarih ve saat seçin"
+    select_date_range_title: "Tarih aralığı seçin"

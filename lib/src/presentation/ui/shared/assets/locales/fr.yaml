@@ -2,6 +2,8 @@ settings:
   import:
     version_mismatch: Incompatibilité de version
 shared:
+  validation:
+    required: "{field} est requis."
   buttons:
     add: Ajouter
     back: Retour
@@ -235,5 +237,21 @@ shared:
     question: Voulez-vous mettre à jour maintenant ?
     success: Mise à jour téléchargée avec succès !
     title: Mise à jour disponible !
-  validation:
-    required: "{field} est requis"
+  datepicker:
+    deadline_cannot_be_before_planned_date: "La date limite doit être égale ou postérieure à la date planifiée"
+    selected_date_must_be_at_or_after: La date sélectionnée doit être le {date} ou après
+    selected_date_must_be_at_or_before: La date sélectionnée doit être le {date} ou avant
+    start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin
+    start_date_must_be_at_or_after: La date de début doit être le {date} ou après
+    end_date_must_be_at_or_before: La date de fin doit être le {date} ou avant
+    cannot_select_date_before_min_date: Impossible de sélectionner une date avant le {date}
+    cannot_select_date_after_max_date: Impossible de sélectionner une date après le {date}
+    start_date_cannot_be_before_min_date: La date de début ne peut pas être avant le {date}
+    end_date_cannot_be_after_max_date: La date de fin ne peut pas être après le {date}
+    cannot_select_time_before_min_date: Impossible de sélectionner une heure avant {time}
+    cannot_select_time_after_max_date: Impossible de sélectionner une heure après {time}
+    time_must_be_at_or_after: L'heure doit être à {time} ou après
+    time_must_be_at_or_before: L'heure doit être à {time} ou avant
+    selected_date_time_must_be_after: La date et l'heure sélectionnées doivent être après {dateTime}
+    select_date_time_title: Sélectionner la date et l'heure
+    select_date_range_title: Sélectionner la plage de dates

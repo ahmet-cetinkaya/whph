@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer;
+import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer, ILogger;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
@@ -38,6 +39,8 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
+  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
+  final _logger = container.resolve<ILogger>();
   bool _isCompleted = false;
   bool _isProcessing = false;
 
@@ -59,6 +62,9 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
     // Prevent multiple rapid taps
     if (_isProcessing) return;
 
+    _logger.debug('TaskCompleteButton: Toggling completion for task ${widget.taskId}');
+    _logger.debug('TaskCompleteButton: Current state - isCompleted: $_isCompleted, isProcessing: $_isProcessing');
+
     setState(() {
       _isProcessing = true;
     });
@@ -71,13 +77,20 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       _isCompleted = !_isCompleted;
     });
 
+    _logger.debug('TaskCompleteButton: Updated UI state to ${_isCompleted ? "completed" : "not completed"}');
+
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.taskCompleteError),
       operation: () async {
+        _logger.debug('TaskCompleteButton: Fetching task details for ${widget.taskId}');
         final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
           GetTaskQuery(id: widget.taskId),
         );
+
+        _logger.debug('TaskCompleteButton: Retrieved task ${task.id} with recurrence type: ${task.recurrenceType}');
+        _logger.debug(
+            'TaskCompleteButton: Task recurrence settings - Interval: ${task.recurrenceInterval}, StartDate: ${task.recurrenceStartDate}, EndDate: ${task.recurrenceEndDate}, Count: ${task.recurrenceCount}');
 
         final command = SaveTaskCommand(
           id: task.id,
@@ -90,10 +103,23 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           isCompleted: !originalCompletedState,
           plannedDateReminderTime: task.plannedDateReminderTime,
           deadlineDateReminderTime: task.deadlineDateReminderTime,
+          // CRITICAL FIX: Preserve all recurrence settings when completing the task
+          recurrenceType: task.recurrenceType,
+          recurrenceInterval: task.recurrenceInterval,
+          recurrenceDays: _recurrenceService.getRecurrenceDays(task),
+          recurrenceStartDate: task.recurrenceStartDate,
+          recurrenceEndDate: task.recurrenceEndDate,
+          recurrenceCount: task.recurrenceCount,
         );
+
+        _logger.debug('TaskCompleteButton: Saving task with isCompleted: ${command.isCompleted}');
+        _logger.debug(
+            'TaskCompleteButton: Task planned date before save: ${task.plannedDate} -> after UTC conversion: ${command.plannedDate}');
 
         // Perform the actual API call
         await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+
+        _logger.debug('TaskCompleteButton: Task save completed successfully');
 
         if (command.isCompleted) {
           _soundPlayer.play(SharedSounds.done, volume: 1.0);
@@ -102,22 +128,26 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       onSuccess: () {
         // Notify the service about the completed task
         if (_isCompleted) {
-          Future.delayed(const Duration(milliseconds: 500), () {
-            _tasksService.notifyTaskCompleted(widget.taskId);
-            _tasksService.notifyTaskUpdated(widget.taskId);
-            widget.onToggleCompleted?.call();
-          });
+          _logger.debug('TaskCompleteButton: Task ${widget.taskId} completed successfully, notifying services');
+          // Immediately notify task completion - the service handles async recurrence creation safely
+          _tasksService.notifyTaskCompleted(widget.taskId);
+          _tasksService.notifyTaskUpdated(widget.taskId);
+          widget.onToggleCompleted?.call();
+          _logger.debug('TaskCompleteButton: Completed task notifications sent for ${widget.taskId}');
         } else {
+          _logger.debug('TaskCompleteButton: Task ${widget.taskId} marked as not completed');
           _tasksService.notifyTaskUpdated(widget.taskId);
           widget.onToggleCompleted?.call();
         }
       },
-      onError: (_) {
+      onError: (error) {
+        _logger.error('TaskCompleteButton: Failed to toggle task completion for ${widget.taskId}: $error');
         // Revert UI state if there was an error
         if (mounted) {
           setState(() {
             _isCompleted = originalCompletedState;
           });
+          _logger.debug('TaskCompleteButton: Reverted UI state back to $originalCompletedState');
         }
       },
     );

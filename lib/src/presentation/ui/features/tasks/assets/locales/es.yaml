@@ -289,12 +289,16 @@ tasks:
       endsOnDate: termina el
       occurrences: ocurrencias
       on: el
+      everyDay: cada día
       starts: comienza
     weekDays: Días de la semana
     weekSuffix: semana(s)
     weekly: Semanal
     yearSuffix: año(s)
     yearly: Anual
+  validation:
+    deadline_time_invalid: La hora límite no es válida
+    deadline_cannot_be_before_planned: La fecha límite debe ser posterior a la fecha planificada
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite
