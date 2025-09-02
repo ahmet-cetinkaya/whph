@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: termina después de
       endsOnDate: termina el
-      occurrences: occurrences
-      on: on
+      occurrences: ocurrencias
+      on: el
       everyDay: cada día
       starts: comienza
     weekDays: Días de la semana
     weekSuffix: semana(s)
     weekly: Semanal
-    yearSuffix: year(s)
-    yearly: Yearly
+    yearSuffix: año(s)
+    yearly: Anual
   validation:
     deadline_time_invalid: La hora límite no es válida
     deadline_cannot_be_before_planned: La fecha límite debe ser posterior a la fecha planificada

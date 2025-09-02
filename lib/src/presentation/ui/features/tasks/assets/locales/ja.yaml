@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: 終了後
       endsOnDate: 終了日
-      occurrences: occurrences
-      on: on
+      occurrences: 回
+      on: に
       everyDay: 毎日
       starts: 開始
     weekDays: 曜日
     weekSuffix: 週
     weekly: 毎週
-    yearSuffix: year(s)
-    yearly: Yearly
+    yearSuffix: 年
+    yearly: 毎年
   validation:
     deadline_time_invalid: 期限時間が無効です
     deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません

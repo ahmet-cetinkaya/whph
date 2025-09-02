@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/src/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/src/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer, ILogger, WeekDays;
+import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer, ILogger;
 import 'package:whph/main.dart';
 import 'package:whph/src/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/src/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/src/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/src/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
@@ -38,6 +39,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
+  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
   final _logger = container.resolve<ILogger>();
   bool _isCompleted = false;
   bool _isProcessing = false;
@@ -104,11 +106,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           // CRITICAL FIX: Preserve all recurrence settings when completing the task
           recurrenceType: task.recurrenceType,
           recurrenceInterval: task.recurrenceInterval,
-          recurrenceDays: task.recurrenceDaysString
-              ?.split(',')
-              .map((day) => WeekDays.values
-                  .firstWhere((e) => e.toString().split('.').last == day.trim(), orElse: () => WeekDays.monday))
-              .toList(),
+          recurrenceDays: _recurrenceService.getRecurrenceDays(task),
           recurrenceStartDate: task.recurrenceStartDate,
           recurrenceEndDate: task.recurrenceEndDate,
           recurrenceCount: task.recurrenceCount,

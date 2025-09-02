@@ -291,15 +291,15 @@ tasks:
     summary:
       endsAfter: заканчивается после
       endsOnDate: заканчивается
-      occurrences: occurrences
-      on: on
+      occurrences: повторения
+      on: в
       everyDay: каждый день
       starts: начинается
     weekDays: Дни недели
     weekSuffix: неделя(и)
     weekly: Еженедельно
-    yearSuffix: year(s)
-    yearly: Yearly
+    yearSuffix: год(ы)
+    yearly: Ежегодно
   validation:
     deadline_time_invalid: Неверное время крайнего срока
     deadline_cannot_be_before_planned: Крайний срок должен быть после запланированной даты

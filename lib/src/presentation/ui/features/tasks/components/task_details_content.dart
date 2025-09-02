@@ -24,7 +24,6 @@ import 'package:whph/src/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/src/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/src/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/src/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/src/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/src/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/src/presentation/ui/features/tags/components/tag_select_dropdown.dart';
@@ -788,12 +787,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     // Otherwise, deadline must be at or after today
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
-  }
-
-  /// Validate if a deadline date is valid relative to the planned date
-  bool _isValidDeadlineDate(DateTime? deadlineDate) {
-    if (deadlineDate == null || _task?.plannedDate == null) return true;
-    return !deadlineDate.isBefore(_task!.plannedDate!);
   }
 
   /// Validate and adjust deadline date if it's before the planned date
