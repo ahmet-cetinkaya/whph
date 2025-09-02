@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} este obligatoriu."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Termenul limită trebuie să fie la data planificată sau ulterior"
     selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
     selected_date_must_be_at_or_before: Data selectată trebuie să fie la sau înainte de {date}
     start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit

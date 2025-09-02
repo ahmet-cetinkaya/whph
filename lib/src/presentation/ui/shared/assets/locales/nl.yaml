@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} is verplicht."
   datepicker:
+    deadline_cannot_be_before_planned_date: "De deadline moet op of na de geplande datum liggen"
     selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
     selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
     start_date_cannot_be_after_end_date: De startdatum kan niet na de einddatum zijn

@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: Määräajan aika on virheellinen
+    deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

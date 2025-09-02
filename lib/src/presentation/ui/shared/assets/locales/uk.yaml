@@ -239,6 +239,7 @@ shared:
   validation:
     required: "{field} є обов'язковим."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Кінцевий термін має бути в день запланованої дати або пізніше"
     selected_date_must_be_at_or_after: "Вибрана дата має бути не раніше {date}"
     selected_date_must_be_at_or_before: "Вибрана дата має бути не пізніше {date}"
     start_date_cannot_be_after_end_date: "Дата початку не може бути пізніше дати завершення"

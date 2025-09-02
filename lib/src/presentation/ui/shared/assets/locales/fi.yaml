@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} on pakollinen."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Määräajan on oltava suunniteltuna päivänä tai sen jälkeen"
     selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
     selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
     start_date_cannot_be_after_end_date: Aloituspäivä ei voi olla lopetuspäivän jälkeen

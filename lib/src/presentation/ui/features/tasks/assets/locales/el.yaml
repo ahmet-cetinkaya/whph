@@ -297,7 +297,8 @@ tasks:
     yearSuffix: year(s)
     yearly: Yearly
   validation:
-    deadline_time_invalid: Η ώρα λήξης δεν είναι έγκυρη
+    deadline_time_invalid: Μη έγκυρη ώρα προθεσμίας
+    deadline_cannot_be_before_planned: Η ημερομηνία προθεσμίας πρέπει να είναι μετά την προγραμματισμένη ημερομηνία
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

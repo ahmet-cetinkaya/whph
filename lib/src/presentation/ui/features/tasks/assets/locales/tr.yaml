@@ -312,6 +312,7 @@ tasks:
     yearly: Yıllık
   validation:
     deadline_time_invalid: Son tarih zamanı geçersiz
+    deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı

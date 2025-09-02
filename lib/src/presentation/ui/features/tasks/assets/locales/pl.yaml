@@ -297,7 +297,8 @@ tasks:
     yearSuffix: year(s)
     yearly: Yearly
   validation:
-    deadline_time_invalid: Czas terminu jest nieprawidłowy
+    deadline_time_invalid: Nieprawidłowy czas terminu
+    deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie

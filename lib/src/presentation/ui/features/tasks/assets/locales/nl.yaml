@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: Deadline tijd is ongeldig
+    deadline_cannot_be_before_planned: Deadline datum moet na de geplande datum liggen
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} krävs."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Deadline måste vara på eller efter planerat datum"
     selected_date_must_be_at_or_after: "Valt datum måste vara på eller efter {date}"
     selected_date_must_be_at_or_before: "Valt datum måste vara på eller före {date}"
     start_date_cannot_be_after_end_date: "Startdatum kan inte vara efter slutdatum"

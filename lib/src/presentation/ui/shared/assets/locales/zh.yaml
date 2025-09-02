@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field}是必需的。"
   datepicker:
+    deadline_cannot_be_before_planned_date: "截止日期必须等于或晚于计划日期"
     selected_date_must_be_at_or_after: "选定的日期必须在 {date} 或之后"
     selected_date_must_be_at_or_before: "选定的日期必须在 {date} 或之前"
     start_date_cannot_be_after_end_date: "开始日期不能晚于结束日期"

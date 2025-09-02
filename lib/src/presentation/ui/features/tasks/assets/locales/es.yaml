@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: La hora límite no es válida
+    deadline_cannot_be_before_planned: La fecha límite debe ser posterior a la fecha planificada
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite

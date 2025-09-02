@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} ist erforderlich."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Fälligkeitsdatum muss am oder nach dem geplanten Datum liegen"
     selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
     selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
     start_date_cannot_be_after_end_date: Startdatum kann nicht nach dem Enddatum liegen

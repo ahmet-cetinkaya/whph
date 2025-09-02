@@ -237,7 +237,9 @@ shared:
     title: Opdatering tilgængelig!
   validation:
     required: "{field} er påkrævet."
+    deadline_cannot_be_before_planned: "Deadline kan ikke være før den planlagte dato."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Deadline skal være på eller efter den planlagte dato"
     selected_date_must_be_at_or_after: Valgt dato skal være på eller efter {date}
     selected_date_must_be_at_or_before: Valgt dato skal være på eller før {date}
     start_date_cannot_be_after_end_date: Startdato kan ikke være efter slutdato

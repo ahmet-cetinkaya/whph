@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: Frist tidspunkt er ugyldig
+    deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

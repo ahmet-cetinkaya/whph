@@ -238,6 +238,7 @@ shared:
   validation:
     required: "Το {field} είναι υποχρεωτικό"
   datepicker:
+    deadline_cannot_be_before_planned_date: "Η προθεσμία πρέπει να είναι την ή μετά την προγραμματισμένη ημερομηνία"
     selected_date_must_be_at_or_after: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή μετά την {date}
     selected_date_must_be_at_or_before: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή πριν την {date}
     start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης

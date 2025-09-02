@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} è obbligatorio."
   datepicker:
+    deadline_cannot_be_before_planned_date: "La scadenza deve essere alla data pianificata o successivamente"
     selected_date_must_be_at_or_after: La data selezionata deve essere il {date} o successiva
     selected_date_must_be_at_or_before: La data selezionata deve essere il {date} o precedente
     start_date_cannot_be_after_end_date: La data di inizio non può essere successiva alla data di fine

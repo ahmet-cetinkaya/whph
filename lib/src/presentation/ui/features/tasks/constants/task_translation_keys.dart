@@ -195,7 +195,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String endsAfter = 'tasks.recurrence.summary.endsAfter';
   static const String everyDay = 'tasks.recurrence.summary.everyDay';
   static const String occurrences = 'tasks.recurrence.summary.occurrences';
-  static const String everyDay = 'tasks.recurrence.summary.everyDay';
 
   // Validation Messages
   static const String deadlineTimeInvalid = 'tasks.validation.deadline_time_invalid';

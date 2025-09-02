@@ -298,6 +298,7 @@ tasks:
     yearly: Annuel
   validation:
     deadline_time_invalid: L'heure d'échéance n'est pas valide
+    deadline_cannot_be_before_planned: La date d'échéance doit être postérieure à la date planifiée
   reminder:
     atTime: À l'heure prévue
     deadlineReminderLabel: Rappel d'échéance

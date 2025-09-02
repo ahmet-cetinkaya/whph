@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} zorunludur."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Bitiş tarihi planlanan tarihte veya sonrasında olmalıdır"
     selected_date_must_be_at_or_after: "Seçilen tarih {date} veya sonrası olmalıdır"
     selected_date_must_be_at_or_before: "Seçilen tarih {date} veya öncesi olmalıdır"
     start_date_cannot_be_after_end_date: "Başlangıç tarihi bitiş tarihinden sonra olamaz"

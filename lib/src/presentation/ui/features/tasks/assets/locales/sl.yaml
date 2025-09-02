@@ -10,6 +10,9 @@ tasks:
       schedule: Schedule task
   complete:
     error: Unexpected error occurred while saving task completion.
+  validation:
+    deadline_time_invalid: Čas roka je neveljaven
+    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
   date_selection:
     deadline_date_title: Select deadline date
     planned_date_title: Select planned date
@@ -296,8 +299,6 @@ tasks:
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
-  validation:
-    deadline_time_invalid: Čas roka ni veljaven
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder
