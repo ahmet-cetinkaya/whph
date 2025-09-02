@@ -207,7 +207,6 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
           'TaskRecurrenceService: Task recurrence settings - Interval: ${task.recurrenceInterval}, StartDate: ${task.recurrenceStartDate}, EndDate: ${task.recurrenceEndDate}, Count: ${task.recurrenceCount}');
       _logger.debug('TaskRecurrenceService: Task planned date: ${task.plannedDate}');
 
-
       // Only handle completed recurring tasks
       if (!task.isCompleted || task.recurrenceType == RecurrenceType.none) {
         _logger.debug(
@@ -221,7 +220,6 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         return null;
       }
 
-
       // Calculate the next recurrence date
       _logger.debug('TaskRecurrenceService: Calculating next recurrence date');
       final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
@@ -233,7 +231,6 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         nextDeadlineDate = calculateNextRecurrenceDate(task, task.deadlineDate!);
         _logger.debug('TaskRecurrenceService: Next deadline date calculated: $nextDeadlineDate');
       }
-
 
       _logger.debug('TaskRecurrenceService: Fetching task tags');
       final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
@@ -279,11 +276,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       _logger.debug(
           'TaskRecurrenceService: New task details - TaskID: ${task.id}, PlannedDate: $nextPlannedDate, DeadlineDate: $nextDeadlineDate, RecurrenceCount: $nextRecurrenceCount');
 
-
       final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
 
       _logger.debug('TaskRecurrenceService: Successfully created new recurring task instance with ID: ${result.id}');
-
 
       // Return the ID of the newly created task
       return result.id;

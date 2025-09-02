@@ -289,12 +289,15 @@ tasks:
       endsOnDate: se termine le
       occurrences: occurrences
       on: le
+      everyDay: tous les jours
       starts: commence
     weekDays: Jours de la semaine
     weekSuffix: semaine(s)
     weekly: Hebdomadaire
     yearSuffix: année(s)
     yearly: Annuel
+  validation:
+    deadline_time_invalid: L'heure d'échéance n'est pas valide
   reminder:
     atTime: À l'heure prévue
     deadlineReminderLabel: Rappel d'échéance

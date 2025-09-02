@@ -236,4 +236,21 @@ shared:
     success: Update downloaded successfully!
     title: Update Available!
   validation:
-    required: "{field} is required"
+    required: "{field} is required."
+  datepicker:
+    selected_date_must_be_at_or_after: Selected date must be at or after {date}
+    selected_date_must_be_at_or_before: Selected date must be at or before {date}
+    start_date_cannot_be_after_end_date: Start date cannot be after end date
+    start_date_must_be_at_or_after: Start date must be at or after {date}
+    end_date_must_be_at_or_before: End date must be at or before {date}
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be at or after {time}
+    time_must_be_at_or_before: Time must be at or before {time}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select Date and Time
+    select_date_range_title: Select Date Range

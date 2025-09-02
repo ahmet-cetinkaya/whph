@@ -14,6 +14,7 @@ shared:
     load_more: Завантажити більше
     save: Зберегти
     saved: Збережено
+
   calendar:
     months:
       apr: Квітень
@@ -236,4 +237,21 @@ shared:
     success: Оновлення завантажено успішно!
     title: Доступне оновлення!
   validation:
-    required: "{field} є обов'язковим"
+    required: "{field} є обов'язковим."
+  datepicker:
+    selected_date_must_be_at_or_after: "Вибрана дата має бути не раніше {date}"
+    selected_date_must_be_at_or_before: "Вибрана дата має бути не пізніше {date}"
+    start_date_cannot_be_after_end_date: "Дата початку не може бути пізніше дати завершення"
+    start_date_must_be_at_or_after: "Дата початку має бути не раніше {date}"
+    end_date_must_be_at_or_before: "Дата завершення має бути не пізніше {date}"
+    cannot_select_date_before_min_date: "Не можна вибрати дату раніше {date}"
+    cannot_select_date_after_max_date: "Не можна вибрати дату пізніше {date}"
+    start_date_cannot_be_before_min_date: "Дата початку не може бути раніше {date}"
+    end_date_cannot_be_after_max_date: "Дата завершення не може бути пізніше {date}"
+    cannot_select_time_before_min_date: "Не можна вибрати час раніше {time}"
+    cannot_select_time_after_max_date: "Не можна вибрати час пізніше {time}"
+    time_must_be_at_or_after: "Час має бути не раніше {time}"
+    time_must_be_at_or_before: "Час має бути не пізніше {time}"
+    selected_date_time_must_be_after: "Вибрані дата і час мають бути пізніше {dateTime}"
+    select_date_time_title: "Виберіть дату і час"
+    select_date_range_title: "Виберіть діапазон дат"

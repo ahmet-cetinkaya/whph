@@ -289,12 +289,15 @@ tasks:
       endsOnDate: ends on
       occurrences: occurrences
       on: on
+      everyDay: todos os dias
       starts: starts
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+  validation:
+    deadline_time_invalid: Hora do prazo é inválida
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

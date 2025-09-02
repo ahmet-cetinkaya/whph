@@ -236,4 +236,21 @@ shared:
     success: Actualizarea a fost descărcată cu succes!
     title: Actualizare disponibilă!
   validation:
-    required: "{field} este obligatoriu"
+    required: "{field} este obligatoriu."
+  datepicker:
+    selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
+    selected_date_must_be_at_or_before: Data selectată trebuie să fie la sau înainte de {date}
+    start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
+    start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
+    end_date_must_be_at_or_before: Data de sfârșit trebuie să fie la sau înainte de {date}
+    cannot_select_date_before_min_date: Nu se poate selecta o dată înainte de {date}
+    cannot_select_date_after_max_date: Nu se poate selecta o dată după {date}
+    start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
+    end_date_cannot_be_after_max_date: Data de sfârșit nu poate fi după {date}
+    cannot_select_time_before_min_date: Nu se poate selecta o oră înainte de {time}
+    cannot_select_time_after_max_date: Nu se poate selecta o oră după {time}
+    time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
+    time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
+    selected_date_time_must_be_after: Data și ora selectate trebuie să fie după {dateTime}
+    select_date_time_title: Selectați data și ora
+    select_date_range_title: Selectați intervalul de date

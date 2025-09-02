@@ -287,14 +287,17 @@ tasks:
     summary:
       endsAfter: 结束于
       endsOnDate: 结束日期
-      occurrences: 次
-      on: 在
+      occurrences: occurrences
+      on: on
+      everyDay: 每天
       starts: 开始
     weekDays: 星期
     weekSuffix: 周
     weekly: 每周
     yearSuffix: 年
     yearly: 每年
+  validation:
+    deadline_time_invalid: 截止时间无效
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒

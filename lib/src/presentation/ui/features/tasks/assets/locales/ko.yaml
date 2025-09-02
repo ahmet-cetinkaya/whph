@@ -290,11 +290,14 @@ tasks:
       occurrences: 회
       on: 에
       starts: 시작
+      everyDay: 매일
     weekDays: 요일
     weekSuffix: 주
     weekly: 매주
-    yearSuffix: 년
-    yearly: 매년
+    yearSuffix: year(s)
+    yearly: Yearly
+  validation:
+    deadline_time_invalid: 마감 시간이 유효하지 않습니다
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림

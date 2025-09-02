@@ -237,3 +237,20 @@ shared:
     title: Διαθέσιμη ενημέρωση!
   validation:
     required: "Το {field} είναι υποχρεωτικό"
+  datepicker:
+    selected_date_must_be_at_or_after: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή μετά την {date}
+    selected_date_must_be_at_or_before: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή πριν την {date}
+    start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης
+    start_date_must_be_at_or_after: Η ημερομηνία έναρξης πρέπει να είναι την ή μετά την {date}
+    end_date_must_be_at_or_before: Η ημερομηνία λήξης πρέπει να είναι την ή πριν την {date}
+    cannot_select_date_before_min_date: Δεν μπορείτε να επιλέξετε ημερομηνία πριν την {date}
+    cannot_select_date_after_max_date: Δεν μπορείτε να επιλέξετε ημερομηνία μετά την {date}
+    start_date_cannot_be_before_min_date: Η ημερομηνία έναρξης δεν μπορεί να είναι πριν την {date}
+    end_date_cannot_be_after_max_date: Η ημερομηνία λήξης δεν μπορεί να είναι μετά την {date}
+    cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν τις {time}
+    cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά τις {time}
+    time_must_be_at_or_after: Η ώρα πρέπει να είναι τις ή μετά τις {time}
+    time_must_be_at_or_before: Η ώρα πρέπει να είναι τις ή πριν τις {time}
+    selected_date_time_must_be_after: Η επιλεγμένη ημερομηνία και ώρα πρέπει να είναι μετά τις {dateTime}
+    select_date_time_title: Επιλέξτε ημερομηνία και ώρα
+    select_date_range_title: Επιλέξτε εύρος ημερομηνιών
