@@ -236,4 +236,21 @@ shared:
     success: Aggiornamento scaricato con successo!
     title: Aggiornamento disponibile!
   validation:
-    required: "{field} è obbligatorio"
+    required: "{field} è obbligatorio."
+  datepicker:
+    selected_date_must_be_at_or_after: La data selezionata deve essere il {date} o successiva
+    selected_date_must_be_at_or_before: La data selezionata deve essere il {date} o precedente
+    start_date_cannot_be_after_end_date: La data di inizio non può essere successiva alla data di fine
+    start_date_must_be_at_or_after: La data di inizio deve essere il {date} o successiva
+    end_date_must_be_at_or_before: La data di fine deve essere il {date} o precedente
+    cannot_select_date_before_min_date: Impossibile selezionare una data precedente al {date}
+    cannot_select_date_after_max_date: Impossibile selezionare una data successiva al {date}
+    start_date_cannot_be_before_min_date: La data di inizio non può essere precedente al {date}
+    end_date_cannot_be_after_max_date: La data di fine non può essere successiva al {date}
+    cannot_select_time_before_min_date: Impossibile selezionare un orario precedente alle {time}
+    cannot_select_time_after_max_date: Impossibile selezionare un orario successivo alle {time}
+    time_must_be_at_or_after: L'orario deve essere alle {time} o successivo
+    time_must_be_at_or_before: L'orario deve essere alle {time} o precedente
+    selected_date_time_must_be_after: La data e l'ora selezionate devono essere successive a {dateTime}
+    select_date_time_title: Seleziona data e ora
+    select_date_range_title: Seleziona intervallo date

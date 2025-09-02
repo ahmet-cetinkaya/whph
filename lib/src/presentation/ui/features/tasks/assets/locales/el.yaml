@@ -287,14 +287,17 @@ tasks:
     summary:
       endsAfter: ends after
       endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      occurrences: επαναλήψεις
+      on: στις
+      everyDay: κάθε μέρα
       starts: starts
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+  validation:
+    deadline_time_invalid: Η ώρα λήξης δεν είναι έγκυρη
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

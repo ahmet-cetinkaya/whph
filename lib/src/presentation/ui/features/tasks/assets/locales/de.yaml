@@ -289,12 +289,15 @@ tasks:
       endsOnDate: endet am
       occurrences: Wiederholungen
       on: am
+      everyDay: jeden Tag
       starts: beginnt
     weekDays: Wochentage
     weekSuffix: Woche(n)
     weekly: Wöchentlich
     yearSuffix: Jahr(e)
     yearly: Jährlich
+  validation:
+    deadline_time_invalid: Termin-Uhrzeit ist ungültig
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung

@@ -237,3 +237,20 @@ shared:
     title: Posodobitev na voljo!
   validation:
     required: "{field} je obvezno"
+  datepicker:
+    selected_date_must_be_at_or_after: "Izbrani datum mora biti na ali po {date}"
+    selected_date_must_be_at_or_before: "Izbrani datum mora biti na ali pred {date}"
+    start_date_cannot_be_after_end_date: "Začetni datum ne more biti po končnem datumu"
+    start_date_must_be_at_or_after: "Začetni datum mora biti na ali po {date}"
+    end_date_must_be_at_or_before: "Končni datum mora biti na ali pred {date}"
+    cannot_select_date_before_min_date: "Ne morete izbrati datuma pred {date}"
+    cannot_select_date_after_max_date: "Ne morete izbrati datuma po {date}"
+    start_date_cannot_be_before_min_date: "Začetni datum ne more biti pred {date}"
+    end_date_cannot_be_after_max_date: "Končni datum ne more biti po {date}"
+    cannot_select_time_before_min_date: "Ne morete izbrati časa pred {time}"
+    cannot_select_time_after_max_date: "Ne morete izbrati časa po {time}"
+    time_must_be_at_or_after: "Čas mora biti ob ali po {time}"
+    time_must_be_at_or_before: "Čas mora biti ob ali pred {time}"
+    selected_date_time_must_be_after: "Izbrani datum in čas morata biti po {dateTime}"
+    select_date_time_title: "Izberite datum in čas"
+    select_date_range_title: "Izberite obdobje"

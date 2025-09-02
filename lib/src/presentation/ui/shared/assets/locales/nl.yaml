@@ -236,4 +236,21 @@ shared:
     success: Update succesvol gedownload!
     title: Update beschikbaar!
   validation:
-    required: "{field} is verplicht"
+    required: "{field} is verplicht."
+  datepicker:
+    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
+    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
+    start_date_cannot_be_after_end_date: De startdatum kan niet na de einddatum zijn
+    start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
+    end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
+    cannot_select_date_before_min_date: Kan geen datum voor {date} selecteren
+    cannot_select_date_after_max_date: Kan geen datum na {date} selecteren
+    start_date_cannot_be_before_min_date: De startdatum kan niet voor {date} zijn
+    end_date_cannot_be_after_max_date: De einddatum kan niet na {date} zijn
+    cannot_select_time_before_min_date: Kan geen tijd voor {time} selecteren
+    cannot_select_time_after_max_date: Kan geen tijd na {time} selecteren
+    time_must_be_at_or_after: De tijd moet op of na {time} zijn
+    time_must_be_at_or_before: De tijd moet op of voor {time} zijn
+    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
+    select_date_time_title: Selecteer datum en tijd
+    select_date_range_title: Selecteer datumbereik

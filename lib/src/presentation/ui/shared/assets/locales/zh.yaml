@@ -236,4 +236,21 @@ shared:
     success: 更新下载成功！
     title: 有可用更新！
   validation:
-    required: "{field}是必填项"
+    required: "{field}是必需的。"
+  datepicker:
+    selected_date_must_be_at_or_after: "选定的日期必须在 {date} 或之后"
+    selected_date_must_be_at_or_before: "选定的日期必须在 {date} 或之前"
+    start_date_cannot_be_after_end_date: "开始日期不能晚于结束日期"
+    start_date_must_be_at_or_after: "开始日期必须在 {date} 或之后"
+    end_date_must_be_at_or_before: "结束日期必须在 {date} 或之前"
+    cannot_select_date_before_min_date: "不能选择 {date} 之前的日期"
+    cannot_select_date_after_max_date: "不能选择 {date} 之后的日期"
+    start_date_cannot_be_before_min_date: "开始日期不能早于 {date}"
+    end_date_cannot_be_after_max_date: "结束日期不能晚于 {date}"
+    cannot_select_time_before_min_date: "不能选择 {time} 之前的时间"
+    cannot_select_time_after_max_date: "不能选择 {time} 之后的时间"
+    time_must_be_at_or_after: "时间必须在 {time} 或之后"
+    time_must_be_at_or_before: "时间必须在 {time} 或之前"
+    selected_date_time_must_be_after: "选定的日期和时间必须在 {dateTime} 之后"
+    select_date_time_title: "选择日期和时间"
+    select_date_range_title: "选择日期范围"

@@ -287,14 +287,17 @@ tasks:
     summary:
       endsAfter: finisce dopo
       endsOnDate: finisce il
-      occurrences: occorrenze
-      on: il
+      occurrences: occurrences
+      on: on
+      everyDay: ogni giorno
       starts: inizia
     weekDays: Giorni della settimana
     weekSuffix: settimana/e
     weekly: Settimanale
-    yearSuffix: anno/i
-    yearly: Annuale
+    yearSuffix: year(s)
+    yearly: Yearly
+  validation:
+    deadline_time_invalid: L'orario della scadenza non è valido
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza

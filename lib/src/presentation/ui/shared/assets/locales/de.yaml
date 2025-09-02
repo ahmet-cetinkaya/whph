@@ -236,4 +236,21 @@ shared:
     success: Update erfolgreich heruntergeladen!
     title: Update verfügbar!
   validation:
-    required: "{field} ist erforderlich"
+    required: "{field} ist erforderlich."
+  datepicker:
+    selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
+    selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
+    start_date_cannot_be_after_end_date: Startdatum kann nicht nach dem Enddatum liegen
+    start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
+    end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
+    cannot_select_date_before_min_date: Datum kann nicht vor dem {date} gewählt werden
+    cannot_select_date_after_max_date: Datum kann nicht nach dem {date} gewählt werden
+    start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
+    end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
+    cannot_select_time_before_min_date: Zeit kann nicht vor {time} gewählt werden
+    cannot_select_time_after_max_date: Zeit kann nicht nach {time} gewählt werden
+    time_must_be_at_or_after: Zeit muss um oder nach {time} sein
+    time_must_be_at_or_before: Zeit muss um oder vor {time} sein
+    selected_date_time_must_be_after: Ausgewähltes Datum und Uhrzeit müssen nach {dateTime} sein
+    select_date_time_title: Datum und Uhrzeit auswählen
+    select_date_range_title: Datumsbereich auswählen

@@ -236,4 +236,21 @@ shared:
     success: Обновление успешно загружено!
     title: Доступно обновление!
   validation:
-    required: "{field} обязательно"
+    required: "{field} обязательно."
+  datepicker:
+    selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
+    selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
+    start_date_cannot_be_after_end_date: Дата начала не может быть позже даты окончания
+    start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
+    end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
+    cannot_select_date_before_min_date: Нельзя выбрать дату раньше {date}
+    cannot_select_date_after_max_date: Нельзя выбрать дату позже {date}
+    start_date_cannot_be_before_min_date: Дата начала не может быть раньше {date}
+    end_date_cannot_be_after_max_date: Дата окончания не может быть позже {date}
+    cannot_select_time_before_min_date: Нельзя выбрать время раньше {time}
+    cannot_select_time_after_max_date: Нельзя выбрать время позже {time}
+    time_must_be_at_or_after: Время должно быть не раньше {time}
+    time_must_be_at_or_before: Время должно быть не позже {time}
+    selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
+    select_date_time_title: Выберите дату и время
+    select_date_range_title: Выберите диапазон дат

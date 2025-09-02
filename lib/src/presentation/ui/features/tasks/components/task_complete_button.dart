@@ -86,11 +86,9 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           GetTaskQuery(id: widget.taskId),
         );
 
-        _logger
-            .debug('TaskCompleteButton: Retrieved task ${task.id} with recurrence type: ${task.recurrenceType}');
+        _logger.debug('TaskCompleteButton: Retrieved task ${task.id} with recurrence type: ${task.recurrenceType}');
         _logger.debug(
             'TaskCompleteButton: Task recurrence settings - Interval: ${task.recurrenceInterval}, StartDate: ${task.recurrenceStartDate}, EndDate: ${task.recurrenceEndDate}, Count: ${task.recurrenceCount}');
-
 
         final command = SaveTaskCommand(
           id: task.id,
@@ -119,7 +117,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         _logger.debug('TaskCompleteButton: Saving task with isCompleted: ${command.isCompleted}');
         _logger.debug(
             'TaskCompleteButton: Task planned date before save: ${task.plannedDate} -> after UTC conversion: ${command.plannedDate}');
-
 
         // Perform the actual API call
         await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);

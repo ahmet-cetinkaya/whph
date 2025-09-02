@@ -236,4 +236,21 @@ shared:
     success: Oppdatering lastet ned!
     title: Oppdatering tilgjengelig!
   validation:
-    required: "{field} er påkrevd"
+    required: "{field} er påkrevd."
+  datepicker:
+    selected_date_must_be_at_or_after: Valgt dato må være på eller etter {date}
+    selected_date_must_be_at_or_before: Valgt dato må være på eller før {date}
+    start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
+    start_date_must_be_at_or_after: Startdato må være på eller etter {date}
+    end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
+    cannot_select_date_before_min_date: Kan ikke velge dato før {date}
+    cannot_select_date_after_max_date: Kan ikke velge dato etter {date}
+    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
+    end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
+    cannot_select_time_before_min_date: Kan ikke velge tidspunkt før {time}
+    cannot_select_time_after_max_date: Kan ikke velge tidspunkt etter {time}
+    time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
+    time_must_be_at_or_before: Tidspunktet må være på eller før {time}
+    selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
+    select_date_time_title: Velg dato og tid
+    select_date_range_title: Velg datoperiode

@@ -303,12 +303,15 @@ tasks:
       endsOnDate: bitiş
       occurrences: tekrarlama
       on: günlerinde
+      everyDay: her gün
       starts: başlangıç
     weekDays: Haftanın günleri
     weekSuffix: hafta
     weekly: Haftalık
     yearSuffix: yıl
     yearly: Yıllık
+  validation:
+    deadline_time_invalid: Son tarih zamanı geçersiz
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı

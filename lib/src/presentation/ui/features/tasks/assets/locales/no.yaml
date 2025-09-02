@@ -289,12 +289,15 @@ tasks:
       endsOnDate: ends on
       occurrences: occurrences
       on: on
+      everyDay: hver dag
       starts: starts
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+  validation:
+    deadline_time_invalid: Frist tidspunkt er ugyldig
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

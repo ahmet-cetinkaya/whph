@@ -236,4 +236,21 @@ shared:
     success: Päivitys ladattu onnistuneesti!
     title: Päivitys saatavilla!
   validation:
-    required: "{field} on pakollinen"
+    required: "{field} on pakollinen."
+  datepicker:
+    selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
+    selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
+    start_date_cannot_be_after_end_date: Aloituspäivä ei voi olla lopetuspäivän jälkeen
+    start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
+    end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
+    cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
+    cannot_select_date_after_max_date: Ei voi valita päivämäärää {date} jälkeen
+    start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
+    end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
+    cannot_select_time_before_min_date: Ei voi valita aikaa ennen {time}
+    cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
+    time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
+    time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
+    selected_date_time_must_be_after: Valitun päivämäärän ja ajan täytyy olla {dateTime} jälkeen
+    select_date_time_title: Valitse päivämäärä ja aika
+    select_date_range_title: Valitse päivämääräväli
