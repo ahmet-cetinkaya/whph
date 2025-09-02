@@ -16,19 +16,15 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     return task.recurrenceType != RecurrenceType.none;
   }
 
+  /// Determines if a recurring task can create a next instance based on its recurrence rules
   @override
   bool canCreateNextInstance(Task task) {
-    _logger.debug('TaskRecurrenceService: Checking if can create next instance for task ${task.id}');
-    _logger.debug('TaskRecurrenceService: Task recurrence type: ${task.recurrenceType}');
-
     if (!isRecurring(task)) {
-      _logger.debug('TaskRecurrenceService: Task is not recurring, cannot create next instance');
       return false;
     }
 
     // If there's no end date or count limit, we can always create new instances
     if (task.recurrenceEndDate == null && task.recurrenceCount == null) {
-      _logger.debug('TaskRecurrenceService: No end date or count limit, can create next instance');
       return true;
     }
 
@@ -36,41 +32,26 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     if (task.recurrenceEndDate != null) {
       DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now();
       DateTime nextDate = calculateNextRecurrenceDate(task, lastDate);
-      bool canCreate = !nextDate.isAfter(task.recurrenceEndDate!);
-      _logger.debug(
-          'TaskRecurrenceService: End date check - next date: $nextDate, end date: ${task.recurrenceEndDate}, can create: $canCreate');
-      return canCreate;
+      return !nextDate.isAfter(task.recurrenceEndDate!);
     }
 
     // Check if we've reached the maximum count
     if (task.recurrenceCount != null) {
-      bool canCreate = task.recurrenceCount! > 0;
-      _logger.debug(
-          'TaskRecurrenceService: Count check - remaining count: ${task.recurrenceCount}, can create: $canCreate');
-      return canCreate;
+      return task.recurrenceCount! > 0;
     }
 
-    _logger.debug('TaskRecurrenceService: Default case, can create next instance');
     return true;
   }
 
+  /// Calculates the next recurrence date based on the task's recurrence settings
   @override
   DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) {
-    _logger.debug('TaskRecurrenceService: Calculating next recurrence date for task ${task.id}');
-    _logger.debug('TaskRecurrenceService: Current date: $currentDate');
-    _logger.debug('TaskRecurrenceService: Recurrence type: ${task.recurrenceType}');
-    _logger.debug('TaskRecurrenceService: Recurrence interval: ${task.recurrenceInterval}');
-
     final List<WeekDays>? recurrenceDays = getRecurrenceDays(task);
-    if (recurrenceDays != null && recurrenceDays.isNotEmpty) {
-      _logger.debug('TaskRecurrenceService: Recurrence days: $recurrenceDays');
-    }
 
     DateTime nextDate;
     switch (task.recurrenceType) {
       case RecurrenceType.daily:
         nextDate = currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
-        _logger.debug('TaskRecurrenceService: Daily recurrence - next date: $nextDate');
         return nextDate;
 
       case RecurrenceType.weekly:
@@ -190,103 +171,110 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         .toList();
   }
 
+  /// Handles the creation of the next recurring task instance when a task is completed
   @override
   Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async {
-    _logger.debug('TaskRecurrenceService: Starting handleCompletedRecurringTask for task $taskId');
-
     try {
-      // Get the completed task
-      _logger.debug('TaskRecurrenceService: Fetching task details for $taskId');
-      final task = await mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
-      );
-
-      _logger.debug(
-          'TaskRecurrenceService: Retrieved task - ID: ${task.id}, Completed: ${task.isCompleted}, RecurrenceType: ${task.recurrenceType}');
-      _logger.debug(
-          'TaskRecurrenceService: Task recurrence settings - Interval: ${task.recurrenceInterval}, StartDate: ${task.recurrenceStartDate}, EndDate: ${task.recurrenceEndDate}, Count: ${task.recurrenceCount}');
-      _logger.debug('TaskRecurrenceService: Task planned date: ${task.plannedDate}');
-
-      // Only handle completed recurring tasks
-      if (!task.isCompleted || task.recurrenceType == RecurrenceType.none) {
-        _logger.debug(
-            'TaskRecurrenceService: Task is not completed (${task.isCompleted}) or not recurring (${task.recurrenceType}), skipping recurrence creation');
+      final task = await _getTaskForRecurrence(taskId, mediator);
+      if (!_canProcessRecurrence(task)) {
         return null;
       }
 
-      // Check if this task can create a next instance
-      if (!canCreateNextInstance(task)) {
-        _logger.debug('TaskRecurrenceService: Cannot create next instance based on recurrence rules');
-        return null;
-      }
-
-      // Calculate the next recurrence date
-      _logger.debug('TaskRecurrenceService: Calculating next recurrence date');
-      final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
-      _logger.debug('TaskRecurrenceService: Next planned date calculated: $nextPlannedDate');
-
-      // Calculate the next deadline date if the original task has one
-      DateTime? nextDeadlineDate;
-      if (task.deadlineDate != null) {
-        nextDeadlineDate = calculateNextRecurrenceDate(task, task.deadlineDate!);
-        _logger.debug('TaskRecurrenceService: Next deadline date calculated: $nextDeadlineDate');
-      }
-
-      _logger.debug('TaskRecurrenceService: Fetching task tags');
-      final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-        GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: double.maxFinite.toInt()),
-      );
-      _logger.debug('TaskRecurrenceService: Found ${taskTags.items.length} tags for task');
-
-      // Calculate the next recurrence count if needed
-      int? nextRecurrenceCount = task.recurrenceCount;
-      if (task.recurrenceCount != null && task.recurrenceCount! > 0) {
-        nextRecurrenceCount = task.recurrenceCount! - 1;
-        _logger.debug(
-            'TaskRecurrenceService: Decremented recurrence count from ${task.recurrenceCount} to $nextRecurrenceCount');
-      } else {
-        _logger.debug('TaskRecurrenceService: Recurrence count unchanged: $nextRecurrenceCount');
-      }
-
-      // Create the new task via the mediator
-      _logger.debug('TaskRecurrenceService: Creating SaveTaskCommand for next recurrence instance');
-
-      final recurrenceDaysForNewTask = getRecurrenceDays(task);
-
-      final saveCommand = SaveTaskCommand(
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: nextPlannedDate,
-        deadlineDate: nextDeadlineDate,
-        estimatedTime: task.estimatedTime,
-        parentTaskId: task.parentTaskId,
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDays: recurrenceDaysForNewTask,
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: nextRecurrenceCount,
-        tagIdsToAdd: taskTags.items.map((tag) => tag.id).toList(),
-      );
-
-      _logger.debug('TaskRecurrenceService: Saving new recurring task instance');
-      _logger.debug(
-          'TaskRecurrenceService: New task details - TaskID: ${task.id}, PlannedDate: $nextPlannedDate, DeadlineDate: $nextDeadlineDate, RecurrenceCount: $nextRecurrenceCount');
-
-      final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-
-      _logger.debug('TaskRecurrenceService: Successfully created new recurring task instance with ID: ${result.id}');
-
-      // Return the ID of the newly created task
-      return result.id;
+      return await _createNextRecurrenceInstance(task, mediator);
     } catch (e) {
-      // Log error but don't throw to avoid breaking the completion flow
-      _logger.error('TaskRecurrenceService: Failed to create recurring task instance for $taskId: $e');
-      // Return null to indicate failure - the caller should handle this gracefully
+      _logger.error('Failed to create recurring task instance for $taskId: $e');
       return null;
     }
+  }
+
+  /// Retrieves and validates a task for recurrence processing
+  Future<Task> _getTaskForRecurrence(String taskId, Mediator mediator) async {
+    return await mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+      GetTaskQuery(id: taskId),
+    );
+  }
+
+  /// Validates if a task can be processed for recurrence
+  bool _canProcessRecurrence(Task task) {
+    if (!task.isCompleted || task.recurrenceType == RecurrenceType.none) {
+      return false;
+    }
+
+    return canCreateNextInstance(task);
+  }
+
+  /// Creates the next recurrence instance of a task
+  Future<String> _createNextRecurrenceInstance(Task task, Mediator mediator) async {
+    final nextDates = _calculateNextDates(task);
+    final taskTags = await _getTaskTags(task.id, mediator);
+    final nextRecurrenceCount = _calculateNextRecurrenceCount(task);
+    
+    final saveCommand = _buildSaveTaskCommand(
+      task, 
+      nextDates.plannedDate, 
+      nextDates.deadlineDate, 
+      nextRecurrenceCount, 
+      taskTags
+    );
+
+    final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+    _logger.info('Created next recurrence instance ${result.id} for task ${task.id}');
+
+    return result.id;
+  }
+
+  /// Calculates the next planned and deadline dates for recurrence
+  ({DateTime plannedDate, DateTime? deadlineDate}) _calculateNextDates(Task task) {
+    final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
+    final nextDeadlineDate = task.deadlineDate != null 
+        ? calculateNextRecurrenceDate(task, task.deadlineDate!) 
+        : null;
+
+    return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
+  }
+
+  /// Retrieves tags associated with a task
+  Future<List<String>> _getTaskTags(String taskId, Mediator mediator) async {
+    final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+      GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: double.maxFinite.toInt()),
+    );
+    return taskTags.items.map((tag) => tag.id).toList();
+  }
+
+  /// Calculates the next recurrence count, decrementing if needed
+  int? _calculateNextRecurrenceCount(Task task) {
+    if (task.recurrenceCount == null || task.recurrenceCount! <= 0) {
+      return task.recurrenceCount;
+    }
+
+    return task.recurrenceCount! - 1;
+  }
+
+  /// Builds a SaveTaskCommand for creating the next recurrence instance
+  SaveTaskCommand _buildSaveTaskCommand(
+    Task task,
+    DateTime nextPlannedDate,
+    DateTime? nextDeadlineDate,
+    int? nextRecurrenceCount,
+    List<String> tagIds,
+  ) {
+    return SaveTaskCommand(
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      plannedDate: nextPlannedDate,
+      deadlineDate: nextDeadlineDate,
+      estimatedTime: task.estimatedTime,
+      parentTaskId: task.parentTaskId,
+      plannedDateReminderTime: task.plannedDateReminderTime,
+      deadlineDateReminderTime: task.deadlineDateReminderTime,
+      recurrenceType: task.recurrenceType,
+      recurrenceInterval: task.recurrenceInterval,
+      recurrenceDays: getRecurrenceDays(task),
+      recurrenceStartDate: task.recurrenceStartDate,
+      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceCount: nextRecurrenceCount,
+      tagIdsToAdd: tagIds,
+    );
   }
 }
