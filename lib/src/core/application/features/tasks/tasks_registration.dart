@@ -26,7 +26,9 @@ void registerTasksFeature(
   ITagRepository tagRepository,
 ) {
   // Register the task recurrence service
-  container.registerSingleton<ITaskRecurrenceService>((_) => TaskRecurrenceService());
+  container.registerSingleton<ITaskRecurrenceService>(
+    (container) => TaskRecurrenceService(container.resolve<ILogger>()),
+  );
 
   mediator
     ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
