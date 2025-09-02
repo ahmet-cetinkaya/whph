@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: ends after
       endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      occurrences: voorvallen
+      on: op
       everyDay: elke dag
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
+      starts: begint
+    weekDays: Dagen van de week
+    weekSuffix: wek/weken
+    weekly: Wekelijks
+    yearSuffix: jaar/jaren
+    yearly: Jaarlijks
   validation:
     deadline_time_invalid: Deadline tijd is ongeldig
     deadline_cannot_be_before_planned: Deadline datum moet na de geplande datum liggen
