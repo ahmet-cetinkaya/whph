@@ -773,12 +773,27 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   /// Get the minimum allowed deadline date based on planned date or current date
   DateTime _getMinimumDeadlineDate() {
-    // If there's a planned date, deadline must be at or after planned date
+    // Always validate against planned date if it exists
     if (_task?.plannedDate != null) {
-      return _task!.plannedDate!;
+      final plannedDate = _task!.plannedDate!;
+      // Return a copy of the date to prevent mutation
+      return DateTime(
+        plannedDate.year,
+        plannedDate.month,
+        plannedDate.day,
+        plannedDate.hour,
+        plannedDate.minute,
+      );
     }
     // Otherwise, deadline must be at or after today
-    return DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+  
+  /// Validate if a deadline date is valid relative to the planned date
+  bool _isValidDeadlineDate(DateTime? deadlineDate) {
+    if (deadlineDate == null || _task?.plannedDate == null) return true;
+    return !deadlineDate.isBefore(_task!.plannedDate!);
   }
 
   /// Validate and adjust deadline date if it's before the planned date

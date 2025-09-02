@@ -221,9 +221,13 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String selectedDateTimeMustBeAfter = 'shared.datepicker.selected_date_time_must_be_after';
   static const String selectDateTimeTitle = 'shared.datepicker.select_date_time_title';
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
+  static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {
+    if (weekday < 1 || weekday > 7) {
+      throw ArgumentError('Invalid weekday: $weekday. Must be between 1 and 7.');
+    }
     final day = switch (weekday) {
       1 => 'monday',
       2 => 'tuesday',
