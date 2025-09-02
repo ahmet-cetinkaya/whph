@@ -164,6 +164,10 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       case RecurrenceType.none:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceNone);
       case RecurrenceType.daily:
+        // For daily recurrence, check if all weekdays are selected
+        if (_selectedDays.length == WeekDays.values.length) {
+          return widget.translationService.translate(TaskTranslationKeys.everyDay);
+        }
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaily);
       case RecurrenceType.weekly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekly);

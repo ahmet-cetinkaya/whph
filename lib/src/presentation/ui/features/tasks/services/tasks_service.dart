@@ -52,19 +52,37 @@ class TasksService extends ChangeNotifier {
     _logger.debug('TasksService: Starting recurring task creation workflow for $taskId');
 
     try {
-      final nextTaskId = await _taskRecurrenceService.handleCompletedRecurringTask(taskId, _mediator);
-      if (nextTaskId != null) {
-        _logger.debug('TasksService: Successfully created next recurring task instance: $nextTaskId');
-        // Notify about the newly created recurring task
-        notifyTaskCreated(nextTaskId);
-        _logger.debug('TasksService: Notified listeners about new recurring task: $nextTaskId');
-      } else {
-        _logger.debug(
-            'TasksService: No next recurring task instance created for $taskId (task may not be recurring or reached limits)');
+      // Add retry logic for robustness
+      int retryCount = 0;
+      const maxRetries = 3;
+      bool success = false;
+
+      while (!success && retryCount < maxRetries) {
+        try {
+          final nextTaskId = await _taskRecurrenceService.handleCompletedRecurringTask(taskId, _mediator);
+          if (nextTaskId != null) {
+            _logger.debug('TasksService: Successfully created next recurring task instance: $nextTaskId');
+            // Notify about the newly created recurring task
+            notifyTaskCreated(nextTaskId);
+            _logger.debug('TasksService: Notified listeners about new recurring task: $nextTaskId');
+          } else {
+            _logger.debug(
+                'TasksService: No next recurring task instance created for $taskId (task may not be recurring or reached limits)');
+          }
+          success = true;
+        } catch (e) {
+          retryCount++;
+          if (retryCount < maxRetries) {
+            _logger.warn('TasksService: Retry $retryCount/$maxRetries for task $taskId after error: $e');
+            await Future.delayed(Duration(milliseconds: 500 * retryCount)); // Exponential backoff
+          } else {
+            rethrow;
+          }
+        }
       }
     } catch (e) {
-      _logger.error('TasksService: Failed to create recurring task instance for $taskId: $e');
-      // Don't rethrow to avoid breaking the completion flow
+      _logger.error('TasksService: Failed to create recurring task instance for $taskId after multiple retries: $e');
+      // Don't rethrow to avoid breaking the completion flow, but could notify user of error
     }
   }
 
