@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} обязательно."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Срок должен быть в день запланированной даты или позже"
     selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
     selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
     start_date_cannot_be_after_end_date: Дата начала не может быть позже даты окончания

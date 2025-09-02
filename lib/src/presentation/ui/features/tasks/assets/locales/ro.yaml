@@ -297,7 +297,8 @@ tasks:
     yearSuffix: year(s)
     yearly: Yearly
   validation:
-    deadline_time_invalid: Ora limită nu este validă
+    deadline_time_invalid: Ora termenului limită este invalidă
+    deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

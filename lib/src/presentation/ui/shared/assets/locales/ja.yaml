@@ -2,6 +2,8 @@ settings:
   import:
     version_mismatch: バージョンの不一致
 shared:
+  validation:
+    required: "{field}は必須です。"
   buttons:
     add: 追加
     back: 戻る
@@ -235,9 +237,8 @@ shared:
     question: 今すぐ更新しますか？
     success: アップデートのダウンロードが完了しました！
     title: アップデート利用可能！
-  validation:
-    required: "{field}は必須です。"
   datepicker:
+    deadline_cannot_be_before_planned_date: "締切日は予定日以降である必要があります"
     selected_date_must_be_at_or_after: "選択された日付は{date}以降でなければなりません"
     selected_date_must_be_at_or_before: "選択された日付は{date}以前でなければなりません"
     start_date_cannot_be_after_end_date: "開始日は終了日より後にできません"

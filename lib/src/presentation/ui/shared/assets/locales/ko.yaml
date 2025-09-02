@@ -237,7 +237,9 @@ shared:
     title: 업데이트 사용 가능!
   validation:
     required: "{field}이(가) 필요합니다."
+    deadline_cannot_be_before_planned: "마감일은 계획된 날짜보다 이르게 설정할 수 없습니다."
   datepicker:
+    deadline_cannot_be_before_planned_date: "마감일은 계획된 날짜와 같거나 이후여야 합니다"
     selected_date_must_be_at_or_after: "선택한 날짜는 {date} 이후여야 합니다"
     selected_date_must_be_at_or_before: "선택한 날짜는 {date} 이전이어야 합니다"
     start_date_cannot_be_after_end_date: "시작일은 종료일 이후가 될 수 없습니다"

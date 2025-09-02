@@ -297,7 +297,8 @@ tasks:
     yearSuffix: year(s)
     yearly: Yearly
   validation:
-    deadline_time_invalid: Час кінцевого терміну недійсний
+    deadline_time_invalid: Неправильний час крайнього терміну
+    deadline_cannot_be_before_planned: Крайній термін має бути після запланованої дати
   reminder:
     atTime: О запланованому часі
     deadlineReminderLabel: Нагадування про дедлайн

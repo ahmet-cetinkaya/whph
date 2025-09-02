@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} is required."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Deadline date must be on or after the planned date"
     selected_date_must_be_at_or_after: Selected date must be at or after {date}
     selected_date_must_be_at_or_before: Selected date must be at or before {date}
     start_date_cannot_be_after_end_date: Start date cannot be after end date

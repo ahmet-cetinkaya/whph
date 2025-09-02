@@ -789,7 +789,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
   }
-  
+
   /// Validate if a deadline date is valid relative to the planned date
   bool _isValidDeadlineDate(DateTime? deadlineDate) {
     if (deadlineDate == null || _task?.plannedDate == null) return true;

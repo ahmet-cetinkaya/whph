@@ -298,6 +298,7 @@ tasks:
     yearly: Jährlich
   validation:
     deadline_time_invalid: Termin-Uhrzeit ist ungültig
+    deadline_cannot_be_before_planned: Das Fälligkeitsdatum darf nicht vor dem geplanten Datum liegen
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung

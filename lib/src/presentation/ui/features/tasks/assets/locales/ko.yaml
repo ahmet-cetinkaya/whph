@@ -297,7 +297,8 @@ tasks:
     yearSuffix: year(s)
     yearly: Yearly
   validation:
-    deadline_time_invalid: 마감 시간이 유효하지 않습니다
+    deadline_time_invalid: 마감 시간이 잘못되었습니다
+    deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림

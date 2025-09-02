@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: L'orario della scadenza non è valido
+    deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza

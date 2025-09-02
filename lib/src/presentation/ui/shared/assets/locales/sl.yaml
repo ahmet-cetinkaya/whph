@@ -237,7 +237,9 @@ shared:
     title: Posodobitev na voljo!
   validation:
     required: "{field} je obvezno"
+    deadline_cannot_be_before_planned: "Rok ne more biti pred načrtovanim datumom."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Rok mora biti na načrtovani datum ali kasneje"
     selected_date_must_be_at_or_after: "Izbrani datum mora biti na ali po {date}"
     selected_date_must_be_at_or_before: "Izbrani datum mora biti na ali pred {date}"
     start_date_cannot_be_after_end_date: "Začetni datum ne more biti po končnem datumu"

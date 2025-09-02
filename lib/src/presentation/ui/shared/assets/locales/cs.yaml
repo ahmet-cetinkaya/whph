@@ -238,6 +238,7 @@ shared:
   validation:
     required: "{field} je povinné."
   datepicker:
+    deadline_cannot_be_before_planned_date: "Termín musí být v den plánovaného data nebo později"
     selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
     selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
     start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu

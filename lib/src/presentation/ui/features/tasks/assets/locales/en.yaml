@@ -317,3 +317,4 @@ tasks:
     show_subtasks: Show subtasks
   validation:
     deadline_time_invalid: Deadline time is invalid
+    deadline_cannot_be_before_planned: Deadline date must be after the planned date

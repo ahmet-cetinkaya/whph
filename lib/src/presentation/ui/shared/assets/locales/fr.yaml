@@ -2,6 +2,8 @@ settings:
   import:
     version_mismatch: Incompatibilité de version
 shared:
+  validation:
+    required: "{field} est requis."
   buttons:
     add: Ajouter
     back: Retour
@@ -235,9 +237,8 @@ shared:
     question: Voulez-vous mettre à jour maintenant ?
     success: Mise à jour téléchargée avec succès !
     title: Mise à jour disponible !
-  validation:
-    required: "{field} est requis."
   datepicker:
+    deadline_cannot_be_before_planned_date: "La date limite doit être égale ou postérieure à la date planifiée"
     selected_date_must_be_at_or_after: La date sélectionnée doit être le {date} ou après
     selected_date_must_be_at_or_before: La date sélectionnée doit être le {date} ou avant
     start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin

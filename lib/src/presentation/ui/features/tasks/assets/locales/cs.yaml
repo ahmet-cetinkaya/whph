@@ -298,6 +298,7 @@ tasks:
     yearly: Yearly
   validation:
     deadline_time_invalid: Čas termínu je neplatný
+    deadline_cannot_be_before_planned: Terminín musí být po plánovaném datu
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder
