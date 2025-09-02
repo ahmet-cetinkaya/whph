@@ -287,15 +287,15 @@ tasks:
     summary:
       endsAfter: закінчується після
       endsOnDate: закінчується в день
-      occurrences: occurrences
-      on: on
+      occurrences: повторення
+      on: в
       everyDay: кожного дня
       starts: починається
     weekDays: Дні тижня
     weekSuffix: тиждень/тижні
     weekly: Щотижня
-    yearSuffix: year(s)
-    yearly: Yearly
+    yearSuffix: рік(и)
+    yearly: Щорічно
   validation:
     deadline_time_invalid: Неправильний час крайнього терміну
     deadline_cannot_be_before_planned: Крайній термін має бути після запланованої дати

@@ -73,7 +73,7 @@ class TasksService extends ChangeNotifier {
         } catch (e) {
           retryCount++;
           if (retryCount < maxRetries) {
-            _logger.warn('TasksService: Retry $retryCount/$maxRetries for task $taskId after error: $e');
+            _logger.warning('TasksService: Retry $retryCount/$maxRetries for task $taskId after error: $e');
             await Future.delayed(Duration(milliseconds: 500 * retryCount)); // Exponential backoff
           } else {
             rethrow;

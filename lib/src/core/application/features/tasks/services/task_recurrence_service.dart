@@ -36,7 +36,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     if (task.recurrenceEndDate != null) {
       DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now();
       DateTime nextDate = calculateNextRecurrenceDate(task, lastDate);
-      bool canCreate = nextDate.isBefore(task.recurrenceEndDate!);
+      bool canCreate = !nextDate.isAfter(task.recurrenceEndDate!);
       _logger.debug(
           'TaskRecurrenceService: End date check - next date: $nextDate, end date: ${task.recurrenceEndDate}, can create: $canCreate');
       return canCreate;

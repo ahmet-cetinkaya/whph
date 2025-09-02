@@ -287,8 +287,8 @@ tasks:
     summary:
       endsAfter: 结束于
       endsOnDate: 结束日期
-      occurrences: occurrences
-      on: on
+      occurrences: 次
+      on: 于
       everyDay: 每天
       starts: 开始
     weekDays: 星期
