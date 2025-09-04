@@ -9,6 +9,9 @@ import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_
 @UseRowClass(Task)
 class TaskTable extends Table {
   TextColumn get id => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
   TextColumn get parentTaskId => text().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
@@ -55,15 +58,54 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     ];
     String whereClause = whereClauses.join(' AND ');
 
-    final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
-      variables: [Variable.withString(id.toString())],
-      readsFrom: {table},
-    ).getSingleOrNull();
+    try {
+      final result = await database.customSelect(
+        'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+        variables: [Variable.withString(id.toString())],
+        readsFrom: {table},
+      ).getSingleOrNull();
 
-    if (result == null) return null;
+      if (result == null) return null;
 
-    return _mapTaskFromRow(result.data);
+      return _mapTaskFromRow(result.data);
+    } catch (e) {
+      if (e.toString().contains('Too many elements')) {
+        // Handle duplicate records case - get the first record and clean up duplicates
+        final results = await database.customSelect(
+          'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+          variables: [Variable.withString(id.toString())],
+          readsFrom: {table},
+        ).get();
+
+        if (results.isEmpty) return null;
+
+        // Return the first (likely original) record
+        final firstRecord = results.first;
+
+        // Clean up duplicates in the background (keep the first, delete the rest)
+        if (results.length > 1) {
+          _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
+        }
+
+        return _mapTaskFromRow(firstRecord.data);
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
+    try {
+      for (final duplicate in duplicatesToDelete) {
+        await database.customStatement(
+          'DELETE FROM ${table.actualTableName} WHERE rowid = ?',
+          [Variable.withInt(duplicate.data['rowid'] as int)],
+        );
+      }
+    } catch (e) {
+      // Log the error but don't throw - this is a background cleanup operation
+      // ignore: avoid_print
+      print('Warning: Failed to cleanup duplicate tasks for ID $taskId: $e');
+    }
   }
 
   @override

@@ -97,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration {
@@ -420,6 +420,61 @@ class AppDatabase extends _$AppDatabase {
             SET [order] = (SELECT new_order FROM ordered_habits WHERE ordered_habits.id = habit_table.id)
             WHERE habit_table.id IN (SELECT id FROM ordered_habits)
           ''');
+        },
+        from22To23: (m, schema) async {
+          // Clean up duplicate task records by keeping only the first occurrence of each ID
+          // This migration addresses the "orphaned task" issue where duplicate records
+          // caused "Too many elements" errors in getById() operations
+
+          // First, identify and delete duplicate records (keep the first record for each ID)
+          await customStatement('''
+            DELETE FROM task_table 
+            WHERE rowid NOT IN (
+              SELECT MIN(rowid) 
+              FROM task_table 
+              GROUP BY id
+            )
+          ''');
+
+          // Recreate the task table with proper primary key constraint
+          // The table structure remains the same, but now enforces uniqueness on the id column
+          await customStatement('''
+            CREATE TABLE task_table_new (
+              id TEXT NOT NULL,
+              parent_task_id TEXT,
+              title TEXT NOT NULL,
+              description TEXT,
+              priority INTEGER,
+              planned_date INTEGER,
+              deadline_date INTEGER,
+              estimated_time INTEGER,
+              is_completed INTEGER NOT NULL DEFAULT 0,
+              created_date INTEGER NOT NULL,
+              modified_date INTEGER,
+              deleted_date INTEGER,
+              "order" REAL NOT NULL DEFAULT 0.0,
+              planned_date_reminder_time INTEGER NOT NULL DEFAULT 0,
+              deadline_date_reminder_time INTEGER NOT NULL DEFAULT 0,
+              recurrence_type INTEGER NOT NULL DEFAULT 0,
+              recurrence_interval INTEGER,
+              recurrence_days_string TEXT,
+              recurrence_start_date INTEGER,
+              recurrence_end_date INTEGER,
+              recurrence_count INTEGER,
+              recurrence_parent_id TEXT,
+              PRIMARY KEY (id)
+            )
+          ''');
+
+          // Copy data to the new table (duplicates should already be removed)
+          await customStatement('''
+            INSERT INTO task_table_new 
+            SELECT * FROM task_table
+          ''');
+
+          // Drop the old table and rename the new one
+          await customStatement('DROP TABLE task_table');
+          await customStatement('ALTER TABLE task_table_new RENAME TO task_table');
         },
       ),
     );
