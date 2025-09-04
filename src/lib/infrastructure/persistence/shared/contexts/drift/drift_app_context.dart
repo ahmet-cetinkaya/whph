@@ -417,7 +417,7 @@ class AppDatabase extends _$AppDatabase {
               WHERE deleted_date IS NULL
             )
             UPDATE habit_table 
-            SET order = (SELECT new_order FROM ordered_habits WHERE ordered_habits.id = habit_table.id)
+            SET [order] = (SELECT new_order FROM ordered_habits WHERE ordered_habits.id = habit_table.id)
             WHERE habit_table.id IN (SELECT id FROM ordered_habits)
           ''');
         },

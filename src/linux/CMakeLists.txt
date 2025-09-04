@@ -163,7 +163,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
 )
 
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/src/core/domain/shared/assets/images/whph_logo.png"
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons"
     RENAME "whph.png"
 )
@@ -171,7 +171,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/src/core/domain/shared/assets/
 # Create additional icon directories in bundle
 install(CODE "
     file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\")
-    file(COPY \"${CMAKE_CURRENT_SOURCE_DIR}/../lib/src/core/domain/shared/assets/images/whph_logo.png\"
+    file(COPY \"${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png\"
          DESTINATION \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\"
          FILES_MATCHING PATTERN \"whph_logo.png\"
          )
@@ -182,7 +182,7 @@ install(CODE "
 ")
 
 # Install system-wide icon for window decoration
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/src/core/domain/shared/assets/images/whph_logo.png"
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps"
     RENAME "whph.png"
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ

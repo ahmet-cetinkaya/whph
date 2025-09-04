@@ -4,7 +4,7 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<!-- App name should match AppInfo.name in lib/src/core/domain/shared/constants/app_info.dart -->
+	<!-- App name should match AppInfo.name in lib/core/domain/shared/constants/app_info.dart -->
 	<key>CFBundleDisplayName</key>
 	<string>Work Hard Play Hard</string>
 	<key>CFBundleExecutable</key>
@@ -13,7 +13,7 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<!-- App name should match AppInfo.name in lib/src/core/domain/shared/constants/app_info.dart -->
+	<!-- App name should match AppInfo.name in lib/core/domain/shared/constants/app_info.dart -->
 	<key>CFBundleName</key>
 	<string>Work Hard Play Hard</string>
 	<key>CFBundlePackageType</key>
