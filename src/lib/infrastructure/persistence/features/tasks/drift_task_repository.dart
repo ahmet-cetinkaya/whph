@@ -76,13 +76,17 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
+    if (duplicatesToDelete.isEmpty) return;
+
     try {
-      for (final duplicate in duplicatesToDelete) {
-        await database.customStatement(
-          'DELETE FROM ${table.actualTableName} WHERE rowid = ?',
-          [Variable.withInt(duplicate.data['rowid'] as int)],
-        );
-      }
+      final rowIds = duplicatesToDelete.map((d) => d.data['rowid'] as int).toList();
+      final placeholders = List.filled(rowIds.length, '?').join(',');
+
+      await database.customStatement(
+        'DELETE FROM ${table.actualTableName} WHERE rowid IN ($placeholders)',
+        rowIds.map((id) => Variable.withInt(id)).toList(),
+      );
+      Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
     } catch (e) {
       // Log the error but don't throw - this is a background cleanup operation
       Logger.warning('Failed to cleanup duplicate tasks for ID $taskId: $e');
