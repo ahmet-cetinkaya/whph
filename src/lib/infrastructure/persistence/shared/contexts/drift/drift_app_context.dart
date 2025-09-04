@@ -468,8 +468,8 @@ class AppDatabase extends _$AppDatabase {
 
           // Copy data to the new table (duplicates should already be removed)
           await customStatement('''
-            INSERT INTO task_table_new 
-            SELECT * FROM task_table
+            INSERT INTO task_table_new (id, parent_task_id, title, description, priority, planned_date, deadline_date, estimated_time, is_completed, created_date, modified_date, deleted_date, "order", planned_date_reminder_time, deadline_date_reminder_time, recurrence_type, recurrence_interval, recurrence_days_string, recurrence_start_date, recurrence_end_date, recurrence_count, recurrence_parent_id)
+            SELECT id, parent_task_id, title, description, priority, planned_date, deadline_date, estimated_time, is_completed, created_date, modified_date, deleted_date, "order", planned_date_reminder_time, deadline_date_reminder_time, recurrence_type, recurrence_interval, recurrence_days_string, recurrence_start_date, recurrence_end_date, recurrence_count, recurrence_parent_id FROM task_table
           ''');
 
           // Drop the old table and rename the new one
