@@ -822,8 +822,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         final days = _taskRecurrenceService.getRecurrenceDays(_task!);
         if (days != null && days.isNotEmpty) {
           // Check if all weekdays are selected
-          if (days.length == WeekDays.values.length && 
-              WeekDays.values.every((weekDay) => days.contains(weekDay))) {
+          if (days.length == WeekDays.values.length && WeekDays.values.every((weekDay) => days.contains(weekDay))) {
             summary += ' ${_translationService.translate(TaskTranslationKeys.everyDay)}';
           } else {
             final dayNames = days
