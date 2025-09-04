@@ -1,0 +1,6 @@
+• Nowa opcja filtra do łatwego pokazywania lub ukrywania podzadań dla lepszego zarządzania zadaniami
+• Ulepszony eksport dzienników debugowania z pełnym wsparciem językowym dla płynniejszego rozwiązywania problemów
+• Ulepszone dzienniki debugowania są teraz wyświetlane jako nakładkowe powiadomienia dla natychmiastowej informacji zwrotnej
+• Pełna funkcja eksportu dzienników z lokalizacją dla wszystkich obsługiwanych języków
+• Dodane tłumaczenia błędów dla dzienników debugowania w każdym języku w celu poprawy doświadczenia użytkownika
+• Wprowadzone zaawansowane ustawienia i kompleksowa funkcjonalność dzienników debugowania dla zaawansowanych użytkowników

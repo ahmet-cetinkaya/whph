@@ -1,0 +1,6 @@
+• Nouvelle option de filtre pour afficher ou masquer facilement les sous-tâches pour une meilleure gestion des tâches
+• Export amélioré des journaux de débogage avec prise en charge complète des langues pour un dépannage plus fluide
+• Les journaux de débogage améliorés s'affichent désormais comme des notifications superposées pour un retour instantané
+• Fonction complète d'exportation des journaux avec localisation pour toutes les langues prises en charge
+• Ajout de traductions d'erreurs pour les journaux de débogage dans toutes les langues pour améliorer l'expérience utilisateur
+• Introduction de paramètres avancés et de fonctionnalités complètes des journaux de débogage pour les utilisateurs avancés
