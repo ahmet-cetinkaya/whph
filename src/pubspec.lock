@@ -1074,7 +1074,7 @@ packages:
     source: hosted
     version: "4.1.0"
   reflectable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: reflectable
       sha256: "35ee17c3b759fa935cc7e9247445903384520fd174e0d6c142d8288e5439fd5b"
