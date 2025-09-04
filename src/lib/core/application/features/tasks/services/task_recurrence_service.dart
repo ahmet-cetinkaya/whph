@@ -208,14 +208,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     final nextDates = _calculateNextDates(task);
     final taskTags = await _getTaskTags(task.id, mediator);
     final nextRecurrenceCount = _calculateNextRecurrenceCount(task);
-    
-    final saveCommand = _buildSaveTaskCommand(
-      task, 
-      nextDates.plannedDate, 
-      nextDates.deadlineDate, 
-      nextRecurrenceCount, 
-      taskTags
-    );
+
+    final saveCommand =
+        _buildSaveTaskCommand(task, nextDates.plannedDate, nextDates.deadlineDate, nextRecurrenceCount, taskTags);
 
     final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
     _logger.info('Created next recurrence instance ${result.id} for task ${task.id}');
@@ -226,9 +221,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// Calculates the next planned and deadline dates for recurrence
   ({DateTime plannedDate, DateTime? deadlineDate}) _calculateNextDates(Task task) {
     final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
-    final nextDeadlineDate = task.deadlineDate != null 
-        ? calculateNextRecurrenceDate(task, task.deadlineDate!) 
-        : null;
+    final nextDeadlineDate = task.deadlineDate != null ? calculateNextRecurrenceDate(task, task.deadlineDate!) : null;
 
     return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
   }
