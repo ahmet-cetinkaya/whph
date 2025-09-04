@@ -8,5 +8,5 @@ runs:
       shell: bash
       run: |
         echo "Initializing acore submodule..."
-        git submodule update --init lib/corePackages/acore
+        git submodule update --init src/lib/corePackages/acore
         echo "Acore submodule initialized successfully"

@@ -37,15 +37,16 @@ jobs:
 
       - name: Remove non-Android platforms
         run: |
+          cd src
           rm -rf ios linux macos web windows
 
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/whph-release.keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release.keystore
 
       - name: Update Gradle Properties
         run: |
-          cat << EOF > android/key.properties
+          cat << EOF > src/android/key.properties
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
@@ -53,7 +54,9 @@ jobs:
           EOF
 
       - name: Build for Android
-        run: fvm flutter build apk --release
+        run: |
+          cd src
+          fvm flutter build apk --release
 
       # Publish the build artifacts
       - name: Get application version
@@ -64,6 +67,6 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           artifact-name: android
-          artifact-path: build/app/outputs/flutter-apk/app-release.apk
+          artifact-path: src/build/app/outputs/flutter-apk/app-release.apk
           app-version: ${{ steps.app_version.outputs.version }}
           compression-level: "0"

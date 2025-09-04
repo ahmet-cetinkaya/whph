@@ -50,10 +50,13 @@ jobs:
       - name: Check plugin compatibility
         run: |
           Write-Host "Checking for plugin compatibility..."
+          cd src
           fvm flutter pub deps
 
       - name: Clean previous builds
-        run: fvm flutter clean
+        run: |
+          cd src
+          fvm flutter clean
 
       # Add workaround for flutter_local_notifications_windows AOT issue
       - name: Apply Windows build workarounds
@@ -62,8 +65,8 @@ jobs:
 
           # Check if the problematic plugin exists
           Write-Host "Checking for flutter_local_notifications_windows plugin..."
-          if (Test-Path "pubspec.lock") {
-            $pubspecLock = Get-Content "pubspec.lock" -Raw
+          if (Test-Path "src/pubspec.lock") {
+            $pubspecLock = Get-Content "src/pubspec.lock" -Raw
             if ($pubspecLock -match "flutter_local_notifications_windows") {
               Write-Host "Found flutter_local_notifications_windows plugin - applying AOT workarounds"
               
@@ -73,12 +76,12 @@ jobs:
               echo "FLUTTER_LOCAL_NOTIFICATIONS_DETECTED=true" >> $env:GITHUB_ENV
               
               Write-Host "Plugin version information:"
-              Select-String -Path "pubspec.lock" -Pattern "flutter_local_notifications" -Context 5
+              Select-String -Path "src/pubspec.lock" -Pattern "flutter_local_notifications" -Context 5
             } else {
               Write-Host "flutter_local_notifications_windows plugin not found"
             }
           } else {
-            Write-Host "pubspec.lock not found"
+            Write-Host "src/pubspec.lock not found"
           }
 
           Write-Host "Setting additional build environment variables..."
@@ -88,6 +91,7 @@ jobs:
       - name: Build for Windows
         run: |
           Write-Host "🔧 Configuring Windows build environment..."
+          cd src
           fvm flutter config --enable-windows-desktop
           fvm flutter clean
           fvm flutter pub get
@@ -126,18 +130,18 @@ jobs:
         if: failure()
         run: |
           Write-Host "Build failed. Checking for build logs..."
-          if (Test-Path "build/") {
-            Get-ChildItem -Path "build/" -Recurse
+          if (Test-Path "src/build/") {
+            Get-ChildItem -Path "src/build/" -Recurse
           } else {
             Write-Host "No build directory found"
           }
-          if (Test-Path "build/windows/") {
-            Get-ChildItem -Path "build/windows/" -Recurse
+          if (Test-Path "src/build/windows/") {
+            Get-ChildItem -Path "src/build/windows/" -Recurse
           } else {
             Write-Host "No windows build directory found"
           }
           Write-Host "Checking for log files..."
-          $logFiles = Get-ChildItem -Path "build/" -Recurse -Filter "*.log" -ErrorAction SilentlyContinue
+          $logFiles = Get-ChildItem -Path "src/build/" -Recurse -Filter "*.log" -ErrorAction SilentlyContinue
           if ($logFiles) {
             foreach ($file in $logFiles) {
               Write-Host "=== Contents of $($file.FullName) ==="
@@ -151,7 +155,7 @@ jobs:
       - name: Check build output
         run: |
           Write-Host "BUILD_TYPE: ${{ env.BUILD_TYPE }}"
-          if (Test-Path "build/windows/x64/runner/${{ env.BUILD_TYPE }}") {
+          if (Test-Path "src/build/windows/x64/runner/${{ env.BUILD_TYPE }}") {
             Write-Host "✅ Build output found"
           } else {
             Write-Host "❌ Build output missing"
@@ -160,7 +164,7 @@ jobs:
 
       - name: Verify build output
         run: |
-          $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
+          $buildPath = "src\build\windows\x64\runner\${{ env.BUILD_TYPE }}"
           if (Test-Path $buildPath) {
             $fileCount = (Get-ChildItem -Path $buildPath -Recurse -File).Count
             Write-Host "✅ Build verified: $fileCount files in $buildPath"
@@ -174,24 +178,24 @@ jobs:
           Write-Host "Creating Windows installer with Inno Setup..."
 
           # Get app version for the installer
-          $content = Get-Content 'pubspec.yaml'
+          $content = Get-Content 'src/pubspec.yaml'
           $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value.Split('+')[0] }
           Write-Host "App version: $version"
 
           # Verify the build output exists
-          $buildPath = "build\windows\x64\runner\${{ env.BUILD_TYPE }}"
+          $buildPath = "src\build\windows\x64\runner\${{ env.BUILD_TYPE }}"
           Write-Host "Checking build output at: $buildPath"
           if (-not (Test-Path $buildPath)) {
             Write-Host "ERROR: Build output not found at $buildPath"
             Write-Host "Available build directories:"
-            if (Test-Path "build\windows\x64\runner") {
-              Get-ChildItem "build\windows\x64\runner" | ForEach-Object { Write-Host "  - $($_.Name)" }
+            if (Test-Path "src\build\windows\x64\runner") {
+              Get-ChildItem "src\build\windows\x64\runner" | ForEach-Object { Write-Host "  - $($_.Name)" }
             }
             exit 1
           }
 
           # Create installer directory in the correct location
-          $installerDir = "build\windows\installer"
+          $installerDir = "src\build\windows\installer"
           New-Item -ItemType Directory -Force -Path $installerDir
           Write-Host "Created installer directory: $installerDir"
 
@@ -202,14 +206,14 @@ jobs:
           Write-Host "Absolute installer directory: $absoluteInstallerDir"
 
           # Create a copy of the installer script with dynamic paths
-          $issTemplate = Get-Content 'windows\setup-wizard\installer.iss' -Raw
+          $issTemplate = Get-Content 'src/windows/setup-wizard/installer.iss' -Raw
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
           $issTemplate = $issTemplate -replace 'Source: "\.\.\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
           # Use absolute path for output directory to avoid confusion
           $issTemplate = $issTemplate -replace 'OutputDir=build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
 
           # Write the modified script to a temporary file
-          $tempIssFile = "windows\setup-wizard\installer_temp.iss"
+          $tempIssFile = "src/windows/setup-wizard/installer_temp.iss"
           $issTemplate | Set-Content $tempIssFile
 
           Write-Host "Installer script configured for build type: ${{ env.BUILD_TYPE }}"
@@ -234,7 +238,7 @@ jobs:
           if ($LASTEXITCODE -eq 0) {
             # Check for the installer
             $expectedPath = "$installerDir\whph-setup.exe"
-            $alternatePath = "build\windows\installer\whph-setup.exe"
+            $alternatePath = "src\build\windows\installer\whph-setup.exe"
             
             if (Test-Path $expectedPath) {
               $installerSize = [math]::Round((Get-Item $expectedPath).Length / 1MB, 1)
@@ -265,20 +269,20 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           artifact-name: windows-portable
-          artifact-path: build\windows\x64\runner\${{ env.BUILD_TYPE }}\
+          artifact-path: src\build\windows\x64\runner\${{ env.BUILD_TYPE }}\
           app-version: ${{ steps.app_version.outputs.version }}
 
       - name: Upload Windows Installer
         uses: ./.github/actions/upload-build-artifact
         with:
           artifact-name: windows-installer
-          artifact-path: build\windows\installer\whph-setup.exe
+          artifact-path: src\build\windows\installer\whph-setup.exe
           app-version: ${{ steps.app_version.outputs.version }}
           compression-level: "0"
 
       - name: Verify installer artifact exists
         run: |
-          $installerPath = "build\windows\installer\whph-setup.exe"
+          $installerPath = "src\build\windows\installer\whph-setup.exe"
           if (Test-Path $installerPath) {
             $sizeMB = [math]::Round((Get-Item $installerPath).Length / 1MB, 1)
             Write-Host "✅ Installer ready for upload ($sizeMB MB)"

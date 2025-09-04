@@ -44,9 +44,9 @@ for arg in "$@"; do
     esac
 done
 
-# Get current version code from pubspec.yaml
-CURRENT_VERSION_CODE=$(grep "^version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d'+' -f2)
-CURRENT_VERSION=$(grep "^version:" "$PROJECT_ROOT/pubspec.yaml" | cut -d' ' -f2 | cut -d'+' -f1)
+# Get current version code from src/pubspec.yaml
+CURRENT_VERSION_CODE=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | cut -d'+' -f2)
+CURRENT_VERSION=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | cut -d' ' -f2 | cut -d'+' -f1)
 
 VERSION_CODE=${VERSION_CODE:-$CURRENT_VERSION_CODE}
 
@@ -286,8 +286,8 @@ EOF
         
         # Get version code from pubspec.yaml at this tag
         version_code=""
-        if git show "$current_tag:pubspec.yaml" >/dev/null 2>&1; then
-            version_line=$(git show "$current_tag:pubspec.yaml" | grep "^version:" | head -1)
+        if git show "$current_tag:src/pubspec.yaml" >/dev/null 2>&1; then
+            version_line=$(git show "$current_tag:src/pubspec.yaml" | grep "^version:" | head -1)
             if [[ "$version_line" =~ ^version:\ [0-9]+\.[0-9]+\.[0-9]+\+([0-9]+)$ ]]; then
                 version_code="${BASH_REMATCH[1]}"
             fi
@@ -505,8 +505,8 @@ get_version_from_code() {
     
     # Search through git tags for matching version code
     for tag in $(git tag --sort=-version:refname); do
-        if git show "$tag:pubspec.yaml" >/dev/null 2>&1; then
-            local version_line=$(git show "$tag:pubspec.yaml" | grep "^version:" | head -1)
+        if git show "$tag:src/pubspec.yaml" >/dev/null 2>&1; then
+            local version_line=$(git show "$tag:src/pubspec.yaml" | grep "^version:" | head -1)
             if [[ "$version_line" =~ version:\ [0-9]+\.[0-9]+\.[0-9]+\+([0-9]+) ]]; then
                 local tag_version_code="${BASH_REMATCH[1]}"
                 if [ "$tag_version_code" = "$version_code" ]; then

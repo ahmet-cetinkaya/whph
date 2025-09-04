@@ -34,11 +34,13 @@ runs:
       shell: bash
       run: |
         echo "Enabling platform: ${{ inputs.enable-platform }}"
+        cd src
         fvm flutter config --enable-${{ inputs.enable-platform }}
 
     - name: Install Flutter dependencies
       shell: bash
       run: |
         echo "Installing Flutter dependencies..."
+        cd src
         fvm flutter pub get
         echo "Flutter dependencies installed successfully"

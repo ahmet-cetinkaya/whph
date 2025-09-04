@@ -5,7 +5,9 @@
 
 set -e
 
-METADATA_DIR="/home/ac/Code/ahmet-cetinkaya/whph/fastlane/metadata/android"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+METADATA_DIR="$PROJECT_ROOT/fastlane/metadata/android"
 ERRORS=0
 WARNINGS=0
 

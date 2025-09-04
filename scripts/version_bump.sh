@@ -23,10 +23,10 @@ fi
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # File paths
-PUBSPEC_FILE="$PROJECT_ROOT/pubspec.yaml"
-APP_INFO_FILE="$PROJECT_ROOT/lib/src/core/domain/shared/constants/app_info.dart"
-INSTALLER_FILE="$PROJECT_ROOT/windows/setup-wizard/installer.iss"
-FDROID_METADATA_FILE="$PROJECT_ROOT/android/fdroid/metadata/me.ahmetcetinkaya.whph.yml"
+PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
+APP_INFO_FILE="$PROJECT_ROOT/src/lib/core/domain/shared/constants/app_info.dart"
+INSTALLER_FILE="$PROJECT_ROOT/src/windows/setup-wizard/installer.iss"
+FDROID_METADATA_FILE="$PROJECT_ROOT/src/android/fdroid/metadata/me.ahmetcetinkaya.whph.yml"
 
 # Extract current version from pubspec.yaml
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
@@ -111,14 +111,14 @@ echo "Creating version bump commit..."
 
 # First, stage changes in the F-Droid submodule
 echo "Staging F-Droid metadata changes in submodule..."
-cd "$PROJECT_ROOT/android/fdroid"
+cd "$PROJECT_ROOT/src/android/fdroid"
 git add "metadata/me.ahmetcetinkaya.whph.yml"
 git commit -m "feat(me.ahmetcetinkaya.whph): update app version to $NEW_VERSION"
 cd "$PROJECT_ROOT"
 
 # Then, stage changes in the main repository (including submodule update)
 echo "Staging main repository changes..."
-git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "android/fdroid" "CHANGELOG.md"
+git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "src/android/fdroid" "CHANGELOG.md"
 for d in fastlane/metadata/android/*/ ; do
     git add "${d}changelogs"
 
@@ -130,14 +130,14 @@ VERSION_COMMIT=$(git rev-parse HEAD)
 
 # Now update F-Droid metadata with the correct commit hash
 echo "Updating F-Droid metadata with commit hash..."
-cd "$PROJECT_ROOT/android/fdroid"
+cd "$PROJECT_ROOT/src/android/fdroid"
 sed -i "s/commit: .*/commit: $VERSION_COMMIT/" "metadata/me.ahmetcetinkaya.whph.yml"
 git add "metadata/me.ahmetcetinkaya.whph.yml"
 git commit -m "build(me.ahmetcetinkaya.whph): update commit hash for F-Droid build"
 cd "$PROJECT_ROOT"
 
 # Update the submodule reference in main repo
-git add "android/fdroid"
+git add "src/android/fdroid"
 git commit -m "chore: update F-Droid submodule with commit hash"
 
 # Create version tag
