@@ -1,0 +1,6 @@
+• Neue Filteroption zum einfachen Anzeigen oder Ausblenden von Unteraufgaben für bessere Aufgabenverwaltung
+• Verbesserter Debug-Log-Export mit vollständiger Sprachunterstützung für reibungslosere Fehlerbehebung
+• Verbesserte Debug-Logs werden nun als Overlay-Benachrichtigungen für sofortiges Feedback angezeigt
+• Vollständige Log-Export-Funktion mit Lokalisierung für alle unterstützten Sprachen
+• Hinzugefügte Fehlerübersetzungen für Debug-Logs in jeder Sprache zur Verbesserung der Benutzererfahrung
+• Eingeführte erweiterte Einstellungen und umfassende Debug-Log-Funktionalität für erfahrene Benutzer

@@ -1,0 +1,6 @@
+• Ny filteralternativ för att enkelt visa eller dölja deluppgifter för bättre uppgiftshantering
+• Förbättrad export av felsökningsloggar med fullständigt språkstöd för smidigare felsökning
+• Förbättrade felsökningsloggar visas nu som överläggsmeddelanden för omedelbar feedback
+• Fullständig loggexportfunktion med lokalisering för alla språk som stöds
+• Tillagda felöversättningar för felsökningsloggar på varje språk för att förbättra användarupplevelsen
+• Införda avancerade inställningar och omfattande felsökningsloggfunktionalitet för avancerade användare

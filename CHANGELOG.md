@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2025-09-04
+
+### Added
+- New filter option to easily show or hide subtasks for better task management
+- Enhanced debug log export with full language support for smoother troubleshooting
+- Improved debug logs now display as overlay notifications for instant feedback
+- Complete log export feature with localization for all supported languages
+- Added error translations for debug logs in every language to improve user experience
+- Introduced advanced settings and comprehensive debug logs functionality for power users
+- Add layout toggle for tasks and improve habits layout control
+- Add custom sort functionality with drag-and-drop support
+- Complete date range filter modernization across all pages
+- Add clear button translations and improve date picker UX
+- Add DateFilterSetting model with quick selection and auto-refresh support
+
+### Changed
+- Optimize order updates with batch processing and simplified command
+
+### Fixed
+- Correct localization and recurrence logic issues
+- Address PR #47 review feedback
+- Add validation message for deadline date in multiple languages
+- Improve date validation and recurrence logic
+- Improve recurrence and deadline validation with translations
+- Resolve task recurrence issues with deadline support
+- Dispose TextEditingController to prevent memory leak
+- Restore truncated error messages in translations
+- Resolve YAML syntax errors and add missing translations
+- Logger class logs now visible in debug logs dialog
+- Preserve exception stack traces in log export service
+- Use platform-safe temporary directory instead of hardcoded /tmp
+- Implement working drag-to-top solution with hybrid approach
+- Replace temporary drag-to-top fix with persistent solution
+- Clean up debug logging and implement temp fix for drag-to-top
+- Address final review issues and improve order handling
+- Address critical review issues in ordering logic
+- Complete missing functionality and remove debug code
+- Remove debug code and improve production readiness
+- Resolve widget alignment issues in shared components
+- Address PR #41 review feedback
+- Update to use improved acore DateTimePicker with translations
+
 ## [0.13.2] - 2025-08-17
 
 ### Added
