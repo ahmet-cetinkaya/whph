@@ -6,7 +6,7 @@ trap 'echo "> ❌ F-Droid CI failed!"; exit 1' ERR
 # F-Droid CI test script for whph
 # Usage: bash scripts/test_ci_fdroid.sh
 
-cd android/fdroid
+cd src/android/fdroid
 
 echo "> ⚙️ Setting up F-Droid environment..."
 python -m venv .fdroid-venv

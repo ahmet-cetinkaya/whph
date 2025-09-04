@@ -40,7 +40,9 @@ jobs:
 
       # Build for Linux
       - name: Build for Linux
-        run: fvm flutter build linux --release
+        run: |
+          cd src
+          fvm flutter build linux --release
 
       # Publish the build artifacts
       - name: Get application version
@@ -51,5 +53,5 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           artifact-name: linux
-          artifact-path: build/linux/x64/release/bundle/
+          artifact-path: src/build/linux/x64/release/bundle/
           app-version: ${{ steps.app_version.outputs.version }}
