@@ -5,6 +5,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 @UseRowClass(Task)
 class TaskTable extends Table {
@@ -58,39 +59,20 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     ];
     String whereClause = whereClauses.join(' AND ');
 
-    try {
-      final result = await database.customSelect(
-        'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
-        variables: [Variable.withString(id.toString())],
-        readsFrom: {table},
-      ).getSingleOrNull();
+    final results = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+      variables: [Variable.withString(id.toString())],
+      readsFrom: {table},
+    ).get();
 
-      if (result == null) return null;
+    if (results.isEmpty) return null;
 
-      return _mapTaskFromRow(result.data);
-    } catch (e) {
-      if (e.toString().contains('Too many elements')) {
-        // Handle duplicate records case - get the first record and clean up duplicates
-        final results = await database.customSelect(
-          'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
-          variables: [Variable.withString(id.toString())],
-          readsFrom: {table},
-        ).get();
-
-        if (results.isEmpty) return null;
-
-        // Return the first (likely original) record
-        final firstRecord = results.first;
-
-        // Clean up duplicates in the background (keep the first, delete the rest)
-        if (results.length > 1) {
-          _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
-        }
-
-        return _mapTaskFromRow(firstRecord.data);
-      }
-      rethrow;
+    // Clean up duplicates in the background (keep the first, delete the rest)
+    if (results.length > 1) {
+      _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
     }
+
+    return _mapTaskFromRow(results.first.data);
   }
 
   Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
@@ -103,8 +85,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       }
     } catch (e) {
       // Log the error but don't throw - this is a background cleanup operation
-      // ignore: avoid_print
-      print('Warning: Failed to cleanup duplicate tasks for ID $taskId: $e');
+      Logger.warning('Failed to cleanup duplicate tasks for ID $taskId: $e');
     }
   }
 
