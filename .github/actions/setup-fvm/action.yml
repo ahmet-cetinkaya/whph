@@ -16,16 +16,21 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Get Flutter version from .fvmrc
+    - name: Get Flutter version from src/.fvmrc
       id: get-version
       shell: bash
       run: |
-        if [ -f ".fvmrc" ]; then
-          VERSION=$(cat .fvmrc | grep -o '"flutter": "[^"]*"' | cut -d'"' -f4)
+        if [ -f "src/.fvmrc" ]; then
+          VERSION=$(cat src/.fvmrc | grep -o '"flutter": "[^"]*"' | cut -d'"' -f4)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Found Flutter version: $VERSION"
+        elif [ -f ".fvmrc" ]; then
+          # Fallback for older structure
+          VERSION=$(cat .fvmrc | grep -o '"flutter": "[^"]*"' | cut -d'"' -f4)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found Flutter version: $VERSION (fallback location)"
         else
-          echo "Error: .fvmrc file not found"
+          echo "Error: .fvmrc file not found in src/ or root"
           exit 1
         fi
 
