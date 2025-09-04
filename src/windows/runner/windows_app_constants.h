@@ -1,11 +1,11 @@
 #ifndef WINDOWS_APP_CONSTANTS_H_
 #define WINDOWS_APP_CONSTANTS_H_
 
-// App constants that should match lib/src/core/domain/shared/constants/app_info.dart
+// App constants that should match lib/core/domain/shared/constants/app_info.dart
 #define APP_NAME L"Work Hard Play Hard"
 #define APP_SHORT_NAME L"WHPH"
 
-// Package name that should match lib/src/infrastructure/windows/constants/windows_app_constants.dart
+// Package name that should match lib/infrastructure/windows/constants/windows_app_constants.dart
 #define PACKAGE_NAME "me.ahmetcetinkaya.whph"
 
 // Method channel names

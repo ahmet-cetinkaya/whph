@@ -66,16 +66,16 @@ class BackgroundTranslationService {
 
       // List of all locale directories in the project
       final localeDirectories = [
-        'lib/src/presentation/ui/features/about/assets/locales',
-        'lib/src/presentation/ui/features/app_usages/assets/locales',
-        'lib/src/presentation/ui/features/calendar/assets/locales',
-        'lib/src/presentation/ui/features/habits/assets/locales',
-        'lib/src/presentation/ui/features/notes/assets/locales',
-        'lib/src/presentation/ui/features/settings/assets/locales',
-        'lib/src/presentation/ui/features/sync/assets/locales',
-        'lib/src/presentation/ui/features/tags/assets/locales',
-        'lib/src/presentation/ui/features/tasks/assets/locales',
-        'lib/src/presentation/ui/shared/assets/locales',
+        'lib/presentation/ui/features/about/assets/locales',
+        'lib/presentation/ui/features/app_usages/assets/locales',
+        'lib/presentation/ui/features/calendar/assets/locales',
+        'lib/presentation/ui/features/habits/assets/locales',
+        'lib/presentation/ui/features/notes/assets/locales',
+        'lib/presentation/ui/features/settings/assets/locales',
+        'lib/presentation/ui/features/sync/assets/locales',
+        'lib/presentation/ui/features/tags/assets/locales',
+        'lib/presentation/ui/features/tasks/assets/locales',
+        'lib/presentation/ui/shared/assets/locales',
       ];
 
       // Load all translation files for current locale

@@ -28,9 +28,9 @@ whph-2/
 └── PRIVACY_POLICY.md          # Privacy policy document
 ```
 
-## Source Code Organization (`lib/` directory)
+## Source Code Organization (`src/lib/` directory)
 
-The `lib/` directory contains the main Dart source code organized using Clean Architecture principles:
+The `src/lib/` directory contains the main Dart source code organized using Clean Architecture principles:
 
 ```
 lib/
@@ -44,7 +44,7 @@ lib/
 └── main.mapper.g.dart         # Generated mapper code
 ```
 
-### Core Layer (`lib/src/core/`)
+### Core Layer (`src/lib/core/`)
 
 Contains the business logic and domain models:
 
@@ -55,7 +55,7 @@ src/core/
 └── shared/                    # Shared core utilities and abstractions
 ```
 
-### Infrastructure Layer (`lib/src/infrastructure/`)
+### Infrastructure Layer (`src/lib/infrastructure/`)
 
 Handles external concerns and platform-specific implementations:
 
@@ -71,7 +71,7 @@ src/infrastructure/
 └── infrastructure_container.dart  # Dependency injection container
 ```
 
-### Presentation Layer (`lib/src/presentation/`)
+### Presentation Layer (`src/lib/presentation/`)
 
 Contains UI components and API controllers:
 
@@ -185,7 +185,7 @@ android/fdroid/                # F-Droid repository submodule
 
 This submodule points to a separate GitLab repository (`ahmet-cetinkaya/fdroid-data`) on the `me.ahmetcetinkaya.whph` branch, containing F-Droid-specific metadata and build configurations.
 
-## Core Packages and Submodules (`lib/corePackages/acore/`)
+## Core Packages and Submodules (`src/lib/corePackages/acore/`)
 
 The project includes the `acore-flutter` package as a Git submodule:
 
@@ -230,13 +230,13 @@ These scripts are integrated with the `pubspec.yaml` scripts section and can be 
 
 ### Application Entry Points
 
-- **`lib/main.dart`** - Main application entry point, sets up global error handling, dependency injection, and launches the app
-- **`lib/src/presentation/ui/app.dart`** - Main app widget with routing and theme configuration
+- **`src/lib/main.dart`** - Main application entry point, sets up global error handling, dependency injection, and launches the app
+- **`src/lib/presentation/ui/app.dart`** - Main app widget with routing and theme configuration
 
 ### Dependency Injection
 
-- **`lib/src/infrastructure/infrastructure_container.dart`** - Infrastructure layer DI container
-- **`lib/src/presentation/ui/ui_presentation_container.dart`** - Presentation layer DI container
+- **`src/lib/infrastructure/infrastructure_container.dart`** - Infrastructure layer DI container
+- **`src/lib/presentation/ui/ui_presentation_container.dart`** - Presentation layer DI container
 
 ### Platform Integration
 
@@ -260,10 +260,10 @@ These scripts are integrated with the `pubspec.yaml` scripts section and can be 
 
 The project follows Clean Architecture principles:
 
-1. **Domain Layer** (`lib/src/core/domain/`) - Business entities and rules
-2. **Application Layer** (`lib/src/core/application/`) - Use cases and application services
-3. **Infrastructure Layer** (`lib/src/infrastructure/`) - External concerns (database, file system, platform APIs)
-4. **Presentation Layer** (`lib/src/presentation/`) - UI components and API controllers
+1. **Domain Layer** (`src/lib/core/domain/`) - Business entities and rules
+2. **Application Layer** (`src/lib/core/application/`) - Use cases and application services
+3. **Infrastructure Layer** (`src/lib/infrastructure/`) - External concerns (database, file system, platform APIs)
+4. **Presentation Layer** (`src/lib/presentation/`) - UI components and API controllers
 
 This structure ensures separation of concerns, testability, and maintainability while supporting multiple platforms (Android, Windows, Linux) with platform-specific optimizations.
 
@@ -274,6 +274,6 @@ For new contributors:
 1. Read `docs/CONTRIBUTING.md` for development setup
 2. Check `docs/LINUX-DEPENDENCIES.md` if developing on Linux
 3. Review the `pubspec.yaml` scripts section for available commands
-4. Explore the `lib/src/` directory structure to understand the codebase organization
+4. Explore the `src/lib/` directory structure to understand the codebase organization
 
 The project uses modern Flutter development practices with comprehensive tooling for building, testing, and deploying across multiple platforms.

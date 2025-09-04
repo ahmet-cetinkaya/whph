@@ -5,10 +5,14 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 @UseRowClass(Task)
 class TaskTable extends Table {
   TextColumn get id => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
   TextColumn get parentTaskId => text().nullable()();
   TextColumn get title => text()();
   TextColumn get description => text().nullable()();
@@ -55,15 +59,38 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     ];
     String whereClause = whereClauses.join(' AND ');
 
-    final result = await database.customSelect(
+    final results = await database.customSelect(
       'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
       variables: [Variable.withString(id.toString())],
       readsFrom: {table},
-    ).getSingleOrNull();
+    ).get();
 
-    if (result == null) return null;
+    if (results.isEmpty) return null;
 
-    return _mapTaskFromRow(result.data);
+    // Clean up duplicates in the background (keep the first, delete the rest)
+    if (results.length > 1) {
+      _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
+    }
+
+    return _mapTaskFromRow(results.first.data);
+  }
+
+  Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
+    if (duplicatesToDelete.isEmpty) return;
+
+    try {
+      final rowIds = duplicatesToDelete.map((d) => d.data['rowid'] as int).toList();
+      final placeholders = List.filled(rowIds.length, '?').join(',');
+
+      await database.customStatement(
+        'DELETE FROM ${table.actualTableName} WHERE rowid IN ($placeholders)',
+        rowIds.map((id) => Variable.withInt(id)).toList(),
+      );
+      Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
+    } catch (e) {
+      // Log the error but don't throw - this is a background cleanup operation
+      Logger.warning('Failed to cleanup duplicate tasks for ID $taskId: $e');
+    }
   }
 
   @override
@@ -235,7 +262,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) {
+            // Handle total_duration which is an alias, not a table column
+            if (order.field == 'total_duration') {
+              return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+            }
+            return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+          }).join(', ')} '
         : null;
 
     final baseQuery = '''
