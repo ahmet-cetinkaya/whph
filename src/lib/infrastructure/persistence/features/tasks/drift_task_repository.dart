@@ -235,7 +235,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) {
+            // Handle total_duration which is an alias, not a table column
+            if (order.field == 'total_duration') {
+              return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+            }
+            return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+          }).join(', ')} '
         : null;
 
     final baseQuery = '''
