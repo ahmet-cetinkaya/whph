@@ -1,0 +1,3 @@
+• Izboljšana zmogljivost aplikacije s hitrejšim odstranjevanjem podvojitev
+• Popravljene osirotele naloge, ki jih povzročajo podvojeni vnosi
+• Boljše razvrščanje nalog po trajanju
