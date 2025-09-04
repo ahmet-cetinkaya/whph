@@ -1,0 +1,3 @@
+• Vylepšený výkon aplikace s rychlejším odstraňováním duplicit
+• Opravené osiřelé úkoly způsobené duplicitními záznamy
+• Lepší řazení úkolů podle doby trvání

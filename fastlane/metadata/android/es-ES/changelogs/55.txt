@@ -1,0 +1,3 @@
+• Mejorado el rendimiento de la aplicación con eliminación más rápida de duplicados
+• Corregidas tareas huérfanas causadas por entradas duplicadas
+• Mejor ordenación de tareas por duración

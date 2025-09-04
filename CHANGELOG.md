@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1] - 2025-09-04
+
+### Changed
+- Optimize duplicate cleanup with batch delete operations
+
+### Fixed
+- Resolve orphaned task issue caused by duplicate records
+- Handle total_duration alias in order by clause
+- Update project paths from lib/src to lib structure
+
 ## [0.14.0] - 2025-09-04
 
 ### Added
