@@ -41,6 +41,7 @@ class TaskList extends StatefulWidget {
   final bool transparentCards;
   final bool enableReordering;
   final bool forceOriginalLayout;
+  final bool useParentScroll;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
@@ -72,6 +73,7 @@ class TaskList extends StatefulWidget {
     this.transparentCards = false,
     this.enableReordering = false,
     this.forceOriginalLayout = false,
+    this.useParentScroll = true,
     this.showDoneOverlayWhenEmpty = false,
     this.ignoreArchivedTagVisibility = false,
     required this.onClickTask,
@@ -511,8 +513,8 @@ class TaskListState extends State<TaskList> {
       return ReorderableListView(
         key: _pageStorageKey,
         buildDefaultDragHandles: false,
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,
           child: child,
@@ -535,8 +537,8 @@ class TaskListState extends State<TaskList> {
       final taskCards = _buildTaskCards();
       return ListView.builder(
         key: _pageStorageKey,
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         itemCount: taskCards.length + (_tasks!.hasNext ? 1 : 0),
         itemBuilder: (context, index) {
           if (index < taskCards.length) {

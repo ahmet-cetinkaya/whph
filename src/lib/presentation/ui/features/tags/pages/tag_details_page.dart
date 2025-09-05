@@ -285,6 +285,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     sortConfig: _taskSortConfig,
                                     enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
                                     ignoreArchivedTagVisibility: true,
+                                    useParentScroll: false,
                                     onClickTask: (task) async {
                                       await ResponsiveDialogHelper.showResponsiveDialog(
                                         context: context,
