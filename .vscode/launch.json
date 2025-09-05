@@ -7,19 +7,33 @@
     {
       "name": "whph",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart"
     },
     {
       "name": "whph (profile mode)",
       "request": "launch",
       "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart",
       "flutterMode": "profile"
     },
     {
       "name": "whph (release mode)",
       "request": "launch",
       "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart",
       "flutterMode": "release"
+    },
+    {
+      "name": "whph (demo mode)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart",
+      "args": ["--dart-define", "DEMO_MODE=true"]
     }
   ]
 }
