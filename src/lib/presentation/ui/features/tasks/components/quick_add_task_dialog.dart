@@ -257,7 +257,12 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           setState(() {
             _clearAllFields();
           });
-          _focusNode.requestFocus();
+          // Delay focus request to prevent dialog instability
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _focusNode.requestFocus();
+            }
+          });
         }
       },
       finallyAction: () {
@@ -607,7 +612,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
     final theme = Theme.of(context);
 
-    return Container(
+    Widget dialogContent = Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         // Use different border radius based on platform
@@ -703,6 +708,17 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         ),
       ),
     );
+
+    // For mobile, wrap in keyboard-aware container
+    if (!isDesktop) {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        child: dialogContent,
+      );
+    }
+
+    return dialogContent;
   }
 
   Widget _buildQuickActionButtons() {
