@@ -62,6 +62,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
+  bool _forceTagsRefresh = false;
 
   DateTime currentMonth = DateTime.now();
 
@@ -122,7 +123,28 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     if (addedHabitId != widget.habitId && removedHabitId != widget.habitId) return;
 
     _getHabitRecordsForMonth(currentMonth);
-    _getHabit(); // Refresh statistics
+    _getHabitStatisticsOnly(); // Refresh only statistics, not tags
+  }
+
+  Future<void> _getHabitStatisticsOnly() async {
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            // Only update statistics-related fields, preserve existing habit data
+            if (_habit != null) {
+              _habit = result;
+            }
+          });
+        }
+      },
+    );
   }
 
   Future<void> _getHabit() async {
@@ -221,10 +243,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: () {
         if (mounted) {
-          setState(() {
-            _getHabitRecordsForMonth(currentMonth);
-            _getHabit();
-          });
+          // Update records and statistics without triggering tag field refresh
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabitStatisticsOnly();
 
           // Play sound feedback for record creation
           _soundPlayer.play(SharedSounds.done, volume: 1.0);
@@ -249,10 +270,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: () {
         if (mounted) {
-          setState(() {
-            _getHabitRecordsForMonth(currentMonth);
-            _getHabit();
-          });
+          // Update records and statistics without triggering tag field refresh
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabitStatisticsOnly();
 
           // Notify service that a record was removed to trigger statistics refresh
           _habitsService.notifyHabitRecordRemoved(widget.habitId);
@@ -268,14 +288,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     int pageIndex = 0;
     const int pageSize = 50;
 
-    // Clear existing tags first to avoid duplications
-    if (mounted) {
-      setState(() {
-        if (_habitTags != null) {
-          _habitTags!.items.clear();
-        }
-      });
-    }
+    // Store existing tags to compare and avoid unnecessary UI updates
+    final existingTagIds = _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
+    GetListHabitTagsQueryResponse? newHabitTags;
 
     while (true) {
       final query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
@@ -287,17 +302,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           return await _mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
         },
         onSuccess: (response) {
-          if (mounted) {
-            setState(() {
-              if (_habitTags == null) {
-                _habitTags = response;
-              } else {
-                _habitTags!.items.addAll(response.items);
-              }
-            });
-
-            // Process field visibility again after tags are loaded
-            _processFieldVisibility();
+          if (newHabitTags == null) {
+            newHabitTags = response;
+          } else {
+            newHabitTags!.items.addAll(response.items);
           }
         },
       );
@@ -309,6 +317,29 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
       // Continue to next page
       pageIndex++;
+    }
+
+    // Update state with new tags - check if we should force refresh or if tags actually changed
+    if (mounted) {
+      // If we have new tags or if this is the first load (_habitTags is null)
+      if (newHabitTags != null) {
+        final newTagIds = newHabitTags!.items.map((tag) => tag.tagId).toSet();
+        
+        // Always update if forced refresh is requested, first load, or if tags actually changed
+        if (_forceTagsRefresh || _habitTags == null || existingTagIds.length != newTagIds.length || !existingTagIds.containsAll(newTagIds)) {
+          setState(() {
+            _habitTags = newHabitTags;
+            _forceTagsRefresh = false; // Reset flag after update
+          });
+          _processFieldVisibility();
+        }
+      } else if (_habitTags == null) {
+        // If no result and _habitTags is still null, initialize with empty response
+        setState(() {
+          _habitTags = GetListHabitTagsQueryResponse(items: [], pageIndex: 0, pageSize: 50, totalItemCount: 0);
+        });
+        _processFieldVisibility();
+      }
     }
   }
 
@@ -374,6 +405,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If operation succeeded, refresh tags and return true
     if (result != null) {
+      _forceTagsRefresh = true; // Force refresh after successful addition
       await _getHabitTags();
       return true;
     }
@@ -394,6 +426,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If operation succeeded, refresh tags and return true
     if (result != null) {
+      _forceTagsRefresh = true; // Force refresh after successful removal
       await _getHabitTags();
       return true;
     }
@@ -753,18 +786,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         label: _translationService.translate(HabitTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(HabitTranslationKeys.tagsHint),
-        widget: _habitTags != null
-            ? TagSelectDropdown(
-                key: ValueKey(_habitTags!.items.length),
-                isMultiSelect: true,
-                onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
-                showSelectedInDropdown: true,
-                initialSelectedTags: _habitTags!.items
-                    .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
-                    .toList(),
-                icon: SharedUiConstants.addIcon,
-              )
-            : Container(),
+        widget: TagSelectDropdown(
+          key: ValueKey('habit_${widget.habitId}_tags'),
+          isMultiSelect: true,
+          onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
+          showSelectedInDropdown: true,
+          initialSelectedTags: _habitTags?.items
+              .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
+              .toList() ?? [],
+          icon: SharedUiConstants.addIcon,
+        ),
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
