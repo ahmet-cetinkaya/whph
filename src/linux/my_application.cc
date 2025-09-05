@@ -12,6 +12,7 @@
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
+  gboolean start_minimized;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
@@ -116,6 +117,8 @@ static void my_application_activate(GApplication* application) {
   }
 
   gtk_window_set_default_size(window, 1280, 720);
+  
+  // Always show the window - minimized handling is done by Flutter layer
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -131,6 +134,21 @@ static void my_application_activate(GApplication* application) {
   setup_method_channel(view);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
+  
+  // Note: Minimized startup is now handled by Flutter's PlatformInitializationService
+  // which will hide the window using window_manager if --minimized argument is present
+}
+
+// Check if application should start minimized
+static gboolean check_start_minimized(gchar** arguments) {
+  if (!arguments) return FALSE;
+  
+  for (int i = 0; arguments[i]; i++) {
+    if (g_strcmp0(arguments[i], "--minimized") == 0) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 // Implements GApplication::local_command_line.
@@ -138,6 +156,9 @@ static gboolean my_application_local_command_line(GApplication* application, gch
   MyApplication* self = MY_APPLICATION(application);
   // Strip out the first argument as it is the binary name.
   self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
+  
+  // Check if we should start minimized
+  self->start_minimized = check_start_minimized(self->dart_entrypoint_arguments);
 
   g_autoptr(GError) error = nullptr;
   if (!g_application_register(application, nullptr, &error)) {
@@ -185,7 +206,9 @@ static void my_application_class_init(MyApplicationClass* klass) {
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
 }
 
-static void my_application_init(MyApplication* self) {}
+static void my_application_init(MyApplication* self) {
+  self->start_minimized = FALSE;
+}
 
 MyApplication* my_application_new() {
   return MY_APPLICATION(g_object_new(my_application_get_type(),

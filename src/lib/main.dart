@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/app.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
@@ -20,9 +21,16 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 /// Global DI container instance
 late final IContainer container;
 
-void main() async {
+void main(List<String> args) async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize desktop startup service to handle command line arguments
+    if (PlatformUtils.isDesktop) {
+      DesktopStartupService.initializeWithArgs(args);
+      debugPrint('Desktop startup mode: ${DesktopStartupService.getStartupModeDescription()}');
+      debugPrint('Received args: ${args.join(', ')}');
+    }
 
     // Set up global error handling
     GlobalErrorHandlerService.setupErrorHandling(navigatorKey);

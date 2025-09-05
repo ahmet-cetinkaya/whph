@@ -1,3 +1,4 @@
 class AppArgs {
-  static const String systemTray = '--system-tray';
+  static const String minimized = '--minimized';
+
 }
