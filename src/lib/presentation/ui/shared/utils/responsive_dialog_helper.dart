@@ -82,14 +82,16 @@ class ResponsiveDialogHelper {
         builder: (BuildContext context) {
           final safeAreaBottom = MediaQuery.viewPaddingOf(context).bottom;
           final screenHeight = MediaQuery.sizeOf(context).height;
+          final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
 
-          // Calculate available height considering safe area
-          final availableHeight = screenHeight - safeAreaBottom;
+          // Calculate available height considering safe area and keyboard
+          final availableHeight = screenHeight - safeAreaBottom - keyboardHeight;
           final maxHeight = availableHeight * size.mobileMaxSizeRatio;
           final initialHeight = availableHeight * size.mobileInitialSizeRatio;
 
+          // Apply keyboard padding for all bottom sheet sizes to ensure proper positioning
           return Padding(
-            padding: size == DialogSize.small ? MediaQuery.viewInsetsOf(context) : EdgeInsets.zero,
+            padding: EdgeInsets.only(bottom: keyboardHeight),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: maxHeight,
