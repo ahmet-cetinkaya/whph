@@ -15,7 +15,7 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
     launchAtStartup.setup(
       appPath: Platform.resolvedExecutable,
       appName: AppInfo.name,
-      args: [AppArgs.systemTray],
+      args: [AppArgs.minimized],
     );
   }
 
