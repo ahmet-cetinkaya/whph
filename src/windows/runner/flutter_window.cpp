@@ -51,13 +51,9 @@ bool FlutterWindow::OnCreate() {
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, 
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
         
-        // Use SW_MINIMIZE to minimize without activation
+        // Use SW_SHOWMINNOACTIVE to minimize without activation
         // This ensures the window doesn't steal focus from other applications
-        ShowWindow(hwnd, SW_MINIMIZE);
-        
-        // Ensure the window doesn't appear on any monitor
-        // by keeping it truly minimized
-        CloseWindow(hwnd);
+        ShowWindow(hwnd, SW_SHOWMINNOACTIVE);
       }
     });
   } else {
