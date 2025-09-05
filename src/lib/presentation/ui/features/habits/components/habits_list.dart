@@ -32,6 +32,7 @@ class HabitsList extends StatefulWidget {
   final DateTime? excludeCompletedForDate;
   final bool enableReordering;
   final bool forceOriginalLayout;
+  final bool useParentScroll;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -53,6 +54,7 @@ class HabitsList extends StatefulWidget {
     this.excludeCompletedForDate,
     this.enableReordering = false,
     this.forceOriginalLayout = false,
+    this.useParentScroll = true,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -279,8 +281,8 @@ class HabitsListState extends State<HabitsList> {
       return ReorderableListView(
         key: _pageStorageKey,
         buildDefaultDragHandles: false,
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,
           child: child,
@@ -395,8 +397,8 @@ class HabitsListState extends State<HabitsList> {
       return ReorderableListView(
         key: _pageStorageKey,
         buildDefaultDragHandles: false,
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,
           child: child,
@@ -419,8 +421,8 @@ class HabitsListState extends State<HabitsList> {
       final habitCards = _buildHabitCards();
       return ListView.builder(
         key: _pageStorageKey,
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         itemCount: habitCards.length + (_habitList!.hasNext ? 1 : 0),
         itemBuilder: (context, index) {
           if (index < habitCards.length) {

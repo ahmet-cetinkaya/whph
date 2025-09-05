@@ -362,6 +362,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                 enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
                 forceOriginalLayout: _forceOriginalLayout,
                 sortConfig: _sortConfig,
+                useParentScroll: false,
               ),
             ),
         ],

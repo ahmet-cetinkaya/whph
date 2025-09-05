@@ -291,6 +291,7 @@ class _HabitsPageState extends State<HabitsPage> {
                 sortConfig: _sortConfig,
                 enableReordering: _sortConfig.useCustomOrder,
                 forceOriginalLayout: _forceOriginalLayout,
+                useParentScroll: false,
                 onClickHabit: (item) {
                   _openDetails(item.id, context);
                 },
