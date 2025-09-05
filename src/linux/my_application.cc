@@ -12,7 +12,6 @@
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
-  gboolean start_minimized;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
@@ -139,26 +138,12 @@ static void my_application_activate(GApplication* application) {
   // which will hide the window using window_manager if --minimized argument is present
 }
 
-// Check if application should start minimized
-static gboolean check_start_minimized(gchar** arguments) {
-  if (!arguments) return FALSE;
-  
-  for (int i = 0; arguments[i]; i++) {
-    if (g_strcmp0(arguments[i], "--minimized") == 0) {
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
 
 // Implements GApplication::local_command_line.
 static gboolean my_application_local_command_line(GApplication* application, gchar*** arguments, int* exit_status) {
   MyApplication* self = MY_APPLICATION(application);
   // Strip out the first argument as it is the binary name.
   self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
-  
-  // Check if we should start minimized
-  self->start_minimized = check_start_minimized(self->dart_entrypoint_arguments);
 
   g_autoptr(GError) error = nullptr;
   if (!g_application_register(application, nullptr, &error)) {
@@ -207,7 +192,6 @@ static void my_application_class_init(MyApplicationClass* klass) {
 }
 
 static void my_application_init(MyApplication* self) {
-  self->start_minimized = FALSE;
 }
 
 MyApplication* my_application_new() {
