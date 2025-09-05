@@ -709,15 +709,6 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       ),
     );
 
-    // For mobile, wrap in keyboard-aware container
-    if (!isDesktop) {
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        child: dialogContent,
-      );
-    }
-
     return dialogContent;
   }
 
