@@ -23,7 +23,7 @@ class DesktopStartupService {
 
   /// Get all startup-related arguments from command line
   static List<String> getStartupArguments() {
-    return _mainArgs.contains(AppArgs.minimized) ? [AppArgs.minimized] : [];
+    return _startMinimized ? [AppArgs.minimized] : [];
   }
 
   /// Check if a specific startup argument is present
