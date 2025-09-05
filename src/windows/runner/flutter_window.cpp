@@ -13,6 +13,10 @@ FlutterWindow::FlutterWindow(const flutter::DartProject& project)
 
 FlutterWindow::~FlutterWindow() {}
 
+void FlutterWindow::SetStartMinimized(bool minimized) {
+  start_minimized_ = minimized;
+}
+
 bool FlutterWindow::OnCreate() {
   if (!Win32Window::OnCreate()) {
     return false;
@@ -35,9 +39,28 @@ bool FlutterWindow::OnCreate() {
   
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
-  flutter_controller_->engine()->SetNextFrameCallback([&]() {
-    this->Show();
-  });
+  if (start_minimized_) {
+    // For minimized startup, we create the window but don't show it
+    // The window will be available in the taskbar but not visible
+    flutter_controller_->engine()->SetNextFrameCallback([&]() {
+      // Handle edge cases for minimized startup
+      HWND hwnd = GetHandle();
+      if (hwnd) {
+        // Set window state without showing it first
+        // This avoids any brief flicker on startup
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, 
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        
+        // Use SW_SHOWMINNOACTIVE to minimize without activation
+        // This ensures the window doesn't steal focus from other applications
+        ShowWindow(hwnd, SW_SHOWMINNOACTIVE);
+      }
+    });
+  } else {
+    flutter_controller_->engine()->SetNextFrameCallback([&]() {
+      this->Show();
+    });
+  }
 
   // Flutter can complete the first frame before the "show window" callback is
   // registered. The following call ensures a frame is pending to ensure the

@@ -116,6 +116,8 @@ static void my_application_activate(GApplication* application) {
   }
 
   gtk_window_set_default_size(window, 1280, 720);
+  
+  // Always show the window - minimized handling is done by Flutter layer
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -131,7 +133,11 @@ static void my_application_activate(GApplication* application) {
   setup_method_channel(view);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
+  
+  // Note: Minimized startup is now handled by Flutter's PlatformInitializationService
+  // which will hide the window using window_manager if --minimized argument is present
 }
+
 
 // Implements GApplication::local_command_line.
 static gboolean my_application_local_command_line(GApplication* application, gchar*** arguments, int* exit_status) {
@@ -185,7 +191,8 @@ static void my_application_class_init(MyApplicationClass* klass) {
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
 }
 
-static void my_application_init(MyApplication* self) {}
+static void my_application_init(MyApplication* self) {
+}
 
 MyApplication* my_application_new() {
   return MY_APPLICATION(g_object_new(my_application_get_type(),

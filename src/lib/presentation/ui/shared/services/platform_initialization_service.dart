@@ -3,7 +3,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_setup_servic
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/api/api.dart';
-import 'package:whph/presentation/ui/shared/constants/app_args.dart';
+import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
@@ -167,11 +167,15 @@ class PlatformInitializationService {
     Logger.debug('PlatformInitializationService: Handling startup visibility...');
 
     final windowManager = container.resolve<IWindowManager>();
-    final args = Platform.executableArguments;
 
-    if (args.contains(AppArgs.systemTray)) {
+    // Check if minimized startup argument is present
+    final hasMinimizedArg = DesktopStartupService.shouldStartMinimized;
+    
+    Logger.debug('PlatformInitializationService: shouldStartMinimized: ${DesktopStartupService.shouldStartMinimized}');
+    
+    if (hasMinimizedArg) {
       await windowManager.hide();
-      Logger.debug('PlatformInitializationService: Window hidden (started with system tray flag)');
+      Logger.debug('PlatformInitializationService: Window hidden (started with minimized startup flag)');
     } else {
       await windowManager.show();
       Logger.debug('PlatformInitializationService: Window shown');
