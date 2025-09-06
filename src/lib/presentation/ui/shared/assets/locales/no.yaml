@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versjonsmisforhold
 shared:
+  untitled: "Uten tittel"
   buttons:
     add: Legg til
     back: Tilbake

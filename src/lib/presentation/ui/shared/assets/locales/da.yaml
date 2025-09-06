@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versionsuoverensstemmelse
 shared:
+  untitled: "Uden titel"
   buttons:
     add: Tilføj
     back: Tilbage

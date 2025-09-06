@@ -6,20 +6,18 @@ class DesktopStartupService {
   static bool _startMinimized = false;
   static List<String> _mainArgs = [];
 
-  
   /// Initialize with direct arguments from main()
   static void initializeWithArgs(List<String> args) {
     if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
       return;
     }
-    
+
     _mainArgs = args;
     _startMinimized = args.contains(AppArgs.minimized);
   }
 
   /// Check if the application should start minimized
   static bool get shouldStartMinimized => _startMinimized;
-
 
   /// Get all startup-related arguments from command line
   static List<String> getStartupArguments() {

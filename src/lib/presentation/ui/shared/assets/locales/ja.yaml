@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: バージョンの不一致
 shared:
+  untitled: "タイトルなし"
   validation:
     required: "{field}は必須です。"
   buttons:

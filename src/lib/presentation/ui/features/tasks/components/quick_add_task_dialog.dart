@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -10,7 +11,6 @@ import 'package:whph/presentation/ui/shared/components/border_fade_overlay.dart'
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -22,6 +22,7 @@ import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -46,6 +47,63 @@ class QuickAddTaskDialog extends StatefulWidget {
     this.onTaskCreated,
     this.initialParentTaskId,
   });
+
+  /// Shows the task dialog as bottom sheet on mobile platforms, dialog on desktop
+  static Future<T?> show<T>({
+    required BuildContext context,
+    List<String>? initialTagIds,
+    DateTime? initialPlannedDate,
+    DateTime? initialDeadlineDate,
+    EisenhowerPriority? initialPriority,
+    int? initialEstimatedTime,
+    String? initialTitle,
+    bool? initialCompleted,
+    Function(String taskId, TaskData taskData)? onTaskCreated,
+    String? initialParentTaskId,
+  }) {
+    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
+
+    final dialog = QuickAddTaskDialog(
+      initialTagIds: initialTagIds,
+      initialPlannedDate: initialPlannedDate,
+      initialDeadlineDate: initialDeadlineDate,
+      initialPriority: initialPriority,
+      initialEstimatedTime: initialEstimatedTime,
+      initialTitle: initialTitle,
+      initialCompleted: initialCompleted,
+      onTaskCreated: onTaskCreated,
+      initialParentTaskId: initialParentTaskId,
+    );
+
+    if (isMobile) {
+      // Show as bottom sheet on mobile
+      return showMaterialModalBottomSheet<T>(
+        context: context,
+        isDismissible: true,
+        enableDrag: true,
+        useRootNavigator: false,
+        builder: (BuildContext context) => dialog,
+      );
+    } else {
+      // Show as dialog on desktop - force dialog instead of responsive
+      return showDialog<T>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) => Dialog(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 500,
+                maxHeight: 600,
+              ),
+              child: dialog,
+            ),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   State<QuickAddTaskDialog> createState() => _QuickAddTaskDialogState();
@@ -109,7 +167,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       for (String tagId in widget.initialTagIds!) {
         final tag = await _tagRepository.getById(tagId);
         if (tag != null) {
-          tagOptions.add(DropdownOption(label: tag.name, value: tagId));
+          tagOptions.add(DropdownOption(
+              label: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
+              value: tagId));
         }
       }
 
@@ -609,16 +669,16 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium);
+    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
     final theme = Theme.of(context);
 
     Widget dialogContent = Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         // Use different border radius based on platform
-        borderRadius: isDesktop
-            ? BorderRadius.circular(AppTheme.containerBorderRadius)
-            : const BorderRadius.vertical(top: Radius.circular(AppTheme.sizeLarge)),
+        borderRadius: isMobile
+            ? const BorderRadius.vertical(top: Radius.circular(AppTheme.sizeLarge))
+            : BorderRadius.circular(AppTheme.containerBorderRadius),
       ),
       // Use mainAxisSize.min to make the container fit its content
       child: Padding(
@@ -628,7 +688,18 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drag handle for mobile, title for desktop
-            if (isDesktop)
+            if (isMobile) ...[
+              // Mobile drag handle
+              Container(
+                width: 32,
+                height: 4,
+                margin: EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ] else
               Padding(
                 padding: EdgeInsets.only(bottom: AppTheme.sizeLarge),
                 child: Row(
@@ -664,16 +735,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 // Use same content padding for both platforms
                 contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
                 // Send button in the text field
-                suffixIcon: isDesktop
-                    ? IconButton(
-                        icon: Icon(
-                          _isLoading ? Icons.hourglass_empty : Icons.send,
-                          color: theme.colorScheme.primary,
-                        ),
-                        onPressed: _createTask,
-                        tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
-                      )
-                    : SizedBox(
+                suffixIcon: isMobile
+                    ? SizedBox(
                         width: AppTheme.iconSizeLarge - 4.0,
                         height: AppTheme.iconSizeLarge - 4.0,
                         child: IconButton(
@@ -689,6 +752,14 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                             minHeight: AppTheme.iconSizeLarge - 4.0,
                           ),
                         ),
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          _isLoading ? Icons.hourglass_empty : Icons.send,
+                          color: theme.colorScheme.primary,
+                        ),
+                        onPressed: _createTask,
+                        tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
                       ),
               ),
               onSubmitted: (_) => _createTask(),

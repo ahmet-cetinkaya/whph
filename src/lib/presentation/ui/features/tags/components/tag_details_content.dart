@@ -42,6 +42,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   final TagsService _tagsService = container.resolve<TagsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _nameController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
@@ -68,6 +69,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     }
 
     _nameController.dispose();
+    _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -139,6 +141,16 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
             widget.onNameUpdated?.call(response.name);
           } else if (nameSelection.isValid) {
             _nameController.selection = nameSelection;
+          }
+
+          // Auto-focus if name is empty (newly created tag)
+          if (response.name.isEmpty) {
+            // Use a small delay to ensure the UI is fully built
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (mounted) {
+                _nameFocusNode.requestFocus();
+              }
+            });
           }
         });
 
@@ -316,6 +328,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           // Tag Name (always visible - mandatory field)
           TextFormField(
             controller: _nameController,
+            focusNode: _nameFocusNode,
             maxLines: null,
             onChanged: _onNameChanged,
             decoration: InputDecoration(

@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Niezgodność wersji
 shared:
+  untitled: "Bez tytułu"
   buttons:
     add: Dodaj
     back: Wstecz

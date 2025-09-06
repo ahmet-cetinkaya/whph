@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Αναντιστοιχία έκδοσης
 shared:
+  untitled: "Χωρίς τίτλο"
   buttons:
     add: Προσθήκη
     back: Πίσω

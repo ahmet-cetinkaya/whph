@@ -13,6 +13,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
@@ -139,7 +140,7 @@ class TaskCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            taskItem.title,
+            taskItem.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : taskItem.title,
             style: (isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -163,7 +164,10 @@ class TaskCard extends StatelessWidget {
           Label.multipleColored(
             icon: TagUiConstants.tagIcon,
             color: Colors.grey,
-            values: taskItem.tags.map((tag) => tag.name).toList(),
+            values: taskItem.tags
+                .map((tag) =>
+                    tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
+                .toList(),
             colors: taskItem.tags
                 .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
                 .toList(),

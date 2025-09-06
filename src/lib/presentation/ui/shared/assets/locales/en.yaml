@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Version mismatch
 shared:
+  untitled: "Untitled"
   buttons:
     add: Add
     back: Back
