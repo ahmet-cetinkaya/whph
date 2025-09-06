@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versieverschil
 shared:
+  untitled: "Zonder titel"
   buttons:
     add: Toevoegen
     back: Terug

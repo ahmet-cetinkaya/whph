@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/core/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
@@ -232,12 +233,18 @@ class TagTimeChartState extends State<TagTimeChart> {
           ? Color(int.parse('FF${item.tagColor!}', radix: 16))
           : Colors.primaries[i % Colors.primaries.length];
 
-      final titleColor = ColorContrastHelper.getContrastingTextColor(sectionColor);
+      final titleColor = ColorContrastHelper.getContrastingTextColor(sectionColor,
+          darkColor: AppTheme.darkTextColor, lightColor: AppTheme.lightTextColor);
+
+      final titleText =
+          item.tagName.isNotEmpty ? item.tagName : _translationService.translate(SharedTranslationKeys.untitled);
+
+      final truncatedTitleText = titleText.length > 15 ? '${titleText.substring(0, 12)}...' : titleText;
 
       sections.add(PieChartSectionData(
         color: sectionColor,
         value: item.duration.toDouble(),
-        title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',
+        title: '$truncatedTitleText\n${percent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
@@ -267,6 +274,10 @@ class TagTimeChartState extends State<TagTimeChart> {
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
           color: otherTitleColor,
+          shadows: [
+            Shadow(blurRadius: 3, color: AppTheme.surface0.withOpacity(0.9)),
+            Shadow(blurRadius: 6, color: AppTheme.surface0.withOpacity(0.9)),
+          ],
         ),
       ));
     }

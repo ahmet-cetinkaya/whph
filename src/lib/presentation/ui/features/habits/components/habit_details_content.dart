@@ -58,10 +58,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
 
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
+  bool _forceTagsRefresh = false;
 
   DateTime currentMonth = DateTime.now();
 
@@ -102,6 +104,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     _nameController.dispose();
     _descriptionController.dispose();
+    _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -122,7 +125,110 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     if (addedHabitId != widget.habitId && removedHabitId != widget.habitId) return;
 
     _getHabitRecordsForMonth(currentMonth);
-    _getHabit(); // Refresh statistics
+    _getHabitStatisticsOnly(); // Refresh only statistics, not tags
+  }
+
+  Future<void> _getHabitStatisticsOnly() async {
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            // Only update statistics-related fields, preserve existing habit data
+            if (_habit != null) {
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
+            }
+          });
+        }
+      },
+    );
+  }
+
+  Future<void> _getHabitPreserveLocal() async {
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          // Store current selections before updating
+          final nameSelection = _nameController.selection;
+          final descriptionSelection = _descriptionController.selection;
+
+          setState(() {
+            if (_habit == null) {
+              _habit = result;
+            } else {
+              // Preserve local changes, only update server-synced fields
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
+            }
+
+            // Only update name if it's different
+            if (_nameController.text != _habit!.name) {
+              _nameController.text = _habit!.name;
+              widget.onNameUpdated?.call(_habit!.name);
+              // Don't restore selection for name if it changed
+            } else if (nameSelection.isValid) {
+              // Restore selection if name didn't change
+              _nameController.selection = nameSelection;
+            }
+
+            // Only update description if it's different
+            if (_descriptionController.text != _habit!.description) {
+              _descriptionController.text = _habit!.description;
+              // Don't restore selection if text changed
+            } else if (descriptionSelection.isValid) {
+              // Restore selection if text didn't change
+              _descriptionController.selection = descriptionSelection;
+            }
+
+            // Ensure habit has valid reminder settings if reminder is enabled
+            if (_habit!.hasReminder) {
+              // Ensure we have a valid time
+              if (_habit!.reminderTime == null) {
+                _habit!.setReminderTimeOfDay(TimeOfDay.now());
+              }
+
+              // Ensure we have valid days
+              if (_habit!.reminderDays.isEmpty) {
+                final allDays = List.generate(7, (index) => index + 1);
+                _habit!.setReminderDaysFromList(allDays);
+
+                // Save the updated habit with the default reminder days
+                _saveHabitImmediately();
+              }
+            }
+          });
+          _processFieldVisibility();
+        }
+      },
+    );
   }
 
   Future<void> _getHabit() async {
@@ -140,16 +246,40 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           final descriptionSelection = _descriptionController.selection;
 
           setState(() {
-            _habit = result;
+            if (_habit == null) {
+              _habit = result;
+            } else {
+              // Preserve local changes, only update server-synced fields
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
+            }
 
             // Only update name if it's different
-            if (_nameController.text != result.name) {
-              _nameController.text = result.name;
-              widget.onNameUpdated?.call(result.name);
+            if (_nameController.text != _habit!.name) {
+              _nameController.text = _habit!.name;
+              widget.onNameUpdated?.call(_habit!.name);
               // Don't restore selection for name if it changed
             } else if (nameSelection.isValid) {
               // Restore selection if name didn't change
               _nameController.selection = nameSelection;
+            }
+
+            // Auto-focus if name is empty (newly created habit)
+            if (_habit!.name.isEmpty) {
+              // Use a small delay to ensure the UI is fully built
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  _nameFocusNode.requestFocus();
+                }
+              });
             }
 
             // Only update description if it's different
@@ -221,10 +351,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: () {
         if (mounted) {
-          setState(() {
-            _getHabitRecordsForMonth(currentMonth);
-            _getHabit();
-          });
+          // Update records and statistics without triggering tag field refresh
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabitStatisticsOnly();
 
           // Play sound feedback for record creation
           _soundPlayer.play(SharedSounds.done, volume: 1.0);
@@ -249,10 +378,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: () {
         if (mounted) {
-          setState(() {
-            _getHabitRecordsForMonth(currentMonth);
-            _getHabit();
-          });
+          // Update records and statistics without triggering tag field refresh
+          _getHabitRecordsForMonth(currentMonth);
+          _getHabitStatisticsOnly();
 
           // Notify service that a record was removed to trigger statistics refresh
           _habitsService.notifyHabitRecordRemoved(widget.habitId);
@@ -268,14 +396,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     int pageIndex = 0;
     const int pageSize = 50;
 
-    // Clear existing tags first to avoid duplications
-    if (mounted) {
-      setState(() {
-        if (_habitTags != null) {
-          _habitTags!.items.clear();
-        }
-      });
-    }
+    // Store existing tags to compare and avoid unnecessary UI updates
+    final existingTagIds = _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
+    GetListHabitTagsQueryResponse? newHabitTags;
 
     while (true) {
       final query = GetListHabitTagsQuery(habitId: widget.habitId, pageIndex: pageIndex, pageSize: pageSize);
@@ -287,17 +410,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           return await _mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query);
         },
         onSuccess: (response) {
-          if (mounted) {
-            setState(() {
-              if (_habitTags == null) {
-                _habitTags = response;
-              } else {
-                _habitTags!.items.addAll(response.items);
-              }
-            });
-
-            // Process field visibility again after tags are loaded
-            _processFieldVisibility();
+          if (newHabitTags == null) {
+            newHabitTags = response;
+          } else {
+            newHabitTags!.items.addAll(response.items);
           }
         },
       );
@@ -309,6 +425,32 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
       // Continue to next page
       pageIndex++;
+    }
+
+    // Update state with new tags - check if we should force refresh or if tags actually changed
+    if (mounted) {
+      // If we have new tags or if this is the first load (_habitTags is null)
+      if (newHabitTags != null) {
+        final newTagIds = newHabitTags!.items.map((tag) => tag.tagId).toSet();
+
+        // Always update if forced refresh is requested, first load, or if tags actually changed
+        if (_forceTagsRefresh ||
+            _habitTags == null ||
+            existingTagIds.length != newTagIds.length ||
+            !existingTagIds.containsAll(newTagIds)) {
+          setState(() {
+            _habitTags = newHabitTags;
+            _forceTagsRefresh = false; // Reset flag after update
+          });
+          _processFieldVisibility();
+        }
+      } else if (_habitTags == null) {
+        // If no result and _habitTags is still null, initialize with empty response
+        setState(() {
+          _habitTags = GetListHabitTagsQueryResponse(items: [], pageIndex: 0, pageSize: 50, totalItemCount: 0);
+        });
+        _processFieldVisibility();
+      }
     }
   }
 
@@ -374,6 +516,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If operation succeeded, refresh tags and return true
     if (result != null) {
+      _forceTagsRefresh = true; // Force refresh after successful addition
       await _getHabitTags();
       return true;
     }
@@ -394,6 +537,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If operation succeeded, refresh tags and return true
     if (result != null) {
+      _forceTagsRefresh = true; // Force refresh after successful removal
       await _getHabitTags();
       return true;
     }
@@ -490,8 +634,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           setState(() {});
         }
 
-        // Refresh habit data from repository to ensure we have the latest data
-        _getHabit();
+        // Refresh habit data from repository while preserving local changes
+        _getHabitPreserveLocal();
       },
     );
   }
@@ -662,6 +806,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               Expanded(
                 child: TextFormField(
                   controller: _nameController,
+                  focusNode: _nameFocusNode,
                   maxLines: null,
                   onChanged: _onNameChanged,
                   decoration: InputDecoration(
@@ -753,18 +898,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         label: _translationService.translate(HabitTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
         hintText: _translationService.translate(HabitTranslationKeys.tagsHint),
-        widget: _habitTags != null
-            ? TagSelectDropdown(
-                key: ValueKey(_habitTags!.items.length),
-                isMultiSelect: true,
-                onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
-                showSelectedInDropdown: true,
-                initialSelectedTags: _habitTags!.items
-                    .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
-                    .toList(),
-                icon: SharedUiConstants.addIcon,
-              )
-            : Container(),
+        widget: TagSelectDropdown(
+          key: ValueKey('habit_${widget.habitId}_tags'),
+          isMultiSelect: true,
+          onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
+          showSelectedInDropdown: true,
+          initialSelectedTags: _habitTags?.items
+                  .map((tag) => DropdownOption<String>(
+                      value: tag.tagId,
+                      label: tag.tagName.isNotEmpty
+                          ? tag.tagName
+                          : _translationService.translate(SharedTranslationKeys.untitled)))
+                  .toList() ??
+              [],
+          icon: SharedUiConstants.addIcon,
+        ),
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(

@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdow
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -44,6 +45,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   GetNoteQueryResponse? _note;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final FocusNode _titleFocusNode = FocusNode();
   Timer? _debounce;
 
   final _translationService = container.resolve<ITranslationService>();
@@ -72,6 +74,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
     _titleController.dispose();
     _contentController.dispose();
+    _titleFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -120,6 +123,16 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           } else if (titleSelection.isValid) {
             // Restore selection if title didn't change
             _titleController.selection = titleSelection;
+          }
+
+          // Auto-focus if title is empty (newly created note)
+          if (response.title.isEmpty) {
+            // Use a small delay to ensure the UI is fully built
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (mounted) {
+                _titleFocusNode.requestFocus();
+              }
+            });
           }
 
           // Update content if it's different
@@ -372,6 +385,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Note Title (always visible)
           TextFormField(
             controller: _titleController,
+            focusNode: _titleFocusNode,
             maxLines: null,
             onChanged: _onTitleChanged,
             decoration: InputDecoration(
@@ -433,8 +447,13 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
                 isMultiSelect: true,
                 onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
                 showSelectedInDropdown: true,
-                initialSelectedTags:
-                    _note!.tags.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
+                initialSelectedTags: _note!.tags
+                    .map((tag) => DropdownOption<String>(
+                        value: tag.tagId,
+                        label: tag.tagName.isNotEmpty
+                            ? tag.tagName
+                            : _translationService.translate(SharedTranslationKeys.untitled)))
+                    .toList(),
                 icon: SharedUiConstants.addIcon,
               )
             : Container(),

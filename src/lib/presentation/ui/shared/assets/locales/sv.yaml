@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versionsmatchning
 shared:
+  untitled: "Utan titel"
   buttons:
     add: Lägg till
     back: Tillbaka

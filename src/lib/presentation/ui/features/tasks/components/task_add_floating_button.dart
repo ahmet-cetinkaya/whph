@@ -4,10 +4,8 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:acore/acore.dart';
 
 /// A floating action button specifically designed for adding tasks.
@@ -86,22 +84,19 @@ class TaskAddFloatingButton extends StatelessWidget {
     );
   }
 
-  /// Shows the task creation dialog using ResponsiveDialogHelper
+  /// Shows the task creation dialog as bottom sheet on mobile, dialog on desktop
   Future<void> _showTaskCreationDialog(BuildContext context) async {
-    await ResponsiveDialogHelper.showResponsiveDialog(
+    await QuickAddTaskDialog.show(
       context: context,
-      child: QuickAddTaskDialog(
-        initialTagIds: initialTagIds,
-        initialPlannedDate: initialPlannedDate,
-        initialDeadlineDate: initialDeadlineDate,
-        initialPriority: initialPriority,
-        initialEstimatedTime: initialEstimatedTime,
-        initialParentTaskId: initialParentTaskId,
-        initialTitle: initialTitle,
-        initialCompleted: initialCompleted,
-        onTaskCreated: onTaskCreated,
-      ),
-      size: DialogSize.small,
+      initialTagIds: initialTagIds,
+      initialPlannedDate: initialPlannedDate,
+      initialDeadlineDate: initialDeadlineDate,
+      initialPriority: initialPriority,
+      initialEstimatedTime: initialEstimatedTime,
+      initialParentTaskId: initialParentTaskId,
+      initialTitle: initialTitle,
+      initialCompleted: initialCompleted,
+      onTaskCreated: onTaskCreated,
     );
   }
 }

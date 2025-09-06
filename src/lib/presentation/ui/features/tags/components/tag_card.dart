@@ -3,8 +3,11 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
 
-class TagCard extends StatelessWidget {
+class TagCard extends StatefulWidget {
   final TagListItem tag;
   final VoidCallback onOpenDetails;
   final bool isDense;
@@ -21,52 +24,61 @@ class TagCard extends StatelessWidget {
   });
 
   @override
+  State<TagCard> createState() => _TagCardState();
+}
+
+class _TagCardState extends State<TagCard> {
+  final _translationService = container.resolve<ITranslationService>();
+
+  @override
   Widget build(BuildContext context) {
-    final spacing = isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
+    final spacing = widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
 
     return ListTile(
-      tileColor: transparent ? Colors.transparent : AppTheme.surface1,
+      tileColor: widget.transparent ? Colors.transparent : AppTheme.surface1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
-      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
       contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
-      dense: isDense,
-      onTap: onOpenDetails,
+      dense: widget.isDense,
+      onTap: widget.onOpenDetails,
       leading: Icon(
         TagUiConstants.tagIcon,
-        size: isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
-        color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : AppTheme.secondaryTextColor,
+        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
+        color: widget.tag.color != null
+            ? Color(int.parse('FF${widget.tag.color}', radix: 16))
+            : AppTheme.secondaryTextColor,
       ),
       title: Text(
-        tag.name,
-        style: (isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+        widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
+        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
           fontWeight: FontWeight.bold,
           color: AppTheme.textColor,
         ),
         overflow: TextOverflow.ellipsis,
-        maxLines: isDense ? 1 : 2,
+        maxLines: widget.isDense ? 1 : 2,
       ),
-      subtitle: tag.relatedTags.isNotEmpty
+      subtitle: widget.tag.relatedTags.isNotEmpty
           ? Padding(
               padding: EdgeInsets.only(top: spacing),
               child: _buildRelatedTags(),
             )
           : null,
-      trailing: trailingButtons != null
+      trailing: widget.trailingButtons != null
           ? Row(
               mainAxisSize: MainAxisSize.min,
-              children: trailingButtons!.map((widget) {
-                if (widget is IconButton) {
+              children: widget.trailingButtons!.map((btn) {
+                if (btn is IconButton) {
                   return IconButton(
-                    icon: widget.icon,
-                    onPressed: widget.onPressed,
-                    color: widget.color,
-                    tooltip: widget.tooltip,
-                    iconSize: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+                    icon: btn.icon,
+                    onPressed: btn.onPressed,
+                    color: btn.color,
+                    tooltip: btn.tooltip,
+                    iconSize: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
                   );
                 }
-                return widget;
+                return btn;
               }).toList(),
             )
           : null,
@@ -82,13 +94,17 @@ class TagCard extends StatelessWidget {
         Label.multipleColored(
           icon: TagUiConstants.tagIcon,
           color: AppTheme.secondaryTextColor,
-          values: tag.relatedTags.map((relatedTag) => relatedTag.name).toList(),
-          colors: tag.relatedTags
+          values: widget.tag.relatedTags
+              .map((relatedTag) => relatedTag.name.isNotEmpty
+                  ? relatedTag.name
+                  : _translationService.translate(SharedTranslationKeys.untitled))
+              .toList(),
+          colors: widget.tag.relatedTags
               .map((relatedTag) => relatedTag.color != null
                   ? Color(int.parse('FF${relatedTag.color}', radix: 16))
                   : AppTheme.secondaryTextColor)
               .toList(),
-          mini: isDense,
+          mini: widget.isDense,
           overflow: TextOverflow.ellipsis,
         ),
       ],

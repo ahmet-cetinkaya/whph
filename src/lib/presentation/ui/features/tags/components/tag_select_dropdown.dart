@@ -336,7 +336,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
                           final tag = _tags!.items[actualIndex];
                           return CheckboxListTile(
-                            title: Text(tag.name),
+                            title: Text(tag.name.isNotEmpty
+                                ? tag.name
+                                : _translationService.translate(SharedTranslationKeys.untitled)),
                             value: tempSelectedTags.contains(tag.id),
                             onChanged: (bool? value) {
                               if (!mounted) return;
@@ -429,7 +431,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .map((id) {
             try {
               final tag = _tags!.items.firstWhere((t) => t.id == id);
-              return tag.name;
+              return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
             } catch (e) {
               return null;
             }
@@ -453,7 +455,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: EdgeInsets.zero,
                       labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      label: Text(tag.name, style: AppTheme.labelSmall),
+                      label: Text(
+                          tag.name.isNotEmpty
+                              ? tag.name
+                              : _translationService.translate(SharedTranslationKeys.untitled),
+                          style: AppTheme.labelSmall),
                       onDeleted: () {
                         final List<DropdownOption<String>> updatedTags =
                             uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {

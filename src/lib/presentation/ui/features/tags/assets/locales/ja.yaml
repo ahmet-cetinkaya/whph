@@ -12,7 +12,7 @@ tags:
     app_usage: アプリ使用状況
     habits: 習慣
     tasks: タスク
-  default_name: 新しいタグ
+
   details:
     archived: アーカイブ済み
     color: 色

@@ -18,6 +18,7 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constant
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
@@ -257,8 +258,11 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build the title widget (habit name)
   Widget _buildTitle() {
+    final displayName =
+        widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name;
+
     return Text(
-      widget.habit.name,
+      displayName,
       style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
@@ -474,7 +478,9 @@ class _HabitCardState extends State<HabitCard> {
     return Label.multipleColored(
       icon: TagUiConstants.tagIcon,
       color: Colors.grey, // Default color for icon and commas
-      values: widget.habit.tags.map((tag) => tag.name).toList(),
+      values: widget.habit.tags
+          .map((tag) => tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
+          .toList(),
       colors: widget.habit.tags
           .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
           .toList(),

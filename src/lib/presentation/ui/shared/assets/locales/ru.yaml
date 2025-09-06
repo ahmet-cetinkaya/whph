@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Несовместимость версий
 shared:
+  untitled: "Без названия"
   buttons:
     add: Добавить
     back: Назад

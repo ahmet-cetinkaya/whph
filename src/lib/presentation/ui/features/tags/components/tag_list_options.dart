@@ -207,7 +207,9 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
         // Only keep selected filters that exist in the current archive state
         final validSelectedTags = result.items
             .where((tag) => widget.selectedTagIds!.contains(tag.id))
-            .map((tag) => DropdownOption(value: tag.id, label: tag.name))
+            .map((tag) => DropdownOption(
+                value: tag.id,
+                label: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled)))
             .toList();
 
         if (mounted) {

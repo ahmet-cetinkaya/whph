@@ -190,7 +190,9 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
                           borderRadius: BorderRadius.circular(AppUsageUiConstants.tagContainerBorderRadius),
                         ),
                         child: Text(
-                          rule.tagName,
+                          rule.tagName.isNotEmpty
+                              ? rule.tagName
+                              : _translationService.translate(SharedTranslationKeys.untitled),
                           style: AppTheme.bodySmall.copyWith(
                             color: AppUsageUiConstants.getTagColor(rule.tagColor),
                           ),

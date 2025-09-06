@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Nepotrivire de versiune
 shared:
+  untitled: "Fără titlu"
   buttons:
     add: Adaugă
     back: Înapoi
