@@ -807,9 +807,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           isMultiSelect: true,
           onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
           showSelectedInDropdown: true,
-          initialSelectedTags:
-              _habitTags?.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList() ??
-                  [],
+          initialSelectedTags: _habitTags?.items
+                  .map((tag) => DropdownOption<String>(
+                      value: tag.tagId,
+                      label: tag.tagName.isNotEmpty
+                          ? tag.tagName
+                          : _translationService.translate(SharedTranslationKeys.untitled)))
+                  .toList() ??
+              [],
           icon: SharedUiConstants.addIcon,
         ),
       );

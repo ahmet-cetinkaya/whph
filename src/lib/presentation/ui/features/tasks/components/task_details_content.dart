@@ -1050,8 +1050,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             isMultiSelect: true,
             onTagsSelected: (options, _) => _onTagsSelected(options),
             showSelectedInDropdown: true,
-            initialSelectedTags:
-                _taskTags!.items.map((tag) => DropdownOption<String>(label: tag.tagName, value: tag.tagId)).toList(),
+            initialSelectedTags: _taskTags!.items
+                .map((tag) => DropdownOption<String>(
+                    label: tag.tagName.isNotEmpty
+                        ? tag.tagName
+                        : _translationService.translate(SharedTranslationKeys.untitled),
+                    value: tag.tagId))
+                .toList(),
             icon: SharedUiConstants.addIcon,
           ),
         ),

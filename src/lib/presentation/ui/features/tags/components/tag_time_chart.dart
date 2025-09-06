@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/core/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
@@ -234,10 +235,13 @@ class TagTimeChartState extends State<TagTimeChart> {
 
       final titleColor = ColorContrastHelper.getContrastingTextColor(sectionColor);
 
+      final titleText =
+          item.tagName.isNotEmpty ? item.tagName : _translationService.translate(SharedTranslationKeys.untitled);
+
       sections.add(PieChartSectionData(
         color: sectionColor,
         value: item.duration.toDouble(),
-        title: '${item.tagName}\n${percent.toStringAsFixed(1)}%',
+        title: '$titleText\n${percent.toStringAsFixed(1)}%',
         radius: isTouched ? 110 : 100,
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,

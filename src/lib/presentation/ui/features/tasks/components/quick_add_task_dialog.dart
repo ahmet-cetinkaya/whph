@@ -167,7 +167,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       for (String tagId in widget.initialTagIds!) {
         final tag = await _tagRepository.getById(tagId);
         if (tag != null) {
-          tagOptions.add(DropdownOption(label: tag.name, value: tagId));
+          tagOptions.add(DropdownOption(
+              label: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
+              value: tagId));
         }
       }
 

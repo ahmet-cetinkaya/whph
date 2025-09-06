@@ -226,7 +226,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     estimatedTime: task.estimatedTime,
                     plannedDate: task.plannedDate,
                     priority: task.priority,
-                    tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList());
+                    tags: taskTags.items
+                        .map((e) => TagListItem(
+                            id: e.id,
+                            name: e.tagName.isNotEmpty
+                                ? e.tagName
+                                : _translationService.translate(SharedTranslationKeys.untitled)))
+                        .toList());
               });
             }
             return;
@@ -299,7 +305,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
               estimatedTime: task.estimatedTime,
               plannedDate: task.plannedDate,
               priority: task.priority,
-              tags: taskTags.items.map((e) => TagListItem(id: e.id, name: e.tagName)).toList(),
+              tags: taskTags.items
+                  .map((e) => TagListItem(
+                      id: e.id,
+                      name: e.tagName.isNotEmpty
+                          ? e.tagName
+                          : _translationService.translate(SharedTranslationKeys.untitled)))
+                  .toList(),
               subTasks: subTasks.items,
             );
           });

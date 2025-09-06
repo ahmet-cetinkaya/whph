@@ -70,7 +70,11 @@ class _NoteCardState extends State<NoteCard> {
                     Label.multipleColored(
                       icon: TagUiConstants.tagIcon,
                       color: Colors.grey,
-                      values: widget.note.tags.map((tag) => tag.tagName).toList(),
+                      values: widget.note.tags
+                          .map((tag) => tag.tagName.isNotEmpty
+                              ? tag.tagName
+                              : _translationService.translate(SharedTranslationKeys.untitled))
+                          .toList(),
                       colors: widget.note.tags
                           .map((tag) =>
                               tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)

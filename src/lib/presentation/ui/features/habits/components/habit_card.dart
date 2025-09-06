@@ -478,7 +478,9 @@ class _HabitCardState extends State<HabitCard> {
     return Label.multipleColored(
       icon: TagUiConstants.tagIcon,
       color: Colors.grey, // Default color for icon and commas
-      values: widget.habit.tags.map((tag) => tag.name).toList(),
+      values: widget.habit.tags
+          .map((tag) => tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
+          .toList(),
       colors: widget.habit.tags
           .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
           .toList(),
