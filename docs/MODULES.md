@@ -236,8 +236,6 @@ Platform-specific implementations for notifications, file systems, and more. Inc
 - Optimize for battery: Minimize updates.
 - `feat(widget): support dynamic sizing`.
 
-## Shared and Infrastructure Modules
-
 ### Shared Module (core/shared/)
 **Overview**: Cross-cutting utilities like logging, extensions.
 
@@ -297,4 +295,4 @@ Platform-specific implementations for notifications, file systems, and more. Inc
 - For cross-references, update this doc: `docs(modules): add new feature section`.
 - Test thoroughly: Unit (services), Integration (sync), UI (widgets).
 
-This documentation is auto-generated based on project structure as of [current date]. Update via PRs.
+This documentation is auto-generated based on project structure as of 2025-09-06. Update via PRs.
