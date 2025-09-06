@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Neujemanje različic
 shared:
+  untitled: "Brez naslova"
   buttons:
     add: Dodaj
     back: Nazaj

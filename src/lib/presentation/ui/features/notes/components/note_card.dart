@@ -4,9 +4,12 @@ import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/main.dart';
 import 'package:acore/acore.dart';
 
-class NoteCard extends StatelessWidget {
+class NoteCard extends StatefulWidget {
   final NoteListItem note;
   final VoidCallback? onOpenDetails;
   final bool transparentCard;
@@ -21,34 +24,41 @@ class NoteCard extends StatelessWidget {
   });
 
   @override
+  State<NoteCard> createState() => _NoteCardState();
+}
+
+class _NoteCardState extends State<NoteCard> {
+  final _translationService = container.resolve<ITranslationService>();
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return ListTile(
-      tileColor: transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
-      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+      tileColor: widget.transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
+      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
       contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
-      onTap: onOpenDetails,
+      onTap: widget.onOpenDetails,
       leading: Icon(
         NoteUiConstants.noteIcon,
-        size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
         color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
       ),
       title: Text(
-        note.title,
-        style: isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
+        widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
+        style: widget.isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
         overflow: TextOverflow.ellipsis,
-        maxLines: isDense ? 1 : 2,
+        maxLines: widget.isDense ? 1 : 2,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Tags and last updated time
-          if (note.tags.isNotEmpty || note.updatedAt != null) ...[
-            SizedBox(height: isDense ? 2 : AppTheme.size2XSmall),
+          if (widget.note.tags.isNotEmpty || widget.note.updatedAt != null) ...[
+            SizedBox(height: widget.isDense ? 2 : AppTheme.size2XSmall),
             DefaultTextStyle(
               style: AppTheme.bodySmall,
               child: Wrap(
@@ -56,12 +66,12 @@ class NoteCard extends StatelessWidget {
                 runSpacing: AppTheme.size2XSmall,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  if (note.tags.isNotEmpty)
+                  if (widget.note.tags.isNotEmpty)
                     Label.multipleColored(
                       icon: TagUiConstants.tagIcon,
                       color: Colors.grey,
-                      values: note.tags.map((tag) => tag.tagName).toList(),
-                      colors: note.tags
+                      values: widget.note.tags.map((tag) => tag.tagName).toList(),
+                      colors: widget.note.tags
                           .map((tag) =>
                               tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
                           .toList(),
@@ -78,7 +88,7 @@ class NoteCard extends StatelessWidget {
                       ),
                       const SizedBox(width: AppTheme.size3XSmall),
                       Text(
-                        _formatDateTime(note.updatedAt ?? note.createdDate, context),
+                        _formatDateTime(widget.note.updatedAt ?? widget.note.createdDate, context),
                         style: TextStyle(
                           color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),

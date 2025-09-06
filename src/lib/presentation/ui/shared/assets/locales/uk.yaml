@@ -2,6 +2,7 @@ settings:
   import:
     version_mismatch: Невідповідність версій
 shared:
+  untitled: "Без назви"
   buttons:
     add: Додати
     back: Назад

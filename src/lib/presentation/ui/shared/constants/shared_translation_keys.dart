@@ -13,6 +13,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String backButton = 'shared.buttons.back';
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
+  static const String untitled = 'shared.untitled'; // Added for sl, tr, uk locales
   static const String requiredValidation = 'shared.validation.required';
   static const String refreshTooltip = 'shared.tooltips.refresh';
 

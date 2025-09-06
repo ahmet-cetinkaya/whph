@@ -42,6 +42,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   final TagsService _tagsService = container.resolve<TagsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _nameController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
@@ -68,6 +69,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     }
 
     _nameController.dispose();
+    _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -82,6 +84,16 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       if (_hasFieldContent(keyRelatedTags)) _visibleOptionalFields.add(keyRelatedTags);
       if (_hasFieldContent(keyArchived)) _visibleOptionalFields.add(keyArchived);
     });
+
+    // Auto-focus name field if empty (newly created tag)
+    if (_tag!.name.isEmpty) {
+      // Use a delay to ensure the UI is fully rendered
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          _nameFocusNode.requestFocus();
+        }
+      });
+    }
   }
 
   // Check if the field should be displayed in the chips section
@@ -137,6 +149,16 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           if (_nameController.text != response.name) {
             _nameController.text = response.name;
             widget.onNameUpdated?.call(response.name);
+
+            // Auto-focus if name is empty (newly created tag)
+            if (response.name.isEmpty) {
+              // Use a small delay to ensure the UI is fully built
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  _nameFocusNode.requestFocus();
+                }
+              });
+            }
           } else if (nameSelection.isValid) {
             _nameController.selection = nameSelection;
           }
@@ -316,6 +338,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           // Tag Name (always visible - mandatory field)
           TextFormField(
             controller: _nameController,
+            focusNode: _nameFocusNode,
             maxLines: null,
             onChanged: _onNameChanged,
             decoration: InputDecoration(

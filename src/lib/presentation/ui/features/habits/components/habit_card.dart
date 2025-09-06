@@ -18,6 +18,7 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constant
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
@@ -257,8 +258,11 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build the title widget (habit name)
   Widget _buildTitle() {
+    final displayName =
+        widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name;
+
     return Text(
-      widget.habit.name,
+      displayName,
       style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,

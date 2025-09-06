@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Neshoda verzí
 shared:
+  untitled: "Bez názvu"
   buttons:
     add: Přidat
     back: Zpět

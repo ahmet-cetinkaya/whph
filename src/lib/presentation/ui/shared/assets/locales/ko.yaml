@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: 버전 불일치
 shared:
+  untitled: "제목 없음"
   buttons:
     add: 추가
     back: 뒤로
