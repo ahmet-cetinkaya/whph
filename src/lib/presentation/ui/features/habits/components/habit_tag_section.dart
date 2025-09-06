@@ -4,6 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -79,8 +80,12 @@ class _HabitTagSectionState extends State<HabitTagSection> {
         widget.onTagsSelected(selected);
         _habitsService.notifyHabitUpdated(widget.habitTags.items.first.habitId);
       },
-      initialSelectedTags:
-          widget.habitTags.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList(),
+      initialSelectedTags: widget.habitTags.items
+          .map((tag) => DropdownOption<String>(
+              value: tag.tagId,
+              label:
+                  tag.tagName.isNotEmpty ? tag.tagName : _translationService.translate(SharedTranslationKeys.untitled)))
+          .toList(),
       icon: SharedUiConstants.addIcon,
       tooltip: _translationService.translate(HabitTranslationKeys.selectTagsTooltip),
     );

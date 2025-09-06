@@ -164,7 +164,10 @@ class TaskCard extends StatelessWidget {
           Label.multipleColored(
             icon: TagUiConstants.tagIcon,
             color: Colors.grey,
-            values: taskItem.tags.map((tag) => tag.name).toList(),
+            values: taskItem.tags
+                .map((tag) =>
+                    tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
+                .toList(),
             colors: taskItem.tags
                 .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
                 .toList(),

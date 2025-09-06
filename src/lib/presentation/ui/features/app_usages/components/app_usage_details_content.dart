@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/features/app_usages/services/app_usages_ser
 import 'package:whph/presentation/ui/shared/components/color_field.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -425,7 +426,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                     onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                     showSelectedInDropdown: true,
                     initialSelectedTags: _appUsageTags!.items
-                        .map((appUsage) => DropdownOption<String>(value: appUsage.tagId, label: appUsage.tagName))
+                        .map((appUsage) => DropdownOption<String>(
+                            value: appUsage.tagId,
+                            label: appUsage.tagName.isNotEmpty
+                                ? appUsage.tagName
+                                : _translationService.translate(SharedTranslationKeys.untitled)))
                         .toList(),
                     icon: SharedUiConstants.addIcon,
                   ),

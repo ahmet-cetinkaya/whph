@@ -94,7 +94,11 @@ class _TagCardState extends State<TagCard> {
         Label.multipleColored(
           icon: TagUiConstants.tagIcon,
           color: AppTheme.secondaryTextColor,
-          values: widget.tag.relatedTags.map((relatedTag) => relatedTag.name).toList(),
+          values: widget.tag.relatedTags
+              .map((relatedTag) => relatedTag.name.isNotEmpty
+                  ? relatedTag.name
+                  : _translationService.translate(SharedTranslationKeys.untitled))
+              .toList(),
           colors: widget.tag.relatedTags
               .map((relatedTag) => relatedTag.color != null
                   ? Color(int.parse('FF${relatedTag.color}', radix: 16))

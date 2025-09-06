@@ -1,5 +1,3 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
