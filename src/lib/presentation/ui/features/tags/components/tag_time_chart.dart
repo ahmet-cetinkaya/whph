@@ -274,10 +274,6 @@ class TagTimeChartState extends State<TagTimeChart> {
         titleStyle: AppTheme.bodySmall.copyWith(
           fontWeight: FontWeight.bold,
           color: otherTitleColor,
-          shadows: [
-            Shadow(blurRadius: 3, color: AppTheme.surface0.withOpacity(0.9)),
-            Shadow(blurRadius: 6, color: AppTheme.surface0.withOpacity(0.9)),
-          ],
         ),
       ));
     }
