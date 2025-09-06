@@ -170,20 +170,20 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_nameController.text != result.name) {
               _nameController.text = result.name;
               widget.onNameUpdated?.call(result.name);
-
-              // Auto-focus if name is empty (newly created habit)
-              if (result.name.isEmpty) {
-                // Use a small delay to ensure the UI is fully built
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  if (mounted) {
-                    _nameFocusNode.requestFocus();
-                  }
-                });
-              }
               // Don't restore selection for name if it changed
             } else if (nameSelection.isValid) {
               // Restore selection if name didn't change
               _nameController.selection = nameSelection;
+            }
+
+            // Auto-focus if name is empty (newly created habit)
+            if (result.name.isEmpty) {
+              // Use a small delay to ensure the UI is fully built
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  _nameFocusNode.requestFocus();
+                }
+              });
             }
 
             // Only update description if it's different
@@ -575,16 +575,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
       if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
     });
-
-    // Auto-focus name field if empty (newly created habit)
-    if (_habit!.name.isEmpty) {
-      // Use a delay to ensure the UI is fully rendered
-      Future.delayed(const Duration(milliseconds: 150), () {
-        if (mounted) {
-          _nameFocusNode.requestFocus();
-        }
-      });
-    }
   }
 
   // Toggles visibility of an optional field
