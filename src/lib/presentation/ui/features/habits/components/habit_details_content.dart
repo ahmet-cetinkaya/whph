@@ -141,9 +141,91 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           setState(() {
             // Only update statistics-related fields, preserve existing habit data
             if (_habit != null) {
-              _habit = result;
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
             }
           });
+        }
+      },
+    );
+  }
+
+  Future<void> _getHabitPreserveLocal() async {
+    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      operation: () async {
+        final query = GetHabitQuery(id: widget.habitId);
+        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          // Store current selections before updating
+          final nameSelection = _nameController.selection;
+          final descriptionSelection = _descriptionController.selection;
+
+          setState(() {
+            if (_habit == null) {
+              _habit = result;
+            } else {
+              // Preserve local changes, only update server-synced fields
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
+            }
+
+            // Only update name if it's different
+            if (_nameController.text != _habit!.name) {
+              _nameController.text = _habit!.name;
+              widget.onNameUpdated?.call(_habit!.name);
+              // Don't restore selection for name if it changed
+            } else if (nameSelection.isValid) {
+              // Restore selection if name didn't change
+              _nameController.selection = nameSelection;
+            }
+
+            // Only update description if it's different
+            if (_descriptionController.text != _habit!.description) {
+              _descriptionController.text = _habit!.description;
+              // Don't restore selection if text changed
+            } else if (descriptionSelection.isValid) {
+              // Restore selection if text didn't change
+              _descriptionController.selection = descriptionSelection;
+            }
+
+            // Ensure habit has valid reminder settings if reminder is enabled
+            if (_habit!.hasReminder) {
+              // Ensure we have a valid time
+              if (_habit!.reminderTime == null) {
+                _habit!.setReminderTimeOfDay(TimeOfDay.now());
+              }
+
+              // Ensure we have valid days
+              if (_habit!.reminderDays.isEmpty) {
+                final allDays = List.generate(7, (index) => index + 1);
+                _habit!.setReminderDaysFromList(allDays);
+
+                // Save the updated habit with the default reminder days
+                _saveHabitImmediately();
+              }
+            }
+          });
+          _processFieldVisibility();
         }
       },
     );
@@ -164,12 +246,26 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           final descriptionSelection = _descriptionController.selection;
 
           setState(() {
-            _habit = result;
+            if (_habit == null) {
+              _habit = result;
+            } else {
+              // Preserve local changes, only update server-synced fields
+              _habit!.name = result.name;
+              _habit!.description = result.description;
+              _habit!.estimatedTime = result.estimatedTime;
+              _habit!.hasReminder = result.hasReminder;
+              _habit!.reminderTime = result.reminderTime;
+              _habit!.reminderDays = result.reminderDays;
+              _habit!.hasGoal = result.hasGoal;
+              _habit!.targetFrequency = result.targetFrequency;
+              _habit!.periodDays = result.periodDays;
+              _habit!.archivedDate = result.archivedDate;
+            }
 
             // Only update name if it's different
-            if (_nameController.text != result.name) {
-              _nameController.text = result.name;
-              widget.onNameUpdated?.call(result.name);
+            if (_nameController.text != _habit!.name) {
+              _nameController.text = _habit!.name;
+              widget.onNameUpdated?.call(_habit!.name);
               // Don't restore selection for name if it changed
             } else if (nameSelection.isValid) {
               // Restore selection if name didn't change
@@ -177,7 +273,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             }
 
             // Auto-focus if name is empty (newly created habit)
-            if (result.name.isEmpty) {
+            if (_habit!.name.isEmpty) {
               // Use a small delay to ensure the UI is fully built
               Future.delayed(const Duration(milliseconds: 100), () {
                 if (mounted) {
@@ -538,8 +634,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           setState(() {});
         }
 
-        // Refresh habit data from repository to ensure we have the latest data
-        _getHabit();
+        // Refresh habit data from repository while preserving local changes
+        _getHabitPreserveLocal();
       },
     );
   }
