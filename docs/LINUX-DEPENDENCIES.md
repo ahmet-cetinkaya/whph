@@ -136,21 +136,25 @@ chmod +x whph
 ## Desktop Environment Specific Notes
 
 ### KDE Plasma (Recommended for Arch Linux users)
+
 - System tray integration works out of the box
 - Window detection uses native KDE tools
 - Best compatibility with the application
 
 ### GNOME
+
 - Requires AppIndicator extension for system tray functionality
 - Install "AppIndicator and KStatusNotifierItem Support" extension
 - Window detection works via D-Bus calls
 
 ### Sway/i3/wlroots compositors
+
 - Requires `jq` for window detection
 - System tray support depends on your bar configuration (waybar, i3bar, etc.)
 - Excellent Wayland support
 
 ### Hyprland
+
 - Uses `hyprctl` for window management (usually pre-installed)
 - Good Wayland support
 - May require additional system tray configuration
@@ -158,20 +162,24 @@ chmod +x whph
 ## What Each Dependency Does
 
 ### Essential Runtime Libraries
+
 - **GTK3**: Provides the user interface framework
 - **GStreamer**: Handles audio playback for notifications and sounds
 - **SQLite**: Database for local data storage (usually pre-installed)
 
 ### System Integration
+
 - **libayatana-appindicator**: Enables system tray functionality
 - **libnotify**: Enables desktop notifications
 
 ### Window Management (Optional but Recommended)
+
 - **xprop, wmctrl, xdotool**: For app usage tracking on X11 systems
 - **jq**: JSON parser needed for some Wayland compositors
 - **Compositor-specific tools**: For advanced window management on Wayland
 
 ### Audio System
+
 - **PulseAudio/PipeWire**: Audio server (usually pre-installed)
 - **GStreamer plugins**: Additional audio format support
 
