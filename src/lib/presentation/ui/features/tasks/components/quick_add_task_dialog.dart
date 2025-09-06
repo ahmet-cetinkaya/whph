@@ -62,7 +62,7 @@ class QuickAddTaskDialog extends StatefulWidget {
     String? initialParentTaskId,
   }) {
     final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
-    
+
     final dialog = QuickAddTaskDialog(
       initialTagIds: initialTagIds,
       initialPlannedDate: initialPlannedDate,

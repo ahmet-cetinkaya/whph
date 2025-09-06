@@ -170,9 +170,9 @@ class PlatformInitializationService {
 
     // Check if minimized startup argument is present
     final hasMinimizedArg = DesktopStartupService.shouldStartMinimized;
-    
+
     Logger.debug('PlatformInitializationService: shouldStartMinimized: ${DesktopStartupService.shouldStartMinimized}');
-    
+
     if (hasMinimizedArg) {
       await windowManager.hide();
       Logger.debug('PlatformInitializationService: Window hidden (started with minimized startup flag)');
