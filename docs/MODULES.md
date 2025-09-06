@@ -5,48 +5,96 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 ## Core Modules
 
 ### About Module
-Displays app information, version, licenses, and credits with localization support. Renders dynamic about pages, loads multi-language strings, and shows open-source licenses.
+**Overview**: Displays app information, version, licenses, and credits with localization support.
+
+**Folder Structure**:
+- `core/application/features/about/`: Commands, queries, services.
+- `core/domain/features/about/`: Domain models.
+- `presentation/ui/features/about/`: UI components.
+
+**Key Functionalities**:
+- Renders dynamic about pages.
+- Loads multi-language strings.
+- Shows open-source licenses.
+
+**Dependencies**:
+- Localization services.
+- Package info utilities.
+
+**Usage Instructions**:
+- Query: `aboutQueries.getAppInfo()`.
+- Reference: [`about_service.dart`](core/application/features/about/services/about_service.dart).
+
+**Best Practices**:
+- Cache license data for performance.
+- `docs(about): update credits for new contributors`.
 
 ### App Usages Module
-Tracks app usage statistics like time spent and sessions across platforms. Logs open/close events, queries daily/weekly stats, and uses platform-specific APIs such as Android UsageStatsManager or desktop timers.
+**Overview**: Tracks app usage statistics like time spent and sessions across platforms.
+
+**Folder Structure**:
+- `core/application/features/app_usages/`: Commands, constants, queries, services.
+- `core/domain/features/app_usages/`: Domain models.
+- `infrastructure/persistence/features/app_usages/`: Database schemas.
+- `presentation/ui/features/app_usages/`: UI (inferred).
+
+**Key Functionalities**:
+- Logs open/close events.
+- Queries daily/weekly stats.
+- Uses platform-specific APIs (e.g., Android UsageStatsManager, desktop timers).
+
+**Dependencies**:
+- Platform infrastructure modules.
+- Persistence for storage.
+
+**Usage Instructions**:
+- Service: `appUsagesService.logSessionStart()`.
+- Query: `appUsagesQueries.getWeeklyStats()`.
+- Reference: [`app_usages_service.dart`](core/application/features/app_usages/services/app_usages_service.dart).
+
+**Best Practices**:
+- Respect privacy: Opt-in tracking.
+- `feat(app-usages): add export functionality`.
 
 ### Calendar Module
-Handles calendar events, reminders, and scheduling. Allows creating/viewing events, setting recurring reminders, and syncing with device calendars across platforms.
+**Overview**: Handles calendar events, reminders, and scheduling.
+
+**Folder Structure**:
+- `core/application/features/calendar/`: Commands, queries, services.
+- `core/domain/features/calendar/`: Domain models.
+- `infrastructure/persistence/features/calendar/`: Storage (if needed).
+- `presentation/ui/features/calendar/`: UI.
+
+**Key Functionalities**:
+- Create/view events.
+- Set recurring reminders.
+- Sync with device calendars across platforms.
+
+**Dependencies**:
+- Notifications module.
+- Date utilities from shared.
+
+**Usage Instructions**:
+- Command: `calendarCommands.createEvent(EventModel(title: 'Meeting'))`.
+- Reference: [`calendar_service.dart`](core/application/features/calendar/services/calendar_service.dart).
+
+**Best Practices**:
+- Handle time zones consistently.
+- `fix(calendar): resolve sync conflicts`.
 
 ### Demo Module
-Provides sample features for testing and onboarding. Generates mock data and demonstrates workflows for other modules.
+**Overview**: Provides sample features for testing and onboarding.
 
-### Habits Module
-Tracks user habits with streaks, reminders, and analytics. Supports creating/editing habits, daily completion tracking, and streak report generation.
+**Folder Structure**:
+- `core/application/features/demo/`: Commands, services.
+- `core/domain/features/demo/`: Mock models.
 
-### Notes Module
-Enables note-taking with rich text, tagging, and search capabilities. Provides CRUD operations, tag attachments, and note searching/filtering.
+**Key Functionalities**:
+- Generates mock data.
+- Demonstrates workflows for other modules.
 
-### Settings Module
-Manages app configuration including themes, privacy, and sync. Allows updating preferences, switching themes, and exporting/importing settings.
-
-### Sync Module
-Handles data synchronization across devices and backups. Supports two-way cloud sync (e.g., Firebase), conflict resolution, and backup/restore functions.
-
-### Tags Module
-Manages tags for categorizing notes, tasks, and more. Allows creating/deleting tags, assigning to entities, and searching by tag.
-
-### Tasks Module
-Manages tasks with priorities, deadlines, and subtasks. Enables adding/completing tasks, setting reminders, and filtering by status or priority.
-
-### Widget Module
-Provides custom widgets for home screens or dashboards. Supports configurable widgets with periodic data updates.
-
-## Shared and Infrastructure Modules
-
-### Shared Module (core/shared/)
-Cross-cutting utilities including logging and extensions. Handles date formatting/validation and shared constants.
-
-### Persistence Module (infrastructure/persistence/)
-Data storage using Drift (SQLite). Supports CRUD operations via repositories and database migrations.
-
-### Platform-Specific Infrastructure
-Platform-specific implementations for notifications, file systems, and more. Includes Android usage stats/reminders, desktop system tray/notifications, Linux window management, mobile wakelock/notifications, and Windows audio handling.
+**Dependencies**:
+- All feature modules for integration testing.
 
 **Usage Instructions**:
 - Enable in settings: `DemoService.enableDemos(true);`.
@@ -236,6 +284,8 @@ Platform-specific implementations for notifications, file systems, and more. Inc
 - Optimize for battery: Minimize updates.
 - `feat(widget): support dynamic sizing`.
 
+## Shared and Infrastructure Modules
+
 ### Shared Module (core/shared/)
 **Overview**: Cross-cutting utilities like logging, extensions.
 
@@ -279,14 +329,27 @@ Platform-specific implementations for notifications, file systems, and more. Inc
 - `fix(persistence): handle schema conflicts`.
 
 ### Platform-Specific Infrastructure
-- **Android (infrastructure/android/)**: Usage stats, file system, reminders.
-- **Desktop (infrastructure/desktop/)**: Notifications, system tray, single instance.
-- **Linux (infrastructure/linux/)**: Window management, file system.
-- **Mobile (infrastructure/mobile/)**: Notifications, wakelock.
-- **Windows (infrastructure/windows/)**: Audio, file system.
+**Overview**: Platform-specific implementations for notifications, file systems, and more.
 
-**Usage Instructions**: Abstract via `abstraction/` interfaces.
-**Best Practices**: Test per platform; use `feat(infrastructure:android): ...`.
+**Folder Structure**:
+- `infrastructure/android/`: Usage stats, reminders.
+- `infrastructure/desktop/`: System tray, notifications.
+- `infrastructure/linux/`: Window management, file system.
+- `infrastructure/mobile/`: Wakelock, notifications.
+- `infrastructure/windows/`: Audio, file system.
+
+**Key Functionalities**:
+- Platform adaptations for core features.
+
+**Dependencies**:
+- Shared abstractions.
+
+**Usage Instructions**:
+- Abstract via `abstraction/` interfaces.
+
+**Best Practices**:
+- Test per platform.
+- `feat(infrastructure:android): add new API integration`.
 
 ## Contribution Guidelines
 - Follow folder structure for new features: Add to all layers (domain, application, infrastructure, presentation).
