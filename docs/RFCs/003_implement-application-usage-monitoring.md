@@ -1,16 +1,7 @@
 # Implement Application Usage Monitoring
 
-## RFC Number
-
-003
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 003
+> Status: Implemented
 
 ## Summary
 
@@ -64,12 +55,9 @@ Phases: 1) Channels/logging (Week 6-7), 2) DB/rules (Week 8), 3) UI/analytics (W
 
 ## References
 
-- PRD 3.1 (lines 61-68), 4.3 (156-164).
-- MODULES.md: App Usages Module (lines 32-58).
+- [PRD 3.1](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L61-L68), [4.3](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L156-L164).
+- [MODULES.md: App Usages Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L32-L58).
 - Flutter: [Platform Channels](https://docs.flutter.dev/platform-integration/platform-channels).
 - fl_chart: [Charts](https://pub.dev/packages/fl_chart).
 - Drift: [ORM](https://pub.dev/packages/drift).
 
-## History
-
-Proposed: 2023. Implemented: v1.0.0.

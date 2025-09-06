@@ -1,16 +1,7 @@
 # Implement Cross-Platform UI Design
 
-## RFC Number
-
-005
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 005
+> Status: Implemented
 
 ## Summary
 
@@ -69,12 +60,9 @@ Phases: 1) Theme/responsive base (Week 1), 2) Navigation (Week 2), 3) Visuals (W
 
 ## References
 
-- PRD 3.2 (lines 75-95).
-- MODULES.md: Settings (162-187), Shared (289-307), Platform Infra (331-353).
+- [PRD 3.2](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L75-L95).
+- [MODULES.md: Settings](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L162-L187), [Shared](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L289-L307), [Platform Infra](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L331-L353).
 - Flutter: [Material](https://docs.flutter.dev/ui/design/material).
 - go_router: [Routing](https://pub.dev/packages/go_router).
 - fl_chart: [Visualization](https://pub.dev/packages/fl_chart).
 
-## History
-
-Proposed: 2023. Implemented: v1.0.0.

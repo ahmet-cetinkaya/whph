@@ -1,16 +1,7 @@
 # Implement Platform-Specific Features
 
-## RFC Number
-
-008
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 008
+> Status: Implemented
 
 ## Summary
 
@@ -69,11 +60,8 @@ Phases: 1) Desktop infra (infrastructure/desktop/, Week 9), 2) Mobile plugins (i
 
 ## References
 
-- PRD Section 3.4: Platform-Specific Features (lines 116-131).
-- MODULES.md: Platform-Specific Infrastructure (lines 332-353).
+- [PRD Section 3.4: Platform-Specific Features](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L116-L131).
+- [MODULES.md: Platform-Specific Infrastructure](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L332-L353).
 - Flutter Documentation: [Platform Channels](https://docs.flutter.dev/platform-integration/platform-channels).
 - tray_manager: [Desktop Tray](https://pub.dev/packages/tray_manager).
 
-## History
-
-Proposed: Late development (2023). Implemented: v1.0.0 (2024).
