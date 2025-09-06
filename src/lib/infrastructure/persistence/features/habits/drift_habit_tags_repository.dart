@@ -98,7 +98,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
               SELECT COUNT(*)
               FROM habit_record_table hr
               WHERE hr.habit_id = h.id
-              AND hr.date BETWEEN ? AND ?
+              AND hr.occurred_at BETWEEN ? AND ?
               AND hr.deleted_date IS NULL
             ))
             FROM habit_tag_table ht

@@ -176,7 +176,7 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
     } else {
       // Habit is not completed today, add a record
       await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-        AddHabitRecordCommand(habitId: habitId, date: today),
+        AddHabitRecordCommand(habitId: habitId, occurredAt: today),
       );
 
       // Play completion sound for habit completion
@@ -509,7 +509,7 @@ class WidgetService {
       } else {
         // Habit is not completed today, add a record
         await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-          AddHabitRecordCommand(habitId: habitId, date: today),
+          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
         );
       }
     } catch (e, stackTrace) {

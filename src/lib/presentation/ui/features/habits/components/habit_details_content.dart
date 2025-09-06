@@ -346,7 +346,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
+        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: DateTimeHelper.toUtcDateTime(date));
         await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
       },
       onSuccess: () {
