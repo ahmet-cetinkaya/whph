@@ -49,7 +49,7 @@ class _NoteCardState extends State<NoteCard> {
       ),
       title: Text(
         widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
-        style: widget.isDense ? AppTheme.bodyLarge : AppTheme.headlineSmall,
+        style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
         overflow: TextOverflow.ellipsis,
         maxLines: widget.isDense ? 1 : 2,
       ),
