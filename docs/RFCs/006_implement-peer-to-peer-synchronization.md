@@ -1,16 +1,7 @@
 # Implement Peer-to-Peer Synchronization
 
-## RFC Number
-
-006
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 006
+> Status: Implemented
 
 ## Summary
 
@@ -71,12 +62,9 @@ Phases: 1) Pairing/handshake (Week 7-8), 2) Diff/queue (Week 9), 3) Transfer (We
 
 ## References
 
-- PRD 3.3 (98-103), 4.4 (165-173).
-- MODULES.md: Sync Module (188-214).
+- [PRD 3.3](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L98-L103), [4.4](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L165-L173).
+- [MODULES.md: Sync Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L188-L214).
 - Flutter: [Connectivity](https://pub.dev/packages/connectivity_plus).
 - nearby_connections: [P2P](https://pub.dev/packages/nearby_connections).
 - Drift: [ORM](https://pub.dev/packages/drift).
 
-## History
-
-Proposed: 2023. Implemented: v1.0.0.

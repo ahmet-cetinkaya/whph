@@ -1,16 +1,7 @@
 # Implement Habit Tracking Module
 
-## RFC Number
-
-002
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 002
+> Status: Implemented
 
 ## Summary
 
@@ -64,12 +55,9 @@ Phases: 1) Models/DB (Week 2), 2) Tracking UI (Week 3), 3) Calendar/streaks (Wee
 
 ## References
 
-- PRD 3.1 (lines 53-60), 4.2 (146-155).
-- MODULES.md: Habits Module (lines 107-133).
+- [PRD 3.1](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L53-L60), [4.2](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L146-L155).
+- [MODULES.md: Habits Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L107-L133).
 - Flutter: [Local Notifications](https://pub.dev/packages/flutter_local_notifications).
 - fl_chart: [Charts](https://pub.dev/packages/fl_chart).
 - Drift: [ORM](https://pub.dev/packages/drift).
 
-## History
-
-Proposed: 2023. Implemented: v1.0.0.

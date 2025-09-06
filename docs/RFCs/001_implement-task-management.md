@@ -1,16 +1,7 @@
 # Implement Task Management Module
 
-## RFC Number
-
-001
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 001
+> Status: Implemented
 
 ## Summary
 
@@ -62,12 +53,8 @@ Phases: 1) Models/DB schema (Week 1-2), 2) CRUD UI/services (Week 3-4), 3) Recur
 
 ## References
 
-- PRD 3.1 (lines 45-52), 4.1 (137-145).
-- MODULES.md: Tasks Module (lines 239-264).
+- [PRD 3.1](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L45-L52), [4.1](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L137-L145).
+- [MODULES.md: Tasks Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L239-L264).
 - Flutter: [Provider](https://pub.dev/packages/provider).
 - Drift: [SQLite ORM](https://pub.dev/packages/drift).
 - table_calendar: [Calendar Widget](https://pub.dev/packages/table_calendar).
-
-## History
-
-Proposed: 2023. Implemented: v1.0.0.

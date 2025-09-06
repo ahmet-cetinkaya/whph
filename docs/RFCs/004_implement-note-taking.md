@@ -1,16 +1,7 @@
 # Implement Note-Taking Module
 
-## RFC Number
-
-004
-
-## Status
-
-Implemented
-
-## Authors
-
-Development Team
+> RFC: 004
+> Status: Implemented
 
 ## Summary
 
@@ -62,11 +53,8 @@ Phases: 1) Models/DB FTS (Week 4), 2) Editor UI (Week 5), 3) Search/linking (Wee
 
 ## References
 
-- PRD 3.1 (lines 69-74).
-- MODULES.md: Notes Module (lines 134-160).
+- [PRD 3.1](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L69-L74).
+- [MODULES.md: Notes Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L134-L160).
 - Flutter: [Markdown](https://pub.dev/packages/flutter_markdown).
 - Drift FTS5: [Full-Text Search](https://drift.simonbinder.eu/docs/advanced-features/full-text-search/).
 
-## History
-
-Proposed: 2023. Implemented: v1.0.0.
