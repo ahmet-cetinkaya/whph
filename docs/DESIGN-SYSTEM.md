@@ -25,12 +25,14 @@ The application uses a golden yellow as its primary brand color, with support fo
 ### Surface Colors
 
 #### Light Theme
+
 - **Surface 0** (Background): `#FFFBFF` - Pure white with slight warm tint
 - **Surface 1** (Primary Surface): `#F8F9FA` - Very light gray with subtle blue tint
 - **Surface 2** (Cards/Containers): `#F1F3F4` - Light gray for elevated content
 - **Surface 3** (Elevated Surfaces): `#E8EAED` - Medium light gray for highest elevation
 
 #### Dark Theme
+
 - **Surface 0** (Background): `#000000` - Pure black background
 - **Surface 1** (Primary Surface): `#121212` - Dark surface
 - **Surface 2** (Cards/Containers): `#181818` - Dark surface variant for cards
@@ -39,12 +41,14 @@ The application uses a golden yellow as its primary brand color, with support fo
 ### Text Colors
 
 #### Light Theme
+
 - **Primary Text**: `#202124` - Rich dark gray for optimal readability
 - **Secondary Text**: `#5F6368` - Medium gray for supporting text
 - **Light Text**: `#FFFFFF` - Pure white for dark backgrounds
 - **Dark Text**: `#000000` - Pure black for light backgrounds
 
 #### Dark Theme
+
 - **Primary Text**: `#FFFFFF` - Pure white text
 - **Secondary Text**: `#B0B0B0` - Secondary gray for supporting content
 - **Light Text**: `#FFFFFF` - Pure white
@@ -92,7 +96,7 @@ A carefully curated palette for data visualization:
 The typography system uses a consistent scale with optimal line heights:
 
 - **XX-Small**: 10px
-- **X-Small**: 11px  
+- **X-Small**: 11px
 - **Small**: 12px
 - **Medium**: 14px (Base size)
 - **Large**: 16px
@@ -102,21 +106,25 @@ The typography system uses a consistent scale with optimal line heights:
 ### Text Styles
 
 #### Body Text
+
 - **Body X-Small**: 11px, line-height 1.5
 - **Body Small**: 12px, line-height 1.5
 - **Body Medium**: 14px, line-height 1.5 (Default body text)
 - **Body Large**: 16px, line-height 1.5, weight 500
 
 #### Headlines
+
 - **Headline Small**: 16px, bold, line-height 1.3
 - **Headline Medium**: 20px, bold, line-height 1.3
 - **Headline Large**: 28px, bold, line-height 1.2
 
 #### Display Text
+
 - **Display Small**: 16px, bold
 - **Display Large**: 48px, bold, line-height 1.1
 
 #### Labels
+
 - **Label X-Small**: 10px, weight 500, letter-spacing 0.5
 - **Label Small**: 12px, weight 500, letter-spacing 0.5
 - **Label Medium**: 14px, weight 500, letter-spacing 0.5
@@ -127,6 +135,7 @@ The typography system uses a consistent scale with optimal line heights:
 ### Buttons
 
 #### Filled Buttons (Primary)
+
 - **Background**: Primary color or Surface 3 (disabled)
 - **Text**: Contrasting color based on background
 - **Padding**: 16px horizontal, 12px vertical
@@ -134,6 +143,7 @@ The typography system uses a consistent scale with optimal line heights:
 - **Typography**: 16px, weight 600, letter-spacing 0.5
 
 #### Outlined Buttons (Secondary)
+
 - **Border**: Primary color (1.5px) or disabled color (1px)
 - **Text**: Primary color or secondary text (disabled)
 - **Padding**: 16px horizontal, 12px vertical
@@ -141,6 +151,7 @@ The typography system uses a consistent scale with optimal line heights:
 - **Typography**: 16px, weight 600, letter-spacing 0.5
 
 #### Text Buttons (Tertiary)
+
 - **Text**: Primary color or secondary text (disabled)
 - **Padding**: 16px horizontal, 12px vertical
 - **Border Radius**: 12px
@@ -166,6 +177,7 @@ The typography system uses a consistent scale with optimal line heights:
 ### Icons
 
 #### Icon Sizes
+
 - **2X-Small**: 8px
 - **X-Small**: 12px
 - **Small**: 16px
@@ -268,6 +280,7 @@ Consistent spacing system based on 4px grid:
 ### Theme Service
 
 The application uses a sophisticated theme service that:
+
 - Supports automatic light/dark mode detection
 - Integrates with Material You dynamic colors
 - Allows custom accent color selection

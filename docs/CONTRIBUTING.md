@@ -111,10 +111,11 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - Run `fvm flutter analyze` and address any warnings or errors.
 - Always use `fvm flutter` instead of `flutter` for consistency with the project's Flutter version management.
 - You can also use the RPS commands defined in `pubspec.yaml` for common tasks:
+
   ```bash
   # Install RPS globally (if not already installed)
   dart pub global activate rps
-  
+
   # Run common commands
   rps test          # Run tests
   rps clean         # Clean build artifacts
@@ -123,6 +124,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   rps run           # Run the app
   rps run:demo      # Run in demo mode
   ```
+
 - If your change affects the build or deployment, update relevant scripts or documentation.
 - For native code integration, use platform channels and defined constants.
 - Respect licensing and third-party dependencies.
