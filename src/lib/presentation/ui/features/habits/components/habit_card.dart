@@ -190,7 +190,7 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
+        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: DateTimeHelper.toUtcDateTime(date));
         final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
         _refreshHabitRecords();

@@ -6,12 +6,12 @@ import 'package:acore/acore.dart';
 
 class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
   final String habitId;
-  final DateTime date;
+  final DateTime occurredAt;
 
   AddHabitRecordCommand({
     required this.habitId,
-    required DateTime date,
-  }) : date = DateTimeHelper.toUtcDateTime(date);
+    DateTime? occurredAt,
+  }) : occurredAt = occurredAt != null ? DateTimeHelper.toUtcDateTime(occurredAt) : DateTime.now().toUtc();
 }
 
 class AddHabitRecordCommandResponse {}
@@ -24,11 +24,12 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
 
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
+    final now = DateTime.now().toUtc();
     HabitRecord habitRecord = HabitRecord(
       id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
+      createdDate: now,
       habitId: request.habitId,
-      date: request.date,
+      occurredAt: request.occurredAt, // This is now guaranteed to be non-null from the command constructor
     );
     await _habitRecordRepository.add(habitRecord);
 

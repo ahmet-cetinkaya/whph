@@ -25,6 +25,10 @@ class HabitTable extends Table {
   BoolColumn get hasGoal => boolean().withDefault(const Constant(false))();
   IntColumn get targetFrequency => integer().withDefault(const Constant(1))();
   IntColumn get periodDays => integer().withDefault(const Constant(7))();
+
+  // Daily target settings for multiple occurrences per day
+  IntColumn get dailyTarget => integer().nullable()();
+
   RealColumn get order => real().withDefault(const Constant(0.0))();
 }
 
@@ -53,6 +57,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       hasGoal: Value(entity.hasGoal),
       targetFrequency: Value(entity.targetFrequency),
       periodDays: Value(entity.periodDays),
+      dailyTarget: Value(entity.dailyTarget),
       order: Value(entity.order),
     );
   }

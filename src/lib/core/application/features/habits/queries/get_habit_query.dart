@@ -156,8 +156,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate overall score based on first record date
     var overallScore = 0.0;
     if (records.isNotEmpty) {
-      final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
-      final firstRecordDate = sortedRecords.first.date;
+      final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
+      final firstRecordDate = sortedRecords.first.recordDate;
       final daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
       overallScore = records.length / daysFromFirstRecord;
     }
@@ -165,12 +165,13 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate monthly score
     final daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
     final monthlyRecords =
-        records.where((r) => r.date.isAfter(startOfMonth) || _isSameDay(r.date, startOfMonth)).length;
+        records.where((r) => r.recordDate.isAfter(startOfMonth) || _isSameDay(r.recordDate, startOfMonth)).length;
     final monthlyScore = monthlyRecords / daysInCurrentMonth;
 
     // Calculate yearly score
     final daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
-    final yearlyRecords = records.where((r) => r.date.isAfter(startOfYear) || _isSameDay(r.date, startOfYear)).length;
+    final yearlyRecords =
+        records.where((r) => r.recordDate.isAfter(startOfYear) || _isSameDay(r.recordDate, startOfYear)).length;
     final yearlyScore = yearlyRecords / daysInCurrentYear;
 
     // Calculate monthly scores for the last 12 months
@@ -182,8 +183,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
       final monthRecords = records
           .where((r) =>
-              (r.date.isAfter(month) || _isSameDay(r.date, month)) &&
-              (r.date.isBefore(monthEnd) || _isSameDay(r.date, monthEnd)))
+              (r.recordDate.isAfter(month) || _isSameDay(r.recordDate, month)) &&
+              (r.recordDate.isBefore(monthEnd) || _isSameDay(r.recordDate, monthEnd)))
           .length;
       final daysInMonth = monthEnd.difference(month).inDays + 1;
       monthlyScores.add(MapEntry(month, monthRecords / daysInMonth));
@@ -196,7 +197,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate yearly frequency
     final yearlyFrequency = <int, int>{};
     for (final record in records) {
-      final dayOfYear = record.date.difference(DateTime(record.date.year, 1, 1)).inDays;
+      final dayOfYear = record.recordDate.difference(DateTime(record.recordDate.year, 1, 1)).inDays;
       yearlyFrequency[dayOfYear] = (yearlyFrequency[dayOfYear] ?? 0) + 1;
     }
 
@@ -211,9 +212,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
       final recordsInCurrentPeriod = records
           .where((record) =>
-              (record.date.isAfter(periodStart.subtract(const Duration(days: 1))) ||
-                  _isSameDay(record.date, periodStart)) &&
-              (record.date.isBefore(periodEnd.add(const Duration(days: 1))) || _isSameDay(record.date, periodEnd)))
+              (record.recordDate.isAfter(periodStart.subtract(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, periodStart)) &&
+              (record.recordDate.isBefore(periodEnd.add(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, periodEnd)))
           .length;
 
       daysGoalMet = recordsInCurrentPeriod;
@@ -251,15 +253,15 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   }
 
   List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate, {int minDays = 2}) {
-    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+    final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
 
     final streaks = <HabitStreak>[];
-    var streakStart = sortedRecords.first.date;
+    var streakStart = sortedRecords.first.recordDate;
     var lastDate = streakStart;
 
     for (var i = 1; i < sortedRecords.length; i++) {
       final record = sortedRecords[i];
-      if (record.date.difference(lastDate).inDays > 1) {
+      if (record.recordDate.difference(lastDate).inDays > 1) {
         // Only add streaks that ended before or on the archive date
         if (endDate == null || !lastDate.isAfter(endDate)) {
           if (lastDate.difference(streakStart).inDays >= minDays - 1) {
@@ -270,9 +272,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
             ));
           }
         }
-        streakStart = record.date;
+        streakStart = record.recordDate;
       }
-      lastDate = record.date;
+      lastDate = record.recordDate;
     }
 
     // Add the last streak if it exists and respects the end date
@@ -292,11 +294,11 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   List<HabitStreak> _calculateGoalBasedStreaks(List<HabitRecord> records, Habit habit, DateTime? endDate) {
     if (records.isEmpty) return [];
 
-    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+    final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
     final streaks = <HabitStreak>[];
 
     // Calculate streaks based on goal periods
-    var currentPeriodStart = sortedRecords.first.date;
+    var currentPeriodStart = sortedRecords.first.recordDate;
     var streakStart = currentPeriodStart;
     var consecutiveSuccessfulPeriods = 0;
 
@@ -306,10 +308,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       // Count records in current period
       final recordsInPeriod = sortedRecords
           .where((record) =>
-              (record.date.isAfter(currentPeriodStart.subtract(const Duration(days: 1))) ||
-                  _isSameDay(record.date, currentPeriodStart)) &&
-              (record.date.isBefore(currentPeriodEnd.add(const Duration(days: 1))) ||
-                  _isSameDay(record.date, currentPeriodEnd)))
+              (record.recordDate.isAfter(currentPeriodStart.subtract(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, currentPeriodStart)) &&
+              (record.recordDate.isBefore(currentPeriodEnd.add(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, currentPeriodEnd)))
           .length;
 
       final goalMet = recordsInPeriod >= habit.targetFrequency;

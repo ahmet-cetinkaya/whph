@@ -97,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration {
@@ -475,6 +475,34 @@ class AppDatabase extends _$AppDatabase {
           // Drop the old table and rename the new one
           await customStatement('DROP TABLE task_table');
           await customStatement('ALTER TABLE task_table_new RENAME TO task_table');
+        },
+        from23To24: (m, schema) async {
+          // Step 1: Create new habit_record_table with updated schema
+          await customStatement('''
+            CREATE TABLE habit_record_table_new (
+              id TEXT NOT NULL,
+              created_date INTEGER NOT NULL,
+              modified_date INTEGER,
+              deleted_date INTEGER,
+              habit_id TEXT NOT NULL,
+              occurred_at INTEGER,
+              PRIMARY KEY (id)
+            )
+          ''');
+
+          // Step 2: Copy data from old table, mapping date to occurred_at
+          await customStatement('''
+            INSERT INTO habit_record_table_new (id, created_date, modified_date, deleted_date, habit_id, occurred_at)
+            SELECT id, created_date, modified_date, deleted_date, habit_id, date
+            FROM habit_record_table
+          ''');
+
+          // Step 3: Drop old table and rename new one
+          await customStatement('DROP TABLE habit_record_table');
+          await customStatement('ALTER TABLE habit_record_table_new RENAME TO habit_record_table');
+
+          // Step 4: Add daily_target column to habit_table
+          await m.addColumn(habitTable, habitTable.dailyTarget);
         },
       ),
     );

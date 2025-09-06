@@ -19,6 +19,9 @@ class Habit extends BaseEntity<String> {
   int targetFrequency = 1; // How many times the habit should be performed
   int periodDays = 7; // Over how many days (e.g., 3 times in 7 days)
 
+  // Daily target settings for multiple occurrences per day
+  int? dailyTarget; // How many times per day (null = 1 for backward compatibility)
+
   // Custom order for sorting
   double order = 0.0;
 
@@ -37,6 +40,7 @@ class Habit extends BaseEntity<String> {
     this.hasGoal = false,
     this.targetFrequency = 1,
     this.periodDays = 7,
+    this.dailyTarget,
     this.order = 0.0,
   });
 
@@ -139,6 +143,30 @@ class Habit extends BaseEntity<String> {
     return percentage > 1.0 ? 1.0 : percentage;
   }
 
+  // DAILY TARGET RELATED METHODS
+
+  /// Gets the daily target (defaults to 1 if not set for backward compatibility)
+  int getDailyTarget() {
+    return dailyTarget ?? 1;
+  }
+
+  /// Checks if the daily target has been met based on the provided count
+  bool isDailyTargetMet(int dailyCount) {
+    return dailyCount >= getDailyTarget();
+  }
+
+  /// Calculates the percentage of daily target completion (0.0 to 1.0)
+  double getDailyCompletionPercentage(int dailyCount) {
+    final target = getDailyTarget();
+    if (target <= 0) {
+      return 1.0; // No target means 100% completion
+    }
+
+    final percentage = dailyCount / target;
+    // Cap at 100% even if overachieved
+    return percentage > 1.0 ? 1.0 : percentage;
+  }
+
   // ARCHIVE RELATED METHODS
 
   /// Checks if the habit is archived
@@ -172,6 +200,7 @@ class Habit extends BaseEntity<String> {
         'hasGoal': hasGoal,
         'targetFrequency': targetFrequency,
         'periodDays': periodDays,
+        'dailyTarget': dailyTarget,
         'order': order,
       };
 
@@ -204,6 +233,13 @@ class Habit extends BaseEntity<String> {
       order = orderValue.toDouble();
     }
 
+    // Handle dailyTarget: might come as int, double, or num
+    int? dailyTarget;
+    final dailyTargetValue = json['dailyTarget'];
+    if (dailyTargetValue is num) {
+      dailyTarget = dailyTargetValue.toInt();
+    }
+
     return Habit(
       id: json['id'] as String,
       createdDate: DateTime.parse(json['createdDate'] as String),
@@ -219,6 +255,7 @@ class Habit extends BaseEntity<String> {
       hasGoal: json['hasGoal'] as bool? ?? false,
       targetFrequency: targetFrequency,
       periodDays: periodDays,
+      dailyTarget: dailyTarget,
       order: order,
     );
   }
