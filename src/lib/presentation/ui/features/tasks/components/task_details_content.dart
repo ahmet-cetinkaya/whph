@@ -988,7 +988,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   onChanged: _onTitleChanged,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    focusedBorder: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
