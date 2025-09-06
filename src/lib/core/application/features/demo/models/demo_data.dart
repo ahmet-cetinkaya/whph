@@ -729,7 +729,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: meditationHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }
@@ -773,7 +773,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: readingHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }
@@ -822,7 +822,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: exerciseHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }
@@ -866,7 +866,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: waterHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }
@@ -903,7 +903,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: vitaminsHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }
@@ -951,7 +951,7 @@ class DemoData {
           records.add(HabitRecord(
             id: KeyHelper.generateStringId(),
             habitId: journalHabit.id,
-            date: recordDate,
+            occurredAt: recordDate,
             createdDate: recordDate,
           ));
         }

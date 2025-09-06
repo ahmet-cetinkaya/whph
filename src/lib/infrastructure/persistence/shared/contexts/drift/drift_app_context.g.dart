@@ -1105,12 +1105,12 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
   @override
   late final GeneratedColumn<String> habitId =
       GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  static const VerificationMeta _occurredAtMeta = const VerificationMeta('occurredAt');
   @override
-  late final GeneratedColumn<DateTime> date =
-      GeneratedColumn<DateTime>('date', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, date];
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, occurredAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1141,10 +1141,10 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
     } else if (isInserting) {
       context.missing(_habitIdMeta);
     }
-    if (data.containsKey('date')) {
-      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    if (data.containsKey('occurred_at')) {
+      context.handle(_occurredAtMeta, occurredAt.isAcceptableOrUnknown(data['occurred_at']!, _occurredAtMeta));
     } else if (isInserting) {
-      context.missing(_dateMeta);
+      context.missing(_occurredAtMeta);
     }
     return context;
   }
@@ -1160,7 +1160,7 @@ class $HabitRecordTableTable extends HabitRecordTable with TableInfo<$HabitRecor
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
-      date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      occurredAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at'])!,
     );
   }
 
@@ -1176,7 +1176,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<String> habitId;
-  final Value<DateTime> date;
+  final Value<DateTime> occurredAt;
   final Value<int> rowid;
   const HabitRecordTableCompanion({
     this.id = const Value.absent(),
@@ -1184,7 +1184,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.habitId = const Value.absent(),
-    this.date = const Value.absent(),
+    this.occurredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitRecordTableCompanion.insert({
@@ -1193,19 +1193,19 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     required String habitId,
-    required DateTime date,
+    required DateTime occurredAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
         habitId = Value(habitId),
-        date = Value(date);
+        occurredAt = Value(occurredAt);
   static Insertable<HabitRecord> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<String>? habitId,
-    Expression<DateTime>? date,
+    Expression<DateTime>? occurredAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1214,7 +1214,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (habitId != null) 'habit_id': habitId,
-      if (date != null) 'date': date,
+      if (occurredAt != null) 'occurred_at': occurredAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1225,7 +1225,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<String>? habitId,
-      Value<DateTime>? date,
+      Value<DateTime>? occurredAt,
       Value<int>? rowid}) {
     return HabitRecordTableCompanion(
       id: id ?? this.id,
@@ -1233,7 +1233,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       habitId: habitId ?? this.habitId,
-      date: date ?? this.date,
+      occurredAt: occurredAt ?? this.occurredAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1256,8 +1256,8 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     if (habitId.present) {
       map['habit_id'] = Variable<String>(habitId.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (occurredAt.present) {
+      map['occurred_at'] = Variable<DateTime>(occurredAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1273,7 +1273,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
-          ..write('date: $date, ')
+          ..write('occurredAt: $occurredAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1347,6 +1347,10 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
   @override
   late final GeneratedColumn<int> periodDays = GeneratedColumn<int>('period_days', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(7));
+  static const VerificationMeta _dailyTargetMeta = const VerificationMeta('dailyTarget');
+  @override
+  late final GeneratedColumn<int> dailyTarget =
+      GeneratedColumn<int>('daily_target', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedColumn<double> order = GeneratedColumn<double>('order', aliasedName, false,
@@ -1367,6 +1371,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
         hasGoal,
         targetFrequency,
         periodDays,
+        dailyTarget,
         order
       ];
   @override
@@ -1430,6 +1435,9 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
     if (data.containsKey('period_days')) {
       context.handle(_periodDaysMeta, periodDays.isAcceptableOrUnknown(data['period_days']!, _periodDaysMeta));
     }
+    if (data.containsKey('daily_target')) {
+      context.handle(_dailyTargetMeta, dailyTarget.isAcceptableOrUnknown(data['daily_target']!, _dailyTargetMeta));
+    }
     if (data.containsKey('order')) {
       context.handle(_orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     }
@@ -1456,6 +1464,7 @@ class $HabitTableTable extends HabitTable with TableInfo<$HabitTableTable, Habit
       hasGoal: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_goal'])!,
       targetFrequency: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}target_frequency'])!,
       periodDays: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}period_days'])!,
+      dailyTarget: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}daily_target']),
       order: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}order'])!,
     );
   }
@@ -1481,6 +1490,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
   final Value<bool> hasGoal;
   final Value<int> targetFrequency;
   final Value<int> periodDays;
+  final Value<int?> dailyTarget;
   final Value<double> order;
   final Value<int> rowid;
   const HabitTableCompanion({
@@ -1498,6 +1508,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.hasGoal = const Value.absent(),
     this.targetFrequency = const Value.absent(),
     this.periodDays = const Value.absent(),
+    this.dailyTarget = const Value.absent(),
     this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1516,6 +1527,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     this.hasGoal = const Value.absent(),
     this.targetFrequency = const Value.absent(),
     this.periodDays = const Value.absent(),
+    this.dailyTarget = const Value.absent(),
     this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -1537,6 +1549,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     Expression<bool>? hasGoal,
     Expression<int>? targetFrequency,
     Expression<int>? periodDays,
+    Expression<int>? dailyTarget,
     Expression<double>? order,
     Expression<int>? rowid,
   }) {
@@ -1555,6 +1568,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       if (hasGoal != null) 'has_goal': hasGoal,
       if (targetFrequency != null) 'target_frequency': targetFrequency,
       if (periodDays != null) 'period_days': periodDays,
+      if (dailyTarget != null) 'daily_target': dailyTarget,
       if (order != null) 'order': order,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1575,6 +1589,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       Value<bool>? hasGoal,
       Value<int>? targetFrequency,
       Value<int>? periodDays,
+      Value<int?>? dailyTarget,
       Value<double>? order,
       Value<int>? rowid}) {
     return HabitTableCompanion(
@@ -1592,6 +1607,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
       hasGoal: hasGoal ?? this.hasGoal,
       targetFrequency: targetFrequency ?? this.targetFrequency,
       periodDays: periodDays ?? this.periodDays,
+      dailyTarget: dailyTarget ?? this.dailyTarget,
       order: order ?? this.order,
       rowid: rowid ?? this.rowid,
     );
@@ -1642,6 +1658,9 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
     if (periodDays.present) {
       map['period_days'] = Variable<int>(periodDays.value);
     }
+    if (dailyTarget.present) {
+      map['daily_target'] = Variable<int>(dailyTarget.value);
+    }
     if (order.present) {
       map['order'] = Variable<double>(order.value);
     }
@@ -1668,6 +1687,7 @@ class HabitTableCompanion extends UpdateCompanion<Habit> {
           ..write('hasGoal: $hasGoal, ')
           ..write('targetFrequency: $targetFrequency, ')
           ..write('periodDays: $periodDays, ')
+          ..write('dailyTarget: $dailyTarget, ')
           ..write('order: $order, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -5110,7 +5130,7 @@ typedef $$HabitRecordTableTableCreateCompanionBuilder = HabitRecordTableCompanio
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   required String habitId,
-  required DateTime date,
+  required DateTime occurredAt,
   Value<int> rowid,
 });
 typedef $$HabitRecordTableTableUpdateCompanionBuilder = HabitRecordTableCompanion Function({
@@ -5119,7 +5139,7 @@ typedef $$HabitRecordTableTableUpdateCompanionBuilder = HabitRecordTableCompanio
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
   Value<String> habitId,
-  Value<DateTime> date,
+  Value<DateTime> occurredAt,
   Value<int> rowid,
 });
 
@@ -5145,8 +5165,8 @@ class $$HabitRecordTableTableFilterComposer extends Composer<_$AppDatabase, $Hab
   ColumnFilters<String> get habitId =>
       $composableBuilder(column: $table.habitId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
+  ColumnFilters<DateTime> get occurredAt =>
+      $composableBuilder(column: $table.occurredAt, builder: (column) => ColumnFilters(column));
 }
 
 class $$HabitRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
@@ -5171,8 +5191,8 @@ class $$HabitRecordTableTableOrderingComposer extends Composer<_$AppDatabase, $H
   ColumnOrderings<String> get habitId =>
       $composableBuilder(column: $table.habitId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<DateTime> get occurredAt =>
+      $composableBuilder(column: $table.occurredAt, builder: (column) => ColumnOrderings(column));
 }
 
 class $$HabitRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, $HabitRecordTableTable> {
@@ -5196,7 +5216,8 @@ class $$HabitRecordTableTableAnnotationComposer extends Composer<_$AppDatabase, 
 
   GeneratedColumn<String> get habitId => $composableBuilder(column: $table.habitId, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date => $composableBuilder(column: $table.date, builder: (column) => column);
+  GeneratedColumn<DateTime> get occurredAt =>
+      $composableBuilder(column: $table.occurredAt, builder: (column) => column);
 }
 
 class $$HabitRecordTableTableTableManager extends RootTableManager<
@@ -5224,7 +5245,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> habitId = const Value.absent(),
-            Value<DateTime> date = const Value.absent(),
+            Value<DateTime> occurredAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitRecordTableCompanion(
@@ -5233,7 +5254,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             habitId: habitId,
-            date: date,
+            occurredAt: occurredAt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -5242,7 +5263,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
             required String habitId,
-            required DateTime date,
+            required DateTime occurredAt,
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitRecordTableCompanion.insert(
@@ -5251,7 +5272,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
             habitId: habitId,
-            date: date,
+            occurredAt: occurredAt,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
@@ -5286,6 +5307,7 @@ typedef $$HabitTableTableCreateCompanionBuilder = HabitTableCompanion Function({
   Value<bool> hasGoal,
   Value<int> targetFrequency,
   Value<int> periodDays,
+  Value<int?> dailyTarget,
   Value<double> order,
   Value<int> rowid,
 });
@@ -5304,6 +5326,7 @@ typedef $$HabitTableTableUpdateCompanionBuilder = HabitTableCompanion Function({
   Value<bool> hasGoal,
   Value<int> targetFrequency,
   Value<int> periodDays,
+  Value<int?> dailyTarget,
   Value<double> order,
   Value<int> rowid,
 });
@@ -5355,6 +5378,9 @@ class $$HabitTableTableFilterComposer extends Composer<_$AppDatabase, $HabitTabl
 
   ColumnFilters<int> get periodDays =>
       $composableBuilder(column: $table.periodDays, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get dailyTarget =>
+      $composableBuilder(column: $table.dailyTarget, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<double> get order =>
       $composableBuilder(column: $table.order, builder: (column) => ColumnFilters(column));
@@ -5409,6 +5435,9 @@ class $$HabitTableTableOrderingComposer extends Composer<_$AppDatabase, $HabitTa
   ColumnOrderings<int> get periodDays =>
       $composableBuilder(column: $table.periodDays, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get dailyTarget =>
+      $composableBuilder(column: $table.dailyTarget, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<double> get order =>
       $composableBuilder(column: $table.order, builder: (column) => ColumnOrderings(column));
 }
@@ -5458,6 +5487,8 @@ class $$HabitTableTableAnnotationComposer extends Composer<_$AppDatabase, $Habit
 
   GeneratedColumn<int> get periodDays => $composableBuilder(column: $table.periodDays, builder: (column) => column);
 
+  GeneratedColumn<int> get dailyTarget => $composableBuilder(column: $table.dailyTarget, builder: (column) => column);
+
   GeneratedColumn<double> get order => $composableBuilder(column: $table.order, builder: (column) => column);
 }
 
@@ -5495,6 +5526,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<bool> hasGoal = const Value.absent(),
             Value<int> targetFrequency = const Value.absent(),
             Value<int> periodDays = const Value.absent(),
+            Value<int?> dailyTarget = const Value.absent(),
             Value<double> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -5513,6 +5545,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             hasGoal: hasGoal,
             targetFrequency: targetFrequency,
             periodDays: periodDays,
+            dailyTarget: dailyTarget,
             order: order,
             rowid: rowid,
           ),
@@ -5531,6 +5564,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             Value<bool> hasGoal = const Value.absent(),
             Value<int> targetFrequency = const Value.absent(),
             Value<int> periodDays = const Value.absent(),
+            Value<int?> dailyTarget = const Value.absent(),
             Value<double> order = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -5549,6 +5583,7 @@ class $$HabitTableTableTableManager extends RootTableManager<
             hasGoal: hasGoal,
             targetFrequency: targetFrequency,
             periodDays: periodDays,
+            dailyTarget: dailyTarget,
             order: order,
             rowid: rowid,
           ),

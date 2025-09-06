@@ -51,7 +51,7 @@ class GetListHabitRecordsQueryHandler
     );
 
     return GetListHabitRecordsQueryResponse(
-      items: habitRecords.items.map((e) => HabitRecordListItem(id: e.id, date: e.date)).toList(),
+      items: habitRecords.items.map((e) => HabitRecordListItem(id: e.id, date: e.recordDate)).toList(),
       totalItemCount: habitRecords.totalItemCount,
       pageIndex: habitRecords.pageIndex,
       pageSize: habitRecords.pageSize,
