@@ -12,7 +12,7 @@ tags:
     app_usage: Использование приложений
     habits: Привычки
     tasks: Задачи
-  default_name: Новый тег
+
   details:
     archived: Архивировано
     color: Цвет

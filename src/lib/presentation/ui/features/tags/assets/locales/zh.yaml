@@ -12,7 +12,7 @@ tags:
     app_usage: 应用使用情况
     habits: 习惯
     tasks: 任务
-  default_name: 新标签
+
   details:
     archived: 已归档
     color: 颜色

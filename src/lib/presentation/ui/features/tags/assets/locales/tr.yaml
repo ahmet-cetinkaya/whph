@@ -12,7 +12,7 @@ tags:
     app_usage: Uygulama Kullanımı
     habits: Alışkanlıklar
     tasks: Görevler
-  default_name: Yeni Etiket
+
   details:
     archived: Arşivlenmiş
     color: Renk

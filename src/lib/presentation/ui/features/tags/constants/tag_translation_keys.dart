@@ -1,9 +1,6 @@
 import 'package:whph/core/application/features/tags/constants/tag_translation_keys.dart' as application;
 
 class TagTranslationKeys extends application.TagTranslationKeys {
-  // Common
-  static const String defaultTagName = 'tags.default_name';
-
   // Actions
   static const String addTag = 'tags.actions.add';
   static const String editTag = 'tags.actions.edit';

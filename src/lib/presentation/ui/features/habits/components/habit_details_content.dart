@@ -58,6 +58,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
 
   GetListHabitRecordsQueryResponse? _habitRecords;
@@ -103,6 +104,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     _nameController.dispose();
     _descriptionController.dispose();
+    _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -168,6 +170,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_nameController.text != result.name) {
               _nameController.text = result.name;
               widget.onNameUpdated?.call(result.name);
+
+              // Auto-focus if name is empty (newly created habit)
+              if (result.name.isEmpty) {
+                // Use a small delay to ensure the UI is fully built
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  if (mounted) {
+                    _nameFocusNode.requestFocus();
+                  }
+                });
+              }
               // Don't restore selection for name if it changed
             } else if (nameSelection.isValid) {
               // Restore selection if name didn't change
@@ -324,9 +336,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       // If we have new tags or if this is the first load (_habitTags is null)
       if (newHabitTags != null) {
         final newTagIds = newHabitTags!.items.map((tag) => tag.tagId).toSet();
-        
+
         // Always update if forced refresh is requested, first load, or if tags actually changed
-        if (_forceTagsRefresh || _habitTags == null || existingTagIds.length != newTagIds.length || !existingTagIds.containsAll(newTagIds)) {
+        if (_forceTagsRefresh ||
+            _habitTags == null ||
+            existingTagIds.length != newTagIds.length ||
+            !existingTagIds.containsAll(newTagIds)) {
           setState(() {
             _habitTags = newHabitTags;
             _forceTagsRefresh = false; // Reset flag after update
@@ -560,6 +575,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
       if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
     });
+
+    // Auto-focus name field if empty (newly created habit)
+    if (_habit!.name.isEmpty) {
+      // Use a delay to ensure the UI is fully rendered
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          _nameFocusNode.requestFocus();
+        }
+      });
+    }
   }
 
   // Toggles visibility of an optional field
@@ -695,6 +720,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               Expanded(
                 child: TextFormField(
                   controller: _nameController,
+                  focusNode: _nameFocusNode,
                   maxLines: null,
                   onChanged: _onNameChanged,
                   decoration: InputDecoration(
@@ -791,9 +817,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           isMultiSelect: true,
           onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
           showSelectedInDropdown: true,
-          initialSelectedTags: _habitTags?.items
-              .map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName))
-              .toList() ?? [],
+          initialSelectedTags:
+              _habitTags?.items.map((tag) => DropdownOption<String>(value: tag.tagId, label: tag.tagName)).toList() ??
+                  [],
           icon: SharedUiConstants.addIcon,
         ),
       );

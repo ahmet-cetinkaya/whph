@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versionskonflikt
 shared:
+  untitled: "Unbenannt"
   buttons:
     add: Hinzufügen
     back: Zurück

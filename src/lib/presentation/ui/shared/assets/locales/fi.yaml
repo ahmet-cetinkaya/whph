@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Versioristiriita
 shared:
+  untitled: "Nimetön"
   buttons:
     add: Lisää
     back: Takaisin

@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: 版本不匹配
 shared:
+  untitled: "无标题"
   buttons:
     add: 添加
     back: 返回

@@ -44,6 +44,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   GetNoteQueryResponse? _note;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final FocusNode _titleFocusNode = FocusNode();
   Timer? _debounce;
 
   final _translationService = container.resolve<ITranslationService>();
@@ -72,6 +73,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
     _titleController.dispose();
     _contentController.dispose();
+    _titleFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -117,6 +119,16 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Update title if it's different
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
+
+            // Auto-focus if title is empty (newly created note)
+            if (response.title.isEmpty) {
+              // Use a small delay to ensure the UI is fully built
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  _titleFocusNode.requestFocus();
+                }
+              });
+            }
           } else if (titleSelection.isValid) {
             // Restore selection if title didn't change
             _titleController.selection = titleSelection;
@@ -157,6 +169,16 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       // Make fields with content automatically visible
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
     });
+
+    // Auto-focus title field if empty (newly created note)
+    if (_note!.title.isEmpty) {
+      // Use a delay to ensure the UI is fully rendered
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          _titleFocusNode.requestFocus();
+        }
+      });
+    }
   }
 
   // Check if the field should be displayed in the chips section
@@ -372,6 +394,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Note Title (always visible)
           TextFormField(
             controller: _titleController,
+            focusNode: _titleFocusNode,
             maxLines: null,
             onChanged: _onTitleChanged,
             decoration: InputDecoration(

@@ -1,7 +1,5 @@
-settings:
-  import:
-    version_mismatch: Incompatibilité de version
 shared:
+  untitled: "Sans titre"
   validation:
     required: "{field} est requis."
   buttons:

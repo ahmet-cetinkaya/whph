@@ -12,7 +12,7 @@ tags:
     app_usage: App Usage
     habits: Habits
     tasks: Tasks
-  default_name: New Tag
+
   details:
     archived: Archived
     color: Color
