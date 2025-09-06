@@ -119,19 +119,19 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Update title if it's different
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
-
-            // Auto-focus if title is empty (newly created note)
-            if (response.title.isEmpty) {
-              // Use a small delay to ensure the UI is fully built
-              Future.delayed(const Duration(milliseconds: 100), () {
-                if (mounted) {
-                  _titleFocusNode.requestFocus();
-                }
-              });
-            }
           } else if (titleSelection.isValid) {
             // Restore selection if title didn't change
             _titleController.selection = titleSelection;
+          }
+
+          // Auto-focus if title is empty (newly created note)
+          if (response.title.isEmpty) {
+            // Use a small delay to ensure the UI is fully built
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (mounted) {
+                _titleFocusNode.requestFocus();
+              }
+            });
           }
 
           // Update content if it's different
@@ -169,16 +169,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       // Make fields with content automatically visible
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
     });
-
-    // Auto-focus title field if empty (newly created note)
-    if (_note!.title.isEmpty) {
-      // Use a delay to ensure the UI is fully rendered
-      Future.delayed(const Duration(milliseconds: 150), () {
-        if (mounted) {
-          _titleFocusNode.requestFocus();
-        }
-      });
-    }
   }
 
   // Check if the field should be displayed in the chips section
