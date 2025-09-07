@@ -274,7 +274,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   }
 
   List<HabitStreak> _calculateStreaks(List<HabitRecord> records,
-      {required Habit habit, DateTime? endDate, Map<DateTime, double>? dailyScores}) {
+      {required Habit habit, DateTime? endDate, required Map<DateTime, double> dailyScores}) {
     if (records.isEmpty) return [];
 
     if (habit.hasGoal) {
@@ -285,44 +285,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   }
 
   List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate,
-      {int minDays = 2, Map<DateTime, double>? dailyScores}) {
-    if (dailyScores == null || dailyScores.isEmpty) {
-      // Fallback to old behavior for backward compatibility
-      final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
-      final streaks = <HabitStreak>[];
-      var streakStart = sortedRecords.first.recordDate;
-      var lastDate = streakStart;
+      {int minDays = 2, required Map<DateTime, double> dailyScores}) {
+    if (dailyScores.isEmpty) return [];
 
-      for (var i = 1; i < sortedRecords.length; i++) {
-        final record = sortedRecords[i];
-        if (record.recordDate.difference(lastDate).inDays > 1) {
-          if (endDate == null || !lastDate.isAfter(endDate)) {
-            if (lastDate.difference(streakStart).inDays >= minDays - 1) {
-              streaks.add(HabitStreak(
-                startDate: streakStart,
-                endDate: lastDate,
-                days: lastDate.difference(streakStart).inDays + 1,
-              ));
-            }
-          }
-          streakStart = record.recordDate;
-        }
-        lastDate = record.recordDate;
-      }
-
-      if (lastDate.difference(streakStart).inDays >= minDays - 1 && (endDate == null || !lastDate.isAfter(endDate))) {
-        streaks.add(HabitStreak(
-          startDate: streakStart,
-          endDate: lastDate,
-          days: lastDate.difference(streakStart).inDays + 1,
-        ));
-      }
-
-      streaks.sort((a, b) => b.days.compareTo(a.days));
-      return streaks;
-    }
-
-    // New logic using daily scores - a day is complete if score >= 1.0
+    // Logic using daily scores - a day is complete if score >= 1.0
     final completeDays = dailyScores.entries.where((entry) => entry.value >= 1.0).map((entry) => entry.key).toList()
       ..sort();
 
