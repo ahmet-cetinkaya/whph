@@ -49,13 +49,12 @@ Assumptions: Current DB no foreign key issues; statistics centralized in GetHabi
 1. Introduce `occurredAt` column to `HabitRecord`.
    - Type: `DateTime` (full timestamp).
    - Replace or supplement existing `date` field; derive `recordDate` as date-only from `occurredAt`.
-2. Implement Drift migrations:
-   ```sql
-   ALTER TABLE habit_record ADD COLUMN occurred_at TEXT;            -- ISO timestamp
-   UPDATE habit_record SET occurred_at = date;                      -- back-fill from existing records
-   ALTER TABLE habit_record RENAME COLUMN date TO record_date;      -- optional, for clarity
-   CREATE INDEX idx_habit_record_habit_date ON habit_record(habit_id, record_date);
-   ```
+2. Implement Drift migrations using a safe create-copy-drop-rename strategy:
+   - Create a new table `habit_record_table_new` with `occurred_at INTEGER NOT NULL` replacing the old `date` column.
+   - Copy data from the old table, mapping `date` to `occurred_at`.
+   - Drop the old table and rename the new one to `habit_record_table`.
+   - Add `daily_target INTEGER` column to `habit_table`.
+   - Create index `idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)` for query performance.
 3. Adjust domain entity:
    ```dart
    class HabitRecord extends BaseEntity<String> {
