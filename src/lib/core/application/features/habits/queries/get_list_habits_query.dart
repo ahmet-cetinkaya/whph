@@ -52,6 +52,7 @@ class HabitListItem {
   List<int> reminderDays;
   DateTime? archivedDate;
   double? order;
+  int? dailyTarget;
 
   HabitListItem({
     required this.id,
@@ -63,6 +64,7 @@ class HabitListItem {
     this.reminderDays = const [],
     this.archivedDate,
     this.order,
+    this.dailyTarget,
   });
 
   bool isArchived() {
@@ -123,6 +125,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         reminderDays: habit.getReminderDaysAsList(),
         archivedDate: habit.archivedDate,
         order: habit.order,
+        dailyTarget: habit.dailyTarget,
       ));
     }
 

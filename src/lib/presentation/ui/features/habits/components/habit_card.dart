@@ -4,7 +4,7 @@ import 'package:whph/core/application/features/habits/commands/add_habit_record_
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' as acore;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
@@ -52,7 +52,7 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   final _mediator = container.resolve<Mediator>();
-  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _soundPlayer = container.resolve<acore.ISoundPlayer>();
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
@@ -103,9 +103,9 @@ class _HabitCardState extends State<HabitCard> {
           pageIndex: 0,
           pageSize: widget.dateRange,
           habitId: widget.habit.id,
-          startDate: DateTimeHelper.toUtcDateTime(
+          startDate: acore.DateTimeHelper.toUtcDateTime(
               endDate.subtract(Duration(days: widget.isMiniLayout ? 1 : widget.dateRange))),
-          endDate: DateTimeHelper.toLocalDateTime(endDate),
+          endDate: acore.DateTimeHelper.toLocalDateTime(endDate),
         );
         return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       },
@@ -132,21 +132,47 @@ class _HabitCardState extends State<HabitCard> {
   // Helper method to check if a date is disabled for habit recording
   bool _isDateDisabled(DateTime date) {
     return date.isAfter(DateTime.now()) ||
-        (widget.habit.archivedDate != null && date.isAfter(DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
+        (widget.habit.archivedDate != null &&
+            date.isAfter(acore.DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
   }
 
   // Helper method to check if there's a record for a specific date
   bool _hasRecordForDate(DateTime date) {
     if (_habitRecords == null) return false;
-    return _habitRecords!.items.any((record) =>
-        DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), DateTimeHelper.toLocalDateTime(date)));
+    return _habitRecords!.items.any((record) => acore.DateTimeHelper.isSameDay(
+        acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)));
   }
 
-  // Helper method to get a record for a specific date
+  // Helper method to count records for a specific date
+  int _countRecordsForDate(DateTime date) {
+    if (_habitRecords == null) return 0;
+    return _habitRecords!.items
+        .where((record) => acore.DateTimeHelper.isSameDay(
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
+        .length;
+  }
+
+  // Helper method to get a record for a specific date (returns first match)
   HabitRecordListItem? _getRecordForDate(DateTime date) {
     if (_habitRecords == null || !_hasRecordForDate(date)) return null;
-    return _habitRecords!.items.firstWhere((record) =>
-        DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(record.date), DateTimeHelper.toLocalDateTime(date)));
+    return _habitRecords!.items.firstWhere((record) => acore.DateTimeHelper.isSameDay(
+        acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)));
+  }
+
+  // Helper method to get the most recent record for a specific date
+  HabitRecordListItem? _getMostRecentRecordForDate(DateTime date) {
+    if (_habitRecords == null || !_hasRecordForDate(date)) return null;
+
+    final todayRecords = _habitRecords!.items
+        .where((record) => acore.DateTimeHelper.isSameDay(
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
+        .toList();
+
+    if (todayRecords.isEmpty) return null;
+
+    // Sort by occurredAt descending to get the most recent record
+    todayRecords.sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
+    return todayRecords.first;
   }
 
   // Helper method to get the appropriate color for record state
@@ -170,18 +196,35 @@ class _HabitCardState extends State<HabitCard> {
     }
   }
 
-  // Event handler for checkbox tap
+  // Event handler for checkbox tap with smart logic for multiple occurrences
   Future<void> _onCheckboxTap() async {
     final today = DateTime.now();
-    final hasRecordToday = _hasRecordForDate(today);
+    final todayCount = _countRecordsForDate(today);
+    final dailyTarget = widget.habit.dailyTarget ?? 1;
 
-    if (hasRecordToday) {
-      final recordToday = _getRecordForDate(today);
-      if (recordToday != null) {
-        await _deleteHabitRecord(recordToday.id);
+    // Smart tap logic based on daily target
+    if (dailyTarget == 1) {
+      // Traditional behavior for single-occurrence habits
+      if (todayCount > 0) {
+        final recordToday = _getRecordForDate(today);
+        if (recordToday != null) {
+          await _deleteHabitRecord(recordToday.id);
+        }
+      } else {
+        await _createHabitRecord(widget.habit.id, today);
       }
     } else {
-      await _createHabitRecord(widget.habit.id, today);
+      // Smart behavior for multi-occurrence habits
+      if (todayCount < dailyTarget) {
+        // Add new record (increment)
+        await _createHabitRecord(widget.habit.id, today);
+      } else {
+        // Remove most recent record (decrement)
+        final mostRecentRecord = _getMostRecentRecordForDate(today);
+        if (mostRecentRecord != null) {
+          await _deleteHabitRecord(mostRecentRecord.id);
+        }
+      }
     }
   }
 
@@ -190,7 +233,7 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: DateTimeHelper.toUtcDateTime(date));
+        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: acore.DateTimeHelper.toUtcDateTime(date));
         final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
 
         _refreshHabitRecords();
@@ -517,8 +560,9 @@ class _HabitCardState extends State<HabitCard> {
       );
     }
 
-    final referenceDate =
-        widget.habit.archivedDate != null ? DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!) : DateTime.now();
+    final referenceDate = widget.habit.archivedDate != null
+        ? acore.DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)
+        : DateTime.now();
     final days = List.generate(
       widget.dateRange,
       (index) => referenceDate.subtract(Duration(days: index)),
@@ -533,8 +577,8 @@ class _HabitCardState extends State<HabitCard> {
 
   Widget _buildCalendarDay(DateTime date, DateTime referenceDate) {
     final isDisabled = _isDateDisabled(date);
-    final localDate = DateTimeHelper.toLocalDateTime(date);
-    final isToday = DateTimeHelper.isSameDay(localDate, DateTime.now());
+    final localDate = acore.DateTimeHelper.toLocalDateTime(date);
+    final isToday = acore.DateTimeHelper.isSameDay(localDate, DateTime.now());
     final hasRecord = _hasRecordForDate(date);
 
     return SizedBox(
@@ -549,7 +593,7 @@ class _HabitCardState extends State<HabitCard> {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  DateTimeHelper.getWeekday(localDate.weekday),
+                  acore.DateTimeHelper.getWeekday(localDate.weekday),
                   style: AppTheme.bodySmall.copyWith(
                     color: isToday
                         ? _themeService.primaryColor
@@ -606,9 +650,57 @@ class _HabitCardState extends State<HabitCard> {
     final today = DateTime.now();
     final isDisabled = _isDateDisabled(today);
     final hasRecordToday = _hasRecordForDate(today);
+    final todayCount = _countRecordsForDate(today);
+    final dailyTarget = widget.habit.dailyTarget ?? 1;
     final isCompactView = widget.isMiniLayout ||
         (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
 
+    // For habits with dailyTarget > 1, show completion badge
+    if (dailyTarget > 1) {
+      final isComplete = todayCount >= dailyTarget;
+      return SizedBox(
+        width: isCompactView ? 32 : 40,
+        height: isCompactView ? 24 : 30,
+        child: InkWell(
+          onTap: isDisabled ? null : _onCheckboxTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDisabled
+                  ? AppTheme.textColor.withValues(alpha: 0.1)
+                  : isComplete
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.grey.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDisabled
+                    ? AppTheme.textColor.withValues(alpha: 0.3)
+                    : isComplete
+                        ? Colors.green
+                        : Colors.grey,
+                width: 1,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                '$todayCount/$dailyTarget',
+                style: TextStyle(
+                  fontSize: isCompactView ? 10 : 12,
+                  fontWeight: FontWeight.bold,
+                  color: isDisabled
+                      ? AppTheme.textColor.withValues(alpha: 0.3)
+                      : isComplete
+                          ? Colors.green
+                          : AppTheme.textColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // For habits with dailyTarget = 1, show traditional icon
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: BoxConstraints(
