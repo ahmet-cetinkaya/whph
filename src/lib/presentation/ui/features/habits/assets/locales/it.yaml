@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistiche
     tags: Tag
     tags_hint: Seleziona tag da associare
+    daily_target: "Obiettivo giornaliero"
+    daily_target_hint: "Inserisci il tuo obiettivo giornaliero (ad es., 10 minuti o 5 ripetizioni)"
   errors:
     adding_tag: Impossibile aggiungere il tag
     creating_record: Impossibile creare record abitudine
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Diminuisci tempo stimato
     edit_name: Modifica nome
     increase_estimated_time: Aumenta tempo stimato
+    decrease_daily_target: "Diminuisci obiettivo giornaliero"
+    increase_daily_target: "Aumenta obiettivo giornaliero"

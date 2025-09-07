@@ -92,6 +92,8 @@ habits:
     statistics_label: 통계
     tags: 태그
     tags_hint: 연결할 태그 선택
+    daily_target: "일일 목표"
+    daily_target_hint: "일일 목표를 입력하세요 (예: 10분 또는 5회 반복)"
   errors:
     adding_tag: 태그 추가에 실패했습니다
     creating_record: 습관 기록 생성에 실패했습니다
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: 예상 시간 줄이기
     edit_name: 이름 편집
     increase_estimated_time: 예상 시간 늘리기
+    decrease_daily_target: "일일 목표 감소"
+    increase_daily_target: "일일 목표 증가"

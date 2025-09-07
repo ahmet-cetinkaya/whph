@@ -95,6 +95,8 @@ habits:
     statistics_label: Статистика
     tags: Теги
     tags_hint: Выбрать теги для связи
+    daily_target: "Ежедневная цель"
+    daily_target_hint: "Введите вашу ежедневную цель (например, 10 минут или 5 повторений)"
   errors:
     adding_tag: Не удалось добавить тег
     creating_record: Не удалось создать запись привычки
@@ -213,3 +215,5 @@ habits:
     decrease_estimated_time: Уменьшить предполагаемое время
     edit_name: Редактировать название
     increase_estimated_time: Увеличить предполагаемое время
+    decrease_daily_target: "Уменьшить ежедневную цель"
+    increase_daily_target: "Увеличить ежедневную цель"
