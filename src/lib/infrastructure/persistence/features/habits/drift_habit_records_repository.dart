@@ -12,7 +12,7 @@ class HabitRecordTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text()();
-  DateTimeColumn get occurredAt => dateTime().nullable()();
+  DateTimeColumn get occurredAt => dateTime()();
 
   @override
   Set<Column>? get primaryKey => {id};
@@ -35,7 +35,7 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
-      occurredAt: Value(entity.occurredAt ?? entity.createdDate),
+      occurredAt: entity.occurredAt,
     );
   }
 

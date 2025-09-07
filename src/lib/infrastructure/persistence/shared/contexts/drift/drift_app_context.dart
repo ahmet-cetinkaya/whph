@@ -485,7 +485,7 @@ class AppDatabase extends _$AppDatabase {
               modified_date INTEGER,
               deleted_date INTEGER,
               habit_id TEXT NOT NULL,
-              occurred_at INTEGER,
+              occurred_at INTEGER NOT NULL,
               PRIMARY KEY (id)
             )
           ''');

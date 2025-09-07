@@ -177,7 +177,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
       final firstRecordDate = sortedRecords.first.recordDate;
       final daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
-      
+
       // Calculate average daily score
       final totalScore = dailyScores.values.fold(0.0, (sum, score) => sum + score);
       overallScore = totalScore / daysFromFirstRecord;
@@ -186,14 +186,14 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate monthly score based on daily scores
     final daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
     final monthlyDailyScores = dailyScores.entries
-        .where((entry) => 
+        .where((entry) =>
             entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
             (entry.key.isBefore(endDate.add(const Duration(days: 1))) || _isSameDay(entry.key, endDate)))
         .map((entry) => entry.value);
     final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final monthlyScore = monthlyTotalScore / daysInCurrentMonth;
 
-    // Calculate yearly score based on daily scores  
+    // Calculate yearly score based on daily scores
     final daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
     final yearlyDailyScores = dailyScores.entries
         .where((entry) =>
@@ -215,7 +215,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
               (entry.key.isAfter(month.subtract(const Duration(days: 1))) || _isSameDay(entry.key, month)) &&
               (entry.key.isBefore(monthEnd.add(const Duration(days: 1))) || _isSameDay(entry.key, monthEnd)))
           .map((entry) => entry.value);
-      
+
       final monthTotalScore = monthlyDailyScoresForMonth.fold(0.0, (sum, score) => sum + score);
       final daysInMonth = monthEnd.difference(month).inDays + 1;
       monthlyScores.add(MapEntry(month, monthTotalScore / daysInMonth));
@@ -273,7 +273,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  List<HabitStreak> _calculateStreaks(List<HabitRecord> records, {required Habit habit, DateTime? endDate, Map<DateTime, double>? dailyScores}) {
+  List<HabitStreak> _calculateStreaks(List<HabitRecord> records,
+      {required Habit habit, DateTime? endDate, Map<DateTime, double>? dailyScores}) {
     if (records.isEmpty) return [];
 
     if (habit.hasGoal) {
@@ -283,7 +284,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
   }
 
-  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate, {int minDays = 2, Map<DateTime, double>? dailyScores}) {
+  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate,
+      {int minDays = 2, Map<DateTime, double>? dailyScores}) {
     if (dailyScores == null || dailyScores.isEmpty) {
       // Fallback to old behavior for backward compatibility
       final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
@@ -321,10 +323,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // New logic using daily scores - a day is complete if score >= 1.0
-    final completeDays = dailyScores.entries
-        .where((entry) => entry.value >= 1.0)
-        .map((entry) => entry.key)
-        .toList()
+    final completeDays = dailyScores.entries.where((entry) => entry.value >= 1.0).map((entry) => entry.key).toList()
       ..sort();
 
     if (completeDays.isEmpty) return [];

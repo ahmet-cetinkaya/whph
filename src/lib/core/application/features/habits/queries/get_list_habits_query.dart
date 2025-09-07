@@ -155,7 +155,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       final startDate = DateTime(now.year, now.month, now.day).toUtc();
       final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
       conditions.add(
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at > ? AND habit_record_table.occurred_at < ? AND habit_record_table.deleted_date IS NULL) = 0");
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at > ? AND habit_record_table.occurred_at < ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
       variables.add(startDate);
       variables.add(endDate);
     }
@@ -169,7 +169,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
               request.excludeCompletedForDate!.day, 23, 59, 59, 999)
           .toUtc();
       conditions.add(
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at >= ? AND habit_record_table.occurred_at <= ? AND habit_record_table.deleted_date IS NULL) = 0");
+          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at >= ? AND habit_record_table.occurred_at <= ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
       variables.add(startDate);
       variables.add(endDate);
     }
