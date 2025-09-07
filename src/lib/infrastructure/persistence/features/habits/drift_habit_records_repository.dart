@@ -35,7 +35,7 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
-      occurredAt: entity.occurredAt ?? entity.createdDate,
+      occurredAt: Value(entity.occurredAt ?? entity.createdDate),
     );
   }
 
