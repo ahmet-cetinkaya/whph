@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
+    daily_target: "Päivittäinen tavoite"
+    daily_target_hint: "Syötä päivittäinen tavoitettasi (esim. 10 minuuttia tai 5 toistoa)"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Decrease estimated time
     edit_name: Edit Name
     increase_estimated_time: Increase estimated time
+    decrease_daily_target: "Vähennä päivittäistä tavoitetta"
+    increase_daily_target: "Lisää päivittäistä tavoitetta"

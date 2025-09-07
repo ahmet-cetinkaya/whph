@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
+    daily_target: "Țintă zilnică"
+    daily_target_hint: "Introduceți obiectivul zilnic (de exemplu, 10 minute sau 5 repetări)"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Decrease estimated time
     edit_name: Edit Name
     increase_estimated_time: Increase estimated time
+    decrease_daily_target: "Scade ținta zilnică"
+    increase_daily_target: "Crește ținta zilnică"

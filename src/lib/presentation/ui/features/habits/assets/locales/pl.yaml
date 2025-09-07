@@ -92,6 +92,8 @@ habits:
     statistics_label: Statystyki
     tags: Tagi
     tags_hint: Wybierz tagi do powiązania
+    daily_target: "Codzienny cel"
+    daily_target_hint: "Wprowadź swój codzienny cel (np. 10 minut lub 5 powtórzeń)"
   errors:
     adding_tag: Nie udało się dodać tagu
     creating_record: Nie udało się utworzyć rekordu nawyku
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Zmniejsz szacowany czas
     edit_name: Edytuj nazwę
     increase_estimated_time: Zwiększ szacowany czas
+    decrease_daily_target: "Zmniejsz codzienny cel"
+    increase_daily_target: "Zwiększ codzienny cel"

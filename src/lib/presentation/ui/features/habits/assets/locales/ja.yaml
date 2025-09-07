@@ -92,6 +92,8 @@ habits:
     statistics_label: 統計
     tags: タグ
     tags_hint: 関連付けるタグを選択
+    daily_target: "毎日の目標"
+    daily_target_hint: "毎日の目標を入力してください（例: 10分または5回）"
   errors:
     adding_tag: タグの追加に失敗しました
     creating_record: 習慣記録の作成に失敗しました
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: 予想時間を減らす
     edit_name: 名前を編集
     increase_estimated_time: 予想時間を増やす
+    decrease_daily_target: "毎日の目標を減らす"
+    increase_daily_target: "毎日の目標を増やす"

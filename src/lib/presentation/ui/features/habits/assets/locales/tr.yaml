@@ -95,6 +95,8 @@ habits:
     statistics_label: İstatistikler
     tags: Etiketler
     tags_hint: İlişkilendirilecek etiketleri seçin
+    daily_target: "Günlük Hedef"
+    daily_target_hint: "Günlük hedefinizi girin (örneğin, 10 dakika veya 5 tekrar)"
   errors:
     adding_tag: Etiket eklenemedi
     creating_record: Alışkanlık kaydı oluşturulamadı
@@ -190,3 +192,5 @@ habits:
     decrease_estimated_time: Tahmini süreyi azalt
     edit_name: İsmi düzenle
     increase_estimated_time: Tahmini süreyi artır
+    decrease_daily_target: "Günlük hedefi azalt"
+    increase_daily_target: "Günlük hedefi artır"

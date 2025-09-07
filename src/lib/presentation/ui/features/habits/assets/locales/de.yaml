@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistiken
     tags: Tags
     tags_hint: Tags zum Verknüpfen auswählen
+    daily_target: "Tägliches Ziel"
+    daily_target_hint: "Geben Sie Ihr tägliches Ziel ein (z. B. 10 Minuten oder 5 Wiederholungen)"
   errors:
     adding_tag: Tag konnte nicht hinzugefügt werden
     creating_record: Gewohnheitsaufzeichnung konnte nicht erstellt werden
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Geschätzte Zeit verringern
     edit_name: Name bearbeiten
     increase_estimated_time: Geschätzte Zeit erhöhen
+    decrease_daily_target: "Tägliches Ziel verringern"
+    increase_daily_target: "Tägliches Ziel erhöhen"

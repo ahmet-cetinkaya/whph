@@ -92,6 +92,8 @@ habits:
     statistics_label: 统计
     tags: 标签
     tags_hint: 选择要关联的标签
+    daily_target: "每日目标"
+    daily_target_hint: "输入您的每日目标（例如，10 分钟或 5 次重复）"
   errors:
     adding_tag: 添加标签失败
     creating_record: 创建习惯记录失败
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: 减少预计时间
     edit_name: 编辑名称
     increase_estimated_time: 增加预计时间
+    decrease_daily_target: "减少每日目标"
+    increase_daily_target: "增加每日目标"
