@@ -1078,7 +1078,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     builder: (context) => HabitGoalDialog(
                       hasGoal: _habit!.hasGoal,
                       targetFrequency: _habit!.targetFrequency,
-                      periodDays: _habit!.periodDays,
+                      periodDays: _habit!.hasGoal ? _habit!.periodDays : 1,
+                      dailyTarget: _habit!.dailyTarget ?? 1,
                       translationService: _translationService,
                     ),
                   );
@@ -1086,6 +1087,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   if (result != null && mounted) {
                     setState(() {
                       _habit!.hasGoal = result.hasGoal;
+                      _habit!.dailyTarget = result.dailyTarget;
                       if (result.hasGoal) {
                         _habit!.targetFrequency = result.targetFrequency;
                         _habit!.periodDays = result.periodDays;

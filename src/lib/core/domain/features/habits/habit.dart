@@ -17,7 +17,7 @@ class Habit extends BaseEntity<String> {
   // Goal settings
   bool hasGoal = false;
   int targetFrequency = 1; // How many times the habit should be performed
-  int periodDays = 7; // Over how many days (e.g., 3 times in 7 days)
+  int periodDays = 1; // Over how many days (e.g., 1 time in 1 day)
 
   // Daily target settings for multiple occurrences per day
   int? dailyTarget; // How many times per day (null = 1 for backward compatibility)
@@ -39,7 +39,7 @@ class Habit extends BaseEntity<String> {
     String reminderDays = "",
     this.hasGoal = false,
     this.targetFrequency = 1,
-    this.periodDays = 7,
+    this.periodDays = 1,
     this.dailyTarget,
     this.order = 0.0,
   });
@@ -220,7 +220,7 @@ class Habit extends BaseEntity<String> {
     }
 
     // Handle periodDays: might come as int, double, or num
-    int periodDays = 7;
+    int periodDays = 1;
     final periodDaysValue = json['periodDays'];
     if (periodDaysValue is num) {
       periodDays = periodDaysValue.toInt();

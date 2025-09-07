@@ -28,6 +28,8 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String tagsHint = 'habits.details.tags_hint';
   static const String estimatedTimeLabel = 'habits.details.estimated_time';
   static const String estimatedTimeNotSet = 'habits.details.estimated_time_not_set';
+  static const String dailyTargetLabel = 'habits.details.daily_target';
+  static const String dailyTargetHint = 'habits.details.daily_target_hint';
   static const String recordsLabel = 'habits.details.records';
   static const String statisticsLabel = 'habits.details.statistics_label';
   static const String createRecordTooltip = 'habits.details.create_record_tooltip';
@@ -93,6 +95,8 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String editNameTooltip = 'habits.tooltips.edit_name';
   static const String decreaseEstimatedTime = 'habits.tooltips.decrease_estimated_time';
   static const String increaseEstimatedTime = 'habits.tooltips.increase_estimated_time';
+  static const String decreaseDailyTarget = 'habits.tooltips.decrease_daily_target';
+  static const String increaseDailyTarget = 'habits.tooltips.increase_daily_target';
 
   static const String addHabit = 'habits.tooltips.add_habit';
 
