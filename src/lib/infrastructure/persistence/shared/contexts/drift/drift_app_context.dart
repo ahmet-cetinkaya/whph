@@ -503,6 +503,9 @@ class AppDatabase extends _$AppDatabase {
 
           // Step 4: Add daily_target column to habit_table
           await m.addColumn(habitTable, habitTable.dailyTarget);
+          
+          // Step 5: Add index for performance on habit records
+          await customStatement('CREATE INDEX idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)');
         },
       ),
     );
