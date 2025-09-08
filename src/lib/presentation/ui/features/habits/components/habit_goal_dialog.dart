@@ -140,13 +140,13 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
 
   String _getGoalDescription() {
     if (!_hasGoal) {
-      return widget.translationService.translate(HabitTranslationKeys.enableGoals);
+      return '$_dailyTarget ${widget.translationService.translate(HabitTranslationKeys.dailyTargetHint)}';
     }
 
-    return widget.translationService.translate(HabitTranslationKeys.goalFormat, namedArgs: {
-      'count': _targetFrequency.toString(),
-      'dayCount': _periodDays.toString(),
-    });
+    return '$_dailyTarget ${widget.translationService.translate(HabitTranslationKeys.dailyTargetHint)}, ${widget.translationService.translate(HabitTranslationKeys.goalFormat, namedArgs: {
+          'count': _targetFrequency.toString(),
+          'dayCount': _periodDays.toString(),
+        })}';
   }
 
   Widget _buildNumberInput({
@@ -227,12 +227,7 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      widget.translationService.translate(HabitTranslationKeys.goalDescription),
-                      style: AppTheme.bodySmall.copyWith(
-                        color: Colors.blue,
-                      ),
-                    ),
+                    child: Text(widget.translationService.translate(HabitTranslationKeys.goalDescription)),
                   ),
                 ],
               ),
@@ -245,10 +240,12 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
                 onChanged: _toggleGoal,
               ),
               title: Text(widget.translationService.translate(HabitTranslationKeys.goal)),
-              subtitle: Text(
-                _getGoalDescription(),
-                style: AppTheme.bodySmall,
-              ),
+              subtitle: _hasGoal
+                  ? Text(
+                      _getGoalDescription(),
+                      style: AppTheme.bodySmall,
+                    )
+                  : null,
             ),
             if (_hasGoal) ...[
               const SizedBox(height: 16),

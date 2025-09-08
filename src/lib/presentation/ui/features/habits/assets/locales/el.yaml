@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Ημερήσιος στόχος"
-    daily_target_hint: "Εισαγάγετε τον ημερήσιο στόχο σας (π.χ. 10 λεπτά ή 5 επαναλήψεις)"
+    daily_target: "Ημερήσια συχνότητα"
+    daily_target_hint: "φορές ανά ημέρα"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: "Συχνότητα περιόδου"
+    times_unit: "φορές ανά περίοδο"
   help:
     description: Help description
   list:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -23,6 +23,7 @@ class HabitCalendarView extends StatefulWidget {
   final bool hasGoal;
   final int targetFrequency;
   final int periodDays;
+  final int dailyTarget;
 
   const HabitCalendarView({
     super.key,
@@ -38,6 +39,7 @@ class HabitCalendarView extends StatefulWidget {
     this.hasGoal = false,
     this.targetFrequency = 1,
     this.periodDays = 7,
+    this.dailyTarget = 1,
   });
 
   @override
@@ -182,27 +184,119 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
   }
 
   Widget _buildCalendarDay(DateTime date) {
-    bool hasRecord = widget.records.any((record) => _isSameDay(record.date, date));
     final maxDate = widget.archivedDate ?? DateTime.now();
     bool isFutureDate = date.isAfter(maxDate);
     bool isCurrentMonth = date.month == widget.currentMonth.month;
 
-    // Get goal-related information
-    final bool isGoalMet = _isGoalMet(date);
-    final double goalCompletion = _getGoalCompletionPercentage(date);
+    // Get daily completion count for this specific date
+    final int dailyCompletionCount = widget.records.where((record) => _isSameDay(record.date, date)).length;
+    final bool hasRecords = dailyCompletionCount > 0;
+    final bool isDailyGoalMet = widget.hasGoal ? (dailyCompletionCount >= widget.dailyTarget) : hasRecords;
 
-    // Determine background color based on goal achievement (only for current month dates)
+    // Calculate period-based progress for period goals
+    int periodCompletionCount = 0;
+    bool isPeriodGoalMet = false;
+    if (widget.hasGoal && widget.periodDays > 1) {
+      // Calculate the period window that contains this date
+      final periodStart = _getPeriodStart(date, widget.periodDays);
+      final periodEnd = DateTime(date.year, date.month, date.day);
+
+      // Count completed daily targets in this period window
+      Map<String, int> dailyRecordCounts = {};
+
+      // Group records by date and count them
+      for (final record in widget.records) {
+        final recordDate = DateTime(record.date.year, record.date.month, record.date.day);
+        if ((recordDate.isAfter(periodStart.subtract(const Duration(days: 1))) ||
+                recordDate.isAtSameMomentAs(periodStart)) &&
+            (recordDate.isBefore(periodEnd.add(const Duration(days: 1))) || recordDate.isAtSameMomentAs(periodEnd))) {
+          final dateKey = '${recordDate.year}-${recordDate.month}-${recordDate.day}';
+          dailyRecordCounts[dateKey] = (dailyRecordCounts[dateKey] ?? 0) + 1;
+        }
+      }
+
+      // Count how many days met the daily target
+      periodCompletionCount = dailyRecordCounts.values.where((count) => count >= widget.dailyTarget).length;
+
+      isPeriodGoalMet = periodCompletionCount >= widget.targetFrequency;
+    }
+
+    // Determine background color based on goal type and achievement
     Color backgroundColor = AppTheme.surface1;
-    if (widget.hasGoal && isCurrentMonth && !isFutureDate) {
-      if (isGoalMet) {
-        backgroundColor = Colors.green.withValues(alpha: 0.2);
-      } else if (goalCompletion > 0) {
-        // Show a gradient from red to green based on completion percentage
-        backgroundColor =
-            Color.lerp(Colors.red.withValues(alpha: 0.2), Colors.green.withValues(alpha: 0.2), goalCompletion) ??
-                Colors.red.withValues(alpha: 0.2);
+    if (isCurrentMonth && !isFutureDate) {
+      if (widget.hasGoal) {
+        // Handle different goal types
+        if (widget.periodDays > 1) {
+          // Period-based frequency behavior (e.g., 1 time every 7 days OR 2 times per day, 5 times every 7 days)
+          if (widget.dailyTarget > 1) {
+            // Both daily target AND period goal
+            if (isDailyGoalMet && isPeriodGoalMet) {
+              // Both daily and period goals met
+              backgroundColor = Colors.green.withValues(alpha: 0.2);
+            } else if (isDailyGoalMet) {
+              // Daily goal met but period not complete
+              backgroundColor = Colors.green.withValues(alpha: 0.15);
+            } else if (isPeriodGoalMet) {
+              // Period goal met but daily not complete
+              backgroundColor = Colors.green.withValues(alpha: 0.1);
+            } else if (hasRecords) {
+              // Has records but neither goal met - show daily progress
+              final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
+              backgroundColor =
+                  Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.2), dailyProgress) ??
+                      Colors.red.withValues(alpha: 0.1);
+            } else if (periodCompletionCount > 0) {
+              // No records today but period has progress
+              final double periodProgress = periodCompletionCount / widget.targetFrequency;
+              backgroundColor = Color.lerp(
+                      Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
+                  Colors.red.withValues(alpha: 0.1);
+            } else {
+              backgroundColor = Colors.red.withValues(alpha: 0.05);
+            }
+          } else {
+            // Period-based goal with daily target = 1
+            if (isPeriodGoalMet) {
+              // Period goal is met - show green background (satisfied)
+              backgroundColor = Colors.green.withValues(alpha: 0.2);
+            } else if (periodCompletionCount > 0) {
+              // Show progress towards period goal
+              final double periodProgress = periodCompletionCount / widget.targetFrequency;
+              backgroundColor = Color.lerp(
+                      Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
+                  Colors.red.withValues(alpha: 0.1);
+            } else {
+              backgroundColor = Colors.red.withValues(alpha: 0.05);
+            }
+          }
+        } else if (widget.dailyTarget > 1) {
+          // Daily target behavior only (no period goal)
+          if (isDailyGoalMet) {
+            backgroundColor = Colors.green.withValues(alpha: 0.2);
+          } else if (hasRecords) {
+            // Show progress towards daily goal
+            final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
+            backgroundColor =
+                Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.green.withValues(alpha: 0.2), dailyProgress) ??
+                    Colors.red.withValues(alpha: 0.1);
+          } else {
+            backgroundColor = Colors.red.withValues(alpha: 0.05);
+          }
+        } else {
+          // Simple daily goal behavior (1 time per day, 1 day period)
+          if (hasRecords) {
+            backgroundColor = Colors.green.withValues(alpha: 0.2);
+          } else {
+            backgroundColor = Colors.red.withValues(alpha: 0.05);
+          }
+        }
       } else {
-        backgroundColor = Colors.red.withValues(alpha: 0.1);
+        // Simple habit behavior - green if completed, red if not
+        if (hasRecords) {
+          backgroundColor = Colors.green.withValues(alpha: 0.2);
+        } else {
+          backgroundColor = Colors.red.withValues(alpha: 0.05);
+        }
       }
     }
 
@@ -220,20 +314,37 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       borderColor = AppTheme.dividerColor.withValues(alpha: 0.1);
     }
 
-    HabitRecordListItem? recordForDay;
-    if (hasRecord) {
-      recordForDay = widget.records.firstWhere((record) => _isSameDay(record.date, date));
-    }
-
     return OutlinedButton(
       onPressed: isFutureDate
           ? null
           : () async {
-              if (hasRecord) {
-                await widget.onDeleteRecord(recordForDay!.id);
+              if (widget.hasGoal) {
+                // Custom goal behavior - use daily target logic
+                if (dailyCompletionCount > 0 && dailyCompletionCount >= widget.dailyTarget) {
+                  // If daily goal is met, remove ALL records for this day (reset to 0)
+                  final recordsForDay = widget.records.where((record) => _isSameDay(record.date, date)).toList();
+                  for (final record in recordsForDay) {
+                    await widget.onDeleteRecord(record.id);
+                  }
+                } else {
+                  // Add a new record
+                  await widget.onCreateRecord(widget.habitId, date);
+                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                }
               } else {
-                await widget.onCreateRecord(widget.habitId, date);
-                _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                // Simple habit behavior - remove ALL records for this day
+                // (handles case where multiple records exist from when custom goals were enabled)
+                if (hasRecords) {
+                  // Remove ALL records for this day
+                  final recordsForDay = widget.records.where((record) => _isSameDay(record.date, date)).toList();
+                  for (final record in recordsForDay) {
+                    await widget.onDeleteRecord(record.id);
+                  }
+                } else {
+                  // Add a new record
+                  await widget.onCreateRecord(widget.habitId, date);
+                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                }
               }
               widget.onRecordChanged?.call();
             },
@@ -252,18 +363,47 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       ),
       child: Stack(
         children: [
+          // Main icon in center
           Center(
-            child: hasRecord
-                ? const Icon(Icons.check, color: Colors.green)
-                : Icon(
-                    widget.hasGoal && isGoalMet ? Icons.check : Icons.close,
-                    color: isFutureDate
-                        ? Colors.grey.withValues(alpha: 0.3)
-                        : widget.hasGoal && isGoalMet
-                            ? Colors.grey.withValues(alpha: 0.5)
-                            : Colors.red,
-                  ),
+            child: isFutureDate
+                ? Icon(
+                    Icons.close,
+                    color: Colors.grey.withValues(alpha: 0.3),
+                    size: 16,
+                  )
+                : widget.hasGoal
+                    ? _buildGoalIcon(
+                        isDailyGoalMet, isPeriodGoalMet, dailyCompletionCount, periodCompletionCount, hasRecords)
+                    : (hasRecords
+                        ? const Icon(Icons.link, color: Colors.green, size: 20)
+                        : const Icon(Icons.close, color: Colors.red, size: 16)),
           ),
+          // Count badge for goals (daily targets or period frequency)
+          if (widget.hasGoal &&
+              _shouldShowBadge() &&
+              _shouldShowBadgeForThisDay(hasRecords, isPeriodGoalMet, dailyCompletionCount) &&
+              isCurrentMonth &&
+              !isFutureDate)
+            Positioned(
+              top: 2,
+              left: 2,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                decoration: BoxDecoration(
+                  color: _getBadgeColor(isDailyGoalMet, isPeriodGoalMet, hasRecords, periodCompletionCount),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  _getBadgeText(dailyCompletionCount, periodCompletionCount),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          // Day number
           Positioned(
             bottom: 2,
             right: 4,
@@ -271,6 +411,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
               date.day.toString(),
               style: TextStyle(
                 color: AppTheme.textColor.withValues(alpha: 0.5),
+                fontSize: 12,
               ),
             ),
           ),
@@ -283,37 +424,148 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  // Calculate goal achievement for a specific date window
-  int _getCompletedCountForPeriod(DateTime date) {
-    if (!widget.hasGoal) return 0;
-
-    // Calculate start and end dates for the period
-    final DateTime periodEnd = date;
-    final DateTime periodStart = date.subtract(Duration(days: widget.periodDays - 1));
-
-    // Count records within the period
-    return widget.records
-        .where((record) =>
-            record.date.isAfter(periodStart.subtract(const Duration(days: 1))) &&
-            record.date.isBefore(periodEnd.add(const Duration(days: 1))))
-        .length;
+  /// Calculate the start date of the period that contains the given date
+  DateTime _getPeriodStart(DateTime date, int periodDays) {
+    // Use a simple rolling window: each day looks back periodDays-1 days
+    // This ensures every day belongs to a period window
+    return DateTime(date.year, date.month, date.day).subtract(Duration(days: periodDays - 1));
   }
 
-  // Check if goal is met for a given date
-  bool _isGoalMet(DateTime date) {
-    if (!widget.hasGoal) return true;
-    final completedCount = _getCompletedCountForPeriod(date);
-    return completedCount >= widget.targetFrequency;
+  /// Build appropriate icon based on goal type and completion status
+  Widget _buildGoalIcon(
+      bool isDailyGoalMet, bool isPeriodGoalMet, int dailyCompletionCount, int periodCompletionCount, bool hasRecords) {
+    // Handle different goal types
+    if (widget.periodDays > 1) {
+      // Period-based frequency behavior
+      if (widget.dailyTarget > 1) {
+        // Both daily target AND period goal
+        if (hasRecords) {
+          if (isDailyGoalMet) {
+            // Daily goal met - show green link
+            return const Icon(Icons.link, color: Colors.green, size: 20);
+          } else {
+            // Has records but daily goal not met - show blue plus
+            return const Icon(Icons.add, color: Colors.blue, size: 18);
+          }
+        } else if (isPeriodGoalMet) {
+          // Period goal met but no records today - show gray check
+          return Icon(Icons.check, color: Colors.grey.withValues(alpha: 0.6), size: 18);
+        } else if (periodCompletionCount > 0) {
+          // Period has progress - show orange link
+          return const Icon(Icons.link, color: Colors.orange, size: 18);
+        } else {
+          return const Icon(Icons.close, color: Colors.red, size: 16);
+        }
+      } else {
+        // Period-based goal with daily target = 1
+        if (hasRecords) {
+          // This day has records - show green link (actually completed)
+          return const Icon(Icons.link, color: Colors.green, size: 20);
+        } else if (isPeriodGoalMet) {
+          // Period goal is met but this day has no records - show gray icon
+          return Icon(Icons.check, color: Colors.grey.withValues(alpha: 0.6), size: 18);
+        } else if (periodCompletionCount > 0) {
+          // Show partial progress in period (other days in period have records)
+          return const Icon(Icons.link, color: Colors.orange, size: 18);
+        } else {
+          return const Icon(Icons.close, color: Colors.red, size: 16);
+        }
+      }
+    } else if (widget.dailyTarget > 1) {
+      // Daily target behavior only (no period goal)
+      if (isDailyGoalMet) {
+        return const Icon(Icons.link, color: Colors.green, size: 20);
+      } else if (dailyCompletionCount > 0) {
+        return const Icon(Icons.add, color: Colors.blue, size: 18);
+      } else {
+        return const Icon(Icons.close, color: Colors.red, size: 16);
+      }
+    } else {
+      // Simple daily goal behavior (1 time per day)
+      if (hasRecords) {
+        return const Icon(Icons.link, color: Colors.green, size: 20);
+      } else {
+        return const Icon(Icons.close, color: Colors.red, size: 16);
+      }
+    }
   }
 
-  // Get goal completion percentage for a given date
-  double _getGoalCompletionPercentage(DateTime date) {
-    if (!widget.hasGoal || widget.targetFrequency <= 0) return 1.0;
+  /// Determine if badge should be shown
+  bool _shouldShowBadge() {
+    // Show badge for daily targets > 1 (multiple times per day)
+    // Also show for period goals when there's meaningful progress to display
+    return widget.dailyTarget > 1 || (widget.periodDays > 1 && widget.targetFrequency > 1);
+  }
 
-    final completedCount = _getCompletedCountForPeriod(date);
-    final percentage = completedCount / widget.targetFrequency;
+  /// Determine if badge should be shown for this specific day
+  bool _shouldShowBadgeForThisDay(bool hasRecords, bool isPeriodGoalMet, int dailyCompletionCount) {
+    // Don't show badge if there's no daily progress
+    if (dailyCompletionCount == 0) {
+      return false;
+    }
 
-    // Cap at 100% even if overachieved
-    return percentage > 1.0 ? 1.0 : percentage;
+    if (widget.periodDays > 1) {
+      // Period-based goals
+      if (widget.dailyTarget > 1) {
+        // Both daily target AND period goal
+        // Only show badge on days with records (not on "satisfied" period days)
+        return hasRecords;
+      } else {
+        // Period-based frequency behavior only
+        // Show badge when there's meaningful progress to display
+        return true;
+      }
+    } else {
+      // Daily target only - always show when applicable
+      return true;
+    }
+  }
+
+  /// Get appropriate badge color based on goal type and completion status
+  Color _getBadgeColor(bool isDailyGoalMet, bool isPeriodGoalMet, bool hasRecords, int periodCompletionCount) {
+    if (widget.periodDays > 1) {
+      // Period-based goals
+      if (widget.dailyTarget > 1) {
+        // Both daily target AND period goal - prioritize daily target for badge color
+        return isDailyGoalMet
+            ? Colors.green
+            : hasRecords
+                ? Colors.orange
+                : Colors.red.withValues(alpha: 0.7);
+      } else {
+        // Period-based frequency behavior only
+        return isPeriodGoalMet
+            ? Colors.green
+            : periodCompletionCount > 0
+                ? Colors.orange
+                : Colors.red.withValues(alpha: 0.7);
+      }
+    } else if (widget.dailyTarget > 1) {
+      // Daily target behavior only
+      return isDailyGoalMet
+          ? Colors.green
+          : hasRecords
+              ? Colors.orange
+              : Colors.red.withValues(alpha: 0.7);
+    }
+    return Colors.grey;
+  }
+
+  /// Get appropriate badge text based on goal type
+  String _getBadgeText(int dailyCompletionCount, int periodCompletionCount) {
+    if (widget.periodDays > 1) {
+      // Period-based goals
+      if (widget.dailyTarget > 1) {
+        // Both daily target AND period goal - show daily count (more immediate feedback)
+        return '$dailyCompletionCount';
+      } else {
+        // Period-based frequency behavior only - show period count
+        return '$periodCompletionCount';
+      }
+    } else if (widget.dailyTarget > 1) {
+      // Daily target behavior only - show daily count
+      return '$dailyCompletionCount';
+    }
+    return '0';
   }
 }

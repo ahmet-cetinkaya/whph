@@ -122,8 +122,8 @@ habits:
     goal_format: "{dayCount}天内{count}次"
     period_days: 期间天数
     settings: 自定义目标设置
-    target_frequency: 目标频率
-    times_unit: 次
+    target_frequency: "周期频率"
+    times_unit: "每周期次数"
   help:
     description: 帮助描述
   list:

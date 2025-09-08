@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Denní cíl"
-    daily_target_hint: "Zadejte svůj denní cíl (např. 10 minut nebo 5 opakování)"
+    daily_target: "Denní frekvence"
+    daily_target_hint: "krát denně"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: Frekvence období
+    times_unit: "krát za období"
   help:
     description: Help description
   list:

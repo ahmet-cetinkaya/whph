@@ -17,6 +17,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final bool? hasGoal;
   final int? targetFrequency;
   final int? periodDays;
+  final int? dailyTarget;
 
   SaveHabitCommand({
     this.id,
@@ -30,6 +31,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
     this.hasGoal,
     this.targetFrequency,
     this.periodDays,
+    this.dailyTarget,
   }) : archivedDate = archivedDate != null ? DateTimeHelper.toUtcDateTime(archivedDate) : null;
 }
 
@@ -90,6 +92,9 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       if (request.periodDays != null) {
         habit.periodDays = request.periodDays!;
       }
+      if (request.dailyTarget != null) {
+        habit.dailyTarget = request.dailyTarget!;
+      }
 
       await _habitRepository.update(habit);
     } else {
@@ -115,7 +120,8 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         reminderTime: request.reminderTime,
         hasGoal: request.hasGoal ?? false,
         targetFrequency: request.targetFrequency ?? 1,
-        periodDays: request.periodDays ?? 7,
+        periodDays: request.periodDays ?? 1,
+        dailyTarget: request.dailyTarget ?? 1,
         archivedDate: request.archivedDate,
         order: newOrder, // Set the calculated order
       );

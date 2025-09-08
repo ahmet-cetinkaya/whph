@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Țintă zilnică"
-    daily_target_hint: "Introduceți obiectivul zilnic (de exemplu, 10 minute sau 5 repetări)"
+    daily_target: "Frecvență zilnică"
+    daily_target_hint: "ori pe zi"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: "Frecvența perioadei"
+    times_unit: "ori pe perioadă"
   help:
     description: Help description
   list:
