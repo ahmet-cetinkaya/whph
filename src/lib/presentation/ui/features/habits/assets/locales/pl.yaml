@@ -92,8 +92,8 @@ habits:
     statistics_label: Statystyki
     tags: Tagi
     tags_hint: Wybierz tagi do powiązania
-    daily_target: "Codzienny cel"
-    daily_target_hint: "Wprowadź swój codzienny cel (np. 10 minut lub 5 powtórzeń)"
+    daily_target: "Codzienna częstotliwość"
+    daily_target_hint: "razy dziennie"
   errors:
     adding_tag: Nie udało się dodać tagu
     creating_record: Nie udało się utworzyć rekordu nawyku
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} razy w {dayCount} dni"
     period_days: Dni okresu
     settings: Ustawienia niestandardowego celu
-    target_frequency: Docelowa częstotliwość
-    times_unit: razy
+    target_frequency: "Częstotliwość okresu"
+    times_unit: "razy na okres"
   help:
     description: Opis pomocy
   list:

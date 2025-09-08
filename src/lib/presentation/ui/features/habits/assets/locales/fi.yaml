@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Päivittäinen tavoite"
-    daily_target_hint: "Syötä päivittäinen tavoitettasi (esim. 10 minuuttia tai 5 toistoa)"
+    daily_target: "Päivittäinen taajuus"
+    daily_target_hint: "kerta päivässä"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: "Jakson taajuus"
+    times_unit: "kerta jaksossa"
   help:
     description: Help description
   list:

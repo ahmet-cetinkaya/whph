@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Dagelijks doel"
-    daily_target_hint: "Voer je dagelijkse doel in (bijv. 10 minuten of 5 herhalingen)"
+    daily_target: "Dagelijkse frequentie"
+    daily_target_hint: "aantal keren per dag"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: "Frequentie periode"
+    times_unit: "keren per periode"
   help:
     description: Help description
   list:

@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Daily Target"
-    daily_target_hint: "Enter your daily goal (e.g., 10 minutes or 5 reps)"
+    daily_target: "Daily Frequency"
+    daily_target_hint: "times per daily"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: Period Frequency
+    times_unit: times per period
   help:
     description: Help description
   list:

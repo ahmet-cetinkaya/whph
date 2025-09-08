@@ -92,8 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Dagligt mål"
-    daily_target_hint: "Indtast dit daglige mål (f.eks. 10 minutter eller 5 gentagelser)"
+    daily_target: "Daglig frekvens"
+    daily_target_hint: "gange pr. dag"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: "Periode frekvens"
+    times_unit: "gange pr. periode"
   help:
     description: Help description
   list:

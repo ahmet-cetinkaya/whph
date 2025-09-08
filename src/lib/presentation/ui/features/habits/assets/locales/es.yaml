@@ -92,8 +92,8 @@ habits:
     statistics_label: Estadísticas
     tags: Etiquetas
     tags_hint: Seleccionar etiquetas para asociar
-    daily_target: "Objetivo diario"
-    daily_target_hint: "Introduce tu objetivo diario (p. ej., 10 minutos o 5 repeticiones)"
+    daily_target: "Frecuencia diaria"
+    daily_target_hint: "veces por día"
   errors:
     adding_tag: No se pudo añadir la etiqueta
     creating_record: No se pudo crear el registro de hábito
@@ -122,8 +122,8 @@ habits:
     goal_format: "{count} veces en {dayCount} días"
     period_days: Días del período
     settings: Configuración de objetivo personalizado
-    target_frequency: Frecuencia objetivo
-    times_unit: veces
+    target_frequency: "Frecuencia de período"
+    times_unit: "veces por período"
   help:
     description: Descripción de ayuda
   list:

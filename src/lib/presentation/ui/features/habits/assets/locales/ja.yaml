@@ -92,8 +92,8 @@ habits:
     statistics_label: 統計
     tags: タグ
     tags_hint: 関連付けるタグを選択
-    daily_target: "毎日の目標"
-    daily_target_hint: "毎日の目標を入力してください（例: 10分または5回）"
+    daily_target: "毎日の頻度"
+    daily_target_hint: "1日あたりの回数"
   errors:
     adding_tag: タグの追加に失敗しました
     creating_record: 習慣記録の作成に失敗しました
@@ -122,8 +122,8 @@ habits:
     goal_format: "{dayCount}日間で{count}回"
     period_days: 期間日数
     settings: カスタム目標設定
-    target_frequency: 目標頻度
-    times_unit: 回
+    target_frequency: "期間頻度"
+    times_unit: "期間あたりの回数"
   help:
     description: ヘルプの説明
   list:
