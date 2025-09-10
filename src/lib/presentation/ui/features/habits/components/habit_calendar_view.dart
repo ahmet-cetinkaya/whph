@@ -448,8 +448,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             return const Icon(Icons.add, color: Colors.blue, size: 18);
           }
         } else if (isPeriodGoalMet) {
-          // Period goal met but no records today - show gray check
-          return Icon(Icons.check, color: Colors.grey.withValues(alpha: 0.6), size: 18);
+          // Period goal met but no records today - show gray link
+          return Icon(Icons.link, color: Colors.grey.withValues(alpha: 0.6), size: 18);
         } else if (periodCompletionCount > 0) {
           // Period has progress - show orange link
           return const Icon(Icons.link, color: Colors.orange, size: 18);
@@ -462,8 +462,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
           // This day has records - show green link (actually completed)
           return const Icon(Icons.link, color: Colors.green, size: 20);
         } else if (isPeriodGoalMet) {
-          // Period goal is met but this day has no records - show gray icon
-          return Icon(Icons.check, color: Colors.grey.withValues(alpha: 0.6), size: 18);
+          // Period goal is met but this day has no records - show gray link icon
+          return Icon(Icons.link, color: Colors.grey.withValues(alpha: 0.6), size: 18);
         } else if (periodCompletionCount > 0) {
           // Show partial progress in period (other days in period have records)
           return const Icon(Icons.link, color: Colors.orange, size: 18);
