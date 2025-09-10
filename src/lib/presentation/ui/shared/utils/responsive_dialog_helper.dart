@@ -79,33 +79,46 @@ class ResponsiveDialogHelper {
         isDismissible: isDismissible,
         enableDrag: enableDrag,
         useRootNavigator: false,
+        // Enable scroll control for better keyboard handling
+        expand: false,
         builder: (BuildContext context) {
-          final safeAreaBottom = MediaQuery.viewPaddingOf(context).bottom;
-          final screenHeight = MediaQuery.sizeOf(context).height;
-          final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
+          final mediaQuery = MediaQuery.of(context);
+          final safeAreaBottom = mediaQuery.viewPadding.bottom;
+          final screenHeight = mediaQuery.size.height;
+          final keyboardHeight = mediaQuery.viewInsets.bottom;
 
-          // Calculate available height considering safe area and keyboard
-          final availableHeight = screenHeight - safeAreaBottom - keyboardHeight;
+          // Calculate available height considering safe area but NOT keyboard height
+          // The modal_bottom_sheet package handles keyboard avoidance automatically
+          final availableHeight = screenHeight - safeAreaBottom;
           final maxHeight = availableHeight * size.mobileMaxSizeRatio;
           final initialHeight = availableHeight * size.mobileInitialSizeRatio;
 
-          // Apply keyboard padding for all bottom sheet sizes to ensure proper positioning
-          return Padding(
-            padding: EdgeInsets.only(bottom: keyboardHeight),
-            child: ConstrainedBox(
+          // Remove the manual keyboard padding since modal_bottom_sheet handles it
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: maxHeight,
+            ),
+            child: Container(
+              // Use flexible initial height that can expand with content
               constraints: BoxConstraints(
+                minHeight: keyboardHeight > 0 ? initialHeight * 0.6 : initialHeight,
                 maxHeight: maxHeight,
               ),
-              child: SizedBox(
-                height: initialHeight,
-                child: Material(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppTheme.containerBorderRadius),
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: child,
-                  ),
+              child: Material(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppTheme.containerBorderRadius),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Flexible wrapper allows content to adapt when keyboard appears
+                    Flexible(
+                      child: SafeArea(
+                        top: false,
+                        child: child,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -150,4 +163,19 @@ class ResponsiveDialogHelper {
 
     return constrainedContent;
   }
+}
+
+/// Legacy function for backward compatibility and simple use cases.
+/// Shows a responsive bottom sheet that properly handles keyboard insets.
+void showResponsiveBottomSheet(BuildContext context, {required Widget child}) {
+  // Use the more robust ResponsiveDialogHelper with medium size for standard bottom sheets
+  ResponsiveDialogHelper.showResponsiveDialog(
+    context: context,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: child,
+    ),
+    size: DialogSize.medium,
+    isScrollable: true,
+  );
 }
