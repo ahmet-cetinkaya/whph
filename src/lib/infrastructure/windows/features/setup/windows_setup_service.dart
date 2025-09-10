@@ -185,4 +185,89 @@ exit
       rethrow;
     }
   }
+
+  // Firewall rule management for Windows
+  @override
+  Future<bool> checkFirewallRule({required String ruleName}) async {
+    try {
+      final result = await Process.run(
+        'netsh',
+        ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
+        runInShell: true,
+      );
+
+      // If the rule exists, netsh will return information about it
+      // If it doesn't exist, it will return "No rules match the specified criteria."
+      return !result.stdout.toString().contains('No rules match the specified criteria.');
+    } catch (e) {
+      Logger.error('Error checking firewall rule: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<void> addFirewallRule({
+    required String ruleName,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+    String direction = 'in',
+  }) async {
+    try {
+      // First check if the rule already exists
+      final ruleExists = await checkFirewallRule(ruleName: ruleName);
+      if (ruleExists) {
+        Logger.debug('Firewall rule "$ruleName" already exists');
+        return;
+      }
+
+      final result = await Process.run(
+        'netsh',
+        [
+          'advfirewall',
+          'firewall',
+          'add',
+          'rule',
+          'name=$ruleName',
+          'dir=$direction',
+          'action=allow',
+          'program=$appPath',
+          'protocol=$protocol',
+          'localport=$port',
+        ],
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        Logger.error('Failed to add firewall rule: ${result.stderr}');
+        throw Exception('Failed to add firewall rule: ${result.stderr}');
+      }
+
+      Logger.debug('Successfully added firewall rule: $ruleName');
+    } catch (e) {
+      Logger.error('Error adding firewall rule: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> removeFirewallRule({required String ruleName}) async {
+    try {
+      final result = await Process.run(
+        'netsh',
+        ['advfirewall', 'firewall', 'delete', 'rule', 'name=$ruleName'],
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        Logger.error('Failed to remove firewall rule: ${result.stderr}');
+        throw Exception('Failed to remove firewall rule: ${result.stderr}');
+      }
+
+      Logger.debug('Successfully removed firewall rule: $ruleName');
+    } catch (e) {
+      Logger.error('Error removing firewall rule: $e');
+      rethrow;
+    }
+  }
 }
