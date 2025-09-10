@@ -1,7 +1,3 @@
-common:
-  buttons:
-    cancel: Cancel
-
 settings:
   about:
     title: About
@@ -96,6 +92,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Firewall Permission
+      description: Allow WHPH to communicate through the {platform} firewall on port 44040 for device synchronization.
+      dialog_description: WHPH needs firewall permission to allow other devices to connect for synchronization. Follow the commands below to configure your {platform} firewall. You can also find these steps in the help menu.
+      dialog_info_text: "Note: You can also find these steps in the help menu."
+      linux_manual_confirmation_button: "I configured"
+      save_confirmation_error: Failed to save firewall confirmation setting
+      rule_added_success: Firewall rule added successfully
+      rule_add_error: Failed to add firewall rule. Please try manual steps.
+      add_rule_button: "Add Firewall Rule"
+      windows_auto_description: "Click 'Add Firewall Rule' to automatically add the firewall rule with UAC permission request. If you prefer to add manually, follow the steps below:"
+      instructions:
+        linux:
+          step1: "Open a terminal"
+          step2: "Check firewall status:"
+          step3: "Add firewall rule (if UFW is active):"
+          step4: "Verify rule was added:"
+        windows:
+          step1: "Open Windows Defender Firewall from Control Panel"
+          step2: "Click Advanced settings on the left"
+          step3: "In the left pane, click Inbound Rules"
+          step4: "In the right pane, click New Rule..."
+          step5: "Select Port and click Next"
+          step6: "Select TCP and enter 44040 in the specific local ports field"
+          step7: "Select Allow the connection and click Next"
+          step8: "Check all profiles (Domain, Private, Public) and click Next"
+          step9: "Enter a name like WHPH Sync Port 44040 and click Finish"
+          alternative_command_prompt:
+            title: "Alternative: Use Command Prompt"
+            steps:
+              cmd_step1: "Open Command Prompt as Administrator"
+              cmd_step2: "Add firewall rule:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.
