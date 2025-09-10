@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -87,14 +88,17 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   late final IHabitRepository _habitRepository;
   late final IHabitTagsRepository _habitTagsRepository;
   late final ITagRepository _tagRepository;
+  late final IHabitRecordRepository _habitRecordRepository;
 
   GetListHabitsQueryHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagRepository,
     required ITagRepository tagRepository,
+    required IHabitRecordRepository habitRecordRepository,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagRepository,
-        _tagRepository = tagRepository;
+        _tagRepository = tagRepository,
+        _habitRecordRepository = habitRecordRepository;
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
@@ -105,9 +109,15 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       customOrder: _getCustomOrders(request),
     );
 
+    // Apply period-aware filtering if excludeCompletedForDate is specified
+    List<Habit> filteredHabits = habits.items;
+    if (request.excludeCompletedForDate != null) {
+      filteredHabits = await _filterHabitsWithPeriodAwareness(habits.items, request.excludeCompletedForDate!);
+    }
+
     List<HabitListItem> habitItems = [];
 
-    for (final habit in habits.items) {
+    for (final habit in filteredHabits) {
       // Fetch tags for each habit
       final habitTags =
           await _habitTagsRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("habit_id = ?", [habit.id]));
@@ -172,7 +182,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       variables.add(endDate);
     }
 
-    // Exclude habits completed for a specific date
+    // Exclude habits completed for a specific date (only daily target check in SQL)
     if (request.excludeCompletedForDate != null) {
       final startDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month,
               request.excludeCompletedForDate!.day)
@@ -246,5 +256,59 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       }
     }
     return customOrders.isEmpty ? null : customOrders;
+  }
+
+  /// Filters habits with period-aware completion logic
+  Future<List<Habit>> _filterHabitsWithPeriodAwareness(List<Habit> habits, DateTime targetDate) async {
+    final List<Habit> filteredHabits = [];
+    final today = DateTime(targetDate.year, targetDate.month, targetDate.day);
+    final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+
+    for (final habit in habits) {
+      bool shouldInclude = true;
+
+      if (habit.hasGoal && habit.periodDays > 1) {
+        // For period-based goals, check if period goal is already met
+        final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
+        final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
+
+        // Get records for the entire period
+        final periodRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+          habit.id,
+          periodStartOfDay,
+          endOfDay,
+          0,
+          100, // Get enough records for period calculation
+        );
+
+        // Group records by date and count complete days
+        final recordsByDate = <DateTime, List>{};
+        for (final record in periodRecords.items) {
+          final dateKey = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
+          recordsByDate.putIfAbsent(dateKey, () => []).add(record);
+        }
+
+        // Count days that meet the daily target
+        int completedDaysInPeriod = 0;
+        final dailyTarget = habit.dailyTarget ?? 1;
+        for (final entry in recordsByDate.entries) {
+          if (entry.value.length >= dailyTarget) {
+            completedDaysInPeriod++;
+          }
+        }
+
+        // If period goal is met, exclude this habit
+        if (completedDaysInPeriod >= habit.targetFrequency) {
+          shouldInclude = false;
+        }
+      }
+      // For daily habits, the SQL filtering already handled them correctly
+
+      if (shouldInclude) {
+        filteredHabits.add(habit);
+      }
+    }
+
+    return filteredHabits;
   }
 }
