@@ -29,6 +29,7 @@ class WidgetHabitData {
   final DateTime? completedAt; // When the habit reached its daily target
   final int targetFrequency; // Period-based goal: how many times
   final int periodDays; // Period-based goal: over how many days
+  final bool isPeriodGoalMet; // Whether the period-based goal is satisfied
 
   WidgetHabitData({
     required this.id,
@@ -41,6 +42,7 @@ class WidgetHabitData {
     this.completedAt,
     this.targetFrequency = 1,
     this.periodDays = 1,
+    this.isPeriodGoalMet = false,
   });
 }
 
@@ -79,6 +81,7 @@ class WidgetData {
                 'completedAt': h.completedAt?.toIso8601String(),
                 'targetFrequency': h.targetFrequency,
                 'periodDays': h.periodDays,
+                'isPeriodGoalMet': h.isPeriodGoalMet,
               })
           .toList(),
       'lastUpdated': lastUpdated.toIso8601String(),
