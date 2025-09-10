@@ -196,4 +196,30 @@ abstract class BaseSetupService implements ISetupService {
       await Process.run('chmod', ['+x', filePath]);
     }
   }
+
+  // Firewall rule management methods with default implementations
+  @override
+  Future<bool> checkFirewallRule({required String ruleName}) async {
+    // Default implementation - platforms should override this
+    Logger.debug('checkFirewallRule not implemented for this platform');
+    return false;
+  }
+
+  @override
+  Future<void> addFirewallRule({
+    required String ruleName,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+    String direction = 'in',
+  }) async {
+    // Default implementation - platforms should override this
+    Logger.debug('addFirewallRule not implemented for this platform');
+  }
+
+  @override
+  Future<void> removeFirewallRule({required String ruleName}) async {
+    // Default implementation - platforms should override this
+    Logger.debug('removeFirewallRule not implemented for this platform');
+  }
 }

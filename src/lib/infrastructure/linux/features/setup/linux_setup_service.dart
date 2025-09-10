@@ -112,4 +112,115 @@ exit 0
       Logger.error('Could not install icon: $e');
     }
   }
+
+  // Firewall rule management for Linux
+  @override
+  Future<bool> checkFirewallRule({required String ruleName}) async {
+    try {
+      // Check if ufw is available
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot check firewall rules');
+        return false;
+      }
+
+      // Get the port from the rule name (assuming format "WHPH Sync Port XXXX")
+      final port = _extractPortFromRuleName(ruleName);
+      if (port == null) {
+        Logger.error('Could not extract port from rule name: $ruleName');
+        return false;
+      }
+
+      final result = await Process.run('ufw', ['status'], runInShell: true);
+      return result.stdout.toString().contains('$port/tcp') || result.stdout.toString().contains('$port/udp');
+    } catch (e) {
+      Logger.error('Error checking firewall rule: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<void> addFirewallRule({
+    required String ruleName,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+    String direction = 'in',
+  }) async {
+    try {
+      // Check if ufw is available
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot add firewall rules');
+        return;
+      }
+
+      // First check if the rule already exists
+      final ruleExists = await checkFirewallRule(ruleName: ruleName);
+      if (ruleExists) {
+        Logger.debug('Firewall rule for port $port already exists');
+        return;
+      }
+
+      // Add the firewall rule
+      final result = await Process.run(
+        'ufw',
+        ['allow', '$port/$protocol'],
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        Logger.error('Failed to add firewall rule: ${result.stderr}');
+        throw Exception('Failed to add firewall rule: ${result.stderr}');
+      }
+
+      Logger.debug('Successfully added firewall rule for port: $port');
+    } catch (e) {
+      Logger.error('Error adding firewall rule: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> removeFirewallRule({required String ruleName}) async {
+    try {
+      // Check if ufw is available
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot remove firewall rules');
+        return;
+      }
+
+      // Get the port from the rule name
+      final port = _extractPortFromRuleName(ruleName);
+      if (port == null) {
+        Logger.error('Could not extract port from rule name: $ruleName');
+        return;
+      }
+
+      final result = await Process.run(
+        'ufw',
+        ['delete', 'allow', '$port/tcp'],
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        Logger.error('Failed to remove firewall rule: ${result.stderr}');
+        throw Exception('Failed to remove firewall rule: ${result.stderr}');
+      }
+
+      Logger.debug('Successfully removed firewall rule for port: $port');
+    } catch (e) {
+      Logger.error('Error removing firewall rule: $e');
+      rethrow;
+    }
+  }
+
+  // Helper method to extract port from rule name
+  String? _extractPortFromRuleName(String ruleName) {
+    // Assuming rule name format is "WHPH Sync Port XXXX"
+    final regex = RegExp(r'Port\s+(\d+)');
+    final match = regex.firstMatch(ruleName);
+    return match?.group(1);
+  }
 }
