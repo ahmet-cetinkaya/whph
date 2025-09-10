@@ -222,88 +222,15 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     }
 
     // Determine background color based on goal type and achievement
-    Color backgroundColor = AppTheme.surface1;
-    if (isCurrentMonth && !isFutureDate) {
-      if (widget.hasGoal) {
-        // Handle different goal types
-        if (widget.periodDays > 1) {
-          // Period-based frequency behavior (e.g., 1 time every 7 days OR 2 times per day, 5 times every 7 days)
-          if (widget.dailyTarget > 1) {
-            // Both daily target AND period goal
-            if (isDailyGoalMet && isPeriodGoalMet) {
-              // Both daily and period goals met
-              backgroundColor = Colors.green.withValues(alpha: 0.2);
-            } else if (isDailyGoalMet) {
-              // Daily goal met but period not complete
-              backgroundColor = Colors.green.withValues(alpha: 0.15);
-            } else if (isPeriodGoalMet) {
-              // Period goal met but daily not complete
-              backgroundColor = Colors.green.withValues(alpha: 0.1);
-            } else if (hasRecords) {
-              // Has records but neither goal met - show daily progress
-              final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
-              backgroundColor =
-                  Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.2), dailyProgress) ??
-                      Colors.red.withValues(alpha: 0.1);
-            } else if (periodCompletionCount > 0) {
-              // No records today but period has progress
-              final double periodProgress = periodCompletionCount / widget.targetFrequency;
-              backgroundColor = Color.lerp(
-                      Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
-                  Colors.red.withValues(alpha: 0.1);
-            } else {
-              backgroundColor = Colors.red.withValues(alpha: 0.05);
-            }
-          } else {
-            // Period-based goal with daily target = 1
-            if (isPeriodGoalMet) {
-              // Period goal is met - show green background (satisfied)
-              backgroundColor = Colors.green.withValues(alpha: 0.2);
-            } else if (periodCompletionCount > 0) {
-              // Show progress towards period goal
-              final double periodProgress = periodCompletionCount / widget.targetFrequency;
-              backgroundColor = Color.lerp(
-                      Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
-                  Colors.red.withValues(alpha: 0.1);
-            } else {
-              backgroundColor = Colors.red.withValues(alpha: 0.05);
-            }
-          }
-        } else if (widget.dailyTarget > 1) {
-          // Daily target behavior only (no period goal)
-          if (isDailyGoalMet) {
-            backgroundColor = Colors.green.withValues(alpha: 0.2);
-          } else if (hasRecords) {
-            // Show progress towards daily goal
-            final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
-            backgroundColor =
-                Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.green.withValues(alpha: 0.2), dailyProgress) ??
-                    Colors.red.withValues(alpha: 0.1);
-          } else {
-            backgroundColor = Colors.red.withValues(alpha: 0.05);
-          }
-        } else {
-          // Simple daily goal behavior (1 time per day, 1 day period)
-          if (hasRecords) {
-            backgroundColor = Colors.green.withValues(alpha: 0.2);
-          } else {
-            backgroundColor = Colors.red.withValues(alpha: 0.05);
-          }
-        }
-      } else {
-        // Simple habit behavior - green if completed, red if not
-        if (hasRecords) {
-          backgroundColor = Colors.green.withValues(alpha: 0.2);
-        } else {
-          backgroundColor = Colors.red.withValues(alpha: 0.05);
-        }
-      }
-    }
-
-    // If it's not the current month, use a faded background
-    if (!isCurrentMonth) {
-      backgroundColor = AppTheme.surface1.withValues(alpha: 0.5);
-    }
+    final backgroundColor = _getBackgroundColorForDay(
+      isCurrentMonth: isCurrentMonth,
+      isFutureDate: isFutureDate,
+      hasRecords: hasRecords,
+      isDailyGoalMet: isDailyGoalMet,
+      isPeriodGoalMet: isPeriodGoalMet,
+      dailyCompletionCount: dailyCompletionCount,
+      periodCompletionCount: periodCompletionCount,
+    );
 
     // Determine border color based on state
     Color borderColor = AppTheme.dividerColor.withValues(alpha: 0.3);
@@ -567,5 +494,131 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       return '$dailyCompletionCount';
     }
     return '0';
+  }
+
+  /// Get background color for calendar day based on goal type and achievement
+  Color _getBackgroundColorForDay({
+    required bool isCurrentMonth,
+    required bool isFutureDate,
+    required bool hasRecords,
+    required bool isDailyGoalMet,
+    required bool isPeriodGoalMet,
+    required int dailyCompletionCount,
+    required int periodCompletionCount,
+  }) {
+    if (isFutureDate) {
+      return AppTheme.surface1;
+    }
+
+    if (!isCurrentMonth) {
+      return AppTheme.surface1.withValues(alpha: 0.5);
+    }
+
+    if (widget.hasGoal) {
+      return _getGoalBasedBackgroundColor(
+        hasRecords: hasRecords,
+        isDailyGoalMet: isDailyGoalMet,
+        isPeriodGoalMet: isPeriodGoalMet,
+        dailyCompletionCount: dailyCompletionCount,
+        periodCompletionCount: periodCompletionCount,
+      );
+    } else {
+      return _getSimpleHabitBackgroundColor(hasRecords);
+    }
+  }
+
+  /// Get background color for habits with goals
+  Color _getGoalBasedBackgroundColor({
+    required bool hasRecords,
+    required bool isDailyGoalMet,
+    required bool isPeriodGoalMet,
+    required int dailyCompletionCount,
+    required int periodCompletionCount,
+  }) {
+    if (widget.periodDays > 1) {
+      return _getPeriodGoalBackgroundColor(
+        hasRecords: hasRecords,
+        isDailyGoalMet: isDailyGoalMet,
+        isPeriodGoalMet: isPeriodGoalMet,
+        dailyCompletionCount: dailyCompletionCount,
+        periodCompletionCount: periodCompletionCount,
+      );
+    } else if (widget.dailyTarget > 1) {
+      return _getDailyTargetBackgroundColor(
+        hasRecords: hasRecords,
+        isDailyGoalMet: isDailyGoalMet,
+        dailyCompletionCount: dailyCompletionCount,
+      );
+    } else {
+      return _getSimpleDailyGoalBackgroundColor(hasRecords);
+    }
+  }
+
+  /// Get background color for period-based goals
+  Color _getPeriodGoalBackgroundColor({
+    required bool hasRecords,
+    required bool isDailyGoalMet,
+    required bool isPeriodGoalMet,
+    required int dailyCompletionCount,
+    required int periodCompletionCount,
+  }) {
+    if (widget.dailyTarget > 1) {
+      // Both daily target AND period goal
+      if (isDailyGoalMet && isPeriodGoalMet) {
+        return Colors.green.withValues(alpha: 0.2);
+      } else if (isDailyGoalMet) {
+        return Colors.green.withValues(alpha: 0.15);
+      } else if (isPeriodGoalMet) {
+        return Colors.green.withValues(alpha: 0.1);
+      } else if (hasRecords) {
+        final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
+        return Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.2), dailyProgress) ??
+            Colors.red.withValues(alpha: 0.1);
+      } else if (periodCompletionCount > 0) {
+        final double periodProgress = periodCompletionCount / widget.targetFrequency;
+        return Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
+            Colors.red.withValues(alpha: 0.1);
+      } else {
+        return Colors.red.withValues(alpha: 0.05);
+      }
+    } else {
+      // Period-based goal with daily target = 1
+      if (isPeriodGoalMet) {
+        return Colors.green.withValues(alpha: 0.2);
+      } else if (periodCompletionCount > 0) {
+        final double periodProgress = periodCompletionCount / widget.targetFrequency;
+        return Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.orange.withValues(alpha: 0.15), periodProgress) ??
+            Colors.red.withValues(alpha: 0.1);
+      } else {
+        return Colors.red.withValues(alpha: 0.05);
+      }
+    }
+  }
+
+  /// Get background color for daily target goals
+  Color _getDailyTargetBackgroundColor({
+    required bool hasRecords,
+    required bool isDailyGoalMet,
+    required int dailyCompletionCount,
+  }) {
+    if (isDailyGoalMet) {
+      return Colors.green.withValues(alpha: 0.2);
+    } else if (hasRecords) {
+      final double dailyProgress = dailyCompletionCount / widget.dailyTarget;
+      return Color.lerp(Colors.red.withValues(alpha: 0.1), Colors.green.withValues(alpha: 0.2), dailyProgress) ??
+          Colors.red.withValues(alpha: 0.1);
+    } else {
+      return Colors.red.withValues(alpha: 0.05);
+    }
+  }
+
+  /// Get background color for simple daily goals
+  Color _getSimpleDailyGoalBackgroundColor(bool hasRecords) {
+    return hasRecords ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.05);
+  }
+
+  /// Get background color for simple habits without goals
+  Color _getSimpleHabitBackgroundColor(bool hasRecords) {
+    return hasRecords ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.05);
   }
 }
