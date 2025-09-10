@@ -358,7 +358,8 @@ class WidgetService {
         pageIndex: 0,
         pageSize: 5, // Match TodayPage's page size
         filterByArchived: false,
-        // Don't exclude completed habits for widgets - we need to show progress
+        // Use the same period-aware exclusion logic as TodayPage
+        excludeCompletedForDate: startOfDay,
         // Apply tag filtering from TodayPage settings
         filterByTags: showNoTagsFilter ? [] : selectedTagIds,
         filterNoTags: showNoTagsFilter,
@@ -395,52 +396,8 @@ class WidgetService {
       }
     }
     
-    // Get all habit records for the period for all habits with period goals in a single query
-    final periodGoalHabits = habitsResult.items.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
-    List periodRecordsList = [];
-    Map<String, List> periodHabitRecordsMap = {};
-    
-    if (periodGoalHabits.isNotEmpty) {
-      final periodHabitIds = periodGoalHabits.map((habit) => habit.id).toList();
-      
-      // Calculate period start dates for each habit
-      final now = DateTime.now();
-      final periodStartDates = <String, DateTime>{};
-      for (final habit in periodGoalHabits) {
-        final periodStartDate = now.subtract(Duration(days: habit.periodDays - 1));
-        periodStartDates[habit.id] = periodStartDate;
-      }
-      
-      // Find the earliest period start date
-      DateTime? earliestPeriodStartDate;
-      for (final startDate in periodStartDates.values) {
-        if (earliestPeriodStartDate == null || startDate.isBefore(earliestPeriodStartDate)) {
-          earliestPeriodStartDate = startDate;
-        }
-      }
-      
-      if (earliestPeriodStartDate != null && periodHabitIds.isNotEmpty) {
-        final periodRecordsWhereFilter = CustomWhereFilter(
-          "habit_id IN (${periodHabitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
-          [...periodHabitIds, earliestPeriodStartDate, endOfDay],
-        );
-        
-        // Resolve the habit record repository directly to use getList with customWhereFilter
-        final habitRecordRepository = _container.resolve<IHabitRecordRepository>();
-        final periodRecordsResult = await habitRecordRepository.getList(
-          0,
-          periodHabitIds.length * 100, // Enough for period records
-          customWhereFilter: periodRecordsWhereFilter,
-        );
-        
-        periodRecordsList = periodRecordsResult.items;
-        
-        // Group records by habit ID
-        for (final record in periodRecordsList) {
-          periodHabitRecordsMap.putIfAbsent(record.habitId, () => []).add(record);
-        }
-      }
-    }
+    // Since we're using excludeCompletedForDate, period-satisfied habits are already filtered out
+    // We don't need complex period goal calculations anymore
 
     // Process each habit with pre-fetched records
     for (final habit in habitsResult.items) {
@@ -452,29 +409,9 @@ class WidgetService {
       final isDailyTargetMet = currentCompletionCount >= dailyTarget;
       final isCompletedToday = currentCompletionCount > 0;
 
-      // For period-based goals, check completion over the goal period
+      // Since we use excludeCompletedForDate, period-satisfied habits are already filtered out
+      // Any habit that appears here either has no period goal or the period goal is not yet met
       bool isPeriodGoalMet = false;
-      if (hasGoal && habit.periodDays > 1) {
-        // Get records for the entire period for this habit
-        final periodRecords = periodHabitRecordsMap[habit.id] ?? [];
-
-        // Group records by date and count complete days
-        final recordsByDate = <DateTime, List>{};
-        for (final record in periodRecords) {
-          final dateKey = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
-          recordsByDate.putIfAbsent(dateKey, () => []).add(record);
-        }
-
-        // Count days that meet the daily target
-        int completedDaysInPeriod = 0;
-        for (final entry in recordsByDate.entries) {
-          if (entry.value.length >= dailyTarget) {
-            completedDaysInPeriod++;
-          }
-        }
-
-        isPeriodGoalMet = completedDaysInPeriod >= habit.targetFrequency;
-      }
 
       // Determine final goal met status
       final isDailyGoalMet = hasGoal ? (habit.periodDays > 1 ? isPeriodGoalMet : isDailyTargetMet) : isDailyTargetMet;
@@ -492,17 +429,8 @@ class WidgetService {
       final shouldHideCompletedHabit =
           isDailyGoalMet && completedAt != null && DateTime.now().difference(completedAt).inSeconds >= hideDelaySeconds;
 
-      // For period-based goals, hide habit immediately if period goal is met
-      bool shouldHidePeriodBasedHabit = false;
-      if (hasGoal && habit.periodDays > 1) {
-        // If period goal is met, hide the habit (user doesn't need to act today)
-        if (isPeriodGoalMet) {
-          shouldHidePeriodBasedHabit = true;
-        }
-      }
-
-      if (shouldHideCompletedHabit || shouldHidePeriodBasedHabit) {
-        continue; // Skip this habit - it's completed and delay has passed or period goal is met
+      if (shouldHideCompletedHabit) {
+        continue; // Skip this habit - it's completed and delay has passed
       }
 
       habits.add(WidgetHabitData(
@@ -516,6 +444,7 @@ class WidgetService {
         completedAt: completedAt,
         targetFrequency: habit.targetFrequency,
         periodDays: habit.periodDays,
+        isPeriodGoalMet: isPeriodGoalMet,
       ));
     }
 
