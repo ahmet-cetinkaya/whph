@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/habits/services/habit_completion_service.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
@@ -56,6 +57,7 @@ class _HabitCardState extends State<HabitCard> {
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _completionService = container.resolve<HabitCompletionService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
@@ -177,88 +179,30 @@ class _HabitCardState extends State<HabitCard> {
 
   // Event handler for calendar day tap
   Future<void> _onCalendarDayTap(DateTime date) async {
-    final dailyCompletionCount = _countRecordsForDate(date);
-    final hasCustomGoals = widget.habit.hasGoal;
-    final dailyTarget = hasCustomGoals ? (widget.habit.dailyTarget ?? 1) : 1;
+    if (_habitRecords == null) return;
 
-    if (hasCustomGoals && dailyTarget > 1) {
-      // Smart behavior for multi-occurrence habits with custom goals
-      if (dailyCompletionCount >= dailyTarget) {
-        // Reset to 0 (remove all records for this day)
-        if (_habitRecords != null) {
-          final dayRecords = _habitRecords!.items
-              .where((record) => acore.DateTimeHelper.isSameDay(
-                  acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
-              .toList();
-          for (final record in dayRecords) {
-            await _deleteHabitRecord(record.id);
-          }
-        }
-      } else {
-        // Add new record (increment)
-        await _createHabitRecord(widget.habit.id, date);
-      }
-    } else {
-      // Traditional behavior for simple habits
-      // Remove ALL records for this date (handles case where multiple records exist from when custom goals were enabled)
-      final dailyCompletionCount = _countRecordsForDate(date);
-      if (dailyCompletionCount > 0) {
-        if (_habitRecords != null) {
-          final dayRecords = _habitRecords!.items
-              .where((record) => acore.DateTimeHelper.isSameDay(
-                  acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
-              .toList();
-          for (final record in dayRecords) {
-            await _deleteHabitRecord(record.id);
-          }
-        }
-      } else {
-        await _createHabitRecord(widget.habit.id, date);
-      }
-    }
+    await _completionService.toggleHabitCompletion(
+      habit: widget.habit,
+      date: date,
+      habitRecords: _habitRecords!,
+      deleteRecord: _deleteHabitRecord,
+      createRecord: _createHabitRecord,
+    );
   }
 
   // Event handler for checkbox tap with smart logic for multiple occurrences
   Future<void> _onCheckboxTap() async {
-    final today = DateTime.now();
-    final todayCount = _countRecordsForDate(today);
-    final hasCustomGoals = widget.habit.hasGoal;
-    final dailyTarget = hasCustomGoals ? (widget.habit.dailyTarget ?? 1) : 1;
+    if (_habitRecords == null) return;
 
-    if (hasCustomGoals && dailyTarget > 1) {
-      // Smart behavior for multi-occurrence habits with custom goals
-      if (todayCount < dailyTarget) {
-        // Add new record (increment)
-        await _createHabitRecord(widget.habit.id, today);
-      } else {
-        // Reset to 0 (remove all records for today)
-        if (_habitRecords != null) {
-          final todayRecords = _habitRecords!.items
-              .where((record) => acore.DateTimeHelper.isSameDay(
-                  acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(today)))
-              .toList();
-          for (final record in todayRecords) {
-            await _deleteHabitRecord(record.id);
-          }
-        }
-      }
-    } else {
-      // Traditional behavior for simple habits or habits without custom goals
-      // Remove ALL records for today (handles case where multiple records exist from when custom goals were enabled)
-      if (todayCount > 0) {
-        if (_habitRecords != null) {
-          final todayRecords = _habitRecords!.items
-              .where((record) => acore.DateTimeHelper.isSameDay(
-                  acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(today)))
-              .toList();
-          for (final record in todayRecords) {
-            await _deleteHabitRecord(record.id);
-          }
-        }
-      } else {
-        await _createHabitRecord(widget.habit.id, today);
-      }
-    }
+    final today = DateTime.now();
+    await _completionService.toggleHabitCompletion(
+      habit: widget.habit,
+      date: today,
+      habitRecords: _habitRecords!,
+      deleteRecord: _deleteHabitRecord,
+      createRecord: _createHabitRecord,
+      useIncrementalBehavior: true, // Checkbox uses incremental behavior
+    );
   }
 
   Future<void> _createHabitRecord(String habitId, DateTime date) async {
