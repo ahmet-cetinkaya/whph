@@ -139,7 +139,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       if (tagIds.isNotEmpty) {
         final tagsWhereFilter = CustomWhereFilter(
           "id IN (${tagIds.map((_) => '?').join(',')})",
-          tagIds as List<Object>,
+          tagIds.cast<Object>(),
         );
         tagsList = (await _tagRepository.getList(
           0,
