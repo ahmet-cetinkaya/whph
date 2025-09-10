@@ -7,53 +7,59 @@ sync:
     from_label: From
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Synchronize your data across all devices on the same Wi-Fi network. No cloud storage - all data stays local.
 
-        ## ⚡ Quick & Secure Setup
+        ## 🔗 Quick Setup
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Connect devices using QR codes:
+        - 📱 **Mobile → Mobile:** One device in **Server mode** 
+        - 💻 **Desktop → Mobile:** Desktop shows QR code, mobile scans it
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        ## 📱 Mobile Device Modes
 
-        ## 📱 Mobile Devices
+        - 🔍 **Client Mode:** Scans QR codes and receives data
+        - 📡 **Server Mode:** Shows QR code and sends data (toggle via Wi-Fi hotspot icon)
 
-        Android devices can work in two different modes:
-
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
-
-        To sync between two mobile devices, one must be in **Server mode**.
+        Two mobile devices need one in **Server mode** to sync.
 
         ## 💻 Desktop Devices
 
-        Desktop apps always act as **Server** nodes:
-
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        Always act as **Server** nodes:
+        - 🖥️ Display QR code for pairing
+        - ✅ Auto-accept connections
+        - 🔄 Two-way sync
+        - 📊 Live sync status
 
         ## 🛠️ Device Management
 
-        Manage all connected devices from one place:
+        - 📋 View connected devices
+        - ⏰ See last sync times
+        - 🔁 Manual sync
+        - 🗑️ Remove old devices
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        ## 🔥 Firewall Setup (Port 44040)
 
-        ## 💡 Best Practices
+        ### 🐧 **Linux (UFW)**
+        ```
+        sudo ufw allow 44040/tcp
+        ```
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
+        ### 🪟 **Windows**
+        **Via Windows Defender Firewall GUI:**
+        1. Open **Windows Defender Firewall** from Control Panel
+        2. Click **Advanced settings** on the left
+        3. In the left pane, click **Inbound Rules**
+        4. In the right pane, click **New Rule...**
+        5. Select **Port** and click **Next**
+        6. Select **TCP** and enter **44040** in the specific local ports field
+        7. Select **Allow the connection** and click **Next**
+        8. Check all profiles (Domain, Private, Public) and click **Next**
+        9. Enter a name like **WHPH Sync Port 44040** and click **Finish**
+
+        **Via Command Prompt (as Administrator):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync Port 44040" dir=in action=allow protocol=TCP localport=44040
+        ```
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
@@ -67,10 +73,11 @@ sync:
     connection_failed: |
       Connection failed. Please ensure:
 
-      1. Both devices are on the same network
+      1. Both devices are on the same Wi-Fi network
       2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
+      3. Desktop firewall allows port 44040 (check sync settings)
+      4. No VPN or proxy interfering with local network
+    device_mismatch: Sync error. Device not properly paired.
     device_not_found: Sync device not found
     ip_address: Unable to fetch local IP address
     parse_message: Unable to parse scanned message
@@ -79,7 +86,7 @@ sync:
     scan: Failed to scan
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+    version_mismatch: "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}. Update both apps."
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully

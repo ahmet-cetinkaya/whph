@@ -239,9 +239,24 @@ exit 0
         // Try to enable UFW non-interactively
         final enableResult = await Process.run('ufw', ['--force', 'enable'], runInShell: true);
         if (enableResult.exitCode != 0) {
-          final error = 'FirewallRuleError: Unable to enable UFW: ${enableResult.stderr}. UFW must be enabled to add firewall rules.';
-          Logger.error(error);
-          throw FirewallRuleException(error, invalidValue: 'ufw enable failed');
+          final stderr = enableResult.stderr.toString().toLowerCase();
+          if (stderr.contains('permission') ||
+              stderr.contains('operation not permitted') ||
+              stderr.contains('must be run as root')) {
+            Logger.warning(
+                'UFW requires administrator privileges to enable. Firewall rule cannot be added automatically.');
+            throw FirewallRuleException(
+              'Administrator privileges required to enable UFW and add firewall rules. Please run the application as administrator or manually configure UFW.',
+              invalidValue: 'insufficient privileges',
+              ufwExitCode: enableResult.exitCode,
+              ufwStderr: enableResult.stderr.toString(),
+            );
+          } else {
+            final error =
+                'FirewallRuleError: Unable to enable UFW: ${enableResult.stderr}. UFW must be enabled to add firewall rules.';
+            Logger.error(error);
+            throw FirewallRuleException(error, invalidValue: 'ufw enable failed');
+          }
         }
         Logger.info('UFW has been enabled successfully');
       }
@@ -267,23 +282,32 @@ exit 0
       if (result.exitCode != 0) {
         final stderr = result.stderr.toString().trim();
         final stdout = result.stdout.toString().trim();
-        
-        // Provide more specific error context
+
+        // Provide more specific error context and check for permission issues
         String errorContext = '';
+        bool isPermissionIssue = false;
+
         if (stderr.toLowerCase().contains('bad port')) {
-          errorContext = ' (Possible causes: UFW configuration corruption, invalid port format, or system firewall conflicts)';
-        } else if (stderr.toLowerCase().contains('permission')) {
-          errorContext = ' (Insufficient privileges - try running with sudo or as administrator)';
+          errorContext =
+              ' (Possible causes: UFW configuration corruption, invalid port format, or system firewall conflicts)';
+        } else if (stderr.toLowerCase().contains('permission') ||
+            stderr.toLowerCase().contains('operation not permitted') ||
+            stderr.toLowerCase().contains('must be run as root')) {
+          errorContext = ' (Administrator privileges required - please run as administrator or use sudo)';
+          isPermissionIssue = true;
         } else if (stderr.toLowerCase().contains('duplicate')) {
           errorContext = ' (Rule may already exist in a different format)';
         }
-        
-        final error = 'FirewallRuleError: Failed to add UFW rule for port $portNum/$upperProtocol$errorContext. UFW error: $stderr';
+
+        final error = isPermissionIssue
+            ? 'Administrator privileges required to add UFW firewall rule for port $portNum/$upperProtocol. Please run the application as administrator or manually configure UFW with: sudo ufw allow $portNum/$upperProtocol'
+            : 'FirewallRuleError: Failed to add UFW rule for port $portNum/$upperProtocol$errorContext. UFW error: $stderr';
+
         Logger.error(error);
         Logger.error('UFW stdout: $stdout');
-        
+
         throw FirewallRuleException(
-          error, 
+          error,
           invalidValue: '$portNum/$upperProtocol',
           ufwExitCode: result.exitCode,
           ufwStderr: stderr,
