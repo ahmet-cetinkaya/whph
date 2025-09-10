@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
+    daily_target: "Denní frekvence"
+    daily_target_hint: "krát denně"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -120,8 +122,8 @@ habits:
     goal_format: "{count} times in {dayCount} days"
     period_days: Period Days
     settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
+    target_frequency: Frekvence období
+    times_unit: "krát za období"
   help:
     description: Help description
   list:
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Decrease estimated time
     edit_name: Edit Name
     increase_estimated_time: Increase estimated time
+    decrease_daily_target: "Snížit denní cíl"
+    increase_daily_target: "Zvýšit denní cíl"

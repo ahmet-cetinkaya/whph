@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistiche
     tags: Tag
     tags_hint: Seleziona tag da associare
+    daily_target: "Frequenza giornaliera"
+    daily_target_hint: "volte al giorno"
   errors:
     adding_tag: Impossibile aggiungere il tag
     creating_record: Impossibile creare record abitudine
@@ -120,8 +122,8 @@ habits:
     goal_format: "{count} volte in {dayCount} giorni"
     period_days: Giorni periodo
     settings: Impostazioni obiettivo personalizzato
-    target_frequency: Frequenza obiettivo
-    times_unit: volte
+    target_frequency: "Frequenza del periodo"
+    times_unit: "volte per periodo"
   help:
     description: Descrizione aiuto
   list:
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Diminuisci tempo stimato
     edit_name: Modifica nome
     increase_estimated_time: Aumenta tempo stimato
+    decrease_daily_target: "Diminuisci obiettivo giornaliero"
+    increase_daily_target: "Aumenta obiettivo giornaliero"

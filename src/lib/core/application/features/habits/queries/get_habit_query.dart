@@ -70,6 +70,7 @@ class GetHabitQueryResponse extends Habit {
     super.hasGoal = false,
     super.targetFrequency = 1,
     super.periodDays = 7,
+    super.dailyTarget,
     required this.statistics,
   }) {
     setReminderDaysFromList(reminderDays);
@@ -120,6 +121,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       hasGoal: habit.hasGoal,
       targetFrequency: habit.targetFrequency,
       periodDays: habit.periodDays,
+      dailyTarget: habit.dailyTarget,
       statistics: statistics,
     );
   }
@@ -153,50 +155,80 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final startOfMonth = DateTime(endDate.year, endDate.month, 1);
     final startOfYear = DateTime(endDate.year, 1, 1);
 
+    // Get daily target (default to 1 for backward compatibility)
+    final dailyTarget = habit.dailyTarget ?? 1;
+
+    // Group records by date and calculate daily scores
+    final recordsByDate = <DateTime, List<HabitRecord>>{};
+    for (final record in records) {
+      final dateKey = DateTime(record.recordDate.year, record.recordDate.month, record.recordDate.day);
+      recordsByDate.putIfAbsent(dateKey, () => []).add(record);
+    }
+
+    final dailyScores = <DateTime, double>{};
+    for (final entry in recordsByDate.entries) {
+      final dailyScore = entry.value.length / dailyTarget;
+      dailyScores[entry.key] = dailyScore > 1.0 ? 1.0 : dailyScore; // Cap at 1.0
+    }
+
     // Calculate overall score based on first record date
     var overallScore = 0.0;
     if (records.isNotEmpty) {
-      final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
-      final firstRecordDate = sortedRecords.first.date;
+      final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
+      final firstRecordDate = sortedRecords.first.recordDate;
       final daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
-      overallScore = records.length / daysFromFirstRecord;
+
+      // Calculate average daily score
+      final totalScore = dailyScores.values.fold(0.0, (sum, score) => sum + score);
+      overallScore = totalScore / daysFromFirstRecord;
     }
 
-    // Calculate monthly score
+    // Calculate monthly score based on daily scores
     final daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
-    final monthlyRecords =
-        records.where((r) => r.date.isAfter(startOfMonth) || _isSameDay(r.date, startOfMonth)).length;
-    final monthlyScore = monthlyRecords / daysInCurrentMonth;
+    final monthlyDailyScores = dailyScores.entries
+        .where((entry) =>
+            entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
+            (entry.key.isBefore(endDate.add(const Duration(days: 1))) || _isSameDay(entry.key, endDate)))
+        .map((entry) => entry.value);
+    final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
+    final monthlyScore = monthlyTotalScore / daysInCurrentMonth;
 
-    // Calculate yearly score
+    // Calculate yearly score based on daily scores
     final daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
-    final yearlyRecords = records.where((r) => r.date.isAfter(startOfYear) || _isSameDay(r.date, startOfYear)).length;
-    final yearlyScore = yearlyRecords / daysInCurrentYear;
+    final yearlyDailyScores = dailyScores.entries
+        .where((entry) =>
+            entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
+            (entry.key.isBefore(endDate.add(const Duration(days: 1))) || _isSameDay(entry.key, endDate)))
+        .map((entry) => entry.value);
+    final yearlyTotalScore = yearlyDailyScores.fold(0.0, (sum, score) => sum + score);
+    final yearlyScore = yearlyTotalScore / daysInCurrentYear;
 
-    // Calculate monthly scores for the last 12 months
+    // Calculate monthly scores for the last 12 months using daily scores
     final monthlyScores = <MapEntry<DateTime, double>>[];
     for (var i = 11; i >= 0; i--) {
       final month = DateTime(endDate.year, endDate.month - i, 1);
       final nextMonth = DateTime(month.year, month.month + 1, 1);
       final monthEnd = i == 0 ? endDate : nextMonth.subtract(const Duration(days: 1));
 
-      final monthRecords = records
-          .where((r) =>
-              (r.date.isAfter(month) || _isSameDay(r.date, month)) &&
-              (r.date.isBefore(monthEnd) || _isSameDay(r.date, monthEnd)))
-          .length;
+      final monthlyDailyScoresForMonth = dailyScores.entries
+          .where((entry) =>
+              (entry.key.isAfter(month.subtract(const Duration(days: 1))) || _isSameDay(entry.key, month)) &&
+              (entry.key.isBefore(monthEnd.add(const Duration(days: 1))) || _isSameDay(entry.key, monthEnd)))
+          .map((entry) => entry.value);
+
+      final monthTotalScore = monthlyDailyScoresForMonth.fold(0.0, (sum, score) => sum + score);
       final daysInMonth = monthEnd.difference(month).inDays + 1;
-      monthlyScores.add(MapEntry(month, monthRecords / daysInMonth));
+      monthlyScores.add(MapEntry(month, monthTotalScore / daysInMonth));
     }
 
-    // Calculate top streaks up to archive date if archived
-    final streaks = _calculateStreaks(records, habit: habit, endDate: habit.archivedDate);
+    // Calculate top streaks up to archive date if archived, using daily scores
+    final streaks = _calculateStreaks(records, habit: habit, endDate: habit.archivedDate, dailyScores: dailyScores);
     final topStreaks = streaks.take(5).toList();
 
     // Calculate yearly frequency
     final yearlyFrequency = <int, int>{};
     for (final record in records) {
-      final dayOfYear = record.date.difference(DateTime(record.date.year, 1, 1)).inDays;
+      final dayOfYear = record.recordDate.difference(DateTime(record.recordDate.year, 1, 1)).inDays;
       yearlyFrequency[dayOfYear] = (yearlyFrequency[dayOfYear] ?? 0) + 1;
     }
 
@@ -211,9 +243,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
       final recordsInCurrentPeriod = records
           .where((record) =>
-              (record.date.isAfter(periodStart.subtract(const Duration(days: 1))) ||
-                  _isSameDay(record.date, periodStart)) &&
-              (record.date.isBefore(periodEnd.add(const Duration(days: 1))) || _isSameDay(record.date, periodEnd)))
+              (record.recordDate.isAfter(periodStart.subtract(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, periodStart)) &&
+              (record.recordDate.isBefore(periodEnd.add(const Duration(days: 1))) ||
+                  _isSameDay(record.recordDate, periodEnd)))
           .length;
 
       daysGoalMet = recordsInCurrentPeriod;
@@ -240,27 +273,35 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
-  List<HabitStreak> _calculateStreaks(List<HabitRecord> records, {required Habit habit, DateTime? endDate}) {
+  List<HabitStreak> _calculateStreaks(List<HabitRecord> records,
+      {required Habit habit, DateTime? endDate, required Map<DateTime, double> dailyScores}) {
     if (records.isEmpty) return [];
 
     if (habit.hasGoal) {
-      return _calculateGoalBasedStreaks(records, habit, endDate);
+      return _calculateGoalBasedStreaks(records, habit, endDate, dailyScores: dailyScores);
     } else {
-      return _calculateConsecutiveDayStreaks(records, endDate, minDays: 2);
+      return _calculateConsecutiveDayStreaks(records, endDate, minDays: 2, dailyScores: dailyScores);
     }
   }
 
-  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate, {int minDays = 2}) {
-    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate,
+      {int minDays = 2, required Map<DateTime, double> dailyScores}) {
+    if (dailyScores.isEmpty) return [];
+
+    // Logic using daily scores - a day is complete if score >= 1.0
+    final completeDays = dailyScores.entries.where((entry) => entry.value >= 1.0).map((entry) => entry.key).toList()
+      ..sort();
+
+    if (completeDays.isEmpty) return [];
 
     final streaks = <HabitStreak>[];
-    var streakStart = sortedRecords.first.date;
+    var streakStart = completeDays.first;
     var lastDate = streakStart;
 
-    for (var i = 1; i < sortedRecords.length; i++) {
-      final record = sortedRecords[i];
-      if (record.date.difference(lastDate).inDays > 1) {
-        // Only add streaks that ended before or on the archive date
+    for (var i = 1; i < completeDays.length; i++) {
+      final currentDate = completeDays[i];
+      if (currentDate.difference(lastDate).inDays > 1) {
+        // End of current streak
         if (endDate == null || !lastDate.isAfter(endDate)) {
           if (lastDate.difference(streakStart).inDays >= minDays - 1) {
             streaks.add(HabitStreak(
@@ -270,9 +311,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
             ));
           }
         }
-        streakStart = record.date;
+        streakStart = currentDate;
       }
-      lastDate = record.date;
+      lastDate = currentDate;
     }
 
     // Add the last streak if it exists and respects the end date
@@ -289,30 +330,30 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return streaks;
   }
 
-  List<HabitStreak> _calculateGoalBasedStreaks(List<HabitRecord> records, Habit habit, DateTime? endDate) {
+  List<HabitStreak> _calculateGoalBasedStreaks(List<HabitRecord> records, Habit habit, DateTime? endDate,
+      {required Map<DateTime, double> dailyScores}) {
     if (records.isEmpty) return [];
 
-    final sortedRecords = records.toList()..sort((a, b) => a.date.compareTo(b.date));
+    final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
     final streaks = <HabitStreak>[];
 
     // Calculate streaks based on goal periods
-    var currentPeriodStart = sortedRecords.first.date;
+    var currentPeriodStart = sortedRecords.first.recordDate;
     var streakStart = currentPeriodStart;
     var consecutiveSuccessfulPeriods = 0;
 
     while (currentPeriodStart.isBefore(endDate ?? DateTime.now())) {
       final currentPeriodEnd = currentPeriodStart.add(Duration(days: habit.periodDays - 1));
 
-      // Count records in current period
-      final recordsInPeriod = sortedRecords
-          .where((record) =>
-              (record.date.isAfter(currentPeriodStart.subtract(const Duration(days: 1))) ||
-                  _isSameDay(record.date, currentPeriodStart)) &&
-              (record.date.isBefore(currentPeriodEnd.add(const Duration(days: 1))) ||
-                  _isSameDay(record.date, currentPeriodEnd)))
+      // Count complete days in current period (daily score >= 1.0)
+      final completeDaysInPeriod = dailyScores.entries
+          .where((entry) =>
+              entry.value >= 1.0 &&
+              !entry.key.isBefore(currentPeriodStart) &&
+              entry.key.isBefore(currentPeriodEnd.add(const Duration(days: 1))))
           .length;
 
-      final goalMet = recordsInPeriod >= habit.targetFrequency;
+      final goalMet = completeDaysInPeriod >= habit.targetFrequency;
 
       if (goalMet) {
         if (consecutiveSuccessfulPeriods == 0) {

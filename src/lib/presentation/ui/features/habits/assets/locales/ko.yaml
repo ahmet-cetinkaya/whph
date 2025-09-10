@@ -92,6 +92,8 @@ habits:
     statistics_label: 통계
     tags: 태그
     tags_hint: 연결할 태그 선택
+    daily_target: "일일 빈도"
+    daily_target_hint: "일당 횟수"
   errors:
     adding_tag: 태그 추가에 실패했습니다
     creating_record: 습관 기록 생성에 실패했습니다
@@ -120,8 +122,8 @@ habits:
     goal_format: "{dayCount}일 동안 {count}회"
     period_days: 기간 일수
     settings: 사용자 정의 목표 설정
-    target_frequency: 목표 빈도
-    times_unit: 회
+    target_frequency: "기간 빈도"
+    times_unit: "기간당 횟수"
   help:
     description: 도움말 설명
   list:
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: 예상 시간 줄이기
     edit_name: 이름 편집
     increase_estimated_time: 예상 시간 늘리기
+    decrease_daily_target: "일일 목표 감소"
+    increase_daily_target: "일일 목표 증가"

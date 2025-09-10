@@ -92,6 +92,8 @@ habits:
     statistics_label: Статистика
     tags: Теги
     tags_hint: Виберіть теги для зв'язування
+    daily_target: "Щоденна частота"
+    daily_target_hint: "разів на день"
   errors:
     adding_tag: Не вдалося додати тег
     creating_record: Не вдалося створити запис звички
@@ -120,8 +122,8 @@ habits:
     goal_format: "{count} разів за {dayCount} днів"
     period_days: Дні періоду
     settings: Налаштування користувацької цілі
-    target_frequency: Цільова частота
-    times_unit: разів
+    target_frequency: "Частота періоду"
+    times_unit: "разів на період"
   help:
     description: Опис допомоги
   list:
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Зменшити орієнтовний час
     edit_name: Редагувати назву
     increase_estimated_time: Збільшити орієнтовний час
+    decrease_daily_target: "Зменшити щоденну мету"
+    increase_daily_target: "Збільшити щоденну мету"

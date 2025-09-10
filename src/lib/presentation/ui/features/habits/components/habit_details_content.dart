@@ -346,7 +346,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, date: DateTimeHelper.toUtcDateTime(date));
+        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: DateTimeHelper.toUtcDateTime(date));
         await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
       },
       onSuccess: () {
@@ -589,6 +589,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       hasGoal: _habit!.hasGoal,
       targetFrequency: _habit!.targetFrequency,
       periodDays: _habit!.periodDays,
+      dailyTarget: _habit!.dailyTarget,
     );
   }
 
@@ -887,6 +888,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               hasGoal: _habit!.hasGoal,
               targetFrequency: _habit!.targetFrequency,
               periodDays: _habit!.periodDays,
+              dailyTarget: _habit!.dailyTarget ?? 1,
             ),
           ],
         ],
@@ -1078,7 +1080,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     builder: (context) => HabitGoalDialog(
                       hasGoal: _habit!.hasGoal,
                       targetFrequency: _habit!.targetFrequency,
-                      periodDays: _habit!.periodDays,
+                      periodDays: _habit!.hasGoal ? _habit!.periodDays : 1,
+                      dailyTarget: _habit!.dailyTarget ?? 1,
                       translationService: _translationService,
                     ),
                   );
@@ -1086,6 +1089,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   if (result != null && mounted) {
                     setState(() {
                       _habit!.hasGoal = result.hasGoal;
+                      _habit!.dailyTarget = result.dailyTarget;
                       if (result.hasGoal) {
                         _habit!.targetFrequency = result.targetFrequency;
                         _habit!.periodDays = result.periodDays;
@@ -1099,15 +1103,23 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             children: [
               // Main Content Section
               Expanded(
-                child: Text(
-                  _habit!.hasGoal
-                      ? _translationService.translate(HabitTranslationKeys.goalFormat, namedArgs: {
-                          'count': _habit!.targetFrequency.toString(),
-                          'dayCount': _habit!.periodDays.toString()
-                        })
-                      : _translationService.translate(HabitTranslationKeys.enableGoals),
-                  style: AppTheme.bodyMedium.copyWith(
-                    color: isArchived ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyMedium?.color,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _habit!.hasGoal
+                            ? '${_habit!.dailyTarget ?? 1} ${_translationService.translate(HabitTranslationKeys.dailyTargetHint)}, ${_translationService.translate(HabitTranslationKeys.goalFormat, namedArgs: {
+                                    'count': _habit!.targetFrequency.toString(),
+                                    'dayCount': _habit!.periodDays.toString()
+                                  })}'
+                            : _translationService.translate(SharedTranslationKeys.notSetTime),
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: isArchived
+                              ? Theme.of(context).disabledColor
+                              : Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -1138,61 +1150,120 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     );
   }
 
-  /// Checks if there's a habit record for today
-  bool _hasRecordForToday() {
-    if (_habitRecords == null) return false;
-    return _habitRecords!.items.any((record) => DateTimeHelper.isSameDay(record.date, DateTime.now()));
+  /// Gets the count of habit records for today
+  int _getTodayRecordCount() {
+    if (_habitRecords == null) return 0;
+    return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).length;
   }
 
-  /// Gets the habit record for today if it exists
-  HabitRecordListItem? _getRecordForToday() {
-    if (!_hasRecordForToday()) return null;
-    return _habitRecords!.items.firstWhere(
-      (record) => DateTimeHelper.isSameDay(record.date, DateTime.now()),
-    );
+  /// Gets all habit records for today
+  List<HabitRecordListItem> _getTodayRecords() {
+    if (_habitRecords == null) return [];
+    return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).toList();
   }
 
   /// Builds the daily record button with cross or chain icon based on completion status
   Widget _buildDailyRecordButton() {
-    final bool hasRecordToday = _hasRecordForToday();
+    final int dailyCompletionCount = _getTodayRecordCount();
+    final bool hasCustomGoals = _habit!.hasGoal;
+    final int dailyTarget = hasCustomGoals ? (_habit!.dailyTarget ?? 1) : 1;
+    final bool isDailyGoalMet = dailyCompletionCount >= dailyTarget;
+    final bool hasRecords = dailyCompletionCount > 0;
     final now = DateTime.now();
     final bool isArchived = _habit!.archivedDate != null &&
         DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(DateTime(now.year, now.month, now.day));
+
     final tooltipText = isArchived
         ? _translationService.translate(HabitTranslationKeys.archivedStatus)
-        : hasRecordToday
+        : (hasCustomGoals && isDailyGoalMet)
             ? _translationService.translate(HabitTranslationKeys.removeRecordTooltip)
             : _translationService.translate(HabitTranslationKeys.createRecordTooltip);
 
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: _themeService.primaryColor.withValues(alpha: isArchived ? 0.05 : 0.1),
-      ),
-      child: IconButton(
-        icon: Icon(
-          hasRecordToday ? Icons.link : Icons.close,
-          size: AppTheme.fontSizeLarge,
-          color: isArchived
-              ? Colors.grey
-              : hasRecordToday
-                  ? Colors.green
-                  : Colors.red,
+    // Determine icon and color based on daily target progress
+    IconData icon;
+    Color iconColor;
+
+    if (isArchived) {
+      icon = Icons.close;
+      iconColor = Colors.grey;
+    } else if (hasCustomGoals && isDailyGoalMet) {
+      icon = Icons.link;
+      iconColor = Colors.green;
+    } else if (hasCustomGoals && dailyTarget > 1 && hasRecords) {
+      icon = Icons.add;
+      iconColor = Colors.blue;
+    } else if (hasRecords) {
+      icon = Icons.link;
+      iconColor = hasCustomGoals ? Colors.orange : Colors.green;
+    } else {
+      icon = Icons.close;
+      iconColor = Colors.red;
+    }
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _themeService.primaryColor.withValues(alpha: isArchived ? 0.05 : 0.1),
+          ),
+          child: IconButton(
+            icon: Icon(
+              icon,
+              size: AppTheme.fontSizeLarge,
+              color: iconColor,
+            ),
+            onPressed: isArchived
+                ? null
+                : () async {
+                    if (hasCustomGoals && isDailyGoalMet) {
+                      // Reset to 0 (remove all records for today)
+                      final todayRecords = _getTodayRecords();
+                      for (final record in todayRecords) {
+                        await _deleteHabitRecord(record.id);
+                      }
+                    } else if (!hasCustomGoals && hasRecords) {
+                      // For habits without custom goals, remove ALL records for today
+                      // (handles case where multiple records exist from when custom goals were enabled)
+                      final todayRecords = _getTodayRecords();
+                      for (final record in todayRecords) {
+                        await _deleteHabitRecord(record.id);
+                      }
+                    } else {
+                      // Add a new record
+                      await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
+                    }
+                  },
+            tooltip: tooltipText,
+          ),
         ),
-        onPressed: isArchived
-            ? null
-            : () async {
-                if (hasRecordToday) {
-                  final recordToday = _getRecordForToday();
-                  if (recordToday != null) {
-                    await _deleteHabitRecord(recordToday.id);
-                  }
-                } else {
-                  await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
-                }
-              },
-        tooltip: tooltipText,
-      ),
+        // Show count badge for multiple daily targets (only when custom goals enabled)
+        if (hasCustomGoals && dailyTarget > 1 && !isArchived && dailyCompletionCount > 0)
+          Positioned(
+            bottom: 4,
+            right: 4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+              decoration: BoxDecoration(
+                color: isDailyGoalMet
+                    ? Colors.green
+                    : hasRecords
+                        ? Colors.orange
+                        : Colors.red.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                '$dailyCompletionCount',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

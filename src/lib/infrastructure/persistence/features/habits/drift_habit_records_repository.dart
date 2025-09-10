@@ -12,7 +12,10 @@ class HabitRecordTable extends Table {
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text()();
-  DateTimeColumn get date => dateTime()();
+  DateTimeColumn get occurredAt => dateTime()();
+
+  @override
+  Set<Column>? get primaryKey => {id};
 }
 
 class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String, HabitRecordTable>
@@ -32,7 +35,7 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
-      date: entity.date,
+      occurredAt: entity.occurredAt,
     );
   }
 
@@ -40,12 +43,16 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
     final query = database.select(table)
-      ..where((t) => t.habitId.equals(habitId) & t.date.isBetweenValues(startDate, endDate) & t.deletedDate.isNull())
+      ..where((t) =>
+          t.habitId.equals(habitId) &
+          t.occurredAt.isNotNull() &
+          t.occurredAt.isBetweenValues(startDate, endDate) &
+          t.deletedDate.isNull())
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
     final count = await (database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND date BETWEEN ? AND ? AND deleted_date IS NULL',
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at BETWEEN ? AND ? AND deleted_date IS NULL',
       variables: [Variable<String>(habitId), Variable<DateTime>(startDate), Variable<DateTime>(endDate)],
       readsFrom: {table},
     ).getSingleOrNull());
@@ -57,6 +64,21 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       pageSize: pageSize,
       totalItemCount: totalCount,
     );
+  }
+
+  /// Count occurrences for a habit on a specific date
+  @override
+  Future<int> countByHabitIdAndDate(String habitId, DateTime date) async {
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    final result = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at >= ? AND occurred_at < ? AND deleted_date IS NULL',
+      variables: [Variable<String>(habitId), Variable<DateTime>(startOfDay), Variable<DateTime>(endOfDay)],
+      readsFrom: {table},
+    ).getSingleOrNull();
+
+    return result?.data['count'] as int? ?? 0;
   }
 
   @override

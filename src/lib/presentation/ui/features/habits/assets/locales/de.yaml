@@ -92,6 +92,8 @@ habits:
     statistics_label: Statistiken
     tags: Tags
     tags_hint: Tags zum Verknüpfen auswählen
+    daily_target: "Tägliche Frequenz"
+    daily_target_hint: "Mal pro Tag"
   errors:
     adding_tag: Tag konnte nicht hinzugefügt werden
     creating_record: Gewohnheitsaufzeichnung konnte nicht erstellt werden
@@ -120,8 +122,8 @@ habits:
     goal_format: "{count} mal in {dayCount} Tagen"
     period_days: Zeitraumtage
     settings: Benutzerdefinierte Zieleinstellungen
-    target_frequency: Zielhäufigkeit
-    times_unit: mal
+    target_frequency: Periodenfrequenz
+    times_unit: "Mal pro Periode"
   help:
     description: Hilfebeschreibung
   list:
@@ -208,3 +210,5 @@ habits:
     decrease_estimated_time: Geschätzte Zeit verringern
     edit_name: Name bearbeiten
     increase_estimated_time: Geschätzte Zeit erhöhen
+    decrease_daily_target: "Tägliches Ziel verringern"
+    increase_daily_target: "Tägliches Ziel erhöhen"
