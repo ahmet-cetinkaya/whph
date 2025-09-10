@@ -346,15 +346,12 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       final currentPeriodEnd = currentPeriodStart.add(Duration(days: habit.periodDays - 1));
 
       // Count complete days in current period (daily score >= 1.0)
-      int completeDaysInPeriod = 0;
-      DateTime day = currentPeriodStart;
-      while (!_isSameDay(day, currentPeriodEnd.add(const Duration(days: 1)))) {
-        final dayKey = DateTime(day.year, day.month, day.day);
-        if (dailyScores[dayKey] != null && dailyScores[dayKey]! >= 1.0) {
-          completeDaysInPeriod++;
-        }
-        day = day.add(const Duration(days: 1));
-      }
+      final completeDaysInPeriod = dailyScores.entries
+          .where((entry) =>
+              entry.value >= 1.0 &&
+              !entry.key.isBefore(currentPeriodStart) &&
+              entry.key.isBefore(currentPeriodEnd.add(const Duration(days: 1))))
+          .length;
 
       final goalMet = completeDaysInPeriod >= habit.targetFrequency;
 
