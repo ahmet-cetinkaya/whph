@@ -773,19 +773,19 @@ class _HabitCardState extends State<HabitCard> {
                     bottom: 2,
                     right: 2,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       decoration: BoxDecoration(
                         color: isDailyGoalMet
                             ? Colors.green
                             : dailyCompletionCount > 0
                                 ? Colors.orange
                                 : Colors.red.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         '$dailyCompletionCount',
                         style: TextStyle(
-                          fontSize: widget.isDense ? 6 : 7,
+                          fontSize: widget.isDense ? 8 : 9,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -855,7 +855,7 @@ class _HabitCardState extends State<HabitCard> {
                     bottom: 1,
                     right: 1,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       decoration: BoxDecoration(
                         color: isDisabled
                             ? AppTheme.textColor.withValues(alpha: 0.3)
@@ -864,12 +864,12 @@ class _HabitCardState extends State<HabitCard> {
                                 : todayCount > 0
                                     ? Colors.orange
                                     : Colors.red.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         '$todayCount',
                         style: TextStyle(
-                          fontSize: isCompactView ? 6 : 7,
+                          fontSize: isCompactView ? 8 : 9,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
