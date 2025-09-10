@@ -87,7 +87,7 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
                                     isDailyGoalMet
                                 } else if (dailyTarget > 1) {
                                     // Multi-occurrence daily goal: check daily completion
-                                    isDailyGoalMet && currentCompletionCount >= dailyTarget
+                                    isDailyGoalMet
                                 } else {
                                     // Simple daily goal: check if completed today
                                     habit.optBoolean("isCompletedToday", false)
