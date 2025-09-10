@@ -117,19 +117,61 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
 
     List<HabitListItem> habitItems = [];
 
-    for (final habit in filteredHabits) {
-      // Fetch tags for each habit
-      final habitTags =
-          await _habitTagsRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("habit_id = ?", [habit.id]));
+    // Fetch all habit tags for all habits in a single query to avoid N+1 problem
+    final habitIds = filteredHabits.map((habit) => habit.id).toList();
+    List<dynamic> habitTagsList = [];
+    Map<String, List<TagListItem>> habitTagsMap = {};
+    
+    if (habitIds.isNotEmpty) {
+      final habitTagsWhereFilter = CustomWhereFilter(
+        "habit_id IN (${habitIds.map((_) => '?').join(',')})",
+        habitIds as List<Object>,
+      );
+      habitTagsList = (await _habitTagsRepository.getList(
+        0, 
+        habitIds.length * 5, // Allow up to 5 tags per habit
+        customWhereFilter: habitTagsWhereFilter,
+      )).items;
 
-      final tagItems = await Future.wait(habitTags.items.map((ht) async {
-        final tag = await _tagRepository.getById(ht.tagId);
-        return TagListItem(
-          id: ht.tagId,
-          name: tag?.name ?? "",
-          color: tag?.color,
+      // Fetch all tags for these habit tags in a single query
+      final tagIds = habitTagsList.map((ht) => ht.tagId).toSet().toList();
+      List<dynamic> tagsList = [];
+      if (tagIds.isNotEmpty) {
+        final tagsWhereFilter = CustomWhereFilter(
+          "id IN (${tagIds.map((_) => '?').join(',')})",
+          tagIds as List<Object>,
         );
-      }).toList());
+        tagsList = (await _tagRepository.getList(
+          0,
+          tagIds.length,
+          customWhereFilter: tagsWhereFilter,
+        )).items;
+      }
+
+      // Create a map for quick tag lookup
+      final tagMap = {for (final tag in tagsList) tag.id: tag};
+
+      // Create a map of habitId to tag items
+      habitTagsMap = <String, List<TagListItem>>{};
+      for (final ht in habitTagsList) {
+        final tag = tagMap[ht.tagId];
+        if (tag != null) {
+          habitTagsMap.putIfAbsent(ht.habitId, () => []).add(
+            TagListItem(
+              id: ht.tagId,
+              name: tag.name ?? "",
+              color: tag.color,
+            ),
+          );
+        }
+      }
+    }
+
+    // Create habit items with their tags
+    for (final habit in filteredHabits) {
+      final tagItems = habitTagsMap.containsKey(habit.id) 
+          ? habitTagsMap[habit.id]!
+          : <TagListItem>[];
 
       habitItems.add(HabitListItem(
         id: habit.id,
