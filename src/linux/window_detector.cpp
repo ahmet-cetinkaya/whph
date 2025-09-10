@@ -593,7 +593,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
                         
                         // Clean up
                         std::string stop_cmd = "qdbus org.kde.KWin /" + script_id + " org.kde.kwin.Script.stop 2>/dev/null";
-                        system(stop_cmd.c_str());
+                        (void)system(stop_cmd.c_str());
                         std::remove(temp_script.c_str());
                         
                         if (result == 0) {
