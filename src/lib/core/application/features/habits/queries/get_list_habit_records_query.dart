@@ -24,8 +24,9 @@ class GetListHabitRecordsQuery implements IRequest<GetListHabitRecordsQueryRespo
 class HabitRecordListItem {
   String id;
   DateTime date;
+  DateTime occurredAt;
 
-  HabitRecordListItem({required this.id, required this.date});
+  HabitRecordListItem({required this.id, required this.date, required this.occurredAt});
 }
 
 class GetListHabitRecordsQueryResponse extends PaginatedList<HabitRecordListItem> {
@@ -51,7 +52,9 @@ class GetListHabitRecordsQueryHandler
     );
 
     return GetListHabitRecordsQueryResponse(
-      items: habitRecords.items.map((e) => HabitRecordListItem(id: e.id, date: e.date)).toList(),
+      items: habitRecords.items
+          .map((e) => HabitRecordListItem(id: e.id, date: e.recordDate, occurredAt: e.occurredAt))
+          .toList(),
       totalItemCount: habitRecords.totalItemCount,
       pageIndex: habitRecords.pageIndex,
       pageSize: habitRecords.pageSize,

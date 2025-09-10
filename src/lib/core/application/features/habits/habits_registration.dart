@@ -41,6 +41,7 @@ void registerHabitsFeature(
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
         tagRepository: tagRepository,
+        habitRecordRepository: habitRecordRepository,
       ),
     )
     ..registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(

@@ -7,4 +7,7 @@ abstract class IHabitRecordRepository extends app.IRepository<HabitRecord, Strin
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize);
 
   Future<List<HabitRecord>> getByHabitId(String habitId);
+
+  /// Count occurrences for a habit on a specific date
+  Future<int> countByHabitIdAndDate(String habitId, DateTime date);
 }

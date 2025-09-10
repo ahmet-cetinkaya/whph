@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/ui/features/habits/services/habit_completion_service.dart';
 import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
@@ -27,6 +28,7 @@ void registerUIPresentation(IContainer container) {
   // Register services
   container.registerSingleton<AppUsagesService>((_) => AppUsagesService());
   container.registerSingleton<HabitsService>((_) => HabitsService());
+  container.registerSingleton<HabitCompletionService>((_) => HabitCompletionService());
   container.registerSingleton<NotesService>((_) => NotesService());
   container.registerSingleton<TasksService>((_) => TasksService(
         container.resolve<ITaskRecurrenceService>(),

@@ -12,6 +12,7 @@ class HabitUiConstants {
   static const IconData nextIcon = Icons.arrow_forward;
   static const IconData lockIcon = Icons.lock;
   static const IconData estimatedTimeIcon = Icons.timer_outlined;
+  static const IconData dailyTargetIcon = Icons.my_location;
 
   // Colors
   static const Color completedColor = Colors.green;
