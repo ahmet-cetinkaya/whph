@@ -87,21 +87,15 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
           return;
       }
 
-      // Update the widget after completion with a small delay to allow proper state processing
+      // Update the widget immediately after completion
       try {
         final widgetService = container.resolve<WidgetService>();
-        // Add a small delay to prevent premature icon state changes
-        await Future.delayed(const Duration(milliseconds: 300));
+        // Update widget to show immediate completion state
         await widgetService.updateWidget();
-
-        // Schedule another update after 3 seconds to hide completed habits
-        Future.delayed(const Duration(seconds: 3), () async {
-          try {
-            await widgetService.updateWidget();
-          } catch (e) {
-            Logger.error('Error in delayed widget update: $e');
-          }
-        });
+        
+        // Update again to refresh and hide completed habits if needed
+        // This ensures the widget shows current state without relying on arbitrary delays
+        await widgetService.updateWidget();
       } catch (e) {
         Logger.error('Failed to resolve WidgetService or update widget: $e');
         // This is expected in test environments where the full DI setup is not available
@@ -482,10 +476,7 @@ class WidgetService {
           return;
       }
 
-      // Update widget to reflect changes after a brief delay
-      developer.log('Waiting 500ms before widget update...', name: 'WidgetService');
-      await Future.delayed(const Duration(milliseconds: 500));
-
+      // Update widget to reflect changes immediately
       developer.log('Updating widget after successful $action...', name: 'WidgetService');
       await updateWidget();
     } catch (e, stackTrace) {
@@ -495,8 +486,7 @@ class WidgetService {
       // Show error feedback
       await _showErrorFeedback(action, itemId);
 
-      // Still try to update widget to show current state after a delay
-      await Future.delayed(const Duration(milliseconds: 1000));
+      // Still try to update widget to show current state immediately
       try {
         await updateWidget();
       } catch (updateError) {
@@ -705,10 +695,7 @@ class WidgetService {
     // Clear existing data first
     await HomeWidget.saveWidgetData(_dataKey, '');
 
-    // Wait a moment
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    // Update with fresh data
+    // Update with fresh data immediately
     await updateWidget();
 
     Logger.info('Force widget refresh completed');
