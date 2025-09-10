@@ -85,6 +85,22 @@
       android:lineSpacingExtra="1dp"
       android:fontFamily="sans-serif"
     />
+    <TextView
+      android:id="@+id/habit_progress_1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="6dp"
+      android:layout_gravity="center_vertical"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:background="@drawable/widget_checkbox_background"
+      android:paddingHorizontal="4dp"
+      android:paddingVertical="2dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:minWidth="24dp"
+      android:gravity="center"
+    />
   </LinearLayout>
 
   <LinearLayout
@@ -119,6 +135,22 @@
       android:ellipsize="end"
       android:lineSpacingExtra="1dp"
       android:fontFamily="sans-serif"
+    />
+    <TextView
+      android:id="@+id/habit_progress_2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="6dp"
+      android:layout_gravity="center_vertical"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:background="@drawable/widget_checkbox_background"
+      android:paddingHorizontal="4dp"
+      android:paddingVertical="2dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:minWidth="24dp"
+      android:gravity="center"
     />
   </LinearLayout>
 
@@ -155,6 +187,22 @@
       android:lineSpacingExtra="1dp"
       android:fontFamily="sans-serif"
     />
+    <TextView
+      android:id="@+id/habit_progress_3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="6dp"
+      android:layout_gravity="center_vertical"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:background="@drawable/widget_checkbox_background"
+      android:paddingHorizontal="4dp"
+      android:paddingVertical="2dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:minWidth="24dp"
+      android:gravity="center"
+    />
   </LinearLayout>
 
   <LinearLayout
@@ -190,6 +238,22 @@
       android:lineSpacingExtra="1dp"
       android:fontFamily="sans-serif"
     />
+    <TextView
+      android:id="@+id/habit_progress_4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="6dp"
+      android:layout_gravity="center_vertical"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:background="@drawable/widget_checkbox_background"
+      android:paddingHorizontal="4dp"
+      android:paddingVertical="2dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:minWidth="24dp"
+      android:gravity="center"
+    />
   </LinearLayout>
 
   <LinearLayout
@@ -224,6 +288,22 @@
       android:ellipsize="end"
       android:lineSpacingExtra="1dp"
       android:fontFamily="sans-serif"
+    />
+    <TextView
+      android:id="@+id/habit_progress_5"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="6dp"
+      android:layout_gravity="center_vertical"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:background="@drawable/widget_checkbox_background"
+      android:paddingHorizontal="4dp"
+      android:paddingVertical="2dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:minWidth="24dp"
+      android:gravity="center"
     />
   </LinearLayout>
 

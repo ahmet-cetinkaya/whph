@@ -11,6 +11,7 @@ import 'package:whph/core/application/features/tasks/queries/get_list_tasks_quer
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
@@ -85,10 +86,21 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
           return;
       }
 
-      // Update the widget after completion
+      // Update the widget after completion with a small delay to allow proper state processing
       try {
         final widgetService = container.resolve<WidgetService>();
+        // Add a small delay to prevent premature icon state changes
+        await Future.delayed(const Duration(milliseconds: 300));
         await widgetService.updateWidget();
+
+        // Schedule another update after 3 seconds to hide completed habits
+        Future.delayed(const Duration(seconds: 3), () async {
+          try {
+            await widgetService.updateWidget();
+          } catch (e) {
+            Logger.error('Error in delayed widget update: $e');
+          }
+        });
       } catch (e) {
         Logger.error('Failed to resolve WidgetService or update widget: $e');
         // This is expected in test environments where the full DI setup is not available
@@ -150,43 +162,78 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
   }
 }
 
-/// Background habit toggle function
+/// Background habit toggle function with smart behavior for multiple occurrences
 Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, String habitId) async {
   try {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
+    // Get habit details to check for custom goals
+    final habit = await mediator.send<GetHabitQuery, GetHabitQueryResponse>(
+      GetHabitQuery(id: habitId),
+    );
+    final hasCustomGoals = habit.hasGoal;
+    final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
+
+    // Get today's records with sufficient page size for multiple occurrences
     final recordsResult = await mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
       GetListHabitRecordsQuery(
         pageIndex: 0,
-        pageSize: 1,
+        pageSize: 20, // Allow for multiple daily occurrences
         habitId: habitId,
         startDate: startOfDay,
         endDate: endOfDay,
       ),
     );
 
-    if (recordsResult.items.isNotEmpty) {
-      // Habit is completed today, remove the record
-      final recordId = recordsResult.items.first.id;
-      await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
-        DeleteHabitRecordCommand(id: recordId),
-      );
-    } else {
-      // Habit is not completed today, add a record
-      await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-        AddHabitRecordCommand(habitId: habitId, occurredAt: today),
-      );
+    final todayCount = recordsResult.items.length;
 
-      // Play completion sound for habit completion
-      try {
-        final soundPlayer = container.resolve<ISoundPlayer>();
-        soundPlayer.play(SharedSounds.done, volume: 1.0);
-      } catch (e) {
-        Logger.warning('Error playing completion sound: $e');
-        // Don't rethrow - sound failure shouldn't break the habit completion
-        // This is expected in test environments where the full DI setup is not available
+    if (hasCustomGoals && dailyTarget > 1) {
+      // Smart behavior for multi-occurrence habits with custom goals
+      if (todayCount < dailyTarget) {
+        // Add new record (increment)
+        await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
+          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+        );
+
+        // Play completion sound
+        try {
+          final soundPlayer = container.resolve<ISoundPlayer>();
+          soundPlayer.play(SharedSounds.done, volume: 1.0);
+        } catch (e) {
+          Logger.warning('Error playing completion sound: $e');
+        }
+      } else {
+        // Reset to 0 (remove all records for today)
+        for (final record in recordsResult.items) {
+          await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
+            DeleteHabitRecordCommand(id: record.id),
+          );
+        }
+      }
+    } else {
+      // Traditional behavior for simple habits or habits without custom goals
+      // Remove ALL records for today (handles case where multiple records exist from when custom goals were enabled)
+      if (todayCount > 0) {
+        for (final record in recordsResult.items) {
+          await mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
+            DeleteHabitRecordCommand(id: record.id),
+          );
+        }
+      } else {
+        // Add new record
+        await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
+          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+        );
+
+        // Play completion sound
+        try {
+          final soundPlayer = container.resolve<ISoundPlayer>();
+          soundPlayer.play(SharedSounds.done, volume: 1.0);
+        } catch (e) {
+          Logger.warning('Error playing completion sound: $e');
+        }
       }
     }
   } catch (e, stackTrace) {
@@ -309,22 +356,111 @@ class WidgetService {
         pageIndex: 0,
         pageSize: 5, // Match TodayPage's page size
         filterByArchived: false,
-        // Exclude habits completed today (same as TodayPage)
-        excludeCompletedForDate: startOfDay,
+        // Don't exclude completed habits for widgets - we need to show progress
         // Apply tag filtering from TodayPage settings
         filterByTags: showNoTagsFilter ? [] : selectedTagIds,
         filterNoTags: showNoTagsFilter,
       ),
     );
 
-    // Convert habits to widget data - these are already filtered to exclude completed ones
-    final habits = habitsResult.items
-        .map((habit) => WidgetHabitData(
-              id: habit.id,
-              name: habit.name,
-              isCompletedToday: false, // These are already filtered to exclude completed ones
-            ))
-        .toList();
+    // Convert habits to widget data with completion progress
+    List<WidgetHabitData> habits = [];
+    for (final habit in habitsResult.items) {
+      // Get today's records for this habit to calculate progress
+      final recordsResult = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
+        GetListHabitRecordsQuery(
+          pageIndex: 0,
+          pageSize: 20, // Enough for multiple daily occurrences
+          habitId: habit.id,
+          startDate: startOfDay,
+          endDate: endOfDay,
+        ),
+      );
+
+      final currentCompletionCount = recordsResult.items.length;
+      final hasGoal = habit.hasGoal;
+      final dailyTarget = hasGoal ? (habit.dailyTarget ?? 1) : 1;
+      final isDailyTargetMet = currentCompletionCount >= dailyTarget;
+      final isCompletedToday = currentCompletionCount > 0;
+
+      // For period-based goals, check completion over the goal period
+      bool isPeriodGoalMet = false;
+      if (hasGoal && habit.periodDays > 1) {
+        // Calculate period start date
+        final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
+        final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
+
+        // Get records for the entire period
+        final periodRecordsResult = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
+          GetListHabitRecordsQuery(
+            pageIndex: 0,
+            pageSize: 100, // Enough for period records
+            habitId: habit.id,
+            startDate: periodStartOfDay,
+            endDate: endOfDay,
+          ),
+        );
+
+        // Group records by date and count complete days
+        final recordsByDate = <DateTime, List>{};
+        for (final record in periodRecordsResult.items) {
+          final dateKey = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
+          recordsByDate.putIfAbsent(dateKey, () => []).add(record);
+        }
+
+        // Count days that meet the daily target
+        int completedDaysInPeriod = 0;
+        for (final entry in recordsByDate.entries) {
+          if (entry.value.length >= dailyTarget) {
+            completedDaysInPeriod++;
+          }
+        }
+
+        isPeriodGoalMet = completedDaysInPeriod >= habit.targetFrequency;
+      }
+
+      // Determine final goal met status
+      final isDailyGoalMet = hasGoal ? (habit.periodDays > 1 ? isPeriodGoalMet : isDailyTargetMet) : isDailyTargetMet;
+
+      // Determine completion timestamp for completed habits
+      DateTime? completedAt;
+      if (isDailyGoalMet && recordsResult.items.isNotEmpty) {
+        // Use the last record's timestamp as completion time
+        final lastRecord = recordsResult.items.last;
+        completedAt = lastRecord.occurredAt;
+      }
+
+      // Hide completed habits after 3 seconds
+      const hideDelaySeconds = 3;
+      final shouldHideCompletedHabit =
+          isDailyGoalMet && completedAt != null && DateTime.now().difference(completedAt).inSeconds >= hideDelaySeconds;
+
+      // For period-based goals, hide habit immediately if period goal is met
+      bool shouldHidePeriodBasedHabit = false;
+      if (hasGoal && habit.periodDays > 1) {
+        // If period goal is met, hide the habit (user doesn't need to act today)
+        if (isPeriodGoalMet) {
+          shouldHidePeriodBasedHabit = true;
+        }
+      }
+
+      if (shouldHideCompletedHabit || shouldHidePeriodBasedHabit) {
+        continue; // Skip this habit - it's completed and delay has passed or period goal is met
+      }
+
+      habits.add(WidgetHabitData(
+        id: habit.id,
+        name: habit.name,
+        isCompletedToday: isCompletedToday,
+        hasGoal: hasGoal,
+        dailyTarget: dailyTarget,
+        currentCompletionCount: currentCompletionCount,
+        isDailyGoalMet: isDailyGoalMet,
+        completedAt: completedAt,
+        targetFrequency: habit.targetFrequency,
+        periodDays: habit.periodDays,
+      ));
+    }
 
     return WidgetData(
       tasks: tasks,
@@ -490,27 +626,56 @@ class WidgetService {
       final startOfDay = DateTime(today.year, today.month, today.day);
       final endOfDay = startOfDay.add(const Duration(days: 1));
 
+      // Get habit details to check for custom goals
+      final habit = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(
+        GetHabitQuery(id: habitId),
+      );
+      final hasCustomGoals = habit.hasGoal;
+      final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
+
+      // Get today's records with sufficient page size for multiple occurrences
       final recordsResult = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
         GetListHabitRecordsQuery(
           pageIndex: 0,
-          pageSize: 1,
+          pageSize: 20, // Allow for multiple daily occurrences
           habitId: habitId,
           startDate: startOfDay,
           endDate: endOfDay,
         ),
       );
 
-      if (recordsResult.items.isNotEmpty) {
-        // Habit is completed today, remove the record
-        final recordId = recordsResult.items.first.id;
-        await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
-          DeleteHabitRecordCommand(id: recordId),
-        );
+      final todayCount = recordsResult.items.length;
+
+      if (hasCustomGoals && dailyTarget > 1) {
+        // Smart behavior for multi-occurrence habits with custom goals
+        if (todayCount < dailyTarget) {
+          // Add new record (increment)
+          await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
+            AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+          );
+        } else {
+          // Reset to 0 (remove all records for today)
+          for (final record in recordsResult.items) {
+            await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
+              DeleteHabitRecordCommand(id: record.id),
+            );
+          }
+        }
       } else {
-        // Habit is not completed today, add a record
-        await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
-        );
+        // Traditional behavior for simple habits or habits without custom goals
+        // Remove ALL records for today (handles case where multiple records exist from when custom goals were enabled)
+        if (todayCount > 0) {
+          for (final record in recordsResult.items) {
+            await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
+              DeleteHabitRecordCommand(id: record.id),
+            );
+          }
+        } else {
+          // Add new record
+          await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
+            AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+          );
+        }
       }
     } catch (e, stackTrace) {
       Logger.error('Error toggling habit $habitId: $e');
