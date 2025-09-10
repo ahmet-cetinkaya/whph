@@ -198,9 +198,9 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
                         
                         // Set progress badge color based on completion status
                         val textColor = when {
-                            currentCompletionCount >= dailyTarget -> android.graphics.Color.parseColor("#4CAF50") // Green - completed
-                            currentCompletionCount > 0 -> android.graphics.Color.parseColor("#FFC107") // Amber - in progress
-                            else -> android.graphics.Color.parseColor("#757575") // Gray - not started
+                            currentCompletionCount >= dailyTarget -> context.getColor(R.color.success_color) // Green - completed
+                            currentCompletionCount > 0 -> context.getColor(R.color.warning_color) // Amber - in progress
+                            else -> context.getColor(R.color.widget_text_secondary) // Gray - not started
                         }
                         views.setTextColor(habitProgressIds[i], textColor)
                     } else {
