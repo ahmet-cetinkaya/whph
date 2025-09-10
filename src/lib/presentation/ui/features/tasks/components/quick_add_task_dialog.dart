@@ -76,13 +76,23 @@ class QuickAddTaskDialog extends StatefulWidget {
     );
 
     if (isMobile) {
-      // Show as bottom sheet on mobile
+      // Show as bottom sheet on mobile with proper keyboard handling
       return showMaterialModalBottomSheet<T>(
         context: context,
         isDismissible: true,
         enableDrag: true,
         useRootNavigator: false,
-        builder: (BuildContext context) => dialog,
+        expand: false, // Enable proper sizing for better keyboard handling
+        builder: (BuildContext context) {
+          return AnimatedPadding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(context).bottom,
+            ),
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            child: dialog,
+          );
+        },
       );
     } else {
       // Show as dialog on desktop - force dialog instead of responsive
