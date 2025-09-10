@@ -15,6 +15,7 @@ import 'package:whph/core/application/features/habits/queries/get_habit_query.da
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/calendar/models/today_page_list_option_settings.dart';
@@ -249,9 +250,10 @@ class WidgetService {
   static const String _dataKey = 'widget_data';
 
   final Mediator _mediator;
+  final IContainer _container;
   late final FilterSettingsManager _filterSettingsManager;
 
-  WidgetService({required Mediator mediator}) : _mediator = mediator {
+  WidgetService({required Mediator mediator, required IContainer container}) : _mediator = mediator, _container = container {
     _filterSettingsManager = FilterSettingsManager(_mediator);
   }
 
@@ -365,19 +367,86 @@ class WidgetService {
 
     // Convert habits to widget data with completion progress
     List<WidgetHabitData> habits = [];
-    for (final habit in habitsResult.items) {
-      // Get today's records for this habit to calculate progress
-      final recordsResult = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
-        GetListHabitRecordsQuery(
-          pageIndex: 0,
-          pageSize: 20, // Enough for multiple daily occurrences
-          habitId: habit.id,
-          startDate: startOfDay,
-          endDate: endOfDay,
-        ),
+    
+    // Get all habit records for today for all habits in a single query to avoid N+1 problem
+    final habitIds = habitsResult.items.map((habit) => habit.id).toList();
+    List todayRecordsList = [];
+    Map<String, List> habitRecordsMap = {};
+    
+    if (habitIds.isNotEmpty) {
+      final todayRecordsWhereFilter = CustomWhereFilter(
+        "habit_id IN (${habitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
+        [...habitIds, startOfDay, endOfDay],
       );
+      
+      // Resolve the habit record repository directly to use getList with customWhereFilter
+      final habitRecordRepository = _container.resolve<IHabitRecordRepository>();
+      final todayRecordsResult = await habitRecordRepository.getList(
+        0,
+        habitIds.length * 20, // Enough for multiple daily occurrences per habit
+        customWhereFilter: todayRecordsWhereFilter,
+      );
+      
+      todayRecordsList = todayRecordsResult.items;
+      
+      // Group records by habit ID
+      for (final record in todayRecordsList) {
+        habitRecordsMap.putIfAbsent(record.habitId, () => []).add(record);
+      }
+    }
+    
+    // Get all habit records for the period for all habits with period goals in a single query
+    final periodGoalHabits = habitsResult.items.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
+    List periodRecordsList = [];
+    Map<String, List> periodHabitRecordsMap = {};
+    
+    if (periodGoalHabits.isNotEmpty) {
+      final periodHabitIds = periodGoalHabits.map((habit) => habit.id).toList();
+      
+      // Calculate period start dates for each habit
+      final now = DateTime.now();
+      final periodStartDates = <String, DateTime>{};
+      for (final habit in periodGoalHabits) {
+        final periodStartDate = now.subtract(Duration(days: habit.periodDays - 1));
+        periodStartDates[habit.id] = periodStartDate;
+      }
+      
+      // Find the earliest period start date
+      DateTime? earliestPeriodStartDate;
+      for (final startDate in periodStartDates.values) {
+        if (earliestPeriodStartDate == null || startDate.isBefore(earliestPeriodStartDate)) {
+          earliestPeriodStartDate = startDate;
+        }
+      }
+      
+      if (earliestPeriodStartDate != null && periodHabitIds.isNotEmpty) {
+        final periodRecordsWhereFilter = CustomWhereFilter(
+          "habit_id IN (${periodHabitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
+          [...periodHabitIds, earliestPeriodStartDate, endOfDay],
+        );
+        
+        // Resolve the habit record repository directly to use getList with customWhereFilter
+        final habitRecordRepository = _container.resolve<IHabitRecordRepository>();
+        final periodRecordsResult = await habitRecordRepository.getList(
+          0,
+          periodHabitIds.length * 100, // Enough for period records
+          customWhereFilter: periodRecordsWhereFilter,
+        );
+        
+        periodRecordsList = periodRecordsResult.items;
+        
+        // Group records by habit ID
+        for (final record in periodRecordsList) {
+          periodHabitRecordsMap.putIfAbsent(record.habitId, () => []).add(record);
+        }
+      }
+    }
 
-      final currentCompletionCount = recordsResult.items.length;
+    // Process each habit with pre-fetched records
+    for (final habit in habitsResult.items) {
+      // Get today's records for this habit
+      final todayRecords = habitRecordsMap[habit.id] ?? [];
+      final currentCompletionCount = todayRecords.length;
       final hasGoal = habit.hasGoal;
       final dailyTarget = hasGoal ? (habit.dailyTarget ?? 1) : 1;
       final isDailyTargetMet = currentCompletionCount >= dailyTarget;
@@ -386,24 +455,12 @@ class WidgetService {
       // For period-based goals, check completion over the goal period
       bool isPeriodGoalMet = false;
       if (hasGoal && habit.periodDays > 1) {
-        // Calculate period start date
-        final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
-        final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
-
-        // Get records for the entire period
-        final periodRecordsResult = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
-          GetListHabitRecordsQuery(
-            pageIndex: 0,
-            pageSize: 100, // Enough for period records
-            habitId: habit.id,
-            startDate: periodStartOfDay,
-            endDate: endOfDay,
-          ),
-        );
+        // Get records for the entire period for this habit
+        final periodRecords = periodHabitRecordsMap[habit.id] ?? [];
 
         // Group records by date and count complete days
         final recordsByDate = <DateTime, List>{};
-        for (final record in periodRecordsResult.items) {
+        for (final record in periodRecords) {
           final dateKey = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
           recordsByDate.putIfAbsent(dateKey, () => []).add(record);
         }
@@ -424,9 +481,9 @@ class WidgetService {
 
       // Determine completion timestamp for completed habits
       DateTime? completedAt;
-      if (isDailyGoalMet && recordsResult.items.isNotEmpty) {
+      if (isDailyGoalMet && todayRecords.isNotEmpty) {
         // Use the last record's timestamp as completion time
-        final lastRecord = recordsResult.items.last;
+        final lastRecord = todayRecords.last;
         completedAt = lastRecord.occurredAt;
       }
 
