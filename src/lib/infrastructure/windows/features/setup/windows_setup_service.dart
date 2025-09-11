@@ -332,10 +332,10 @@ Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Ve
         'firewall',
         'add',
         'rule',
-        'name=$ruleName',
+        'name="$ruleName"',
         'dir=$direction',
         'action=allow',
-        'program=$appPath',
+        'program="$appPath"',
         'protocol=$upperProtocol',
         'localport=$portNum',
       ];
@@ -406,13 +406,14 @@ Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Ve
     try {
       final result = await Process.run(
         'netsh',
-        ['advfirewall', 'firewall', 'delete', 'rule', 'name=$ruleName'],
+        ['advfirewall', 'firewall', 'delete', 'rule', 'name="$ruleName"'],
         runInShell: true,
       );
 
       if (result.exitCode != 0) {
-        Logger.error('Failed to remove firewall rule: ${result.stderr}');
-        throw Exception('Failed to remove firewall rule: ${result.stderr}');
+        final stderr = result.stderr.toString();
+        Logger.error('Failed to remove firewall rule: $stderr');
+        throw WindowsFirewallRuleException('Failed to remove firewall rule: $stderr');
       }
 
       Logger.debug('Successfully removed firewall rule: $ruleName');
