@@ -67,7 +67,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   /// Load manual confirmation status from settings (Linux only)
   Future<void> _loadManualConfirmation() async {
     // Manual confirmation is only available for Linux
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     if (!isLinux) {
       _isManuallyConfirmed = false;
@@ -104,7 +104,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   /// Save manual confirmation status to settings (Linux only)
   Future<void> _saveManualConfirmation(bool confirmed) async {
     // Manual confirmation is only available for Linux
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     if (!isLinux) {
       return;
@@ -209,7 +209,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
   /// Get platform name for display
   String _getPlatformName() {
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
     
@@ -220,14 +220,14 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
   /// Get the main command for the platform
   String _getMainCommand() {
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
     
     if (isLinux) {
       return 'sudo ufw allow $webSocketPort/tcp';
     } else if (isWindows) {
-      return 'netsh advfirewall firewall add rule name="WHPH Sync Port $webSocketPort" dir=in action=allow protocol=TCP localport=$webSocketPort';
+      return 'netsh advfirewall firewall add rule name="WHPH Sync Port $webSocketPort" dir=in action=allow program="${Platform.resolvedExecutable}" protocol=TCP localport=$webSocketPort';
     } else {
       return '';
     }
@@ -295,7 +295,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
   /// Automatic firewall rule addition for Windows
   Future<bool> _onAutomaticFirewallRuleAddition() async {
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isWindows = Platform.isWindows;
     
     if (!isWindows || _setupService == null) {
@@ -353,7 +353,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   @override
   Widget build(BuildContext context) {
     // Only show on desktop platforms with setup service
-    // When debugging, simulate Windows platform
+    // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
     
