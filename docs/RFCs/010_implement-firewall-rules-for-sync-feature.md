@@ -55,7 +55,7 @@ Targets the `ufw` (Uncomplicated Firewall) tool:
 - Add: `sudo ufw allow {port}/{protocol}`
 - Remove: `sudo ufw delete allow {port}/{protocol}`
 
-Uses `pkexec` for graphical password prompts when available.
+On permission failures, provides clear error messages instructing users to run commands with `sudo` manually. Automatic privilege escalation is not implemented to avoid security concerns.
 
 ### Error Handling and Idempotency
 
