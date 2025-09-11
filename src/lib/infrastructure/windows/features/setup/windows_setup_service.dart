@@ -214,9 +214,12 @@ exit
 
   /// Run a PowerShell command with elevated privileges (admin request)
   Future<ProcessResult> _runWithElevatedPrivileges(String command, List<String> arguments) async {
+    // Properly escape arguments for PowerShell and construct an array
+    final argsString = arguments.map((arg) => "'${arg.replaceAll("'", "''")}'").join(', ');
+
     // Create a PowerShell script that requests elevation
     final elevatedScript = '''
-Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Verb RunAs -WindowStyle Hidden -Wait
+Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -WindowStyle Hidden -Wait
 ''';
 
     try {
@@ -265,9 +268,9 @@ Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Ve
 
       Logger.debug('Netsh check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
 
-      // If the rule exists, netsh will return information about it
-      // If it doesn't exist, it will return "No rules match the specified criteria."
-      final ruleExists = !result.stdout.toString().contains('No rules match the specified criteria.');
+      // If the rule exists, netsh will return information about it including "Rule Name:"
+      // This approach is more robust than checking for "No rules match" which varies by Windows language
+      final ruleExists = result.stdout.toString().contains('Rule Name:');
       Logger.debug('Firewall rule "$ruleName" exists: $ruleExists');
 
       return ruleExists;
