@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/api/api.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -29,7 +30,7 @@ class FirewallPermissionCard extends StatefulWidget {
 }
 
 class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
-  static const String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_44040xc';
+  static final String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_${webSocketPort}xc';
   
   // DEBUG: Simulate Windows platform for testing
   static const bool _debugSimulateWindows = false;
@@ -178,7 +179,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
     try {
       // Check if firewall rule exists for the sync port
-      final port = '44040'; // WebSocket port from api.dart
+      final port = webSocketPort.toString();
       final ruleName = 'WHPH Sync Port $port';
 
       final ruleExists = await _setupService!.checkFirewallRule(ruleName: ruleName);
@@ -227,9 +228,9 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     final isWindows = _debugSimulateWindows ? true : Platform.isWindows;
     
     if (isLinux) {
-      return 'sudo ufw allow 44040/tcp';
+      return 'sudo ufw allow $webSocketPort/tcp';
     } else if (isWindows) {
-      return 'netsh advfirewall firewall add rule name="WHPH Sync Port 44040" dir=in action=allow protocol=TCP localport=44040';
+      return 'netsh advfirewall firewall add rule name="WHPH Sync Port $webSocketPort" dir=in action=allow protocol=TCP localport=$webSocketPort';
     } else {
       return '';
     }
@@ -309,9 +310,9 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       
       // Add firewall rule using the setup service (this will request UAC)
       await _setupService!.addFirewallRule(
-        ruleName: 'WHPH Sync Port 44040',
+        ruleName: 'WHPH Sync Port $webSocketPort',
         appPath: Platform.resolvedExecutable,
-        port: '44040',
+        port: webSocketPort.toString(),
         protocol: 'TCP',
       );
       
