@@ -21,7 +21,7 @@ Extending `ISetupService` in `core/application/shared/services/abstraction/i_set
 
 ```dart
 /// Checks whether a firewall rule with the specified name already exists.
-Future<bool> checkFirewallRule({required String ruleName});
+Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'});
 
 /// Adds a firewall rule for the specified application path with the given port, 
 /// protocol, and direction.
