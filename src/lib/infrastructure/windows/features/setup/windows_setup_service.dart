@@ -253,7 +253,7 @@ Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Ve
 
   // Firewall rule management for Windows
   @override
-  Future<bool> checkFirewallRule({required String ruleName}) async {
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     try {
       Logger.debug('Checking Windows firewall rule: $ruleName');
 

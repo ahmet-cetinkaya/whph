@@ -199,7 +199,7 @@ abstract class BaseSetupService implements ISetupService {
 
   // Firewall rule management methods with default implementations
   @override
-  Future<bool> checkFirewallRule({required String ruleName}) async {
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     // Default implementation - platforms should override this
     Logger.debug('checkFirewallRule not implemented for this platform');
     return false;
