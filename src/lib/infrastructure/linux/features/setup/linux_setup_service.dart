@@ -384,7 +384,7 @@ exit 0
     }
     
     // Fallback: try to find any 1-5 digit number in the string
-    final numberRegex = RegExp(r'\d{1,5}');
+    final numberRegex = RegExp(r'\b\d{1,5}\b');
     final numberMatch = numberRegex.firstMatch(ruleName);
     if (numberMatch != null) {
       final portStr = numberMatch.group(0)!;
