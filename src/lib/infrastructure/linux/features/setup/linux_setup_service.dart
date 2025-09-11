@@ -165,7 +165,8 @@ exit 0
       }
 
       final result = await Process.run('ufw', ['status'], runInShell: true);
-      return result.stdout.toString().contains('$port/tcp') || result.stdout.toString().contains('$port/udp');
+      return result.stdout.toString().split('\n').any((line) => 
+        (line.contains('$port/tcp') || line.contains('$port/udp')) && line.contains('ALLOW'));
     } catch (e) {
       Logger.error('Error checking firewall rule: $e');
       return false;
@@ -324,58 +325,41 @@ exit 0
   @override
   Future<void> removeFirewallRule({required String ruleName}) async {
     try {
-      // Check if ufw is available
       final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
       if (ufwCheck.exitCode != 0) {
         Logger.debug('ufw not found, cannot remove firewall rules');
         return;
       }
 
-      // Extract the port from the rule name
       final port = _extractPortFromRuleName(ruleName);
       if (port == null) {
-        Logger.error('Could not extract port from rule name: $ruleName');
-        // Try to get port from the addFirewallRule method's port parameter pattern
-        // This is a fallback for cases where we can't extract from rule name
-        final regex = RegExp(r'(\d{1,5})');
-        final match = regex.firstMatch(ruleName);
-        if (match != null) {
-          final extractedPort = match.group(1);
-          final portNum = int.tryParse(extractedPort!);
-          if (portNum != null && portNum > 0 && portNum <= 65535) {
-            final result = await Process.run(
-              'ufw',
-              ['delete', 'allow', '$portNum/tcp'],
-              runInShell: true,
-            );
-
-            if (result.exitCode != 0) {
-              Logger.error('Failed to remove firewall rule: ${result.stderr}');
-              throw Exception('Failed to remove firewall rule: ${result.stderr}');
-            }
-
-            Logger.debug('Successfully removed firewall rule for port: $portNum');
-            return;
-          }
-        }
+        Logger.error('Could not extract port from rule name for removal: $ruleName');
         return;
       }
 
-      final result = await Process.run(
-        'ufw',
-        ['delete', 'allow', '$port/tcp'],
-        runInShell: true,
-      );
+      for (final protocol in ['tcp', 'udp']) {
+        final result = await Process.run(
+          'ufw',
+          ['delete', 'allow', '$port/$protocol'],
+          runInShell: true,
+        );
 
-      if (result.exitCode != 0) {
-        Logger.error('Failed to remove firewall rule: ${result.stderr}');
-        throw Exception('Failed to remove firewall rule: ${result.stderr}');
+        final stderr = result.stderr.toString();
+        // "Skipping" means the rule didn't exist, which is fine for idempotency.
+        if (result.exitCode != 0 && !stderr.contains('Skipping')) {
+          final error = 'Failed to remove firewall rule for $port/$protocol: $stderr';
+          Logger.error(error);
+          throw FirewallRuleException(error, ufwExitCode: result.exitCode, ufwStderr: stderr);
+        }
       }
 
-      Logger.debug('Successfully removed firewall rule for port: $port');
+      Logger.info('Successfully removed firewall rules for port: $port');
     } catch (e) {
-      Logger.error('Error removing firewall rule: $e');
-      rethrow;
+      if (e is FirewallRuleException) rethrow;
+
+      final error = 'Unexpected error while removing firewall rule: $e';
+      Logger.error(error);
+      throw FirewallRuleException(error);
     }
   }
 
