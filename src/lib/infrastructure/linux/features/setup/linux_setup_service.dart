@@ -383,17 +383,8 @@ exit 0
       }
     }
     
-    // Fallback: try to find any 1-5 digit number in the string
-    final numberRegex = RegExp(r'\b\d{1,5}\b');
-    final numberMatch = numberRegex.firstMatch(ruleName);
-    if (numberMatch != null) {
-      final portStr = numberMatch.group(0)!;
-      final portNum = int.tryParse(portStr);
-      if (portNum != null && portNum > 0 && portNum <= 65535) {
-        return portStr;
-      }
-    }
-    
+    // Fallback is removed for robustness. If the primary regex fails, it's better to return null
+    // than to guess a number from the string.
     return null;
   }
 }
