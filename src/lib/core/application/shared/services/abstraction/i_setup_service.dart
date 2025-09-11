@@ -5,7 +5,7 @@ abstract class ISetupService {
   Future<void> checkForUpdates(BuildContext context);
 
   /// Checks whether a firewall rule with the specified name already exists.
-  Future<bool> checkFirewallRule({required String ruleName});
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'});
 
   /// Adds a firewall rule for the specified application path with the given port,
   /// protocol, and direction.

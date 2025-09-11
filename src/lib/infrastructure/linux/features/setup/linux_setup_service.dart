@@ -141,7 +141,7 @@ exit 0
 
   // Firewall rule management for Linux
   @override
-  Future<bool> checkFirewallRule({required String ruleName}) async {
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     try {
       // Check if ufw is available
       final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
@@ -165,8 +165,9 @@ exit 0
       }
 
       final result = await Process.run('ufw', ['status'], runInShell: true);
+      final lowerProtocol = protocol.toLowerCase();
       return result.stdout.toString().split('\n').any((line) => 
-        (line.contains('$port/tcp') || line.contains('$port/udp')) && line.contains('ALLOW'));
+        line.contains('$port/$lowerProtocol') && line.contains('ALLOW'));
     } catch (e) {
       Logger.error('Error checking firewall rule: $e');
       return false;
@@ -176,10 +177,10 @@ exit 0
   @override
   Future<void> addFirewallRule({
     required String ruleName,
-    required String appPath,
+    required String appPath, // Unused: ufw manages port-based rules, not app-specific
     required String port,
     String protocol = 'TCP',
-    String direction = 'in',
+    String direction = 'in', // Unused: ufw rules are bidirectional by default for allow rules
   }) async {
     try {
       Logger.debug('Attempting to add firewall rule with port: $port, protocol: $protocol');

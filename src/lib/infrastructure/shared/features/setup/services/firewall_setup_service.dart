@@ -23,13 +23,16 @@ class FirewallSetupService {
       // Define rule parameters using the WebSocket port
       final port = webSocketPort.toString();
       const protocol = 'TCP';
-      final ruleName = 'WHPH Sync Port $port';  // Updated to include port for Linux extraction
+      // IMPORTANT: This naming format is tightly coupled with LinuxSetupService._extractPortFromRuleName()
+      // The Linux implementation relies on parsing this specific string format to extract the port number
+      // If this format changes, update the Linux parsing logic accordingly
+      final ruleName = 'WHPH Sync Port $port';
       final appPath = Platform.resolvedExecutable;
       
       Logger.debug('FirewallSetupService: Using port=$port, protocol=$protocol, ruleName=$ruleName, appPath=$appPath');
       
       // Check if the rule already exists
-      final ruleExists = await setupService.checkFirewallRule(ruleName: ruleName);
+      final ruleExists = await setupService.checkFirewallRule(ruleName: ruleName, protocol: protocol);
       
       if (!ruleExists) {
         Logger.debug('FirewallSetupService: Firewall rule does not exist, creating it...');
@@ -71,7 +74,8 @@ class FirewallSetupService {
       
       // Define rule parameters using the WebSocket port
       final port = webSocketPort.toString();
-      final ruleName = 'WHPH Sync Port $port';  // Updated to include port for Linux extraction
+      // IMPORTANT: Must match the format used in setupSyncFirewallRules() for consistency
+      final ruleName = 'WHPH Sync Port $port';
       
       Logger.debug('FirewallSetupService: Removing rule with port=$port, ruleName=$ruleName');
       
