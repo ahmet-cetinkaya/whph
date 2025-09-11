@@ -30,10 +30,7 @@ class FirewallPermissionCard extends StatefulWidget {
 }
 
 class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
-  static final String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_${webSocketPort}xc';
-  
-  // DEBUG: Simulate Windows platform for testing
-  static const bool _debugSimulateWindows = false;
+  static final String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_$webSocketPort';
   
   ISetupService? _setupService;
   final ITranslationService _translationService = container.resolve<ITranslationService>();
@@ -71,7 +68,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   Future<void> _loadManualConfirmation() async {
     // Manual confirmation is only available for Linux
     // When debugging, simulate Windows platform
-    final isLinux = _debugSimulateWindows ? false : Platform.isLinux;
+    final isLinux = Platform.isLinux;
     if (!isLinux) {
       _isManuallyConfirmed = false;
       return;
@@ -108,7 +105,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   Future<void> _saveManualConfirmation(bool confirmed) async {
     // Manual confirmation is only available for Linux
     // When debugging, simulate Windows platform
-    final isLinux = _debugSimulateWindows ? false : Platform.isLinux;
+    final isLinux = Platform.isLinux;
     if (!isLinux) {
       return;
     }
@@ -213,8 +210,8 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   /// Get platform name for display
   String _getPlatformName() {
     // When debugging, simulate Windows platform
-    final isLinux = _debugSimulateWindows ? false : Platform.isLinux;
-    final isWindows = _debugSimulateWindows ? true : Platform.isWindows;
+    final isLinux = Platform.isLinux;
+    final isWindows = Platform.isWindows;
     
     if (isLinux) return 'Linux';
     if (isWindows) return 'Windows';
@@ -224,8 +221,8 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   /// Get the main command for the platform
   String _getMainCommand() {
     // When debugging, simulate Windows platform
-    final isLinux = _debugSimulateWindows ? false : Platform.isLinux;
-    final isWindows = _debugSimulateWindows ? true : Platform.isWindows;
+    final isLinux = Platform.isLinux;
+    final isWindows = Platform.isWindows;
     
     if (isLinux) {
       return 'sudo ufw allow $webSocketPort/tcp';
@@ -299,7 +296,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   /// Automatic firewall rule addition for Windows
   Future<bool> _onAutomaticFirewallRuleAddition() async {
     // When debugging, simulate Windows platform
-    final isWindows = _debugSimulateWindows ? true : Platform.isWindows;
+    final isWindows = Platform.isWindows;
     
     if (!isWindows || _setupService == null) {
       return false;
@@ -357,8 +354,8 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   Widget build(BuildContext context) {
     // Only show on desktop platforms with setup service
     // When debugging, simulate Windows platform
-    final isLinux = _debugSimulateWindows ? false : Platform.isLinux;
-    final isWindows = _debugSimulateWindows ? true : Platform.isWindows;
+    final isLinux = Platform.isLinux;
+    final isWindows = Platform.isWindows;
     
     if (!PlatformUtils.isDesktop || _setupService == null || _shouldHideCard) {
       return const SizedBox.shrink();
