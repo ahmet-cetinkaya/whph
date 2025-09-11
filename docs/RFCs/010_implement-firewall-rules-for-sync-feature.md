@@ -46,12 +46,12 @@ Uses `netsh advfirewall firewall` commands via `Process.run`:
 - Add: `netsh advfirewall firewall add rule name="{ruleName}" dir={direction} action=allow program="{appPath}" protocol={protocol} localport={port}`
 - Remove: `netsh advfirewall firewall delete rule name="{ruleName}"`
 
-Handles UAC elevation requirements via application manifest.
+Handles UAC elevation using PowerShell `Start-Process -Verb RunAs` for flexible privilege escalation.
 
 #### Linux (`linux_setup_service.dart`)
 
 Targets the `ufw` (Uncomplicated Firewall) tool:
-- Check: `sudo ufw status | grep "{port}/{protocol}"`
+- Check: Parse `ufw status` output and verify both port/protocol match AND ALLOW action
 - Add: `sudo ufw allow {port}/{protocol}`
 - Remove: `sudo ufw delete allow {port}/{protocol}`
 
