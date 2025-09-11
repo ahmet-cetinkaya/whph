@@ -4,6 +4,32 @@ import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 
+/// Custom exception for Windows firewall rule operations with detailed context
+class WindowsFirewallRuleException implements Exception {
+  final String message;
+  final String? invalidValue;
+  final int? netshExitCode;
+  final String? netshStderr;
+  final String? netshStdout;
+
+  const WindowsFirewallRuleException(
+    this.message, {
+    this.invalidValue,
+    this.netshExitCode,
+    this.netshStderr,
+    this.netshStdout,
+  });
+
+  @override
+  String toString() {
+    final buffer = StringBuffer(message);
+    if (invalidValue != null) buffer.write(' [InvalidValue: $invalidValue]');
+    if (netshExitCode != null) buffer.write(' [Netsh ExitCode: $netshExitCode]');
+    if (netshStderr != null) buffer.write(' [Netsh Error: $netshStderr]');
+    return buffer.toString();
+  }
+}
+
 class WindowsSetupService extends BaseSetupService {
   static const _updateScriptTemplate = '''
 @echo off
@@ -182,6 +208,226 @@ exit
       }
     } catch (e) {
       Logger.error('Failed to create shortcut: $e');
+      rethrow;
+    }
+  }
+
+  /// Run a PowerShell command with elevated privileges (admin request)
+  Future<ProcessResult> _runWithElevatedPrivileges(String command, List<String> arguments) async {
+    // Properly escape arguments for PowerShell and construct an array
+    final argsString = arguments.map((arg) => "'${arg.replaceAll("'", "''")}'").join(', ');
+
+    // Create a PowerShell script that requests elevation
+    final elevatedScript = '''
+Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -WindowStyle Hidden -Wait
+''';
+
+    try {
+      Logger.debug('Running elevated command: $command ${arguments.join(' ')}');
+      return await Process.run(
+        'powershell',
+        ['-ExecutionPolicy', 'Bypass', '-Command', elevatedScript],
+        runInShell: true,
+      );
+    } catch (e) {
+      Logger.error('Failed to run elevated command: $e');
+      rethrow;
+    }
+  }
+
+  /// Check if the current process is running with administrator privileges
+  Future<bool> _isRunningAsAdmin() async {
+    try {
+      final result = await Process.run(
+        'powershell',
+        [
+          '-Command',
+          '([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")'
+        ],
+        runInShell: true,
+      );
+
+      return result.stdout.toString().trim().toLowerCase() == 'true';
+    } catch (e) {
+      Logger.error('Failed to check admin status: $e');
+      return false;
+    }
+  }
+
+  // Firewall rule management for Windows
+  @override
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
+    try {
+      Logger.debug('Checking Windows firewall rule: $ruleName');
+
+      final result = await Process.run(
+        'netsh',
+        ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
+        runInShell: true,
+      );
+
+      Logger.debug('Netsh check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
+
+      // If the rule exists, netsh will return information about it including "Rule Name:"
+      // This approach is more robust than checking for "No rules match" which varies by Windows language
+      final ruleExists = result.stdout.toString().contains('Rule Name:');
+      Logger.debug('Firewall rule "$ruleName" exists: $ruleExists');
+
+      return ruleExists;
+    } catch (e) {
+      Logger.error('Error checking firewall rule: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<void> addFirewallRule({
+    required String ruleName,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+    String direction = 'in',
+  }) async {
+    try {
+      Logger.debug('Attempting to add Windows firewall rule: $ruleName for port $port/$protocol');
+
+      // Enhanced input validation
+      if (port.isEmpty) {
+        final error = 'WindowsFirewallRuleError: Port cannot be empty';
+        Logger.error(error);
+        throw WindowsFirewallRuleException(error, invalidValue: port);
+      }
+
+      final portNum = int.tryParse(port.trim());
+      if (portNum == null) {
+        final error = 'WindowsFirewallRuleError: Port must be a valid integer, received: "$port"';
+        Logger.error(error);
+        throw WindowsFirewallRuleException(error, invalidValue: port);
+      }
+
+      if (portNum <= 0 || portNum > 65535) {
+        final error = 'WindowsFirewallRuleError: Port must be between 1-65535, received: $portNum';
+        Logger.error(error);
+        throw WindowsFirewallRuleException(error, invalidValue: port);
+      }
+
+      // Validate protocol
+      final upperProtocol = protocol.trim().toUpperCase();
+      if (upperProtocol != 'TCP' && upperProtocol != 'UDP') {
+        final error = 'WindowsFirewallRuleError: Protocol must be TCP or UDP, received: "$protocol"';
+        Logger.error(error);
+        throw WindowsFirewallRuleException(error, invalidValue: protocol);
+      }
+
+      // First check if the rule already exists
+      final ruleExists = await checkFirewallRule(ruleName: ruleName);
+      if (ruleExists) {
+        Logger.debug('Windows firewall rule "$ruleName" already exists');
+        return;
+      }
+
+      // Check if running as admin
+      final isAdmin = await _isRunningAsAdmin();
+      Logger.debug('Running as administrator: $isAdmin');
+
+      final netshArgs = [
+        'advfirewall',
+        'firewall',
+        'add',
+        'rule',
+        'name="$ruleName"',
+        'dir=$direction',
+        'action=allow',
+        'program="$appPath"',
+        'protocol=$upperProtocol',
+        'localport=$portNum',
+      ];
+
+      ProcessResult result;
+
+      if (isAdmin) {
+        // If already running as admin, execute directly
+        Logger.debug('Executing netsh command directly with admin privileges');
+        result = await Process.run('netsh', netshArgs, runInShell: true);
+      } else {
+        // Request elevation using PowerShell
+        Logger.debug('Requesting elevation to run netsh command');
+        result = await _runWithElevatedPrivileges('netsh', netshArgs);
+      }
+
+      Logger.debug(
+          'Netsh command result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
+
+      if (result.exitCode != 0) {
+        final stderr = result.stderr.toString().trim();
+        final stdout = result.stdout.toString().trim();
+
+        // Provide specific error context
+        String errorContext = '';
+        bool isPermissionIssue = false;
+
+        if (stderr.toLowerCase().contains('access is denied') ||
+            stderr.toLowerCase().contains('operation requires elevation') ||
+            stderr.toLowerCase().contains('administrator')) {
+          errorContext = ' (Administrator privileges required)';
+          isPermissionIssue = true;
+        } else if (stderr.toLowerCase().contains('already exists') || stderr.toLowerCase().contains('duplicate')) {
+          errorContext = ' (Rule may already exist with different parameters)';
+        }
+
+        final error = isPermissionIssue
+            ? 'Administrator privileges required to add Windows Firewall rule for port $portNum/$upperProtocol. Please run the application as administrator or manually add the firewall rule in Windows Defender Firewall settings.'
+            : 'WindowsFirewallRuleError: Failed to add Windows Firewall rule for port $portNum/$upperProtocol$errorContext. Netsh error: $stderr';
+
+        Logger.error(error);
+        Logger.error('Netsh stdout: $stdout');
+
+        throw WindowsFirewallRuleException(
+          error,
+          invalidValue: '$portNum/$upperProtocol',
+          netshExitCode: result.exitCode,
+          netshStderr: stderr,
+          netshStdout: stdout,
+        );
+      }
+
+      Logger.info('Successfully added Windows firewall rule: $ruleName for port $portNum/$upperProtocol');
+    } catch (e) {
+      if (e is WindowsFirewallRuleException) {
+        Logger.error('Windows firewall rule creation failed: ${e.message}');
+        rethrow;
+      } else {
+        final error = 'WindowsFirewallRuleError: Unexpected error while adding firewall rule: $e';
+        Logger.error(error);
+        throw WindowsFirewallRuleException(error, invalidValue: port);
+      }
+    }
+  }
+
+  @override
+  Future<void> removeFirewallRule({required String ruleName}) async {
+    try {
+      final ruleExists = await checkFirewallRule(ruleName: ruleName);
+      if (!ruleExists) {
+        Logger.debug('Firewall rule "$ruleName" does not exist, skipping removal.');
+        return;
+      }
+
+      final result = await Process.run(
+        'netsh',
+        ['advfirewall', 'firewall', 'delete', 'rule', 'name="$ruleName"'],
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        final stderr = result.stderr.toString();
+        Logger.error('Failed to remove firewall rule: $stderr');
+        throw WindowsFirewallRuleException('Failed to remove firewall rule: $stderr');
+      }
+
+      Logger.debug('Successfully removed firewall rule: $ruleName');
+    } catch (e) {
+      Logger.error('Error removing firewall rule: $e');
       rethrow;
     }
   }
