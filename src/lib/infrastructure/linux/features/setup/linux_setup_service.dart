@@ -261,13 +261,6 @@ exit 0
         Logger.info('UFW has been enabled successfully');
       }
 
-      // First check if the rule already exists
-      final ruleExists = await checkFirewallRule(ruleName: ruleName);
-      if (ruleExists) {
-        Logger.debug('Firewall rule for port $port already exists');
-        return;
-      }
-
       Logger.debug('Executing ufw allow $portNum/$upperProtocol');
       
       // Add the firewall rule with validated parameters
