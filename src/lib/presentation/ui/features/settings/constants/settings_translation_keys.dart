@@ -1,9 +1,6 @@
 import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart' as application;
 
 class SettingsTranslationKeys extends application.SettingTranslationKeys {
-  // Common UI Elements
-  static const String commonCancel = 'common.buttons.cancel';
-
   // Language Settings
   static const String languageTitle = 'settings.language.title';
   static const String languageChooseTitle = 'settings.language.choose_title';
@@ -62,6 +59,40 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String openSettings = 'settings.permissions.open_settings';
   static const String permissionGranted = 'settings.permissions.granted';
   static const String instructions = 'settings.permissions.instructions';
+
+  // Firewall Permissions
+  static const String firewallPermissionTitle = 'settings.permissions.firewall.title';
+  static const String firewallPermissionDescription = 'settings.permissions.firewall.description';
+  static const String firewallPermissionDialogDescription = 'settings.permissions.firewall.dialog_description';
+  static const String firewallPermissionDialogInfoText = 'settings.permissions.firewall.dialog_info_text';
+  static const String firewallLinuxManualConfirmationButton = 'settings.permissions.firewall.linux_manual_confirmation_button';
+  static const String firewallSaveConfirmationError = 'settings.permissions.firewall.save_confirmation_error';
+  static const String firewallRuleAddedSuccess = 'settings.permissions.firewall.rule_added_success';
+  static const String firewallRuleAddError = 'settings.permissions.firewall.rule_add_error';
+
+  // Firewall Instructions - Linux
+  static const String firewallInstructionLinuxStep1 = 'settings.permissions.firewall.instructions.linux.step1';
+  static const String firewallInstructionLinuxStep2 = 'settings.permissions.firewall.instructions.linux.step2';
+  static const String firewallInstructionLinuxStep3 = 'settings.permissions.firewall.instructions.linux.step3';
+  static const String firewallInstructionLinuxStep4 = 'settings.permissions.firewall.instructions.linux.step4';
+
+  // Firewall Instructions - Windows
+  static const String firewallInstructionWindowsStep1 = 'settings.permissions.firewall.instructions.windows.step1';
+  static const String firewallInstructionWindowsStep2 = 'settings.permissions.firewall.instructions.windows.step2';
+  static const String firewallInstructionWindowsStep3 = 'settings.permissions.firewall.instructions.windows.step3';
+  static const String firewallInstructionWindowsStep4 = 'settings.permissions.firewall.instructions.windows.step4';
+  static const String firewallInstructionWindowsStep5 = 'settings.permissions.firewall.instructions.windows.step5';
+  static const String firewallInstructionWindowsStep6 = 'settings.permissions.firewall.instructions.windows.step6';
+  static const String firewallInstructionWindowsStep7 = 'settings.permissions.firewall.instructions.windows.step7';
+  static const String firewallInstructionWindowsStep8 = 'settings.permissions.firewall.instructions.windows.step8';
+  static const String firewallInstructionWindowsStep9 = 'settings.permissions.firewall.instructions.windows.step9';
+  static const String firewallInstructionWindowsAlternativeCommandPromptTitle = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.title';
+  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep1 = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step1';
+  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep2 = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step2';
+  
+  // Firewall Automatic Actions - Windows
+  static const String firewallAddRuleButtonText = 'settings.permissions.firewall.add_rule_button';
+  static const String firewallWindowsAutoDescription = 'settings.permissions.firewall.windows_auto_description';
 
   // Battery Optimization
   static const String batteryOptimizationTitle = 'settings.permissions.battery_optimization.title';

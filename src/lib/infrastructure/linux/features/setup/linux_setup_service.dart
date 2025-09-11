@@ -3,6 +3,32 @@ import 'package:path/path.dart' as path;
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
+/// Custom exception for firewall rule operations with detailed context
+class FirewallRuleException implements Exception {
+  final String message;
+  final String? invalidValue;
+  final int? ufwExitCode;
+  final String? ufwStderr;
+  final String? ufwStdout;
+  
+  const FirewallRuleException(
+    this.message, {
+    this.invalidValue,
+    this.ufwExitCode,
+    this.ufwStderr,
+    this.ufwStdout,
+  });
+  
+  @override
+  String toString() {
+    final buffer = StringBuffer(message);
+    if (invalidValue != null) buffer.write(' [InvalidValue: $invalidValue]');
+    if (ufwExitCode != null) buffer.write(' [UFW ExitCode: $ufwExitCode]');
+    if (ufwStderr != null) buffer.write(' [UFW Error: $ufwStderr]');
+    return buffer.toString();
+  }
+}
+
 class LinuxSetupService extends BaseSetupService {
   static const _updateScriptTemplate = '''
 #!/bin/bash
@@ -111,5 +137,254 @@ exit 0
     } catch (e) {
       Logger.error('Could not install icon: $e');
     }
+  }
+
+  // Firewall rule management for Linux
+  @override
+  Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
+    try {
+      // Check if ufw is available
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot check firewall rules');
+        return false;
+      }
+
+      // Get the port from the rule name
+      final port = _extractPortFromRuleName(ruleName);
+      if (port == null) {
+        Logger.error('Could not extract port from rule name: $ruleName');
+        return false;
+      }
+      
+      // Validate port
+      final portNum = int.tryParse(port);
+      if (portNum == null || portNum <= 0 || portNum > 65535) {
+        Logger.error('Invalid port number extracted: $port');
+        return false;
+      }
+
+      final result = await Process.run('ufw', ['status'], runInShell: true);
+      final lowerProtocol = protocol.toLowerCase();
+      return result.stdout.toString().split('\n').any((line) => 
+        line.contains('$port/$lowerProtocol') && line.contains('ALLOW'));
+    } catch (e) {
+      Logger.error('Error checking firewall rule: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<void> addFirewallRule({
+    required String ruleName,
+    required String appPath, // Unused: ufw manages port-based rules, not app-specific
+    required String port,
+    String protocol = 'TCP',
+    String direction = 'in', // Unused: ufw rules are bidirectional by default for allow rules
+  }) async {
+    try {
+      Logger.debug('Attempting to add firewall rule with port: $port, protocol: $protocol');
+      
+      // Enhanced input validation with detailed error messages
+      if (port.isEmpty) {
+        final error = 'FirewallRuleError: Port cannot be empty';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: port);
+      }
+      
+      final portNum = int.tryParse(port.trim());
+      if (portNum == null) {
+        final error = 'FirewallRuleError: Port must be a valid integer, received: "$port"';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: port);
+      }
+      
+      if (portNum <= 0 || portNum > 65535) {
+        final error = 'FirewallRuleError: Port must be between 1-65535, received: $portNum';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: port);
+      }
+      
+      // Validate protocol
+      if (protocol.isEmpty) {
+        final error = 'FirewallRuleError: Protocol cannot be empty';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: protocol);
+      }
+      
+      final upperProtocol = protocol.trim().toUpperCase();
+      if (upperProtocol != 'TCP' && upperProtocol != 'UDP') {
+        final error = 'FirewallRuleError: Protocol must be TCP or UDP, received: "$protocol"';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: protocol);
+      }
+
+      // Check if ufw is available
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot add firewall rules');
+        return;
+      }
+
+      // Check if UFW is enabled/active - this is crucial for avoiding "Bad port" errors
+      final statusResult = await Process.run('ufw', ['status'], runInShell: true);
+      if (statusResult.exitCode != 0) {
+        final error = 'FirewallRuleError: Unable to check UFW status: ${statusResult.stderr}';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: 'ufw status command failed');
+      }
+      
+      final statusOutput = statusResult.stdout.toString().toLowerCase();
+      if (statusOutput.contains('status: inactive')) {
+        Logger.warning('UFW is inactive. Attempting to enable UFW before adding rule...');
+        
+        // Try to enable UFW non-interactively
+        final enableResult = await Process.run('ufw', ['--force', 'enable'], runInShell: true);
+        if (enableResult.exitCode != 0) {
+          final stderr = enableResult.stderr.toString().toLowerCase();
+          if (stderr.contains('permission') ||
+              stderr.contains('operation not permitted') ||
+              stderr.contains('must be run as root')) {
+            Logger.warning(
+                'UFW requires administrator privileges to enable. Firewall rule cannot be added automatically.');
+            throw FirewallRuleException(
+              'Administrator privileges required to enable UFW and add firewall rules. Please run the application as administrator or manually configure UFW.',
+              invalidValue: 'insufficient privileges',
+              ufwExitCode: enableResult.exitCode,
+              ufwStderr: enableResult.stderr.toString(),
+            );
+          } else {
+            final error =
+                'FirewallRuleError: Unable to enable UFW: ${enableResult.stderr}. UFW must be enabled to add firewall rules.';
+            Logger.error(error);
+            throw FirewallRuleException(error, invalidValue: 'ufw enable failed');
+          }
+        }
+        Logger.info('UFW has been enabled successfully');
+      }
+
+      Logger.debug('Executing ufw allow $portNum/$upperProtocol');
+      
+      // Add the firewall rule with validated parameters
+      final result = await Process.run(
+        'ufw',
+        ['allow', '$portNum/$upperProtocol'],
+        runInShell: true,
+      );
+
+      Logger.debug('ufw command result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
+      
+      if (result.exitCode != 0) {
+        final stderr = result.stderr.toString().trim();
+        final stdout = result.stdout.toString().trim();
+
+        // Provide more specific error context and check for permission issues
+        String errorContext = '';
+        bool isPermissionIssue = false;
+
+        if (stderr.toLowerCase().contains('bad port')) {
+          errorContext =
+              ' (Possible causes: UFW configuration corruption, invalid port format, or system firewall conflicts)';
+        } else if (stderr.toLowerCase().contains('permission') ||
+            stderr.toLowerCase().contains('operation not permitted') ||
+            stderr.toLowerCase().contains('must be run as root')) {
+          errorContext = ' (Administrator privileges required - please run as administrator or use sudo)';
+          isPermissionIssue = true;
+        } else if (stderr.toLowerCase().contains('duplicate')) {
+          errorContext = ' (Rule may already exist in a different format)';
+        }
+
+        final error = isPermissionIssue
+            ? 'Administrator privileges required to add UFW firewall rule for port $portNum/$upperProtocol. Please run the application as administrator or manually configure UFW with: sudo ufw allow $portNum/$upperProtocol'
+            : 'FirewallRuleError: Failed to add UFW rule for port $portNum/$upperProtocol$errorContext. UFW error: $stderr';
+
+        Logger.error(error);
+        Logger.error('UFW stdout: $stdout');
+
+        throw FirewallRuleException(
+          error,
+          invalidValue: '$portNum/$upperProtocol',
+          ufwExitCode: result.exitCode,
+          ufwStderr: stderr,
+          ufwStdout: stdout,
+        );
+      }
+
+      Logger.info('Successfully added firewall rule for port $portNum/$upperProtocol');
+    } catch (e) {
+      if (e is FirewallRuleException) {
+        Logger.error('Firewall rule creation failed: ${e.message}');
+        rethrow;
+      } else {
+        final error = 'FirewallRuleError: Unexpected error while adding firewall rule: $e';
+        Logger.error(error);
+        throw FirewallRuleException(error, invalidValue: port);
+      }
+    }
+  }
+
+  @override
+  Future<void> removeFirewallRule({required String ruleName}) async {
+    try {
+      final ufwCheck = await Process.run('which', ['ufw'], runInShell: true);
+      if (ufwCheck.exitCode != 0) {
+        Logger.debug('ufw not found, cannot remove firewall rules');
+        return;
+      }
+
+      final port = _extractPortFromRuleName(ruleName);
+      if (port == null) {
+        Logger.error('Could not extract port from rule name for removal: $ruleName');
+        return;
+      }
+
+      for (final protocol in ['tcp', 'udp']) {
+        final result = await Process.run(
+          'ufw',
+          ['delete', 'allow', '$port/$protocol'],
+          runInShell: true,
+        );
+
+        final stderr = result.stderr.toString();
+        // "Skipping" means the rule didn't exist, which is fine for idempotency.
+        if (result.exitCode != 0 && !stderr.contains('Skipping')) {
+          final error = 'Failed to remove firewall rule for $port/$protocol: $stderr';
+          Logger.error(error);
+          throw FirewallRuleException(error, ufwExitCode: result.exitCode, ufwStderr: stderr);
+        }
+      }
+
+      Logger.info('Successfully removed firewall rules for port: $port');
+    } catch (e) {
+      if (e is FirewallRuleException) rethrow;
+
+      final error = 'Unexpected error while removing firewall rule: $e';
+      Logger.error(error);
+      throw FirewallRuleException(error);
+    }
+  }
+
+  // Helper method to extract port from rule name
+  String? _extractPortFromRuleName(String ruleName) {
+    // Enhanced regex to match various formats like "Port XXXX", "Port-XXXX", or just numbers
+    final regex = RegExp(r'(?:Port\s+|Port-|#)(\d{1,5})|(\d{1,5})(?:\s*$)');
+    final match = regex.firstMatch(ruleName);
+    
+    if (match != null) {
+      // Check all groups for a valid port
+      for (int i = 1; i <= match.groupCount; i++) {
+        final group = match.group(i);
+        if (group != null && group.isNotEmpty) {
+          final portNum = int.tryParse(group);
+          if (portNum != null && portNum > 0 && portNum <= 65535) {
+            return group;
+          }
+        }
+      }
+    }
+    
+    // Fallback is removed for robustness. If the primary regex fails, it's better to return null
+    // than to guess a number from the string.
+    return null;
   }
 }

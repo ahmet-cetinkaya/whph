@@ -22,6 +22,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -571,28 +572,38 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           ),
         ],
       ),
-      body: list == null || list!.items.isEmpty
-          ? Padding(
-              padding: const EdgeInsets.all(0),
-              child: IconOverlay(
-                icon: Icons.devices_other,
-                message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
-              ),
-            )
-          : ListView.separated(
-              itemCount: list!.items.length,
-              padding: EdgeInsets.all(AppTheme.sizeSmall),
-              itemBuilder: (context, index) {
-                return SyncDeviceListItemWidget(
-                  key: ValueKey(list!.items[index].id),
-                  item: list!.items[index],
-                  onRemove: _removeDevice,
-                  isBeingSynced:
-                      _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == list!.items[index].id,
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(height: AppTheme.sizeSmall),
-            ),
+      body: Column(
+        children: [
+          // Firewall permission card (desktop only)
+          const FirewallPermissionCard(),
+
+          // Device list content
+          Expanded(
+            child: list == null || list!.items.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: IconOverlay(
+                      icon: Icons.devices_other,
+                      message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: list!.items.length,
+                    padding: EdgeInsets.all(AppTheme.sizeSmall),
+                    itemBuilder: (context, index) {
+                      return SyncDeviceListItemWidget(
+                        key: ValueKey(list!.items[index].id),
+                        item: list!.items[index],
+                        onRemove: _removeDevice,
+                        isBeingSynced:
+                            _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == list!.items[index].id,
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(height: AppTheme.sizeSmall),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
