@@ -404,6 +404,12 @@ Start-Process -FilePath "$command" -ArgumentList "${arguments.join('", "')}" -Ve
   @override
   Future<void> removeFirewallRule({required String ruleName}) async {
     try {
+      final ruleExists = await checkFirewallRule(ruleName: ruleName);
+      if (!ruleExists) {
+        Logger.debug('Firewall rule "$ruleName" does not exist, skipping removal.');
+        return;
+      }
+
       final result = await Process.run(
         'netsh',
         ['advfirewall', 'firewall', 'delete', 'rule', 'name="$ruleName"'],
