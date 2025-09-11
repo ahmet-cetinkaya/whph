@@ -13,7 +13,6 @@ import 'package:whph/presentation/ui/shared/services/platform_initialization_ser
 import 'package:whph/core/application/features/widget/services/widget_service.dart';
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
-import 'package:whph/infrastructure/shared/features/setup/services/firewall_setup_service.dart';
 import 'package:acore/acore.dart';
 
 /// Global navigator key for accessing context throughout the application
@@ -124,9 +123,6 @@ void main(List<String> args) async {
 Future<void> _cleanupOnExit() async {
   try {
     if (PlatformUtils.isDesktop) {
-      // Clean up firewall rules
-      await FirewallSetupService.removeSyncFirewallRules(container);
-      
       final singleInstanceService = container.resolve<ISingleInstanceService>();
       await singleInstanceService.releaseInstance();
     }
