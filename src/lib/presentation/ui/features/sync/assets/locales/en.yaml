@@ -78,6 +78,7 @@ sync:
       3. Desktop firewall allows port 44040 (check sync settings)
       4. No VPN or proxy interfering with local network
     device_mismatch: Sync error. Device not properly paired.
+    environment_mismatch: Sync cannot proceed between debug and production builds.
     device_not_found: Sync device not found
     ip_address: Unable to fetch local IP address
     parse_message: Unable to parse scanned message
@@ -87,14 +88,20 @@ sync:
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
     version_mismatch: "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}. Update both apps."
+    local_ip_error: Unable to determine local IP address
+    device_already_paired: This device is already paired
+    no_active_interfaces: No active network interfaces found
+    device_discovery_failed: "Failed to start device discovery: {error}"
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
     sync_in_progress: Syncing in progress...
     testing_connection: Testing connection...
+    device_added_success: Successfully added {deviceName} to sync devices
   qr_code:
     close_button: Close
     dialog_title: Scan QR Code to Sync
+    title: Show QR Code
   scanner:
     title: Scan QR Code
     instruction: Position QR code within the frame
@@ -105,5 +112,37 @@ sync:
     start_failed: Failed to start server mode - Check if port 44040 is available
     start_tooltip: Start Server Mode
     stop_tooltip: Stop Server Mode
+    start_menu: Start Server Mode
+    stop_menu: Stop Server Mode
     error: Error
     device_became_server: This device is now the sync server
+  manual:
+    connection: Manual Connection
+    description: Enter the IP address and port of the device you want to connect to manually.
+    ip_address: IP Address
+    port: Port
+    device_name: Device Name
+    optional: (Optional)
+    connecting: Connecting to device...
+    cancel: Cancel
+    connect: Connect
+    ip_required: IP address is required
+    invalid_ip: Invalid IP address format
+    port_required: Port is required
+    invalid_port: Port must be between 1 and 65535
+    connection_failed: Failed to connect to device
+    connection_error: "Connection error: {0}"
+  add:
+    device: Add Device
+    device_tooltip: Add a new device via QR code scan or manual IP entry
+    sync_device: Add Sync Device
+    sync_device_title: Add Sync Device
+    sync_device_description: Discover nearby devices or manually connect to sync your data across devices.
+    scanning_for_devices: Scanning for nearby devices...
+    no_nearby_devices: No nearby devices found
+    no_nearby_devices_hint: Make sure both devices are on the same Wi-Fi network and have WHPH running.
+    alternative_methods_hint: Can't find your device? Try these alternative methods to connect.
+    scan_qr_code: Scan QR Code
+    refresh_scan: Refresh Scan
+    last_seen: "Last seen at {time}"
+    already_added: Already added

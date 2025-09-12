@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Napaka pri nalaganju naprav za sinhronizacijo
+      removing: Napaka pri odstranjevanju naprave za sinhronizacijo
+      sync_failed: Napaka pri sinhronizaciji naprav
+    from_label: Od
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Ohranite svoje naloge, navade, beležke, nastavitve itd. sinhronizirane na vseh napravah. Vsi podatki ostanejo v lokalni mreži — nič se ne pošlje v oblak.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Hitra in varna nastavitev
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Povežite naprave prek istega Wi-Fi omrežja z QR kodami. Sinhronizacija se začne samodejno po paru.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobilno → Mobilno:** Ena naprava mora biti v **načinu strežnika** za omogočanje para  
+        - 💻 **Namizno → Mobilno:** Namizje prikaže QR kodo, mobilna jo skenira  
 
-        ## 📱 Mobile Devices
+        ## 📱 Mobilne naprave
 
-        Android devices can work in two different modes:
+        Android naprave lahko delujejo v dveh različnih načinih:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Način klienta:**  
+          - Skenira QR kode  
+          - Se poveže z drugimi napravami za prejemanje podatkov  
+        - 📡 **Način strežnika:**  
+          - Prikazuje QR kodo za skeniranje drugih  
+          - Pošilja podatke povezanim napravam  
+          - Lahko se preklopi prek ikone Wi-Fi hotspot
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Za sinhronizacijo med dvema mobilnima napravama mora ena biti v **načinu strežnika**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Namizne naprave
 
-        Desktop apps always act as **Server** nodes:
+        Namizne aplikacije vedno delujejo kot **strežniška** vozlišča:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Prikazuje QR kodo za par  
+        - ✅ Samodejno sprejema dohodne povezave  
+        - 🔄 Sinhronizira podatke v obe smeri  
+        - 📊 Prikazuje status sinhronizacije v živo
 
-        ## 🛠️ Device Management
+        ## 🛠️ Upravljanje naprav
 
-        Manage all connected devices from one place:
+        Upravljajte vse povezane naprave na enem mestu:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Prikaz povezanih naprav  
+        - ⏰ Prikaz zadnjih časov sinhronizacije  
+        - 🔁 Zaženi ročno sinhronizacijo  
+        - 🗑️ Odstrani stare ali neuporabljene naprave
 
-        ## 💡 Best Practices
+        ## 💡 Najboljše prakse
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Preverite, da so vse naprave v isti Wi-Fi mreži  
+        - 📱 Držite aplikacije odprte in aktivne med sinhronizacijo  
+        - 🧹 Odstranite naprave, ki jih ne uporabljate več  
+        - ⏱️ Preverite čase sinhronizacije, da se prepričate, da je vse posodobljeno
+      title: Pomoč sinhronizaciji naprav
+    last_sync_label: Zadnja sinhronizacija
+    no_devices_found: Ni sinhroniziranih naprav
+    sync_tooltip: Sinhroniziraj zdaj
+    title: Naprave sinhronizacije
+    to_label: Do
+    unnamed_device: Nepoimenovana naprava
   error:
-    scan: Failed to scan
+    scan: Napaka pri skeniranju
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Povezava ni uspela. Preverite:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Obe napravi sta v isti mreži
+      2. Obe aplikaciji sta odprti in delujeta
+      3. Noben požarni zid ne blokira povezave
+    device_mismatch: Napaka sinhronizacije. Naprava, ki poskuša sinhronizirati, ni pravilno sparjena s to napravo.
+    environment_mismatch: Sinhronizacija se ne more nadaljevati med debug in produkcijskimi gradnjami.
+    device_not_found: Naprava sinhronizacije ni najdena
+    ip_address: Ni mogoče pridobiti lokalnega IP naslova
+    parse_message: Ni mogoče razčleniti skeniranega sporočila
+    process_failed: Proces sinhronizacije ni uspel.
+    save_device: Napaka pri shranjevanju naprave sinhronizacije
+    scan: Napaka pri skeniranju
+    sync_failed: Sinhronizacija ni uspela. Poskusite znova.
+    sync_timeout: Časovna omejitev sinhronizacije
+    version_mismatch: "Neskladnost različice. Lokalna različica: {currentVersion}, Oddaljena različica: {remoteVersion}. Posodobite obe aplikaciji na isto različico."
+    local_ip_error: Napaka lokalnega IP
+    device_already_paired: Naprava že sparjena
+    no_active_interfaces: Ni aktivnih omrežnih vmesnikov
+    device_discovery_failed: Odkrivanje naprav ni uspelo
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Ta naprava je že sparjena
+    sync_completed: Sinhronizacija uspešno dokončana
+    sync_in_progress: Sinhronizacija v teku...
+    testing_connection: Testiranje povezave...
+    device_added_success: Naprava uspešno dodana
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Zapri
+    dialog_title: Skeniraj QR kodo za sinhronizacijo
+    title: QR koda
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Skeniraj QR kodo
+    instruction: Postavi QR kodo znotraj okvirja
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Začenjanje načina strežnika...
+    active: Način strežnika aktiven - Pokaži QR kodo drugim napravam
+    stopped: Način strežnika ustavljen - Naprava je zdaj v načinu klienta
+    start_failed: Začenjanje načina strežnika ni uspelo - Preveri, ali je vrata 44040 na voljo
+    start_tooltip: Začni način strežnika
+    stop_tooltip: Ustavi način strežnika
+    error: Napaka
+    device_became_server: Ta naprava je zdaj strežnik sinhronizacije
+    start_menu: Začni strežnik
+    stop_menu: Ustavi strežnik
+  manual:
+    connection: Ročna povezava
+    description: Vnesi IP naslov in vrata za povezavo z drugo napravo
+    ip_address: IP naslov
+    port: Vrata
+    device_name: Ime naprave
+    optional: (Neobvezno)
+    connecting: Povezovanje...
+    cancel: Prekliči
+    connect: Poveži
+    ip_required: IP naslov je obvezen
+    invalid_ip: Neveljaven format IP naslova
+    port_required: Vrata so obvezna
+    invalid_port: Neveljavna številka vrat
+    connection_failed: Povezava ni uspela
+    connection_error: Napaka povezave
+  add:
+    device: Dodaj napravo
+    device_tooltip: Dodaj novo napravo sinhronizacije
+    sync_device: Sinhroniziraj napravo
+    sync_device_title: Sinhroniziraj z napravo
+    sync_device_description: Poveži se z drugo napravo za sinhronizacijo podatkov
+    scanning_for_devices: Skeniranje naprav...
+    no_nearby_devices: Ni naprav v bližini
+    no_nearby_devices_hint: Preveri, da so naprave v isti mreži
+    alternative_methods_hint: Poskusi ročno povezavo ali QR kodo
+    scan_qr_code: Skeniraj QR kodo
+    refresh_scan: Osveži skeniranje
+    last_seen: Zadnjič viden
+    already_added: Že dodano

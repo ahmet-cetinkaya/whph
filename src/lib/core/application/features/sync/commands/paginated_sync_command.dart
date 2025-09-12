@@ -326,6 +326,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       await _validateDeviceId(request.paginatedSyncDataDto!.syncDevice);
 
       await _yieldToUIThreadMaximum();
+      Logger.debug('🔄 Starting environment mode validation');
+      _validateEnvironmentMode(request.paginatedSyncDataDto!);
+
+      await _yieldToUIThreadMaximum();
       Logger.debug('🔄 Starting incoming data processing');
       // Process the incoming paginated data
       final success = await processIncomingPaginatedData(request.paginatedSyncDataDto!);
@@ -594,6 +598,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     return PaginatedSyncDataDto(
       appVersion: AppInfo.version,
       syncDevice: syncDevice,
+      isDebugMode: kDebugMode,
       entityType: entityType,
       pageIndex: paginatedData.pageIndex,
       pageSize: paginatedData.pageSize,
@@ -1975,6 +1980,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     return PaginatedSyncDataDto(
       appVersion: appVersion,
       syncDevice: syncDevice,
+      isDebugMode: kDebugMode,
       entityType: entityType,
       pageIndex: pageIndex,
       pageSize: pageSize,
@@ -2049,6 +2055,27 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     Logger.error('Remote: toIP=${remoteDevice.toIp}, toID=${remoteDevice.toDeviceId}');
 
     throw BusinessException('Device ID mismatch', SyncTranslationKeys.deviceMismatchError);
+  }
+
+  /// Validates that the remote device is in the same environment mode (debug/production)
+  void _validateEnvironmentMode(PaginatedSyncDataDto remoteData) {
+    final localIsDebug = kDebugMode;
+    final remoteIsDebug = remoteData.isDebugMode;
+
+    if (localIsDebug != remoteIsDebug) {
+      final localMode = localIsDebug ? 'debug' : 'production';
+      final remoteMode = remoteIsDebug ? 'debug' : 'production';
+
+      Logger.error('Environment mode mismatch detected:');
+      Logger.error('Local device: $localMode mode');
+      Logger.error('Remote device: $remoteMode mode');
+      Logger.error('Sync cannot proceed between different environment modes');
+
+      throw BusinessException('Environment mode mismatch: local=$localMode, remote=$remoteMode',
+          SyncTranslationKeys.environmentMismatchError);
+    }
+
+    Logger.debug('Environment mode validation passed: both devices in ${localIsDebug ? 'debug' : 'production'} mode');
   }
 
   void _updateProgress({

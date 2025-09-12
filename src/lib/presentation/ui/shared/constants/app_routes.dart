@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart
 import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/sync/pages/qr_code_scanner_page.dart';
+import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 
 class AppRoutes {
@@ -79,6 +80,9 @@ class AppRoutes {
         break;
       case QRCodeScannerPage.route:
         page = const QRCodeScannerPage();
+        break;
+      case AddSyncDevicePage.route:
+        page = const AddSyncDevicePage();
         break;
       case TagDetailsPage.route:
         if (arguments?['id'] == null) {

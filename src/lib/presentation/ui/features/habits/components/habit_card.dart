@@ -104,12 +104,12 @@ class _HabitCardState extends State<HabitCard> {
         // Calculate appropriate page size to handle multiple daily occurrences
         final dailyTarget = widget.habit.hasGoal ? (widget.habit.dailyTarget ?? 1) : 1;
         final daysToShow = widget.isMiniLayout ? 1 : widget.dateRange;
-        
+
         // For period-based habits, we need to fetch enough data to calculate period completion
         // This ensures we have data for the full period window that might affect the displayed days
         final periodDays = widget.habit.hasGoal ? widget.habit.periodDays : 1;
         final daysToFetch = daysToShow + (periodDays > 1 ? periodDays - 1 : 0);
-        
+
         final pageSize =
             daysToFetch * (dailyTarget > 1 ? dailyTarget * 2 : 10); // Allow for more records than the target
 

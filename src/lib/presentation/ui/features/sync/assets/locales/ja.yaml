@@ -71,6 +71,7 @@ sync:
       2. 両方のアプリが開いて実行中である
       3. ファイアウォールが接続をブロックしていない
     device_mismatch: 同期エラー。同期を試みているデバイスがこのデバイスと適切にペアリングされていません。
+    environment_mismatch: デバッグとプロダクションビルド間の同期は続行できません。
     device_not_found: 同期デバイスが見つかりません
     ip_address: ローカルIPアドレスを取得できません
     parse_message: スキャンしたメッセージを解析できません
@@ -80,14 +81,20 @@ sync:
     sync_failed: 同期に失敗しました。もう一度お試しください。
     sync_timeout: 同期タイムアウト
     version_mismatch: "バージョンの不一致。ローカルバージョン: {currentVersion}、リモートバージョン: {remoteVersion}。両方のアプリケーションを同じバージョンに更新してください。"
+    local_ip_error: ローカルIPエラー
+    device_already_paired: デバイスはすでにペアリングされています
+    no_active_interfaces: アクティブなネットワークインターフェースがありません
+    device_discovery_failed: デバイス検出に失敗しました
   messages:
     device_already_paired: このデバイスは既にペアリングされています
     sync_completed: 同期が正常に完了しました
     sync_in_progress: 同期中...
     testing_connection: 接続をテスト中...
+    device_added_success: デバイスが正常に追加されました
   qr_code:
     close_button: 閉じる
     dialog_title: QRコードをスキャンして同期
+    title: QRコード
   scanner:
     title: QRコードをスキャン
     instruction: QRコードをフレーム内に配置してください
@@ -100,3 +107,35 @@ sync:
     stop_tooltip: サーバーモードを停止
     error: エラー
     device_became_server: このデバイスは同期サーバーになりました
+    start_menu: サーバーを開始
+    stop_menu: サーバーを停止
+  manual:
+    connection: 手動接続
+    description: 他のデバイスに接続するためのIPアドレスとポートを入力
+    ip_address: IPアドレス
+    port: ポート
+    device_name: デバイス名
+    optional: (オプション)
+    connecting: 接続中...
+    cancel: キャンセル
+    connect: 接続
+    ip_required: IPアドレスが必要です
+    invalid_ip: IPアドレスの形式が無効です
+    port_required: ポートが必要です
+    invalid_port: ポート番号が無効です
+    connection_failed: 接続に失敗しました
+    connection_error: 接続エラー
+  add:
+    device: デバイスを追加
+    device_tooltip: 新しい同期デバイスを追加
+    sync_device: デバイスを同期
+    sync_device_title: デバイスと同期
+    sync_device_description: データ同期のために他のデバイスに接続
+    scanning_for_devices: デバイスをスキャン中...
+    no_nearby_devices: 近くのデバイスがありません
+    no_nearby_devices_hint: デバイスが同じネットワーク上にあることを確認してください
+    alternative_methods_hint: 手動接続またはQRコードを試してください
+    scan_qr_code: QRコードをスキャン
+    refresh_scan: スキャンを更新
+    last_seen: 最後に見られた
+    already_added: すでに追加済み

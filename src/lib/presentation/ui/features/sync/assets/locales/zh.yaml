@@ -2,39 +2,39 @@ sync:
   devices:
     errors:
       loading: 加载同步设备失败
-      removing: 移除同步设备失败
-      sync_failed: 设备同步失败
-    from_label: 来自
+      removing: 删除同步设备失败
+      sync_failed: 同步设备失败
+    from_label: 从
     help:
       content: |
-        🔄 在所有设备上保持任务、习惯、笔记、设置等同步。所有数据都保留在您的本地网络中——不会发送到云端。
+        🔄 在所有设备上保持任务、习惯、笔记、设置等同步。所有数据保留在本地网络中 — 不会发送到云端。
 
-        ## ⚡ 快速安全设置
+        ## ⚡ 快速安全的设置
 
-        通过同一Wi-Fi网络使用二维码连接您的设备。配对后同步会自动开始。
+        使用 QR 码通过同一 Wi-Fi 网络连接设备。配对后同步自动开始。
 
-        - 📱 **手机 → 手机：** 一台设备必须处于**服务器模式**才能允许配对  
-        - 💻 **桌面 → 手机：** 桌面显示二维码，手机扫描  
+        - 📱 **移动 → 移动:** 一个设备必须处于 **服务器模式** 以允许配对  
+        - 💻 **桌面 → 移动:** 桌面显示 QR 码，移动设备扫描它  
 
         ## 📱 移动设备
 
-        Android设备可以在两种不同模式下工作：
+        Android 设备可以以两种不同的模式工作：
 
-        - 🔍 **客户端模式：**  
-          - 扫描二维码  
-          - 连接到其他设备接收数据  
-        - 📡 **服务器模式：**  
-          - 显示二维码供其他人扫描  
+        - 🔍 **客户端模式:**  
+          - 扫描 QR 码  
+          - 连接到其他设备以接收数据  
+        - 📡 **服务器模式:**  
+          - 显示 QR 码供他人扫描  
           - 向连接的设备发送数据  
-          - 可通过Wi-Fi热点图标切换
+          - 可通过 Wi-Fi 热点图标切换
 
-        要在两台移动设备之间同步，其中一台必须处于**服务器模式**。
+        两个移动设备之间同步，一个必须处于 **服务器模式**。
 
         ## 💻 桌面设备
 
-        桌面应用程序始终作为**服务器**节点运行：
+        桌面应用始终作为 **服务器** 节点工作：
 
-        - 🖥️ 显示配对用的二维码  
+        - 🖥️ 显示用于配对的 QR 码  
         - ✅ 自动接受传入连接  
         - 🔄 双向同步数据  
         - 📊 显示实时同步状态
@@ -46,19 +46,19 @@ sync:
         - 📋 查看连接的设备  
         - ⏰ 查看最后同步时间  
         - 🔁 触发手动同步  
-        - 🗑️ 移除旧的或未使用的设备
+        - 🗑️ 删除旧的或未使用的设备
 
         ## 💡 最佳实践
 
-        - 📶 确保所有设备都在同一Wi-Fi网络上  
-        - 📱 在同步期间保持应用程序打开和活跃  
-        - 🧹 移除不再使用的设备  
-        - ⏱️ 检查同步时间以确保一切都是最新的
+        - 📶 确保所有设备在同一 Wi-Fi 网络上  
+        - 📱 在同步期间保持应用打开和活跃  
+        - 🧹 删除不再使用的设备  
+        - ⏱️ 检查同步时间以确保一切是最新的
       title: 设备同步帮助
     last_sync_label: 最后同步
     no_devices_found: 没有同步设备
     sync_tooltip: 立即同步
-    title: 设备同步
+    title: 同步设备
     to_label: 到
     unnamed_device: 未命名设备
   error:
@@ -68,35 +68,74 @@ sync:
       连接失败。请确保：
 
       1. 两个设备在同一网络上
-      2. 两个应用都已打开并运行
-      3. 防火墙没有阻止连接
+      2. 两个应用都打开并运行
+      3. 没有防火墙阻塞连接
     device_mismatch: 同步错误。尝试同步的设备未与此设备正确配对。
+    environment_mismatch: 调试和生产构建之间无法继续同步。
     device_not_found: 未找到同步设备
-    ip_address: 无法获取本地IP地址
+    ip_address: 无法获取本地 IP 地址
     parse_message: 无法解析扫描的消息
     process_failed: 同步过程失败。
     save_device: 保存同步设备失败
     scan: 扫描失败
     sync_failed: 同步失败。请重试。
     sync_timeout: 同步超时
-    version_mismatch: "版本不匹配。本地版本：{currentVersion}，远程版本：{remoteVersion}。请将两个应用程序更新到相同版本。"
+    version_mismatch: "版本不匹配。本地版本: {currentVersion}, 远程版本: {remoteVersion}. 请将两个应用更新到同一版本。"
+    local_ip_error: 本地 IP 错误
+    device_already_paired: 设备已配对
+    no_active_interfaces: 没有活动网络接口
+    device_discovery_failed: 设备发现失败
   messages:
     device_already_paired: 此设备已配对
     sync_completed: 同步成功完成
-    sync_in_progress: 正在同步...
-    testing_connection: 正在测试连接...
+    sync_in_progress: 同步进行中...
+    testing_connection: 测试连接...
+    device_added_success: 设备添加成功
   qr_code:
     close_button: 关闭
-    dialog_title: 扫描二维码进行同步
+    dialog_title: 扫描 QR 码以同步
+    title: QR 码
   scanner:
-    title: 扫描二维码
-    instruction: 将二维码放置在框架内
+    title: 扫描 QR 码
+    instruction: 将 QR 码置于框架内
   server:
-    starting: 正在启动服务器模式...
-    active: 服务器模式已激活 - 向其他设备展示二维码
-    stopped: 服务器模式已停止 - 设备现在处于客户端模式
-    start_failed: 启动服务器模式失败 - 请检查端口44040是否可用
+    starting: 启动服务器模式...
+    active: 服务器模式活跃 - 向其他设备显示 QR 码
+    stopped: 服务器模式停止 - 设备现在处于客户端模式
+    start_failed: 启动服务器模式失败 - 检查端口 44040 是否可用
     start_tooltip: 启动服务器模式
     stop_tooltip: 停止服务器模式
     error: 错误
     device_became_server: 此设备现在是同步服务器
+    start_menu: 启动服务器
+    stop_menu: 停止服务器
+  manual:
+    connection: 手动连接
+    description: 输入 IP 地址和端口以连接到其他设备
+    ip_address: IP 地址
+    port: 端口
+    device_name: 设备名称
+    optional: (可选)
+    connecting: 连接中...
+    cancel: 取消
+    connect: 连接
+    ip_required: IP 地址是必需的
+    invalid_ip: 无效的 IP 地址格式
+    port_required: 端口是必需的
+    invalid_port: 无效的端口号
+    connection_failed: 连接失败
+    connection_error: 连接错误
+  add:
+    device: 添加设备
+    device_tooltip: 添加新的同步设备
+    sync_device: 同步设备
+    sync_device_title: 与设备同步
+    sync_device_description: 连接到其他设备以同步数据
+    scanning_for_devices: 扫描设备...
+    no_nearby_devices: 附近没有设备
+    no_nearby_devices_hint: 确保设备在同一网络上
+    alternative_methods_hint: 尝试手动连接或 QR 码
+    scan_qr_code: 扫描 QR 码
+    refresh_scan: 刷新扫描
+    last_seen: 最后看到
+    already_added: 已添加

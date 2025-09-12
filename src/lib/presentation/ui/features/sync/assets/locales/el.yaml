@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Αποτυχία φόρτωσης συσκευών συγχρονισμού
+      removing: Αποτυχία αφαίρεσης συσκευής συγχρονισμού
+      sync_failed: Αποτυχία συγχρονισμού συσκευών
+    from_label: Από
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Διατηρήστε τις εργασίες, τις συνήθειες, τις σημειώσεις, τις ρυθμίσεις κ.λπ. συγχρονισμένες σε όλες τις συσκευές σας. Όλα τα δεδομένα παραμένουν στο τοπικό σας δίκτυο — τίποτα δεν αποστέλλεται στο cloud.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Γρήγορη και Ασφαλής Ρύθμιση
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Συνδέστε τις συσκευές σας μέσω του ίδιου Wi-Fi δικτύου χρησιμοποιώντας QR κωδικούς. Ο συγχρονισμός ξεκινά αυτόματα μετά το ζεύγος.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Κινητό → Κινητό:** Μια συσκευή πρέπει να βρίσκεται σε **Λειτουργία Server** για να επιτρέψει το ζεύγος  
+        - 💻 **Desktop → Κινητό:** Το Desktop εμφανίζει QR κωδικό, το κινητό τον σαρώνει  
 
-        ## 📱 Mobile Devices
+        ## 📱 Κινητές Συσκευές
 
-        Android devices can work in two different modes:
+        Οι συσκευές Android μπορούν να λειτουργήσουν σε δύο διαφορετικές λειτουργίες:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Λειτουργία Πελάτη:**  
+          - Σαρώνει QR κωδικούς  
+          - Συνδέεται με άλλες συσκευές για λήψη δεδομένων  
+        - 📡 **Λειτουργία Server:**  
+          - Εμφανίζει QR κωδικό για σάρωση από άλλους  
+          - Αποστέλλει δεδομένα σε συνδεδεμένες συσκευές  
+          - Μπορεί να εναλλάσσεται μέσω εικονιδίου Wi-Fi hotspot
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Για συγχρονισμό μεταξύ δύο κινητών συσκευών, μία πρέπει να βρίσκεται σε **Λειτουργία Server**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Συσκευές Desktop
 
-        Desktop apps always act as **Server** nodes:
+        Οι εφαρμογές Desktop λειτουργούν πάντα ως **κόμβοι Server**:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Εμφανίζουν QR κωδικό για ζεύγος  
+        - ✅ Αποδέχονται αυτόματα εισερχόμενες συνδέσεις  
+        - 🔄 Συγχρονίζουν δεδομένα και στις δύο κατευθύνσεις  
+        - 📊 Εμφανίζουν κατάσταση συγχρονισμού σε πραγματικό χρόνο
 
-        ## 🛠️ Device Management
+        ## 🛠️ Διαχείριση Συσκευών
 
-        Manage all connected devices from one place:
+        Διαχειριστείτε όλες τις συνδεδεμένες συσκευές από ένα μέρος:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Προβολή συνδεδεμένων συσκευών  
+        - ⏰ Προβολή τελευταίων χρόνων συγχρονισμού  
+        - 🔁 Ενεργοποίηση χειροκίνητου συγχρονισμού  
+        - 🗑️ Αφαίρεση παλιών ή αχρησιμοποίητων συσκευών
 
-        ## 💡 Best Practices
+        ## 💡 Καλύτερες Πρακτικές
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Βεβαιωθείτε ότι όλες οι συσκευές βρίσκονται στο ίδιο Wi-Fi δίκτυο  
+        - 📱 Κρατήστε τις εφαρμογές ανοιχτές και ενεργές κατά τον συγχρονισμό  
+        - 🧹 Αφαιρέστε συσκευές που δεν χρησιμοποιείτε πλέον  
+        - ⏱️ Ελέγξτε τους χρόνους συγχρονισμού για να βεβαιωθείτε ότι όλα είναι ενημερωμένα
+      title: Βοήθεια Συγχρονισμού Συσκευών
+    last_sync_label: Τελευταίος Συγχρονισμός
+    no_devices_found: Καμία συγχρονισμένη συσκευή
+    sync_tooltip: Συγχρονισμός Τώρα
+    title: Συσκευές Συγχρονισμού
+    to_label: Προς
+    unnamed_device: Ακατονομασία Συσκευή
   error:
-    scan: Failed to scan
+    scan: Αποτυχία σάρωσης
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Η σύνδεση απέτυχε. Παρακαλούμε βεβαιωθείτε:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Και οι δύο συσκευές βρίσκονται στο ίδιο δίκτυο
+      2. Και οι δύο εφαρμογές είναι ανοιχτές και εκτελούνται
+      3. Κανένας firewall δεν εμποδίζει τη σύνδεση
+    device_mismatch: Σφάλμα συγχρονισμού. Η συσκευή που προσπαθεί να συγχρονιστεί δεν είναι σωστά ζευγμένη με αυτή τη συσκευή.
+    environment_mismatch: Η συγχρονισμός δεν μπορεί να προχωρήσει μεταξύ debug και production builds.
+    device_not_found: Δεν βρέθηκε συσκευή συγχρονισμού
+    ip_address: Δεν είναι δυνατή η λήψη τοπικής IP διεύθυνσης
+    parse_message: Δεν είναι δυνατή η ανάλυση του σαρωθέντος μηνύματος
+    process_failed: Η διαδικασία συγχρονισμού απέτυχε.
+    save_device: Αποτυχία αποθήκευσης συσκευής συγχρονισμού
+    scan: Αποτυχία σάρωσης
+    sync_failed: Ο συγχρονισμός απέτυχε. Δοκιμάστε ξανά.
+    sync_timeout: Timeout συγχρονισμού
+    version_mismatch: "Ασυμφωνία έκδοσης. Τοπική έκδοση: {currentVersion}, Απομακρυσμένη έκδοση: {remoteVersion}. Ενημερώστε και τις δύο εφαρμογές στην ίδια έκδοση."
+    local_ip_error: Σφάλμα τοπικής IP
+    device_already_paired: Η συσκευή είναι ήδη ζευγμένη
+    no_active_interfaces: Καμία ενεργή διεπαφή δικτύου
+    device_discovery_failed: Αποτυχία ανίχνευσης συσκευής
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Αυτή η συσκευή είναι ήδη ζευγμένη
+    sync_completed: Ο συγχρονισμός ολοκληρώθηκε επιτυχώς
+    sync_in_progress: Συγχρονισμός σε εξέλιξη...
+    testing_connection: Δοκιμή σύνδεσης...
+    device_added_success: Η συσκευή προστέθηκε επιτυχώς
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Κλείσιμο
+    dialog_title: Σάρωση QR Κωδικού για Συγχρονισμό
+    title: QR Κωδικός
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Σάρωση QR Κωδικού
+    instruction: Τοποθετήστε τον QR κωδικό μέσα στο πλαίσιο
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Έναρξη λειτουργίας server...
+    active: Λειτουργία server ενεργή - Εμφάνιση QR κωδικού σε άλλες συσκευές
+    stopped: Λειτουργία server σταματημένη - Η συσκευή είναι τώρα σε λειτουργία πελάτη
+    start_failed: Αποτυχία έναρξης λειτουργίας server - Ελέγξτε αν η θύρα 44040 είναι διαθέσιμη
+    start_tooltip: Έναρξη Λειτουργίας Server
+    stop_tooltip: Διακοπή Λειτουργίας Server
+    error: Σφάλμα
+    device_became_server: Αυτή η συσκευή είναι τώρα ο server συγχρονισμού
+    start_menu: Έναρξη Server
+    stop_menu: Διακοπή Server
+  manual:
+    connection: Χειροκίνητη Σύνδεση
+    description: Εισαγάγετε IP διεύθυνση και θύρα για σύνδεση με άλλη συσκευή
+    ip_address: IP Διεύθυνση
+    port: Θύρα
+    device_name: Όνομα Συσκευής
+    optional: (Προαιρετικό)
+    connecting: Σύνδεση...
+    cancel: Ακύρωση
+    connect: Σύνδεση
+    ip_required: Η IP διεύθυνση είναι απαραίτητη
+    invalid_ip: Μη έγκυρη μορφή IP διεύθυνσης
+    port_required: Η θύρα είναι απαραίτητη
+    invalid_port: Μη έγκυρο νούμερο θύρας
+    connection_failed: Η σύνδεση απέτυχε
+    connection_error: Σφάλμα σύνδεσης
+  add:
+    device: Προσθήκη Συσκευής
+    device_tooltip: Προσθήκη νέας συσκευής συγχρονισμού
+    sync_device: Συγχρονισμός Συσκευής
+    sync_device_title: Συγχρονισμός με Συσκευή
+    sync_device_description: Σύνδεση με άλλη συσκευή για συγχρονισμό δεδομένων
+    scanning_for_devices: Αναζήτηση συσκευών...
+    no_nearby_devices: Καμία κοντινή συσκευή
+    no_nearby_devices_hint: Βεβαιωθείτε ότι οι συσκευές βρίσκονται στο ίδιο δίκτυο
+    alternative_methods_hint: Δοκιμάστε χειροκίνητη σύνδεση ή QR κωδικό
+    scan_qr_code: Σάρωση QR Κωδικού
+    refresh_scan: Ανανέωση Σάρωσης
+    last_seen: Τελευταία εμφάνιση
+    already_added: Ήδη προστέθηκε
