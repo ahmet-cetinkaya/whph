@@ -5,7 +5,6 @@ import 'package:acore/acore.dart' as acore;
 /// Centralized service for habit completion toggle logic
 /// Eliminates duplication across UI components like HabitCard, HabitCalendarView, and WidgetService
 class HabitCompletionService {
-
   /// Toggle habit completion for a specific date with smart multi-occurrence logic
   Future<void> toggleHabitCompletion({
     required HabitListItem habit,
@@ -95,8 +94,7 @@ class HabitCompletionService {
   ) async {
     final dayRecords = habitRecords.items
         .where((record) => acore.DateTimeHelper.isSameDay(
-            acore.DateTimeHelper.toLocalDateTime(record.occurredAt),
-            acore.DateTimeHelper.toLocalDateTime(date)))
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
         .toList();
 
     for (final record in dayRecords) {
@@ -108,8 +106,7 @@ class HabitCompletionService {
   int _countRecordsForDate(GetListHabitRecordsQueryResponse habitRecords, DateTime date) {
     return habitRecords.items
         .where((record) => acore.DateTimeHelper.isSameDay(
-            acore.DateTimeHelper.toLocalDateTime(record.occurredAt),
-            acore.DateTimeHelper.toLocalDateTime(date)))
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
         .length;
   }
 }

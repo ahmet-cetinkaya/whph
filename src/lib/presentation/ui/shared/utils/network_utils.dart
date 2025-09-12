@@ -28,7 +28,6 @@ class NetworkUtils {
     }
   }
 
-
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {
       Logger.debug('🔍 Testing WebSocket connectivity to $host:$webSocketPort...');
@@ -75,5 +74,4 @@ class NetworkUtils {
       return false;
     }
   }
-
 }

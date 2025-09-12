@@ -37,5 +37,6 @@ class ConnectionAttemptResult {
   });
 
   @override
-  String toString() => 'ConnectionAttemptResult(ip: $ipAddress, success: $successful, time: ${responseTime.inMilliseconds}ms)';
+  String toString() =>
+      'ConnectionAttemptResult(ip: $ipAddress, success: $successful, time: ${responseTime.inMilliseconds}ms)';
 }

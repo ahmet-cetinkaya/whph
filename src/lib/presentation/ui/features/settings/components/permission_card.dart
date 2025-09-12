@@ -229,9 +229,9 @@ class PermissionCard extends StatelessWidget {
                       ...learnMoreDialogSections!.asMap().entries.expand((sectionEntry) {
                         final sectionIndex = sectionEntry.key;
                         final section = sectionEntry.value;
-                        
+
                         final sectionWidgets = <Widget>[];
-                        
+
                         // Add section title (except for the first section to maintain backward compatibility)
                         if (sectionIndex > 0 && section.title.isNotEmpty) {
                           sectionWidgets.addAll([
@@ -245,7 +245,7 @@ class PermissionCard extends StatelessWidget {
                             const SizedBox(height: AppTheme.sizeSmall),
                           ]);
                         }
-                        
+
                         // Add section steps
                         sectionWidgets.addAll(section.steps.asMap().entries.map((stepEntry) {
                           final stepIndex = stepEntry.key;
@@ -272,7 +272,7 @@ class PermissionCard extends StatelessWidget {
                             ),
                           );
                         }));
-                        
+
                         return sectionWidgets;
                       }),
                     ] else if (learnMoreDialogSteps != null && learnMoreDialogSteps!.isNotEmpty) ...[

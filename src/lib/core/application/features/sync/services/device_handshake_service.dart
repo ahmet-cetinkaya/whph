@@ -12,25 +12,25 @@ class DeviceHandshakeService {
     WebSocketChannel? channel;
     try {
       Logger.info('🤝 Attempting handshake with device at $ipAddress:$port');
-      
+
       // Connect to the device
       final uri = Uri.parse('ws://$ipAddress:$port');
       channel = WebSocketChannel.connect(uri);
-      
+
       // Set up a completer for the response
       final completer = Completer<DeviceInfo?>();
       StreamSubscription? subscription;
-      
+
       // Listen for messages
       subscription = channel.stream.listen(
         (message) {
           try {
             Logger.debug('📨 Received handshake response: $message');
             final response = JsonMapper.deserialize<WebSocketMessage>(message.toString());
-            
+
             if (response?.type == 'device_info_response') {
               final data = response!.data as Map<String, dynamic>;
-              
+
               if (data['success'] == true) {
                 final deviceInfo = DeviceInfo(
                   deviceId: data['deviceId'] as String,
@@ -40,7 +40,7 @@ class DeviceHandshakeService {
                   ipAddress: ipAddress,
                   port: port,
                 );
-                
+
                 Logger.info('✅ Device handshake successful: ${deviceInfo.deviceName} (${deviceInfo.deviceId})');
                 if (!completer.isCompleted) {
                   completer.complete(deviceInfo);
@@ -77,16 +77,16 @@ class DeviceHandshakeService {
           }
         },
       );
-      
+
       // Send device info request
       final request = WebSocketMessage(
         type: 'device_info',
         data: {'timestamp': DateTime.now().toIso8601String()},
       );
-      
+
       channel.sink.add(JsonMapper.serialize(request));
       Logger.debug('📤 Sent device info request to $ipAddress:$port');
-      
+
       // Wait for response with timeout
       final result = await completer.future.timeout(
         const Duration(seconds: 5),
@@ -95,11 +95,10 @@ class DeviceHandshakeService {
           return null;
         },
       );
-      
+
       // Clean up
       await subscription.cancel();
       return result;
-      
     } catch (e) {
       Logger.error('❌ Device handshake failed for $ipAddress:$port - $e');
       return null;
@@ -111,7 +110,7 @@ class DeviceHandshakeService {
       }
     }
   }
-  
+
   /// Tests if a device is reachable and is a WHPH instance
   Future<bool> isWHPHDevice(String ipAddress, int port) async {
     final deviceInfo = await getDeviceInfo(ipAddress, port);
@@ -141,7 +140,7 @@ class DeviceInfo {
 
   @override
   String toString() => 'DeviceInfo(name: $deviceName, id: $deviceId, platform: $platform, address: $ipAddress:$port)';
-  
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

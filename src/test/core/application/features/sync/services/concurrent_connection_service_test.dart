@@ -23,7 +23,7 @@ void main() {
           12345, // Non-existent port
           timeout: const Duration(milliseconds: 100),
         );
-        
+
         // Should return empty list since addresses are not reachable on the test port
         expect(result, isA<List<String>>());
         expect(result, isEmpty);
@@ -38,7 +38,7 @@ void main() {
           12345,
           timeout: const Duration(milliseconds: 100),
         );
-        
+
         expect(result, isA<List<String>>());
       });
     });
@@ -50,7 +50,7 @@ void main() {
           12345,
           timeout: const Duration(milliseconds: 100),
         );
-        
+
         expect(result, false);
       });
 
@@ -60,7 +60,7 @@ void main() {
           12345,
           timeout: const Duration(milliseconds: 100),
         );
-        
+
         expect(result, false);
       });
     });
@@ -78,7 +78,7 @@ void main() {
           12345,
           timeout: const Duration(milliseconds: 100),
         );
-        
+
         expect(result, isNull);
       });
     });

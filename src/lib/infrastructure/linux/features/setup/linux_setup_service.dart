@@ -10,7 +10,7 @@ class FirewallRuleException implements Exception {
   final int? ufwExitCode;
   final String? ufwStderr;
   final String? ufwStdout;
-  
+
   const FirewallRuleException(
     this.message, {
     this.invalidValue,
@@ -18,7 +18,7 @@ class FirewallRuleException implements Exception {
     this.ufwStderr,
     this.ufwStdout,
   });
-  
+
   @override
   String toString() {
     final buffer = StringBuffer(message);
@@ -156,7 +156,7 @@ exit 0
         Logger.error('Could not extract port from rule name: $ruleName');
         return false;
       }
-      
+
       // Validate port
       final portNum = int.tryParse(port);
       if (portNum == null || portNum <= 0 || portNum > 65535) {
@@ -166,8 +166,10 @@ exit 0
 
       final result = await Process.run('ufw', ['status'], runInShell: true);
       final lowerProtocol = protocol.toLowerCase();
-      return result.stdout.toString().split('\n').any((line) => 
-        line.contains('$port/$lowerProtocol') && line.contains('ALLOW'));
+      return result.stdout
+          .toString()
+          .split('\n')
+          .any((line) => line.contains('$port/$lowerProtocol') && line.contains('ALLOW'));
     } catch (e) {
       Logger.error('Error checking firewall rule: $e');
       return false;
@@ -184,34 +186,34 @@ exit 0
   }) async {
     try {
       Logger.debug('Attempting to add firewall rule with port: $port, protocol: $protocol');
-      
+
       // Enhanced input validation with detailed error messages
       if (port.isEmpty) {
         final error = 'FirewallRuleError: Port cannot be empty';
         Logger.error(error);
         throw FirewallRuleException(error, invalidValue: port);
       }
-      
+
       final portNum = int.tryParse(port.trim());
       if (portNum == null) {
         final error = 'FirewallRuleError: Port must be a valid integer, received: "$port"';
         Logger.error(error);
         throw FirewallRuleException(error, invalidValue: port);
       }
-      
+
       if (portNum <= 0 || portNum > 65535) {
         final error = 'FirewallRuleError: Port must be between 1-65535, received: $portNum';
         Logger.error(error);
         throw FirewallRuleException(error, invalidValue: port);
       }
-      
+
       // Validate protocol
       if (protocol.isEmpty) {
         final error = 'FirewallRuleError: Protocol cannot be empty';
         Logger.error(error);
         throw FirewallRuleException(error, invalidValue: protocol);
       }
-      
+
       final upperProtocol = protocol.trim().toUpperCase();
       if (upperProtocol != 'TCP' && upperProtocol != 'UDP') {
         final error = 'FirewallRuleError: Protocol must be TCP or UDP, received: "$protocol"';
@@ -233,11 +235,11 @@ exit 0
         Logger.error(error);
         throw FirewallRuleException(error, invalidValue: 'ufw status command failed');
       }
-      
+
       final statusOutput = statusResult.stdout.toString().toLowerCase();
       if (statusOutput.contains('status: inactive')) {
         Logger.warning('UFW is inactive. Attempting to enable UFW before adding rule...');
-        
+
         // Try to enable UFW non-interactively
         final enableResult = await Process.run('ufw', ['--force', 'enable'], runInShell: true);
         if (enableResult.exitCode != 0) {
@@ -264,7 +266,7 @@ exit 0
       }
 
       Logger.debug('Executing ufw allow $portNum/$upperProtocol');
-      
+
       // Add the firewall rule with validated parameters
       final result = await Process.run(
         'ufw',
@@ -272,8 +274,9 @@ exit 0
         runInShell: true,
       );
 
-      Logger.debug('ufw command result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
-      
+      Logger.debug(
+          'ufw command result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
+
       if (result.exitCode != 0) {
         final stderr = result.stderr.toString().trim();
         final stdout = result.stdout.toString().trim();
@@ -369,7 +372,7 @@ exit 0
     // Enhanced regex to match various formats like "Port XXXX", "Port-XXXX", or just numbers
     final regex = RegExp(r'(?:Port\s+|Port-|#)(\d{1,5})|(\d{1,5})(?:\s*$)');
     final match = regex.firstMatch(ruleName);
-    
+
     if (match != null) {
       // Check all groups for a valid port
       for (int i = 1; i <= match.groupCount; i++) {
@@ -382,7 +385,7 @@ exit 0
         }
       }
     }
-    
+
     // Fallback is removed for robustness. If the primary regex fails, it's better to return null
     // than to guess a number from the string.
     return null;
