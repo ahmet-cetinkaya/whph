@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Dovoljenje požarnega zidu
+      description: Dovolite WHPH, da komunicira prek požarnega zidu {platform} na vratih 44040 za sinhronizacijo naprav.
+      dialog_description: WHPH potrebuje dovoljenje požarnega zidu, da omogoči povezavo drugih naprav za sinhronizacijo. Sledite spodnjim ukazom za konfiguracijo vašega požarnega zidu {platform}. Te korake lahko najdete tudi v meniju pomoči.
+      dialog_info_text: "Opomba: Te korake lahko najdete tudi v meniju pomoči."
+      linux_manual_confirmation_button: "Konfiguriral sem"
+      save_confirmation_error: Shranjevanje nastavitve potrditve požarnega zidu ni uspelo
+      rule_added_success: Pravilo požarnega zidu je bilo uspešno dodano
+      rule_add_error: Dodajanje pravila požarnega zidu ni uspelo. Poskusite ročne korake.
+      add_rule_button: "Dodaj pravilo požarnega zidu"
+      windows_auto_description: "Kliknite 'Dodaj pravilo požarnega zidu' za samodejno dodajanje pravila požarnega zidu z zahtevo za dovoljenje UAC. Če želite dodati ročno, sledite spodnjim korakom:"
+      instructions:
+        linux:
+          step1: "Odprite terminal"
+          step2: "Preverite stanje požarnega zidu:"
+          step3: "Dodajte pravilo požarnega zidu (če je UFW aktiven):"
+          step4: "Preverite, ali je bilo pravilo dodano:"
+        windows:
+          step1: "Odprite Windows Defender Firewall iz Nadzorne plošče"
+          step2: "Kliknite Napredne nastavitve na levi strani"
+          step3: "V levem podoknu kliknite Dohodna pravila"
+          step4: "V desnem podoknu kliknite Novo pravilo..."
+          step5: "Izberite Vrata in kliknite Naprej"
+          step6: "Izberite TCP in vnesite 44040 v polje za določena lokalna vrata"
+          step7: "Izberite Dovoli povezavo in kliknite Naprej"
+          step8: "Označite vse profile (Domena, Zasebno, Javno) in kliknite Naprej"
+          step9: "Vnesite ime, kot je WHPH Sync Port 44040, in kliknite Dokončaj"
+          alternative_command_prompt:
+            title: "Alternativa: Uporabite ukazni poziv"
+            steps:
+              cmd_step1: "Odprite ukazni poziv kot skrbnik"
+              cmd_step2: "Dodajte pravilo požarnega zidu:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

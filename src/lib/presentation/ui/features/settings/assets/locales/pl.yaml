@@ -96,6 +96,39 @@ settings:
           step2: Zezwól na powiadomienia po wyświetleniu monitu
       title: Uprawnienie powiadomień
     open_settings: Otwórz ustawienia
+    open_terminal: Otwórz terminal
+    firewall:
+      title: Uprawnienie zapory sieciowej
+      description: Zezwól WHPH na komunikację przez zaporę sieciową {platform} na porcie 44040 dla synchronizacji urządzeń.
+      dialog_description: WHPH potrzebuje uprawnień zapory sieciowej, aby umożliwić innym urządzeniom łączenie się do synchronizacji. Postępuj zgodnie z poniższymi poleceniami, aby skonfigurować zaporę sieciową {platform}. Możesz również znaleźć te kroki w menu pomocy.
+      dialog_info_text: "Uwaga: Możesz również znaleźć te kroki w menu pomocy."
+      linux_manual_confirmation_button: "Skonfigurowałem"
+      save_confirmation_error: Nie udało się zapisać ustawienia potwierdzenia zapory sieciowej
+      rule_added_success: Reguła zapory sieciowej dodana pomyślnie
+      rule_add_error: Nie udało się dodać reguły zapory sieciowej. Spróbuj wykonać kroki ręcznie.
+      add_rule_button: "Dodaj regułę zapory sieciowej"
+      windows_auto_description: "Kliknij 'Dodaj regułę zapory sieciowej', aby automatycznie dodać regułę zapory sieciowej z żądaniem uprawnień UAC. Jeśli wolisz dodać ręcznie, postępuj zgodnie z poniższymi krokami:"
+      instructions:
+        linux:
+          step1: "Otwórz terminal"
+          step2: "Sprawdź stan zapory sieciowej:"
+          step3: "Dodaj regułę zapory sieciowej (jeśli UFW jest aktywny):"
+          step4: "Sprawdź, czy reguła została dodana:"
+        windows:
+          step1: "Otwórz Zaporę systemu Windows Defender z Panelu sterowania"
+          step2: "Kliknij Ustawienia zaawansowane po lewej stronie"
+          step3: "W lewym panelu kliknij Reguły ruchu przychodzącego"
+          step4: "W prawym panelu kliknij Nowa reguła..."
+          step5: "Wybierz Port i kliknij Dalej"
+          step6: "Wybierz TCP i wprowadź 44040 w polu określonych portów lokalnych"
+          step7: "Wybierz Zezwól na połączenie i kliknij Dalej"
+          step8: "Zaznacz wszystkie profile (Domena, Prywatny, Publiczny) i kliknij Dalej"
+          step9: "Wprowadź nazwę, np. WHPH Sync Port 44040 i kliknij Zakończ"
+          alternative_command_prompt:
+            title: "Alternatywa: Użyj wiersza poleceń"
+            steps:
+              cmd_step1: "Otwórz wiersz poleceń jako administrator"
+              cmd_step2: "Dodaj regułę zapory sieciowej:"
     startup:
       description: Aby aplikacja uruchamiała się automatycznie z urządzeniem, wymagane jest uprawnienie automatycznego uruchamiania. To zapewnia, że przypomnienia i powiadomienia działają prawidłowo nawet po ponownym uruchomieniu urządzenia.
       importance: Lokalizacja ustawienia automatycznego uruchamiania różni się lub może nie być obecna w zależności od producenta urządzenia.
