@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
@@ -12,6 +11,7 @@ import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart' show BusinessException;
 
@@ -43,6 +43,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
   final _ipController = TextEditingController();
   final _portController = TextEditingController(text: '44040');
   final _deviceNameController = TextEditingController();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
   
   bool _isConnecting = false;
   String? _errorMessage;
@@ -74,7 +75,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        SyncTranslationKeys.manualConnection.tr(),
+        _translationService.translate(SyncTranslationKeys.manualConnection),
         style: Theme.of(context).textTheme.titleLarge,
       ),
       content: SizedBox(
@@ -86,7 +87,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                SyncTranslationKeys.manualConnectionDescription.tr(),
+                _translationService.translate(SyncTranslationKeys.manualConnectionDescription),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: AppTheme.sizeMedium),
@@ -95,7 +96,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
               TextFormField(
                 controller: _ipController,
                 decoration: InputDecoration(
-                  labelText: SyncTranslationKeys.ipAddress.tr(),
+                  labelText: _translationService.translate(SyncTranslationKeys.ipAddress),
                   hintText: '192.168.1.100',
                   prefixIcon: const Icon(Icons.computer),
                   border: const OutlineInputBorder(),
@@ -113,7 +114,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
               TextFormField(
                 controller: _portController,
                 decoration: InputDecoration(
-                  labelText: SyncTranslationKeys.port.tr(),
+                  labelText: _translationService.translate(SyncTranslationKeys.port),
                   hintText: '44040',
                   prefixIcon: const Icon(Icons.settings_ethernet),
                   border: const OutlineInputBorder(),
@@ -131,8 +132,8 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
               TextFormField(
                 controller: _deviceNameController,
                 decoration: InputDecoration(
-                  labelText: SyncTranslationKeys.deviceName.tr(),
-                  hintText: SyncTranslationKeys.optional.tr(),
+                  labelText: _translationService.translate(SyncTranslationKeys.deviceName),
+                  hintText: _translationService.translate(SyncTranslationKeys.optional),
                   prefixIcon: const Icon(Icons.device_hub),
                   border: const OutlineInputBorder(),
                 ),
@@ -174,7 +175,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                 const LinearProgressIndicator(),
                 const SizedBox(height: AppTheme.sizeSmall),
                 Text(
-                  SyncTranslationKeys.connectingToDevice.tr(),
+                  _translationService.translate(SyncTranslationKeys.connectingToDevice),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
@@ -186,7 +187,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
       actions: [
         TextButton(
           onPressed: _isConnecting ? null : () => Navigator.of(context).pop(),
-          child: Text(SyncTranslationKeys.cancel.tr()),
+          child: Text(_translationService.translate(SyncTranslationKeys.cancel)),
         ),
         ElevatedButton(
           onPressed: _isConnecting ? null : _attemptConnection,
@@ -196,7 +197,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(SyncTranslationKeys.connect.tr()),
+              : Text(_translationService.translate(SyncTranslationKeys.connect)),
         ),
       ],
     );
@@ -204,20 +205,20 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
 
   String? _validateIPAddress(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return SyncTranslationKeys.ipAddressRequired.tr();
+      return _translationService.translate(SyncTranslationKeys.ipAddressRequired);
     }
     
     final ip = value.trim();
     final parts = ip.split('.');
     
     if (parts.length != 4) {
-      return SyncTranslationKeys.invalidIPFormat.tr();
+      return _translationService.translate(SyncTranslationKeys.invalidIPFormat);
     }
     
     for (final part in parts) {
       final num = int.tryParse(part);
       if (num == null || num < 0 || num > 255) {
-        return SyncTranslationKeys.invalidIPFormat.tr();
+        return _translationService.translate(SyncTranslationKeys.invalidIPFormat);
       }
     }
     
@@ -226,12 +227,12 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
 
   String? _validatePort(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return SyncTranslationKeys.portRequired.tr();
+      return _translationService.translate(SyncTranslationKeys.portRequired);
     }
     
     final port = int.tryParse(value.trim());
     if (port == null || port < 1 || port > 65535) {
-      return SyncTranslationKeys.invalidPort.tr();
+      return _translationService.translate(SyncTranslationKeys.invalidPort);
     }
     
     return null;
@@ -264,7 +265,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         
         if (!isReachable) {
           setState(() {
-            _errorMessage = SyncTranslationKeys.connectionFailed.tr();
+            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionFailed);
             _isConnecting = false;
           });
           return;
@@ -276,7 +277,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
       
     } catch (e) {
       setState(() {
-        _errorMessage = SyncTranslationKeys.connectionError.tr(args: [e.toString()]);
+        _errorMessage = _translationService.translate(SyncTranslationKeys.connectionError, namedArgs: {'0': e.toString()});
         _isConnecting = false;
       });
     }
@@ -288,12 +289,15 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
     
     await AsyncErrorHandler.execute<void>(
       context: context,
-      errorMessage: SyncTranslationKeys.saveDeviceError.tr(),
+      errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
       operation: () async {
         // Get local device information
         final localIp = await NetworkUtils.getLocalIpAddress();
         if (localIp == null) {
-          throw BusinessException(SyncTranslationKeys.localIpError, SyncTranslationKeys.ipAddressError);
+          throw BusinessException(
+            _translationService.translate(SyncTranslationKeys.localIpError),
+            SyncTranslationKeys.ipAddressError,
+          );
         }
 
         final localDeviceId = await deviceIdService.getDeviceId();
@@ -308,7 +312,10 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         );
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
-          throw BusinessException(SyncTranslationKeys.deviceAlreadyPairedError, SyncTranslationKeys.deviceAlreadyPaired);
+          throw BusinessException(
+            _translationService.translate(SyncTranslationKeys.deviceAlreadyPairedError),
+            SyncTranslationKeys.deviceAlreadyPaired,
+          );
         }
 
         // Create the sync device
@@ -330,7 +337,10 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
           // Show success message
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: SyncTranslationKeys.deviceAddedSuccess.tr(args: [deviceName]),
+            message: _translationService.translate(
+              SyncTranslationKeys.deviceAddedSuccess,
+              namedArgs: {'deviceName': deviceName},
+            ),
             duration: const Duration(seconds: 3),
           );
           

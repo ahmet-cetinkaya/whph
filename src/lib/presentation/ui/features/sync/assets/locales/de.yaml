@@ -84,12 +84,14 @@ sync:
     version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf dieselbe Version."
     local_ip_error: Lokale IP-Adresse kann nicht ermittelt werden
     device_already_paired: Dieses Gerät ist bereits gekoppelt
+    no_active_interfaces: Keine aktiven Netzwerkschnittstellen gefunden
+    device_discovery_failed: "Geräteerkennung fehlgeschlagen: {error}"
   messages:
     device_already_paired: Dieses Gerät ist bereits gekoppelt
     sync_completed: Synchronisation erfolgreich abgeschlossen
     sync_in_progress: Synchronisation läuft...
     testing_connection: Verbindung wird getestet...
-    device_added_success: {deviceName} erfolgreich zu Synchronisationsgeräten hinzugefügt
+    device_added_success: "{deviceName} erfolgreich zu Synchronisationsgeräten hinzugefügt"
   qr_code:
     close_button: Schließen
     dialog_title: QR-Code scannen zum Synchronisieren
