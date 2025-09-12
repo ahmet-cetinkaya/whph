@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/main.dart';
 
 class NetworkUtils {
   static const int webSocketPort = 44040;
@@ -17,90 +17,17 @@ class NetworkUtils {
   }
 
   /// Get all local IP addresses from available network interfaces
+  /// Delegates to INetworkInterfaceService to avoid code duplication
   static Future<List<String>> getLocalIpAddresses() async {
-    final List<String> addresses = [];
-    
     try {
-      if (PlatformUtils.isMobile) {
-        // Use NetworkInfo Plus for mobile devices
-        final info = NetworkInfo();
-        String? wifiIP = await info.getWifiIP();
-        if (wifiIP != null && _isValidLocalNetworkIP(wifiIP)) {
-          addresses.add(wifiIP);
-        }
-      }
-      
-      // For all platforms, also use NetworkInterface for comprehensive detection
-      final interfaces = await NetworkInterface.list(
-        includeLinkLocal: false,
-        type: InternetAddressType.IPv4,
-      );
-
-      // Collect all valid local network IPs with priority ordering
-      final prioritizedIPs = <String, int>{};
-
-      for (final interface in interfaces) {
-        final lowerName = interface.name.toLowerCase();
-        int priority = 50; // Default priority
-
-        // Assign priority based on interface type
-        if (lowerName.contains('eth') || lowerName.contains('ethernet')) {
-          priority = 95; // Highest for Ethernet
-        } else if (lowerName.contains('wlan') || lowerName.contains('wi-fi') || lowerName.contains('wifi')) {
-          priority = 90; // High for WiFi
-        }
-
-        for (final addr in interface.addresses) {
-          if (_isValidLocalNetworkIP(addr.address)) {
-            // Boost priority for common local network ranges
-            int finalPriority = priority;
-            if (addr.address.startsWith('192.168.')) {
-              finalPriority += 10;
-            } else if (addr.address.startsWith('10.')) {
-              finalPriority += 5;
-            }
-
-            prioritizedIPs[addr.address] = finalPriority;
-          }
-        }
-      }
-
-      // Sort by priority and add to addresses list
-      final sortedEntries = prioritizedIPs.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value));
-
-      for (final entry in sortedEntries) {
-        if (!addresses.contains(entry.key)) {
-          addresses.add(entry.key);
-        }
-      }
-
-      Logger.debug('Found ${addresses.length} local network addresses: ${addresses.join(', ')}');
+      final networkService = container.resolve<INetworkInterfaceService>();
+      return await networkService.getLocalIPAddresses();
     } catch (e) {
-      Logger.error('Failed to get local IP addresses: $e');
+      Logger.error('Failed to get local IP addresses via service: $e');
+      return [];
     }
-    
-    return addresses;
   }
 
-  static bool _isValidLocalNetworkIP(String ip) {
-    final parts = ip.split('.');
-    if (parts.length != 4) return false;
-
-    // 192.168.x.x
-    if (parts[0] == '192' && parts[1] == '168') return true;
-
-    // 10.x.x.x
-    if (parts[0] == '10') return true;
-
-    // 172.16-31.x.x
-    if (parts[0] == '172') {
-      int second = int.tryParse(parts[1]) ?? 0;
-      if (second >= 16 && second <= 31) return true;
-    }
-
-    return false;
-  }
 
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {

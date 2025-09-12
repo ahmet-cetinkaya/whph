@@ -89,7 +89,7 @@ sync:
     sync_completed: Senkronizasyon başarıyla tamamlandı
     sync_in_progress: Senkronizasyon devam ediyor...
     testing_connection: Bağlantı test ediliyor...
-    device_added_success: {deviceName} senkronizasyon cihazlarına başarıyla eklendi
+    device_added_success: "{deviceName} senkronizasyon cihazlarına başarıyla eklendi"
   qr_code:
     close_button: Kapat
     dialog_title: Senkronize Etmek için QR Kodu Tarayın
