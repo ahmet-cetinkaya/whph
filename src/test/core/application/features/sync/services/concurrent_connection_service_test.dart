@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/services/concurrent_connection_service.dart';
-import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
 
 void main() {
   group('ConcurrentConnectionService', () {
@@ -31,12 +30,12 @@ void main() {
       });
     });
 
-    group('NetworkUtils integration', () {
-      test('should test multiple addresses via NetworkUtils', () async {
+    group('ConcurrentConnectionService integration', () {
+      test('should test multiple addresses via ConcurrentConnectionService', () async {
         final addresses = ['192.168.1.1', '10.0.0.1'];
-        final result = await NetworkUtils.testMultipleAddresses(
+        final result = await service.testMultipleAddresses(
           addresses,
-          port: 12345,
+          12345,
           timeout: const Duration(milliseconds: 100),
         );
         
