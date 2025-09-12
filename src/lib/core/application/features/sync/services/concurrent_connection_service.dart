@@ -4,6 +4,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/shared/utils/unawaited.dart';
 
 /// Service for establishing concurrent connections to multiple IP addresses
 /// Implements intelligent connection logic with timeout handling and cancellation
@@ -25,13 +26,12 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     Logger.debug('Attempting concurrent connections to ${ipAddresses.length} addresses: ${ipAddresses.join(', ')}');
     
     final Completer<WebSocket?> completer = Completer();
-    final List<Future<void>> connectionFutures = [];
     bool connectionSucceeded = false;
 
     // Create connection attempts for each IP address
     for (int i = 0; i < ipAddresses.length; i++) {
       final ipAddress = ipAddresses[i];
-      final connectionFuture = _attemptConnection(
+      unawaited(_attemptConnection(
         ipAddress,
         port,
         timeout,
@@ -49,10 +49,13 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
         },
         (error) {
           Logger.debug('❌ Connection failed to $ipAddress:$port: $error');
+          // If this is the last attempt and no connection succeeded, complete with null
+          if (!connectionSucceeded && i == ipAddresses.length - 1 && !completer.isCompleted) {
+            Logger.debug('All connection attempts failed');
+            completer.complete(null);
+          }
         },
-      );
-      
-      connectionFutures.add(connectionFuture);
+      ));
     }
 
     // Set up timeout for the entire operation
@@ -65,9 +68,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
 
     // Wait for first successful connection or timeout
     final result = await completer.future;
-    
-    // Cancel remaining connection attempts
-    // Note: We can't actually cancel the futures, but we handle it in the completion callback
     
     return result;
   }
