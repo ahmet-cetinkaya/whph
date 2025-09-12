@@ -327,69 +327,38 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       onSuccess: (_) async {
         if (!mounted) return;
 
-        // Show sync progress
-        OverlayNotificationHelper.showLoading(
-          context: context,
-          message: _translationService.translate(SyncTranslationKeys.syncInProgress),
-          duration: const Duration(seconds: 30),
-        );
+        // Device created successfully - start sync in background and return immediately
+        _startSyncInBackground();
 
-        // Start sync
-        await _startSync();
+        // Notify parent that device was added successfully
+        widget.onDeviceAdded?.call();
+
+        // Small delay to ensure callback processing completes
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Close the add device page and return to sync devices page immediately
+        if (mounted) {
+          Navigator.pop(context, true);
+        }
       },
     );
   }
 
-  Future<void> _startSync() async {
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(SyncTranslationKeys.syncError),
-      operation: () async {
-        final syncService = container.resolve<ISyncService>();
-        final completer = Completer<void>();
+  void _startSyncInBackground() {
+    // Start sync in background without blocking UI
+    final syncService = container.resolve<ISyncService>();
 
-        final subscription = syncService.onSyncComplete.listen((completed) {
-          if (completed && !completer.isCompleted) {
-            completer.complete();
-          }
-        });
-
+    // Run sync in background without awaiting
+    () async {
+      try {
         // Mark as manual sync so UI updates properly
         await syncService.runSync(isManual: true);
-
-        await completer.future.timeout(
-          const Duration(seconds: 30),
-          onTimeout: () {
-            subscription.cancel();
-            throw BusinessException(
-              _translationService.translate(SyncTranslationKeys.syncTimeoutError),
-              SyncTranslationKeys.syncTimeoutError,
-            );
-          },
-        );
-
-        subscription.cancel();
-      },
-    );
-
-    // Handle success after executeVoid completes
-    if (!mounted) return;
-
-    OverlayNotificationHelper.hideNotification();
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    if (!mounted) return;
-    OverlayNotificationHelper.showSuccess(
-      context: context,
-      message: _translationService.translate(SyncTranslationKeys.syncCompleted),
-      duration: const Duration(seconds: 3),
-    );
-
-    // Notify parent and close the page
-    widget.onDeviceAdded?.call();
-
-    // Pop once to close the dialog
-    Navigator.pop(context, true);
+        Logger.info('Background sync completed successfully after device pairing');
+      } catch (e) {
+        Logger.error('Background sync failed after device pairing: $e');
+        // Sync errors will be handled by the sync service and shown in the main sync UI
+      }
+    }();
   }
 
   Future<void> _openQRScanner() async {
@@ -402,7 +371,13 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
     if (result != null && mounted) {
       widget.onDeviceAdded?.call();
-      Navigator.pop(context, true);
+
+      // Small delay to ensure callback processing completes
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     }
   }
 
@@ -420,7 +395,12 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     );
 
     if (result == true && mounted) {
-      Navigator.pop(context, true);
+      // Small delay to ensure any processing completes
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     }
   }
 
