@@ -100,5 +100,7 @@ sync:
     start_failed: Impossible de démarrer le mode serveur - Vérifiez si le port 44040 est disponible
     start_tooltip: Démarrer le mode serveur
     stop_tooltip: Arrêter le mode serveur
+    start_menu: Démarrer le mode serveur
+    stop_menu: Arrêter le mode serveur
     error: Erreur
     device_became_server: Cet appareil est maintenant le serveur de synchronisation

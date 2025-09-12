@@ -10,47 +10,77 @@ class NetworkUtils {
   static const int webSocketPort = 44040;
   static const Duration connectionTimeout = Duration(seconds: 2);
 
+  /// Get primary local IP address (backward compatibility)
   static Future<String?> getLocalIpAddress() async {
+    final addresses = await getLocalIpAddresses();
+    return addresses.isNotEmpty ? addresses.first : null;
+  }
+
+  /// Get all local IP addresses from available network interfaces
+  static Future<List<String>> getLocalIpAddresses() async {
+    final List<String> addresses = [];
+    
     try {
       if (PlatformUtils.isMobile) {
         // Use NetworkInfo Plus for mobile devices
         final info = NetworkInfo();
         String? wifiIP = await info.getWifiIP();
-        return wifiIP;
-      } else {
-        // Use NetworkInterface for desktop
-        final interfaces = await NetworkInterface.list(
-          includeLinkLocal: false,
-          type: InternetAddressType.IPv4,
-        );
+        if (wifiIP != null && _isValidLocalNetworkIP(wifiIP)) {
+          addresses.add(wifiIP);
+        }
+      }
+      
+      // For all platforms, also use NetworkInterface for comprehensive detection
+      final interfaces = await NetworkInterface.list(
+        includeLinkLocal: false,
+        type: InternetAddressType.IPv4,
+      );
 
-        // Check the most probable interfaces first
-        for (final interface in interfaces) {
-          if (interface.name.toLowerCase().contains('wlan') ||
-              interface.name.toLowerCase().contains('wi-fi') ||
-              interface.name.toLowerCase().contains('eth')) {
-            for (final addr in interface.addresses) {
-              // Check for local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-              if (_isValidLocalNetworkIP(addr.address)) {
-                return addr.address;
-              }
-            }
-          }
+      // Collect all valid local network IPs with priority ordering
+      final prioritizedIPs = <String, int>{};
+
+      for (final interface in interfaces) {
+        final lowerName = interface.name.toLowerCase();
+        int priority = 50; // Default priority
+
+        // Assign priority based on interface type
+        if (lowerName.contains('eth') || lowerName.contains('ethernet')) {
+          priority = 95; // Highest for Ethernet
+        } else if (lowerName.contains('wlan') || lowerName.contains('wi-fi') || lowerName.contains('wifi')) {
+          priority = 90; // High for WiFi
         }
 
-        // If not found, check all interfaces
-        for (final interface in interfaces) {
-          for (final addr in interface.addresses) {
-            if (_isValidLocalNetworkIP(addr.address)) {
-              return addr.address;
+        for (final addr in interface.addresses) {
+          if (_isValidLocalNetworkIP(addr.address)) {
+            // Boost priority for common local network ranges
+            int finalPriority = priority;
+            if (addr.address.startsWith('192.168.')) {
+              finalPriority += 10;
+            } else if (addr.address.startsWith('10.')) {
+              finalPriority += 5;
             }
+
+            prioritizedIPs[addr.address] = finalPriority;
           }
         }
       }
+
+      // Sort by priority and add to addresses list
+      final sortedEntries = prioritizedIPs.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
+
+      for (final entry in sortedEntries) {
+        if (!addresses.contains(entry.key)) {
+          addresses.add(entry.key);
+        }
+      }
+
+      Logger.debug('Found ${addresses.length} local network addresses: ${addresses.join(', ')}');
     } catch (e) {
-      Logger.error('Failed to get local IP: $e');
+      Logger.error('Failed to get local IP addresses: $e');
     }
-    return null;
+    
+    return addresses;
   }
 
   static bool _isValidLocalNetworkIP(String ip) {
@@ -115,6 +145,47 @@ class NetworkUtils {
       return true;
     } catch (e) {
       Logger.debug('❌ Port connectivity failed to $host:$port: $e');
+      return false;
+    }
+  }
+
+  /// Test multiple IP addresses concurrently and return successful ones
+  static Future<List<String>> testMultipleAddresses(
+    List<String> ipAddresses, {
+    int port = webSocketPort,
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    if (ipAddresses.isEmpty) return [];
+
+    Logger.debug('Testing connectivity to ${ipAddresses.length} addresses concurrently');
+    
+    final futures = ipAddresses.map((ip) => _testSingleAddress(ip, port, timeout)).toList();
+    
+    try {
+      final results = await Future.wait(futures);
+      final successful = <String>[];
+      
+      for (int i = 0; i < results.length; i++) {
+        if (results[i]) {
+          successful.add(ipAddresses[i]);
+        }
+      }
+      
+      Logger.debug('Connectivity test completed: ${successful.length}/${ipAddresses.length} addresses reachable');
+      return successful;
+    } catch (e) {
+      Logger.error('Error during multi-address connectivity testing: $e');
+      return [];
+    }
+  }
+
+  /// Test single address connectivity (internal helper)
+  static Future<bool> _testSingleAddress(String ip, int port, Duration timeout) async {
+    try {
+      final socket = await Socket.connect(ip, port, timeout: timeout);
+      await socket.close();
+      return true;
+    } catch (e) {
       return false;
     }
   }

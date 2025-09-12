@@ -100,5 +100,19 @@ sync:
     start_failed: Server-Modus konnte nicht gestartet werden - Prüfen Sie, ob Port 44040 verfügbar ist
     start_tooltip: Server-Modus starten
     stop_tooltip: Server-Modus stoppen
+    start_menu: Server-Modus starten
+    stop_menu: Server-Modus stoppen
     error: Fehler
     device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver
+  add:
+    device: Gerät hinzufügen
+    device_tooltip: Neues Gerät per QR-Code-Scan oder manuelle IP-Eingabe hinzufügen
+    sync_device: Synchronisationsgerät hinzufügen
+    sync_device_title: Synchronisationsgerät hinzufügen
+    sync_device_description: Entdecken Sie Geräte in der Nähe oder verbinden Sie sich manuell, um Ihre Daten zwischen Geräten zu synchronisieren.
+    scanning_for_devices: Suche nach Geräten in der Nähe...
+    no_nearby_devices: Keine Geräte in der Nähe gefunden
+    no_nearby_devices_hint: Stellen Sie sicher, dass beide Geräte im selben WLAN sind und WHPH ausgeführt wird.
+    scan_qr_code: QR-Code scannen
+    refresh_scan: Scan aktualisieren
+    last_seen: "Zuletzt gesehen um {0}"
