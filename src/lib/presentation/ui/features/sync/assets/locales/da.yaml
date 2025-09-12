@@ -71,6 +71,7 @@ sync:
       2. Begge apps er åbne og kører
       3. Ingen firewall blokerer forbindelsen
     device_mismatch: Synkroniseringsfejl. Enheden, der forsøger at synkronisere, er ikke korrekt parret med denne enhed.
+    environment_mismatch: Synkronisering kan ikke fortsætte mellem debug- og produktionsbuilds.
     device_not_found: Synkroniseringsenhed ikke fundet
     ip_address: Kan ikke hente lokal IP-adresse
     parse_message: Kan ikke parse scannet besked

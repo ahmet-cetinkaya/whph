@@ -71,6 +71,7 @@ sync:
       2. Molemmat sovellukset ovat auki ja käynnissä
       3. Mikään palomuuri ei estä yhteyttä
     device_mismatch: Synkronointivirhe. Synkronoimaan yrittävä laite ei ole oikein paritettu tähän laitteeseen.
+    environment_mismatch: Synkronointi ei voi jatkua debug- ja tuotanto-versioiden välillä.
     device_not_found: Synkronointilaitetta ei löytynyt
     ip_address: Paikallisen IP-osoitteen hakeminen epäonnistui
     parse_message: Skannatun viestin jäsentäminen epäonnistui

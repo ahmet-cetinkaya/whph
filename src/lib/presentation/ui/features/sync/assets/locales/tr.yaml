@@ -71,6 +71,7 @@ sync:
       2. Her iki uygulama da açık ve çalışıyor
       3. Hiçbir firewall bağlantıyı engellemiyor
     device_mismatch: Senkronizasyon hatası. Senkronize etmeye çalışan cihaz bu cihazla düzgün eşleştirilmemiş.
+    environment_mismatch: Debug ve üretim buildleri arasında senkronizasyon devam edemez.
     device_not_found: Senkronizasyon cihazı bulunamadı
     ip_address: Yerel IP adresi alınamadı
     parse_message: Tarama mesajı ayrıştırılamadı

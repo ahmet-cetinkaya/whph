@@ -71,6 +71,7 @@ sync:
       2. Obe aplikaciji sta odprti in delujeta
       3. Noben požarni zid ne blokira povezave
     device_mismatch: Napaka sinhronizacije. Naprava, ki poskuša sinhronizirati, ni pravilno sparjena s to napravo.
+    environment_mismatch: Sinhronizacija se ne more nadaljevati med debug in produkcijskimi gradnjami.
     device_not_found: Naprava sinhronizacije ni najdena
     ip_address: Ni mogoče pridobiti lokalnega IP naslova
     parse_message: Ni mogoče razčleniti skeniranega sporočila

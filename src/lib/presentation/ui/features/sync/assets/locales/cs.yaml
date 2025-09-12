@@ -71,6 +71,7 @@ sync:
       2. Oba aplikace jsou otevřené a běžící
       3. Žádný firewall nepřekáží připojení
     device_mismatch: Chyba synchronizace. Zařízení, které se pokouší synchronizovat, není správně spárováno s tímto zařízením.
+    environment_mismatch: Synchronizace nemůže proběhnout mezi debug a produkční sestavami.
     device_not_found: Synchronizační zařízení nenalezeno
     ip_address: Nelze získat lokální IP adresu
     parse_message: Nelze parsovat skenovanou zprávu

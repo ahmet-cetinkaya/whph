@@ -71,6 +71,7 @@ sync:
       2. Båda apparna är öppna och körs
       3. Ingen brandvägg blockerar anslutningen
     device_mismatch: Synkroniseringsfel. Enheten som försöker synkronisera är inte korrekt parad med denna enhet.
+    environment_mismatch: Synkroniseringen kan inte fortsätta mellan debug- och produktionsbyggen.
     device_not_found: Synkroniseringsenhet inte hittad
     ip_address: Kan inte hämta lokal IP-adress
     parse_message: Kan inte parsa skannat meddelande

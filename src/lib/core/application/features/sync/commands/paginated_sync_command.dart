@@ -2071,8 +2071,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.error('Remote device: $remoteMode mode');
       Logger.error('Sync cannot proceed between different environment modes');
 
-      throw BusinessException(
-          'Environment mode mismatch: local=$localMode, remote=$remoteMode', SyncTranslationKeys.deviceMismatchError);
+      throw BusinessException('Environment mode mismatch: local=$localMode, remote=$remoteMode',
+          SyncTranslationKeys.environmentMismatchError);
     }
 
     Logger.debug('Environment mode validation passed: both devices in ${localIsDebug ? 'debug' : 'production'} mode');

@@ -10,6 +10,7 @@ class DeviceHandshakeService {
   /// Returns null if the device is not a WHPH instance or handshake fails
   Future<DeviceInfo?> getDeviceInfo(String ipAddress, int port) async {
     WebSocketChannel? channel;
+    StreamSubscription? subscription;
     try {
       Logger.info('🤝 Attempting handshake with device at $ipAddress:$port');
 
@@ -19,7 +20,6 @@ class DeviceHandshakeService {
 
       // Set up a completer for the response
       final completer = Completer<DeviceInfo?>();
-      StreamSubscription? subscription;
 
       // Listen for messages
       subscription = channel.stream.listen(
@@ -96,13 +96,19 @@ class DeviceHandshakeService {
         },
       );
 
-      // Clean up
-      await subscription.cancel();
       return result;
     } catch (e) {
       Logger.error('❌ Device handshake failed for $ipAddress:$port - $e');
       return null;
     } finally {
+      // Clean up subscription
+      try {
+        await subscription?.cancel();
+      } catch (e) {
+        Logger.debug('Warning: Failed to cancel subscription during cleanup: $e');
+      }
+
+      // Clean up WebSocket
       try {
         await channel?.sink.close();
       } catch (e) {

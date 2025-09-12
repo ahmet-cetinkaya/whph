@@ -71,6 +71,7 @@ sync:
       2. Beide apps zijn open en draaien
       3. Geen firewall blokkeert de verbinding
     device_mismatch: Sync-fout. Het apparaat dat probeert te synchroniseren is niet correct gepaart met dit apparaat.
+    environment_mismatch: Synchronisatie kan niet doorgaan tussen debug- en productiebuilds.
     device_not_found: Sync-apparaat niet gevonden
     ip_address: Kan lokale IP-adres niet ophalen
     parse_message: Kan gescande bericht niet parseren

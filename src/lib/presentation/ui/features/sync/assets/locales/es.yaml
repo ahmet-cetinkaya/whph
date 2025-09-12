@@ -71,6 +71,7 @@ sync:
       2. Ambas aplicaciones están abiertas y ejecutándose
       3. Ningún firewall está bloqueando la conexión
     device_mismatch: Error de sincronización. El dispositivo que intenta sincronizar no está correctamente emparejado con este dispositivo.
+    environment_mismatch: La sincronización no puede continuar entre builds de depuración y producción.
     device_not_found: Dispositivo de sincronización no encontrado
     ip_address: No se puede obtener la dirección IP local
     parse_message: No se puede analizar el mensaje escaneado

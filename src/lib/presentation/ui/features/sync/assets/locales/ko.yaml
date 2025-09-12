@@ -71,6 +71,7 @@ sync:
       2. 두 앱이 모두 열려 있고 실행 중인지
       3. 방화벽이 연결을 차단하지 않는지
     device_mismatch: 동기화 오류. 동기화를 시도하는 기기가 이 기기와 올바르게 페어링되지 않았습니다.
+    environment_mismatch: 디버그와 프로덕션 빌드 간의 동기화는 진행할 수 없습니다.
     device_not_found: 동기화 기기를 찾을 수 없습니다
     ip_address: 로컬 IP 주소를 가져올 수 없습니다
     parse_message: 스캔한 메시지를 파싱할 수 없습니다

@@ -168,7 +168,7 @@ class DeviceHandshakeService {
   // Connection validation with proper error handling
 }
 
-### 6. Updated QR Code Protocol
+### 8. Updated QR Code Protocol
 
 Modify QR code generation to include multiple IP addresses:
 
@@ -182,7 +182,7 @@ class SyncQRCodeMessage {
 }
 ```
 
-### 7. Enhanced Sync Device Discovery
+### 9. Enhanced Sync Device Discovery
 
 **Location**: Update existing `sync_service.dart` implementations:
 

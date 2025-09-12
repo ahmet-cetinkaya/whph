@@ -71,6 +71,7 @@ sync:
       2. Oba aplikacje są otwarte i działają
       3. Żaden firewall nie blokuje połączenia
     device_mismatch: Błąd synchronizacji. Urządzenie próbujące synchronizować nie jest prawidłowo sparowane z tym urządzeniem.
+    environment_mismatch: Synchronizacja nie może być kontynuowana między buildami debug i produkcyjnymi.
     device_not_found: Urządzenie synchronizacji nie znalezione
     ip_address: Nie można pobrać lokalnego adresu IP
     parse_message: Nie można przeanalizować zeskanowanej wiadomości

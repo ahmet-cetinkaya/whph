@@ -71,6 +71,7 @@ sync:
       2. Les deux applications sont ouvertes et en cours d'exécution
       3. Aucun pare-feu ne bloque la connexion
     device_mismatch: Erreur de synchronisation. L'appareil qui tente de synchroniser n'est pas correctement appairé avec cet appareil.
+    environment_mismatch: La synchronisation ne peut pas continuer entre les builds de débogage et de production.
     device_not_found: Appareil de synchronisation non trouvé
     ip_address: Impossible de récupérer l'adresse IP locale
     parse_message: Impossible d'analyser le message scanné
