@@ -47,5 +47,5 @@ class NetworkInterfaceInfo {
           ipAddress == other.ipAddress;
 
   @override
-  int get hashCode => name.hashCode ^ ipAddress.hashCode;
+  int get hashCode => Object.hash(name, ipAddress);
 }
