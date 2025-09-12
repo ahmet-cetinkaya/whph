@@ -19,7 +19,7 @@ class DeviceHandshakeService {
       
       // Set up a completer for the response
       final completer = Completer<DeviceInfo?>();
-      late StreamSubscription subscription;
+      StreamSubscription? subscription;
       
       // Listen for messages
       subscription = channel.stream.listen(
@@ -152,5 +152,5 @@ class DeviceInfo {
           port == other.port;
 
   @override
-  int get hashCode => deviceId.hashCode ^ ipAddress.hashCode ^ port.hashCode;
+  int get hashCode => Object.hash(deviceId, ipAddress, port);
 }
