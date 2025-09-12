@@ -6,6 +6,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String syncInProgress = 'sync.messages.sync_in_progress';
   static const String syncCompleted = 'sync.messages.sync_completed';
   static const String deviceAlreadyPaired = 'sync.messages.device_already_paired';
+  static const String deviceAddedSuccess = 'sync.messages.device_added_success';
 
   // Errors
   static const String scanError = 'sync.error.scan';
@@ -18,6 +19,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String syncDeviceNotFoundError = 'sync.errors.device_not_found';
   static const String versionMismatchError = 'sync.errors.version_mismatch';
   static const String deviceMismatchError = 'sync.errors.device_mismatch';
+  static const String localIpError = 'sync.errors.local_ip_error';
+  static const String deviceAlreadyPairedError = 'sync.errors.device_already_paired';
 
   // QR Code Dialog
   static const String qrDialogTitle = 'sync.qr_code.dialog_title';

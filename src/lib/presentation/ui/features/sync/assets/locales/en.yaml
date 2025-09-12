@@ -87,11 +87,14 @@ sync:
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
     version_mismatch: "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}. Update both apps."
+    local_ip_error: Unable to determine local IP address
+    device_already_paired: This device is already paired
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
     sync_in_progress: Syncing in progress...
     testing_connection: Testing connection...
+    device_added_success: Successfully added {deviceName} to sync devices
   qr_code:
     close_button: Close
     dialog_title: Scan QR Code to Sync

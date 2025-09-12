@@ -82,11 +82,14 @@ sync:
     sync_failed: Synchronisation fehlgeschlagen. Bitte versuchen Sie es erneut.
     sync_timeout: Synchronisation-Timeout
     version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf dieselbe Version."
+    local_ip_error: Lokale IP-Adresse kann nicht ermittelt werden
+    device_already_paired: Dieses Gerät ist bereits gekoppelt
   messages:
     device_already_paired: Dieses Gerät ist bereits gekoppelt
     sync_completed: Synchronisation erfolgreich abgeschlossen
     sync_in_progress: Synchronisation läuft...
     testing_connection: Verbindung wird getestet...
+    device_added_success: {deviceName} erfolgreich zu Synchronisationsgeräten hinzugefügt
   qr_code:
     close_button: Schließen
     dialog_title: QR-Code scannen zum Synchronisieren
@@ -104,6 +107,22 @@ sync:
     stop_menu: Server-Modus stoppen
     error: Fehler
     device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver
+  manual:
+    connection: Manuelle Verbindung
+    description: Geben Sie die IP-Adresse und den Port des Geräts ein, mit dem Sie sich manuell verbinden möchten.
+    ip_address: IP-Adresse
+    port: Port
+    device_name: Gerätename
+    optional: (Optional)
+    connecting: Verbindung zum Gerät wird hergestellt...
+    cancel: Abbrechen
+    connect: Verbinden
+    ip_required: IP-Adresse ist erforderlich
+    invalid_ip: Ungültiges IP-Adressformat
+    port_required: Port ist erforderlich
+    invalid_port: Port muss zwischen 1 und 65535 liegen
+    connection_failed: Verbindung zum Gerät fehlgeschlagen
+    connection_error: "Verbindungsfehler: {0}"
   add:
     device: Gerät hinzufügen
     device_tooltip: Neues Gerät per QR-Code-Scan oder manuelle IP-Eingabe hinzufügen
@@ -113,6 +132,8 @@ sync:
     scanning_for_devices: Suche nach Geräten in der Nähe...
     no_nearby_devices: Keine Geräte in der Nähe gefunden
     no_nearby_devices_hint: Stellen Sie sicher, dass beide Geräte im selben WLAN sind und WHPH ausgeführt wird.
+    alternative_methods_hint: Können Sie Ihr Gerät nicht finden? Probieren Sie diese alternativen Methoden aus.
     scan_qr_code: QR-Code scannen
     refresh_scan: Scan aktualisieren
-    last_seen: "Zuletzt gesehen um {0}"
+    last_seen: "Zuletzt gesehen um {time}"
+    already_added: Bereits hinzugefügt
