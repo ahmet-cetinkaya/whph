@@ -95,6 +95,39 @@ settings:
           step2: Autorisez les notifications lorsque demandé
       title: Permission de notification
     open_settings: Ouvrir les paramètres
+    open_terminal: Ouvrir le terminal
+    firewall:
+      title: Permission de pare-feu
+      description: Autoriser WHPH à communiquer via le pare-feu {platform} sur le port 44040 pour la synchronisation des appareils.
+      dialog_description: WHPH a besoin de la permission de pare-feu pour permettre à d'autres appareils de se connecter pour la synchronisation. Suivez les commandes ci-dessous pour configurer votre pare-feu {platform}. Vous pouvez également trouver ces étapes dans le menu d'aide.
+      dialog_info_text: "Remarque : Vous pouvez également trouver ces étapes dans le menu d'aide."
+      linux_manual_confirmation_button: "J'ai configuré"
+      save_confirmation_error: Échec de l'enregistrement du paramètre de confirmation du pare-feu
+      rule_added_success: Règle de pare-feu ajoutée avec succès
+      rule_add_error: Échec de l'ajout de la règle de pare-feu. Essayez les étapes manuelles.
+      add_rule_button: "Ajouter une règle de pare-feu"
+      windows_auto_description: "Cliquez sur 'Ajouter une règle de pare-feu' pour ajouter automatiquement la règle de pare-feu avec demande de permission UAC. Si vous préférez ajouter manuellement, suivez les étapes ci-dessous :"
+      instructions:
+        linux:
+          step1: "Ouvrez un terminal"
+          step2: "Vérifiez l'état du pare-feu :"
+          step3: "Ajoutez une règle de pare-feu (si UFW est actif) :"
+          step4: "Vérifiez que la règle a été ajoutée :"
+        windows:
+          step1: "Ouvrez le Pare-feu Windows Defender depuis le Panneau de configuration"
+          step2: "Cliquez sur Paramètres avancés à gauche"
+          step3: "Dans le volet gauche, cliquez sur Règles de trafic entrant"
+          step4: "Dans le volet droit, cliquez sur Nouvelle règle..."
+          step5: "Sélectionnez Port et cliquez sur Suivant"
+          step6: "Sélectionnez TCP et entrez 44040 dans le champ des ports locaux spécifiques"
+          step7: "Sélectionnez Autoriser la connexion et cliquez sur Suivant"
+          step8: "Cochez tous les profils (Domaine, Privé, Public) et cliquez sur Suivant"
+          step9: "Entrez un nom comme WHPH Sync Port 44040 et cliquez sur Terminer"
+          alternative_command_prompt:
+            title: "Alternative : Utiliser l'Invite de commandes"
+            steps:
+              cmd_step1: "Ouvrez l'Invite de commandes en tant qu'administrateur"
+              cmd_step2: "Ajoutez une règle de pare-feu :"
     startup:
       description: Pour que l'application démarre automatiquement avec votre appareil, la permission de démarrage automatique est requise. Cela garantit que les rappels et notifications fonctionnent correctement même après les redémarrages de l'appareil.
       importance: L'emplacement du paramètre de démarrage automatique varie ou peut ne pas être présent selon le fabricant de l'appareil.

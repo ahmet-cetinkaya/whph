@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Brandväggsbehörighet
+      description: Tillåt WHPH att kommunicera via {platform}s brandvägg på port 44040 för enhetssynkronisering.
+      dialog_description: WHPH behöver brandväggsbehörighet för att tillåta andra enheter att ansluta för synkronisering. Följ kommandona nedan för att konfigurera din {platform} brandvägg. Du kan också hitta dessa steg i hjälpmenyn.
+      dialog_info_text: "Obs: Du kan också hitta dessa steg i hjälpmenyn."
+      linux_manual_confirmation_button: "Jag har konfigurerat"
+      save_confirmation_error: Det gick inte att spara brandväggsbekräftelseinställningen
+      rule_added_success: Brandväggsregel har lagts till
+      rule_add_error: Det gick inte att lägga till brandväggsregel. Försök med manuella steg.
+      add_rule_button: "Lägg till brandväggsregel"
+      windows_auto_description: "Klicka på 'Lägg till brandväggsregel' för att automatiskt lägga till brandväggsregeln med UAC-behörighetsbegäran. Om du föredrar att lägga till manuellt, följ stegen nedan:"
+      instructions:
+        linux:
+          step1: "Öppna en terminal"
+          step2: "Kontrollera brandväggsstatus:"
+          step3: "Lägg till brandväggsregel (om UFW är aktiv):"
+          step4: "Verifiera att regeln har lagts till:"
+        windows:
+          step1: "Öppna Windows Defender Brandvägg från Kontrollpanelen"
+          step2: "Klicka på Avancerade inställningar till vänster"
+          step3: "I vänster panel, klicka på Inkommande regler"
+          step4: "I höger panel, klicka på Ny regel..."
+          step5: "Välj Port och klicka på Nästa"
+          step6: "Välj TCP och ange 44040 i fältet för specifika lokala portar"
+          step7: "Välj Tillåt anslutningen och klicka på Nästa"
+          step8: "Markera alla profiler (Domän, Privat, Offentlig) och klicka på Nästa"
+          step9: "Ange ett namn som WHPH Sync Port 44040 och klicka på Slutför"
+          alternative_command_prompt:
+            title: "Alternativ: Använd Kommandotolk"
+            steps:
+              cmd_step1: "Öppna Kommandotolk som administratör"
+              cmd_step2: "Lägg till brandväggsregel:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

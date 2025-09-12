@@ -95,6 +95,39 @@ settings:
           step2: Permite notificaciones cuando se solicite
       title: Permiso de notificación
     open_settings: Abrir configuración
+    open_terminal: Abrir terminal
+    firewall:
+      title: Permiso de firewall
+      description: Permitir que WHPH se comunique a través del firewall de {platform} en el puerto 44040 para la sincronización de dispositivos.
+      dialog_description: WHPH necesita permiso de firewall para permitir que otros dispositivos se conecten para la sincronización. Siga los comandos a continuación para configurar su firewall de {platform}. También puede encontrar estos pasos en el menú de ayuda.
+      dialog_info_text: "Nota: También puede encontrar estos pasos en el menú de ayuda."
+      linux_manual_confirmation_button: "He configurado"
+      save_confirmation_error: Error al guardar la configuración de confirmación del firewall
+      rule_added_success: Regla de firewall añadida exitosamente
+      rule_add_error: Error al añadir la regla de firewall. Intente los pasos manuales.
+      add_rule_button: "Añadir regla de firewall"
+      windows_auto_description: "Haga clic en 'Añadir regla de firewall' para añadir automáticamente la regla de firewall con solicitud de permiso UAC. Si prefiere añadir manualmente, siga los pasos a continuación:"
+      instructions:
+        linux:
+          step1: "Abra una terminal"
+          step2: "Verifique el estado del firewall:"
+          step3: "Añada una regla de firewall (si UFW está activo):"
+          step4: "Verifique que la regla fue añadida:"
+        windows:
+          step1: "Abra Windows Defender Firewall desde el Panel de Control"
+          step2: "Haga clic en Configuración avanzada a la izquierda"
+          step3: "En el panel izquierdo, haga clic en Reglas de entrada"
+          step4: "En el panel derecho, haga clic en Nueva regla..."
+          step5: "Seleccione Puerto y haga clic en Siguiente"
+          step6: "Seleccione TCP e introduzca 44040 en el campo de puertos locales específicos"
+          step7: "Seleccione Permitir la conexión y haga clic en Siguiente"
+          step8: "Marque todos los perfiles (Dominio, Privado, Público) y haga clic en Siguiente"
+          step9: "Introduzca un nombre como WHPH Sync Port 44040 y haga clic en Finalizar"
+          alternative_command_prompt:
+            title: "Alternativa: Usar Símbolo del sistema"
+            steps:
+              cmd_step1: "Abra el Símbolo del sistema como administrador"
+              cmd_step2: "Añada una regla de firewall:"
     startup:
       description: Para que la aplicación inicie automáticamente con tu dispositivo, se requiere permiso de inicio automático. Esto asegura que los recordatorios y notificaciones funcionen correctamente incluso después de reinicios del dispositivo.
       importance: La ubicación de la configuración de inicio automático varía o puede no estar presente según el fabricante del dispositivo.
