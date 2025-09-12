@@ -24,7 +24,7 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     }
 
     Logger.debug('Attempting concurrent connections to ${ipAddresses.length} addresses: ${ipAddresses.join(', ')}');
-    
+
     final Completer<WebSocket?> completer = Completer();
     bool connectionSucceeded = false;
     int failedAttempts = 0;
@@ -70,7 +70,7 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
 
     // Wait for first successful connection or timeout
     final result = await completer.future;
-    
+
     return result;
   }
 
@@ -85,17 +85,13 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     }
 
     Logger.debug('Testing connectivity to ${ipAddresses.length} addresses');
-    
-    final List<Future<ConnectionAttemptResult>> testFutures = ipAddresses
-        .map((ip) => _testSingleAddress(ip, port, timeout))
-        .toList();
+
+    final List<Future<ConnectionAttemptResult>> testFutures =
+        ipAddresses.map((ip) => _testSingleAddress(ip, port, timeout)).toList();
 
     try {
       final results = await Future.wait(testFutures);
-      final successful = results
-          .where((result) => result.successful)
-          .map((result) => result.ipAddress)
-          .toList();
+      final successful = results.where((result) => result.successful).map((result) => result.ipAddress).toList();
 
       Logger.debug('Connectivity test completed: ${successful.length}/${ipAddresses.length} addresses reachable');
       return successful;
@@ -122,15 +118,15 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     try {
       final stopwatch = Stopwatch()..start();
       final wsUrl = 'ws://$ipAddress:$port';
-      
+
       Logger.debug('🔍 Attempting WebSocket connection to $wsUrl');
-      
+
       final socket = await WebSocket.connect(wsUrl).timeout(timeout);
       stopwatch.stop();
-      
+
       // Test the connection with a simple message
       final isValid = await _validateConnection(socket);
-      
+
       if (isValid) {
         Logger.debug('✅ Connection validated to $ipAddress:$port (${stopwatch.elapsedMilliseconds}ms)');
         onSuccess(socket);
@@ -148,13 +144,13 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
   /// Test connectivity to a single address and return result
   Future<ConnectionAttemptResult> _testSingleAddress(String ipAddress, int port, Duration timeout) async {
     final stopwatch = Stopwatch()..start();
-    
+
     try {
       // First try simple socket connection (faster than WebSocket)
       final socket = await Socket.connect(ipAddress, port, timeout: timeout);
       await socket.close();
       stopwatch.stop();
-      
+
       Logger.debug('✅ Socket test passed for $ipAddress:$port (${stopwatch.elapsedMilliseconds}ms)');
       return ConnectionAttemptResult(
         ipAddress: ipAddress,
@@ -181,24 +177,25 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
         type: 'connection_test',
         data: {'timestamp': DateTime.now().toIso8601String()},
       );
-      
+
       socket.add(JsonMapper.serialize(testMessage));
-      
+
       // Wait for the specific connection_test_response or timeout after 2 seconds
-      final responseData = await socket.timeout(
-        const Duration(seconds: 2),
-        onTimeout: (_) => throw TimeoutException('Validation timeout'),
-      ).first;
-      
+      final responseData = await socket
+          .timeout(
+            const Duration(seconds: 2),
+            onTimeout: (_) => throw TimeoutException('Validation timeout'),
+          )
+          .first;
+
       // Parse the response and check if it's a valid connection_test_response
       final response = JsonMapper.deserialize<WebSocketMessage>(responseData);
-      final isValid = response?.type == 'connection_test_response' && 
-                     response?.data?['success'] == true;
-      
+      final isValid = response?.type == 'connection_test_response' && response?.data?['success'] == true;
+
       if (!isValid) {
         Logger.debug('Invalid connection test response: ${response?.type}');
       }
-      
+
       return isValid;
     } catch (e) {
       Logger.debug('Connection validation failed: $e');

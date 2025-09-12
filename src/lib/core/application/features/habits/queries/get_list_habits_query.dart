@@ -121,17 +121,18 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     final habitIds = filteredHabits.map((habit) => habit.id).toList();
     List<dynamic> habitTagsList = [];
     Map<String, List<TagListItem>> habitTagsMap = {};
-    
+
     if (habitIds.isNotEmpty) {
       final habitTagsWhereFilter = CustomWhereFilter(
         "habit_id IN (${habitIds.map((_) => '?').join(',')})",
         habitIds as List<Object>,
       );
       habitTagsList = (await _habitTagsRepository.getList(
-        0, 
+        0,
         habitIds.length * 5, // Allow up to 5 tags per habit
         customWhereFilter: habitTagsWhereFilter,
-      )).items;
+      ))
+          .items;
 
       // Fetch all tags for these habit tags in a single query
       final tagIds = habitTagsList.map((ht) => ht.tagId).toSet().toList();
@@ -145,7 +146,8 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
           0,
           tagIds.length,
           customWhereFilter: tagsWhereFilter,
-        )).items;
+        ))
+            .items;
       }
 
       // Create a map for quick tag lookup
@@ -157,21 +159,19 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         final tag = tagMap[ht.tagId];
         if (tag != null) {
           habitTagsMap.putIfAbsent(ht.habitId, () => []).add(
-            TagListItem(
-              id: ht.tagId,
-              name: tag.name ?? "",
-              color: tag.color,
-            ),
-          );
+                TagListItem(
+                  id: ht.tagId,
+                  name: tag.name ?? "",
+                  color: tag.color,
+                ),
+              );
         }
       }
     }
 
     // Create habit items with their tags
     for (final habit in filteredHabits) {
-      final tagItems = habitTagsMap.containsKey(habit.id) 
-          ? habitTagsMap[habit.id]!
-          : <TagListItem>[];
+      final tagItems = habitTagsMap.containsKey(habit.id) ? habitTagsMap[habit.id]! : <TagListItem>[];
 
       habitItems.add(HabitListItem(
         id: habit.id,
@@ -309,20 +309,20 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     // Identify period-based habits and their date ranges
     final periodHabits = habits.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
     final Map<String, dynamic> habitPeriodData = {};
-    
+
     // Calculate the earliest period start date to fetch all needed records in one query
     DateTime? earliestPeriodStart;
-    
+
     for (final habit in periodHabits) {
       final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
       final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
-      
+
       habitPeriodData[habit.id] = {
         'periodStartOfDay': periodStartOfDay,
         'dailyTarget': habit.dailyTarget ?? 1,
         'targetFrequency': habit.targetFrequency,
       };
-      
+
       if (earliestPeriodStart == null || periodStartOfDay.isBefore(earliestPeriodStart)) {
         earliestPeriodStart = periodStartOfDay;
       }
@@ -332,19 +332,19 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     Map<String, List<dynamic>> allHabitRecords = {};
     if (periodHabits.isNotEmpty && earliestPeriodStart != null) {
       final habitIds = periodHabits.map((habit) => habit.id).toList();
-      
+
       // Use a custom where filter to get all records for all habits in the period range
       final whereFilter = CustomWhereFilter(
         "habit_id IN (${habitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
         [...habitIds, earliestPeriodStart, endOfDay],
       );
-      
+
       final allRecords = await _habitRecordRepository.getList(
         0,
         habitIds.length * 100, // Sufficient for multiple periods
         customWhereFilter: whereFilter,
       );
-      
+
       // Group records by habit ID
       for (final record in allRecords.items) {
         allHabitRecords.putIfAbsent(record.habitId, () => []).add(record);
@@ -361,9 +361,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         final periodStartOfDay = periodData['periodStartOfDay'] as DateTime;
         final dailyTarget = periodData['dailyTarget'] as int;
         final targetFrequency = periodData['targetFrequency'] as int;
-        
+
         final habitRecords = allHabitRecords[habit.id] ?? [];
-        
+
         // Filter records to the specific period for this habit and group by date
         final recordsByDate = <DateTime, List>{};
         for (final record in habitRecords) {

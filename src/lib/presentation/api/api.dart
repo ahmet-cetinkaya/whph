@@ -105,7 +105,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           final deviceIdService = container.resolve<IDeviceIdService>();
           final deviceId = await deviceIdService.getDeviceId();
           final deviceName = await DeviceInfoHelper.getDeviceName();
-          
+
           socket.add(JsonMapper.serialize(WebSocketMessage(
             type: 'device_info_response',
             data: {
@@ -113,11 +113,17 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
               'deviceId': deviceId,
               'deviceName': deviceName,
               'appName': 'WHPH',
-              'platform': Platform.isAndroid ? 'android' : 
-                         Platform.isIOS ? 'ios' :
-                         Platform.isLinux ? 'linux' :
-                         Platform.isWindows ? 'windows' :
-                         Platform.isMacOS ? 'macos' : 'unknown',
+              'platform': Platform.isAndroid
+                  ? 'android'
+                  : Platform.isIOS
+                      ? 'ios'
+                      : Platform.isLinux
+                          ? 'linux'
+                          : Platform.isWindows
+                              ? 'windows'
+                              : Platform.isMacOS
+                                  ? 'macos'
+                                  : 'unknown',
               'timestamp': DateTime.now().toIso8601String(),
             },
           )));

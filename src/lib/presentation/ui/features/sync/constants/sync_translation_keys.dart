@@ -73,7 +73,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String invalidPort = 'sync.manual.invalid_port';
   static const String connectionFailed = 'sync.manual.connection_failed';
   static const String connectionError = 'sync.manual.connection_error';
-  
+
   // Add Device Menu
   static const String addDevice = 'sync.add.device';
   static const String addDeviceTooltip = 'sync.add.device_tooltip';
@@ -88,7 +88,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String refreshScan = 'sync.add.refresh_scan';
   static const String lastSeen = 'sync.add.last_seen';
   static const String alreadyAdded = 'sync.add.already_added';
-  
+
   // Error Messages
   static const String noActiveInterfacesError = 'sync.errors.no_active_interfaces';
   static const String deviceDiscoveryFailedError = 'sync.errors.device_discovery_failed';

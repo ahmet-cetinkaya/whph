@@ -53,7 +53,6 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> with TickerProvid
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

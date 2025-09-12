@@ -51,10 +51,10 @@ void main() {
     group('getLocalIPAddresses', () {
       test('should return a list of IP addresses', () async {
         final addresses = await service.getLocalIPAddresses();
-        
+
         // Should return at least empty list (may have actual addresses in test environment)
         expect(addresses, isA<List<String>>());
-        
+
         // If any addresses are returned, they should be valid local network IPs
         for (final address in addresses) {
           expect(service.isValidLocalIPAddress(address), true,
@@ -66,9 +66,9 @@ void main() {
     group('getActiveNetworkInterfaces', () {
       test('should return network interface information', () async {
         final interfaces = await service.getActiveNetworkInterfaces();
-        
+
         expect(interfaces, isA<List<dynamic>>());
-        
+
         // If any interfaces are returned, they should have valid structure
         for (final interface in interfaces) {
           expect(interface.name, isNotEmpty);
@@ -82,9 +82,9 @@ void main() {
     group('getPreferredIPAddresses', () {
       test('should return addresses in priority order', () async {
         final addresses = await service.getPreferredIPAddresses();
-        
+
         expect(addresses, isA<List<String>>());
-        
+
         // Addresses should be valid local network IPs
         for (final address in addresses) {
           expect(service.isValidLocalIPAddress(address), true);

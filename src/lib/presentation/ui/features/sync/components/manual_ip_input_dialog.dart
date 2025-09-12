@@ -44,7 +44,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
   final _portController = TextEditingController(text: '44040');
   final _deviceNameController = TextEditingController();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
-  
+
   bool _isConnecting = false;
   String? _errorMessage;
 
@@ -91,7 +91,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: AppTheme.sizeMedium),
-              
+
               // IP Address Input
               TextFormField(
                 controller: _ipController,
@@ -109,7 +109,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                 enabled: !_isConnecting,
               ),
               const SizedBox(height: AppTheme.sizeMedium),
-              
+
               // Port Input
               TextFormField(
                 controller: _portController,
@@ -127,7 +127,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                 enabled: !_isConnecting,
               ),
               const SizedBox(height: AppTheme.sizeMedium),
-              
+
               // Device Name Input (Optional)
               TextFormField(
                 controller: _deviceNameController,
@@ -139,7 +139,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                 ),
                 enabled: !_isConnecting,
               ),
-              
+
               if (_errorMessage != null) ...[
                 const SizedBox(height: AppTheme.sizeSmall),
                 Container(
@@ -169,7 +169,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
                   ),
                 ),
               ],
-              
+
               if (_isConnecting) ...[
                 const SizedBox(height: AppTheme.sizeMedium),
                 const LinearProgressIndicator(),
@@ -207,21 +207,21 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
     if (value == null || value.trim().isEmpty) {
       return _translationService.translate(SyncTranslationKeys.ipAddressRequired);
     }
-    
+
     final ip = value.trim();
     final parts = ip.split('.');
-    
+
     if (parts.length != 4) {
       return _translationService.translate(SyncTranslationKeys.invalidIPFormat);
     }
-    
+
     for (final part in parts) {
       final num = int.tryParse(part);
       if (num == null || num < 0 || num > 255) {
         return _translationService.translate(SyncTranslationKeys.invalidIPFormat);
       }
     }
-    
+
     return null;
   }
 
@@ -229,12 +229,12 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
     if (value == null || value.trim().isEmpty) {
       return _translationService.translate(SyncTranslationKeys.portRequired);
     }
-    
+
     final port = int.tryParse(value.trim());
     if (port == null || port < 1 || port > 65535) {
       return _translationService.translate(SyncTranslationKeys.invalidPort);
     }
-    
+
     return null;
   }
 
@@ -242,27 +242,26 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isConnecting = true;
       _errorMessage = null;
     });
-    
+
     try {
       final ipAddress = _ipController.text.trim();
       final port = int.parse(_portController.text.trim());
-      final deviceName = _deviceNameController.text.trim().isNotEmpty 
-          ? _deviceNameController.text.trim() 
-          : 'Manual Device';
-      
+      final deviceName =
+          _deviceNameController.text.trim().isNotEmpty ? _deviceNameController.text.trim() : 'Manual Device';
+
       // First test connection if service is available
       if (widget.connectionService != null) {
         final isReachable = await widget.connectionService!.testWebSocketConnection(
-          ipAddress, 
-          port, 
+          ipAddress,
+          port,
           timeout: const Duration(seconds: 5),
         );
-        
+
         if (!isReachable) {
           setState(() {
             _errorMessage = _translationService.translate(SyncTranslationKeys.connectionFailed);
@@ -271,13 +270,13 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
           return;
         }
       }
-      
+
       // If connection test passes, create and save the sync device
       await _createSyncDevice(ipAddress, port, deviceName);
-      
     } catch (e) {
       setState(() {
-        _errorMessage = _translationService.translate(SyncTranslationKeys.connectionError, namedArgs: {'0': e.toString()});
+        _errorMessage =
+            _translationService.translate(SyncTranslationKeys.connectionError, namedArgs: {'0': e.toString()});
         _isConnecting = false;
       });
     }
@@ -286,7 +285,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
   Future<void> _createSyncDevice(String ipAddress, int port, String deviceName) async {
     final mediator = container.resolve<Mediator>();
     final deviceIdService = container.resolve<IDeviceIdService>();
-    
+
     await AsyncErrorHandler.execute<void>(
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
@@ -302,14 +301,13 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
 
         final localDeviceId = await deviceIdService.getDeviceId();
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Use pre-discovered device ID if available, otherwise generate one
         final remoteDeviceId = widget.preDiscoveredDeviceId ?? 'manual-$ipAddress:$port';
-        
+
         // Check if device already exists
         final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-          GetSyncDeviceQuery(fromDeviceId: remoteDeviceId, toDeviceId: localDeviceId)
-        );
+            GetSyncDeviceQuery(fromDeviceId: remoteDeviceId, toDeviceId: localDeviceId));
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
           throw BusinessException(
@@ -322,14 +320,14 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         // For manual connections, treat the remote device as server and local as client
         final saveCommand = SaveSyncDeviceCommand(
           fromIP: ipAddress, // Remote device IP (server)
-          toIP: localIp,     // Local device IP (client)
+          toIP: localIp, // Local device IP (client)
           fromDeviceId: remoteDeviceId,
           toDeviceId: localDeviceId,
           name: "$deviceName ↔ $localDeviceName",
         );
 
         await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
-        
+
         return;
       },
       onSuccess: (_) async {
@@ -343,10 +341,10 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
             ),
             duration: const Duration(seconds: 3),
           );
-          
+
           // Close dialog
           Navigator.of(context).pop(true); // Return true to indicate success
-          
+
           // Notify parent to refresh
           widget.onSyncDeviceAdded?.call();
         }

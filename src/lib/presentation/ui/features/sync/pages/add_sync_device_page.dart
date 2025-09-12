@@ -26,7 +26,7 @@ import 'package:acore/acore.dart' show BusinessException;
 /// Page for adding new sync devices with network discovery capabilities
 class AddSyncDevicePage extends StatefulWidget {
   static const String route = '/sync/add-device';
-  
+
   final VoidCallback? onDeviceAdded;
 
   const AddSyncDevicePage({
@@ -43,7 +43,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   final _connectionService = container.resolve<IConcurrentConnectionService>();
   final _handshakeService = container.resolve<DeviceHandshakeService>();
   final _translationService = container.resolve<ITranslationService>();
-  
+
   bool _isScanning = false;
   final List<DiscoveredDevice> _discoveredDevices = [];
   Timer? _scanTimer;
@@ -93,7 +93,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = _translationService.translate(SyncTranslationKeys.deviceDiscoveryFailedError, namedArgs: {'error': e.toString()});
+          _errorMessage = _translationService
+              .translate(SyncTranslationKeys.deviceDiscoveryFailedError, namedArgs: {'error': e.toString()});
           _isScanning = false;
         });
       }
@@ -104,25 +105,25 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     final Set<String> scannedAddresses = {};
     int totalBatches = 0;
     final startTime = DateTime.now();
-    
+
     for (final interface in interfaces) {
       if (!interface.isWiFi && !interface.isEthernet) continue;
-      
+
       final networkBase = _getNetworkBase(interface.ipAddress);
       if (networkBase == null) continue;
 
       // Scan common IP ranges in parallel (focus on common ranges first)
       final futures = <Future<void>>[];
-      
+
       // Start with more common IP ranges (1-50, 100-150, 200-254)
       final commonRanges = [
-        for (int i = 1; i <= 50; i++) i,      // Common router/device range
-        for (int i = 100; i <= 150; i++) i,  // Common DHCP range
-        for (int i = 200; i <= 254; i++) i,  // Higher end range
-        for (int i = 51; i <= 99; i++) i,    // Fill remaining gap
-        for (int i = 151; i <= 199; i++) i,  // Fill remaining gap
+        for (int i = 1; i <= 50; i++) i, // Common router/device range
+        for (int i = 100; i <= 150; i++) i, // Common DHCP range
+        for (int i = 200; i <= 254; i++) i, // Higher end range
+        for (int i = 51; i <= 99; i++) i, // Fill remaining gap
+        for (int i = 151; i <= 199; i++) i, // Fill remaining gap
       ];
-      
+
       for (final i in commonRanges) {
         final targetIP = '$networkBase.$i';
         if (targetIP != interface.ipAddress && !scannedAddresses.contains(targetIP)) {
@@ -135,22 +136,22 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       for (int batchStart = 0; batchStart < futures.length; batchStart += 10) {
         final batchEnd = (batchStart + 10).clamp(0, futures.length);
         await Future.wait(futures.sublist(batchStart, batchEnd));
-        
+
         totalBatches++;
-        
+
         // Smaller delay for better responsiveness
         await Future.delayed(const Duration(milliseconds: 50));
-        
+
         if (!mounted) return;
-        
+
         // Early exit conditions for better UX
         final elapsedTime = DateTime.now().difference(startTime);
-        
+
         // Stop scanning if we found devices and have scanned enough
         if (_discoveredDevices.isNotEmpty && totalBatches > 5) {
           break;
         }
-        
+
         // Stop scanning if no devices found after reasonable time
         if (_discoveredDevices.isEmpty && elapsedTime.inSeconds > 10) {
           break;
@@ -180,7 +181,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       if (deviceInfo != null && mounted) {
         // Check if device is already paired
         final isAlreadyAdded = await _checkIfDeviceAlreadyAdded(deviceInfo.deviceId);
-        
+
         final device = DiscoveredDevice(
           name: deviceInfo.deviceName,
           ipAddress: deviceInfo.ipAddress,
@@ -194,10 +195,9 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         setState(() {
           // Check if device is already in the list
           final existingIndex = _discoveredDevices.indexWhere(
-            (d) => d.deviceId == device.deviceId || 
-                   (d.ipAddress == device.ipAddress && d.port == device.port),
+            (d) => d.deviceId == device.deviceId || (d.ipAddress == device.ipAddress && d.port == device.port),
           );
-          
+
           if (existingIndex >= 0) {
             // Update existing device with fresh info
             _discoveredDevices[existingIndex] = device;
@@ -205,7 +205,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
             // Add new device
             _discoveredDevices.add(device);
           }
-          
+
           // Sort by device name for consistent ordering
           _discoveredDevices.sort((a, b) => a.name.compareTo(b.name));
         });
@@ -224,11 +224,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       final mediator = container.resolve<Mediator>();
       final deviceIdService = container.resolve<IDeviceIdService>();
       final localDeviceId = await deviceIdService.getDeviceId();
-      
+
       // Check if device already exists
       final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-        GetSyncDeviceQuery(fromDeviceId: deviceId, toDeviceId: localDeviceId)
-      );
+          GetSyncDeviceQuery(fromDeviceId: deviceId, toDeviceId: localDeviceId));
 
       return existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null;
     } catch (e) {
@@ -238,7 +237,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Future<void> _connectToDevice(DiscoveredDevice device) async {
     HapticFeedback.selectionClick();
-    
+
     if (!mounted) return;
 
     await AsyncErrorHandler.executeChain<void>(
@@ -273,7 +272,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       ],
       onSuccess: (_) async {
         if (!mounted) return;
-        
+
         // Create and save the sync device
         await _createSyncDevice(device);
       },
@@ -283,7 +282,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   Future<void> _createSyncDevice(DiscoveredDevice device) async {
     final mediator = container.resolve<Mediator>();
     final deviceIdService = container.resolve<IDeviceIdService>();
-    
+
     await AsyncErrorHandler.executeChain<void>(
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
@@ -299,11 +298,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
         final localDeviceId = await deviceIdService.getDeviceId();
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
-        
+
         // Check if device already exists
         final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-          GetSyncDeviceQuery(fromDeviceId: device.deviceId, toDeviceId: localDeviceId)
-        );
+            GetSyncDeviceQuery(fromDeviceId: device.deviceId, toDeviceId: localDeviceId));
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
           throw BusinessException(
@@ -316,14 +314,14 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         // Remote device acts as server, local device as client
         final saveCommand = SaveSyncDeviceCommand(
           fromIP: device.ipAddress, // Remote device IP (server)
-          toIP: localIp,           // Local device IP (client)
+          toIP: localIp, // Local device IP (client)
           fromDeviceId: device.deviceId,
           toDeviceId: localDeviceId,
           name: "${device.name} ↔ $localDeviceName",
         );
 
         await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
-        
+
         return;
       },
       onSuccess: (_) async {
@@ -376,7 +374,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
     // Handle success after executeVoid completes
     if (!mounted) return;
-    
+
     OverlayNotificationHelper.hideNotification();
     await Future.delayed(const Duration(milliseconds: 100));
 
@@ -389,14 +387,14 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
     // Notify parent and close the page
     widget.onDeviceAdded?.call();
-    
+
     // Pop once to close the dialog
     Navigator.pop(context, true);
   }
 
   Future<void> _openQRScanner() async {
     HapticFeedback.selectionClick();
-    
+
     final result = await Navigator.pushNamed(
       context,
       QRCodeScannerPage.route,
@@ -410,7 +408,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Future<void> _openManualConnection() async {
     HapticFeedback.selectionClick();
-    
+
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => ManualIPInputDialog(
@@ -478,15 +476,15 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                 Text(
                   _translationService.translate(SyncTranslationKeys.addSyncDeviceTitle),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(height: AppTheme.sizeSmall),
                 Text(
                   _translationService.translate(SyncTranslationKeys.addSyncDeviceDescription),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ],
             ),
@@ -546,9 +544,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
           // Device List or Empty State
           Expanded(
-            child: _discoveredDevices.isEmpty && !_isScanning
-                ? _buildEmptyStateWithFooter()
-                : _buildDeviceList(),
+            child: _discoveredDevices.isEmpty && !_isScanning ? _buildEmptyStateWithFooter() : _buildDeviceList(),
           ),
         ],
       ),
@@ -577,12 +573,12 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
             Text(
               _translationService.translate(SyncTranslationKeys.noNearbyDevicesHint),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.sizeLarge),
-            
+
             // Refresh Button
             ElevatedButton.icon(
               onPressed: _startDeviceDiscovery,
@@ -602,7 +598,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         Expanded(
           child: _buildEmptyState(),
         ),
-        
+
         // Alternative Methods Footer
         _buildAlternativeMethodsFooter(),
       ],
@@ -632,124 +628,124 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                 );
               } else {
                 final device = _discoveredDevices[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.sizeMedium),
-            child: Row(
-              children: [
-                // Leading icon - centered
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                  child: const Icon(Icons.devices),
-                ),
-                const SizedBox(width: AppTheme.sizeMedium),
-                
-                // Content - takes available space
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        device.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
+                return Card(
+                  margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                    child: Row(
+                      children: [
+                        // Leading icon - centered
+                        CircleAvatar(
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                          child: const Icon(Icons.devices),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${device.ipAddress}:${device.port}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontFamily: 'monospace',
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        const SizedBox(width: AppTheme.sizeMedium),
+
+                        // Content - takes available space
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                device.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${device.ipAddress}:${device.port}',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontFamily: 'monospace',
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Icon(
+                                    _getPlatformIcon(device.platform),
+                                    size: 14,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      _translationService.translate(
+                                        SyncTranslationKeys.lastSeen,
+                                        namedArgs: {
+                                          'time': DateFormat.Hms().format(device.lastSeen),
+                                        },
+                                      ),
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(
-                            _getPlatformIcon(device.platform),
-                            size: 14,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              _translationService.translate(
-                                SyncTranslationKeys.lastSeen,
-                                namedArgs: {
-                                  'time': DateFormat.Hms().format(device.lastSeen),
-                                },
+                        const SizedBox(width: AppTheme.sizeMedium),
+
+                        // Trailing button - centered
+                        device.isAlreadyAdded
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.sizeMedium,
+                                  vertical: AppTheme.sizeSmall,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      size: 16,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _translationService.translate(SyncTranslationKeys.alreadyAdded),
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ElevatedButton(
+                                onPressed: () => _connectToDevice(device),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.sizeMedium,
+                                    vertical: AppTheme.sizeSmall,
+                                  ),
+                                ),
+                                child: Text(_translationService.translate(SyncTranslationKeys.connect)),
                               ),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppTheme.sizeMedium),
-                
-                // Trailing button - centered
-                device.isAlreadyAdded
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.sizeMedium,
-                          vertical: AppTheme.sizeSmall,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.check_circle_outline,
-                              size: 16,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _translationService.translate(SyncTranslationKeys.alreadyAdded),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : ElevatedButton(
-                        onPressed: () => _connectToDevice(device),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.sizeMedium,
-                            vertical: AppTheme.sizeSmall,
-                          ),
-                        ),
-                        child: Text(_translationService.translate(SyncTranslationKeys.connect)),
-                      ),
-              ],
-            ),
-          ),
-        );
+                );
               }
             },
           ),
         ),
-        
+
         // Alternative Methods Footer - only show when scanning is finished
         if (!_isScanning) _buildAlternativeMethodsFooter(),
       ],
@@ -785,8 +781,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                 child: Text(
                   _translationService.translate(SyncTranslationKeys.alternativeMethodsHint),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                 ),
               ),
             ],
@@ -851,9 +847,7 @@ class DiscoveredDevice {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DiscoveredDevice &&
-          runtimeType == other.runtimeType &&
-          deviceId == other.deviceId;
+      other is DiscoveredDevice && runtimeType == other.runtimeType && deviceId == other.deviceId;
 
   @override
   int get hashCode => deviceId.hashCode;

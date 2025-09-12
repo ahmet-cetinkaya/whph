@@ -73,7 +73,7 @@ void registerSyncFeature(
 
   // Register concurrent connection service
   container.registerSingleton<IConcurrentConnectionService>((_) => ConcurrentConnectionService());
-  
+
   // Register device handshake service
   container.registerSingleton<DeviceHandshakeService>((_) => DeviceHandshakeService());
 

@@ -7,12 +7,16 @@ import 'package:whph/core/shared/utils/logger.dart';
 /// Cross-platform network interface discovery service
 /// Provides comprehensive network interface detection for multi-interface sync
 class NetworkInterfaceService implements INetworkInterfaceService {
-  static const List<String> _wifiInterfaceNames = [
-    'wlan', 'wi-fi', 'wifi', 'wireless', 'wlp', 'wlx'
-  ];
-  
+  static const List<String> _wifiInterfaceNames = ['wlan', 'wi-fi', 'wifi', 'wireless', 'wlp', 'wlx'];
+
   static const List<String> _ethernetInterfaceNames = [
-    'eth', 'ethernet', 'ens', 'enp', 'eno', 'lan', 'local area connection'
+    'eth',
+    'ethernet',
+    'ens',
+    'enp',
+    'eno',
+    'lan',
+    'local area connection'
   ];
 
   @override
@@ -35,7 +39,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
         // For mobile, use network_info_plus to get WiFi info
         await _addMobileNetworkInterfaces(networkInterfaces);
       }
-      
+
       // For all platforms, also use NetworkInterface for comprehensive detection
       await _addDesktopNetworkInterfaces(networkInterfaces);
 
@@ -43,7 +47,8 @@ class NetworkInterfaceService implements INetworkInterfaceService {
       final uniqueInterfaces = _removeDuplicateInterfaces(networkInterfaces);
       uniqueInterfaces.sort((a, b) => b.priority.compareTo(a.priority));
 
-      Logger.debug('Found ${uniqueInterfaces.length} network interfaces: ${uniqueInterfaces.map((i) => '${i.name}(${i.ipAddress})').join(', ')}');
+      Logger.debug(
+          'Found ${uniqueInterfaces.length} network interfaces: ${uniqueInterfaces.map((i) => '${i.name}(${i.ipAddress})').join(', ')}');
       return uniqueInterfaces;
     } catch (e) {
       Logger.error('Failed to get active network interfaces: $e');
@@ -94,7 +99,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
   Future<void> _addMobileNetworkInterfaces(List<NetworkInterfaceInfo> interfaces) async {
     try {
       final info = NetworkInfo();
-      
+
       // Get WiFi IP
       final wifiIP = await info.getWifiIP();
       if (wifiIP != null && isValidLocalIPAddress(wifiIP)) {
@@ -143,10 +148,10 @@ class NetworkInterfaceService implements INetworkInterfaceService {
   /// Analyze network interface to determine type and priority
   NetworkInterfaceInfo _analyzeNetworkInterface(String name, String ipAddress) {
     final lowerName = name.toLowerCase();
-    
+
     bool isWiFi = _wifiInterfaceNames.any((wifiName) => lowerName.contains(wifiName));
     bool isEthernet = _ethernetInterfaceNames.any((ethName) => lowerName.contains(ethName));
-    
+
     // Determine priority based on interface type
     int priority = 50; // Default priority
     if (isWiFi) {
@@ -175,14 +180,14 @@ class NetworkInterfaceService implements INetworkInterfaceService {
   /// Remove duplicate interfaces based on IP address
   List<NetworkInterfaceInfo> _removeDuplicateInterfaces(List<NetworkInterfaceInfo> interfaces) {
     final Map<String, NetworkInterfaceInfo> uniqueMap = {};
-    
+
     for (final interface in interfaces) {
       final existing = uniqueMap[interface.ipAddress];
       if (existing == null || interface.priority > existing.priority) {
         uniqueMap[interface.ipAddress] = interface;
       }
     }
-    
+
     return uniqueMap.values.toList();
   }
 }

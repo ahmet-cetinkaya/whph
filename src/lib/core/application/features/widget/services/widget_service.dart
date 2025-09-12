@@ -92,7 +92,7 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
         final widgetService = container.resolve<WidgetService>();
         // Update widget to show immediate completion state
         await widgetService.updateWidget();
-        
+
         // Update again to refresh and hide completed habits if needed
         // This ensures the widget shows current state without relying on arbitrary delays
         await widgetService.updateWidget();
@@ -247,7 +247,9 @@ class WidgetService {
   final IContainer _container;
   late final FilterSettingsManager _filterSettingsManager;
 
-  WidgetService({required Mediator mediator, required IContainer container}) : _mediator = mediator, _container = container {
+  WidgetService({required Mediator mediator, required IContainer container})
+      : _mediator = mediator,
+        _container = container {
     _filterSettingsManager = FilterSettingsManager(_mediator);
   }
 
@@ -362,18 +364,18 @@ class WidgetService {
 
     // Convert habits to widget data with completion progress
     List<WidgetHabitData> habits = [];
-    
+
     // Get all habit records for today for all habits in a single query to avoid N+1 problem
     final habitIds = habitsResult.items.map((habit) => habit.id).toList();
     List todayRecordsList = [];
     Map<String, List> habitRecordsMap = {};
-    
+
     if (habitIds.isNotEmpty) {
       final todayRecordsWhereFilter = CustomWhereFilter(
         "habit_id IN (${habitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
         [...habitIds, startOfDay, endOfDay],
       );
-      
+
       // Resolve the habit record repository directly to use getList with customWhereFilter
       final habitRecordRepository = _container.resolve<IHabitRecordRepository>();
       final todayRecordsResult = await habitRecordRepository.getList(
@@ -381,15 +383,15 @@ class WidgetService {
         habitIds.length * 20, // Enough for multiple daily occurrences per habit
         customWhereFilter: todayRecordsWhereFilter,
       );
-      
+
       todayRecordsList = todayRecordsResult.items;
-      
+
       // Group records by habit ID
       for (final record in todayRecordsList) {
         habitRecordsMap.putIfAbsent(record.habitId, () => []).add(record);
       }
     }
-    
+
     // Since we're using excludeCompletedForDate, period-satisfied habits are already filtered out
     // We don't need complex period goal calculations anymore
 

@@ -31,7 +31,7 @@ class FirewallPermissionCard extends StatefulWidget {
 
 class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   static final String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_$webSocketPort';
-  
+
   ISetupService? _setupService;
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   final Mediator _mediator = container.resolve<Mediator>();
@@ -46,7 +46,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     _initializeSetupService();
     _initializeAsync();
   }
-  
+
   /// Initialize async operations
   Future<void> _initializeAsync() async {
     await _loadManualConfirmation();
@@ -73,11 +73,11 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       _isManuallyConfirmed = false;
       return;
     }
-    
+
     try {
       final query = GetSettingQuery(key: _linuxFirewallManualConfirmationKey);
       final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(query);
-      
+
       if (mounted) {
         setState(() {
           _isManuallyConfirmed = response.getValue<bool>();
@@ -88,7 +88,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
           }
         });
       }
-      
+
       Logger.debug('Loaded firewall manual confirmation: $_isManuallyConfirmed');
     } catch (e) {
       // Setting doesn't exist yet, default to false
@@ -109,16 +109,16 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     if (!isLinux) {
       return;
     }
-    
+
     try {
       final command = SaveSettingCommand(
         key: _linuxFirewallManualConfirmationKey,
         value: confirmed.toString(),
         valueType: SettingValueType.bool,
       );
-      
+
       await _mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(command);
-      
+
       if (mounted) {
         setState(() {
           _isManuallyConfirmed = confirmed;
@@ -139,15 +139,15 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
             _checkFirewallPermission();
           }
         });
-        
+
         // Notify parent of permission change
         widget.onPermissionChanged?.call();
       }
-      
+
       Logger.debug('Saved firewall manual confirmation: $confirmed');
     } catch (e) {
       Logger.error('Failed to save firewall manual confirmation: $e');
-      
+
       // Show error to user
       if (mounted) {
         OverlayNotificationHelper.showError(
@@ -212,7 +212,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
-    
+
     if (isLinux) return 'Linux';
     if (isWindows) return 'Windows';
     return 'Desktop';
@@ -223,7 +223,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
-    
+
     if (isLinux) {
       return 'sudo ufw allow $webSocketPort/tcp';
     } else if (isWindows) {
@@ -254,10 +254,13 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       ),
       // Alternative command prompt instructions
       PermissionInstructionSection(
-        title: _translationService.translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptTitle),
+        title: _translationService
+            .translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptTitle),
         steps: [
-          _translationService.translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptCmdStep1),
-          _translationService.translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptCmdStep2),
+          _translationService
+              .translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptCmdStep1),
+          _translationService
+              .translate(SettingsTranslationKeys.firewallInstructionWindowsAlternativeCommandPromptCmdStep2),
         ],
         copyableCommands: [
           '', // No command for "Open Command Prompt"
@@ -297,14 +300,14 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   Future<bool> _onAutomaticFirewallRuleAddition() async {
     // Manual confirmation is only available for Linux
     final isWindows = Platform.isWindows;
-    
+
     if (!isWindows || _setupService == null) {
       return false;
     }
 
     try {
       Logger.debug('Starting automatic Windows firewall rule addition');
-      
+
       // Add firewall rule using the setup service (this will request UAC)
       await _setupService!.addFirewallRule(
         ruleName: 'WHPH Sync Port $webSocketPort',
@@ -312,30 +315,30 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
         port: webSocketPort.toString(),
         protocol: 'TCP',
       );
-      
+
       // Refresh the firewall permission status
       await _checkFirewallPermission();
-      
+
       Logger.info('Automatic Windows firewall rule addition completed successfully');
-      
+
       if (mounted) {
         OverlayNotificationHelper.showSuccess(
           context: context,
           message: _translationService.translate(SettingsTranslationKeys.firewallRuleAddedSuccess),
         );
       }
-      
+
       return true; // Success
     } catch (e) {
       Logger.error('Failed to add Windows firewall rule automatically: $e');
-      
+
       if (mounted) {
         OverlayNotificationHelper.showError(
           context: context,
           message: _translationService.translate(SettingsTranslationKeys.firewallRuleAddError),
         );
       }
-      
+
       return false; // Failure
     }
   }
@@ -356,7 +359,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     // Manual confirmation is only available for Linux
     final isLinux = Platform.isLinux;
     final isWindows = Platform.isWindows;
-    
+
     if (!PlatformUtils.isDesktop || _setupService == null || _shouldHideCard) {
       return const SizedBox.shrink();
     }
@@ -383,17 +386,15 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
                     namedArgs: {'platform': _getPlatformName()},
                   ),
             // Use multiple instruction sections for Windows and Linux
-            learnMoreDialogSections: isWindows 
-                ? _getWindowsInstructionSections() 
-                : (isLinux ? _getLinuxInstructionSections() : null),
+            learnMoreDialogSections:
+                isWindows ? _getWindowsInstructionSections() : (isLinux ? _getLinuxInstructionSections() : null),
             learnMoreDialogInfoText:
                 _translationService.translate(SettingsTranslationKeys.firewallPermissionDialogInfoText),
             actionButtonText: _translationService.translate('shared.buttons.done'),
             // Windows automatic action
             onAutomaticAction: isWindows ? _onAutomaticFirewallRuleAdditionWithDialogControl : null,
-            automaticActionButtonText: isWindows
-                ? _translationService.translate(SettingsTranslationKeys.firewallAddRuleButtonText)
-                : null,
+            automaticActionButtonText:
+                isWindows ? _translationService.translate(SettingsTranslationKeys.firewallAddRuleButtonText) : null,
             // Don't automatically close the dialog after automatic action - we'll handle it manually
             autoCloseAfterAutomaticAction: false,
             // Linux manual confirmation action

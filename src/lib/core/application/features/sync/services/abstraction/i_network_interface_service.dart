@@ -36,7 +36,8 @@ class NetworkInterfaceInfo {
   });
 
   @override
-  String toString() => 'NetworkInterfaceInfo(name: $name, ip: $ipAddress, wifi: $isWiFi, ethernet: $isEthernet, priority: $priority)';
+  String toString() =>
+      'NetworkInterfaceInfo(name: $name, ip: $ipAddress, wifi: $isWiFi, ethernet: $isEthernet, priority: $priority)';
 
   @override
   bool operator ==(Object other) =>

@@ -65,7 +65,8 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String firewallPermissionDescription = 'settings.permissions.firewall.description';
   static const String firewallPermissionDialogDescription = 'settings.permissions.firewall.dialog_description';
   static const String firewallPermissionDialogInfoText = 'settings.permissions.firewall.dialog_info_text';
-  static const String firewallLinuxManualConfirmationButton = 'settings.permissions.firewall.linux_manual_confirmation_button';
+  static const String firewallLinuxManualConfirmationButton =
+      'settings.permissions.firewall.linux_manual_confirmation_button';
   static const String firewallSaveConfirmationError = 'settings.permissions.firewall.save_confirmation_error';
   static const String firewallRuleAddedSuccess = 'settings.permissions.firewall.rule_added_success';
   static const String firewallRuleAddError = 'settings.permissions.firewall.rule_add_error';
@@ -86,10 +87,13 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String firewallInstructionWindowsStep7 = 'settings.permissions.firewall.instructions.windows.step7';
   static const String firewallInstructionWindowsStep8 = 'settings.permissions.firewall.instructions.windows.step8';
   static const String firewallInstructionWindowsStep9 = 'settings.permissions.firewall.instructions.windows.step9';
-  static const String firewallInstructionWindowsAlternativeCommandPromptTitle = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.title';
-  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep1 = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step1';
-  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep2 = 'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step2';
-  
+  static const String firewallInstructionWindowsAlternativeCommandPromptTitle =
+      'settings.permissions.firewall.instructions.windows.alternative_command_prompt.title';
+  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep1 =
+      'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step1';
+  static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep2 =
+      'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step2';
+
   // Firewall Automatic Actions - Windows
   static const String firewallAddRuleButtonText = 'settings.permissions.firewall.add_rule_button';
   static const String firewallWindowsAutoDescription = 'settings.permissions.firewall.windows_auto_description';

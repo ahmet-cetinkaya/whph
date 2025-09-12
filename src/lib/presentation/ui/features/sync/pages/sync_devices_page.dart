@@ -68,7 +68,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     // CRITICAL: Use the same sync service instance from container
     // This ensures we listen to the same stream that's being updated
     _syncService = container.resolve<ISyncService>();
-    
+
     if (Platform.isAndroid) {
       _serverSyncService = container.resolve<AndroidServerSyncService>();
     }
@@ -486,8 +486,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     }
   }
 
-
-
   /// Show the Add Sync Device page using ResponsiveDialogHelper
   Future<void> _showAddDevicePage() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -510,7 +508,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       refresh();
     }
   }
-
 
   Widget _buildSyncStatusIndicator() {
     return AnimatedBuilder(
@@ -579,7 +576,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               color: Theme.of(context).colorScheme.primary,
               tooltip: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
             ),
-          
+
           // Kebab menu containing help, and mobile sync controls
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
@@ -624,10 +621,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                   value: 'toggle_server',
                   child: Row(
                     children: [
-                      Icon(_isServerMode ? Icons.stop : Icons.wifi_tethering, color: Theme.of(context).colorScheme.primary),
+                      Icon(_isServerMode ? Icons.stop : Icons.wifi_tethering,
+                          color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
-                      Text(_isServerMode 
-                          ? _translationService.translate(SyncTranslationKeys.serverModeStopMenu) 
+                      Text(_isServerMode
+                          ? _translationService.translate(SyncTranslationKeys.serverModeStopMenu)
                           : _translationService.translate(SyncTranslationKeys.serverModeStartMenu)),
                     ],
                   ),
@@ -681,7 +679,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       ),
     );
   }
-  }
+}
 
 class SyncDeviceListItemWidget extends StatefulWidget {
   final SyncDeviceListItem item;
@@ -776,7 +774,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
     // Enhanced device info to show connection details
     final fromIP = widget.item.fromIP;
     final toIP = widget.item.toIP;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -803,8 +801,9 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
           const SizedBox(height: 2),
           Row(
             children: [
-              Icon(Icons.network_check, size: AppTheme.iconSizeXSmall, 
-                   color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+              Icon(Icons.network_check,
+                  size: AppTheme.iconSizeXSmall,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
               SizedBox(width: AppTheme.sizeXSmall),
               Expanded(
                 child: Text(
