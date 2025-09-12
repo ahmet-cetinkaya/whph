@@ -1,22 +1,20 @@
-error:
-  scan: Scannen fehlgeschlagen
 sync:
   devices:
     errors:
-      loading: Synchronisationsgeräte konnten nicht geladen werden
-      removing: Synchronisationsgerät konnte nicht entfernt werden
-      sync_failed: Geräte konnten nicht synchronisiert werden
+      loading: Fehler beim Laden der Synchronisierungsgeräte
+      removing: Fehler beim Entfernen des Synchronisierungsgeräts
+      sync_failed: Fehler beim Synchronisieren der Geräte
     from_label: Von
     help:
       content: |
-        🔄 Halten Sie Ihre Aufgaben, Gewohnheiten, Notizen, Einstellungen usw. auf allen Geräten synchronisiert. Alle Daten bleiben in Ihrem lokalen Netzwerk — nichts wird in die Cloud gesendet.
+        🔄 Halten Sie Ihre Aufgaben, Gewohnheiten, Notizen, Einstellungen usw. auf allen Geräten synchronisiert. Alle Daten bleiben im lokalen Netzwerk — nichts wird in die Cloud gesendet.
 
         ## ⚡ Schnelle und sichere Einrichtung
 
-        Verbinden Sie Ihre Geräte über dasselbe Wi-Fi-Netzwerk mit QR-Codes. Die Synchronisation startet automatisch nach der Kopplung.
+        Verbinden Sie Ihre Geräte über dasselbe Wi-Fi-Netzwerk mit QR-Codes. Die Synchronisation startet automatisch nach der Paarung.
 
-        - 📱 **Mobil → Mobil:** Ein Gerät muss im **Server-Modus** sein, um die Kopplung zu ermöglichen  
-        - 💻 **Desktop → Mobil:** Desktop zeigt QR-Code, Mobil scannt ihn  
+        - 📱 **Mobil → Mobil:** Ein Gerät muss im **Server-Modus** sein, um die Paarung zu erlauben  
+        - 💻 **Desktop → Mobil:** Desktop zeigt einen QR-Code, Mobil scannt ihn  
 
         ## 📱 Mobile Geräte
 
@@ -24,118 +22,119 @@ sync:
 
         - 🔍 **Client-Modus:**  
           - Scannt QR-Codes  
-          - Verbindet sich mit anderen Geräten zum Datenempfang  
+          - Verbinde mit anderen Geräten, um Daten zu empfangen  
         - 📡 **Server-Modus:**  
-          - Zeigt QR-Code zum Scannen für andere  
+          - Zeigt QR-Code für andere zum Scannen  
           - Sendet Daten an verbundene Geräte  
           - Kann über das Wi-Fi-Hotspot-Symbol umgeschaltet werden
 
-        Für die Synchronisation zwischen zwei mobilen Geräten muss eines im **Server-Modus** sein.
+        Um zwischen zwei mobilen Geräten zu synchronisieren, muss eines im **Server-Modus** sein.
 
         ## 💻 Desktop-Geräte
 
-        Desktop-Anwendungen fungieren immer als **Server**-Knoten:
+        Desktop-Apps arbeiten immer als **Server**-Knoten:
 
-        - 🖥️ Zeigen QR-Code für die Kopplung  
-        - ✅ Akzeptieren eingehende Verbindungen automatisch  
-        - 🔄 Synchronisieren Daten in beide Richtungen  
-        - 📊 Zeigen Live-Synchronisationsstatus
+        - 🖥️ Zeigt QR-Code für die Paarung  
+        - ✅ Akzeptiert eingehende Verbindungen automatisch  
+        - 🔄 Synchronisiert Daten in beide Richtungen  
+        - 📊 Zeigt Live-Synchronisationsstatus
 
         ## 🛠️ Geräteverwaltung
 
-        Verwalten Sie alle verbundenen Geräte von einem Ort aus:
+        Verwalten Sie alle verbundenen Geräte von einem Ort:
 
-        - 📋 Verbundene Geräte anzeigen  
-        - ⏰ Letzte Synchronisationszeiten einsehen  
+        - 📋 Anzeigen verbundener Geräte  
+        - ⏰ Letzte Synchronisationszeiten anzeigen  
         - 🔁 Manuelle Synchronisation auslösen  
         - 🗑️ Alte oder ungenutzte Geräte entfernen
 
-        ## 💡 Bewährte Praktiken
+        ## 💡 Best Practices
 
         - 📶 Stellen Sie sicher, dass alle Geräte im selben Wi-Fi-Netzwerk sind  
-        - 📱 Halten Sie Apps während der Synchronisation geöffnet und aktiv  
-        - 🧹 Entfernen Sie Geräte, die Sie nicht mehr verwenden  
+        - 📱 Halten Sie Apps während der Synchronisation offen und aktiv  
+        - 🧹 Entfernen Sie Geräte, die Sie nicht mehr nutzen  
         - ⏱️ Überprüfen Sie Synchronisationszeiten, um sicherzustellen, dass alles aktuell ist
-      title: Gerätesynchronisation Hilfe
+      title: Hilfe zur Gerätesynchronisation
     last_sync_label: Letzte Synchronisation
     no_devices_found: Keine synchronisierten Geräte
     sync_tooltip: Jetzt synchronisieren
-    title: Geräte synchronisieren
-    to_label: An
+    title: Synchronisierte Geräte
+    to_label: Zu
     unnamed_device: Unbenanntes Gerät
   error:
-    scan: Scannen fehlgeschlagen
+    scan: Scan fehlgeschlagen
   errors:
     connection_failed: |
       Verbindung fehlgeschlagen. Bitte stellen Sie sicher:
 
       1. Beide Geräte sind im selben Netzwerk
       2. Beide Apps sind geöffnet und laufen
-      3. Keine Firewall blockiert die Verbindung
-    device_mismatch: Synchronisationsfehler. Das Gerät, das zu synchronisieren versucht, ist nicht ordnungsgemäß mit diesem Gerät gekoppelt.
-    device_not_found: Synchronisationsgerät nicht gefunden
-    ip_address: Lokale IP-Adresse konnte nicht abgerufen werden
-    parse_message: Gescannte Nachricht konnte nicht verarbeitet werden
+      3. Kein Firewall blockiert die Verbindung
+    device_mismatch: Synchronisationsfehler. Das Gerät, das synchronisieren möchte, ist nicht korrekt mit diesem Gerät gepaart.
+    device_not_found: Synchronisierungsgerät nicht gefunden
+    ip_address: Lokale IP-Adresse kann nicht abgerufen werden
+    parse_message: Gescannte Nachricht kann nicht geparst werden
     process_failed: Synchronisationsprozess fehlgeschlagen.
-    save_device: Synchronisationsgerät konnte nicht gespeichert werden
-    scan: QR-Code konnte nicht gescannt werden
+    save_device: Speichern des Synchronisierungsgeräts fehlgeschlagen
+    scan: Scan fehlgeschlagen
     sync_failed: Synchronisation fehlgeschlagen. Bitte versuchen Sie es erneut.
-    sync_timeout: Synchronisation-Timeout
-    version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf dieselbe Version."
-    local_ip_error: Lokale IP-Adresse kann nicht ermittelt werden
-    device_already_paired: Dieses Gerät ist bereits gekoppelt
-    no_active_interfaces: Keine aktiven Netzwerkschnittstellen gefunden
-    device_discovery_failed: "Geräteerkennung fehlgeschlagen: {error}"
+    sync_timeout: Synchronisations-Timeout
+    version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf die gleiche Version."
+    local_ip_error: Lokaler IP-Fehler
+    device_already_paired: Gerät bereits gepaart
+    no_active_interfaces: Keine aktiven Netzwerkschnittstellen
+    device_discovery_failed: Geräteerkennung fehlgeschlagen
   messages:
-    device_already_paired: Dieses Gerät ist bereits gekoppelt
+    device_already_paired: Dieses Gerät ist bereits gepaart
     sync_completed: Synchronisation erfolgreich abgeschlossen
     sync_in_progress: Synchronisation läuft...
     testing_connection: Verbindung wird getestet...
-    device_added_success: "{deviceName} erfolgreich zu Synchronisationsgeräten hinzugefügt"
+    device_added_success: Gerät erfolgreich hinzugefügt
   qr_code:
     close_button: Schließen
-    dialog_title: QR-Code scannen zum Synchronisieren
+    dialog_title: QR-Code zum Synchronisieren scannen
+    title: QR-Code
   scanner:
     title: QR-Code scannen
-    instruction: QR-Code im Rahmen positionieren
+    instruction: Positionieren Sie den QR-Code im Rahmen
   server:
     starting: Server-Modus wird gestartet...
     active: Server-Modus aktiv - QR-Code anderen Geräten zeigen
     stopped: Server-Modus gestoppt - Gerät ist jetzt im Client-Modus
-    start_failed: Server-Modus konnte nicht gestartet werden - Prüfen Sie, ob Port 44040 verfügbar ist
+    start_failed: Start des Server-Modus fehlgeschlagen - Überprüfen Sie, ob Port 44040 verfügbar ist
     start_tooltip: Server-Modus starten
     stop_tooltip: Server-Modus stoppen
-    start_menu: Server-Modus starten
-    stop_menu: Server-Modus stoppen
     error: Fehler
     device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver
+    start_menu: Server starten
+    stop_menu: Server stoppen
   manual:
     connection: Manuelle Verbindung
-    description: Geben Sie die IP-Adresse und den Port des Geräts ein, mit dem Sie sich manuell verbinden möchten.
+    description: Geben Sie IP-Adresse und Port ein, um mit einem anderen Gerät zu verbinden
     ip_address: IP-Adresse
     port: Port
     device_name: Gerätename
     optional: (Optional)
-    connecting: Verbindung zum Gerät wird hergestellt...
+    connecting: Verbinde...
     cancel: Abbrechen
     connect: Verbinden
-    ip_required: IP-Adresse ist erforderlich
+    ip_required: IP-Adresse erforderlich
     invalid_ip: Ungültiges IP-Adressformat
-    port_required: Port ist erforderlich
-    invalid_port: Port muss zwischen 1 und 65535 liegen
-    connection_failed: Verbindung zum Gerät fehlgeschlagen
-    connection_error: "Verbindungsfehler: {0}"
+    port_required: Port erforderlich
+    invalid_port: Ungültige Portnummer
+    connection_failed: Verbindung fehlgeschlagen
+    connection_error: Verbindungsfehler
   add:
     device: Gerät hinzufügen
-    device_tooltip: Neues Gerät per QR-Code-Scan oder manuelle IP-Eingabe hinzufügen
-    sync_device: Synchronisationsgerät hinzufügen
-    sync_device_title: Synchronisationsgerät hinzufügen
-    sync_device_description: Entdecken Sie Geräte in der Nähe oder verbinden Sie sich manuell, um Ihre Daten zwischen Geräten zu synchronisieren.
-    scanning_for_devices: Suche nach Geräten in der Nähe...
-    no_nearby_devices: Keine Geräte in der Nähe gefunden
-    no_nearby_devices_hint: Stellen Sie sicher, dass beide Geräte im selben WLAN sind und WHPH ausgeführt wird.
-    alternative_methods_hint: Können Sie Ihr Gerät nicht finden? Probieren Sie diese alternativen Methoden aus.
+    device_tooltip: Neues Synchronisierungsgerät hinzufügen
+    sync_device: Gerät synchronisieren
+    sync_device_title: Mit Gerät synchronisieren
+    sync_device_description: Mit einem anderen Gerät verbinden, um Daten zu synchronisieren
+    scanning_for_devices: Suche nach Geräten...
+    no_nearby_devices: Keine Geräte in der Nähe
+    no_nearby_devices_hint: Stellen Sie sicher, dass Geräte im selben Netzwerk sind
+    alternative_methods_hint: Versuchen Sie manuelle Verbindung oder QR-Code
     scan_qr_code: QR-Code scannen
     refresh_scan: Scan aktualisieren
-    last_seen: "Zuletzt gesehen um {time}"
+    last_seen: Zuletzt gesehen
     already_added: Bereits hinzugefügt

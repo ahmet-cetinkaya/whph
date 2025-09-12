@@ -1,102 +1,140 @@
 sync:
   devices:
     errors:
-      loading: Nie udało się załadować urządzeń synchronizacji
-      removing: Nie udało się usunąć urządzenia synchronizacji
-      sync_failed: Nie udało się zsynchronizować urządzeń
+      loading: Błąd podczas ładowania urządzeń synchronizacji
+      removing: Błąd podczas usuwania urządzenia synchronizacji
+      sync_failed: Błąd podczas synchronizacji urządzeń
     from_label: Od
     help:
       content: |
-        🔄 Utrzymuj swoje zadania, nawyki, notatki, ustawienia itp. zsynchronizowane na wszystkich urządzeniach. Wszystkie dane pozostają w twojej sieci lokalnej — nic nie jest wysyłane do chmury.
+        🔄 Utrzymuj swoje zadania, nawyki, notatki, ustawienia itp. zsynchronizowane na wszystkich urządzeniach. Wszystkie dane pozostają w lokalnej sieci — nic nie jest wysyłane do chmury.
 
         ## ⚡ Szybka i bezpieczna konfiguracja
 
-        Połącz swoje urządzenia przez tę samą sieć Wi-Fi używając kodów QR. Synchronizacja rozpoczyna się automatycznie po sparowaniu.
+        Połącz swoje urządzenia przez tę samą sieć Wi-Fi za pomocą kodów QR. Synchronizacja zaczyna się automatycznie po sparowaniu.
 
-        - 📱 **Telefon → Telefon:** Jedno urządzenie musi być w **trybie serwera**, aby umożliwić parowanie
-        - 💻 **Komputer → Telefon:** Komputer pokazuje kod QR, telefon go skanuje
+        - 📱 **Mobilne → Mobilne:** Jedno urządzenie musi być w **trybie Serwera**, aby umożliwić sparowanie  
+        - 💻 **Desktop → Mobilne:** Desktop pokazuje kod QR, mobilne go skanuje  
 
         ## 📱 Urządzenia mobilne
 
         Urządzenia Android mogą pracować w dwóch różnych trybach:
 
-        - 🔍 **Tryb klienta:**
-          - Skanuje kody QR
-          - Łączy się z innymi urządzeniami, aby otrzymać dane
-        - 📡 **Tryb serwera:**
-          - Pokazuje kod QR do skanowania przez innych
-          - Wysyła dane do połączonych urządzeń
-          - Można przełączać za pomocą ikony hotspotu Wi-Fi
+        - 🔍 **Tryb Klienta:**  
+          - Skanuje kody QR  
+          - Łączy się z innymi urządzeniami, aby odbierać dane  
+        - 📡 **Tryb Serwera:**  
+          - Wyświetla kod QR dla innych do skanowania  
+          - Wysyła dane do połączonych urządzeń  
+          - Może być przełączany za pomocą ikony hotspotu Wi-Fi
 
-        Aby synchronizować między dwoma urządzeniami mobilnymi, jedno musi być w **trybie serwera**.
+        Aby synchronizować między dwoma urządzeniami mobilnymi, jedno musi być w **trybie Serwera**.
 
-        ## 💻 Urządzenia stacjonarne
+        ## 💻 Urządzenia desktopowe
 
-        Aplikacje komputerowe zawsze działają jako węzły **serwera**:
+        Aplikacje desktopowe zawsze działają jako węzły **Serwera**:
 
-        - 🖥️ Wyświetlają kod QR do parowania
-        - ✅ Automatycznie akceptują przychodzące połączenia
-        - 🔄 Synchronizują dane w obu kierunkach
-        - 📊 Pokazują status synchronizacji na żywo
+        - 🖥️ Wyświetlają kod QR do sparowania  
+        - ✅ Automatycznie akceptują przychodzące połączenia  
+        - 🔄 Synchronizują dane w obu kierunkach  
+        - 📊 Wyświetlają status synchronizacji na żywo
 
         ## 🛠️ Zarządzanie urządzeniami
 
         Zarządzaj wszystkimi połączonymi urządzeniami z jednego miejsca:
 
-        - 📋 Przeglądaj połączone urządzenia
-        - ⏰ Zobacz czasy ostatniej synchronizacji
-        - 🔁 Uruchom ręczną synchronizację
+        - 📋 Wyświetl połączone urządzenia  
+        - ⏰ Wyświetl ostatnie czasy synchronizacji  
+        - 🔁 Uruchom ręczną synchronizację  
         - 🗑️ Usuń stare lub nieużywane urządzenia
 
         ## 💡 Najlepsze praktyki
 
-        - 📶 Upewnij się, że wszystkie urządzenia są w tej samej sieci Wi-Fi
-        - 📱 Utrzymuj aplikacje otwarte i aktywne podczas synchronizacji
-        - 🧹 Usuń urządzenia, których już nie używasz
-        - ⏱️ Sprawdzaj czasy synchronizacji, aby upewnić się, że wszystko jest aktualne
+        - 📶 Upewnij się, że wszystkie urządzenia są w tej samej sieci Wi-Fi  
+        - 📱 Trzymaj aplikacje otwarte i aktywne podczas synchronizacji  
+        - 🧹 Usuń urządzenia, których już nie używasz  
+        - ⏱️ Sprawdź czasy synchronizacji, aby upewnić się, że wszystko jest aktualne
       title: Pomoc synchronizacji urządzeń
     last_sync_label: Ostatnia synchronizacja
-    no_devices_found: Nie znaleziono zsynchronizowanych urządzeń
+    no_devices_found: Brak zsynchronizowanych urządzeń
     sync_tooltip: Synchronizuj teraz
-    title: Synchronizuj urządzenia
+    title: Urządzenia synchronizacji
     to_label: Do
-    unnamed_device: Urządzenie bez nazwy
+    unnamed_device: Nieznane urządzenie
   error:
-    scan: Nie udało się zeskanować
+    scan: Błąd skanowania
   errors:
     connection_failed: |
-      Połączenie nie powiodło się. Upewnij się, że:
+      Połączenie nie powiodło się. Upewnij się:
 
       1. Oba urządzenia są w tej samej sieci
-      2. Obie aplikacje są otwarte i działają
-      3. Żadna zapora sieciowa nie blokuje połączenia
+      2. Oba aplikacje są otwarte i działają
+      3. Żaden firewall nie blokuje połączenia
     device_mismatch: Błąd synchronizacji. Urządzenie próbujące synchronizować nie jest prawidłowo sparowane z tym urządzeniem.
-    device_not_found: Nie znaleziono urządzenia synchronizacji
+    device_not_found: Urządzenie synchronizacji nie znalezione
     ip_address: Nie można pobrać lokalnego adresu IP
     parse_message: Nie można przeanalizować zeskanowanej wiadomości
     process_failed: Proces synchronizacji nie powiódł się.
-    save_device: Nie udało się zapisać urządzenia synchronizacji
-    scan: Nie udało się zeskanować
+    save_device: Błąd podczas zapisywania urządzenia synchronizacji
+    scan: Błąd skanowania
     sync_failed: Synchronizacja nie powiodła się. Spróbuj ponownie.
-    sync_timeout: Przekroczono czas synchronizacji
-    version_mismatch: "Niezgodność wersji. Wersja lokalna: {currentVersion}, Wersja zdalna: {remoteVersion}. Zaktualizuj obie aplikacje do tej samej wersji."
+    sync_timeout: Limit czasu synchronizacji
+    version_mismatch: "Niezgodność wersji. Lokalna wersja: {currentVersion}, Zdalna wersja: {remoteVersion}. Zaktualizuj obie aplikacje do tej samej wersji."
+    local_ip_error: Błąd lokalnego IP
+    device_already_paired: Urządzenie już sparowane
+    no_active_interfaces: Brak aktywnych interfejsów sieciowych
+    device_discovery_failed: Odkrywanie urządzeń nie powiodło się
   messages:
     device_already_paired: To urządzenie jest już sparowane
     sync_completed: Synchronizacja zakończona pomyślnie
-    sync_in_progress: Synchronizacja w toku...
+    sync_in_progress: Synchronizowanie...
     testing_connection: Testowanie połączenia...
+    device_added_success: Urządzenie dodane pomyślnie
   qr_code:
     close_button: Zamknij
-    dialog_title: Zeskanuj kod QR, aby zsynchronizować
+    dialog_title: Skanuj kod QR, aby synchronizować
+    title: Kod QR
   scanner:
-    title: Zeskanuj kod QR
+    title: Skanuj kod QR
     instruction: Umieść kod QR w ramce
   server:
     starting: Uruchamianie trybu serwera...
     active: Tryb serwera aktywny - Pokaż kod QR innym urządzeniom
     stopped: Tryb serwera zatrzymany - Urządzenie jest teraz w trybie klienta
-    start_failed: Nie udało się uruchomić trybu serwera - Sprawdź, czy port 44040 jest dostępny
+    start_failed: Uruchomienie trybu serwera nie powiodło się - Sprawdź, czy port 44040 jest dostępny
     start_tooltip: Uruchom tryb serwera
     stop_tooltip: Zatrzymaj tryb serwera
     error: Błąd
     device_became_server: To urządzenie jest teraz serwerem synchronizacji
+    start_menu: Uruchom serwer
+    stop_menu: Zatrzymaj serwer
+  manual:
+    connection: Ręczne połączenie
+    description: Wpisz adres IP i port, aby połączyć się z innym urządzeniem
+    ip_address: Adres IP
+    port: Port
+    device_name: Nazwa urządzenia
+    optional: (Opcjonalne)
+    connecting: Łączenie...
+    cancel: Anuluj
+    connect: Połącz
+    ip_required: Adres IP jest wymagany
+    invalid_ip: Nieprawidłowy format adresu IP
+    port_required: Port jest wymagany
+    invalid_port: Nieprawidłowy numer portu
+    connection_failed: Połączenie nie powiodło się
+    connection_error: Błąd połączenia
+  add:
+    device: Dodaj urządzenie
+    device_tooltip: Dodaj nowe urządzenie synchronizacji
+    sync_device: Synchronizuj urządzenie
+    sync_device_title: Synchronizuj z urządzeniem
+    sync_device_description: Połącz się z innym urządzeniem, aby synchronizować dane
+    scanning_for_devices: Skanowanie urządzeń...
+    no_nearby_devices: Brak urządzeń w pobliżu
+    no_nearby_devices_hint: Upewnij się, że urządzenia są w tej samej sieci
+    alternative_methods_hint: Spróbuj ręcznego połączenia lub kodu QR
+    scan_qr_code: Skanuj kod QR
+    refresh_scan: Odśwież skanowanie
+    last_seen: Ostatnio widziany
+    already_added: Już dodany
