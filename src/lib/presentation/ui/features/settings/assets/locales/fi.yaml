@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Palomuurin käyttöoikeus
+      description: Salli WHPH:n kommunikoida {platform}-palomuurin läpi portissa 44040 laitesynkronointia varten.
+      dialog_description: WHPH tarvitsee palomuurin käyttöoikeuden, jotta muut laitteet voivat muodostaa yhteyden synkronointia varten. Seuraa alla olevia komentoja määrittääksesi {platform}-palomuurin. Löydät nämä vaiheet myös ohjevalikosta.
+      dialog_info_text: "Huomautus: Löydät nämä vaiheet myös ohjevalikosta."
+      linux_manual_confirmation_button: "Olen määrittänyt"
+      save_confirmation_error: Palomuurin vahvistusasetuksen tallentaminen epäonnistui
+      rule_added_success: Palomuurisääntö lisätty onnistuneesti
+      rule_add_error: Palomuurisäännön lisääminen epäonnistui. Kokeile manuaalisia vaiheita.
+      add_rule_button: "Lisää palomuurisääntö"
+      windows_auto_description: "Napsauta 'Lisää palomuurisääntö' lisätäksesi palomuurisäännön automaattisesti UAC-käyttöoikeuspyynnöllä. Jos haluat lisätä manuaalisesti, seuraa alla olevia vaiheita:"
+      instructions:
+        linux:
+          step1: "Avaa pääte"
+          step2: "Tarkista palomuurin tila:"
+          step3: "Lisää palomuurisääntö (jos UFW on aktiivinen):"
+          step4: "Vahvista, että sääntö lisättiin:"
+        windows:
+          step1: "Avaa Windows Defender -palomuuri Ohjauspaneelista"
+          step2: "Napsauta Vasemmassa reunassa Lisäasetukset"
+          step3: "Vasemmassa ruudussa napsauta Saapuvat säännöt"
+          step4: "Oikeassa ruudussa napsauta Uusi sääntö..."
+          step5: "Valitse Portti ja napsauta Seuraava"
+          step6: "Valitse TCP ja syötä 44040 tiettyjen paikallisten porttien kenttään"
+          step7: "Valitse Salli yhteys ja napsauta Seuraava"
+          step8: "Valitse kaikki profiilit (Toimialue, Yksityinen, Julkinen) ja napsauta Seuraava"
+          step9: "Anna nimeksi esimerkiksi WHPH Sync Port 44040 ja napsauta Valmis"
+          alternative_command_prompt:
+            title: "Vaihtoehtoinen: Käytä komentokehotetta"
+            steps:
+              cmd_step1: "Avaa komentokehote järjestelmänvalvojana"
+              cmd_step2: "Lisää palomuurisääntö:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

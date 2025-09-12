@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Brannmur-tillatelse
+      description: Tillat WHPH å kommunisere gjennom {platform} brannmuren på port 44040 for enhetssynkronisering.
+      dialog_description: WHPH trenger brannmur-tillatelse for å tillate andre enheter å koble til for synkronisering. Følg kommandoene nedenfor for å konfigurere din {platform} brannmur. Du kan også finne disse trinnene i hjelpemenyen.
+      dialog_info_text: "Merk: Du kan også finne disse trinnene i hjelpemenyen."
+      linux_manual_confirmation_button: "Jeg har konfigurert"
+      save_confirmation_error: Kunne ikke lagre brannmur-bekreftelsesinnstilling
+      rule_added_success: Brannmur-regel lagt til vellykket
+      rule_add_error: Kunne ikke legge til brannmur-regel. Prøv manuelle trinn.
+      add_rule_button: "Legg til brannmur-regel"
+      windows_auto_description: "Klikk på 'Legg til brannmur-regel' for å automatisk legge til brannmur-regelen med UAC-tillatelsesforespørsel. Hvis du foretrekker å legge til manuelt, følg trinnene nedenfor:"
+      instructions:
+        linux:
+          step1: "Åpne en terminal"
+          step2: "Sjekk brannmur-status:"
+          step3: "Legg til brannmur-regel (hvis UFW er aktiv):"
+          step4: "Bekreft at regelen ble lagt til:"
+        windows:
+          step1: "Åpne Windows Defender Brannmur fra Kontrollpanel"
+          step2: "Klikk på Avanserte innstillinger til venstre"
+          step3: "I venstre rute, klikk på Innkommende regler"
+          step4: "I høyre rute, klikk på Ny regel..."
+          step5: "Velg Port og klikk på Neste"
+          step6: "Velg TCP og skriv inn 44040 i feltet for spesifikke lokale porter"
+          step7: "Velg Tillat tilkoblingen og klikk på Neste"
+          step8: "Merk alle profiler (Domene, Privat, Offentlig) og klikk på Neste"
+          step9: "Skriv inn et navn som WHPH Sync Port 44040 og klikk på Fullfør"
+          alternative_command_prompt:
+            title: "Alternativ: Bruk kommandoprompt"
+            steps:
+              cmd_step1: "Åpne kommandoprompt som administrator"
+              cmd_step2: "Legg til brannmur-regel:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

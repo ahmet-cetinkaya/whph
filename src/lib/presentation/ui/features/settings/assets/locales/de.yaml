@@ -95,6 +95,39 @@ settings:
           step2: Erlauben Sie Benachrichtigungen, wenn Sie dazu aufgefordert werden
       title: Benachrichtigungsberechtigung
     open_settings: Einstellung öffnen
+    open_terminal: Terminal öffnen
+    firewall:
+      title: Firewall-Berechtigung
+      description: Erlauben Sie WHPH, über die {platform}-Firewall auf Port 44040 für die Gerätesynchronisierung zu kommunizieren.
+      dialog_description: WHPH benötigt Firewall-Berechtigungen, damit andere Geräte für die Synchronisierung eine Verbindung herstellen können. Folgen Sie den unten stehenden Befehlen, um Ihre {platform}-Firewall zu konfigurieren. Sie finden diese Schritte auch im Hilfe-Menü.
+      dialog_info_text: "Hinweis: Sie finden diese Schritte auch im Hilfe-Menü."
+      linux_manual_confirmation_button: "Ich habe konfiguriert"
+      save_confirmation_error: Firewall-Bestätigungseinstellung konnte nicht gespeichert werden
+      rule_added_success: Firewall-Regel erfolgreich hinzugefügt
+      rule_add_error: Firewall-Regel konnte nicht hinzugefügt werden. Bitte versuchen Sie es manuell.
+      add_rule_button: "Firewall-Regel hinzufügen"
+      windows_auto_description: "Klicken Sie auf 'Firewall-Regel hinzufügen', um die Firewall-Regel automatisch mit UAC-Berechtigungsanforderung hinzuzufügen. Wenn Sie es vorziehen, manuell hinzuzufügen, folgen Sie den Schritten unten:"
+      instructions:
+        linux:
+          step1: "Öffnen Sie ein Terminal"
+          step2: "Überprüfen Sie den Firewall-Status:"
+          step3: "Fügen Sie eine Firewall-Regel hinzu (wenn UFW aktiv ist):"
+          step4: "Überprüfen Sie, ob die Regel hinzugefügt wurde:"
+        windows:
+          step1: "Öffnen Sie die Windows Defender Firewall über die Systemsteuerung"
+          step2: "Klicken Sie links auf Erweiterte Einstellungen"
+          step3: "Klicken Sie im linken Bereich auf Eingehende Regeln"
+          step4: "Klicken Sie im rechten Bereich auf Neue Regel..."
+          step5: "Wählen Sie Port aus und klicken Sie auf Weiter"
+          step6: "Wählen Sie TCP aus und geben Sie 44040 in das Feld für bestimmte lokale Ports ein"
+          step7: "Wählen Sie Verbindung zulassen und klicken Sie auf Weiter"
+          step8: "Aktivieren Sie alle Profile (Domäne, Privat, Öffentlich) und klicken Sie auf Weiter"
+          step9: "Geben Sie einen Namen wie WHPH Sync Port 44040 ein und klicken Sie auf Fertig stellen"
+          alternative_command_prompt:
+            title: "Alternative: Verwenden Sie die Eingabeaufforderung"
+            steps:
+              cmd_step1: "Öffnen Sie die Eingabeaufforderung als Administrator"
+              cmd_step2: "Fügen Sie eine Firewall-Regel hinzu:"
     startup:
       description: Damit die App automatisch mit Ihrem Gerät startet, ist eine Autostart-Berechtigung erforderlich. Dies stellt sicher, dass Erinnerungen und Benachrichtigungen auch nach Geräteneustarts ordnungsgemäß funktionieren.
       importance: Die Position der Autostart-Einstellung variiert oder ist möglicherweise nicht vorhanden, je nach Gerätehersteller.

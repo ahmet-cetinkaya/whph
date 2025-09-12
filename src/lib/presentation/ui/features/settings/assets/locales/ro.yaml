@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Permisiunea Firewall-ului
+      description: Permiteți WHPH să comunice prin firewall-ul {platform} pe portul 44040 pentru sincronizarea dispozitivelor.
+      dialog_description: WHPH are nevoie de permisiunea firewall-ului pentru a permite altor dispozitive să se conecteze pentru sincronizare. Urmați comenzile de mai jos pentru a configura firewall-ul {platform}. Puteți găsi, de asemenea, acești pași în meniul de ajutor.
+      dialog_info_text: "Notă: Puteți găsi, de asemenea, acești pași în meniul de ajutor."
+      linux_manual_confirmation_button: "Am configurat"
+      save_confirmation_error: Salvarea setării de confirmare a firewall-ului a eșuat
+      rule_added_success: Regula de firewall a fost adăugată cu succes
+      rule_add_error: Adăugarea regulii de firewall a eșuat. Încercați pașii manuali.
+      add_rule_button: "Adăugați o regulă de firewall"
+      windows_auto_description: "Faceți clic pe 'Adăugați o regulă de firewall' pentru a adăuga automat regula de firewall cu cerere de permisiune UAC. Dacă preferați să adăugați manual, urmați pașii de mai jos:"
+      instructions:
+        linux:
+          step1: "Deschideți un terminal"
+          step2: "Verificați starea firewall-ului:"
+          step3: "Adăugați o regulă de firewall (dacă UFW este activ):"
+          step4: "Verificați dacă regula a fost adăugată:"
+        windows:
+          step1: "Deschideți Windows Defender Firewall din Panoul de control"
+          step2: "Faceți clic pe Setări avansate în partea stângă"
+          step3: "În panoul din stânga, faceți clic pe Reguli de intrare"
+          step4: "În panoul din dreapta, faceți clic pe Regulă nouă..."
+          step5: "Selectați Port și faceți clic pe Următorul"
+          step6: "Selectați TCP și introduceți 44040 în câmpul porturilor locale specifice"
+          step7: "Selectați Permiteți conexiunea și faceți clic pe Următorul"
+          step8: "Bifați toate profilele (Domeniu, Privat, Public) și faceți clic pe Următorul"
+          step9: "Introduceți un nume ca WHPH Sync Port 44040 și faceți clic pe Terminare"
+          alternative_command_prompt:
+            title: "Alternativă: Utilizați Promptul de comandă"
+            steps:
+              cmd_step1: "Deschideți Promptul de comandă ca Administrator"
+              cmd_step2: "Adăugați o regulă de firewall:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

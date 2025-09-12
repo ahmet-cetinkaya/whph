@@ -95,6 +95,39 @@ settings:
           step2: İstendiğinde bildirimlere izin verin
       title: Bildirim İzni
     open_settings: Ayarı Aç
+    open_terminal: Terminali Aç
+    firewall:
+      title: Güvenlik Duvarı İzni
+      description: Cihaz senkronizasyonu için WHPH uygulamasının {platform} güvenlik duvarı üzerinden 44040 portunda iletişim kurmasına izin verin.
+      dialog_description: WHPH, diğer cihazların senkronizasyon için bağlanabilmesi için güvenlik duvarı iznine ihtiyaç duyar. {platform} güvenlik duvarınızı yapılandırmak için aşağıdaki komutları izleyin. Bu adımları ayrıca yardım menüsünde de bulabilirsiniz.
+      dialog_info_text: "Not: Bu adımları ayrıca yardım menüsünde de bulabilirsiniz."
+      linux_manual_confirmation_button: "Yapılandırdım"
+      save_confirmation_error: Güvenlik duvarı onay ayarı kaydedilemedi
+      rule_added_success: Güvenlik duvarı kuralı başarıyla eklendi
+      rule_add_error: Güvenlik duvarı kuralı eklenemedi. Manuel adımları deneyin.
+      add_rule_button: "Güvenlik Duvarı Kuralı Ekle"
+      windows_auto_description: "UAC izin isteğiyle güvenlik duvarı kuralını otomatik olarak eklemek için 'Güvenlik Duvarı Kuralı Ekle'ye tıklayın. Manuel eklemeyi tercih ederseniz, aşağıdaki adımları izleyin:"
+      instructions:
+        linux:
+          step1: "Bir terminal açın"
+          step2: "Güvenlik duvarı durumunu kontrol edin:"
+          step3: "Güvenlik duvarı kuralı ekleyin (UFW aktifse):"
+          step4: "Kuralın eklendiğini doğrulayın:"
+        windows:
+          step1: "Kontrol Panelinden Windows Defender Güvenlik Duvarını açın"
+          step2: "Solda Gelişmiş ayarlara tıklayın"
+          step3: "Sol panelde Gelen kurallara tıklayın"
+          step4: "Sağ panelde Yeni kural... seçeneğine tıklayın"
+          step5: "Port'u seçin ve İleri'ye tıklayın"
+          step6: "TCP'yi seçin ve belirli yerel bağlantı noktaları alanına 44040 girin"
+          step7: "Bağlantıya izin ver'i seçin ve İleri'ye tıklayın"
+          step8: "Tüm profilleri (Etki Alanı, Özel, Genel) işaretleyin ve İleri'ye tıklayın"
+          step9: "WHPH Sync Port 44040 gibi bir ad girin ve Son'a tıklayın"
+          alternative_command_prompt:
+            title: "Alternatif: Komut İstemi Kullan"
+            steps:
+              cmd_step1: "Komut İstemi'ni Yönetici olarak açın"
+              cmd_step2: "Güvenlik duvarı kuralı ekleyin:"
     startup:
       description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
       importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.

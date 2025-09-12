@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Oprávnění firewallu
+      description: Povolte aplikaci WHPH komunikovat přes firewall systému {platform} na portu 44040 pro synchronizaci zařízení.
+      dialog_description: Aplikace WHPH potřebuje oprávnění firewallu, aby umožnila připojení jiných zařízení pro synchronizaci. Podle níže uvedených příkazů nakonfigurujte firewall systému {platform}. Tyto kroky můžete také najít v nabídce nápovědy.
+      dialog_info_text: "Poznámka: Tyto kroky můžete také najít v nabídce nápovědy."
+      linux_manual_confirmation_button: "Nakonfigurováno"
+      save_confirmation_error: Nepodařilo se uložit nastavení potvrzení firewallu
+      rule_added_success: Pravidlo firewallu bylo úspěšně přidáno
+      rule_add_error: Nepodařilo se přidat pravidlo firewallu. Zkuste ruční kroky.
+      add_rule_button: "Přidat pravidlo firewallu"
+      windows_auto_description: "Kliknutím na 'Přidat pravidlo firewallu' automaticky přidáte pravidlo firewallu s požadavkem na oprávnění UAC. Pokud dáváte přednost ručnímu přidání, postupujte podle níže uvedených kroků:"
+      instructions:
+        linux:
+          step1: "Otevřete terminál"
+          step2: "Zkontrolujte stav firewallu:"
+          step3: "Přidejte pravidlo firewallu (pokud je aktivní UFW):"
+          step4: "Ověřte, že bylo pravidlo přidáno:"
+        windows:
+          step1: "Otevřete bránu Windows Defender Firewall z Ovládacích panelů"
+          step2: "Klikněte na Pokročilé nastavení vlevo"
+          step3: "V levém podokně klikněte na Příchozí pravidla"
+          step4: "V pravém podokně klikněte na Nové pravidlo..."
+          step5: "Vyberte Port a klikněte na Další"
+          step6: "Vyberte TCP a zadejte 44040 do pole pro konkrétní místní porty"
+          step7: "Vyberte Povolit připojení a klikněte na Další"
+          step8: "Zaškrtněte všechny profily (Doména, Soukromý, Veřejný) a klikněte na Další"
+          step9: "Zadejte název jako WHPH Sync Port 44040 a klikněte na Dokončit"
+          alternative_command_prompt:
+            title: "Alternativa: Použijte příkazový řádek"
+            steps:
+              cmd_step1: "Otevřete příkazový řádek jako správce"
+              cmd_step2: "Přidejte pravidlo firewallu:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

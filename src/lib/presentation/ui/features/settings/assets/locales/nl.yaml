@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Firewall-toestemming
+      description: Sta WHPH toe om te communiceren via de {platform} firewall op poort 44040 voor apparaatsynchronisatie.
+      dialog_description: WHPH heeft firewall-toestemming nodig om andere apparaten verbinding te laten maken voor synchronisatie. Volg de onderstaande commando's om je {platform} firewall te configureren. Je kunt deze stappen ook vinden in het helpmenu.
+      dialog_info_text: "Opmerking: Je kunt deze stappen ook vinden in het helpmenu."
+      linux_manual_confirmation_button: "Ik heb geconfigureerd"
+      save_confirmation_error: Opslaan van firewall-bevestigingsinstelling mislukt
+      rule_added_success: Firewall-regel succesvol toegevoegd
+      rule_add_error: Toevoegen van firewall-regel mislukt. Probeer de handmatige stappen.
+      add_rule_button: "Firewall-regel toevoegen"
+      windows_auto_description: "Klik op 'Firewall-regel toevoegen' om automatisch de firewall-regel toe te voegen met UAC-toestemmingsverzoek. Als je liever handmatig toevoegt, volg dan de onderstaande stappen:"
+      instructions:
+        linux:
+          step1: "Open een terminal"
+          step2: "Controleer firewall-status:"
+          step3: "Voeg firewall-regel toe (als UFW actief is):"
+          step4: "Controleer of regel is toegevoegd:"
+        windows:
+          step1: "Open Windows Defender Firewall vanuit Configuratiescherm"
+          step2: "Klik op Geavanceerde instellingen aan de linkerkant"
+          step3: "Klik in het linkerdeelvenster op Inkomende regels"
+          step4: "Klik in het rechterdeelvenster op Nieuwe regel..."
+          step5: "Selecteer Poort en klik op Volgende"
+          step6: "Selecteer TCP en voer 44040 in het veld voor specifieke lokale poorten in"
+          step7: "Selecteer Verbinding toestaan en klik op Volgende"
+          step8: "Vink alle profielen aan (Domein, Privé, Openbaar) en klik op Volgende"
+          step9: "Voer een naam in zoals WHPH Sync Poort 44040 en klik op Voltooien"
+          alternative_command_prompt:
+            title: "Alternatief: Gebruik opdrachtprompt"
+            steps:
+              cmd_step1: "Open opdrachtprompt als administrator"
+              cmd_step2: "Voeg firewall-regel toe:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.
