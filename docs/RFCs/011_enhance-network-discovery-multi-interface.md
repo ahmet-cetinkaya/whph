@@ -26,7 +26,7 @@ This forces users into troubleshooting network configurations or disabling inter
 ```dart
 abstract class INetworkInterfaceService {
   Future<List<String>> getLocalIPAddresses();
-  Future<List<NetworkInterface>> getActiveNetworkInterfaces();
+  Future<List<NetworkInterfaceInfo>> getActiveNetworkInterfaces();
   bool isValidLocalIPAddress(String ipAddress);
 }
 
@@ -66,7 +66,7 @@ class SyncConnectionInfo {
 
 ```dart
 abstract class IConcurrentConnectionService {
-  Future<WebSocketChannel?> connectToAnyAddress(
+  Future<WebSocket?> connectToAnyAddress(
     List<String> ipAddresses,
     int port, {
     Duration timeout = const Duration(seconds: 5),
