@@ -259,7 +259,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
         if (!isReachable) {
           throw BusinessException(
-            'Cannot connect to sync device: ${device.ipAddress}',
+            _translationService.translate(SyncTranslationKeys.connectionFailedError),
             SyncTranslationKeys.connectionFailedError,
           );
         }
@@ -289,7 +289,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         // Get local device information
         final localIp = await NetworkUtils.getLocalIpAddress();
         if (localIp == null) {
-          throw BusinessException('Local IP address could not be determined', SyncTranslationKeys.ipAddressError);
+          throw BusinessException(
+            _translationService.translate(SyncTranslationKeys.localIpError),
+            SyncTranslationKeys.ipAddressError,
+          );
         }
 
         final localDeviceId = await deviceIdService.getDeviceId();
@@ -301,7 +304,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         );
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
-          throw BusinessException('This device is already paired', SyncTranslationKeys.deviceAlreadyPaired);
+          throw BusinessException(
+            _translationService.translate(SyncTranslationKeys.deviceAlreadyPairedError),
+            SyncTranslationKeys.deviceAlreadyPaired,
+          );
         }
 
         // Create the sync device
@@ -355,7 +361,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           const Duration(seconds: 30),
           onTimeout: () {
             subscription.cancel();
-            throw BusinessException('Sync operation timed out', SyncTranslationKeys.syncTimeoutError);
+            throw BusinessException(
+              _translationService.translate(SyncTranslationKeys.syncTimeoutError),
+              SyncTranslationKeys.syncTimeoutError,
+            );
           },
         );
 
