@@ -71,6 +71,7 @@ sync:
       2. Ambele aplicații sunt deschise și rulează
       3. Niciun firewall nu blochează conexiunea
     device_mismatch: Eroare de sincronizare. Dispozitivul care încearcă să se sincronizeze nu este corect împerecheat cu acest dispozitiv.
+    environment_mismatch: Sincronizarea nu poate continua între build-urile de debug și producție.
     device_not_found: Dispozitiv de sincronizare negăsit
     ip_address: Nu se poate obține adresa IP locală
     parse_message: Nu se poate analiza mesajul scanat

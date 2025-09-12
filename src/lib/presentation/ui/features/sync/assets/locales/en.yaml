@@ -78,6 +78,7 @@ sync:
       3. Desktop firewall allows port 44040 (check sync settings)
       4. No VPN or proxy interfering with local network
     device_mismatch: Sync error. Device not properly paired.
+    environment_mismatch: Sync cannot proceed between debug and production builds.
     device_not_found: Sync device not found
     ip_address: Unable to fetch local IP address
     parse_message: Unable to parse scanned message

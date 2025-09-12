@@ -71,6 +71,7 @@ sync:
       2. 两个应用都打开并运行
       3. 没有防火墙阻塞连接
     device_mismatch: 同步错误。尝试同步的设备未与此设备正确配对。
+    environment_mismatch: 调试和生产构建之间无法继续同步。
     device_not_found: 未找到同步设备
     ip_address: 无法获取本地 IP 地址
     parse_message: 无法解析扫描的消息
